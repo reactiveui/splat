@@ -26,13 +26,13 @@ namespace Splat
                 source.EndInit();
                 source.Freeze();
 
-                return new BitmapSourceBitmap(source);
+                return (IBitmap) new BitmapSourceBitmap(source);
             });
         }
 
         public IBitmap Create(float width, float height)
         {
-            return new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height, 96, 96, PixelFormats.Default, null));
+            return (IBitmap) new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height, 96, 96, PixelFormats.Default, null));
         }
     }
 
