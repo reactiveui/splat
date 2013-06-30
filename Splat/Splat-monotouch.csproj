@@ -44,5 +44,7 @@
   <ItemGroup>
     <Compile Include="Bitmaps.cs" />
     <Compile Include="Cocoa\Bitmaps.cs" />
+    <Compile Include="ModeDetector.cs" />
+    <Compile Include="PlatformModeDetector.cs" />
   </ItemGroup>
 </Project>

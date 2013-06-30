@@ -46,6 +46,8 @@
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Bitmaps.cs" />
     <Compile Include="Android\Bitmaps.cs" />
+    <Compile Include="ModeDetector.cs" />
+    <Compile Include="PlatformModeDetector.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
