@@ -42,5 +42,6 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="ModeDetector.cs" />
+    <Compile Include="PlatformModeDetector.cs" />
   </ItemGroup>
 </Project>
