@@ -40,4 +40,7 @@
     <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Compile Include="ModeDetector.cs" />
+  </ItemGroup>
 </Project>
