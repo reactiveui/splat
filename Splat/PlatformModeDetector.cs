@@ -3,6 +3,13 @@ using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+
+#if SILVERLIGHT
+using System.Windows;
+#elif NETFX_CORE
+using Windows.ApplicationModel;
+#endif
 
 namespace Splat
 {
@@ -32,7 +39,7 @@ namespace Splat
             if (Application.Current.RootVisual != null) {
                 return System.ComponentModel.DesignerProperties.GetIsInDesignMode(Application.Current.RootVisual);
             }
-#elif WINRT
+#elif NETFX_CORE
             return DesignMode.DesignModeEnabled;
 #else
             var designEnvironments = new[] {
@@ -56,7 +63,7 @@ namespace Splat
         {
 #if SILVERLIGHT
             return Deployment.Current.Parts.Any(x => assemblyList.Any(name => x.Source.ToUpperInvariant().Contains(name)));
-#elif WINRT
+#elif NETFX_CORE
             var depPackages = Package.Current.Dependencies.Select(x => x.Id.FullName);
             if (depPackages.Any(x => assemblyList.Any(name => x.ToUpperInvariant().Contains(name)))) return true;
 

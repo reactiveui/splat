@@ -87,7 +87,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Splat-Portable.csproj">
+    <ProjectReference Include="Splat-Portable.csproj">
       <Project>{0EC8DBA1-D745-4EE5-993A-6026440EC3BF}</Project>
       <Name>Splat-Portable</Name>
     </ProjectReference>
