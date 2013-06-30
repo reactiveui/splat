@@ -44,6 +44,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Resources\Resource.designer.cs" />
+    <Compile Include="Bitmaps.cs" />
+    <Compile Include="Android\Bitmaps.cs" />
     <Compile Include="ModeDetector.cs" />
     <Compile Include="PlatformModeDetector.cs" />
   </ItemGroup>
@@ -55,6 +57,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="BigKidsCLR\" />
+    <Folder Include="Android\" />
   </ItemGroup>
 </Project>
