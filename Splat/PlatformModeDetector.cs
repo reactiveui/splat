@@ -39,6 +39,8 @@ namespace Splat
             if (Application.Current.RootVisual != null) {
                 return System.ComponentModel.DesignerProperties.GetIsInDesignMode(Application.Current.RootVisual);
             }
+
+            return false;
 #elif NETFX_CORE
             return DesignMode.DesignModeEnabled;
 #else
@@ -55,8 +57,9 @@ namespace Splat
                     return true;
                 }
             }
-#endif
+
             return false;
+#endif
         }
         
         static bool searchForAssembly(IEnumerable<string> assemblyList)
