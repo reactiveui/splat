@@ -18,3 +18,4 @@ Splat currently supports:
 * Cross-platform image loading/saving
 * A port of System.Drawing.Color for platforms that don't support it (WinRT,
   WP8)
+* A way to detect whether you're in a Unit Test runner / Design Mode
