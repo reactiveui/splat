@@ -40,7 +40,7 @@ namespace Splat
 
     class WriteableBitmapImageBitmap : IBitmap
     {
-        WriteableBitmap inner;
+        internal WriteableBitmap inner;
 
         public float Width { get; protected set; }
         public float Height { get; protected set; }
@@ -76,7 +76,7 @@ namespace Splat
 
     class BitmapImageBitmap : IBitmap
     {
-        BitmapImage inner;
+        internal BitmapImage inner;
 
         public float Width { get; protected set; }
         public float Height { get; protected set; }
@@ -103,4 +103,28 @@ namespace Splat
             inner = null;
         }
     }
+
+    public static class BitmapMixins
+    {
+        public static IBitmap FromNative(this BitmapImage This)
+        {
+            return new BitmapImageBitmap(This);
+        }
+
+        public static IBitmap FromNative(this WriteableBitmap This)
+        {
+            return new WriteableBitmapImageBitmap(This);
+        }
+
+        public static BitmapSource ToNative(this IBitmap This)
+        {
+            var wbib = This as WriteableBitmapImageBitmap;
+            if (wbib != null) {
+                return wbib.inner;
+            }
+
+            return ((BitmapImageBitmap)This).inner;
+        }
+    }
+
 }
