@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.20617.1 PREVIEW
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat-wp8", "Splat\Splat-wp8.csproj", "{95309EA3-055A-4B66-84DE-7771237CCF6C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat-WP8", "Splat\Splat-WP8.csproj", "{95309EA3-055A-4B66-84DE-7771237CCF6C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat-NetCore45", "Splat\Splat-NetCore45.csproj", "{18DCE642-06B7-4092-B8F4-30A675DA6929}"
 EndProject
