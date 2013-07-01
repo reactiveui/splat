@@ -37,6 +37,7 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyFinder.cs" />
     <Compile Include="Bitmaps.cs" />
     <Compile Include="Colors\Color.cs" />
     <Compile Include="Colors\KnownColor.cs" />

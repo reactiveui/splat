@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 
 namespace Splat
 {
-    class BitmapLoader : IBitmapLoader
+    public class PlatformBitmapLoader : IBitmapLoader
     {
         public Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {

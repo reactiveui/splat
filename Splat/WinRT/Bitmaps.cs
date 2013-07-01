@@ -13,7 +13,7 @@ using Windows.Storage;
 
 namespace Splat
 {
-    class BitmapLoader : IBitmapLoader
+    class PlatformBitmapLoader : IBitmapLoader
     {
         public async Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
