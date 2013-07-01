@@ -11,7 +11,7 @@ and `FromNative()`, which converts the abstraction to the platform-specific
 version. Load the image in the cross-platform code, then call `ToNative()` in
 your view to actually display it.
 
-### Support
+### What does it do?
 
 Splat currently supports:
 
