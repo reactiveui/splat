@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Splat</id>
+        <version>0.1.0</version>
+        <authors>Paul Betts</authors>
+        <licenseUrl>https://github.com/xpaulbettsx/splat/blob/master/COPYING</licenseUrl>
+        <projectUrl>https://github.com/xpaulbettsx/splat</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>A library to make things cross-platform that should be</description>
+        <summary>A library to make things cross-platform that should be</summary>
+        <tags>portable</tags>
+    </metadata>
+    <files>
+        <file src="Splat\bin\Release\**\Splat*" target="lib" />
+    </files>
+</package>
