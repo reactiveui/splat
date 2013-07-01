@@ -10,6 +10,12 @@ namespace Splat
 
     public static class ModeDetector
     {
+        static ModeDetector()
+        {
+            var platModeDetector = AssemblyFinder.AttemptToLoadType<IModeDetector>("Splat.PlatformModeDetector");
+            current = platModeDetector;
+        }
+
         static IModeDetector current { get; set; }
 
         public static void OverrideModeDetector(IModeDetector modeDetector)
