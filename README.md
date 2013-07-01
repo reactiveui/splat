@@ -1,5 +1,7 @@
 ## Splat
 
+![](http://f.cl.ly/items/1307401C3x2g3F2p2Z36/Logo.png)
+
 Certain types of things are basically impossible to do in cross-platform
 mobile code today, yet there's no reason why. Writing a ViewModel that handles
 loading a gallery of pictures from disk will be completely riddled with
