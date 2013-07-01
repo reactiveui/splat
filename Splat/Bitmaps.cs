@@ -70,6 +70,12 @@ namespace Splat
     /// </summary>
     public static class BitmapLoader
     {
+        static BitmapLoader()
+        {
+            var platBitmapLoader = AssemblyFinder.AttemptToLoadType<IBitmapLoader>("Splat.PlatformBitmapLoader");
+            _Current = platBitmapLoader;
+        }
+
         // TODO: This needs to be improved once we move the "Detect in Unit Test 
         // Runner" code into Splat
         static IBitmapLoader _Current;

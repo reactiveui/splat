@@ -29,6 +29,8 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <DefineConstants>UIKIT</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -51,5 +53,6 @@
     <Compile Include="Colors\Color.cs" />
     <Compile Include="Colors\KnownColor.cs" />
     <Compile Include="Colors\KnownColors.cs" />
+    <Compile Include="AssemblyFinder.cs" />
   </ItemGroup>
 </Project>

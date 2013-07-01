@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 
 namespace Splat
 {
-    class BitmapLoader : IBitmapLoader
+    public class PlatformBitmapLoader : IBitmapLoader
     {
         public Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
@@ -57,7 +57,7 @@ namespace Splat
 
     class BitmapSourceBitmap : IBitmap
     {
-        BitmapSource inner;
+        internal BitmapSource inner;
 
         public float Width { get; protected set; }
         public float Height { get; protected set; }
@@ -97,6 +97,19 @@ namespace Splat
         public void Dispose()
         {
             inner = null;
+        }
+    }
+
+    public static class BitmapMixins
+    {
+        public static IBitmap FromNative(this BitmapSource This)
+        {
+            return new BitmapSourceBitmap(This);
+        }
+
+        public static BitmapSource ToNative(this IBitmap This)
+        {
+            return ((BitmapSourceBitmap)This).inner;
         }
     }
 }
