@@ -39,6 +39,7 @@
   <ItemGroup>
     <Folder Include="Resources\" />
     <Folder Include="Cocoa\" />
+    <Folder Include="Colors\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -46,5 +47,9 @@
     <Compile Include="Cocoa\Bitmaps.cs" />
     <Compile Include="ModeDetector.cs" />
     <Compile Include="PlatformModeDetector.cs" />
+    <Compile Include="Cocoa\Color.cs" />
+    <Compile Include="Colors\Color.cs" />
+    <Compile Include="Colors\KnownColor.cs" />
+    <Compile Include="Colors\KnownColors.cs" />
   </ItemGroup>
 </Project>
