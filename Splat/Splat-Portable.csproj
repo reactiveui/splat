@@ -38,6 +38,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bitmaps.cs" />
+    <Compile Include="Colors\Color.cs" />
+    <Compile Include="Colors\KnownColor.cs" />
+    <Compile Include="Colors\KnownColors.cs" />
     <Compile Include="ModeDetector.cs">
       <SubType>Code</SubType>
     </Compile>
