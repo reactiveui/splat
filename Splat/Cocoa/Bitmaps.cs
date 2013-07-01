@@ -15,7 +15,7 @@ using UIImage = MonoMac.AppKit.NSImage;
 
 namespace Splat
 {
-    class CocoaBitmapLoader : IBitmapLoader
+    public class PlatformBitmapLoader : IBitmapLoader
     {
         public Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
