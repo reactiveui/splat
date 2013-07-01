@@ -50,6 +50,7 @@
     <Compile Include="ModeDetector.cs" />
     <Compile Include="PlatformModeDetector.cs" />
     <Compile Include="Android\Color.cs" />
+    <Compile Include="AssemblyFinder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
