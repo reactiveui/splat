@@ -39,6 +39,8 @@
   <ItemGroup>
     <Compile Include="AssemblyFinder.cs" />
     <Compile Include="Bitmaps.cs" />
+    <Compile Include="Points\RectangleF.cs" />
+    <Compile Include="Points\Rectangle.cs" />
     <Compile Include="Points\Size.cs" />
     <Compile Include="Points\SizeF.cs" />
     <Compile Include="Points\PointF.cs" />

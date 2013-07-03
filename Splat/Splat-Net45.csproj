@@ -48,6 +48,7 @@
     <Compile Include="PlatformModeDetector.cs" />
     <Compile Include="Xaml\Color.cs" />
     <Compile Include="Xaml\Point.cs" />
+    <Compile Include="Xaml\Rect.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Splat-Portable.csproj">
