@@ -106,6 +106,7 @@
     <Compile Include="WinRT\Bitmaps.cs" />
     <Compile Include="WinRT\Color.cs" />
     <Compile Include="WinRT\Point.cs" />
+    <Compile Include="WinRT\Rect.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Splat-Portable.csproj">

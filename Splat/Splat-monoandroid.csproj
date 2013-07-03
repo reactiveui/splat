@@ -51,6 +51,7 @@
     <Compile Include="PlatformModeDetector.cs" />
     <Compile Include="Android\Color.cs" />
     <Compile Include="Android\Point.cs" />
+    <Compile Include="Android\Rect.cs" />
     <Compile Include="AssemblyFinder.cs" />
   </ItemGroup>
   <ItemGroup>
