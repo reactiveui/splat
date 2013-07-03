@@ -17,12 +17,12 @@ namespace Splat
 
         public static System.Drawing.Rectangle FromNative(this Rect This)
         {
-            return new System.Drawing.Rectangle(This.X, This.Y, This.Width(), This.Height());
+            return new System.Drawing.Rectangle(This.Left, This.Top, This.Width(), This.Height());
         }
 
         public static System.Drawing.RectangleF FromNative(this RectF This)
         {
-            return new System.Drawing.RectangleF(This.X, This.Y, This.Width(), This.Height());
+            return new System.Drawing.RectangleF(This.Left, This.Top, This.Width(), This.Height());
         }
     }
 }
