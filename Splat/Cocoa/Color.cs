@@ -11,12 +11,12 @@ namespace Splat
 #if UIKIT
     public static class ColorExtensions
     {
-        public static UIColor ToNative(System.Drawing.Color This)
+        public static UIColor ToNative(this System.Drawing.Color This)
         {
             return new UIColor((float)This.R / 255.0f, (float)This.G / 255.0f, This.B / 255.0f, This.A / 255.0f);
         }
 
-        public static System.Drawing.Color FromNative(UIColor This)
+        public static System.Drawing.Color FromNative(this UIColor This)
         {
             float r,g,b,a;
 
@@ -27,12 +27,12 @@ namespace Splat
 #else
     public static class ColorExtensions
     {
-        public static NSColor ToNative(System.Drawing.Color This)
+        public static NSColor ToNative(this System.Drawing.Color This)
         {
             return NSColor.FromSrgb((float)This.R / 255.0f, (float)This.G / 255.0f, This.B / 255.0f, This.A / 255.0f);
         }
 
-        public static System.Drawing.Color FromNative(NSColor This)
+        public static System.Drawing.Color FromNative(this NSColor This)
         {
             float r,g,b,a;
 
