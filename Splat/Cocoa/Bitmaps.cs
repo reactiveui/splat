@@ -30,6 +30,17 @@ namespace Splat
             });
         }
 
+        public Task<IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
+        {
+            return Task.Run (() => {
+#if UIKIT
+                return (IBitmap)new CocoaBitmap(UIImage.FromBundle(source));
+#else
+                return (IBitmap)new CocoaBitmap(UIImage.ImageNamed(source));
+#endif
+            });
+        }
+
         public IBitmap Create(float width, float height)
         {
             throw new NotImplementedException();
