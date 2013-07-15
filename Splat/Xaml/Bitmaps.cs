@@ -33,6 +33,23 @@ namespace Splat
             });
         }
 
+        public Task<IBitmap> LoadFromResource(string resource, float? desiredWidth, float? desiredHeight)
+        {
+            return Task.Run(() => {
+                var ret = new BitmapImage();
+                withInit(ret, x => {
+                    if (desiredWidth != null) {
+                        x.DecodePixelWidth = (int)desiredWidth;
+                        x.DecodePixelHeight = (int)desiredHeight;
+                    }
+
+                    x.UriSource = new Uri(resource);
+                });
+
+                return (IBitmap) new BitmapSourceBitmap(ret);
+            });
+        }
+
         public IBitmap Create(float width, float height)
         {
 #if SILVERLIGHT
