@@ -28,6 +28,16 @@ namespace Splat
         Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight);
 
         /// <summary>
+        /// Loads from the application's resources (i.e. from bundle on Cocoa,
+        /// from Pack URIs on Windows, etc)
+        /// </summary>
+        /// <param name="source">The source resource, as a relative path.</param>
+        /// <param name="desiredWidth">Desired width.</param>
+        /// <param name="desiredHeight">Desired height.</param>
+        /// <returns>A future result representing the loaded image</returns>
+        Task<IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight);
+
+        /// <summary>
         /// Creates an empty bitmap of the specified dimensions
         /// </summary>
         /// <param name="width">The width of the canvas</param>
