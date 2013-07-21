@@ -12,9 +12,9 @@ namespace Splat
         {
 #if UIKIT
             // NB: I have no idea but Archimedes does this, soooooooo....
-            return new PointF((float)Math.Floor((double)This.X), (float)Math.Ceiling((double)This.Y));
-#else
             return new PointF((float)Math.Floor((double)This.X), (float)Math.Floor((double)This.Y));
+#else
+            return new PointF((float)Math.Floor((double)This.X), (float)Math.Ceiling((double)This.Y));
 #endif
         }
 
