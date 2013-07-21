@@ -52,6 +52,20 @@ namespace Splat
                 throw new ArgumentException("edge");
             }
         }
+                
+        /// <summary>
+        /// Divide the specified Rectangle into two component rectangles, adding 
+        /// a padding between them.
+        /// </summary>
+        /// <param name="amount">Amount to move away from the given edge</param>
+        /// <param name="padding">The amount of padding that is in neither rectangle.</param>
+        /// <param name="fromEdge">The edge to create the slice from.</param>
+        public static Tuple<RectangleF, RectangleF> DivideWithPadding(this RectangleF This, float sliceAmount, float padding, RectEdge fromEdge)
+        {
+            var slice = This.Divide(sliceAmount, fromEdge);
+            var pad = This.Divide(padding, fromEdge);
+            return Tuple.Create(slice.Item1, pad.Item2);
+        }
 
         /// <summary>
         /// Vertically inverts the coordinates of the rectangle within containingRect 
