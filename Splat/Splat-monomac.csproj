@@ -53,6 +53,9 @@
     <Compile Include="AssemblyFinder.cs" />
     <Compile Include="Bitmaps.cs" />
     <Compile Include="ModeDetector.cs" />
+    <Compile Include="PointExtensions.cs" />
+    <Compile Include="RectangleExtensions.cs" />
+    <Compile Include="SizeExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

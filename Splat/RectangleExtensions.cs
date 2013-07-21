@@ -8,7 +8,7 @@ namespace Splat
         Right, Bottom,  // Right / Bottom
     }
 
-    public static class RectangleExtensions
+    public static class RectangleMathExtensions
     {
         /// <summary>
         /// Determine the center of a Rectangle

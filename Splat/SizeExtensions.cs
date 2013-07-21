@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace Splat
 {
-    public static class SizeExtensions
+    public static class SizeMathExtensions
     {
         /// <summary>
         /// Determines whether two sizes are within epsilon of each other

@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace Splat
 {
-    public static class PointExtensions
+    public static class PointMathExtensions
     {
         /// <summary>
         /// Floor the specified point (i.e. round it to integer values)
