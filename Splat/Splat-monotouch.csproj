@@ -55,5 +55,6 @@
     <Compile Include="Colors\KnownColors.cs" />
     <Compile Include="AssemblyFinder.cs" />
     <Compile Include="PointExtensions.cs" />
+    <Compile Include="SizeExtensions.cs" />
   </ItemGroup>
 </Project>
