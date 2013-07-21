@@ -53,6 +53,9 @@
     <Compile Include="Android\Point.cs" />
     <Compile Include="Android\Rect.cs" />
     <Compile Include="AssemblyFinder.cs" />
+    <Compile Include="PointExtensions.cs" />
+    <Compile Include="RectangleExtensions.cs" />
+    <Compile Include="SizeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
