@@ -6,11 +6,28 @@ using System.Threading;
 using Android.Content;
 using Android.App;
 using Android.Graphics.Drawables;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Splat
 {
     public class PlatformBitmapLoader : IBitmapLoader
     {
+        static readonly Dictionary<string, int> drawableList;
+
+        static PlatformBitmapLoader()
+        {
+            // NB: This is some hacky shit, but on MonoAndroid at the moment, 
+            // this is always the entry assembly.
+            var assm = AppDomain.CurrentDomain.GetAssemblies()[1];
+
+            var resources = assm.GetModules().SelectMany(x => x.GetTypes()).First(x => x.Name == "Resource");
+
+            drawableList = resources.GetNestedType("Drawable").GetFields()
+                .Where(x => x.FieldType == typeof(int))
+                .ToDictionary(k => k.Name, v => (int)v.GetRawConstantValue());
+        }
+
         public Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
             if (desiredWidth == null) {
@@ -28,7 +45,17 @@ namespace Splat
         public Task<IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
         {
             var res = Application.Context.Resources;
-            return Task.Run(() => (IBitmap)new DrawableBitmap(res.GetDrawable(Int32.Parse(source))));
+
+            var id = default(int);
+            if (Int32.TryParse(source, out id)) {
+                return Task.Run(() => (IBitmap)new DrawableBitmap(res.GetDrawable(Int32.Parse(source))));
+            }
+
+            if (drawableList.ContainsKey(source)) {
+                return Task.Run(() => (IBitmap)new DrawableBitmap(res.GetDrawable(drawableList[source])));
+            }
+
+            throw new ArgumentException("Either pass in an integer ID cast to a string, or the name of a drawable resource");
         }
 
         public IBitmap Create(float width, float height)
