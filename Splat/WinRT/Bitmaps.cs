@@ -26,7 +26,8 @@ namespace Splat
 
             // NB: WinRT is dumb.
             var rwStream = new InMemoryRandomAccessStream();
-            await rwStream.AsStreamForRead().CopyToAsync(rwStream.AsStreamForWrite());
+            await sourceStream.CopyToAsync(rwStream.AsStreamForWrite());
+            rwStream.Seek(0);
 
             await source.SetSourceAsync(rwStream);
             return (IBitmap) new BitmapImageBitmap(source);
