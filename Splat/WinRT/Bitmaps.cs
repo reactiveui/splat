@@ -17,8 +17,7 @@ namespace Splat
     {
         public async Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
-            using (var rwStream = new InMemoryRandomAccessStream())
-            {
+            using (var rwStream = new InMemoryRandomAccessStream()) {
                 await sourceStream.CopyToAsync(rwStream.AsStreamForWrite());
 
                 var decoder = await BitmapDecoder.CreateAsync(rwStream);
@@ -33,8 +32,7 @@ namespace Splat
                 var pixels = pixelData.DetachPixelData();
 
                 WriteableBitmap bmp = new WriteableBitmap((int)decoder.OrientedPixelWidth, (int)decoder.OrientedPixelHeight);
-                using (var bmpStream = bmp.PixelBuffer.AsStream())
-                {
+                using (var bmpStream = bmp.PixelBuffer.AsStream()) {
                     bmpStream.Seek(0, SeekOrigin.Begin);
                     bmpStream.Write(pixels, 0, (int)bmpStream.Length);
                     return (IBitmap) new WriteableBitmapImageBitmap(bmp);
