@@ -17,19 +17,27 @@ namespace Splat
     {
         public async Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
-            var source = new BitmapImage();
+            using (var rwStream = new InMemoryRandomAccessStream()) {
+                await sourceStream.CopyToAsync(rwStream.AsStreamForWrite());
 
-            if (desiredWidth != null) {
-                source.DecodePixelWidth = (int)desiredWidth;
-                source.DecodePixelHeight = (int)desiredHeight;
+                var decoder = await BitmapDecoder.CreateAsync(rwStream);
+
+                var transform = new BitmapTransform();
+                if (desiredWidth != null) {
+                    transform.ScaledWidth = (uint)desiredWidth;
+                    transform.ScaledHeight = (uint)desiredHeight;
+                }
+
+                var pixelData = await decoder.GetPixelDataAsync(decoder.BitmapPixelFormat, decoder.BitmapAlphaMode, transform, ExifOrientationMode.RespectExifOrientation, ColorManagementMode.ColorManageToSRgb);
+                var pixels = pixelData.DetachPixelData();
+
+                WriteableBitmap bmp = new WriteableBitmap((int)decoder.OrientedPixelWidth, (int)decoder.OrientedPixelHeight);
+                using (var bmpStream = bmp.PixelBuffer.AsStream()) {
+                    bmpStream.Seek(0, SeekOrigin.Begin);
+                    bmpStream.Write(pixels, 0, (int)bmpStream.Length);
+                    return (IBitmap) new WriteableBitmapImageBitmap(bmp);
+                }
             }
-
-            // NB: WinRT is dumb.
-            var rwStream = new InMemoryRandomAccessStream();
-            await rwStream.AsStreamForRead().CopyToAsync(rwStream.AsStreamForWrite());
-
-            await source.SetSourceAsync(rwStream);
-            return (IBitmap) new BitmapImageBitmap(source);
         }
 
         public Task<IBitmap> LoadFromResource(string resource, float? desiredWidth, float? desiredHeight)
