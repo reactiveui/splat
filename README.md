@@ -29,6 +29,7 @@ Splat currently supports:
 
 * Xamarin.iOS
 * Xamarin.Android
+* Xamarin.Mac
 * WPF (.NET 4.5)
 * Windows Phone 8
 * WinRT
