@@ -19,6 +19,8 @@ Splat currently supports:
 
 * Cross-platform image loading/saving
 * A port of System.Drawing.Color for portable libraries
+* Cross-platform geometry primitives (PointF, SizeF, RectangleF), as well as a bunch of 
+  additional extension methods to make using them easier.
 * A way to detect whether you're in a Unit Test runner / Design Mode
 
 ### How do I install?
