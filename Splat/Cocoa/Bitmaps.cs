@@ -70,10 +70,14 @@ namespace Splat
                 var data = format == CompressedBitmapFormat.Jpeg ? inner.AsJPEG((float)quality) : inner.AsPNG();
                 data.AsStream().CopyTo(target);
                 #else
-                var imageRep = (NSBitmapImageRep)NSBitmapImageRep.ImageRepFromData(inner.AsTiff());
+                var rect = new RectangleF();
+                var cgImage = inner.AsCGImage(ref rect, null, null);
+                var imageRep = new NSBitmapImageRep(cgImage);
+
                 var props = format == CompressedBitmapFormat.Png ? 
                     new NSDictionary() : 
-                        new NSDictionary(new NSNumber(quality), new NSString("NSImageCompressionFactor"));
+                    new NSDictionary(new NSNumber(quality), AppKitConstants.NSImageCompressionFactor);
+
                 var type = format == CompressedBitmapFormat.Png ? NSBitmapImageFileType.Png : NSBitmapImageFileType.Jpeg;
 
                 var outData = imageRep.RepresentationUsingTypeProperties(type, props);
