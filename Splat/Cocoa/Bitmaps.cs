@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Drawing;
 
 #if UIKIT
 using MonoTouch.UIKit;
@@ -76,7 +77,7 @@ namespace Splat
 
                 var props = format == CompressedBitmapFormat.Png ? 
                     new NSDictionary() : 
-                    new NSDictionary(new NSNumber(quality), AppKitConstants.NSImageCompressionFactor);
+                    new NSDictionary(new NSNumber(quality), new NSString("NSImageCompressionFactor"));
 
                 var type = format == CompressedBitmapFormat.Png ? NSBitmapImageFileType.Png : NSBitmapImageFileType.Jpeg;
 
