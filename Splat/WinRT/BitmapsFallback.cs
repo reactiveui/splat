@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Imaging;
 
@@ -17,26 +18,28 @@ namespace Splat
     {
         public async Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
-            ImagingFactory factory = new ImagingFactory();
+            var factory = new ImagingFactory();
             var decoder = factory.CreateDecoderFromStream(sourceStream, WICDecodeOptions.WICDecodeMetadataCacheOnLoad);
             var frame = decoder.GetFrame(0);
             var frameSize = frame.GetSize();
+            var convertedSource = default(BitmapSource);
 
-            BitmapSource convertedSource;
-            if (!frame.GetPixelFormat().Equals(NativeMethods.WICPixelFormat32bppBGRA))
-            {
-                FormatConverter converter = factory.CreateFormatConverter();
+            if (!frame.GetPixelFormat().Equals(NativeMethods.WICPixelFormat32bppBGRA)) {
+                var converter = factory.CreateFormatConverter();
+
                 converter.Initialize(frame, NativeMethods.WICPixelFormat32bppBGRA);
                 convertedSource = converter;
-            }
-            else
+            } else {
                 convertedSource = frame;
+            }
 
-            byte[] buffer = convertedSource.CopyPixels();
+            var buffer = convertedSource.CopyPixels();
 
-            WriteableBitmap bmp = new WriteableBitmap(frameSize.Width, frameSize.Height);
-            using (var stream = bmp.PixelBuffer.AsStream())
+            var bmp = new WriteableBitmap(frameSize.Width, frameSize.Height);
+            using (var stream = bmp.PixelBuffer.AsStream()) {
                 stream.Write(buffer, 0, buffer.Length);
+            }
+
             bmp.Invalidate();
 
             return new WriteableBitmapImageBitmap(bmp);
@@ -52,45 +55,55 @@ namespace Splat
             throw new NotImplementedException();
         }
 
-        class ImagingFactory
+        class ImagingFactory : IDisposable
         {
-
+            IDisposable inner;
             IWICImagingFactory comObject;
             IntPtr nativePointer;
             IntPtr riidPointer;
 
             public ImagingFactory()
             {
-                Guid riid = typeof(IWICImagingFactory).GetTypeInfo().GUID;
+                var riid = typeof(IWICImagingFactory).GetTypeInfo().GUID;
                 byte[] riidBytes = riid.ToByteArray();
+
                 riidPointer = Marshal.AllocHGlobal(riidBytes.Length);
                 Marshal.Copy(riidBytes, 0, riidPointer, riidBytes.Length);
-                MultiQueryInterface localQuery = new MultiQueryInterface()
-                {
+
+                var localQuery = new MultiQueryInterface() {
                     InterfaceIID = riidPointer,
                     IUnknownPointer = IntPtr.Zero,
                     ResultCode = 0,
                 };
+
                 var result = NativeMethods.CoCreateInstanceFromApp(NativeMethods.CLSID_WICImagingFactory, IntPtr.Zero, CLSCTX.CLSCTX_INPROC_SERVER, IntPtr.Zero, 1, ref localQuery);
-                if (result != NativeMethods.S_OK || localQuery.ResultCode != NativeMethods.S_OK)
+                if (result != NativeMethods.S_OK || localQuery.ResultCode != NativeMethods.S_OK) {
                     throw new Exception("CoCreateInstanceFromApp failed");
-                this.nativePointer = localQuery.IUnknownPointer;
-                this.comObject = (IWICImagingFactory)Marshal.GetObjectForIUnknown(nativePointer);
+                }
+
+                nativePointer = localQuery.IUnknownPointer;
+                comObject = (IWICImagingFactory)Marshal.GetObjectForIUnknown(nativePointer);
+
+                inner = new DelegateDisposable(() => {
+                    Marshal.FreeHGlobal(riidPointer);
+                    Marshal.ReleaseComObject(comObject);
+                });
             }
 
-            ~ImagingFactory()
+            ~ImagingFactory() { Dispose(); }
+            public void Dispose()
             {
-                Marshal.FreeHGlobal(riidPointer);
-                // todo: do other classes as well as this one need the com objects to be freed? possible memory leak
+                Interlocked.Exchange(ref inner, DelegateDisposable.Empty).Dispose();
             }
 
             public BitmapDecoder CreateDecoderFromStream(Stream stream, WICDecodeOptions wicDecodeOptions)
             {
                 IntPtr nativePointer;
-                Guid nullGuid = Guid.Empty;
+                var nullGuid = Guid.Empty;
+
                 var result = comObject.CreateDecoderFromStream(new ManagedIStream(stream), ref nullGuid, wicDecodeOptions, out nativePointer);
-                if (result != NativeMethods.S_OK)
-                    throw new Exception("CreateDecoderFromStream failed");
+                if (result != NativeMethods.S_OK) throw new Exception("CreateDecoderFromStream failed");
+
                 return new BitmapDecoder(nativePointer);
             }
 
@@ -98,42 +111,57 @@ namespace Splat
             {
                 IntPtr nativePointer;
                 var result = comObject.CreateFormatConverter(out nativePointer);
+
                 if (result != NativeMethods.S_OK)
                     throw new Exception("CreateFormatConverter failed");
+
                 return new FormatConverter(nativePointer);
             }
         }
 
-        class BitmapDecoder
+        class BitmapDecoder : IDisposable
         {
             IWICBitmapDecoder comObject;
             IntPtr nativePointer;
+            IDisposable inner;
 
             internal BitmapDecoder(IntPtr nativePointer)
             {
                 this.nativePointer = nativePointer;
                 this.comObject = (IWICBitmapDecoder)Marshal.GetObjectForIUnknown(nativePointer);
+                inner = new DelegateDisposable(() => Marshal.ReleaseComObject(comObject));
             }
 
             public BitmapFrameDecode GetFrame(uint index)
             {
                 IntPtr nativePointer;
                 var result = comObject.GetFrame(index, out nativePointer);
-                if (result != NativeMethods.S_OK)
+
+                if (result != NativeMethods.S_OK) {
                     throw new Exception("GetFrame failed");
+                }
+
                 return new BitmapFrameDecode(nativePointer);
+            }
+
+            ~BitmapDecoder() { Dispose(); }
+            public void Dispose()
+            {
+                Interlocked.Exchange(ref inner, DelegateDisposable.Empty).Dispose();
             }
         }
 
-        class BitmapSource
+        class BitmapSource : IDisposable
         {
             IWICBitmapSource comObject;
             public IntPtr NativePointer { get; private set; }
+            IDisposable inner;
 
             internal BitmapSource(IntPtr nativePointer)
             {
                 NativePointer = nativePointer;
                 comObject = (IWICBitmapSource)Marshal.GetObjectForIUnknown(NativePointer);
+                inner = new DelegateDisposable(() => Marshal.ReleaseComObject(comObject));
             }
 
             public System.Drawing.Size GetSize()
@@ -173,7 +201,14 @@ namespace Splat
             {
                 comObject.GetSize(out width, out height);
             }
+
+            ~BitmapSource() { Dispose(); }
+            public void Dispose()
+            {
+                Interlocked.Exchange(ref inner, DelegateDisposable.Empty).Dispose();
+            }
         }
+
 
         class BitmapFrameDecode : BitmapSource
         {
@@ -289,6 +324,26 @@ namespace Splat
             {
                 throw new NotImplementedException();
             }
+        }
+    }
+
+    sealed class DelegateDisposable : IDisposable
+    {
+        Action block;
+
+        static IDisposable empty;
+        public static IDisposable Empty {
+            get { return empty ?? (empty = new DelegateDisposable(() => {})); }
+        }
+
+        public DelegateDisposable(Action block)
+        {
+            this.block = block;
+        }
+
+        public void Dispose()
+        {
+            block();
         }
     }
 }
