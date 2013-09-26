@@ -168,6 +168,7 @@ namespace Splat
             {
                 uint width, height;
                 comObject.GetSize(out width, out height);
+
                 // this will throw an exception if dimensions are > Int32.MaxValue
                 // in fact all of this code assumes dimensions will not overflow under arithmetic
                 return new System.Drawing.Size(checked((int)width), checked((int)height));
@@ -184,16 +185,20 @@ namespace Splat
             {
                 uint width, height;
                 GetSizeInternal(out width, out height);
+
                 byte[] pixels = new byte[width * height * 4];
                 uint bufferSize = width * height * 32;
                 IntPtr buffer = Marshal.AllocCoTaskMem(checked((int)bufferSize));
+
                 comObject.CopyPixels(
                     IntPtr.Zero,
                     width * 4,
                     bufferSize,
                     buffer);
+
                 Marshal.Copy(buffer, pixels, 0, pixels.Length);
                 Marshal.FreeCoTaskMem(buffer);
+
                 return pixels;
             }
 
@@ -239,21 +244,25 @@ namespace Splat
             {
                 if (stream == null)
                     throw new ArgumentNullException("stream");
+
                 _stream = stream;
             }
 
             public void Read(byte[] pv, int cb, IntPtr pcbRead)
             {
                 int val = _stream.Read(pv, 0, cb);
-                if (pcbRead != IntPtr.Zero)
+                if (pcbRead != IntPtr.Zero) {
                     Marshal.WriteInt32(pcbRead, val);
+                }
             }
 
             public void Write(byte[] pv, int cb, IntPtr pcbWritten)
             {
                 _stream.Write(pv, 0, cb);
-                if (pcbWritten != IntPtr.Zero)
+
+                if (pcbWritten != IntPtr.Zero) {
                     Marshal.WriteInt32(pcbWritten, cb);
+                }
             }
 
             public void Seek(long dlibMove, int dwOrigin, IntPtr plibNewPosition)
@@ -264,12 +273,14 @@ namespace Splat
                     case 0: origin = SeekOrigin.Begin; break;
                     case 1: origin = SeekOrigin.Current; break;
                     case 2: origin = SeekOrigin.End; break;
+
                     default: throw new ArgumentOutOfRangeException("dwOrigin");
                 }
 
                 long val = _stream.Seek(dlibMove, origin);
-                if (plibNewPosition != IntPtr.Zero)
+                if (plibNewPosition != IntPtr.Zero) {
                     Marshal.WriteInt64(plibNewPosition, val);
+                }
             }
 
             public void SetSize(long libNewSize)
@@ -279,20 +290,20 @@ namespace Splat
 
             public void Stat(out STATSTG pstatstg, int grfStatFlag)
             {
-                pstatstg = new STATSTG
-                {
+                pstatstg = new STATSTG {
                     type = 2,
                     cbSize = _stream.Length,
                 };
 
-                if (_stream.CanRead && _stream.CanWrite)
+                if (_stream.CanRead && _stream.CanWrite) {
                     pstatstg.grfMode = 0x00000002;
-                else if (_stream.CanWrite)
+                } else if (_stream.CanWrite) {
                     pstatstg.grfMode = 0x00000001;
-                else if (_stream.CanRead)
+                } else if (_stream.CanRead) {
                     pstatstg.grfMode = 0x00000000;
-                else
+                } else {
                     throw new IOException();
+                }
             }
 
             public void Clone(out IStream ppstm)
