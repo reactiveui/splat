@@ -28,7 +28,7 @@ namespace Splat
                     decoder = await BitmapDecoder.CreateAsync(rwStream);
                 }
                 catch (Exception ex) {
-                    if (ex.Message.Contains("0x88982F50"))
+                    if (ex.Message.Contains("0x88982F50") || ex.Message.Contains("0x88982F60"))
                         tryFallback = true;
                     else
                         throw;
