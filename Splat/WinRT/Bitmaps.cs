@@ -20,7 +20,22 @@ namespace Splat
             using (var rwStream = new InMemoryRandomAccessStream()) {
                 await sourceStream.CopyToAsync(rwStream.AsStreamForWrite());
 
-                var decoder = await BitmapDecoder.CreateAsync(rwStream);
+                // TODO clean this code up
+
+                bool tryFallback = false;
+                BitmapDecoder decoder = null;
+                try {
+                    decoder = await BitmapDecoder.CreateAsync(rwStream);
+                }
+                catch (Exception ex) {
+                    if (ex.Message.Contains("0x88982F50") || ex.Message.Contains("0x88982F60"))
+                        tryFallback = true;
+                    else
+                        throw;
+                }
+
+                if (tryFallback)
+                    return await new FallbackBitmapLoader().Load(sourceStream, desiredWidth, desiredHeight);
 
                 var transform = new BitmapTransform();
                 if (desiredWidth != null) {
