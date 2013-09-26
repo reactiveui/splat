@@ -20,22 +20,23 @@ namespace Splat
             using (var rwStream = new InMemoryRandomAccessStream()) {
                 await sourceStream.CopyToAsync(rwStream.AsStreamForWrite());
 
-                // TODO clean this code up
+                var decoder = default(BitmapDecoder);
 
                 bool tryFallback = false;
-                BitmapDecoder decoder = null;
                 try {
                     decoder = await BitmapDecoder.CreateAsync(rwStream);
-                }
-                catch (Exception ex) {
-                    if (ex.Message.Contains("0x88982F50") || ex.Message.Contains("0x88982F60"))
+                } catch (Exception ex) {
+                    if (ex.Message.Contains("0x88982F50") || ex.Message.Contains("0x88982F60")) {
+                        // NB: Can't await in a catch block, have to do some silliness
                         tryFallback = true;
-                    else
+                    } else {
                         throw;
+                    }
                 }
 
-                if (tryFallback)
+                if (tryFallback) {
                     return await new FallbackBitmapLoader().Load(sourceStream, desiredWidth, desiredHeight);
+                }
 
                 var transform = new BitmapTransform();
                 if (desiredWidth != null) {
@@ -46,7 +47,7 @@ namespace Splat
                 var pixelData = await decoder.GetPixelDataAsync(decoder.BitmapPixelFormat, decoder.BitmapAlphaMode, transform, ExifOrientationMode.RespectExifOrientation, ColorManagementMode.ColorManageToSRgb);
                 var pixels = pixelData.DetachPixelData();
 
-                WriteableBitmap bmp = new WriteableBitmap((int)decoder.OrientedPixelWidth, (int)decoder.OrientedPixelHeight);
+                var bmp = new WriteableBitmap((int)decoder.OrientedPixelWidth, (int)decoder.OrientedPixelHeight);
                 using (var bmpStream = bmp.PixelBuffer.AsStream()) {
                     bmpStream.Seek(0, SeekOrigin.Begin);
                     bmpStream.Write(pixels, 0, (int)bmpStream.Length);
