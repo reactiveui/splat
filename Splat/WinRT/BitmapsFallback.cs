@@ -24,16 +24,18 @@ namespace Splat
             var frameSize = frame.GetSize();
             var convertedSource = default(BitmapSource);
 
-            if (!frame.GetPixelFormat().Equals(NativeMethods.WICPixelFormat32bppBGRA)) {
-                var converter = factory.CreateFormatConverter();
+            var buffer = await Task.Run(() => {
+                if (!frame.GetPixelFormat().Equals(NativeMethods.WICPixelFormat32bppBGRA)) {
+                    var converter = factory.CreateFormatConverter();
 
-                converter.Initialize(frame, NativeMethods.WICPixelFormat32bppBGRA);
-                convertedSource = converter;
-            } else {
-                convertedSource = frame;
-            }
+                    converter.Initialize(frame, NativeMethods.WICPixelFormat32bppBGRA);
+                    convertedSource = converter;
+                } else {
+                    convertedSource = frame;
+                }
 
-            var buffer = convertedSource.CopyPixels();
+                return convertedSource.CopyPixels();
+            });
 
             var bmp = new WriteableBitmap(frameSize.Width, frameSize.Height);
             using (var stream = bmp.PixelBuffer.AsStream()) {
@@ -45,7 +47,7 @@ namespace Splat
             return new WriteableBitmapImageBitmap(bmp);
         }
 
-        public async Task<IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
+        public Task<IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
         {
             throw new NotImplementedException();
         }
