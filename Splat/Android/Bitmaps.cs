@@ -9,6 +9,8 @@ using Android.Graphics.Drawables;
 using System.Collections.Generic;
 using System.Linq;
 
+using Path = System.IO.Path;
+
 namespace Splat
 {
     public class PlatformBitmapLoader : IBitmapLoader
@@ -53,6 +55,13 @@ namespace Splat
 
             if (drawableList.ContainsKey(source)) {
                 return Task.Run(() => (IBitmap)new DrawableBitmap(res.GetDrawable(drawableList[source])));
+            }
+
+            // NB: On iOS, you have to pass the extension, but on Android it's 
+            // stripped - try stripping the extension to see if there's a Drawable.
+            var key = Path.GetFileNameWithoutExtension(source);
+            if (drawableList.ContainsKey(key)) {
+                return Task.Run(() => (IBitmap)new DrawableBitmap(res.GetDrawable(drawableList[key])));
             }
 
             throw new ArgumentException("Either pass in an integer ID cast to a string, or the name of a drawable resource");
