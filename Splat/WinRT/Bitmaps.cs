@@ -56,21 +56,12 @@ namespace Splat
             }
         }
 
-        public Task<IBitmap> LoadFromResource(string resource, float? desiredWidth, float? desiredHeight)
+        public async Task<IBitmap> LoadFromResource(string resource, float? desiredWidth, float? desiredHeight)
         {
-            // NB: I'm sure there's a way to return a constant as a Task but
-            // I'm too lazy to look it up.
-            return Task.Run(() => {
-                var source = new BitmapImage();
-
-                if (desiredWidth != null) {
-                    source.DecodePixelWidth = (int)desiredWidth;
-                    source.DecodePixelHeight = (int)desiredHeight;
-                }
-
-                source.UriSource = new Uri(resource);
-                return (IBitmap)new BitmapImageBitmap(source);
-            });
+            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(resource));
+            using (var stream = await file.OpenAsync(FileAccessMode.Read)) {
+                return await Load(stream.AsStreamForRead(), desiredWidth, desiredHeight);
+            }
         }
 
         public IBitmap Create(float width, float height)
