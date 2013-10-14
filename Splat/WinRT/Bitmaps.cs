@@ -10,6 +10,8 @@ using Windows.Graphics.Imaging;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 
 namespace Splat
 {
@@ -17,51 +19,55 @@ namespace Splat
     {
         public async Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
-            using (var rwStream = new InMemoryRandomAccessStream()) {
-                await sourceStream.CopyToAsync(rwStream.AsStreamForWrite());
+            return await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(async () => {
+                using (var rwStream = new InMemoryRandomAccessStream()) {
+                    await sourceStream.CopyToAsync(rwStream.AsStreamForWrite());
 
-                var decoder = default(BitmapDecoder);
+                    var decoder = default(BitmapDecoder);
 
-                bool tryFallback = false;
-                try {
-                    decoder = await BitmapDecoder.CreateAsync(rwStream);
-                } catch (Exception ex) {
-                    if (ex.Message.Contains("0x88982F50") || ex.Message.Contains("0x88982F60")) {
-                        // NB: Can't await in a catch block, have to do some silliness
-                        tryFallback = true;
-                    } else {
-                        throw;
+                    bool tryFallback = false;
+                    try {
+                        decoder = await BitmapDecoder.CreateAsync(rwStream);
+                    } catch (Exception ex) {
+                        if (ex.Message.Contains("0x88982F50") || ex.Message.Contains("0x88982F60")) {
+                            // NB: Can't await in a catch block, have to do some silliness
+                            tryFallback = true;
+                        } else {
+                            throw;
+                        }
+                    }
+
+                    if (tryFallback) {
+                        return await new FallbackBitmapLoader().Load(sourceStream, desiredWidth, desiredHeight);
+                    }
+
+                    var transform = new BitmapTransform();
+                    if (desiredWidth != null) {
+                        transform.ScaledWidth = (uint)desiredWidth;
+                        transform.ScaledHeight = (uint)desiredHeight;
+                    }
+
+                    var pixelData = await decoder.GetPixelDataAsync(decoder.BitmapPixelFormat, decoder.BitmapAlphaMode, transform, ExifOrientationMode.RespectExifOrientation, ColorManagementMode.ColorManageToSRgb);
+                    var pixels = pixelData.DetachPixelData();
+
+                    var bmp = new WriteableBitmap((int)decoder.OrientedPixelWidth, (int)decoder.OrientedPixelHeight);
+                    using (var bmpStream = bmp.PixelBuffer.AsStream()) {
+                        bmpStream.Seek(0, SeekOrigin.Begin);
+                        bmpStream.Write(pixels, 0, (int)bmpStream.Length);
+                        return (IBitmap) new WriteableBitmapImageBitmap(bmp);
                     }
                 }
-
-                if (tryFallback) {
-                    return await new FallbackBitmapLoader().Load(sourceStream, desiredWidth, desiredHeight);
-                }
-
-                var transform = new BitmapTransform();
-                if (desiredWidth != null) {
-                    transform.ScaledWidth = (uint)desiredWidth;
-                    transform.ScaledHeight = (uint)desiredHeight;
-                }
-
-                var pixelData = await decoder.GetPixelDataAsync(decoder.BitmapPixelFormat, decoder.BitmapAlphaMode, transform, ExifOrientationMode.RespectExifOrientation, ColorManagementMode.ColorManageToSRgb);
-                var pixels = pixelData.DetachPixelData();
-
-                var bmp = new WriteableBitmap((int)decoder.OrientedPixelWidth, (int)decoder.OrientedPixelHeight);
-                using (var bmpStream = bmp.PixelBuffer.AsStream()) {
-                    bmpStream.Seek(0, SeekOrigin.Begin);
-                    bmpStream.Write(pixels, 0, (int)bmpStream.Length);
-                    return (IBitmap) new WriteableBitmapImageBitmap(bmp);
-                }
-            }
+            });
         }
 
         public async Task<IBitmap> LoadFromResource(string resource, float? desiredWidth, float? desiredHeight)
         {
-            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(resource));
-            using (var stream = await file.OpenAsync(FileAccessMode.Read)) {
-                return await Load(stream.AsStreamForRead(), desiredWidth, desiredHeight);
-            }
+            return await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(async () => {
+                var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(resource));
+                using (var stream = await file.OpenAsync(FileAccessMode.Read)) {
+                    return await Load(stream.AsStreamForRead(), desiredWidth, desiredHeight);
+                }
+            });
         }
 
         public IBitmap Create(float width, float height)
@@ -159,4 +165,23 @@ namespace Splat
         }
     }
 
+    static class DispatcherMixin
+    {
+        public static Task<T> RunAsync<T>(this CoreDispatcher This, Func<Task<T>> func, CoreDispatcherPriority prio = CoreDispatcherPriority.Normal)
+        {
+            var tcs = new TaskCompletionSource<T>();
+
+            This.RunAsync(prio, () => {
+                func().ContinueWith(t => {
+                    if (t.IsFaulted) {
+                        tcs.SetException(t.Exception);
+                    } else {
+                        tcs.SetResult(t.Result);
+                    }
+                });
+            });
+
+            return tcs.Task;
+        }
+    }
 }
