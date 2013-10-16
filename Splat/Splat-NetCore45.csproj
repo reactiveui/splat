@@ -106,9 +106,7 @@
     <Compile Include="PlatformModeDetector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WinRT\Bitmaps.cs" />
-    <Compile Include="WinRT\BitmapsFallback.cs" />
     <Compile Include="WinRT\Color.cs" />
-    <Compile Include="WinRT\NativeMethods.cs" />
     <Compile Include="WinRT\Point.cs" />
     <Compile Include="WinRT\Rect.cs" />
   </ItemGroup>

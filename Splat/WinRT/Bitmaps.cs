@@ -2,8 +2,6 @@
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Graphics.Imaging;
@@ -20,43 +18,24 @@ namespace Splat
         public async Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
             return await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(async () => {
-                using (var rwStream = new InMemoryRandomAccessStream()) {
-                    await sourceStream.CopyToAsync(rwStream.AsStreamForWrite());
+                var bitmap = new BitmapImage();
 
-                    var decoder = default(BitmapDecoder);
-
-                    bool tryFallback = false;
-                    try {
-                        decoder = await BitmapDecoder.CreateAsync(rwStream);
-                    } catch (Exception ex) {
-                        if (ex.Message.Contains("0x88982F50") || ex.Message.Contains("0x88982F60")) {
-                            // NB: Can't await in a catch block, have to do some silliness
-                            tryFallback = true;
-                        } else {
-                            throw;
-                        }
-                    }
-
-                    if (tryFallback) {
-                        return await new FallbackBitmapLoader().Load(sourceStream, desiredWidth, desiredHeight);
-                    }
-
-                    var transform = new BitmapTransform();
-                    if (desiredWidth != null) {
-                        transform.ScaledWidth = (uint)desiredWidth;
-                        transform.ScaledHeight = (uint)desiredHeight;
-                    }
-
-                    var pixelData = await decoder.GetPixelDataAsync(decoder.BitmapPixelFormat, decoder.BitmapAlphaMode, transform, ExifOrientationMode.RespectExifOrientation, ColorManagementMode.ColorManageToSRgb);
-                    var pixels = pixelData.DetachPixelData();
-
-                    var bmp = new WriteableBitmap((int)decoder.OrientedPixelWidth, (int)decoder.OrientedPixelHeight);
-                    using (var bmpStream = bmp.PixelBuffer.AsStream()) {
-                        bmpStream.Seek(0, SeekOrigin.Begin);
-                        bmpStream.Write(pixels, 0, (int)bmpStream.Length);
-                        return (IBitmap) new WriteableBitmapImageBitmap(bmp);
-                    }
+                if (desiredWidth != null)
+                {
+                    bitmap.DecodePixelWidth = (int)desiredWidth;
                 }
+
+                if (desiredHeight != null)
+                {
+                    bitmap.DecodePixelHeight = (int)desiredHeight;
+                }
+
+                using (var source = await ConvertToRandomAccessStream(sourceStream))
+                {
+                    await bitmap.SetSourceAsync(source);
+                }
+
+                return bitmap.FromNative();
             });
         }
 
@@ -73,6 +52,20 @@ namespace Splat
         public IBitmap Create(float width, float height)
         {
             return new WriteableBitmapImageBitmap(new WriteableBitmap((int)width, (int)height));
+        }
+
+        private static async Task<InMemoryRandomAccessStream> ConvertToRandomAccessStream(Stream stream)
+        {
+            stream.Seek(0, SeekOrigin.Begin);
+
+            var ras = new InMemoryRandomAccessStream();
+            var writer = ras.AsStreamForWrite();
+
+            await stream.CopyToAsync(writer);
+            await writer.FlushAsync();
+
+            ras.Seek(0);
+            return ras;
         }
     }
 
@@ -128,7 +121,6 @@ namespace Splat
 
         public async Task Save(CompressedBitmapFormat format, float quality, Stream target)
         {
-            string installedFolderImageSourceUri = inner.UriSource.OriginalString.Replace("ms-appx:/", "");
             var wb = new WriteableBitmap(inner.PixelWidth, inner.PixelHeight);
             var file = await StorageFile.GetFileFromPathAsync(inner.UriSource.OriginalString);
             await wb.SetSourceAsync(await file.OpenReadAsync());
