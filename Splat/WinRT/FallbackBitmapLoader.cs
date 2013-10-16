@@ -10,14 +10,20 @@ namespace Splat
     {
         public async Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
-            return new BitmapImageBitmap(await ByteArrayToBitmapImage(sourceStream));
-        }
-
-        private static async Task<BitmapImage> ByteArrayToBitmapImage(Stream stream)
-        {
             var bitmapImage = new BitmapImage();
-            bitmapImage.SetSource(await ConvertToRandomAccessStream(stream));
-            return bitmapImage;
+
+            if (desiredWidth != null)
+            {
+                bitmapImage.DecodePixelWidth = (int)desiredWidth;
+            }
+
+            if (desiredHeight != null)
+            {
+                bitmapImage.DecodePixelHeight = (int)desiredHeight;
+            }
+
+            bitmapImage.SetSource(await ConvertToRandomAccessStream(sourceStream));
+            return bitmapImage.FromNative();
         }
 
         private static async Task<InMemoryRandomAccessStream> ConvertToRandomAccessStream(Stream stream)
