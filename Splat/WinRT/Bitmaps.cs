@@ -81,7 +81,7 @@ namespace Splat
             // NB: Due to WinRT's brain-dead design, we're copying this image 
             // like three times. Let Dreams Soar.
             var rwTarget = new InMemoryRandomAccessStream();
-            var fmt = format == CompressedBitmapFormat.Jpeg ? BitmapEncoder.PngEncoderId : BitmapEncoder.JpegEncoderId;
+            var fmt = format == CompressedBitmapFormat.Jpeg ? BitmapEncoder.JpegEncoderId : BitmapEncoder.PngEncoderId;
             var encoder = await BitmapEncoder.CreateAsync(fmt, rwTarget, new[] { new KeyValuePair<string, BitmapTypedValue>("ImageQuality", new BitmapTypedValue(quality, PropertyType.Single)) });
 
             var pixels = new byte[inner.PixelBuffer.Length];
