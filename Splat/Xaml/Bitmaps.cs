@@ -4,8 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace Splat
 {
@@ -13,7 +15,11 @@ namespace Splat
     {
         public Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
+#if SILVERLIGHT
+            return Application.Current.RootVisual.Dispatcher.InvokeAsync(() => {
+#else
             return Task.Run(() => {
+#endif
                 var ret = new BitmapImage();
 
                 withInit(ret, source => {
@@ -35,7 +41,11 @@ namespace Splat
 
         public Task<IBitmap> LoadFromResource(string resource, float? desiredWidth, float? desiredHeight)
         {
+#if SILVERLIGHT
+            return Application.Current.RootVisual.Dispatcher.InvokeAsync(() => {
+#else
             return Task.Run(() => {
+#endif
                 var ret = new BitmapImage();
                 withInit(ret, x => {
                     if (desiredWidth != null) {
@@ -127,6 +137,24 @@ namespace Splat
         public static BitmapSource ToNative(this IBitmap This)
         {
             return ((BitmapSourceBitmap)This).inner;
+        }
+    }
+
+    static class DispatcherMixin
+    {
+        public static Task<T> InvokeAsync<T>(this Dispatcher This, Func<T> block)
+        {
+            var tcs = new TaskCompletionSource<T>();
+
+            This.BeginInvoke(new Action(() => {
+                try {
+                    tcs.SetResult(block());
+                } catch (Exception ex) {
+                    tcs.SetException(ex);
+                }
+            }));
+
+            return tcs.Task;
         }
     }
 }
