@@ -16,7 +16,7 @@ namespace Splat
         public Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
 #if SILVERLIGHT
-            return Application.Current.RootVisual.Dispatcher.InvokeAsync(() => {
+            return Deployment.Current.Dispatcher.InvokeAsync(() => {
 #else
             return Task.Run(() => {
 #endif
@@ -42,7 +42,7 @@ namespace Splat
         public Task<IBitmap> LoadFromResource(string resource, float? desiredWidth, float? desiredHeight)
         {
 #if SILVERLIGHT
-            return Application.Current.RootVisual.Dispatcher.InvokeAsync(() => {
+            return Deployment.Current.Dispatcher.InvokeAsync(() => {
 #else
             return Task.Run(() => {
 #endif
