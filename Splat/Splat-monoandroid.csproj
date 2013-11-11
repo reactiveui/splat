@@ -56,6 +56,7 @@
     <Compile Include="PointExtensions.cs" />
     <Compile Include="RectangleExtensions.cs" />
     <Compile Include="SizeExtensions.cs" />
+    <Compile Include="TypeForwardedSystemDrawing.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

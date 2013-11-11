@@ -103,19 +103,29 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AssemblyFinder.cs" />
+    <Compile Include="Bitmaps.cs" />
+    <Compile Include="Colors\Color.cs" />
+    <Compile Include="Colors\KnownColor.cs" />
+    <Compile Include="Colors\KnownColors.cs" />
+    <Compile Include="ModeDetector.cs" />
     <Compile Include="PlatformModeDetector.cs" />
+    <Compile Include="PointExtensions.cs" />
+    <Compile Include="Points\Point.cs" />
+    <Compile Include="Points\PointF.cs" />
+    <Compile Include="Points\Rectangle.cs" />
+    <Compile Include="Points\RectangleF.cs" />
+    <Compile Include="Points\Size.cs" />
+    <Compile Include="Points\SizeF.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RectangleExtensions.cs" />
+    <Compile Include="ReflectionStubs.cs" />
+    <Compile Include="SizeExtensions.cs" />
     <Compile Include="WinRT\Bitmaps.cs" />
     <Compile Include="WinRT\Color.cs" />
     <Compile Include="WinRT\NativeMethods.cs" />
     <Compile Include="WinRT\Point.cs" />
     <Compile Include="WinRT\Rect.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="Splat-Portable.csproj">
-      <Project>{0ec8dba1-d745-4ee5-993a-6026440ec3bf}</Project>
-      <Name>Splat-Portable</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
