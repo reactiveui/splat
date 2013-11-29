@@ -12,6 +12,7 @@ using MonoMac.AppKit;
 using MonoMac.Foundation;
 
 using UIImage = MonoMac.AppKit.NSImage;
+using UIApplication = MonoMac.AppKit.NSApplication;
 #endif
 
 namespace Splat
@@ -20,34 +21,38 @@ namespace Splat
     {
         public Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
-            return Task.Run(() => {
-                var data = NSData.FromStream(sourceStream);
+            var data = NSData.FromStream(sourceStream);
 
-                var tcs = new TaskCompletionSource<IBitmap>();
-                new NSObject().InvokeOnMainThread(() => {
+            var tcs = new TaskCompletionSource<IBitmap>();
+            UIApplication.SharedApplication.InvokeOnMainThread(() => {
+                try {
 #if UIKIT
                     tcs.TrySetResult(new CocoaBitmap(UIImage.LoadFromData(data)));
 #else
                     tcs.TrySetResult(new CocoaBitmap(new UIImage(data)));
 #endif
-                });
-                return tcs.Task;
+                } catch (Exception ex) {
+                    tcs.TrySetException(ex);
+                }
             });
+            return tcs.Task;
         }
 
         public Task<IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
         {
-            return Task.Run(() => {
-                var tcs = new TaskCompletionSource<IBitmap>();
-                new NSObject().InvokeOnMainThread(() => {
+            var tcs = new TaskCompletionSource<IBitmap>();
+            UIApplication.SharedApplication.InvokeOnMainThread(() => {
+                try {
 #if UIKIT
                     tcs.TrySetResult(new CocoaBitmap(UIImage.FromBundle(source)));
 #else
                     tcs.TrySetResult(new CocoaBitmap(UIImage.ImageNamed(source)));
 #endif
-                });
-                return tcs.Task;
+                } catch (Exception ex) {
+                    tcs.TrySetException(ex);
+                }
             });
+            return tcs.Task;
         }
 
         public IBitmap Create(float width, float height)
