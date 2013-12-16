@@ -21,7 +21,7 @@ namespace Splat
             float r,g,b,a;
 
             This.GetRGBA(out r, out g, out b, out a);
-            return System.Drawing.Color.FromArgb((int)(r * 255.0f), (int)(g * 255.0f), (int)(b * 255.0f), (int)(a * 255.0f));
+            return System.Drawing.Color.FromArgb((int)(a * 255.0f), (int)(r * 255.0f), (int)(g * 255.0f), (int)(b * 255.0f));
         }
     }
 #else
@@ -37,7 +37,7 @@ namespace Splat
             float r,g,b,a;
 
             This.GetRgba(out r, out g, out b, out a);
-            return System.Drawing.Color.FromArgb((int)(r * 255.0f), (int)(g * 255.0f), (int)(b * 255.0f), (int)(a * 255.0f));
+            return System.Drawing.Color.FromArgb((int)(a * 255.0f), (int)(r * 255.0f), (int)(g * 255.0f), (int)(b * 255.0f));
         }
     }
 #endif
