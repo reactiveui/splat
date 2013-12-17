@@ -10,6 +10,14 @@ namespace Splat
         [ThreadStatic] static IDependencyResolver _UnitTestDependencyResolver;
         static IDependencyResolver _DependencyResolver;
 
+        static Locator()
+        {
+            var r = new ModernDependencyResolver();
+            r.InitializeSplat();
+           
+            _DependencyResolver = r;
+        }
+
         /// <summary>
         /// Gets or sets the dependency resolver. This class is used throughout
         /// libraries for many internal operations as well as for general use
@@ -125,6 +133,12 @@ namespace Splat
             var val = new Lazy<object>(valueFactory, LazyThreadSafetyMode.ExecutionAndPublication);
             This.Register(() => val.Value, serviceType, contract);
         }
+
+        public static void InitializeSplat(this IMutableDependencyResolver This)
+        {
+            This.Register(() => new DefaultLogManager(), typeof(ILogManager));
+            This.Register(() => new DebugLogger(), typeof(ILogger));
+        }
     }
 
     /// <summary>
@@ -188,7 +202,6 @@ namespace Splat
         }
     }
 
-
     /// <summary>
     /// A simple dependency resolver which takes Funcs for all its actions.
     /// GetService is always implemented via GetServices().LastOrDefault()
@@ -246,5 +259,4 @@ namespace Splat
             Interlocked.Exchange(ref block, () => {})();
         }
     }
-
 }

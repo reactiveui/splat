@@ -96,7 +96,7 @@ namespace Splat
         IFullLogger GetLogger(Type type);
     }
 
-    class DefaultLogManager : ILogManager
+    public class DefaultLogManager : ILogManager
     {
         readonly MemoizingMRUCache<Type, IFullLogger> loggerCache;
 
