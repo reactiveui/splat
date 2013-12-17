@@ -121,6 +121,8 @@
     <Compile Include="RectangleExtensions.cs" />
     <Compile Include="ReflectionStubs.cs" />
     <Compile Include="ServiceLocation.cs" />
+    <Compile Include="Logging.cs" />
+    <Compile Include="MemoizingMRUCache.cs" />
     <Compile Include="SizeExtensions.cs" />
     <Compile Include="WinRT\Bitmaps.cs" />
     <Compile Include="WinRT\Color.cs" />

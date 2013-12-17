@@ -59,5 +59,7 @@
     <Compile Include="Colors\KnownColor.cs" />
     <Compile Include="Colors\KnownColors.cs" />
     <Compile Include="ServiceLocation.cs" />
+    <Compile Include="Logging.cs" />
+    <Compile Include="MemoizingMRUCache.cs" />
   </ItemGroup>
 </Project>
