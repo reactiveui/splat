@@ -216,7 +216,7 @@ namespace Splat
     }
 
     #region Extremely Dull Code Ahead
-    internal class WrappingFullLogger : IFullLogger
+    public class WrappingFullLogger : IFullLogger
     {
         readonly ILogger _inner;
         readonly string prefix;
