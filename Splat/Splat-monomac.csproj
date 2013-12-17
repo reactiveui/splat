@@ -55,6 +55,7 @@
     <Compile Include="ModeDetector.cs" />
     <Compile Include="PointExtensions.cs" />
     <Compile Include="RectangleExtensions.cs" />
+    <Compile Include="ServiceLocation.cs" />
     <Compile Include="SizeExtensions.cs" />
     <Compile Include="TypeForwardedSystemDrawing.cs" />
   </ItemGroup>
