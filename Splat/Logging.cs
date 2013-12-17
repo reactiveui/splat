@@ -596,14 +596,11 @@ namespace Splat
     }
     #endregion
 
-    #if PORTABLE
+    #if PORTABLE || WINDOWS_PHONE || NETFX_CORE
     [AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
     public sealed class LocalizableAttribute : Attribute
     {
-        // This is a positional argument
-        public LocalizableAttribute(bool isLocalizable)
-        {
-        }
+        public LocalizableAttribute(bool isLocalizable) { }
     }
     #endif
 }
