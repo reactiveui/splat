@@ -26,7 +26,15 @@ namespace Splat.WinForms
 
         public Task<IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
         {
-            throw new NotImplementedException();
+            return Task.Run(() => {
+                var ret = new Bitmap(source);
+
+                if (desiredWidth != null) {
+                    ret = new Bitmap(ret, (int)desiredWidth, (int)desiredHeight);
+                }
+
+                return (IBitmap)new BitmapBitmap(ret);
+            });
         }
 
         public IBitmap Create(float width, float height)
