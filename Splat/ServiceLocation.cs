@@ -15,9 +15,12 @@ namespace Splat
         static Locator()
         {
             var r = new ModernDependencyResolver();
-            r.InitializeSplat();
-
             dependencyResolver = r;
+
+            RegisterResolverCallbackChanged(() => {
+                if (Locator.CurrentMutable == null) return;
+                Locator.CurrentMutable.InitializeSplat();
+            });
         }
 
         /// <summary>
