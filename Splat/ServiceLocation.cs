@@ -7,15 +7,15 @@ namespace Splat
 {
     public static class Locator
     {
-        [ThreadStatic] static IDependencyResolver _UnitTestDependencyResolver;
-        static IDependencyResolver _DependencyResolver;
+        [ThreadStatic] static IDependencyResolver unitTestDependencyResolver;
+        static IDependencyResolver dependencyResolver;
 
         static Locator()
         {
             var r = new ModernDependencyResolver();
             r.InitializeSplat();
            
-            _DependencyResolver = r;
+            dependencyResolver = r;
         }
 
         /// <summary>
@@ -28,14 +28,14 @@ namespace Splat
         /// <value>The dependency resolver.</value>
         public static IDependencyResolver Current {
             get {
-                return _UnitTestDependencyResolver ?? _DependencyResolver;
+                return unitTestDependencyResolver ?? dependencyResolver;
             }
             set {
                 if (ModeDetector.InUnitTestRunner()) {
-                    _UnitTestDependencyResolver = value;
-                    _DependencyResolver = _DependencyResolver ?? value;
+                    unitTestDependencyResolver = value;
+                    dependencyResolver = dependencyResolver ?? value;
                 } else {
-                    _DependencyResolver = value;
+                    dependencyResolver = value;
                 }
             }
         }
