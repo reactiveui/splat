@@ -10,11 +10,13 @@ namespace Splat
         [ThreadStatic] static IDependencyResolver unitTestDependencyResolver;
         static IDependencyResolver dependencyResolver;
 
+        static readonly List<Action> resolverChanged = new List<Action>();
+
         static Locator()
         {
             var r = new ModernDependencyResolver();
             r.InitializeSplat();
-           
+
             dependencyResolver = r;
         }
 
@@ -37,6 +39,15 @@ namespace Splat
                 } else {
                     dependencyResolver = value;
                 }
+
+                var currentCallbacks = default(Action[]);
+                lock (resolverChanged) {
+                    // NB: Prevent deadlocks should we reenter this setter from 
+                    // the callbacks
+                    currentCallbacks = resolverChanged.ToArray();
+                }
+
+                foreach (var block in currentCallbacks) block();
             }
         }
 
@@ -49,6 +60,32 @@ namespace Splat
         public static IMutableDependencyResolver CurrentMutable {
             get { return Current as IMutableDependencyResolver; }
             set { Current = value; }
+        }
+
+        /// <summary>
+        /// This method allows libraries to register themselves to be set up
+        /// whenever the dependency resolver changes. Applications should avoid
+        /// this method, it is usually used for libraries that depend on service
+        /// location.
+        /// </summary>
+        /// <param name="callback">A callback that is invoked when the 
+        /// resolver is changed. This callback is also invoked immediately,
+        /// to configure the current resolver.</param>
+        /// <returns>When disposed, removes the callback. You probably can 
+        /// ignore this.</returns>
+        public static IDisposable RegisterResolverCallbackChanged(Action callback)
+        {
+            lock (resolverChanged) {
+                resolverChanged.Add(callback);
+            }
+
+            // NB: We always immediately invoke the callback to set up the 
+            // current resolver with whatever we've got
+            callback();
+
+            return new ActionDisposable(() => {
+                lock (resolverChanged) resolverChanged.Remove(callback);
+            });
         }
     }
 
