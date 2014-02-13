@@ -33,7 +33,7 @@ namespace Splat
                         InterpolationMode = BitmapInterpolationMode.Fant
                     };
 
-                    var pixelData = await decoder.GetPixelDataAsync(decoder.BitmapPixelFormat, decoder.BitmapAlphaMode, transform, ExifOrientationMode.RespectExifOrientation, ColorManagementMode.ColorManageToSRgb);
+                    var pixelData = await decoder.GetPixelDataAsync(decoder.BitmapPixelFormat, BitmapAlphaMode.Premultiplied, transform, ExifOrientationMode.RespectExifOrientation, ColorManagementMode.ColorManageToSRgb);
                     var pixels = pixelData.DetachPixelData();
 
                     var bmp = new WriteableBitmap((int)transform.ScaledWidth, (int)transform.ScaledHeight);
