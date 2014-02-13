@@ -232,6 +232,15 @@ namespace Splat
             Contract.Requires(stringFormat != null);
         }
 
+        string InvokeStringFormat(IFormatProvider formatProvider, string message, object[] args)
+        {
+            var sfArgs = new object[3];
+            sfArgs[0] = formatProvider;
+            sfArgs[1] = message;
+            sfArgs[2] = args;
+            return (string) stringFormat.Invoke(null, sfArgs);
+        }
+
         public void Debug<T>(T value)
         {
             _inner.Write(prefix + value, LogLevel.Debug);
@@ -249,13 +258,11 @@ namespace Splat
 
         public void Debug(IFormatProvider formatProvider, string message, params object[] args)
         {
-            var sfArgs = new object[args.Length + 2];
-            sfArgs[0] = formatProvider; sfArgs[1] = message;
-            Array.Copy(args, 0, sfArgs, 2, args.Length);
-            string result = (string)stringFormat.Invoke(null, sfArgs);
+            var result = InvokeStringFormat(formatProvider, message, args);
 
             _inner.Write(prefix + result, LogLevel.Debug);
         }
+
 
         public void Debug(string message)
         {
@@ -264,11 +271,7 @@ namespace Splat
 
         public void Debug(string message, params object[] args)
         {
-            var sfArgs = new object[args.Length + 2];
-            sfArgs[0] = CultureInfo.InvariantCulture; sfArgs[1] = message;
-            Array.Copy(args, 0, sfArgs, 2, args.Length);
-            string result = (string)stringFormat.Invoke(null, sfArgs);
-
+            var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
             _inner.Write(prefix + result, LogLevel.Debug);
         }
 
@@ -319,11 +322,7 @@ namespace Splat
 
         public void Info(IFormatProvider formatProvider, string message, params object[] args)
         {
-            var sfArgs = new object[args.Length + 2];
-            sfArgs[0] = formatProvider; sfArgs[1] = message;
-            Array.Copy(args, 0, sfArgs, 2, args.Length);
-            string result = (string)stringFormat.Invoke(null, sfArgs);
-
+            var result = InvokeStringFormat(formatProvider, message, args);
             _inner.Write(prefix + result, LogLevel.Info);
         }
 
@@ -334,11 +333,7 @@ namespace Splat
 
         public void Info(string message, params object[] args)
         {
-            var sfArgs = new object[args.Length + 2];
-            sfArgs[0] = CultureInfo.InvariantCulture; sfArgs[1] = message;
-            Array.Copy(args, 0, sfArgs, 2, args.Length);
-            string result = (string)stringFormat.Invoke(null, sfArgs);
-
+            var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
             _inner.Write(prefix + result, LogLevel.Info);
         }
 
@@ -389,11 +384,7 @@ namespace Splat
 
         public void Warn(IFormatProvider formatProvider, string message, params object[] args)
         {
-            var sfArgs = new object[args.Length + 2];
-            sfArgs[0] = formatProvider; sfArgs[1] = message;
-            Array.Copy(args, 0, sfArgs, 2, args.Length);
-            string result = (string)stringFormat.Invoke(null, sfArgs);
-
+            var result = InvokeStringFormat(formatProvider, message, args);
             _inner.Write(prefix + result, LogLevel.Warn);
         }
 
@@ -404,11 +395,7 @@ namespace Splat
 
         public void Warn(string message, params object[] args)
         {
-            var sfArgs = new object[args.Length + 2];
-            sfArgs[0] = CultureInfo.InvariantCulture; sfArgs[1] = message;
-            Array.Copy(args, 0, sfArgs, 2, args.Length);
-            string result = (string)stringFormat.Invoke(null, sfArgs);
-
+            var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
             _inner.Write(prefix + result, LogLevel.Warn);
         }
 
@@ -460,11 +447,7 @@ namespace Splat
 
         public void Error(IFormatProvider formatProvider, string message, params object[] args)
         {
-            var sfArgs = new object[args.Length + 2];
-            sfArgs[0] = formatProvider; sfArgs[1] = message;
-            Array.Copy(args, 0, sfArgs, 2, args.Length);
-            string result = (string)stringFormat.Invoke(null, sfArgs);
-
+            var result = InvokeStringFormat(formatProvider, message, args);
             _inner.Write(prefix + result, LogLevel.Error);
         }
 
@@ -475,11 +458,7 @@ namespace Splat
 
         public void Error(string message, params object[] args)
         {
-            var sfArgs = new object[args.Length + 2];
-            sfArgs[0] = CultureInfo.InvariantCulture; sfArgs[1] = message;
-            Array.Copy(args, 0, sfArgs, 2, args.Length);
-            string result = (string)stringFormat.Invoke(null, sfArgs);
-
+            var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
             _inner.Write(prefix + result, LogLevel.Error);
         }
 
@@ -531,11 +510,7 @@ namespace Splat
 
         public void Fatal(IFormatProvider formatProvider, string message, params object[] args)
         {
-            var sfArgs = new object[args.Length + 2];
-            sfArgs[0] = formatProvider; sfArgs[1] = message;
-            Array.Copy(args, 0, sfArgs, 2, args.Length);
-            string result = (string)stringFormat.Invoke(null, sfArgs);
-
+            var result = InvokeStringFormat(formatProvider, message, args);
             _inner.Write(prefix + result, LogLevel.Fatal);
         }
 
@@ -546,11 +521,7 @@ namespace Splat
 
         public void Fatal(string message, params object[] args)
         {
-            var sfArgs = new object[args.Length + 2];
-            sfArgs[0] = CultureInfo.InvariantCulture; sfArgs[1] = message;
-            Array.Copy(args, 0, sfArgs, 2, args.Length);
-            string result = (string)stringFormat.Invoke(null, sfArgs);
-
+            var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
             _inner.Write(prefix + result, LogLevel.Fatal);
         }
 
