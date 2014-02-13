@@ -234,7 +234,7 @@ namespace Splat
 
         string InvokeStringFormat(IFormatProvider formatProvider, string message, object[] args)
         {
-            var sfArgs = new object[args.Length + 2];
+            var sfArgs = new object[3];
             sfArgs[0] = formatProvider;
             sfArgs[1] = message;
             sfArgs[2] = args;
