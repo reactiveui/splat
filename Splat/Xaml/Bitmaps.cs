@@ -32,6 +32,7 @@ namespace Splat
                     source.SetSource(sourceStream);
 #else
                     source.StreamSource = sourceStream;
+                    source.CacheOption = BitmapCacheOption.OnLoad;
 #endif
                 });
 
