@@ -26,68 +26,43 @@ namespace Splat
     public interface IFullLogger : ILogger
     {
         void Debug<T>(T value);
-        void Debug<T>(IFormatProvider formatProvider, T value);
         void DebugException(string message, Exception exception);
-        void Debug(IFormatProvider formatProvider, string message, params object[] args);
         void Debug(string message);
         void Debug(string message, params object[] args);
-        void Debug<TArgument>(IFormatProvider formatProvider, string message, TArgument argument);
         void Debug<TArgument>(string message, TArgument argument);
-        void Debug<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2);
         void Debug<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
-        void Debug<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
         void Debug<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
         void Info<T>(T value);
-        void Info<T>(IFormatProvider formatProvider, T value);
         void InfoException(string message, Exception exception);
-        void Info(IFormatProvider formatProvider, string message, params object[] args);
         void Info(string message);
         void Info(string message, params object[] args);
-        void Info<TArgument>(IFormatProvider formatProvider, string message, TArgument argument);
         void Info<TArgument>(string message, TArgument argument);
-        void Info<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2);
         void Info<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
-        void Info<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
         void Info<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
         void Warn<T>(T value);
-        void Warn<T>(IFormatProvider formatProvider, T value);
         void WarnException(string message, Exception exception);
-        void Warn(IFormatProvider formatProvider, string message, params object[] args);
         void Warn(string message);
         void Warn(string message, params object[] args);
-        void Warn<TArgument>(IFormatProvider formatProvider, string message, TArgument argument);
         void Warn<TArgument>(string message, TArgument argument);
-        void Warn<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2);
         void Warn<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
-        void Warn<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
         void Warn<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
         void Error<T>(T value);
-        void Error<T>(IFormatProvider formatProvider, T value);
         void ErrorException(string message, Exception exception);
-        void Error(IFormatProvider formatProvider, string message, params object[] args);
         void Error(string message);
         void Error(string message, params object[] args);
-        void Error<TArgument>(IFormatProvider formatProvider, string message, TArgument argument);
         void Error<TArgument>(string message, TArgument argument);
-        void Error<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2);
         void Error<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
-        void Error<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
         void Error<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
         void Fatal<T>(T value);
-        void Fatal<T>(IFormatProvider formatProvider, T value);
         void FatalException(string message, Exception exception);
-        void Fatal(IFormatProvider formatProvider, string message, params object[] args);
         void Fatal(string message);
         void Fatal(string message, params object[] args);
-        void Fatal<TArgument>(IFormatProvider formatProvider, string message, TArgument argument);
         void Fatal<TArgument>(string message, TArgument argument);
-        void Fatal<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2);
         void Fatal<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
-        void Fatal<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
         void Fatal<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
     }
 
@@ -227,18 +202,8 @@ namespace Splat
             _inner = inner;
             prefix = String.Format(CultureInfo.InvariantCulture, "{0}: ", callingType.Name);
 
-            stringFormat = typeof (String).GetMethod("Format", new[] {typeof (IFormatProvider), typeof (string), typeof (object[])});
             Contract.Requires(inner != null);
             Contract.Requires(stringFormat != null);
-        }
-
-        string InvokeStringFormat(IFormatProvider formatProvider, string message, object[] args)
-        {
-            var sfArgs = new object[3];
-            sfArgs[0] = formatProvider;
-            sfArgs[1] = message;
-            sfArgs[2] = args;
-            return (string) stringFormat.Invoke(null, sfArgs);
         }
 
         public void Debug<T>(T value)
@@ -246,23 +211,10 @@ namespace Splat
             _inner.Write(prefix + value, LogLevel.Debug);
         }
 
-        public void Debug<T>(IFormatProvider formatProvider, T value)
-        {
-            _inner.Write(String.Format(formatProvider, "{0}{1}", prefix, value), LogLevel.Debug);
-        }
-
         public void DebugException(string message, Exception exception)
         {
             _inner.Write(String.Format("{0}{1}: {2}", prefix, message, exception), LogLevel.Debug);
         }
-
-        public void Debug(IFormatProvider formatProvider, string message, params object[] args)
-        {
-            var result = InvokeStringFormat(formatProvider, message, args);
-
-            _inner.Write(prefix + result, LogLevel.Debug);
-        }
-
 
         public void Debug(string message)
         {
@@ -275,29 +227,14 @@ namespace Splat
             _inner.Write(prefix + result, LogLevel.Debug);
         }
 
-        public void Debug<TArgument>(IFormatProvider formatProvider, string message, TArgument argument)
-        {
-            _inner.Write(prefix + String.Format(formatProvider, message, argument), LogLevel.Debug);
-        }
-
         public void Debug<TArgument>(string message, TArgument argument)
         {
             _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument), LogLevel.Debug);
         }
 
-        public void Debug<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2)
-        {
-            _inner.Write(prefix + String.Format(formatProvider, message, argument1, argument2), LogLevel.Debug);
-        }
-
         public void Debug<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
         {
             _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2), LogLevel.Debug);
-        }
-
-        public void Debug<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
-        {
-            _inner.Write(prefix + String.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Debug);
         }
 
         public void Debug<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
@@ -310,20 +247,9 @@ namespace Splat
             _inner.Write(prefix + value, LogLevel.Info);
         }
 
-        public void Info<T>(IFormatProvider formatProvider, T value)
-        {
-            _inner.Write(String.Format(formatProvider, "{0}{1}", prefix, value), LogLevel.Info);
-        }
-
         public void InfoException(string message, Exception exception)
         {
             _inner.Write(String.Format("{0}{1}: {2}", prefix, message, exception), LogLevel.Info);
-        }
-
-        public void Info(IFormatProvider formatProvider, string message, params object[] args)
-        {
-            var result = InvokeStringFormat(formatProvider, message, args);
-            _inner.Write(prefix + result, LogLevel.Info);
         }
 
         public void Info(string message)
@@ -337,29 +263,14 @@ namespace Splat
             _inner.Write(prefix + result, LogLevel.Info);
         }
 
-        public void Info<TArgument>(IFormatProvider formatProvider, string message, TArgument argument)
-        {
-            _inner.Write(prefix + String.Format(formatProvider, message, argument), LogLevel.Info);
-        }
-
         public void Info<TArgument>(string message, TArgument argument)
         {
             _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument), LogLevel.Info);
         }
 
-        public void Info<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2)
-        {
-            _inner.Write(prefix + String.Format(formatProvider, message, argument1, argument2), LogLevel.Info);
-        }
-
         public void Info<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
         {
             _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2), LogLevel.Info);
-        }
-
-        public void Info<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
-        {
-            _inner.Write(prefix + String.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Info);
         }
 
         public void Info<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
@@ -372,20 +283,9 @@ namespace Splat
             _inner.Write(prefix + value, LogLevel.Warn);
         }
 
-        public void Warn<T>(IFormatProvider formatProvider, T value)
-        {
-            _inner.Write(String.Format(formatProvider, "{0}{1}", prefix, value), LogLevel.Warn);
-        }
-
         public void WarnException(string message, Exception exception)
         {
             _inner.Write(String.Format("{0}{1}: {2}", prefix, message, exception), LogLevel.Warn);
-        }
-
-        public void Warn(IFormatProvider formatProvider, string message, params object[] args)
-        {
-            var result = InvokeStringFormat(formatProvider, message, args);
-            _inner.Write(prefix + result, LogLevel.Warn);
         }
 
         public void Warn(string message)
@@ -399,29 +299,14 @@ namespace Splat
             _inner.Write(prefix + result, LogLevel.Warn);
         }
 
-        public void Warn<TArgument>(IFormatProvider formatProvider, string message, TArgument argument)
-        {
-            _inner.Write(prefix + String.Format(formatProvider, message, argument), LogLevel.Warn);
-        }
-
         public void Warn<TArgument>(string message, TArgument argument)
         {
             _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument), LogLevel.Warn);
         }
 
-        public void Warn<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2)
-        {
-            _inner.Write(prefix + String.Format(formatProvider, message, argument1, argument2), LogLevel.Warn);
-        }
-
         public void Warn<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
         {
             _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2), LogLevel.Warn);
-        }
-
-        public void Warn<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
-        {
-            _inner.Write(prefix + String.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Warn);
         }
 
         public void Warn<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
@@ -435,20 +320,9 @@ namespace Splat
             _inner.Write(prefix + value, LogLevel.Error);
         }
 
-        public void Error<T>(IFormatProvider formatProvider, T value)
-        {
-            _inner.Write(String.Format(formatProvider, "{0}{1}", prefix, value), LogLevel.Error);
-        }
-
         public void ErrorException(string message, Exception exception)
         {
             _inner.Write(String.Format("{0}{1}: {2}", prefix, message, exception), LogLevel.Error);
-        }
-
-        public void Error(IFormatProvider formatProvider, string message, params object[] args)
-        {
-            var result = InvokeStringFormat(formatProvider, message, args);
-            _inner.Write(prefix + result, LogLevel.Error);
         }
 
         public void Error(string message)
@@ -462,19 +336,9 @@ namespace Splat
             _inner.Write(prefix + result, LogLevel.Error);
         }
 
-        public void Error<TArgument>(IFormatProvider formatProvider, string message, TArgument argument)
-        {
-            _inner.Write(prefix + String.Format(formatProvider, message, argument), LogLevel.Error);
-        }
-
         public void Error<TArgument>(string message, TArgument argument)
         {
             _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument), LogLevel.Error);
-        }
-
-        public void Error<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2)
-        {
-            _inner.Write(prefix + String.Format(formatProvider, message, argument1, argument2), LogLevel.Error);
         }
 
         public void Error<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
@@ -482,36 +346,19 @@ namespace Splat
             _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2), LogLevel.Error);
         }
 
-        public void Error<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
-        {
-            _inner.Write(prefix + String.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Error);
-        }
-
         public void Error<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
         {
             _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3), LogLevel.Error);
         }
-
 
         public void Fatal<T>(T value)
         {
             _inner.Write(prefix + value, LogLevel.Fatal);
         }
 
-        public void Fatal<T>(IFormatProvider formatProvider, T value)
-        {
-            _inner.Write(String.Format(formatProvider, "{0}{1}", prefix, value), LogLevel.Fatal);
-        }
-
         public void FatalException(string message, Exception exception)
         {
             _inner.Write(String.Format("{0}{1}: {2}", prefix, message, exception), LogLevel.Fatal);
-        }
-
-        public void Fatal(IFormatProvider formatProvider, string message, params object[] args)
-        {
-            var result = InvokeStringFormat(formatProvider, message, args);
-            _inner.Write(prefix + result, LogLevel.Fatal);
         }
 
         public void Fatal(string message)
@@ -525,29 +372,14 @@ namespace Splat
             _inner.Write(prefix + result, LogLevel.Fatal);
         }
 
-        public void Fatal<TArgument>(IFormatProvider formatProvider, string message, TArgument argument)
-        {
-            _inner.Write(prefix + String.Format(formatProvider, message, argument), LogLevel.Fatal);
-        }
-
         public void Fatal<TArgument>(string message, TArgument argument)
         {
             _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument), LogLevel.Fatal);
         }
 
-        public void Fatal<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2)
-        {
-            _inner.Write(prefix + String.Format(formatProvider, message, argument1, argument2), LogLevel.Fatal);
-        }
-
         public void Fatal<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
         {
             _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2), LogLevel.Fatal);
-        }
-
-        public void Fatal<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
-        {
-            _inner.Write(prefix + String.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Fatal);
         }
 
         public void Fatal<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
