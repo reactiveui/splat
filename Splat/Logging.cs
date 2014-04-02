@@ -14,7 +14,7 @@ namespace Splat
      */
 
     public enum LogLevel {
-        Debug = 1, Info, Warn, Error, Fatal,
+        Debug = 1, Info, Warn, Error, 
     }
 
     public interface ILogger
@@ -56,14 +56,6 @@ namespace Splat
         void Error<TArgument>(string message, TArgument argument);
         void Error<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
         void Error<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
-
-        void Fatal<T>(T value);
-        void FatalException(string message, Exception exception);
-        void Fatal(string message);
-        void Fatal(string message, params object[] args);
-        void Fatal<TArgument>(string message, TArgument argument);
-        void Fatal<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
-        void Fatal<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
     }
 
     public interface ILogManager
@@ -349,47 +341,6 @@ namespace Splat
         public void Error<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
         {
             _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3), LogLevel.Error);
-        }
-
-        public void Fatal<T>(T value)
-        {
-            _inner.Write(prefix + value, LogLevel.Fatal);
-        }
-
-        public void FatalException(string message, Exception exception)
-        {
-            _inner.Write(String.Format("{0}{1}: {2}", prefix, message, exception), LogLevel.Fatal);
-        }
-
-        public void Fatal(string message)
-        {
-            _inner.Write(prefix + message, LogLevel.Fatal);
-        }
-
-        public void Fatal(string message, params object[] args)
-        {
-            var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
-            _inner.Write(prefix + result, LogLevel.Fatal);
-        }
-
-        public void Fatal<TArgument>(string message, TArgument argument)
-        {
-            _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument), LogLevel.Fatal);
-        }
-
-        public void Fatal<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
-        {
-            _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2), LogLevel.Fatal);
-        }
-
-        public void Fatal<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
-        {
-            _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3), LogLevel.Fatal);
-        }
-
-        public void Write(string message, LogLevel logLevel)
-        {
-            _inner.Write(message, logLevel);
         }
 
         public LogLevel Level {
