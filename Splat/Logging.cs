@@ -19,7 +19,7 @@ namespace Splat
 
     public interface ILogger
     {
-        void Write([Localizable(false)] string message, LogLevel logLevel);
+        void Write(string message, LogLevel logLevel);
         LogLevel Level { get; set; }
     }
 
@@ -27,68 +27,68 @@ namespace Splat
     {
         void Debug<T>(T value);
         void Debug<T>(IFormatProvider formatProvider, T value);
-        void DebugException([Localizable(false)] string message, Exception exception);
-        void Debug(IFormatProvider formatProvider, [Localizable(false)] string message, params object[] args);
-        void Debug([Localizable(false)] string message);
-        void Debug([Localizable(false)] string message, params object[] args);
-        void Debug<TArgument>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument argument);
-        void Debug<TArgument>([Localizable(false)] string message, TArgument argument);
-        void Debug<TArgument1, TArgument2>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2);
-        void Debug<TArgument1, TArgument2>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2);
-        void Debug<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
-        void Debug<TArgument1, TArgument2, TArgument3>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void DebugException(string message, Exception exception);
+        void Debug(IFormatProvider formatProvider, string message, params object[] args);
+        void Debug(string message);
+        void Debug(string message, params object[] args);
+        void Debug<TArgument>(IFormatProvider formatProvider, string message, TArgument argument);
+        void Debug<TArgument>(string message, TArgument argument);
+        void Debug<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2);
+        void Debug<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
+        void Debug<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void Debug<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
         void Info<T>(T value);
         void Info<T>(IFormatProvider formatProvider, T value);
-        void InfoException([Localizable(false)] string message, Exception exception);
-        void Info(IFormatProvider formatProvider, [Localizable(false)] string message, params object[] args);
-        void Info([Localizable(false)] string message);
-        void Info([Localizable(false)] string message, params object[] args);
-        void Info<TArgument>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument argument);
-        void Info<TArgument>([Localizable(false)] string message, TArgument argument);
-        void Info<TArgument1, TArgument2>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2);
-        void Info<TArgument1, TArgument2>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2);
-        void Info<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
-        void Info<TArgument1, TArgument2, TArgument3>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void InfoException(string message, Exception exception);
+        void Info(IFormatProvider formatProvider, string message, params object[] args);
+        void Info(string message);
+        void Info(string message, params object[] args);
+        void Info<TArgument>(IFormatProvider formatProvider, string message, TArgument argument);
+        void Info<TArgument>(string message, TArgument argument);
+        void Info<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2);
+        void Info<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
+        void Info<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void Info<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
         void Warn<T>(T value);
         void Warn<T>(IFormatProvider formatProvider, T value);
-        void WarnException([Localizable(false)] string message, Exception exception);
-        void Warn(IFormatProvider formatProvider, [Localizable(false)] string message, params object[] args);
-        void Warn([Localizable(false)] string message);
-        void Warn([Localizable(false)] string message, params object[] args);
-        void Warn<TArgument>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument argument);
-        void Warn<TArgument>([Localizable(false)] string message, TArgument argument);
-        void Warn<TArgument1, TArgument2>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2);
-        void Warn<TArgument1, TArgument2>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2);
-        void Warn<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
-        void Warn<TArgument1, TArgument2, TArgument3>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void WarnException(string message, Exception exception);
+        void Warn(IFormatProvider formatProvider, string message, params object[] args);
+        void Warn(string message);
+        void Warn(string message, params object[] args);
+        void Warn<TArgument>(IFormatProvider formatProvider, string message, TArgument argument);
+        void Warn<TArgument>(string message, TArgument argument);
+        void Warn<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2);
+        void Warn<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
+        void Warn<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void Warn<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
         void Error<T>(T value);
         void Error<T>(IFormatProvider formatProvider, T value);
-        void ErrorException([Localizable(false)] string message, Exception exception);
-        void Error(IFormatProvider formatProvider, [Localizable(false)] string message, params object[] args);
-        void Error([Localizable(false)] string message);
-        void Error([Localizable(false)] string message, params object[] args);
-        void Error<TArgument>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument argument);
-        void Error<TArgument>([Localizable(false)] string message, TArgument argument);
-        void Error<TArgument1, TArgument2>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2);
-        void Error<TArgument1, TArgument2>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2);
-        void Error<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
-        void Error<TArgument1, TArgument2, TArgument3>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void ErrorException(string message, Exception exception);
+        void Error(IFormatProvider formatProvider, string message, params object[] args);
+        void Error(string message);
+        void Error(string message, params object[] args);
+        void Error<TArgument>(IFormatProvider formatProvider, string message, TArgument argument);
+        void Error<TArgument>(string message, TArgument argument);
+        void Error<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2);
+        void Error<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
+        void Error<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void Error<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
         void Fatal<T>(T value);
         void Fatal<T>(IFormatProvider formatProvider, T value);
-        void FatalException([Localizable(false)] string message, Exception exception);
-        void Fatal(IFormatProvider formatProvider, [Localizable(false)] string message, params object[] args);
-        void Fatal([Localizable(false)] string message);
-        void Fatal([Localizable(false)] string message, params object[] args);
-        void Fatal<TArgument>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument argument);
-        void Fatal<TArgument>([Localizable(false)] string message, TArgument argument);
-        void Fatal<TArgument1, TArgument2>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2);
-        void Fatal<TArgument1, TArgument2>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2);
-        void Fatal<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
-        void Fatal<TArgument1, TArgument2, TArgument3>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void FatalException(string message, Exception exception);
+        void Fatal(IFormatProvider formatProvider, string message, params object[] args);
+        void Fatal(string message);
+        void Fatal(string message, params object[] args);
+        void Fatal<TArgument>(IFormatProvider formatProvider, string message, TArgument argument);
+        void Fatal<TArgument>(string message, TArgument argument);
+        void Fatal<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2);
+        void Fatal<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
+        void Fatal<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void Fatal<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
     }
 
     public interface ILogManager
@@ -555,7 +555,7 @@ namespace Splat
             _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3), LogLevel.Fatal);
         }
 
-        public void Write([Localizable(false)] string message, LogLevel logLevel)
+        public void Write(string message, LogLevel logLevel)
         {
             _inner.Write(message, logLevel);
         }
@@ -566,14 +566,6 @@ namespace Splat
         }
     }
     #endregion
-
-    #if PORTABLE || WINDOWS_PHONE || NETFX_CORE
-    [AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
-    public sealed class LocalizableAttribute : Attribute
-    {
-        public LocalizableAttribute(bool isLocalizable) { }
-    }
-    #endif
 }
 
 // vim: tw=120 ts=4 sw=4 et :
