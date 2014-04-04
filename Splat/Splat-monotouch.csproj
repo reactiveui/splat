@@ -50,7 +50,6 @@
     <Compile Include="ModeDetector.cs" />
     <Compile Include="PlatformModeDetector.cs" />
     <Compile Include="Cocoa\Color.cs" />
-    <Compile Include="AssemblyFinder.cs" />
     <Compile Include="RectangleExtensions.cs" />
     <Compile Include="PointExtensions.cs" />
     <Compile Include="SizeExtensions.cs" />

@@ -59,7 +59,6 @@
     <Compile Include="PlatformModeDetector.cs" />
     <Compile Include="Cocoa\Bitmaps.cs" />
     <Compile Include="Cocoa\Color.cs" />
-    <Compile Include="AssemblyFinder.cs" />
     <Compile Include="Bitmaps.cs" />
     <Compile Include="ModeDetector.cs" />
     <Compile Include="PointExtensions.cs" />
