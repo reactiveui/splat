@@ -124,6 +124,11 @@ namespace Splat
     {
         public void Write(LogLevel logLevel, string message) { }
         public LogLevel Level { get; set; }
+
+        public IDisposable EnterSpan(LogLevel level, string message)
+        {
+            return ActionDisposable.Empty;
+        }
     }
 
     public class DebugLogger : ILogger
@@ -135,6 +140,14 @@ namespace Splat
         }
 
         public LogLevel Level { get; set; }
+
+        public IDisposable EnterSpan(LogLevel level, string message)
+        {
+            if ((int)level < (int)Level) return ActionDisposable.Empty;
+            Debug.WriteLine("Entering Span: " + message);
+
+            return new ActionDisposable(() => Debug.WriteLine("Exiting Span: " + message));
+        }
     }
 
 
