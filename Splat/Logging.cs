@@ -206,10 +206,21 @@ namespace Splat
         }
     }
 
-    public class LogEntry : ILogEntry
+    public sealed class LogEntry : ILogEntry, IDisposable
     {
-        public IFullLogger Logger { get; set; }
+        public ILogger Logger { get; set; }
         public long MessageId { get; set; }
+
+        IDisposable inner = ActionDisposable.Empty;
+        public LogEntry(IDisposable onDispose = null)
+        {
+            inner = onDispose;
+        }
+
+        public void Dispose()
+        {
+            Interlocked.Exchange(ref inner, ActionDisposable.Empty).Dispose();
+        }
     }
 
     #region Extremely Dull Code Ahead
