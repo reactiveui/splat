@@ -19,7 +19,8 @@ namespace Splat
 
     public interface ILogger
     {
-        void Write(string message, LogLevel logLevel);
+        IDisposable EnterSpan(LogLevel level, string message);
+        void Write(LogLevel logLevel, string message);
         LogLevel Level { get; set; }
     }
 
@@ -56,6 +57,10 @@ namespace Splat
         void Error<TArgument>(string message, TArgument argument);
         void Error<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
         void Error<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+
+        IDisposable EnterSpan(string message);
+        IDisposable EnterSpan(string message, params object[] args);
+        IDisposable EnterSpan(LogLevel logLevel, string message, params object[] args);
     }
 
     public interface ILogManager
@@ -117,19 +122,32 @@ namespace Splat
 
     public class NullLogger : ILogger
     {
-        public void Write(string message, LogLevel logLevel) {}
+        public void Write(LogLevel logLevel, string message) { }
         public LogLevel Level { get; set; }
+
+        public IDisposable EnterSpan(LogLevel level, string message)
+        {
+            return ActionDisposable.Empty;
+        }
     }
 
     public class DebugLogger : ILogger
     {
-        public void Write(string message, LogLevel logLevel)
+        public void Write(LogLevel logLevel, string message)
         {
             if ((int)logLevel < (int)Level) return;
             Debug.WriteLine(message);
         }
 
         public LogLevel Level { get; set; }
+
+        public IDisposable EnterSpan(LogLevel level, string message)
+        {
+            if ((int)level < (int)Level) return ActionDisposable.Empty;
+            Debug.WriteLine("Entering Span: " + message);
+
+            return new ActionDisposable(() => Debug.WriteLine("Exiting Span: " + message));
+        }
     }
 
 
@@ -193,159 +211,194 @@ namespace Splat
         {
             _inner = inner;
             prefix = String.Format(CultureInfo.InvariantCulture, "{0}: ", callingType.Name);
+            stringFormat = typeof (String).GetMethod("Format", new[] {typeof (IFormatProvider), typeof (string), typeof (object[])});
 
             Contract.Requires(inner != null);
             Contract.Requires(stringFormat != null);
         }
 
+        public void Write(LogLevel logLevel, string message)
+        {
+            _inner.Write(logLevel, message);
+        }
+
         public void Debug<T>(T value)
         {
-            _inner.Write(prefix + value, LogLevel.Debug);
+            _inner.Write(LogLevel.Debug, prefix + value);
         }
 
         public void DebugException(string message, Exception exception)
         {
-            _inner.Write(String.Format("{0}{1}: {2}", prefix, message, exception), LogLevel.Debug);
+            _inner.Write(LogLevel.Debug, String.Format("{0}{1}: {2}", prefix, message, exception));
         }
 
         public void Debug(string message)
         {
-            _inner.Write(prefix + message, LogLevel.Debug);
+            _inner.Write(LogLevel.Debug, prefix + message);
         }
 
         public void Debug(string message, params object[] args)
         {
-            var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
-            _inner.Write(prefix + result, LogLevel.Debug);
+            var result = invokeStringFormat(CultureInfo.InvariantCulture, message, args);
+            _inner.Write(LogLevel.Debug, prefix + result);
         }
 
         public void Debug<TArgument>(string message, TArgument argument)
         {
-            _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument), LogLevel.Debug);
+            _inner.Write(LogLevel.Debug, prefix + String.Format(CultureInfo.InvariantCulture, message, argument));
         }
 
         public void Debug<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
         {
-            _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2), LogLevel.Debug);
+            _inner.Write(LogLevel.Debug, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2));
         }
 
         public void Debug<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
         {
-            _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3), LogLevel.Debug);
+            _inner.Write(LogLevel.Debug, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3));
         }
 
         public void Info<T>(T value)
         {
-            _inner.Write(prefix + value, LogLevel.Info);
+            _inner.Write(LogLevel.Info, prefix + value);
         }
 
         public void InfoException(string message, Exception exception)
         {
-            _inner.Write(String.Format("{0}{1}: {2}", prefix, message, exception), LogLevel.Info);
+            _inner.Write(LogLevel.Info, String.Format("{0}{1}: {2}", prefix, message, exception));
         }
 
         public void Info(string message)
         {
-            _inner.Write(prefix + message, LogLevel.Info);
+            _inner.Write(LogLevel.Info, prefix + message);
         }
 
         public void Info(string message, params object[] args)
         {
-            var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
-            _inner.Write(prefix + result, LogLevel.Info);
+            var result = invokeStringFormat(CultureInfo.InvariantCulture, message, args);
+            _inner.Write(LogLevel.Info, prefix + result);
         }
 
         public void Info<TArgument>(string message, TArgument argument)
         {
-            _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument), LogLevel.Info);
+            _inner.Write(LogLevel.Info, prefix + String.Format(CultureInfo.InvariantCulture, message, argument));
         }
 
         public void Info<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
         {
-            _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2), LogLevel.Info);
+            _inner.Write(LogLevel.Info, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2));
         }
 
         public void Info<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
         {
-            _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3), LogLevel.Info);
+            _inner.Write(LogLevel.Info, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3));
         }
 
         public void Warn<T>(T value)
         {
-            _inner.Write(prefix + value, LogLevel.Warn);
+            _inner.Write(LogLevel.Warn, prefix + value);
         }
 
         public void WarnException(string message, Exception exception)
         {
-            _inner.Write(String.Format("{0}{1}: {2}", prefix, message, exception), LogLevel.Warn);
+            _inner.Write(LogLevel.Warn, String.Format("{0}{1}: {2}", prefix, message, exception));
         }
 
         public void Warn(string message)
         {
-            _inner.Write(prefix + message, LogLevel.Warn);
+            _inner.Write(LogLevel.Warn, prefix + message);
         }
 
         public void Warn(string message, params object[] args)
         {
-            var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
-            _inner.Write(prefix + result, LogLevel.Warn);
+            var result = invokeStringFormat(CultureInfo.InvariantCulture, message, args);
+            _inner.Write(LogLevel.Warn, prefix + result);
         }
 
         public void Warn<TArgument>(string message, TArgument argument)
         {
-            _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument), LogLevel.Warn);
+            _inner.Write(LogLevel.Warn, prefix + String.Format(CultureInfo.InvariantCulture, message, argument));
         }
 
         public void Warn<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
         {
-            _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2), LogLevel.Warn);
+            _inner.Write(LogLevel.Warn, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2));
         }
 
         public void Warn<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
         {
-            _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3), LogLevel.Warn);
+            _inner.Write(LogLevel.Warn, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3));
         }
-
 
         public void Error<T>(T value)
         {
-            _inner.Write(prefix + value, LogLevel.Error);
+            _inner.Write(LogLevel.Error, prefix + value);
         }
 
         public void ErrorException(string message, Exception exception)
         {
-            _inner.Write(String.Format("{0}{1}: {2}", prefix, message, exception), LogLevel.Error);
+            _inner.Write(LogLevel.Error, String.Format("{0}{1}: {2}", prefix, message, exception));
         }
 
         public void Error(string message)
         {
-            _inner.Write(prefix + message, LogLevel.Error);
+            _inner.Write(LogLevel.Error, prefix + message);
         }
 
         public void Error(string message, params object[] args)
         {
-            var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
-            _inner.Write(prefix + result, LogLevel.Error);
+            var result = invokeStringFormat(CultureInfo.InvariantCulture, message, args);
+            _inner.Write(LogLevel.Error, prefix + result);
         }
 
         public void Error<TArgument>(string message, TArgument argument)
         {
-            _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument), LogLevel.Error);
+            _inner.Write(LogLevel.Error, prefix + String.Format(CultureInfo.InvariantCulture, message, argument));
         }
 
         public void Error<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
         {
-            _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2), LogLevel.Error);
+            _inner.Write(LogLevel.Error, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2));
         }
 
         public void Error<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
         {
-            _inner.Write(prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3), LogLevel.Error);
+            _inner.Write(LogLevel.Error, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3));
+        }
+
+        public IDisposable EnterSpan(string message)
+        {
+            return _inner.EnterSpan(LogLevel.Info, message);
+        }
+
+        public IDisposable EnterSpan(string message, params object[] args)
+        {
+            return _inner.EnterSpan(LogLevel.Info, invokeStringFormat(CultureInfo.InvariantCulture, message, args));
+        }
+
+        public IDisposable EnterSpan(LogLevel logLevel, string message)
+        {
+            return _inner.EnterSpan(logLevel, message);
+        }
+
+        public IDisposable EnterSpan(LogLevel logLevel, string message, params object[] args)
+        {
+            return _inner.EnterSpan(logLevel, invokeStringFormat(CultureInfo.InvariantCulture, message, args));
         }
 
         public LogLevel Level {
             get { return _inner.Level; }
             set { _inner.Level = value; }
+        }
+
+        string invokeStringFormat(IFormatProvider formatProvider, string message, object[] args)
+        {
+            var sfArgs = new object[3];
+            sfArgs[0] = formatProvider;
+            sfArgs[1] = message;
+            sfArgs[2] = args;
+
+            return (string) stringFormat.Invoke(null, sfArgs);
         }
     }
     #endregion
