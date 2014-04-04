@@ -19,7 +19,6 @@ namespace Splat
 
     public interface ILogger
     {
-        ILogEntry EnterSpan(LogLevel level, string message);
         ILogEntry Write(LogLevel logLevel, string message);
         LogLevel Level { get; set; }
     }
@@ -66,6 +65,7 @@ namespace Splat
 
         ILogEntry EnterSpan(string message);
         ILogEntry EnterSpan(string message, params object[] args);
+        ILogEntry EnterSpan(LogLevel level, string message);
         ILogEntry EnterSpan(LogLevel logLevel, string message, params object[] args);
     }
 
@@ -128,32 +128,25 @@ namespace Splat
 
     public class NullLogger : ILogger
     {
-        public void Write(LogLevel logLevel, string message) { }
-        public LogLevel Level { get; set; }
+        static LogEntry emptyEntry = new LogEntry();
 
-        public IDisposable EnterSpan(LogLevel level, string message)
-        {
-            return ActionDisposable.Empty;
-        }
+        public ILogEntry Write(LogLevel logLevel, string message) { return emptyEntry; }
+        public LogLevel Level { get; set; }
     }
 
     public class DebugLogger : ILogger
     {
-        public void Write(LogLevel logLevel, string message)
+        static LogEntry emptyEntry = new LogEntry();
+
+        public ILogEntry Write(LogLevel logLevel, string message)
         {
-            if ((int)logLevel < (int)Level) return;
+            if ((int)logLevel < (int)Level) return emptyEntry;
             Debug.WriteLine(message);
+
+            return new LogEntry(emptyEntry);
         }
 
         public LogLevel Level { get; set; }
-
-        public IDisposable EnterSpan(LogLevel level, string message)
-        {
-            if ((int)level < (int)Level) return ActionDisposable.Empty;
-            Debug.WriteLine("Entering Span: " + message);
-
-            return new ActionDisposable(() => Debug.WriteLine("Exiting Span: " + message));
-        }
     }
 
 
@@ -391,22 +384,26 @@ namespace Splat
 
         public ILogEntry EnterSpan(string message)
         {
-            return _inner.EnterSpan(LogLevel.Info, message);
+            Info("Entered Span: " + message);
+            return new LogEntry(new ActionDisposable(() => Info("Exited Span: " + message)));
         }
 
         public ILogEntry EnterSpan(string message, params object[] args)
         {
-            return _inner.EnterSpan(LogLevel.Info, invokeStringFormat(CultureInfo.InvariantCulture, message, args));
+            var msg = invokeStringFormat(CultureInfo.InvariantCulture, message, args);
+            return EnterSpan(msg);
         }
 
         public ILogEntry EnterSpan(LogLevel logLevel, string message)
         {
-            return _inner.EnterSpan(logLevel, message);
+            _inner.Write(logLevel, ("Entered Span: " + message));
+            return new LogEntry(new ActionDisposable(() => _inner.Write(logLevel, "Exited Span: " + message)));
         }
 
         public ILogEntry EnterSpan(LogLevel logLevel, string message, params object[] args)
         {
-            return _inner.EnterSpan(logLevel, invokeStringFormat(CultureInfo.InvariantCulture, message, args));
+            var msg = invokeStringFormat(CultureInfo.InvariantCulture, message, args);
+            return EnterSpan(logLevel, msg);
         }
 
         public LogLevel Level {
