@@ -38,8 +38,8 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyFinder.cs" />
     <Compile Include="Bitmaps.cs" />
+    <Compile Include="DummyPlatformRegistrations.cs" />
     <Compile Include="PointExtensions.cs" />
     <Compile Include="Points\RectangleF.cs" />
     <Compile Include="Points\Rectangle.cs" />

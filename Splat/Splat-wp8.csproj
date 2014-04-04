@@ -85,7 +85,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AssemblyFinder.cs" />
     <Compile Include="Bitmaps.cs" />
     <Compile Include="Colors\Color.cs" />
     <Compile Include="Colors\KnownColor.cs" />
@@ -108,6 +107,7 @@
     <Compile Include="SizeExtensions.cs" />
     <Compile Include="Xaml\Bitmaps.cs" />
     <Compile Include="Xaml\Color.cs" />
+    <Compile Include="Xaml\PlatformRegistrations.cs" />
     <Compile Include="Xaml\Point.cs" />
     <Compile Include="Xaml\Rect.cs" />
   </ItemGroup>

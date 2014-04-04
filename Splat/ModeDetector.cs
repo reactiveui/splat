@@ -10,22 +10,10 @@ namespace Splat
 
     public static class ModeDetector
     {
-        static ModeDetector()
-        {
-            var platModeDetector = AssemblyFinder.AttemptToLoadType<IModeDetector>("Splat.PlatformModeDetector");
-            current = platModeDetector;
-        }
-
-        static IModeDetector current { get; set; }
-
-        public static void OverrideModeDetector(IModeDetector modeDetector)
-        {
-            current = modeDetector;
-        }
-
         public static bool InUnitTestRunner() 
         {
             var ret = default(bool?);
+            var current = Locator.Current.GetService<IModeDetector>();
 
             if (current != null) {
                 ret = current.InUnitTestRunner();
@@ -41,6 +29,7 @@ namespace Splat
         public static bool InDesignMode()
         {
             var ret = default(bool?);
+            var current = Locator.Current.GetService<IModeDetector>();
 
             if (current != null) {
                 ret = current.InDesignMode();

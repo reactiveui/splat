@@ -103,7 +103,6 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AssemblyFinder.cs" />
     <Compile Include="Bitmaps.cs" />
     <Compile Include="Colors\Color.cs" />
     <Compile Include="Colors\KnownColor.cs" />
@@ -127,6 +126,7 @@
     <Compile Include="WinRT\Bitmaps.cs" />
     <Compile Include="WinRT\Color.cs" />
     <Compile Include="WinRT\NativeMethods.cs" />
+    <Compile Include="WinRT\PlatformRegistrations.cs" />
     <Compile Include="WinRT\Point.cs" />
     <Compile Include="WinRT\Rect.cs" />
   </ItemGroup>
