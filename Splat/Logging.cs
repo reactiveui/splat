@@ -24,6 +24,12 @@ namespace Splat
         LogLevel Level { get; set; }
     }
 
+    public interface ILogEntry
+    {
+        ILogger Logger { get; }
+        long MessageId { get; }
+    }
+
     public interface IFullLogger : ILogger
     {
         void Debug<T>(T value);
@@ -198,6 +204,12 @@ namespace Splat
 
             return factory.GetLogger<T>();
         }
+    }
+
+    public class LogEntry : ILogEntry
+    {
+        public IFullLogger Logger { get; set; }
+        public long MessageId { get; set; }
     }
 
     #region Extremely Dull Code Ahead
