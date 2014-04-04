@@ -39,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bitmaps.cs" />
+    <Compile Include="DummyPlatformRegistrations.cs" />
     <Compile Include="PointExtensions.cs" />
     <Compile Include="Points\RectangleF.cs" />
     <Compile Include="Points\Rectangle.cs" />

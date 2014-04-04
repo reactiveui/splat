@@ -178,6 +178,8 @@ namespace Splat
         {
             This.Register(() => new DefaultLogManager(), typeof(ILogManager));
             This.Register(() => new NullLogger(), typeof(ILogger));
+
+            PlatformRegistrations.Register(This);
         }
     }
 
