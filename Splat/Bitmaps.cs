@@ -80,26 +80,15 @@ namespace Splat
     /// </summary>
     public static class BitmapLoader
     {
-        static BitmapLoader()
-        {
-            var platBitmapLoader = AssemblyFinder.AttemptToLoadType<IBitmapLoader>("Splat.PlatformBitmapLoader");
-            _Current = platBitmapLoader;
-        }
-
-        // TODO: This needs to be improved once we move the "Detect in Unit Test 
-        // Runner" code into Splat
-        static IBitmapLoader _Current;
-
         public static IBitmapLoader Current {
             get {
-                var ret = _Current;
+                var ret = Locator.Current.GetService<IBitmapLoader>("Splat.PlatformBitmapLoader");
                 if (ret == null) {
                     throw new Exception("Could not find a default bitmap loader. This should never happen, your dependency resolver is broken");
                 }
 
                 return ret;
             }
-            set { _Current = value; }
         }
     }
 }
