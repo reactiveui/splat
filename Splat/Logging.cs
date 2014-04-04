@@ -19,12 +19,12 @@ namespace Splat
 
     public interface ILogger
     {
-        IDisposable EnterSpan(LogLevel level, string message);
-        void Write(LogLevel logLevel, string message);
+        ILogEntry EnterSpan(LogLevel level, string message);
+        ILogEntry Write(LogLevel logLevel, string message);
         LogLevel Level { get; set; }
     }
 
-    public interface ILogEntry
+    public interface ILogEntry : IDisposable
     {
         ILogger Logger { get; }
         long MessageId { get; }
@@ -32,41 +32,41 @@ namespace Splat
 
     public interface IFullLogger : ILogger
     {
-        void Debug<T>(T value);
-        void DebugException(string message, Exception exception);
-        void Debug(string message);
-        void Debug(string message, params object[] args);
-        void Debug<TArgument>(string message, TArgument argument);
-        void Debug<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
-        void Debug<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        ILogEntry Debug<T>(T value);
+        ILogEntry DebugException(string message, Exception exception);
+        ILogEntry Debug(string message);
+        ILogEntry Debug(string message, params object[] args);
+        ILogEntry Debug<TArgument>(string message, TArgument argument);
+        ILogEntry Debug<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
+        ILogEntry Debug<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
-        void Info<T>(T value);
-        void InfoException(string message, Exception exception);
-        void Info(string message);
-        void Info(string message, params object[] args);
-        void Info<TArgument>(string message, TArgument argument);
-        void Info<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
-        void Info<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        ILogEntry Info<T>(T value);
+        ILogEntry InfoException(string message, Exception exception);
+        ILogEntry Info(string message);
+        ILogEntry Info(string message, params object[] args);
+        ILogEntry Info<TArgument>(string message, TArgument argument);
+        ILogEntry Info<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
+        ILogEntry Info<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
-        void Warn<T>(T value);
-        void WarnException(string message, Exception exception);
-        void Warn(string message);
-        void Warn(string message, params object[] args);
-        void Warn<TArgument>(string message, TArgument argument);
-        void Warn<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
-        void Warn<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        ILogEntry Warn<T>(T value);
+        ILogEntry WarnException(string message, Exception exception);
+        ILogEntry Warn(string message);
+        ILogEntry Warn(string message, params object[] args);
+        ILogEntry Warn<TArgument>(string message, TArgument argument);
+        ILogEntry Warn<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
+        ILogEntry Warn<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
-        void Error<T>(T value);
-        void ErrorException(string message, Exception exception);
-        void Error(string message);
-        void Error(string message, params object[] args);
-        void Error<TArgument>(string message, TArgument argument);
-        void Error<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
-        void Error<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        ILogEntry Error<T>(T value);
+        ILogEntry ErrorException(string message, Exception exception);
+        ILogEntry Error(string message);
+        ILogEntry Error(string message, params object[] args);
+        ILogEntry Error<TArgument>(string message, TArgument argument);
+        ILogEntry Error<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
+        ILogEntry Error<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
-        IDisposable EnterSpan(string message);
-        IDisposable EnterSpan(string message, params object[] args);
-        IDisposable EnterSpan(LogLevel logLevel, string message, params object[] args);
+        ILogEntry EnterSpan(string message);
+        ILogEntry EnterSpan(string message, params object[] args);
+        ILogEntry EnterSpan(LogLevel logLevel, string message, params object[] args);
     }
 
     public interface ILogManager
@@ -217,7 +217,7 @@ namespace Splat
             inner = onDispose;
         }
 
-        public void Dispose()
+        public void Dispose() 
         {
             Interlocked.Exchange(ref inner, ActionDisposable.Empty).Dispose();
         }
@@ -240,171 +240,171 @@ namespace Splat
             Contract.Requires(stringFormat != null);
         }
 
-        public void Write(LogLevel logLevel, string message)
+        public ILogEntry Write(LogLevel logLevel, string message)
         {
-            _inner.Write(logLevel, message);
+            return _inner.Write(logLevel, message);
         }
 
-        public void Debug<T>(T value)
+        public ILogEntry Debug<T>(T value)
         {
-            _inner.Write(LogLevel.Debug, prefix + value);
+            return _inner.Write(LogLevel.Debug, prefix + value);
         }
 
-        public void DebugException(string message, Exception exception)
+        public ILogEntry DebugException(string message, Exception exception)
         {
-            _inner.Write(LogLevel.Debug, String.Format("{0}{1}: {2}", prefix, message, exception));
+            return _inner.Write(LogLevel.Debug, String.Format("{0}{1}: {2}", prefix, message, exception));
         }
 
-        public void Debug(string message)
+        public ILogEntry Debug(string message)
         {
-            _inner.Write(LogLevel.Debug, prefix + message);
+            return _inner.Write(LogLevel.Debug, prefix + message);
         }
 
-        public void Debug(string message, params object[] args)
-        {
-            var result = invokeStringFormat(CultureInfo.InvariantCulture, message, args);
-            _inner.Write(LogLevel.Debug, prefix + result);
-        }
-
-        public void Debug<TArgument>(string message, TArgument argument)
-        {
-            _inner.Write(LogLevel.Debug, prefix + String.Format(CultureInfo.InvariantCulture, message, argument));
-        }
-
-        public void Debug<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
-        {
-            _inner.Write(LogLevel.Debug, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2));
-        }
-
-        public void Debug<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
-        {
-            _inner.Write(LogLevel.Debug, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3));
-        }
-
-        public void Info<T>(T value)
-        {
-            _inner.Write(LogLevel.Info, prefix + value);
-        }
-
-        public void InfoException(string message, Exception exception)
-        {
-            _inner.Write(LogLevel.Info, String.Format("{0}{1}: {2}", prefix, message, exception));
-        }
-
-        public void Info(string message)
-        {
-            _inner.Write(LogLevel.Info, prefix + message);
-        }
-
-        public void Info(string message, params object[] args)
+        public ILogEntry Debug(string message, params object[] args)
         {
             var result = invokeStringFormat(CultureInfo.InvariantCulture, message, args);
-            _inner.Write(LogLevel.Info, prefix + result);
+            return _inner.Write(LogLevel.Debug, prefix + result);
         }
 
-        public void Info<TArgument>(string message, TArgument argument)
+        public ILogEntry Debug<TArgument>(string message, TArgument argument)
         {
-            _inner.Write(LogLevel.Info, prefix + String.Format(CultureInfo.InvariantCulture, message, argument));
+            return _inner.Write(LogLevel.Debug, prefix + String.Format(CultureInfo.InvariantCulture, message, argument));
         }
 
-        public void Info<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
+        public ILogEntry Debug<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
         {
-            _inner.Write(LogLevel.Info, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2));
+            return _inner.Write(LogLevel.Debug, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2));
         }
 
-        public void Info<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
+        public ILogEntry Debug<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
         {
-            _inner.Write(LogLevel.Info, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3));
+            return _inner.Write(LogLevel.Debug, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3));
         }
 
-        public void Warn<T>(T value)
+        public ILogEntry Info<T>(T value)
         {
-            _inner.Write(LogLevel.Warn, prefix + value);
+            return _inner.Write(LogLevel.Info, prefix + value);
         }
 
-        public void WarnException(string message, Exception exception)
+        public ILogEntry InfoException(string message, Exception exception)
         {
-            _inner.Write(LogLevel.Warn, String.Format("{0}{1}: {2}", prefix, message, exception));
+            return _inner.Write(LogLevel.Info, String.Format("{0}{1}: {2}", prefix, message, exception));
         }
 
-        public void Warn(string message)
+        public ILogEntry Info(string message)
         {
-            _inner.Write(LogLevel.Warn, prefix + message);
+            return _inner.Write(LogLevel.Info, prefix + message);
         }
 
-        public void Warn(string message, params object[] args)
-        {
-            var result = invokeStringFormat(CultureInfo.InvariantCulture, message, args);
-            _inner.Write(LogLevel.Warn, prefix + result);
-        }
-
-        public void Warn<TArgument>(string message, TArgument argument)
-        {
-            _inner.Write(LogLevel.Warn, prefix + String.Format(CultureInfo.InvariantCulture, message, argument));
-        }
-
-        public void Warn<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
-        {
-            _inner.Write(LogLevel.Warn, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2));
-        }
-
-        public void Warn<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
-        {
-            _inner.Write(LogLevel.Warn, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3));
-        }
-
-        public void Error<T>(T value)
-        {
-            _inner.Write(LogLevel.Error, prefix + value);
-        }
-
-        public void ErrorException(string message, Exception exception)
-        {
-            _inner.Write(LogLevel.Error, String.Format("{0}{1}: {2}", prefix, message, exception));
-        }
-
-        public void Error(string message)
-        {
-            _inner.Write(LogLevel.Error, prefix + message);
-        }
-
-        public void Error(string message, params object[] args)
+        public ILogEntry Info(string message, params object[] args)
         {
             var result = invokeStringFormat(CultureInfo.InvariantCulture, message, args);
-            _inner.Write(LogLevel.Error, prefix + result);
+            return _inner.Write(LogLevel.Info, prefix + result);
         }
 
-        public void Error<TArgument>(string message, TArgument argument)
+        public ILogEntry Info<TArgument>(string message, TArgument argument)
         {
-            _inner.Write(LogLevel.Error, prefix + String.Format(CultureInfo.InvariantCulture, message, argument));
+            return _inner.Write(LogLevel.Info, prefix + String.Format(CultureInfo.InvariantCulture, message, argument));
         }
 
-        public void Error<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
+        public ILogEntry Info<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
         {
-            _inner.Write(LogLevel.Error, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2));
+            return _inner.Write(LogLevel.Info, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2));
         }
 
-        public void Error<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
+        public ILogEntry Info<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
         {
-            _inner.Write(LogLevel.Error, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3));
+            return _inner.Write(LogLevel.Info, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3));
         }
 
-        public IDisposable EnterSpan(string message)
+        public ILogEntry Warn<T>(T value)
+        {
+            return _inner.Write(LogLevel.Warn, prefix + value);
+        }
+
+        public ILogEntry WarnException(string message, Exception exception)
+        {
+            return _inner.Write(LogLevel.Warn, String.Format("{0}{1}: {2}", prefix, message, exception));
+        }
+
+        public ILogEntry Warn(string message)
+        {
+            return _inner.Write(LogLevel.Warn, prefix + message);
+        }
+
+        public ILogEntry Warn(string message, params object[] args)
+        {
+            var result = invokeStringFormat(CultureInfo.InvariantCulture, message, args);
+            return _inner.Write(LogLevel.Warn, prefix + result);
+        }
+
+        public ILogEntry Warn<TArgument>(string message, TArgument argument)
+        {
+            return _inner.Write(LogLevel.Warn, prefix + String.Format(CultureInfo.InvariantCulture, message, argument));
+        }
+
+        public ILogEntry Warn<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
+        {
+            return _inner.Write(LogLevel.Warn, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2));
+        }
+
+        public ILogEntry Warn<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
+        {
+            return _inner.Write(LogLevel.Warn, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3));
+        }
+
+        public ILogEntry Error<T>(T value)
+        {
+            return _inner.Write(LogLevel.Error, prefix + value);
+        }
+
+        public ILogEntry ErrorException(string message, Exception exception)
+        {
+            return _inner.Write(LogLevel.Error, String.Format("{0}{1}: {2}", prefix, message, exception));
+        }
+
+        public ILogEntry Error(string message)
+        {
+            return _inner.Write(LogLevel.Error, prefix + message);
+        }
+
+        public ILogEntry Error(string message, params object[] args)
+        {
+            var result = invokeStringFormat(CultureInfo.InvariantCulture, message, args);
+            return _inner.Write(LogLevel.Error, prefix + result);
+        }
+
+        public ILogEntry Error<TArgument>(string message, TArgument argument)
+        {
+            return _inner.Write(LogLevel.Error, prefix + String.Format(CultureInfo.InvariantCulture, message, argument));
+        }
+
+        public ILogEntry Error<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
+        {
+            return _inner.Write(LogLevel.Error, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2));
+        }
+
+        public ILogEntry Error<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
+        {
+            return _inner.Write(LogLevel.Error, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3));
+        }
+
+        public ILogEntry EnterSpan(string message)
         {
             return _inner.EnterSpan(LogLevel.Info, message);
         }
 
-        public IDisposable EnterSpan(string message, params object[] args)
+        public ILogEntry EnterSpan(string message, params object[] args)
         {
             return _inner.EnterSpan(LogLevel.Info, invokeStringFormat(CultureInfo.InvariantCulture, message, args));
         }
 
-        public IDisposable EnterSpan(LogLevel logLevel, string message)
+        public ILogEntry EnterSpan(LogLevel logLevel, string message)
         {
             return _inner.EnterSpan(logLevel, message);
         }
 
-        public IDisposable EnterSpan(LogLevel logLevel, string message, params object[] args)
+        public ILogEntry EnterSpan(LogLevel logLevel, string message, params object[] args)
         {
             return _inner.EnterSpan(logLevel, invokeStringFormat(CultureInfo.InvariantCulture, message, args));
         }
