@@ -19,6 +19,7 @@ namespace Splat
 
     public interface ILogger
     {
+        IDisposable EnterSpan(LogLevel level, string message);
         void Write(LogLevel logLevel, string message);
         LogLevel Level { get; set; }
     }
@@ -56,6 +57,10 @@ namespace Splat
         void Error<TArgument>(string message, TArgument argument);
         void Error<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2);
         void Error<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+
+        IDisposable EnterSpan(string message);
+        IDisposable EnterSpan(string message, params object[] args);
+        IDisposable EnterSpan(LogLevel logLevel, string message, params object[] args);
     }
 
     public interface ILogManager
@@ -193,9 +198,15 @@ namespace Splat
         {
             _inner = inner;
             prefix = String.Format(CultureInfo.InvariantCulture, "{0}: ", callingType.Name);
+            stringFormat = typeof (String).GetMethod("Format", new[] {typeof (IFormatProvider), typeof (string), typeof (object[])});
 
             Contract.Requires(inner != null);
             Contract.Requires(stringFormat != null);
+        }
+
+        public void Write(LogLevel logLevel, string message)
+        {
+            _inner.Write(logLevel, message);
         }
 
         public void Debug<T>(T value)
@@ -215,7 +226,7 @@ namespace Splat
 
         public void Debug(string message, params object[] args)
         {
-            var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
+            var result = invokeStringFormat(CultureInfo.InvariantCulture, message, args);
             _inner.Write(LogLevel.Debug, prefix + result);
         }
 
@@ -251,7 +262,7 @@ namespace Splat
 
         public void Info(string message, params object[] args)
         {
-            var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
+            var result = invokeStringFormat(CultureInfo.InvariantCulture, message, args);
             _inner.Write(LogLevel.Info, prefix + result);
         }
 
@@ -287,7 +298,7 @@ namespace Splat
 
         public void Warn(string message, params object[] args)
         {
-            var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
+            var result = invokeStringFormat(CultureInfo.InvariantCulture, message, args);
             _inner.Write(LogLevel.Warn, prefix + result);
         }
 
@@ -306,7 +317,6 @@ namespace Splat
             _inner.Write(LogLevel.Warn, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3));
         }
 
-
         public void Error<T>(T value)
         {
             _inner.Write(LogLevel.Error, prefix + value);
@@ -324,7 +334,7 @@ namespace Splat
 
         public void Error(string message, params object[] args)
         {
-            var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
+            var result = invokeStringFormat(CultureInfo.InvariantCulture, message, args);
             _inner.Write(LogLevel.Error, prefix + result);
         }
 
@@ -343,9 +353,39 @@ namespace Splat
             _inner.Write(LogLevel.Error, prefix + String.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3));
         }
 
+        public IDisposable EnterSpan(string message)
+        {
+            return _inner.EnterSpan(LogLevel.Info, message);
+        }
+
+        public IDisposable EnterSpan(string message, params object[] args)
+        {
+            return _inner.EnterSpan(LogLevel.Info, invokeStringFormat(CultureInfo.InvariantCulture, message, args));
+        }
+
+        public IDisposable EnterSpan(LogLevel logLevel, string message)
+        {
+            return _inner.EnterSpan(logLevel, message);
+        }
+
+        public IDisposable EnterSpan(LogLevel logLevel, string message, params object[] args)
+        {
+            return _inner.EnterSpan(logLevel, invokeStringFormat(CultureInfo.InvariantCulture, message, args));
+        }
+
         public LogLevel Level {
             get { return _inner.Level; }
             set { _inner.Level = value; }
+        }
+
+        string invokeStringFormat(IFormatProvider formatProvider, string message, object[] args)
+        {
+            var sfArgs = new object[3];
+            sfArgs[0] = formatProvider;
+            sfArgs[1] = message;
+            sfArgs[2] = args;
+
+            return (string) stringFormat.Invoke(null, sfArgs);
         }
     }
     #endregion
