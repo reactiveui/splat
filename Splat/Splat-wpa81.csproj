@@ -62,6 +62,7 @@
     <Compile Include="WinRT\Bitmaps.cs" />
     <Compile Include="WinRT\Color.cs" />
     <Compile Include="WinRT\NativeMethods.cs" />
+    <Compile Include="WinRT\PlatformRegistrations.cs" />
     <Compile Include="WinRT\Point.cs" />
     <Compile Include="WinRT\Rect.cs" />
   </ItemGroup>
