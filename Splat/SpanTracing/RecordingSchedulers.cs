@@ -1,200 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Splat
 {
-    public interface IProfilerPlatformOperations
-    {
-        IDisposable Initialize();
-        int GetThreadIdentifier();
-    }
-
-    public class Span
-    {
-        static int nextId;
-
-        public Span Parent { get; set; }
-        public string Message { get; set; }
-        public int Id { get; set; }
-
-        static readonly Dictionary<ulong, Span> contextMap = new Dictionary<ulong, Span>();
-
-        List<ulong> associatedThreads = new List<ulong>();
-        int refCount = 1;
-
-        protected Span() { }
-
-        public static IDisposable EnterSpan(string message)
-        {
-            var ctx = Span.GetThreadIdentifier();
-
-            var ret = new Span() {
-                Message = message,
-                Parent = GetSpanForContext(ctx),
-                Id = Interlocked.Increment(ref nextId),
-            };
-
-            if (!RecordingTaskScheduler.ContextIsNotScheduled(ctx)) {
-                ret.AddRef();
-            }
-
-            ret.AssociateSpanWithContext(ctx);
-
-            Profiler.Write("Entering Span: " + message);
-            return new ActionDisposable(() => {
-                Profiler.Write("Exiting Span: " + message);
-                //Console.WriteLine("Exiting Span " + ret.Id + ": " + message);
-                ret.Release();
-            });
-        }
-
-        public void AddRef()
-        {
-            Interlocked.Increment(ref refCount);
-            //Console.WriteLine("AddRef: {0} - {1}", refCount, Message);
-        }
-
-        public void Release()
-        {
-            //Console.WriteLine("Release: {0} - {1}", refCount - 1, Message);
-
-            if (Interlocked.Decrement(ref refCount) <= 0) {
-                lock (contextMap) {
-                    foreach(var v in associatedThreads) {
-                        if (!contextMap.ContainsKey(v) || contextMap[v] != this) continue;
-
-                        //Console.WriteLine("{0:x} disassociated from {1}", v, this.Message);
-                        contextMap.Remove(v);
-                    }
-                };
-            }
-        }
-
-        public void AssociateSpanWithContext(ulong ctx)
-        {
-            lock (contextMap) {
-                //Console.WriteLine("{0:x} associated with {1}", ctx, this.Message);
-                contextMap[ctx] = this;
-                associatedThreads.Add(ctx);
-            }
-        }
-
-        public static Span GetSpanForContext(ulong ctx)
-        {
-            lock (contextMap) {
-                if (!contextMap.ContainsKey(ctx)) return null;
-                return contextMap[ctx];
-            }
-        }
-
-        public bool SpanIsAlive {
-            get { return (associatedThreads != null); }
-        }
-
-        public bool SpanHasReferences {
-            get { return refCount > 0; }
-        }
-
-        public static ulong GetThreadIdentifier()
-        {
-            var ret = RecordingDispatcherSchedulerHook.Current != null ?
-                RecordingDispatcherSchedulerHook.Current.GetThreadIdentifier() :
-                default(ulong);
-
-            return (ret != 0 ? ret : RecordingTaskScheduler.GetThreadIdentifier());
-        }
-    }
-
-    public static class Profiler
-    {
-        const string MarkersTypeName = "Microsoft.ConcurrencyVisualizer.Instrumentation.Markers, Microsoft.ConcurrencyVisualizer.Markers, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a";
-        static Type markersType;
-        static MethodInfo enterSpan;
-        static MethodInfo writeFlag;
-        static MethodInfo writeMessage;
-
-        static Profiler()
-        {
-            // NB: If this fails, we're in production
-            markersType = Type.GetType(MarkersTypeName, false);
-            if (markersType == null) return;
-
-            // public Span EnterSpan(Importance level, int category, string text)
-            enterSpan = markersType.GetMethods(BindingFlags.Static | BindingFlags.Public).First(x =>
-            {
-                if (x.Name != "EnterSpan") return false;
-                var p = x.GetParameters();
-                return p.Length == 3 && p[2].ParameterType == typeof(string);
-            });
-
-            // public static void WriteFlag(Importance level, string text)
-            writeFlag = markersType.GetMethods(BindingFlags.Static | BindingFlags.Public).First(x =>
-            {
-                if (x.Name != "WriteFlag") return false;
-                var p = x.GetParameters();
-                return p.Length == 2 && p[0].ParameterType != typeof(int) && p[1].ParameterType == typeof(string);
-            });
-
-            // public static void WriteMessage(string text)
-            writeMessage = markersType.GetMethods(BindingFlags.Static | BindingFlags.Public).First(x =>
-            {
-                if (x.Name != "WriteMessage") return false;
-                var p = x.GetParameters();
-                return p.Length == 1 && p[0].ParameterType == typeof(string);
-            });
-        }
-
-        public static IDisposable EnterSpan(string message, Importance importance = Importance.Normal)
-        {
-            if (markersType == null) {
-                return Span.EnterSpan(message);
-            }
-
-            return (IDisposable)enterSpan.Invoke(null, new object[] { importance, 1, message });
-        }
-
-        public static void Write(string message, Importance importance = Importance.Normal)
-        {
-            if (markersType == null) {
-                var ctx = Span.GetThreadIdentifier();
-                var span = Span.GetSpanForContext(ctx);
-
-                //Console.WriteLine("Write: {0:x}", ctx);
-                if (span != null) {
-                    var parentSpan = span;
-                    var indent = "";
-
-                    while (parentSpan != null) {
-                        if (parentSpan.SpanIsAlive || true) indent = indent + parentSpan.Id + "   ";
-                        parentSpan = parentSpan.Parent;
-                    }
-
-                    Console.WriteLine(indent + message);
-                } else {
-                    Console.WriteLine(message);
-                }
-
-                return;
-            }
-
-            switch (importance)
-            {
-            case Importance.Critical:
-            case Importance.High:
-                writeFlag.Invoke(null, new object[] { importance, message });
-                return;
-            default:
-                writeMessage.Invoke(null, new object[] { message });
-                return;
-            }
-        }
-    }
-
     public sealed class RecordingDispatcherSchedulerHook : IDisposable
     {
         IDisposable _inner;
@@ -333,6 +144,12 @@ namespace Splat
             _threadHighWord = ((ulong)"thread".GetHashCode()) << 32;
         }
 
+#if MONO
+        internal const string defaultSchedulerBackingField = "s_defaultTaskScheduler";
+#else
+        internal const string defaultSchedulerBackingField = "defaultScheduler";
+#endif
+
         TaskScheduler _inner;
         TaskFactory _factory;
 
@@ -341,7 +158,7 @@ namespace Splat
             _inner = inner;
 
             if (_inner == null) {
-                _inner = (TaskScheduler) typeof(TaskScheduler).GetField("s_defaultTaskScheduler", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
+                _inner = (TaskScheduler) typeof(TaskScheduler).GetField(defaultSchedulerBackingField, BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
             }
 
             _factory = new TaskFactory(_inner);
@@ -395,14 +212,5 @@ namespace Splat
         {
             return (ctx & _threadHighWord) == _threadHighWord;
         }
-    }
-
-    interface IUiThreadDispatcherHook
-    {
-        IDisposable RegisterHook(
-            Action<int> dispatcherQueued,
-            Action<int> dispatcherItemStarted,
-            Action<int> dispatcherItemFinished,
-            Action<int> dispatcherItemCancelled);
     }
 }
