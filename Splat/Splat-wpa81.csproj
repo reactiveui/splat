@@ -38,7 +38,6 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyFinder.cs" />
     <Compile Include="Bitmaps.cs" />
     <Compile Include="PointExtensions.cs" />
     <Compile Include="Points\RectangleF.cs" />
@@ -54,7 +53,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="RectangleExtensions.cs" />
-    <Compile Include="ReflectionStubs.cs" />
     <Compile Include="SizeExtensions.cs" />
     <Compile Include="ServiceLocation.cs" />
     <Compile Include="Logging.cs" />
