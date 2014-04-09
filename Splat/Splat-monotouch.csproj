@@ -17,7 +17,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\monotouch</OutputPath>
-    <DefineConstants>DEBUG; UIKIT</DefineConstants>
+    <DefineConstants>DEBUG; UIKIT;MONO</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -28,7 +28,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <DefineConstants>UIKIT</DefineConstants>
+    <DefineConstants>UIKIT;MONO</DefineConstants>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>pdbonly</DebugType>
   </PropertyGroup>
@@ -65,5 +65,6 @@
     <Compile Include="SpanTracing\Interfaces.cs" />
     <Compile Include="SpanTracing\RecordingSchedulers.cs" />
     <Compile Include="SpanTracing\Span.cs" />
+    <Compile Include="SpanTracing\SpanTracingPlatformOps.cs" />
   </ItemGroup>
 </Project>

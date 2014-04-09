@@ -104,16 +104,5 @@ namespace Splat
         public bool SpanHasReferences {
             get { return refCount > 0; }
         }
-
-        /* XXX: This goes to PlatformOps
-        public static ulong GetThreadIdentifier()
-        {
-            var ret = RecordingDispatcherSchedulerHook.Current != null ?
-                RecordingDispatcherSchedulerHook.Current.GetThreadIdentifier() :
-                default(ulong);
-
-            return (ret != 0 ? ret : RecordingTaskScheduler.GetThreadIdentifier());
-        }
-        */
     }
 }

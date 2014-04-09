@@ -4,7 +4,7 @@ namespace Splat
 {
     interface IProfilerPlatformOperations
     {
-        IDisposable Initialize();
+        void Initialize();
 
         ulong GetSpanContextIdentifier();
         int GetRealThreadIdentifier();

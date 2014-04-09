@@ -145,9 +145,9 @@ namespace Splat
         }
 
 #if MONO
-        internal const string defaultSchedulerBackingField = "s_defaultTaskScheduler";
-#else
         internal const string defaultSchedulerBackingField = "defaultScheduler";
+#else
+        internal const string defaultSchedulerBackingField = "s_defaultTaskScheduler";
 #endif
 
         TaskScheduler _inner;
@@ -187,6 +187,12 @@ namespace Splat
                 //Console.WriteLine("Exiting task: {0:x} from {1:x}", GetThreadIdentifier(task), oldId);
                 if (span != null) span.Release();
             });
+        }
+
+        public void InstallScheduler()
+        {
+            var fi = typeof(TaskScheduler).GetField(defaultSchedulerBackingField, BindingFlags.Static | BindingFlags.NonPublic);
+            fi.SetValue(null, this);
         }
 
         protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
