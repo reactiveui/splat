@@ -53,11 +53,13 @@
     <Compile Include="ModeDetector.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SpanTracing\Span.cs" />
     <Compile Include="RectangleExtensions.cs" />
     <Compile Include="SizeExtensions.cs" />
     <Compile Include="ServiceLocation.cs" />
     <Compile Include="Logging.cs" />
     <Compile Include="MemoizingMRUCache.cs" />
+    <Compile Include="SpanTracing\Interfaces.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

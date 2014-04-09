@@ -2,10 +2,13 @@
 
 namespace Splat
 {
-    public interface IProfilerPlatformOperations
+    interface IProfilerPlatformOperations
     {
         IDisposable Initialize();
-        int GetThreadIdentifier();
+
+        ulong GetSpanContextIdentifier();
+        int GetRealThreadIdentifier();
+        bool IsContextSpanNotScheduled(ulong spanContext);
     }
 
     interface IUiThreadDispatcherHook

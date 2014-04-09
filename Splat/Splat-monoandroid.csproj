@@ -60,6 +60,9 @@
     <Compile Include="Logging.cs" />
     <Compile Include="MemoizingMRUCache.cs" />
     <Compile Include="Android\PlatformRegistrations.cs" />
+    <Compile Include="SpanTracing\Interfaces.cs" />
+    <Compile Include="SpanTracing\RecordingSchedulers.cs" />
+    <Compile Include="SpanTracing\Span.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -70,5 +73,6 @@
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Android\" />
+    <Folder Include="SpanTracing\" />
   </ItemGroup>
 </Project>

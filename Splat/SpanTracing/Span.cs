@@ -17,15 +17,21 @@ namespace Splat
         public int Id { get; set; }
 
         static readonly Dictionary<ulong, Span> contextMap = new Dictionary<ulong, Span>();
+        static readonly IProfilerPlatformOperations platformOps;
 
         List<ulong> associatedThreads = new List<ulong>();
         int refCount = 1;
+
+        static Span()
+        {
+            platformOps = Locator.Current.GetService<IProfilerPlatformOperations>();
+        }
 
         protected Span() { }
 
         public static IDisposable EnterSpan(object context)
         {
-            var ctx = Span.GetThreadIdentifier();
+            var ctx = platformOps.GetSpanContextIdentifier();
 
             var ret = new Span() {
                 Context = context,
@@ -33,7 +39,7 @@ namespace Splat
                 Id = Interlocked.Increment(ref nextId),
             };
 
-            if (!RecordingTaskScheduler.ContextIsNotScheduled(ctx)) {
+            if (!platformOps.IsContextSpanNotScheduled(ctx)) {
                 ret.AddRef();
             }
 
@@ -99,6 +105,7 @@ namespace Splat
             get { return refCount > 0; }
         }
 
+        /* XXX: This goes to PlatformOps
         public static ulong GetThreadIdentifier()
         {
             var ret = RecordingDispatcherSchedulerHook.Current != null ?
@@ -107,5 +114,6 @@ namespace Splat
 
             return (ret != 0 ? ret : RecordingTaskScheduler.GetThreadIdentifier());
         }
+        */
     }
 }

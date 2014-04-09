@@ -35,7 +35,7 @@ namespace Splat
                 operationCompleted,
                 operationCanceled);
 
-            _dispatcherThreadId = platformOps.GetThreadIdentifier();
+            _dispatcherThreadId = platformOps.GetRealThreadIdentifier();
 
             Current = this;
         }
@@ -46,7 +46,7 @@ namespace Splat
                 return _dispatcherHighWord | (uint)dispatcherOperationId.Value;
             }
 
-            if (_runningDispatcherOperation == 0 || _dispatcherThreadId != platformOps.GetThreadIdentifier()) {
+            if (_runningDispatcherOperation == 0 || _dispatcherThreadId != platformOps.GetRealThreadIdentifier()) {
                 return 0;
             }
 
@@ -107,7 +107,7 @@ namespace Splat
         void operationQueued(int op)
         {
             lock (_queuedOps) {
-                var ctx = Span.GetThreadIdentifier();
+                var ctx = platformOps.GetSpanContextIdentifier();
                 _queuedOps[op] = ctx;
 
                 var opCtx = GetThreadIdentifier(op);
@@ -171,7 +171,7 @@ namespace Splat
 
         protected override void QueueTask(Task task)
         {
-            var oldId = Span.GetThreadIdentifier();
+            var oldId = _platformOps.GetSpanContextIdentifier();
             //Console.WriteLine("Scheduling {0:x}=>{1:x}", oldId, GetThreadIdentifier(task));
             var span = Span.GetSpanForContext(oldId);
 
@@ -204,7 +204,7 @@ namespace Splat
             if (Task.CurrentId != null) {
                 return (_taskHighWord | (uint)Task.CurrentId.Value);
             } else {
-                return (_threadHighWord | (uint)_platformOps.GetThreadIdentifier());
+                return (_threadHighWord | (uint)_platformOps.GetRealThreadIdentifier());
             }
         }
 

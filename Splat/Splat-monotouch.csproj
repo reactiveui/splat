@@ -42,6 +42,7 @@
     <Folder Include="Resources\" />
     <Folder Include="Cocoa\" />
     <Folder Include="Colors\" />
+    <Folder Include="SpanTracing\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -61,5 +62,8 @@
     <Compile Include="Logging.cs" />
     <Compile Include="MemoizingMRUCache.cs" />
     <Compile Include="Cocoa\PlatformRegistrations.cs" />
+    <Compile Include="SpanTracing\Interfaces.cs" />
+    <Compile Include="SpanTracing\RecordingSchedulers.cs" />
+    <Compile Include="SpanTracing\Span.cs" />
   </ItemGroup>
 </Project>
