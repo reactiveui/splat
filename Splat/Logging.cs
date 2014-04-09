@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Reflection;
+using System.Linq;
 using System.Globalization;
 using System.Text;
 using System.Threading;
@@ -227,7 +228,12 @@ namespace Splat
         {
             _inner = inner;
             prefix = String.Format(CultureInfo.InvariantCulture, "{0}: ", callingType.Name);
-            stringFormat = typeof (String).GetMethod("Format", new[] {typeof (IFormatProvider), typeof (string), typeof (object[])});
+            stringFormat = typeof (String).GetTypeInfo().GetDeclaredMethods("Format")
+                .First(x => { 
+                    var p = x.GetParameters();
+                    return p.Length == 3 && p[0].ParameterType == typeof(IFormatProvider) &&
+                        p[1].ParameterType == typeof(string) && p[2].ParameterType == typeof(object[]);
+                });
 
             Contract.Requires(inner != null);
             Contract.Requires(stringFormat != null);

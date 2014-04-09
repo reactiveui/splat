@@ -54,7 +54,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="RectangleExtensions.cs" />
-    <Compile Include="ReflectionStubs.cs" />
     <Compile Include="SizeExtensions.cs" />
     <Compile Include="ServiceLocation.cs" />
     <Compile Include="Logging.cs" />
