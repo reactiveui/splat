@@ -12,6 +12,8 @@ namespace Splat
         {
             This.RegisterConstant(new PlatformBitmapLoader(), typeof(IBitmapLoader));
             This.RegisterConstant(new PlatformModeDetector(), typeof(IModeDetector));
+            This.RegisterConstant(new UiThreadDispatcherHook(), typeof(IUiThreadDispatcherHook));
+            This.RegisterConstant(new ProfilerPlatformOperations(), typeof(IProfilerPlatformOperations));
         }
     }
 }
