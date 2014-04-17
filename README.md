@@ -22,6 +22,8 @@ Splat currently supports:
 * Cross-platform geometry primitives (PointF, SizeF, RectangleF), as well as a bunch of 
   additional extension methods to make using them easier.
 * A way to detect whether you're in a Unit Test runner / Design Mode
+* A cross-platform logging framework
+* Simple yet flexible Service Location
 
 ### Cross-platform Image Loading
 
@@ -32,14 +34,17 @@ Splat currently supports:
 //
 
 var wc = new WebClient();
-var imageBytes = await wc.DownloadDataTaskAsync("http://octodex.github.com/images/Professortocat_v2.png");
-ProfileImage = await BitmapLoader.Current.Load(imageBytes, null /* Use original width */, null /* Use original height */);
+byte[] imageBytes = await wc.DownloadDataTaskAsync("http://octodex.github.com/images/Professortocat_v2.png");
 
+// IBitmap is a type that provides basic image information such as dimensions
+IBitmap profileImage = await BitmapLoader.Current.Load(imageBytes, null /* Use original width */, null /* Use original height */);
 ```
 
 Then later, in your View:
 
 ```
+// ToNative always converts an IBitmap into the type that the platform
+// uses, such as UIBitmap on iOS or BitmapSource in WPF
 ImageView.Source = ViewModel.ProfileImage.ToNative();
 ```
 
