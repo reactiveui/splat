@@ -339,6 +339,28 @@ namespace Splat
         void Run(IMutableDependencyResolver resolver);
     }
 
+    /// <summary>
+    /// This class describes an action to be executed by the service locator
+    /// to allow class libraries to register their classes via an implementation 
+    /// of <see cref="IRegistrations"/>.
+    /// When distributing via NuGet a special class inheriting from 
+    /// <see cref="LocatorAction{TRegistrations}"/> should be distributed with
+    /// the package and be included in the final application.
+    /// <see cref="Locator.Initialize(Assembly)"/> will run these classes when called
+    /// from the assembly specified.
+    /// 
+    /// Example:
+    /// 
+    /// using Splat;
+    ///
+    /// namespace $rootnamespace$.LocatorActions
+    /// {
+    ///     public class YourLibraryLocatorAction : LocatorAction<YourLibraryRegistrations>
+    ///     {
+    ///     }
+    /// }
+    /// </summary>
+    /// <typeparam name="TRegistrations">The type of the registrations class.</typeparam>
     public class LocatorAction<TRegistrations> : ILocatorAction where TRegistrations : IRegistrations
     {
         void ILocatorAction.Run(IMutableDependencyResolver resolver)
@@ -347,6 +369,10 @@ namespace Splat
         }
     }
 
+    /// <summary>
+    /// This interface can be implemented by class libraries to register 
+    /// classes with the service locator.
+    /// </summary>
     public interface IRegistrations
     {
         void Register(IMutableDependencyResolver resolver);
