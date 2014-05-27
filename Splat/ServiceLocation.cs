@@ -27,7 +27,7 @@ namespace Splat
                 throw new ArgumentNullException("assembly");
             }            
 
-            // find all type that implement ILOcatorAction and have a default public constructor
+            // find all types that implement ILocatorAction and have a default public constructor
             var actionTypes = assembly.ExportedTypes.Where(t => {
                 TypeInfo typeInfo = t.GetTypeInfo();
                 return !typeInfo.IsAbstract && 
