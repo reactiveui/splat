@@ -35,12 +35,10 @@ namespace Splat
                     typeInfo.DeclaredConstructors.Any(ci => ci.IsPublic && ci.GetParameters().Length == 0);
             });
 
-            foreach (var actionType in actionTypes)
-            {
+            foreach (var actionType in actionTypes) {
                 var type = Activator.CreateInstance(actionType);
                 ILocatorAction action = type as ILocatorAction;
-                if(action != null)
-                {
+                if(action != null) {
                     RegisterLocatorAction(action);
                 }
             }
