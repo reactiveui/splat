@@ -123,7 +123,8 @@ namespace Splat
         /// <returns>When disposed removes the callback</returns>
         /// <param name="serviceType">Service type.</param>
         /// <param name="contract">Contract.</param>
-        IDisposable ServiceRegistrationCallback(Action callback, Type serviceType, string contract = null);
+        /// <param name="callback">Callback.</param>
+        IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action callback);
     }
 
     /// <summary>
@@ -158,6 +159,11 @@ namespace Splat
         public static IEnumerable<T> GetServices<T>(this IDependencyResolver This, string contract = null)
         {
             return This.GetServices(typeof(T), contract).Cast<T>();
+        }
+
+        public static IDisposable ServiceRegistrationCallback(this IDependencyResolver This, Type serviceType, Action callback)
+        {
+            return This.ServiceRegistrationCallback(serviceType, null, callback);
         }
 
         /// <summary>
@@ -252,7 +258,7 @@ namespace Splat
             return _registry[pair].Select(x => x()).ToList();
         }
 
-        public IDisposable ServiceRegistrationCallback(Action callback, Type serviceType, string contract = null)
+        public IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action callback)
         {
             var pair = Tuple.Create(serviceType, contract ?? string.Empty);
 
@@ -322,7 +328,7 @@ namespace Splat
             innerRegister(factory, serviceType, contract);
         }
 
-        public IDisposable ServiceRegistrationCallback(Action callback, Type serviceType, string contract = null)
+        public IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action callback)
         {
             throw new NotImplementedException("ServiceRegistrationCallback is not implemented on FuncDependencyResolver");
         }
