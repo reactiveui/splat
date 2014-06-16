@@ -114,6 +114,16 @@ namespace Splat
         /// <returns>A sequence of instances of the requested <paramref name="serviceType"/>. The sequence
         /// should be empty (not <c>null</c>) if no objects of the given type are available.</returns>
         IEnumerable<object> GetServices(Type serviceType, string contract = null);
+
+        /// <summary>
+        /// Register a callback to be called when a new service matching the type and contract is registered.
+        /// 
+        /// When registered, the callback is also called for each currently matching service
+        /// </summary>
+        /// <returns>When disposed removes the callback</returns>
+        /// <param name="serviceType">Service type.</param>
+        /// <param name="contract">Contract.</param>
+        IDisposable ServiceRegistrationCallback(Action callback, Type serviceType, string contract = null);
     }
 
     /// <summary>
@@ -193,7 +203,8 @@ namespace Splat
     /// </summary>
     public class ModernDependencyResolver : IMutableDependencyResolver
     {
-        private Dictionary<Tuple<Type, string>, List<Func<object>>> _registry;
+        Dictionary<Tuple<Type, string>, List<Func<object>>> _registry;
+        Dictionary<Tuple<Type, string>, List<Action>> _callbackRegistry;
 
         public ModernDependencyResolver() : this(null) { }
 
@@ -202,6 +213,8 @@ namespace Splat
             _registry = registry != null ? 
                 registry.ToDictionary(k => k.Key, v => v.Value.ToList()) :
                 new Dictionary<Tuple<Type, string>, List<Func<object>>>();
+
+            _callbackRegistry = new Dictionary<Tuple<Type, string>, List<Action>>();
         }
 
         public void Register(Func<object> factory, Type serviceType, string contract = null)
@@ -212,6 +225,14 @@ namespace Splat
             }
 
             _registry[pair].Add(factory);
+
+            if (_callbackRegistry.ContainsKey(pair)) {
+                foreach (var callback in _callbackRegistry[pair]) {
+                    foreach (var s in _registry[pair]) {
+                        callback();
+                    }
+                }
+            }
         }
 
         public object GetService(Type serviceType, string contract = null)
@@ -229,6 +250,27 @@ namespace Splat
             if (!_registry.ContainsKey(pair)) return Enumerable.Empty<object>();
 
             return _registry[pair].Select(x => x()).ToList();
+        }
+
+        public IDisposable ServiceRegistrationCallback(Action callback, Type serviceType, string contract = null)
+        {
+            var pair = Tuple.Create(serviceType, contract ?? string.Empty);
+
+            if (!_callbackRegistry.ContainsKey(pair)) {
+                _callbackRegistry[pair] = new List<Action>();
+            }
+
+            _callbackRegistry[pair].Add(callback);
+
+            if (_registry.ContainsKey(pair)) {
+                foreach (var s in _registry[pair]) {
+                    callback();
+                }
+            }
+
+            return new ActionDisposable(() => {
+                _callbackRegistry[pair].Remove(callback);
+            });
         }
 
         public ModernDependencyResolver Duplicate()
@@ -278,6 +320,11 @@ namespace Splat
         {
             if (innerRegister == null) throw new NotImplementedException();
             innerRegister(factory, serviceType, contract);
+        }
+
+        public IDisposable ServiceRegistrationCallback(Action callback, Type serviceType, string contract = null)
+        {
+            throw new NotImplementedException("ServiceRegistrationCallback is not implemented on FuncDependencyResolver");
         }
     }
 
