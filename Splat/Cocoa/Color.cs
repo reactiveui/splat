@@ -6,7 +6,7 @@ using MonoTouch.UIKit;
 using MonoMac.AppKit;
 #endif
 
-namespace Splat
+namespace System.Drawing
 {
 #if UIKIT
     public static class ColorExtensions

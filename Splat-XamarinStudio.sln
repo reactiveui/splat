@@ -5,8 +5,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat-monotouch", "Splat\Sp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat-monoandroid", "Splat\Splat-monoandroid.csproj", "{E429F061-65F1-4B17-A122-F6115840D56D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat-monomac", "Splat\Splat-monomac.csproj", "{252CE1CF-331C-4445-A3C2-E4D6C80A935A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat-Portable", "Splat\Splat-Portable.csproj", "{0EC8DBA1-D745-4EE5-993A-6026440EC3BF}"
 EndProject
 Global
@@ -19,10 +17,6 @@ Global
 		{0EC8DBA1-D745-4EE5-993A-6026440EC3BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EC8DBA1-D745-4EE5-993A-6026440EC3BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EC8DBA1-D745-4EE5-993A-6026440EC3BF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{252CE1CF-331C-4445-A3C2-E4D6C80A935A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{252CE1CF-331C-4445-A3C2-E4D6C80A935A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{252CE1CF-331C-4445-A3C2-E4D6C80A935A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{252CE1CF-331C-4445-A3C2-E4D6C80A935A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{95E74294-9538-44F3-AC97-F83760565242}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{95E74294-9538-44F3-AC97-F83760565242}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95E74294-9538-44F3-AC97-F83760565242}.Release|Any CPU.ActiveCfg = Release|Any CPU
