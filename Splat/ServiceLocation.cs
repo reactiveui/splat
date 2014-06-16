@@ -114,17 +114,6 @@ namespace Splat
         /// <returns>A sequence of instances of the requested <paramref name="serviceType"/>. The sequence
         /// should be empty (not <c>null</c>) if no objects of the given type are available.</returns>
         IEnumerable<object> GetServices(Type serviceType, string contract = null);
-
-        /// <summary>
-        /// Register a callback to be called when a new service matching the type and contract is registered.
-        /// 
-        /// When registered, the callback is also called for each currently matching service
-        /// </summary>
-        /// <returns>When disposed removes the callback</returns>
-        /// <param name="serviceType">Service type.</param>
-        /// <param name="contract">Contract.</param>
-        /// <param name="callback">Callback.</param>
-        IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action callback);
     }
 
     /// <summary>
@@ -134,6 +123,19 @@ namespace Splat
     public interface IMutableDependencyResolver : IDependencyResolver
     {
         void Register(Func<object> factory, Type serviceType, string contract = null);
+
+        /// <summary>
+        /// Register a callback to be called when a new service matching the type
+        /// and contract is registered.
+        ///
+        /// When registered, the callback is also called for each currently matching
+        /// service.
+        /// </summary>
+        /// <returns>When disposed removes the callback</returns>
+        /// <param name="serviceType">Service type.</param>
+        /// <param name="contract">Contract.</param>
+        /// <param name="callback">Callback.</param>
+        IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action callback);
     }
 
     public static class DependencyResolverMixins
@@ -161,7 +163,7 @@ namespace Splat
             return This.GetServices(typeof(T), contract).Cast<T>();
         }
 
-        public static IDisposable ServiceRegistrationCallback(this IDependencyResolver This, Type serviceType, Action callback)
+        public static IDisposable ServiceRegistrationCallback(this IMutableDependencyResolver This, Type serviceType, Action callback)
         {
             return This.ServiceRegistrationCallback(serviceType, null, callback);
         }
