@@ -135,7 +135,7 @@ namespace Splat
         /// <param name="serviceType">Service type.</param>
         /// <param name="contract">Contract.</param>
         /// <param name="callback">Callback.</param>
-        IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action callback);
+        IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback);
     }
 
     public static class DependencyResolverMixins
@@ -163,7 +163,7 @@ namespace Splat
             return This.GetServices(typeof(T), contract).Cast<T>();
         }
 
-        public static IDisposable ServiceRegistrationCallback(this IMutableDependencyResolver This, Type serviceType, Action callback)
+        public static IDisposable ServiceRegistrationCallback(this IMutableDependencyResolver This, Type serviceType, Action<IDisposable> callback)
         {
             return This.ServiceRegistrationCallback(serviceType, null, callback);
         }
@@ -212,7 +212,7 @@ namespace Splat
     public class ModernDependencyResolver : IMutableDependencyResolver
     {
         Dictionary<Tuple<Type, string>, List<Func<object>>> _registry;
-        Dictionary<Tuple<Type, string>, List<Action>> _callbackRegistry;
+        Dictionary<Tuple<Type, string>, List<Action<IDisposable>>> _callbackRegistry;
 
         public ModernDependencyResolver() : this(null) { }
 
@@ -222,7 +222,7 @@ namespace Splat
                 registry.ToDictionary(k => k.Key, v => v.Value.ToList()) :
                 new Dictionary<Tuple<Type, string>, List<Func<object>>>();
 
-            _callbackRegistry = new Dictionary<Tuple<Type, string>, List<Action>>();
+            _callbackRegistry = new Dictionary<Tuple<Type, string>, List<Action<IDisposable>>>();
         }
 
         public void Register(Func<object> factory, Type serviceType, string contract = null)
@@ -235,9 +235,28 @@ namespace Splat
             _registry[pair].Add(factory);
 
             if (_callbackRegistry.ContainsKey(pair)) {
+                List<Action<IDisposable>> toRemove = null;
+
                 foreach (var callback in _callbackRegistry[pair]) {
-                    foreach (var s in _registry[pair]) {
-                        callback();
+                    var remove = false;
+                    var disp = new ActionDisposable(() => {
+                        remove = true;
+                    });
+
+                    callback(disp);
+
+                    if (remove) {
+                        if (toRemove == null) {
+                            toRemove = new List<Action<IDisposable>>();
+                        }
+
+                        toRemove.Add(callback);
+                    }
+                }
+
+                if (toRemove != null) {
+                    foreach (var c in toRemove) {
+                        _callbackRegistry[pair].Remove(c);
                     }
                 }
             }
@@ -260,25 +279,27 @@ namespace Splat
             return _registry[pair].Select(x => x()).ToList();
         }
 
-        public IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action callback)
+        public IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
         {
             var pair = Tuple.Create(serviceType, contract ?? string.Empty);
 
             if (!_callbackRegistry.ContainsKey(pair)) {
-                _callbackRegistry[pair] = new List<Action>();
+                _callbackRegistry[pair] = new List<Action<IDisposable>>();
             }
 
             _callbackRegistry[pair].Add(callback);
 
+            var disp = new ActionDisposable(() => {
+                _callbackRegistry[pair].Remove(callback);
+            });
+
             if (_registry.ContainsKey(pair)) {
                 foreach (var s in _registry[pair]) {
-                    callback();
+                    callback(disp);
                 }
             }
 
-            return new ActionDisposable(() => {
-                _callbackRegistry[pair].Remove(callback);
-            });
+            return disp;
         }
 
         public ModernDependencyResolver Duplicate()
@@ -300,8 +321,8 @@ namespace Splat
     {
         readonly Func<Type, string, IEnumerable<object>> innerGetServices;
         readonly Action<Func<object>, Type, string> innerRegister;
-        readonly Dictionary<Tuple<Type, string>, List<Action>> _callbackRegistry = 
-            new Dictionary<Tuple<Type, string>, List<Action>>();
+        readonly Dictionary<Tuple<Type, string>, List<Action<IDisposable>>> _callbackRegistry = 
+            new Dictionary<Tuple<Type, string>, List<Action<IDisposable>>>();
 
         IDisposable inner;
 
@@ -338,16 +359,39 @@ namespace Splat
             var pair = Tuple.Create(serviceType, contract ?? string.Empty);
 
             if (_callbackRegistry.ContainsKey(pair)) {
-                foreach (var cb in _callbackRegistry[pair]) { cb (); }
+                List<Action<IDisposable>> toRemove = null;
+
+                foreach (var callback in _callbackRegistry[pair]) {
+                    var remove = false;
+                    var disp = new ActionDisposable(() => {
+                        remove = true;
+                    });
+
+                    callback(disp);
+
+                    if (remove) {
+                        if (toRemove == null) {
+                            toRemove = new List<Action<IDisposable>>();
+                        }
+
+                        toRemove.Add(callback);
+                    }
+                }
+
+                if (toRemove != null) {
+                    foreach (var c in toRemove) {
+                        _callbackRegistry[pair].Remove(c);
+                    }
+                }
             }
         }
 
-        public IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action callback)
+        public IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
         {
             var pair = Tuple.Create(serviceType, contract ?? string.Empty);
 
             if (!_callbackRegistry.ContainsKey(pair)) {
-                _callbackRegistry[pair] = new List<Action>();
+                _callbackRegistry[pair] = new List<Action<IDisposable>>();
             }
 
             _callbackRegistry[pair].Add(callback);
