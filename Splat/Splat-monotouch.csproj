@@ -65,5 +65,6 @@
     <Compile Include="ServiceLocation.cs" />
     <Compile Include="Logging.cs" />
     <Compile Include="MemoizingMRUCache.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
 </Project>
