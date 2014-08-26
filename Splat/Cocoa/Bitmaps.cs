@@ -27,7 +27,12 @@ namespace Splat
             UIApplication.SharedApplication.InvokeOnMainThread(() => {
                 try {
 #if UIKIT
-                    tcs.TrySetResult(new CocoaBitmap(UIImage.LoadFromData(data)));
+                    var bitmap = UIImage.LoadFromData(data);
+                    if (bitmap == null) {
+                        throw new Exception("Failed to load image");
+                    }
+
+                    tcs.TrySetResult(new CocoaBitmap(bitmap));
 #else
                     tcs.TrySetResult(new CocoaBitmap(new UIImage(data)));
 #endif
@@ -44,10 +49,15 @@ namespace Splat
             UIApplication.SharedApplication.InvokeOnMainThread(() => {
                 try {
 #if UIKIT
-                    tcs.TrySetResult(new CocoaBitmap(UIImage.FromBundle(source)));
+                    var bitmap = UIImage.FromBundle(source);
 #else
-                    tcs.TrySetResult(new CocoaBitmap(UIImage.ImageNamed(source)));
+                    var bitmap = UIImage.ImageNamed(source);
 #endif
+                    if (bitmap == null) {
+                        throw new Exception("Failed to load image from resource: " + source);
+                    }
+
+                    tcs.TrySetResult(new CocoaBitmap(bitmap));
                 } catch (Exception ex) {
                     tcs.TrySetException(ex);
                 }
