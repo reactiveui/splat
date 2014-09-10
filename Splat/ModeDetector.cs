@@ -28,11 +28,11 @@ namespace Splat
         static bool? cachedInUnitTestRunnerResult;
         public static bool InUnitTestRunner() 
         {
-            if (cachedInUnitTestRunnerResult != null) return cachedInUnitTestRunnerResult.Value;
+            if (cachedInUnitTestRunnerResult.HasValue) return cachedInUnitTestRunnerResult.Value;
 
             if (current != null) {
                 cachedInUnitTestRunnerResult = current.InUnitTestRunner();
-                if (cachedInUnitTestRunnerResult != null) return cachedInUnitTestRunnerResult.Value;
+                if (cachedInUnitTestRunnerResult.HasValue) return cachedInUnitTestRunnerResult.Value;
             }
 
             // We have no sane platform-independent way to detect a unit test 
@@ -43,11 +43,11 @@ namespace Splat
         static bool? cachedInDesignModeResult;
         public static bool InDesignMode()
         {
-            if (cachedInDesignModeResult != null) return cachedInDesignModeResult.Value;
+            if (cachedInDesignModeResult.HasValue) return cachedInDesignModeResult.Value;
 
             if (current != null) {
                 cachedInDesignModeResult = current.InDesignMode();
-                if (cachedInDesignModeResult != null) return cachedInDesignModeResult.Value;
+                if (cachedInDesignModeResult.HasValue) return cachedInDesignModeResult.Value;
             }
             
             // Check Silverlight / WP8 Design Mode
