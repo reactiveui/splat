@@ -21,15 +21,18 @@ namespace Splat
         public static void OverrideModeDetector(IModeDetector modeDetector)
         {
             current = modeDetector;
+            cachedInDesignModeResult = null;
+            cachedInUnitTestRunnerResult = null;
         }
 
+        static bool? cachedInUnitTestRunnerResult;
         public static bool InUnitTestRunner() 
         {
-            var ret = default(bool?);
+            if (cachedInUnitTestRunnerResult != null) return cachedInUnitTestRunnerResult.Value;
 
             if (current != null) {
-                ret = current.InUnitTestRunner();
-                if (ret != null) return ret.Value;
+                cachedInUnitTestRunnerResult = current.InUnitTestRunner();
+                if (cachedInUnitTestRunnerResult != null) return cachedInUnitTestRunnerResult.Value;
             }
 
             // We have no sane platform-independent way to detect a unit test 
@@ -40,15 +43,13 @@ namespace Splat
         static bool? cachedInDesignModeResult;
         public static bool InDesignMode()
         {
-            var ret = default(bool?);
-
-            if (current != null) {
-                ret = current.InDesignMode();
-                if (ret != null) return ret.Value;
-            }
-
             if (cachedInDesignModeResult != null) return cachedInDesignModeResult.Value;
 
+            if (current != null) {
+                cachedInDesignModeResult = current.InDesignMode();
+                if (cachedInDesignModeResult != null) return cachedInDesignModeResult.Value;
+            }
+            
             // Check Silverlight / WP8 Design Mode
             var type = Type.GetType("System.ComponentModel.DesignerProperties, System.Windows, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e", false);
             if (type != null) {
