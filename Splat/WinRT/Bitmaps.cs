@@ -13,7 +13,7 @@ using Windows.UI.Core;
 
 namespace Splat
 {
-    class PlatformBitmapLoader : IBitmapLoader
+    public class PlatformBitmapLoader : IBitmapLoader
     {
         public async Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
