@@ -18,8 +18,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\Xamarin.Mac</OutputPath>
-    <IntermediateOutputPath>bin\Debug\Xamarin.Mac</IntermediateOutputPath>
+    <OutputPath>bin\Debug\Xamarin.Mac10</OutputPath>
+    <IntermediateOutputPath>bin\Debug\Xamarin.Mac10</IntermediateOutputPath>
     <DefineConstants>DEBUG;UNIFIED</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -34,8 +34,8 @@
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <DefineConstants>UNIFIED</DefineConstants>
-    <OutputPath>bin\Release\Xamarin.Mac</OutputPath>
-    <IntermediateOutputPath>bin\Release\Xamarin.Mac</IntermediateOutputPath>
+    <OutputPath>bin\Release\Xamarin.Mac10</OutputPath>
+    <IntermediateOutputPath>bin\Release\Xamarin.Mac10</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
