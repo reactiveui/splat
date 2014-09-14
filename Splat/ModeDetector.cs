@@ -68,7 +68,11 @@ namespace Splat
                 }
             } else if ((type = Type.GetType("Windows.ApplicationModel.DesignMode, Windows, ContentType=WindowsRuntime", false)) != null) {
                 // check WinRT next
+#if PORTABLE || NET40
+                cachedInDesignModeResult = (bool)type.GetProperty("DesignModeEnabled").GetGetMethod().Invoke(null, null);
+#else
                 cachedInDesignModeResult = (bool)type.GetProperty("DesignModeEnabled").GetMethod.Invoke(null, null);
+#endif
             } else {
                 cachedInDesignModeResult = false;
             }

@@ -13,7 +13,8 @@ namespace Splat.WinForms
     {
         public Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
-            return Task.Run(() => {
+            return Task.Factory.StartNew(() =>
+            {
                 var ret = new Bitmap(sourceStream);
 
                 if (desiredWidth != null) {
@@ -26,7 +27,8 @@ namespace Splat.WinForms
 
         public Task<IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
         {
-            return Task.Run(() => {
+            return Task.Factory.StartNew(() =>
+            {
                 var ret = new Bitmap(source);
 
                 if (desiredWidth != null) {
@@ -59,7 +61,8 @@ namespace Splat.WinForms
 
         public Task Save(CompressedBitmapFormat format, float quality, Stream target)
         {
-            return Task.Run(() => {
+            return Task.Factory.StartNew(() =>
+            {
                 if (format == CompressedBitmapFormat.Jpeg) {
                     var jpgEncoder = GetEncoder(ImageFormat.Jpeg);
                     var encoderParams = new EncoderParameters(1);
