@@ -1,7 +1,11 @@
 using System;
 
-#if UIKIT
+#if UIKIT && !UNIFIED
 using MonoTouch.UIKit;
+#elif UNIFIED && UIKIT
+using UIKit;
+#elif UNIFIED && !UIKIT
+using AppKit;
 #else
 using MonoMac.AppKit;
 #endif
@@ -18,7 +22,11 @@ namespace Splat
 
         public static System.Drawing.Color FromNative(this UIColor This)
         {
+#if UNIFIED
+            nfloat r,g,b,a;
+#else
             float r,g,b,a;
+#endif
 
             This.GetRGBA(out r, out g, out b, out a);
             return System.Drawing.Color.FromArgb((int)(a * 255.0f), (int)(r * 255.0f), (int)(g * 255.0f), (int)(b * 255.0f));
@@ -34,7 +42,11 @@ namespace Splat
 
         public static System.Drawing.Color FromNative(this NSColor This)
         {
+#if UNIFIED
+            nfloat r,g,b,a;
+#else
             float r,g,b,a;
+#endif
 
             This.GetRgba(out r, out g, out b, out a);
             return System.Drawing.Color.FromArgb((int)(a * 255.0f), (int)(r * 255.0f), (int)(g * 255.0f), (int)(b * 255.0f));
