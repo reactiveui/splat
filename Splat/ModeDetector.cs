@@ -11,14 +11,24 @@ namespace Splat
 
     public static class ModeDetector
     {
+        static IModeDetector current { get; set; }
+
+        public static void OverrideModeDetector(IModeDetector modeDetector)
+        {
+            current = modeDetector;
+            cachedInDesignModeResult = null;
+            cachedInUnitTestRunnerResult = null;
+        }
+
+        static bool? cachedInUnitTestRunnerResult;
         public static bool InUnitTestRunner() 
         {
-            var ret = default(bool?);
-            var current = Locator.Current.GetService<IModeDetector>();
+            if (cachedInUnitTestRunnerResult.HasValue) return cachedInUnitTestRunnerResult.Value;
 
+            current = current ?? Locator.Current.GetService<IModeDetector>();
             if (current != null) {
-                ret = current.InUnitTestRunner();
-                if (ret != null) return ret.Value;
+                cachedInUnitTestRunnerResult = current.InUnitTestRunner();
+                if (cachedInUnitTestRunnerResult.HasValue) return cachedInUnitTestRunnerResult.Value;
             }
 
             // We have no sane platform-independent way to detect a unit test 
@@ -29,15 +39,13 @@ namespace Splat
         static bool? cachedInDesignModeResult;
         public static bool InDesignMode()
         {
-            var ret = default(bool?);
-            var current = Locator.Current.GetService<IModeDetector>();
+            if (cachedInDesignModeResult.HasValue) return cachedInDesignModeResult.Value;
 
+            current = current ?? Locator.Current.GetService<IModeDetector>();
             if (current != null) {
-                ret = current.InDesignMode();
-                if (ret != null) return ret.Value;
+                cachedInDesignModeResult = current.InDesignMode();
+                if (cachedInDesignModeResult.HasValue) return cachedInDesignModeResult.Value;
             }
-
-            if (cachedInDesignModeResult != null) return cachedInDesignModeResult.Value;
 
             // Check Silverlight / WP8 Design Mode
             var type = Type.GetType("System.ComponentModel.DesignerProperties, System.Windows, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e", false);

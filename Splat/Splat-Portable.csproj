@@ -22,6 +22,8 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\Portable-Net45+WinRT45+WP8+WPA81\</OutputPath>
+    <OutputPath>bin\Debug\Portable-net45+win+wpa81+wp80\</OutputPath>
+    <IntermediateOutputPath>obj\Debug\Portable-net45+win+wpa81+wp80\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE;PORTABLE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -29,13 +31,14 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\Portable-Net45+WinRT45+WP8+WPA81\</OutputPath>
+    <OutputPath>bin\Release\Portable-net45+win+wpa81+wp80\</OutputPath>
+    <IntermediateOutputPath>obj\Release\Portable-net45+win+wpa81+wp80\</IntermediateOutputPath>
     <DefineConstants>TRACE;PORTABLE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bitmaps.cs" />
@@ -53,6 +56,7 @@
     <Compile Include="ModeDetector.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RectangleExtensions.cs" />
     <Compile Include="SizeExtensions.cs" />
     <Compile Include="ServiceLocation.cs" />

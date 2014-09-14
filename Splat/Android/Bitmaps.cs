@@ -30,18 +30,27 @@ namespace Splat
                 .ToDictionary(k => k.Name, v => (int)v.GetRawConstantValue());
         }
 
-        public Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
+        public async Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
+            Bitmap bitmap = null;
+            
             if (desiredWidth == null) {
-                return Task.Run(() => BitmapFactory.DecodeStream(sourceStream).FromNative());
+                bitmap = await Task.Run(() => BitmapFactory.DecodeStream(sourceStream));
+            } else {
+                var opts = new BitmapFactory.Options() {
+                    OutWidth = (int)desiredWidth.Value,
+                    OutHeight = (int)desiredHeight.Value,
+                };
+
+                var noPadding = new Rect(0, 0, 0, 0);
+                bitmap = await Task.Run(() => BitmapFactory.DecodeStream(sourceStream, noPadding, opts));
             }
 
-            var opts = new BitmapFactory.Options() {
-                OutWidth = (int)desiredWidth.Value,
-                OutHeight = (int)desiredHeight.Value,
-            };
-            var noPadding = new Rect(0, 0, 0, 0);
-            return Task.Run(() => BitmapFactory.DecodeStream(sourceStream, noPadding, opts).FromNative());
+            if (bitmap == null) {
+                throw new IOException("Failed to load bitmap from source stream");
+            }
+
+            return bitmap.FromNative();
         }
 
         public Task<IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
