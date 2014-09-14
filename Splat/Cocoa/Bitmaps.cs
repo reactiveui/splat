@@ -4,9 +4,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Drawing;
 
-#if UIKIT
+#if UIKIT && !UNIFIED
 using MonoTouch.UIKit;
 using MonoTouch.Foundation;
+#elif UNIFIED && UIKIT
+using UIKit;
+using Foundation;
+#elif UNIFIED && !UIKIT
+using AppKit;
+using Foundation;
+
+using UIImage = AppKit.NSImage;
+using UIApplication = AppKit.NSApplication;
 #else
 using MonoMac.AppKit;
 using MonoMac.Foundation;
@@ -80,21 +89,28 @@ namespace Splat
         }
 
         public float Width {
-            get { return inner.Size.Width; }
+			get { return (float)inner.Size.Width; }
         }
 
         public float Height {
-            get { return inner.Size.Height; }
+			get { return (float)inner.Size.Height; }
         }
 
         public Task Save(CompressedBitmapFormat format, float quality, Stream target)
         {
             return Task.Run(() => {
-                #if UIKIT
+#if UIKIT
                 var data = format == CompressedBitmapFormat.Jpeg ? inner.AsJPEG((float)quality) : inner.AsPNG();
                 data.AsStream().CopyTo(target);
-                #else
+
+#else
+
+#if UNIFIED
+				var rect = new CoreGraphics.CGRect();
+#else
                 var rect = new RectangleF();
+#endif
+
                 var cgImage = inner.AsCGImage(ref rect, null, null);
                 var imageRep = new NSBitmapImageRep(cgImage);
 
