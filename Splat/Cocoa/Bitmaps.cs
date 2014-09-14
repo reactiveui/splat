@@ -89,11 +89,11 @@ namespace Splat
         }
 
         public float Width {
-			get { return (float)inner.Size.Width; }
+            get { return (float)inner.Size.Width; }
         }
 
         public float Height {
-			get { return (float)inner.Size.Height; }
+            get { return (float)inner.Size.Height; }
         }
 
         public Task Save(CompressedBitmapFormat format, float quality, Stream target)
@@ -106,7 +106,7 @@ namespace Splat
 #else
 
 #if UNIFIED
-				var rect = new CoreGraphics.CGRect();
+                var rect = new CoreGraphics.CGRect();
 #else
                 var rect = new RectangleF();
 #endif

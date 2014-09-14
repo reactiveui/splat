@@ -55,6 +55,7 @@
     <Compile Include="PlatformModeDetector.cs" />
     <Compile Include="Cocoa\Bitmaps.cs" />
     <Compile Include="Cocoa\Color.cs" />
+    <Compile Include="AssemblyFinder.cs" />
     <Compile Include="Bitmaps.cs" />
     <Compile Include="ModeDetector.cs" />
     <Compile Include="PointExtensions.cs" />
@@ -64,7 +65,7 @@
     <Compile Include="TypeForwardedSystemDrawing.cs" />
     <Compile Include="Logging.cs" />
     <Compile Include="MemoizingMRUCache.cs" />
-    <Compile Include="Cocoa\PlatformRegistrations.cs" />
   </ItemGroup>
+
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
 </Project>
