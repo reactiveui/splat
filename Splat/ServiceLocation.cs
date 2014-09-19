@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 
 namespace Splat
@@ -10,17 +11,37 @@ namespace Splat
         [ThreadStatic] static IDependencyResolver unitTestDependencyResolver;
         static IDependencyResolver dependencyResolver;
 
-        static readonly List<Action> resolverChanged = new List<Action>();
+        static readonly List<ILocatorAction> locatorActions = new List<ILocatorAction>();
 
         static Locator()
         {
             var r = new ModernDependencyResolver();
             dependencyResolver = r;
+            //we can call Splat directly
+            Locator.CurrentMutable.InitializeSplat();
+        }
 
-            RegisterResolverCallbackChanged(() => {
-                if (Locator.CurrentMutable == null) return;
-                Locator.CurrentMutable.InitializeSplat();
+        public static void Initialize(Assembly assembly)
+        {
+            if (assembly == null) {
+                throw new ArgumentNullException("assembly");
+            }            
+
+            // find all types that implement ILocatorAction and have a default public constructor
+            var actionTypes = assembly.ExportedTypes.Where(t => {
+                TypeInfo typeInfo = t.GetTypeInfo();
+                return !typeInfo.IsAbstract && 
+                    typeInfo.IsAssignableFrom(typeof(ILocatorAction).GetTypeInfo()) && 
+                    typeInfo.DeclaredConstructors.Any(ci => ci.IsPublic && ci.GetParameters().Length == 0);
             });
+
+            foreach (var actionType in actionTypes) {
+                var type = Activator.CreateInstance(actionType);
+                ILocatorAction action = type as ILocatorAction;
+                if(action != null) {
+                    RegisterLocatorAction(action);
+                }
+            }
         }
 
         /// <summary>
@@ -43,14 +64,17 @@ namespace Splat
                     dependencyResolver = value;
                 }
 
-                var currentCallbacks = default(Action[]);
-                lock (resolverChanged) {
+                //we can call Splat directly
+                Locator.CurrentMutable.InitializeSplat();
+
+                var currentLocatorActions = default(ILocatorAction[]);
+                lock (locatorActions) {
                     // NB: Prevent deadlocks should we reenter this setter from 
                     // the callbacks
-                    currentCallbacks = resolverChanged.ToArray();
+                    currentLocatorActions = locatorActions.ToArray();
                 }
 
-                foreach (var block in currentCallbacks) block();
+                foreach (var action in currentLocatorActions) action.Run(Locator.CurrentMutable);
             }
         }
 
@@ -76,18 +100,18 @@ namespace Splat
         /// to configure the current resolver.</param>
         /// <returns>When disposed, removes the callback. You probably can 
         /// ignore this.</returns>
-        public static IDisposable RegisterResolverCallbackChanged(Action callback)
+        static IDisposable RegisterLocatorAction(ILocatorAction callback)
         {
-            lock (resolverChanged) {
-                resolverChanged.Add(callback);
+            lock (locatorActions) {
+                locatorActions.Add(callback);
             }
 
             // NB: We always immediately invoke the callback to set up the 
             // current resolver with whatever we've got
-            callback();
+            callback.Run(Locator.CurrentMutable);
 
             return new ActionDisposable(() => {
-                lock (resolverChanged) resolverChanged.Remove(callback);
+                lock (locatorActions) locatorActions.Remove(callback);
             });
         }
     }
@@ -198,6 +222,14 @@ namespace Splat
             This.Register(() => new NullLogger(), typeof(ILogger));
 
             PlatformRegistrations.Register(This);
+        }
+
+        public static void EnsureRegistrations<TRegistrations>(this IMutableDependencyResolver This) where TRegistrations : IRegistrations
+        {
+            try {
+                IRegistrations registrations = Activator.CreateInstance<TRegistrations>();
+                registrations.Register(This);
+            } catch(MissingMemberException) { }
         }
     }
 
@@ -421,5 +453,49 @@ namespace Splat
         {
             Interlocked.Exchange(ref block, () => {})();
         }
+    }
+
+    interface ILocatorAction
+    {
+        void Run(IMutableDependencyResolver resolver);
+    }
+
+    /// <summary>
+    /// This class describes an action to be executed by the service locator
+    /// to allow class libraries to register their classes via an implementation 
+    /// of <see cref="IRegistrations"/>.
+    /// When distributing via NuGet a special class inheriting from 
+    /// <see cref="LocatorAction{TRegistrations}"/> should be distributed with
+    /// the package and be included in the final application.
+    /// <see cref="Locator.Initialize(Assembly)"/> will run these classes when called
+    /// from the assembly specified.
+    /// 
+    /// Example:
+    /// 
+    /// using Splat;
+    ///
+    /// namespace $rootnamespace$.LocatorActions
+    /// {
+    ///     public class YourLibraryLocatorAction : LocatorAction<YourLibraryRegistrations>
+    ///     {
+    ///     }
+    /// }
+    /// </summary>
+    /// <typeparam name="TRegistrations">The type of the registrations class.</typeparam>
+    public class LocatorAction<TRegistrations> : ILocatorAction where TRegistrations : IRegistrations
+    {
+        void ILocatorAction.Run(IMutableDependencyResolver resolver)
+        {
+            resolver.EnsureRegistrations<TRegistrations>();
+        }
+    }
+
+    /// <summary>
+    /// This interface can be implemented by class libraries to register 
+    /// classes with the service locator.
+    /// </summary>
+    public interface IRegistrations
+    {
+        void Register(IMutableDependencyResolver resolver);
     }
 }
