@@ -22,7 +22,7 @@ namespace Splat
         public static readonly Guid WICPixelFormat32bppBGRA = new Guid("6fddc324-4e03-4bfe-b185-3d77768dc90e");
         public static readonly Guid WICPixelFormat48bppRGB = new Guid("6fddc324-4e03-4bfe-b185-3d77768dc915");
 
-        [DllImport("ole32.dll", ExactSpelling = true, EntryPoint = "CoCreateInstanceFromApp", PreserveSig = true)]
+        [DllImport("combase.dll", ExactSpelling = true, EntryPoint = "CoCreateInstanceFromApp", PreserveSig = true)]
         public static extern int CoCreateInstanceFromApp(
             [In, MarshalAs(UnmanagedType.LPStruct)] Guid rclsid,
             IntPtr pUnkOuter,
