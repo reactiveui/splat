@@ -6,13 +6,7 @@ using System.Threading.Tasks;
 
 namespace Splat
 {
-    public interface IEventLoop
-    {
-        SynchronizationContext Context { get; }
-        void Stop();
-    }
-
-    public static class EventLoop
+    public static partial class EventLoop
     {    
         private static readonly ThreadLocal<IEventLoop> current = new ThreadLocal<IEventLoop>(() => 
             {   
@@ -26,70 +20,65 @@ namespace Splat
                     return EventLoop.MainLoop;
                 } 
 
-                return new AndroidEventLoop(looper);
+                return new AndroidEventLoop(new Handler(looper));
             });
                 
-        private static readonly IEventLoop mainloop = new AndroidEventLoop(Looper.MainLooper);
+        private static readonly IEventLoop mainloop = new AndroidEventLoop(new Handler(Looper.MainLooper));
 
         public static IEventLoop Current { get { return current.Value; } }
 
         public static IEventLoop MainLoop { get { return mainloop; } }
  
-        public static Task<SynchronizationContext> Spawn()
+        public static Task<IEventLoop> Spawn()
         {
-            var retval = new TaskCompletionSource<SynchronizationContext>();
+            var completer = new TaskCompletionSource<IEventLoop>();
             new Thread(() => 
                 {
                     Thread.CurrentThread.IsBackground = true;
                     IEventLoop eventLoop = EventLoop.Current;
 
-                    SynchronizationContext.SetSynchronizationContext(eventLoop.Context);
-                    retval.SetResult(eventLoop.Context);
+                    SynchronizationContext.SetSynchronizationContext(eventLoop.AsSynchronizationContext());
+                    completer.SetResult(eventLoop);
                     Looper.Loop();
                 }).Start();
 
-            return retval.Task;
+            return completer.Task;
         }
 
         private sealed class AndroidEventLoop : IEventLoop
         {
-            private readonly Looper looper;
-            private readonly SynchronizationContext context;
-
-            internal AndroidEventLoop(Looper looper)
-            {
-                this.looper = looper;
-                this.context = new HandlerSynchronizationContext(new Handler(looper));
-            }
-
-            public SynchronizationContext Context { get { return context; } }
-
-            public void Stop()
-            {
-                // FIXME: Try catch QuitSafely for Nosuchmethod first.
-                looper.Quit();
-            }
-        }
-
-        private sealed class HandlerSynchronizationContext : SynchronizationContext
-        {
             private readonly Handler handler;
 
-            internal HandlerSynchronizationContext(Handler handler)
+            internal AndroidEventLoop(Handler handler)
             {
                 this.handler = handler;
             }
-
-            public override void Post(SendOrPostCallback d, object state)
+                
+            public Task PostAsync(Action block)
             {
-                Contract.Requires(d != null);
-
-                handler.Post(() => d(state));
+                var completer = new TaskCompletionSource<object>();
+                handler.Post(() => 
+                    {   
+                        try
+                        {
+                            block();
+                            completer.SetResult(null);
+                        } 
+                        catch (Exception e) 
+                        {
+                            completer.SetException(e);
+                        }
+                    });
+                return completer.Task;
             }
 
-            public override void Send(SendOrPostCallback d, object state)
+            public Task StopAsync()
             {
-                throw new NotSupportedException();
+                return PostAsync(() => 
+                    {
+                        // FIXME: Try catch QuitSafely for Nosuchmethod first.
+                        Looper.MyLooper().Quit();
+                    });
             }
         }
     }

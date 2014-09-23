@@ -23,23 +23,17 @@ using MonoTouch.ObjCRuntime;
 
 namespace Splat
 {
-    public interface IEventLoop
-    {
-        SynchronizationContext Context { get; }
-        void Stop();
-    }
-
-    public static class EventLoop
+    public static partial class EventLoop
     {
         private static readonly ThreadLocal<IEventLoop> current = new ThreadLocal<IEventLoop>(() => 
             {   
-                NSRunLoop runLoop = NSRunLoop.Current;
+                NSThread thread = NSThread.Current;
 
-                if (runLoop == NSRunLoop.Main) {
+                if (thread == NSThread.MainThread) {
                     return EventLoop.MainLoop;
                 } 
 
-                return new NSRunLoopEventLoop(runLoop, NSThread.Current);
+                return new NSRunLoopEventLoop(thread);
             });
 
         private static readonly IEventLoop mainloop = new NSMainThreadEventLoop();
@@ -48,107 +42,110 @@ namespace Splat
 
         public static IEventLoop MainLoop { get { return mainloop; } }
 
-        public static Task<SynchronizationContext> Spawn()
+        public static Task<IEventLoop> Spawn()
         {
-            var retval = new TaskCompletionSource<SynchronizationContext>();
+            var completer = new TaskCompletionSource<IEventLoop>();
 
-            (new Thread(() => 
+            new Thread(() => 
                 {
                     Thread.CurrentThread.IsBackground = true;
                     IEventLoop eventLoop = EventLoop.Current;
 
-                    SynchronizationContext.SetSynchronizationContext(eventLoop.Context);
-                    retval.SetResult(eventLoop.Context);
+                    SynchronizationContext.SetSynchronizationContext(eventLoop.AsSynchronizationContext());
+                    completer.SetResult(eventLoop);
 
                     ((NSRunLoopEventLoop) eventLoop).Run();
-                })).Start();
+                }).Start();
 
-            return retval.Task;
+            return completer.Task;
         }
 
-        private sealed class NSMainThreadEventLoop : NSObject, IEventLoop
-        {
-            private readonly SynchronizationContext context = new NSThreadSynchronizationContext(NSThread.MainThread);
-
-            public SynchronizationContext Context { get { return context; } }
-
-            public void Stop()
-            {
-#if UIKIT
-                throw new NotSupportedException("Cannot call Stop() on the main loop on iOS");
-#else
-                NSApplication.Stop(this);
-#endif
-            }
-        }
-
-        private sealed class NSRunLoopEventLoop : IEventLoop
-        {
-            private readonly NSRunLoop runLoop;
-            private readonly SynchronizationContext context;
-            private volatile bool stopped = false;
-
-            internal NSRunLoopEventLoop(NSRunLoop runLoop, NSThread thread)
-            {
-                this.runLoop = runLoop;
-                this.context = new NSThreadSynchronizationContext(thread);
-            }
-
-            public SynchronizationContext Context { get { return context; } }
-
-            internal void Run()
-            {
-                stopped = false;
-                while (!stopped) {
-                    runLoop.RunUntil(NSRunLoopMode.Default, NSDate.DistantFuture);
-                }
-            }
-
-            public void Stop()
-            {
-                stopped = true;
-                runLoop.Stop();
-            }
-        }
-
-        private sealed class NSThreadSynchronizationContext : SynchronizationContext
+        private sealed class NSRunLoopEventLoop : NSObject, IEventLoop
         {
             private readonly NSThread thread;
+            private volatile bool stopped = false;
 
-            internal NSThreadSynchronizationContext(NSThread thread)
+            internal NSRunLoopEventLoop(NSThread thread)
             {
                 this.thread = thread;
             }
 
-            public override void Post(SendOrPostCallback d, object state)
+            public Task PostAsync(Action block)
             {
-                Contract.Requires(d != null);
-
-                var callback = new NSSendOrPostCallback(d, state);
+                var completer = new TaskCompletionSource<object>();
+                var callback = new NSSelectableAction(block, completer);
                 callback.PerformSelector(new Selector("Invoke"), thread, NSNull.Null, false);
+                return completer.Task;
             }
 
-            public override void Send(SendOrPostCallback d, object state)
+            internal void Run()
             {
-                throw new NotSupportedException();
+                if (NSThread.Current != thread) {
+                    throw new NotSupportedException("Run called on a different thread");
+                }
+
+                stopped = false;
+                while (!stopped) {
+                    NSRunLoop.Current.RunUntil(NSRunLoopMode.Default, NSDate.DistantFuture);
+                }
+            }
+
+            public Task StopAsync()
+            {
+                return PostAsync(() => 
+                    {
+                        stopped = true;
+                        NSRunLoop.Current.Stop();
+                    });
             }
         }
 
-        private sealed class NSSendOrPostCallback : NSObject
+        private sealed class NSMainThreadEventLoop : NSObject, IEventLoop
         {
-            private readonly SendOrPostCallback d;
-            private readonly object state;
-
-            internal NSSendOrPostCallback(SendOrPostCallback d, object state)
+            public Task PostAsync(Action block)
             {
-                this.d = d;
-                this.state = state;
+                var completer = new TaskCompletionSource<object>();
+                var callback = new NSSelectableAction(block, completer);
+                callback.PerformSelector(new Selector("Invoke"), NSThread.MainThread, NSNull.Null, false);
+                return completer.Task;
+            }
+
+            public Task StopAsync()
+            {
+#if UIKIT
+                throw new NotSupportedException("Cannot call Stop() on the main loop on iOS");
+#else
+                return PostAsync(() =>
+                    {
+                        NSApplication.Stop(this);
+                    }
+#endif
+            }
+        }
+
+        private sealed class NSSelectableAction : NSObject 
+        {
+            private readonly Action block;
+            private readonly TaskCompletionSource<object> completer;
+
+            internal NSSelectableAction (Action block, TaskCompletionSource<object> completer)
+            {
+                this.block = block;
+                this.completer = completer;
             }
 
             [Export ("Invoke")]
             public void Invoke()
             {
-                d(state);
+                try
+                {
+                    block();
+                    completer.SetResult(null);
+                } 
+                catch (Exception e) 
+                {
+                    completer.SetException(e);
+                }
             }
         }
     }

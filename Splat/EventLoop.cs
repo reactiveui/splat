@@ -4,15 +4,7 @@ using System.Threading.Tasks;
 
 namespace Splat
 {
-    public interface IEventLoop 
-    {
-        SynchronizationContext Context { get; }
-
-        // Not threadsafe, must be called from the eventloop's thread
-        void Stop();
-    }
-
-    public static class EventLoop
+    public static partial class EventLoop
     {
         public static IEventLoop Current 
         {
@@ -30,7 +22,7 @@ namespace Splat
             }
         }
 
-        public static Task<SynchronizationContext> Spawn()
+        public static Task<IEventLoop> Spawn()
         {
             throw new Exception("Could not create EventLoop. This should never happen, your dependency resolver is broken");
         }

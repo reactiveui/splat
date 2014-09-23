@@ -7,13 +7,7 @@ using Windows.UI.Core;
 
 namespace Splat
 {
-    public interface IEventLoop
-    {
-        SynchronizationContext Context { get; }
-        void Stop();
-    }
-
-    public static class EventLoop
+    public static partial class EventLoop
     {
         private static readonly CoreDispatcher dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
         private static readonly IEventLoop mainloop = new CoreDispatcherEventLoop();
@@ -32,35 +26,25 @@ namespace Splat
 
         public static IEventLoop MainLoop { get { return mainloop; } }
 
-        public static Task<SynchronizationContext> Spawn()
+        public static Task<IEventLoop> Spawn()
         {
             throw new PlatformNotSupportedException("WinRT doesn't support creating threads");
         }
 
         private sealed class CoreDispatcherEventLoop : IEventLoop
         {
-            private SynchronizationContext context =  new CoreDispatcherSynchronizationContext();
-
-            public SynchronizationContext Context { get { return context; } }
-
-            public void Stop()
+            public Task PostAsync(Action block)
             {
-                throw new PlatformNotSupportedException("Cannot call Stop() on the main loop on WinRT");
-            }
-        }
-
-        private sealed class CoreDispatcherSynchronizationContext : SynchronizationContext
-        {            
-            public override void Post(SendOrPostCallback d, object state)
-            {
-                Contract.Requires(d != null);
-
-                dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => d(state));
+                return dispatcher.RunAsync(() =>
+                    {
+                        block();
+                        return null;
+                    });
             }
 
-            public override void Send(SendOrPostCallback d, object state)
+            public Task StopAsync()
             {
-                throw new NotSupportedException();
+                throw new PlatformNotSupportedException("Cannot call StopAsync() on the main loop on WinRT");
             }
         }
     }

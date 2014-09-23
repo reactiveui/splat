@@ -5,13 +5,7 @@ using System.Threading.Tasks;
 
 namespace Splat
 {
-    public interface IEventLoop
-    {
-        SynchronizationContext Context { get; }
-        void Stop();
-    }
-
-    public static class EventLoop
+    public static partial class EventLoop
     {
         private static readonly ThreadLocal<IEventLoop> current = new ThreadLocal<IEventLoop>(() =>
             {
@@ -28,37 +22,45 @@ namespace Splat
             }
         }
 
-        public static Task<SynchronizationContext> Spawn()
+        public static Task<IEventLoop> Spawn()
         {
-            var retval = new TaskCompletionSource<SynchronizationContext>();
-            (new Thread(() =>
+            var completer = new TaskCompletionSource<IEventLoop>();
+            new Thread(() =>
                 {
                     Thread.CurrentThread.IsBackground = true;
                     IEventLoop eventLoop = EventLoop.Current;
 
-                    retval.SetResult(eventLoop.Context);
+                    completer.SetResult(eventLoop);
                     Dispatcher.Run();
-                })).Start();
+                }).Start();
 
-            return retval.Task;
+            return completer.Task;
         }
 
         private sealed class DispatcherEventLoop : IEventLoop
         {
             private readonly Dispatcher dispatcher;
-            private readonly SynchronizationContext context;
 
             internal DispatcherEventLoop(Dispatcher dispatcher)
             {
                 this.dispatcher = dispatcher;
-                this.context = new DispatcherSynchronizationContext(dispatcher);
             }
 
-            public SynchronizationContext Context { get { return context; } }
-
-            public void Stop()
+            public Task PostAsync(Action block)
             {
+                return dispatcher.InvokeAsync(block).Task;
+            }
+
+            public Task StopAsync()
+            {
+                var completer = new TaskCompletionSource<object>();
+                dispatcher.ShutdownFinished += (o, e) => 
+                    {
+                        completer.SetResult(null);
+                    };
+
                 dispatcher.InvokeShutdown();
+                return completer.Task;
             }
         }
     }
