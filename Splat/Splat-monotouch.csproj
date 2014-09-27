@@ -54,7 +54,6 @@
     <Compile Include="ModeDetector.cs" />
     <Compile Include="PlatformModeDetector.cs" />
     <Compile Include="Cocoa\Color.cs" />
-    <Compile Include="AssemblyFinder.cs" />
     <Compile Include="RectangleExtensions.cs" />
     <Compile Include="PointExtensions.cs" />
     <Compile Include="SizeExtensions.cs" />
@@ -65,6 +64,7 @@
     <Compile Include="ServiceLocation.cs" />
     <Compile Include="Logging.cs" />
     <Compile Include="MemoizingMRUCache.cs" />
+    <Compile Include="Cocoa\PlatformRegistrations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
 </Project>

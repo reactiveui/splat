@@ -12,7 +12,7 @@
     <AssemblyName>Splat</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -61,7 +61,6 @@
     <Compile Include="PlatformModeDetector.cs" />
     <Compile Include="Cocoa\Bitmaps.cs" />
     <Compile Include="Cocoa\Color.cs" />
-    <Compile Include="AssemblyFinder.cs" />
     <Compile Include="Bitmaps.cs" />
     <Compile Include="ModeDetector.cs" />
     <Compile Include="PointExtensions.cs" />
@@ -71,6 +70,7 @@
     <Compile Include="TypeForwardedSystemDrawing.cs" />
     <Compile Include="Logging.cs" />
     <Compile Include="MemoizingMRUCache.cs" />
+    <Compile Include="Cocoa\PlatformRegistrations.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

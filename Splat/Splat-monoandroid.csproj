@@ -54,7 +54,6 @@
     <Compile Include="Android\Color.cs" />
     <Compile Include="Android\Point.cs" />
     <Compile Include="Android\Rect.cs" />
-    <Compile Include="AssemblyFinder.cs" />
     <Compile Include="PointExtensions.cs" />
     <Compile Include="RectangleExtensions.cs" />
     <Compile Include="ServiceLocation.cs" />
@@ -62,6 +61,7 @@
     <Compile Include="TypeForwardedSystemDrawing.cs" />
     <Compile Include="Logging.cs" />
     <Compile Include="MemoizingMRUCache.cs" />
+    <Compile Include="Android\PlatformRegistrations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
