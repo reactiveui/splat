@@ -71,11 +71,5 @@
     <TargetPlatform Include="Windows, Version=8.1" />
     <TargetPlatform Include="WindowsPhoneApp, Version=8.1" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="Splat-Native.csproj">
-      <Project>{784c0abd-5d57-4d93-ade2-66abab67a687}</Project>
-      <Name>Splat-Native</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
 </Project>
