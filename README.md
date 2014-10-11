@@ -64,6 +64,23 @@ ImageView.Source = ViewModel.ProfileImage.ToNative();
 ```
 
 ### Using Cross-Platform Colors and Geometry
+Images can also be loaded from a Resource. On Android, this can either be a
+Resource ID casted to a string, or the name of the resource *as* as string
+(optionally including the extension).
+
+```cs
+var profileImage = await BitmapLoader.Current.LoadFromResource("DefaultAvatar.png", null, null);
+```
+
+Bitmaps can also be created and saved - actually *drawing* on the image is
+beyond the scope of this library, you should do this in your view-specific
+code.
+
+```cs
+var blankImage = BitmapLoader.Current.Create(512.0f, 512.0f);
+await blankImage.Save(CompressedBitmapFormat.Png, 0.0, File.Open("ItsBlank.png"));
+```
+
 
 ```cs
 // This System.Drawing class works, even on WinRT or WP8 where it's not supposed to exist
