@@ -81,6 +81,33 @@ var blankImage = BitmapLoader.Current.Create(512.0f, 512.0f);
 await blankImage.Save(CompressedBitmapFormat.Png, 0.0, File.Open("ItsBlank.png"));
 ```
 
+## Service Location
+
+Splat provides a simple service location implementation that is optimized for
+Desktop and Mobile applications, while still remaining reasonably flexible. To
+get a type:
+
+```cs
+var toaster = Locator.Current.GetService<IToaster>();
+var allToasterImpls = Locator.Current.GetServices<IToaster>();
+```
+
+Locator.Current is a static variable that can be set on startup, to adapt Splat
+to other DI/IoC frameworks. This is usually a bad idea.
+
+The default implementation of Service Location also allows new types to be
+registered at runtime.
+
+```cs
+// Create a new Toaster any time someone asks
+Locator.CurrentMutable.Register(() => new Toaster(), typeof(IToaster));
+
+// Register a singleton instance
+Locator.CurrentMutable.RegisterConstant(new ExtraGoodToaster(), typeof(IToaster));
+
+// Register a singleton which won't get created until the first user accesses it
+Locator.CurrentMutable.RegisterLazySingleton(() => new LazyToaster(), typeof(IToaster));
+```
 
 ```cs
 // This System.Drawing class works, even on WinRT or WP8 where it's not supposed to exist
