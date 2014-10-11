@@ -5,7 +5,7 @@
 Certain types of things are basically impossible to do in cross-platform
 mobile code today, yet there's no reason why. Writing a ViewModel that handles
 loading a gallery of pictures from disk will be completely riddled with
-`#ifdefs` and basically unreadable. 
+`#ifdefs` and basically unreadable.
 
 Splat aims to fix that, by providing a usable leaky abstraction above platform
 code. It is leaky, because it always provides an extension method `ToNative()`
@@ -19,13 +19,28 @@ Splat currently supports:
 
 * Cross-platform image loading/saving
 * A port of System.Drawing.Color for portable libraries
-* Cross-platform geometry primitives (PointF, SizeF, RectangleF), as well as a bunch of 
+* Cross-platform geometry primitives (PointF, SizeF, RectangleF), as well as a bunch of
   additional extension methods to make using them easier.
 * A way to detect whether you're in a Unit Test runner / Design Mode
 * A cross-platform logging framework
 * Simple yet flexible Service Location
 
-### Cross-platform Image Loading
+### How do I install?
+
+[Always Be NuGetting](https://nuget.org/packages/Splat/). Package contains binaries for:
+
+* Xamarin.iOS
+* Xamarin.iOS 64-bit
+* Xamarin.Android
+* Xamarin.Mac
+* Xamarin.Mac 64-bit
+* WPF (.NET 4.5)
+* Windows Forms
+* Windows Phone 8
+* Windows Phone 8.1 Universal
+* WinRT
+
+## Cross-platform Image Loading
 
 ```cs
 //
@@ -62,7 +77,7 @@ Later, in the view, we can use it:
 ImageView.Background = ViewModel.ProfileBackgroundAccentColor.ToNativeBrush();
 ```
 
-### Detecting whether you're in a unit test runner
+## Detecting whether you're in a unit test runner
 
 ```cs
 // If true, we are running unit tests
@@ -71,14 +86,3 @@ ModeDetector.InUnitTestRunner();
 // If true, we are running inside Blend, so don't do anything
 ModeDetector.InDesignMode();
 ```
-
-### How do I install?
-
-[Always Be NuGetting](https://nuget.org/packages/Splat/). Package contains binaries for:
-
-* Xamarin.iOS
-* Xamarin.Android
-* Xamarin.Mac
-* WPF (.NET 4.5)
-* Windows Phone 8
-* WinRT
