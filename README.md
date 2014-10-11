@@ -57,13 +57,12 @@ IBitmap profileImage = await BitmapLoader.Current.Load(imageBytes, null /* Use o
 
 Then later, in your View:
 
-```
+```cs
 // ToNative always converts an IBitmap into the type that the platform
 // uses, such as UIBitmap on iOS or BitmapSource in WPF
 ImageView.Source = ViewModel.ProfileImage.ToNative();
 ```
 
-### Using Cross-Platform Colors and Geometry
 Images can also be loaded from a Resource. On Android, this can either be a
 Resource ID casted to a string, or the name of the resource *as* as string
 (optionally including the extension).
@@ -108,6 +107,27 @@ Locator.CurrentMutable.RegisterConstant(new ExtraGoodToaster(), typeof(IToaster)
 // Register a singleton which won't get created until the first user accesses it
 Locator.CurrentMutable.RegisterLazySingleton(() => new LazyToaster(), typeof(IToaster));
 ```
+
+## Logging
+
+Splat provides a simple logging proxy for libraries and applications to set up.
+By default, this logging isn't configured (i.e. it logs to the Null Logger). To
+set up logging:
+
+1. Register an implementation of `ILogger` using Service Location.
+1. In the class in which you want to log stuff, "implement" the `IEnableLogger`
+   interface (this is a tag interface, no implementation actually needed).
+1. Call the `Log` method to write log entries:
+
+```cs
+this.Log().Warn("Something bad happened: {0}", errorMessage);
+this.Log().ErrorException("Tried to do a thing and failed", exception);
+```
+
+For static methods, `LogHost.Default` can be used as the object to write a log
+entry for. 
+
+## Using Cross-Platform Colors and Geometry
 
 ```cs
 // This System.Drawing class works, even on WinRT or WP8 where it's not supposed to exist
