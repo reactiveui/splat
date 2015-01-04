@@ -22,7 +22,6 @@ namespace Splat
                 "NUNIT",
                 "XUNIT",
                 "MBUNIT",
-                "PEX.",
                 "NBEHAVE",
             };
 
