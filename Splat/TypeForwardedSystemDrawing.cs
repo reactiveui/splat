@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 
 #if !UIKIT
 [assembly: TypeForwardedTo(typeof(Color))]
+[assembly: TypeForwardedTo(typeof(KnownColor))]
 #endif
 
 [assembly: TypeForwardedTo(typeof(Point))]
