@@ -35,9 +35,11 @@
 
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace System.Drawing
 {
+    [DataContract]
     public struct Color
     {
 
@@ -137,6 +139,7 @@ namespace System.Drawing
             }
         }
 
+        [DataMember]
         internal long Value
         {
             get
