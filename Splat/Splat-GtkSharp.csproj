@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2099C89B-9BA2-4053-8808-7BA1A98C116B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Splat</RootNamespace>
+    <AssemblyName>Splat</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Extra\Debug\GtkSharp\</OutputPath>
+    <IntermediateOutputPath>obj\Debug\GtkSharp\</IntermediateOutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Extra\Release\GtkSharp\</OutputPath>
+    <IntermediateOutputPath>obj\Release\GtkSharp\</IntermediateOutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyFinder.cs" />
+    <Compile Include="Bitmaps.cs" />
+    <Compile Include="ModeDetector.cs" />
+    <Compile Include="PointExtensions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RectangleExtensions.cs" />
+    <Compile Include="ReflectionStubs.cs" />
+    <Compile Include="ServiceLocation.cs" />
+    <Compile Include="Logging.cs" />
+    <Compile Include="MemoizingMRUCache.cs" />
+    <Compile Include="SizeExtensions.cs" />
+    <Compile Include="TypeForwardedSystemDrawing.cs" />
+    <Compile Include="PlatformModeDetector.cs" />
+    <Compile Include="Gdk\Bitmaps.cs" />
+    <Compile Include="Gdk\Color.cs" />
+    <Compile Include="Gdk\Point.cs" />
+    <Compile Include="Gdk\Rectangle.cs" />
+    <Compile Include="Gdk\Size.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Gdk\" />
+  </ItemGroup>
+</Project>

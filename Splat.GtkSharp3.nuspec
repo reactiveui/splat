@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Splat.GtkSharp3</id>
+        <version>1.6.1</version>
+        <authors>David Lechner, Paul Betts</authors>
+        <iconUrl>http://f.cl.ly/items/1307401C3x2g3F2p2Z36/Logo.png</iconUrl>
+        <licenseUrl>https://github.com/paulcbetts/splat/blob/master/COPYING</licenseUrl>
+        <projectUrl>https://github.com/paulcbetts/splat</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>
+            A library to make things cross-platform that should be.
+
+            This package provides an assembly compatible with Gtk#3.
+        </description>
+        <summary>A library to make things cross-platform that should be</summary>
+        <tags>portable</tags>
+    </metadata>
+    <files>
+        <file src="Splat/bin/Extra/Release/GtkSharp3/Splat*" target="lib/net45" />
+    </files>
+</package>
