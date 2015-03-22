@@ -175,6 +175,7 @@ namespace Splat
     /// Mixin, which will give you a Logger that includes the class name in the
     /// log.
     /// </summary>
+    [System.Runtime.InteropServices.ComVisible(false)]
     public interface IEnableLogger { }
 
     public static class LogHost
