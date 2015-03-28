@@ -59,7 +59,7 @@ namespace Splat
 
             var id = default(int);
             if (Int32.TryParse(source, out id)) {
-                return Task.Run(() => (IBitmap)new DrawableBitmap(res.GetDrawable(Int32.Parse(source))));
+                return Task.Run(() => (IBitmap)new DrawableBitmap(res.GetDrawable(id)));
             }
 
             if (drawableList.ContainsKey(source)) {
