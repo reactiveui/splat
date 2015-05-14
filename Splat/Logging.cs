@@ -223,10 +223,10 @@ namespace Splat
         readonly string prefix;
         readonly MethodInfo stringFormat;
 
-        public WrappingFullLogger(ILogger inner, Type callingType)
+        public WrappingFullLogger(ILogger inner, Type callingType, bool includePrefix = true)
         {
             _inner = inner;
-            prefix = String.Format(CultureInfo.InvariantCulture, "{0}: ", callingType.Name);
+            prefix = includePrefix ? String.Format(CultureInfo.InvariantCulture, "{0}: ", callingType.Name) : "";
 
             stringFormat = typeof (String).GetMethod("Format", new[] {typeof (IFormatProvider), typeof (string), typeof (object[])});
             Contract.Requires(inner != null);
