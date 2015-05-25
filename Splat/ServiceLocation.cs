@@ -195,7 +195,7 @@ namespace Splat
         public static void InitializeSplat(this IMutableDependencyResolver This)
         {
             This.Register(() => new DefaultLogManager(), typeof(ILogManager));
-            This.Register(() => new DebugLogger(), typeof(ILogger));
+            This.RegisterConstant(new DebugLogger(), typeof(ILogger));
         }
     }
 
