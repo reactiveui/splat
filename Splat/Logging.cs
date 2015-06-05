@@ -173,15 +173,9 @@ namespace Splat
         public LogLevel Level { get; set; }
     }
 
-    public class DebugLogger : ILogger
+    public class DebugLogger : DelegateLogger
     {
-        public void Write(string message, LogLevel logLevel)
-        {
-            if ((int)logLevel < (int)Level) return;
-            Debug.WriteLine(message);
-        }
-
-        public LogLevel Level { get; set; }
+        public DebugLogger() : base((message, logLevel) => Debug.WriteLine(message)) { }
     }
 
 
