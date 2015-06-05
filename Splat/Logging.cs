@@ -154,6 +154,25 @@ namespace Splat
         public LogLevel Level { get; set; }
     }
 
+    public class DelegateLogger : ILogger
+    {
+        public DelegateLogger(Action<string, LogLevel> logAction)
+        {
+            LogAction = logAction;
+        }
+
+        private Action<string, LogLevel> LogAction { get; set; }
+
+        public void Write(string message, LogLevel logLevel)
+        {
+            if ((int)logLevel < (int)Level) return;
+            if (LogAction == null) return;
+            LogAction(message, logLevel);
+        }
+
+        public LogLevel Level { get; set; }
+    }
+
     public class DebugLogger : ILogger
     {
         public void Write(string message, LogLevel logLevel)
