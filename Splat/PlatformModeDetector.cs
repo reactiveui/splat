@@ -23,6 +23,7 @@ namespace Splat
                 "XUNIT",
                 "MBUNIT",
                 "NBEHAVE",
+                "VISUALSTUDIO.QUALITYTOOLS",
             };
 
             try {
