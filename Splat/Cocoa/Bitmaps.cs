@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Drawing;
 
 #if UIKIT && !UNIFIED
 using MonoTouch.UIKit;
@@ -17,6 +16,7 @@ using Foundation;
 using UIImage = AppKit.NSImage;
 using UIApplication = AppKit.NSApplication;
 #else
+using System.Drawing;
 using MonoMac.AppKit;
 using MonoMac.Foundation;
 
