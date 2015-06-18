@@ -67,6 +67,9 @@
     <Compile Include="SizeExtensions.cs" />
     <Compile Include="Logging.cs" />
     <Compile Include="MemoizingMRUCache.cs" />
+    <Compile Include="Colors\Color.cs" />
+    <Compile Include="Colors\KnownColor.cs" />
+    <Compile Include="Colors\KnownColors.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
 </Project>
