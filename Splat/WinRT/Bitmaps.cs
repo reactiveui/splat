@@ -17,7 +17,7 @@ namespace Splat
     {
         public async Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
-            return await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(async () => {
+            return await GetDispatcher().RunAsync(async () => {
                 using (var rwStream = new InMemoryRandomAccessStream()) {
                     var writer = rwStream.AsStreamForWrite();
                     await sourceStream.CopyToAsync(writer);
@@ -48,7 +48,7 @@ namespace Splat
 
         public async Task<IBitmap> LoadFromResource(string resource, float? desiredWidth, float? desiredHeight)
         {
-            return await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(async () => {
+            return await GetDispatcher().RunAsync(async () => {
                 var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(resource));
                 using (var stream = await file.OpenAsync(FileAccessMode.Read)) {
                     return await Load(stream.AsStreamForRead(), desiredWidth, desiredHeight);
@@ -59,6 +59,11 @@ namespace Splat
         public IBitmap Create(float width, float height)
         {
             return new WriteableBitmapImageBitmap(new WriteableBitmap((int)width, (int)height));
+        }
+
+        private static CoreDispatcher GetDispatcher()
+        {
+            return CoreWindow.GetForCurrentThread()?.Dispatcher ?? CoreApplication.MainView.CoreWindow.Dispatcher;
         }
     }
 
