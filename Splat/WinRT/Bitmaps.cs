@@ -63,7 +63,9 @@ namespace Splat
 
         private static CoreDispatcher GetDispatcher()
         {
-            return CoreWindow.GetForCurrentThread()?.Dispatcher ?? CoreApplication.MainView.CoreWindow.Dispatcher;
+            CoreWindow currentThreadWindow = CoreWindow.GetForCurrentThread();
+
+            return currentThreadWindow == null ? CoreApplication.MainView.CoreWindow.Dispatcher : currentThreadWindow.Dispatcher;
         }
     }
 
