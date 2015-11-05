@@ -27,7 +27,7 @@ namespace Splat
 
         public IBitmap Create(float width, float height)
         {
-            return new PixbufBitmap(new Pixbuf(Colorspace.Rgb, true, 32, (int)width, (int)height));
+            return new PixbufBitmap(new Pixbuf(Colorspace.Rgb, true, 8, (int)width, (int)height));
         }
     }
 
