@@ -65,10 +65,10 @@ namespace Splat
         static bool searchForAssembly(IEnumerable<string> assemblyList)
         {
 #if SILVERLIGHT
-            return Deployment.Current.Parts.Any(x => assemblyList.Any(name => x.Source.ToUpperInvariant().Contains(name)));
+            return Deployment.Current.Parts.Select(x => x.Source.ToUpperInvariant()).Any(x => assemblyList.Any(name => x.Contains(name)));
 #elif NETFX_CORE
-            var depPackages = Package.Current.Dependencies.Select(x => x.Id.FullName);
-            if (depPackages.Any(x => assemblyList.Any(name => x.ToUpperInvariant().Contains(name)))) return true;
+            var depPackages = Package.Current.Dependencies.Select(x => x.Id.FullName.ToUpperInvariant());
+            if (depPackages.Any(x => assemblyList.Any(name => x.Contains(name)))) return true;
 
             var fileTask = Task.Factory.StartNew(async () => {
                 var files = await Package.Current.InstalledLocation.GetFilesAsync();
@@ -78,7 +78,8 @@ namespace Splat
             return fileTask.Result.Any(x => assemblyList.Any(name => x.ToUpperInvariant().Contains(name)));
 #else
             return AppDomain.CurrentDomain.GetAssemblies()
-                .Any(x => assemblyList.Any(name => x.FullName.ToUpperInvariant().Contains(name)));
+                .Select(x => x.FullName.ToUpperInvariant())
+                .Any(x => assemblyList.Any(name => x.Contains(name)));
 #endif
         }
     }
