@@ -38,6 +38,7 @@ using System.ComponentModel;
 namespace System.Drawing
 {
     public struct Rectangle
+        : IEquatable<Rectangle>
     {
         private int x, y, width, height;
 
@@ -569,6 +570,20 @@ namespace System.Drawing
         /// </summary>
         ///
         /// <remarks>
+        ///	Checks equivalence of this Rectangle and another Rectangle.
+        /// </remarks>
+
+        public bool Equals(Rectangle other)
+        {
+            return ((this.Location == other.Location) &&
+                (this.Size == other.Size));
+        }
+
+        /// <summary>
+        ///	Equals Method
+        /// </summary>
+        ///
+        /// <remarks>
         ///	Checks equivalence of this Rectangle and another object.
         /// </remarks>
 
@@ -577,7 +592,7 @@ namespace System.Drawing
             if (!(obj is Rectangle))
                 return false;
 
-            return (this == (Rectangle)obj);
+            return this.Equals((Rectangle)obj);
         }
 
         /// <summary>
