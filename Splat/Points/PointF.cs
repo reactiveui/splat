@@ -35,6 +35,7 @@ using System.ComponentModel;
 namespace System.Drawing
 {
     public struct PointF
+        : IEquatable<PointF>
     {
         // Private x and y coordinate fields.
         private float x, y;
@@ -206,6 +207,19 @@ namespace System.Drawing
         /// </summary>
         ///
         /// <remarks>
+        ///	Checks equivalence of this PointF and another PointF.
+        /// </remarks>
+
+        public bool Equals(PointF other)
+        {
+            return ((this.X == other.X) && (this.Y == other.Y));
+        }
+
+        /// <summary>
+        ///	Equals Method
+        /// </summary>
+        ///
+        /// <remarks>
         ///	Checks equivalence of this PointF and another object.
         /// </remarks>
 
@@ -214,7 +228,7 @@ namespace System.Drawing
             if (!(obj is PointF))
                 return false;
 
-            return (this == (PointF)obj);
+            return this.Equals((PointF)obj);
         }
 
         /// <summary>

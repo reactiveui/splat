@@ -39,6 +39,7 @@ using System.ComponentModel;
 namespace System.Drawing
 {
     public struct Size
+        : IEquatable<Size>
     {
 
         // Private Height and width fields.
@@ -307,6 +308,20 @@ namespace System.Drawing
         /// </summary>
         ///
         /// <remarks>
+        ///	Checks equivalence of this Size and another Size.
+        /// </remarks>
+
+        public bool Equals(Size other)
+        {
+            return ((this.Width == other.Width) &&
+                (this.Height == other.Height));
+        }
+
+        /// <summary>
+        ///	Equals Method
+        /// </summary>
+        ///
+        /// <remarks>
         ///	Checks equivalence of this Size and another object.
         /// </remarks>
 
@@ -315,7 +330,7 @@ namespace System.Drawing
             if (!(obj is Size))
                 return false;
 
-            return (this == (Size)obj);
+            return this.Equals((Size)obj);
         }
 
         /// <summary>
