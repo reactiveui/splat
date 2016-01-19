@@ -54,7 +54,7 @@ namespace Splat
                         x.DecodePixelHeight = (int)desiredHeight;
                     }
 
-                    x.UriSource = new Uri(resource);
+                    x.UriSource = new Uri(resource, UriKind.RelativeOrAbsolute);
                 });
 
                 return (IBitmap) new BitmapSourceBitmap(ret);
