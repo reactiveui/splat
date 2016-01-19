@@ -181,17 +181,17 @@ namespace Splat
             return new ActionDisposable(() => Locator.Current = origResolver);
         }
 
-        public static void Register<T>(this IMutableDependencyResolver This, Func<object> factory, string contract = null)
+        public static void Register<T>(this IMutableDependencyResolver This, Func<T> factory, string contract = null)
         {
-            This.Register(factory, typeof(T), contract);
+            This.Register(() => factory(), typeof(T), contract);
         }
-                
+
         public static void RegisterConstant(this IMutableDependencyResolver This, object value, Type serviceType, string contract = null)
         {
             This.Register(() => value, serviceType, contract);
         }
 
-        public static void RegisterConstant<T>(this IMutableDependencyResolver This, object value, string contract = null)
+        public static void RegisterConstant<T>(this IMutableDependencyResolver This, T value, string contract = null)
         {
             RegisterConstant(This, value, typeof(T), contract);
         }
@@ -202,9 +202,9 @@ namespace Splat
             This.Register(() => val.Value, serviceType, contract);
         }
 
-        public static void RegisterLazySingleton<T>(this IMutableDependencyResolver This, Func<object> valueFactory, string contract = null)
+        public static void RegisterLazySingleton<T>(this IMutableDependencyResolver This, Func<T> valueFactory, string contract = null)
         {
-            RegisterLazySingleton(This, valueFactory, typeof(T), contract);
+            RegisterLazySingleton(This, () => valueFactory(), typeof(T), contract);
         }
 
         public static void InitializeSplat(this IMutableDependencyResolver This)
