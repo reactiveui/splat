@@ -9,6 +9,8 @@ using System.Diagnostics.Contracts;
 
 namespace Splat
 {
+    // NOTES:
+
     /*    
      * Interfaces
      */
