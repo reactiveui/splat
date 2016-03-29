@@ -24,6 +24,7 @@ namespace Splat
                 "MBUNIT",
                 "NBEHAVE",
                 "VISUALSTUDIO.QUALITYTOOLS",
+                "FIXIE",
             };
 
             try {
