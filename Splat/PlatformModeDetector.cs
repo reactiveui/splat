@@ -25,6 +25,7 @@ namespace Splat
                 "NBEHAVE",
                 "VISUALSTUDIO.QUALITYTOOLS",
                 "FIXIE",
+                "NCRUNCH",
             };
 
             try {
@@ -62,7 +63,7 @@ namespace Splat
             return false;
 #endif
         }
-        
+
         static bool searchForAssembly(IEnumerable<string> assemblyList)
         {
 #if SILVERLIGHT
