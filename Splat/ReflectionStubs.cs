@@ -5,6 +5,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
+#if !PORTABLE && !NET40
+
 namespace Splat
 {
     internal enum BindingFlags
@@ -64,7 +66,6 @@ namespace Splat
             return This.GetTypeInfo().DeclaredFields;
         }
 
-
         public static MethodInfo GetMethod(this Type This, string methodName, Type[] paramTypes, BindingFlags flags = default(BindingFlags))
         {
             var ti = This.GetTypeInfo();
@@ -94,3 +95,5 @@ namespace Splat
         }
     }
 }
+
+#endif

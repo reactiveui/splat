@@ -18,7 +18,7 @@ namespace Splat
 #if SILVERLIGHT
             return Deployment.Current.Dispatcher.InvokeAsync(() => {
 #else
-            return Task.Run(() => {
+            return Task.Factory.StartNew(() => {
 #endif
                 var ret = new BitmapImage();
 
@@ -45,7 +45,8 @@ namespace Splat
 #if SILVERLIGHT
             return Deployment.Current.Dispatcher.InvokeAsync(() => {
 #else
-            return Task.Run(() => {
+            return Task.Factory.StartNew(() =>
+            {
 #endif
                 var ret = new BitmapImage();
                 withInit(ret, x => {
@@ -104,7 +105,8 @@ namespace Splat
 
         public Task Save(CompressedBitmapFormat format, float quality, Stream target)
         {
-            return Task.Run(() => {
+            return Task.Factory.StartNew(() =>
+            {
 #if SILVERLIGHT
                 if (format == CompressedBitmapFormat.Png) {
                     throw new PlatformNotSupportedException("WP8 can't save PNGs.");
