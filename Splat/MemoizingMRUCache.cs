@@ -60,8 +60,9 @@ namespace Splat
         {
             Contract.Requires(key != null);
 
-            if (cacheEntries.ContainsKey(key)) {
-                var found = cacheEntries[key];
+            Tuple<LinkedListNode<TParam>, TVal> found;
+
+            if (cacheEntries.TryGetValue(key, out found)) {
                 cacheMRUList.Remove(found.Item1);
                 cacheMRUList.AddFirst(found.Item1);
                 return found.Item2;
@@ -101,10 +102,11 @@ namespace Splat
         {
             Contract.Requires(key != null);
 
-            if (!cacheEntries.ContainsKey(key))
+            Tuple<LinkedListNode<TParam>, TVal> to_remove;
+
+            if (!cacheEntries.TryGetValue(key, out to_remove))
                 return;
 
-            var to_remove = cacheEntries[key];
             if (releaseFunction != null)
                 releaseFunction(to_remove.Item2);
 
