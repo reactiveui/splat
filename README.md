@@ -37,8 +37,7 @@ Splat currently supports:
 * WPF (.NET 4.5)
 * Windows Forms
 * Windows Phone 8
-* Windows Phone 8.1 Universal
-* WinRT
+* Windows 8.1/Windows Phone 8.1 Universal
 
 ## Cross-platform Image Loading
 
