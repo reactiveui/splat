@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{0EC8DBA1-D745-4EE5-993A-6026440EC3BF}</ProjectGuid>
@@ -11,7 +11,7 @@
     <RootNamespace>Splat</RootNamespace>
     <AssemblyName>Splat</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile78</TargetFrameworkProfile>
+    <TargetFrameworkProfile>Profile259</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <ProductVersion>10.0.0</ProductVersion>
@@ -21,7 +21,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\Portable-net45+win+wpa81+wp80\</OutputPath>
+    <OutputPath>bin\Debug\Portable-net45+win81+wpa81+wp8\</OutputPath>
     <IntermediateOutputPath>obj\Debug\Portable-net45+win+wpa81+wp80\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE;PORTABLE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
