@@ -107,3 +107,6 @@ UpgradeLog*.XML
 
 # Mac Crap
 .DS_Store
+
+# Visual Studio 2015 cache
+.vs/
