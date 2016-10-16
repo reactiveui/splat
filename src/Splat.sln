@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{43D7EB91-1B21-490D-9E25-8036E1B53A21}"
+	ProjectSection(SolutionItems) = preProject
+		Splat.nuspec = Splat.nuspec
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Splat", "Splat\Splat.xproj", "{4052AF53-4C1B-48D1-B873-BFD0351481C3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4052AF53-4C1B-48D1-B873-BFD0351481C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4052AF53-4C1B-48D1-B873-BFD0351481C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4052AF53-4C1B-48D1-B873-BFD0351481C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4052AF53-4C1B-48D1-B873-BFD0351481C3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Splat\Splat-monotouch.csproj
+	EndGlobalSection
+EndGlobal
