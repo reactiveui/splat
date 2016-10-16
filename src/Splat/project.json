@@ -6,7 +6,7 @@
   },
 
   "frameworks": {
-    "netstandard1.1": {
+    "netstandard1.0": {
       "dependencies": {
         "System.ComponentModel.Primitives": "4.1.0",
         "System.Diagnostics.Contracts": "4.0.1",
