@@ -10,8 +10,7 @@ using System.Resources;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Splat")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
+
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -24,6 +23,4 @@ using System.Resources;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("1.6.2")]
-[assembly: AssemblyFileVersion("1.6.2")]
 [assembly: NeutralResourcesLanguageAttribute("en-US")]
