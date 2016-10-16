@@ -26,6 +26,31 @@
           ]
         }
       }
+    },
+
+    "net45": {
+      "dependencies": {
+      },
+      "frameworkAssemblies": {
+        "PresentationCore": "4.0.0.0",
+        "PresentationFramework": "4.0.0.0",
+        "System.Drawing": "4.0.0.0",
+        "System.Xaml": "4.0.0.0",
+        "WindowsBase": "4.0.0.0"
+      },
+      "buildOptions": {
+        "compile": {
+          "exclude": [
+            "Android/*.cs",
+            "Cocoa/*.cs",
+            "Resources/*.cs",
+            "Colors/*.cs",
+            "Points/*.cs",
+            "WinForms/*.cs",
+            "WinRT/*.cs"
+          ]
+        }
+      }
     }
   }
 }
