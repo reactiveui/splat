@@ -9,21 +9,21 @@
     "netstandard1.1": {
       "dependencies": {
         "System.ComponentModel.Primitives": "4.1.0",
-        "System.Diagnostics.Contracts":  "4.0.1"
+        "System.Diagnostics.Contracts": "4.0.1",
+        "System.Runtime.Serialization.Primitives": "4.1.1"
       },
       "buildOptions": {
         "compile": {
           "exclude": [
             "Android/*.cs",
             "Cocoa/*.cs",
+            "Resources/*.cs",
             "WinForms/*.cs",
             "WinRT/*.cs",
-            "Xaml/*cs"
+            "Xaml/*cs",
+            "PlatformModeDetector.cs",
+            "TypeForwardedSystemDrawing.cs"
           ]
-          //"include": [
-          //  "./Colors/*.cs",
-          //  "./Points/*.cs"
-          //]
         }
       }
     }
