@@ -125,7 +125,7 @@ Task("Build")
 {
     Action<string> build = (filename) =>
     {
-        var solution = System.IO.Path.Combine("./", filename);
+        var solution = filename;
 
         // UWP (project.json) needs to be restored before it will build.
         RestorePackages(solution);
@@ -142,7 +142,7 @@ Task("Build")
         SourceLink(solution);
     };
 
-    build("./src/Splat.sln");
+    build("src/Splat.sln");
 });
 
 Task("UpdateAppVeyorBuildNumber")
@@ -156,7 +156,7 @@ Task("UpdateAssemblyInfo")
     .IsDependentOn("UpdateAppVeyorBuildNumber")
     .Does (() =>
 {
-    var file = "./src/Splat/Properties/AssemblyInfo.cs";
+    var file = "src/Splat/Properties/AssemblyInfo.cs";
 
     CreateAssemblyInfo(file, new AssemblyInfoSettings {
         Product = "Splat",
@@ -169,7 +169,7 @@ Task("UpdateAssemblyInfo")
 
 Task("RestorePackages").Does (() =>
 {
-    RestorePackages("./src/Splat.sln");
+    RestorePackages("src/Splat.sln");
 });
 
 Task("RunUnitTests")
@@ -188,7 +188,7 @@ Task("Package")
     .IsDependentOn("RunUnitTests")
     .Does (() =>
 {
-    Package("./src/Splat.nuspec", "./");
+    Package("src/Splat.nuspec", "src");
 });
 
 Task("Publish")
