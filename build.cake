@@ -156,7 +156,7 @@ Task("UpdateAssemblyInfo")
     .IsDependentOn("UpdateAppVeyorBuildNumber")
     .Does (() =>
 {
-    var file = "src/Splat/Properties/AssemblyInfo.cs";
+    var file = "src/Splat/GlobalAssemblyInfo.cs";
 
     CreateAssemblyInfo(file, new AssemblyInfoSettings {
         Product = "Splat",
