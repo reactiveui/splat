@@ -73,7 +73,7 @@ Action<string, string> Package = (nuspec, basePath) =>
         ProjectUrl               = new Uri("https://github.com/paulcbetts/splat/"),
         IconUrl                  = new Uri("http://f.cl.ly/items/1307401C3x2g3F2p2Z36/Logo.png"),
         LicenseUrl               = new Uri("https://github.com/paulcbetts/splat/blob/master/COPYING"),
-        Copyright                = "Copyright (c) GitHub",
+        Copyright                = "Copyright (c) Akavache Contributors",
         RequireLicenseAcceptance = false,
 
         Version                  = semVersion,
