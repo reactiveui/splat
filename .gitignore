@@ -116,5 +116,5 @@ UpgradeLog*.XML
 artifacts/
 
 # build tools
-tools/
+tools/**/*
 !tools/nuget/NuGet.exe
