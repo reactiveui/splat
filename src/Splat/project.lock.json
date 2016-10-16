@@ -830,6 +830,476 @@
           "ref/netstandard1.0/System.Xml.XDocument.dll": {}
         }
       }
+    },
+    "WindowsPhoneApp,Version=v8.1": {
+      "Microsoft.NETCore.Platforms/1.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard1.0/_._": {}
+        },
+        "runtime": {
+          "lib/netstandard1.0/_._": {}
+        }
+      },
+      "Microsoft.TargetingPack.Private.WindowsPhone.v8.1/1.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/wpa81/Microsoft.CSharp.dll": {},
+          "lib/wpa81/Microsoft.VisualBasic.dll": {},
+          "lib/wpa81/System.Collections.Concurrent.dll": {},
+          "lib/wpa81/System.Collections.dll": {},
+          "lib/wpa81/System.ComponentModel.EventBasedAsync.dll": {},
+          "lib/wpa81/System.ComponentModel.dll": {},
+          "lib/wpa81/System.Core.dll": {},
+          "lib/wpa81/System.Diagnostics.Contracts.dll": {},
+          "lib/wpa81/System.Diagnostics.Debug.dll": {},
+          "lib/wpa81/System.Diagnostics.Tools.dll": {},
+          "lib/wpa81/System.Diagnostics.Tracing.dll": {},
+          "lib/wpa81/System.Dynamic.Runtime.dll": {},
+          "lib/wpa81/System.Globalization.dll": {},
+          "lib/wpa81/System.IO.Compression.dll": {},
+          "lib/wpa81/System.IO.dll": {},
+          "lib/wpa81/System.Linq.Expressions.dll": {},
+          "lib/wpa81/System.Linq.Parallel.dll": {},
+          "lib/wpa81/System.Linq.Queryable.dll": {},
+          "lib/wpa81/System.Linq.dll": {},
+          "lib/wpa81/System.Net.Http.dll": {},
+          "lib/wpa81/System.Net.NetworkInformation.dll": {},
+          "lib/wpa81/System.Net.Primitives.dll": {},
+          "lib/wpa81/System.Net.Requests.dll": {},
+          "lib/wpa81/System.Net.dll": {},
+          "lib/wpa81/System.Numerics.dll": {},
+          "lib/wpa81/System.ObjectModel.dll": {},
+          "lib/wpa81/System.Reflection.Extensions.dll": {},
+          "lib/wpa81/System.Reflection.Primitives.dll": {},
+          "lib/wpa81/System.Reflection.dll": {},
+          "lib/wpa81/System.Resources.ResourceManager.dll": {},
+          "lib/wpa81/System.Runtime.Extensions.dll": {},
+          "lib/wpa81/System.Runtime.InteropServices.WindowsRuntime.dll": {},
+          "lib/wpa81/System.Runtime.InteropServices.dll": {},
+          "lib/wpa81/System.Runtime.Numerics.dll": {},
+          "lib/wpa81/System.Runtime.Serialization.Json.dll": {},
+          "lib/wpa81/System.Runtime.Serialization.Primitives.dll": {},
+          "lib/wpa81/System.Runtime.Serialization.Xml.dll": {},
+          "lib/wpa81/System.Runtime.Serialization.dll": {},
+          "lib/wpa81/System.Runtime.WindowsRuntime.UI.Xaml.dll": {},
+          "lib/wpa81/System.Runtime.WindowsRuntime.dll": {},
+          "lib/wpa81/System.Runtime.dll": {},
+          "lib/wpa81/System.Security.Principal.dll": {},
+          "lib/wpa81/System.ServiceModel.Web.dll": {},
+          "lib/wpa81/System.Text.Encoding.Extensions.dll": {},
+          "lib/wpa81/System.Text.Encoding.dll": {},
+          "lib/wpa81/System.Text.RegularExpressions.dll": {},
+          "lib/wpa81/System.Threading.Tasks.Parallel.dll": {},
+          "lib/wpa81/System.Threading.Tasks.dll": {},
+          "lib/wpa81/System.Threading.Timer.dll": {},
+          "lib/wpa81/System.Threading.dll": {},
+          "lib/wpa81/System.Windows.dll": {},
+          "lib/wpa81/System.Xml.Linq.dll": {},
+          "lib/wpa81/System.Xml.ReaderWriter.dll": {},
+          "lib/wpa81/System.Xml.Serialization.dll": {},
+          "lib/wpa81/System.Xml.XDocument.dll": {},
+          "lib/wpa81/System.Xml.XmlSerializer.dll": {},
+          "lib/wpa81/System.Xml.dll": {},
+          "lib/wpa81/System.dll": {},
+          "lib/wpa81/mscorlib.dll": {}
+        },
+        "runtime": {
+          "lib/wpa81/Microsoft.CSharp.dll": {},
+          "lib/wpa81/Microsoft.VisualBasic.dll": {},
+          "lib/wpa81/System.Collections.Concurrent.dll": {},
+          "lib/wpa81/System.Collections.dll": {},
+          "lib/wpa81/System.ComponentModel.EventBasedAsync.dll": {},
+          "lib/wpa81/System.ComponentModel.dll": {},
+          "lib/wpa81/System.Core.dll": {},
+          "lib/wpa81/System.Diagnostics.Contracts.dll": {},
+          "lib/wpa81/System.Diagnostics.Debug.dll": {},
+          "lib/wpa81/System.Diagnostics.Tools.dll": {},
+          "lib/wpa81/System.Diagnostics.Tracing.dll": {},
+          "lib/wpa81/System.Dynamic.Runtime.dll": {},
+          "lib/wpa81/System.Globalization.dll": {},
+          "lib/wpa81/System.IO.Compression.dll": {},
+          "lib/wpa81/System.IO.dll": {},
+          "lib/wpa81/System.Linq.Expressions.dll": {},
+          "lib/wpa81/System.Linq.Parallel.dll": {},
+          "lib/wpa81/System.Linq.Queryable.dll": {},
+          "lib/wpa81/System.Linq.dll": {},
+          "lib/wpa81/System.Net.Http.dll": {},
+          "lib/wpa81/System.Net.NetworkInformation.dll": {},
+          "lib/wpa81/System.Net.Primitives.dll": {},
+          "lib/wpa81/System.Net.Requests.dll": {},
+          "lib/wpa81/System.Net.dll": {},
+          "lib/wpa81/System.Numerics.dll": {},
+          "lib/wpa81/System.ObjectModel.dll": {},
+          "lib/wpa81/System.Reflection.Extensions.dll": {},
+          "lib/wpa81/System.Reflection.Primitives.dll": {},
+          "lib/wpa81/System.Reflection.dll": {},
+          "lib/wpa81/System.Resources.ResourceManager.dll": {},
+          "lib/wpa81/System.Runtime.Extensions.dll": {},
+          "lib/wpa81/System.Runtime.InteropServices.WindowsRuntime.dll": {},
+          "lib/wpa81/System.Runtime.InteropServices.dll": {},
+          "lib/wpa81/System.Runtime.Numerics.dll": {},
+          "lib/wpa81/System.Runtime.Serialization.Json.dll": {},
+          "lib/wpa81/System.Runtime.Serialization.Primitives.dll": {},
+          "lib/wpa81/System.Runtime.Serialization.Xml.dll": {},
+          "lib/wpa81/System.Runtime.Serialization.dll": {},
+          "lib/wpa81/System.Runtime.WindowsRuntime.UI.Xaml.dll": {},
+          "lib/wpa81/System.Runtime.WindowsRuntime.dll": {},
+          "lib/wpa81/System.Runtime.dll": {},
+          "lib/wpa81/System.Security.Principal.dll": {},
+          "lib/wpa81/System.ServiceModel.Web.dll": {},
+          "lib/wpa81/System.Text.Encoding.Extensions.dll": {},
+          "lib/wpa81/System.Text.Encoding.dll": {},
+          "lib/wpa81/System.Text.RegularExpressions.dll": {},
+          "lib/wpa81/System.Threading.Tasks.Parallel.dll": {},
+          "lib/wpa81/System.Threading.Tasks.dll": {},
+          "lib/wpa81/System.Threading.Timer.dll": {},
+          "lib/wpa81/System.Threading.dll": {},
+          "lib/wpa81/System.Windows.dll": {},
+          "lib/wpa81/System.Xml.Linq.dll": {},
+          "lib/wpa81/System.Xml.ReaderWriter.dll": {},
+          "lib/wpa81/System.Xml.Serialization.dll": {},
+          "lib/wpa81/System.Xml.XDocument.dll": {},
+          "lib/wpa81/System.Xml.XmlSerializer.dll": {},
+          "lib/wpa81/System.Xml.dll": {},
+          "lib/wpa81/System.dll": {},
+          "lib/wpa81/mscorlib.dll": {}
+        }
+      },
+      "Microsoft.TargetingPack.Private.WinRT/1.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/dotnet5.1/windows.winmd": {}
+        },
+        "runtime": {
+          "lib/dotnet5.1/windows.winmd": {}
+        }
+      },
+      "NETStandard.Library/1.6.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.0.1",
+          "System.Collections": "4.0.11",
+          "System.Collections.Concurrent": "4.0.12",
+          "System.Diagnostics.Debug": "4.0.11",
+          "System.Diagnostics.Tools": "4.0.1",
+          "System.Diagnostics.Tracing": "4.1.0",
+          "System.Globalization": "4.0.11",
+          "System.IO": "4.1.0",
+          "System.IO.Compression": "4.1.0",
+          "System.Linq": "4.1.0",
+          "System.Linq.Expressions": "4.1.0",
+          "System.Net.Http": "4.1.0",
+          "System.Net.Primitives": "4.0.11",
+          "System.ObjectModel": "4.0.12",
+          "System.Reflection": "4.1.0",
+          "System.Reflection.Extensions": "4.0.1",
+          "System.Reflection.Primitives": "4.0.1",
+          "System.Resources.ResourceManager": "4.0.1",
+          "System.Runtime": "4.1.0",
+          "System.Runtime.Extensions": "4.1.0",
+          "System.Runtime.InteropServices": "4.1.0",
+          "System.Runtime.InteropServices.RuntimeInformation": "4.0.0",
+          "System.Runtime.Numerics": "4.0.1",
+          "System.Text.Encoding": "4.0.11",
+          "System.Text.Encoding.Extensions": "4.0.11",
+          "System.Text.RegularExpressions": "4.1.0",
+          "System.Threading": "4.0.11",
+          "System.Threading.Tasks": "4.0.11",
+          "System.Threading.Timer": "4.0.1",
+          "System.Xml.ReaderWriter": "4.0.11",
+          "System.Xml.XDocument": "4.0.11"
+        }
+      },
+      "System.Collections/4.0.11": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Collections.Concurrent/4.0.12": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.ComponentModel.Primitives/4.1.0": {
+        "type": "package",
+        "compile": {
+          "ref/netstandard1.0/System.ComponentModel.Primitives.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.0/System.ComponentModel.Primitives.dll": {}
+        }
+      },
+      "System.Diagnostics.Debug/4.0.11": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Diagnostics.Tools/4.0.1": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Diagnostics.Tracing/4.1.0": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Globalization/4.0.11": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.IO/4.1.0": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.IO.Compression/4.1.0": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Linq/4.1.0": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Linq.Expressions/4.1.0": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Net.Http/4.1.0": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Net.Primitives/4.0.11": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.ObjectModel/4.0.12": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Reflection/4.1.0": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Reflection.Extensions/4.0.1": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Reflection.Primitives/4.0.1": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Resources.ResourceManager/4.0.1": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Runtime/4.1.0": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Runtime.Extensions/4.1.0": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Runtime.InteropServices/4.1.0": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Runtime.InteropServices.RuntimeInformation/4.0.0": {
+        "type": "package",
+        "compile": {
+          "ref/netstandard1.1/System.Runtime.InteropServices.RuntimeInformation.dll": {}
+        },
+        "runtime": {
+          "lib/wpa81/System.Runtime.InteropServices.RuntimeInformation.dll": {}
+        },
+        "runtimeTargets": {
+          "runtimes/unix/lib/netstandard1.1/System.Runtime.InteropServices.RuntimeInformation.dll": {
+            "assetType": "runtime",
+            "rid": "unix"
+          },
+          "runtimes/win/lib/netstandard1.1/System.Runtime.InteropServices.RuntimeInformation.dll": {
+            "assetType": "runtime",
+            "rid": "win"
+          }
+        }
+      },
+      "System.Runtime.Numerics/4.0.1": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Text.Encoding/4.0.11": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Text.Encoding.Extensions/4.0.11": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Text.RegularExpressions/4.1.0": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Threading/4.0.11": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Threading.Tasks/4.0.11": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Threading.Timer/4.0.1": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Xml.ReaderWriter/4.0.11": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      },
+      "System.Xml.XDocument/4.0.11": {
+        "type": "package",
+        "compile": {
+          "ref/wpa81/_._": {}
+        },
+        "runtime": {
+          "lib/wpa81/_._": {}
+        }
+      }
     }
   },
   "libraries": {
@@ -857,6 +1327,154 @@
         "dotnet_library_license.txt",
         "lib/netstandard1.0/_._",
         "runtime.json"
+      ]
+    },
+    "Microsoft.TargetingPack.Private.WindowsPhone.v8.1/1.0.1": {
+      "sha512": "9Id8eQZXn227b7sT6mDle9W04TTuy7xvCCdFb7UlyHIjH+d9qWm7lAOd6lxuEiulpaiCR/DSpHmCqsAZ3Pa6Cg==",
+      "type": "package",
+      "path": "Microsoft.TargetingPack.Private.WindowsPhone.v8.1/1.0.1",
+      "files": [
+        "Microsoft.TargetingPack.Private.WindowsPhone.v8.1.1.0.1.nupkg.sha512",
+        "Microsoft.TargetingPack.Private.WindowsPhone.v8.1.nuspec",
+        "lib/wp81/Microsoft.CSharp.dll",
+        "lib/wp81/Microsoft.Devices.Sensors.dll",
+        "lib/wp81/Microsoft.Phone.Interop.dll",
+        "lib/wp81/Microsoft.Phone.Maps.dll",
+        "lib/wp81/Microsoft.Phone.Media.ElementaryStreams.dll",
+        "lib/wp81/Microsoft.Phone.Reactive.dll",
+        "lib/wp81/Microsoft.Phone.dll",
+        "lib/wp81/Microsoft.Xna.Framework.GamerServices.dll",
+        "lib/wp81/Microsoft.Xna.Framework.GamerServicesExtensions.dll",
+        "lib/wp81/Microsoft.Xna.Framework.Input.Touch.dll",
+        "lib/wp81/Microsoft.Xna.Framework.MediaLibraryExtensions.dll",
+        "lib/wp81/Microsoft.Xna.Framework.dll",
+        "lib/wp81/System.Collections.dll",
+        "lib/wp81/System.ComponentModel.EventBasedAsync.dll",
+        "lib/wp81/System.ComponentModel.dll",
+        "lib/wp81/System.Core.dll",
+        "lib/wp81/System.Data.Linq.dll",
+        "lib/wp81/System.Device.dll",
+        "lib/wp81/System.Diagnostics.Contracts.dll",
+        "lib/wp81/System.Diagnostics.Debug.dll",
+        "lib/wp81/System.Diagnostics.Tools.dll",
+        "lib/wp81/System.Dynamic.Runtime.dll",
+        "lib/wp81/System.Globalization.dll",
+        "lib/wp81/System.IO.dll",
+        "lib/wp81/System.Linq.Expressions.dll",
+        "lib/wp81/System.Linq.Queryable.dll",
+        "lib/wp81/System.Linq.dll",
+        "lib/wp81/System.Net.NetworkInformation.dll",
+        "lib/wp81/System.Net.Primitives.dll",
+        "lib/wp81/System.Net.Requests.dll",
+        "lib/wp81/System.Net.dll",
+        "lib/wp81/System.ObjectModel.dll",
+        "lib/wp81/System.Observable.dll",
+        "lib/wp81/System.Reflection.Emit.IlGeneration.dll",
+        "lib/wp81/System.Reflection.Emit.Lightweight.dll",
+        "lib/wp81/System.Reflection.Extensions.dll",
+        "lib/wp81/System.Reflection.Primitives.dll",
+        "lib/wp81/System.Reflection.dll",
+        "lib/wp81/System.Resources.ResourceManager.dll",
+        "lib/wp81/System.Runtime.Extensions.dll",
+        "lib/wp81/System.Runtime.InteropServices.WindowsRuntime.dll",
+        "lib/wp81/System.Runtime.Serialization.Json.dll",
+        "lib/wp81/System.Runtime.Serialization.Primitives.dll",
+        "lib/wp81/System.Runtime.Serialization.Xml.dll",
+        "lib/wp81/System.Runtime.Serialization.dll",
+        "lib/wp81/System.Runtime.WindowsRuntime.dll",
+        "lib/wp81/System.Runtime.dll",
+        "lib/wp81/System.Security.Principal.dll",
+        "lib/wp81/System.ServiceModel.Http.dll",
+        "lib/wp81/System.ServiceModel.Primitives.dll",
+        "lib/wp81/System.ServiceModel.Security.dll",
+        "lib/wp81/System.ServiceModel.Web.dll",
+        "lib/wp81/System.ServiceModel.dll",
+        "lib/wp81/System.Text.Encoding.Extensions.dll",
+        "lib/wp81/System.Text.Encoding.dll",
+        "lib/wp81/System.Text.RegularExpressions.dll",
+        "lib/wp81/System.Threading.Tasks.dll",
+        "lib/wp81/System.Threading.dll",
+        "lib/wp81/System.Windows.dll",
+        "lib/wp81/System.Xml.Linq.dll",
+        "lib/wp81/System.Xml.ReaderWriter.dll",
+        "lib/wp81/System.Xml.Serialization.dll",
+        "lib/wp81/System.Xml.XDocument.dll",
+        "lib/wp81/System.Xml.XmlSerializer.dll",
+        "lib/wp81/System.Xml.dll",
+        "lib/wp81/System.dll",
+        "lib/wp81/mscorlib.dll",
+        "lib/wp81/mscorlib.extensions.dll",
+        "lib/wpa81/Microsoft.CSharp.dll",
+        "lib/wpa81/Microsoft.VisualBasic.dll",
+        "lib/wpa81/System.Collections.Concurrent.dll",
+        "lib/wpa81/System.Collections.dll",
+        "lib/wpa81/System.ComponentModel.EventBasedAsync.dll",
+        "lib/wpa81/System.ComponentModel.dll",
+        "lib/wpa81/System.Core.dll",
+        "lib/wpa81/System.Diagnostics.Contracts.dll",
+        "lib/wpa81/System.Diagnostics.Debug.dll",
+        "lib/wpa81/System.Diagnostics.Tools.dll",
+        "lib/wpa81/System.Diagnostics.Tracing.dll",
+        "lib/wpa81/System.Dynamic.Runtime.dll",
+        "lib/wpa81/System.Globalization.dll",
+        "lib/wpa81/System.IO.Compression.dll",
+        "lib/wpa81/System.IO.dll",
+        "lib/wpa81/System.Linq.Expressions.dll",
+        "lib/wpa81/System.Linq.Parallel.dll",
+        "lib/wpa81/System.Linq.Queryable.dll",
+        "lib/wpa81/System.Linq.dll",
+        "lib/wpa81/System.Net.Http.dll",
+        "lib/wpa81/System.Net.NetworkInformation.dll",
+        "lib/wpa81/System.Net.Primitives.dll",
+        "lib/wpa81/System.Net.Requests.dll",
+        "lib/wpa81/System.Net.dll",
+        "lib/wpa81/System.Numerics.dll",
+        "lib/wpa81/System.ObjectModel.dll",
+        "lib/wpa81/System.Reflection.Extensions.dll",
+        "lib/wpa81/System.Reflection.Primitives.dll",
+        "lib/wpa81/System.Reflection.dll",
+        "lib/wpa81/System.Resources.ResourceManager.dll",
+        "lib/wpa81/System.Runtime.Extensions.dll",
+        "lib/wpa81/System.Runtime.InteropServices.WindowsRuntime.dll",
+        "lib/wpa81/System.Runtime.InteropServices.dll",
+        "lib/wpa81/System.Runtime.Numerics.dll",
+        "lib/wpa81/System.Runtime.Serialization.Json.dll",
+        "lib/wpa81/System.Runtime.Serialization.Primitives.dll",
+        "lib/wpa81/System.Runtime.Serialization.Xml.dll",
+        "lib/wpa81/System.Runtime.Serialization.dll",
+        "lib/wpa81/System.Runtime.WindowsRuntime.UI.Xaml.dll",
+        "lib/wpa81/System.Runtime.WindowsRuntime.dll",
+        "lib/wpa81/System.Runtime.dll",
+        "lib/wpa81/System.Security.Principal.dll",
+        "lib/wpa81/System.ServiceModel.Web.dll",
+        "lib/wpa81/System.Text.Encoding.Extensions.dll",
+        "lib/wpa81/System.Text.Encoding.dll",
+        "lib/wpa81/System.Text.RegularExpressions.dll",
+        "lib/wpa81/System.Threading.Tasks.Parallel.dll",
+        "lib/wpa81/System.Threading.Tasks.dll",
+        "lib/wpa81/System.Threading.Timer.dll",
+        "lib/wpa81/System.Threading.dll",
+        "lib/wpa81/System.Windows.dll",
+        "lib/wpa81/System.Xml.Linq.dll",
+        "lib/wpa81/System.Xml.ReaderWriter.dll",
+        "lib/wpa81/System.Xml.Serialization.dll",
+        "lib/wpa81/System.Xml.XDocument.dll",
+        "lib/wpa81/System.Xml.XmlSerializer.dll",
+        "lib/wpa81/System.Xml.dll",
+        "lib/wpa81/System.dll",
+        "lib/wpa81/mscorlib.dll"
+      ]
+    },
+    "Microsoft.TargetingPack.Private.WinRT/1.0.1": {
+      "sha512": "6tYPnz+n2W1R7F6QTQktZ2HiP56gndoonSsT4xDcnIZ7PPTywOF5I4FtPYd/UAS48SmLk5DD9YjAKJxiH7C8uQ==",
+      "type": "package",
+      "path": "Microsoft.TargetingPack.Private.WinRT/1.0.1",
+      "files": [
+        "Microsoft.TargetingPack.Private.WinRT.1.0.1.nupkg.sha512",
+        "Microsoft.TargetingPack.Private.WinRT.nuspec",
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "lib/dotnet5.1/windows.winmd"
       ]
     },
     "NETStandard.Library/1.6.0": {
@@ -2973,6 +3591,59 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
+    "System.Threading.Timer/4.0.1": {
+      "sha512": "saGfUV8uqVW6LeURiqxcGhZ24PzuRNaUBtbhVeuUAvky1naH395A/1nY0P2bWvrw/BreRtIB/EzTDkGBpqCwEw==",
+      "type": "package",
+      "path": "System.Threading.Timer/4.0.1",
+      "files": [
+        "System.Threading.Timer.4.0.1.nupkg.sha512",
+        "System.Threading.Timer.nuspec",
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net451/_._",
+        "lib/portable-net451+win81+wpa81/_._",
+        "lib/win81/_._",
+        "lib/wpa81/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net451/_._",
+        "ref/netcore50/System.Threading.Timer.dll",
+        "ref/netcore50/System.Threading.Timer.xml",
+        "ref/netcore50/de/System.Threading.Timer.xml",
+        "ref/netcore50/es/System.Threading.Timer.xml",
+        "ref/netcore50/fr/System.Threading.Timer.xml",
+        "ref/netcore50/it/System.Threading.Timer.xml",
+        "ref/netcore50/ja/System.Threading.Timer.xml",
+        "ref/netcore50/ko/System.Threading.Timer.xml",
+        "ref/netcore50/ru/System.Threading.Timer.xml",
+        "ref/netcore50/zh-hans/System.Threading.Timer.xml",
+        "ref/netcore50/zh-hant/System.Threading.Timer.xml",
+        "ref/netstandard1.2/System.Threading.Timer.dll",
+        "ref/netstandard1.2/System.Threading.Timer.xml",
+        "ref/netstandard1.2/de/System.Threading.Timer.xml",
+        "ref/netstandard1.2/es/System.Threading.Timer.xml",
+        "ref/netstandard1.2/fr/System.Threading.Timer.xml",
+        "ref/netstandard1.2/it/System.Threading.Timer.xml",
+        "ref/netstandard1.2/ja/System.Threading.Timer.xml",
+        "ref/netstandard1.2/ko/System.Threading.Timer.xml",
+        "ref/netstandard1.2/ru/System.Threading.Timer.xml",
+        "ref/netstandard1.2/zh-hans/System.Threading.Timer.xml",
+        "ref/netstandard1.2/zh-hant/System.Threading.Timer.xml",
+        "ref/portable-net451+win81+wpa81/_._",
+        "ref/win81/_._",
+        "ref/wpa81/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._"
+      ]
+    },
     "System.Xml.ReaderWriter/4.0.11": {
       "sha512": "ZIiLPsf67YZ9zgr31vzrFaYQqxRPX9cVHjtPSnmx4eN6lbS/yEyYNr2vs1doGDEscF0tjCZFsk9yUg1sC9e8tg==",
       "type": "package",
@@ -3125,6 +3796,11 @@
       "System.ComponentModel.Primitives >= 4.1.0",
       "System.Diagnostics.Contracts >= 4.0.1",
       "System.Runtime.Serialization.Primitives >= 4.1.1"
+    ],
+    "WindowsPhoneApp,Version=v8.1": [
+      "Microsoft.TargetingPack.Private.WinRT >= 1.0.1",
+      "Microsoft.TargetingPack.Private.WindowsPhone.v8.1 >= 1.0.1",
+      "System.ComponentModel.Primitives >= 4.1.0"
     ]
   },
   "tools": {},
