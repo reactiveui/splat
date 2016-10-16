@@ -110,3 +110,11 @@ UpgradeLog*.XML
 
 # Visual Studio 2015 cache
 .vs/
+
+# random build junk
+*.targets
+artifacts/
+
+# build tools
+tools/
+!tools/nuget/NuGet.exe
