@@ -12,6 +12,9 @@
         "System.Diagnostics.Contracts": "4.0.1",
         "System.Runtime.Serialization.Primitives": "4.1.1"
       },
+      "compilationOptions": {
+        "define": [ "PORTABLE" ]
+      },
       "buildOptions": {
         "compile": {
           "exclude": [
@@ -64,7 +67,9 @@
         },
         "System.ComponentModel.Primitives": "4.1.0"
       },
-
+      "compilationOptions": {
+        "define": [ "NETFX_CORE" ]
+      },
       "buildOptions": {
         "compile": {
           "exclude": [
