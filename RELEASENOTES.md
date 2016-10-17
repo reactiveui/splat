@@ -7,6 +7,10 @@
 
 **Breaking Changes**
 
- - Windows Phone 8 support has been deprecated, as MSBuild tooling doesn't support 64-bit compilation
+ - Windows Phone 8 and Windows Runtime support have been deprecated, as VS2015 tooling no longer supports these platforms
  - specific builds for Xamarin and Mono tooling have been removed due to existing limitations of .NET command line tooling
 
+**Fixes**
+
+ - `Point` implements `IEquatable<Point>` - #126 via @aalmada
+ - Factory registration mixins for registering services - #128 via @kentcb
