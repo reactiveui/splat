@@ -115,7 +115,5 @@
     //       - xamarin.ios
     //       - xamarin.mac
     // tracking issue: https://github.com/dotnet/cli/issues/589#issuecomment-235671884
-
-
   }
 }
