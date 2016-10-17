@@ -32,8 +32,6 @@
     },
 
     "net45": {
-      "dependencies": {
-      },
       "frameworkAssemblies": {
         "PresentationCore": "4.0.0.0",
         "PresentationFramework": "4.0.0.0",
@@ -83,6 +81,41 @@
           ]
         }
       }
+    },
+
+    "netstandard1.4": {
+      "dependencies": {
+        "System.ComponentModel.Primitives": "4.1.0",
+        "System.Diagnostics.Contracts": "4.0.1",
+        "System.Runtime.Serialization.Primitives": "4.1.1"
+      },
+      "compilationOptions": {
+        "define": [ "PORTABLE" ]
+      },
+      "buildOptions": {
+        "compile": {
+          "exclude": [
+            "Android/*.cs",
+            "Cocoa/*.cs",
+            "Resources/*.cs",
+            "WinForms/*.cs",
+            "WinRT/*.cs",
+            "Xaml/*cs",
+            "PlatformModeDetector.cs",
+            "TypeForwardedSystemDrawing.cs"
+          ]
+        }
+      }
     }
+
+    // TODO: add compilation for these Xamarin platforms
+    //       - monoandroid
+    //       - monotouch
+    //       - monomac
+    //       - xamarin.ios
+    //       - xamarin.mac
+    // tracking issue: https://github.com/dotnet/cli/issues/589#issuecomment-235671884
+
+
   }
 }
