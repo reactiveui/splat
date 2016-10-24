@@ -16,7 +16,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat-wpa81", "Splat\Splat-
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat-monoandroid", "Splat\Splat-monoandroid.csproj", "{E429F061-65F1-4B17-A122-F6115840D56D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat-Portable", "Splat\Splat-Portable.csproj", "{0EC8DBA1-D745-4EE5-993A-6026440EC3BF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat-Netstandard", "Splat\Splat-Netstandard.csproj", "{0EC8DBA1-D745-4EE5-993A-6026440EC3BF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat-Net45", "Splat\Splat-Net45.csproj", "{252CE1C2-027A-4445-A3C2-E4D6C80A935A}"
 EndProject

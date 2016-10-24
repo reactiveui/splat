@@ -72,12 +72,12 @@ Action<string, string> Package = (nuspec, basePath) =>
 
         ProjectUrl               = new Uri("https://github.com/paulcbetts/splat/"),
         IconUrl                  = new Uri("http://f.cl.ly/items/1307401C3x2g3F2p2Z36/Logo.png"),
-        LicenseUrl               = new Uri("https://github.com/paulcbetts/splat/blob/master/COPYING"),
-        Copyright                = "Copyright (c) Akavache Contributors",
+        LicenseUrl               = new Uri("https://github.com/paulcbetts/splat/blob/master/LICENSE"),
+        Copyright                = "Copyright (c) Splat Contributors",
         RequireLicenseAcceptance = false,
 
         Version                  = semVersion,
-        Tags                     = new [] {  "portable"  },
+        Tags                     = new [] {  "drawing", "colours", "geometry", "logging", "unit test detection", "service location", "image handling", "portable", "xamarin", "xamarin ios", "xamarin mac", "android", "monodroid", "uwp", "net45", "wpa81" },
         ReleaseNotes             = new List<string>(releaseNotes.Notes),
 
         Symbols                  = true,
@@ -93,10 +93,7 @@ Action<string> SourceLink = (solutionFileName) =>
         RepositoryUrl = "https://github.com/paulcbetts/splat",
         SolutionFileName = solutionFileName,
         
-        // nb: I would love to set this to `treatErrorsAsWarnings` which defaults to `false` but GitLink trips over Akavache.Tests :/
-        // Handling project 'Akavache.Tests'
-        //   No pdb file found for 'Akavache.Tests', is project built in 'Release' mode with pdb files enabled? Expected file is 'C:\Dropbox\OSS\akavache\Akavache\src\Akavache.Tests\Akavache.Tests.pdb'
-        ErrorsAsWarnings = true, 
+        ErrorsAsWarnings = treatWarningsAsErrors, 
     });
 };
 
@@ -123,26 +120,29 @@ Task("Build")
     .IsDependentOn("UpdateAssemblyInfo")
     .Does (() =>
 {
-    Action<string> build = (filename) =>
+    Action<string> build = (project) =>
     {
-        var solution = filename;
-
-        // UWP (project.json) needs to be restored before it will build.
-        RestorePackages(solution);
-
-        Information("Building {0}", solution);
-
-        MSBuild(solution, new MSBuildSettings()
+        Information("Building {0}", project);
+    
+        MSBuild(project, new MSBuildSettings()
             .SetConfiguration("Release")
             .WithProperty("NoWarn", "1591") // ignore missing XML doc warnings
             .WithProperty("TreatWarningsAsErrors", treatWarningsAsErrors.ToString())
             .SetVerbosity(Verbosity.Minimal)
             .SetNodeReuse(false));
 
-        SourceLink(solution);
+        SourceLink(project);
     };
 
     build("src/Splat.sln");
+
+    // build("src/Splat/Splat-Netstandard.csproj");
+    // build("src/Splat/Splat-Net45.csproj");
+    // build("src/Splat/Splat-MonoAndroid.csproj");
+    // build("src/Splat/Splat-XamarinIOS.csproj");
+    // build("src/Splat/Splat-XamarinMac.csproj");
+    // build("src/Splat/Splat-XamarinMac.csproj");
+    // build("src/Splat/Splat-WPA81.csproj");
 });
 
 Task("UpdateAppVeyorBuildNumber")
@@ -156,14 +156,14 @@ Task("UpdateAssemblyInfo")
     .IsDependentOn("UpdateAppVeyorBuildNumber")
     .Does (() =>
 {
-    var file = "src/Splat/GlobalAssemblyInfo.cs";
+    var file = "src/CommonAssemblyInfo.cs";
 
     CreateAssemblyInfo(file, new AssemblyInfoSettings {
         Product = "Splat",
         Version = version,
         FileVersion = version,
         InformationalVersion = semVersion,
-        Copyright = "Copyright (c) Paul Betts"
+        Copyright = "Copyright (c) Splat Contributors"
     });
 });
 
@@ -188,7 +188,7 @@ Task("Package")
     .IsDependentOn("RunUnitTests")
     .Does (() =>
 {
-    Package("src/Splat.nuspec", "src");
+    Package("src/Splat.nuspec", "src/Splat");
 });
 
 Task("Publish")
