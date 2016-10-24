@@ -70,6 +70,7 @@
     <Compile Include="Colors\Color.cs" />
     <Compile Include="Colors\KnownColor.cs" />
     <Compile Include="Colors\KnownColors.cs" />
+    <Compile Include="..\CommonAssemblyInfo.cs" />  
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
 </Project>

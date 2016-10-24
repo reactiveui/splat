@@ -2,6 +2,8 @@
 
 ![](http://f.cl.ly/items/1307401C3x2g3F2p2Z36/Logo.png)
 
+[![Build status](https://ci.appveyor.com/api/projects/status/i59faf63q00bm613?svg=true)](https://ci.appveyor.com/project/shiftkey/splat)
+
 Certain types of things are basically impossible to do in cross-platform
 mobile code today, yet there's no reason why. Writing a ViewModel that handles
 loading a gallery of pictures from disk will be completely riddled with
@@ -29,15 +31,10 @@ Splat currently supports:
 
 [Always Be NuGetting](https://nuget.org/packages/Splat/). Package contains binaries for:
 
-* Xamarin.iOS
-* Xamarin.iOS 64-bit
-* Xamarin.Android
-* Xamarin.Mac
-* Xamarin.Mac 64-bit
 * WPF (.NET 4.5)
 * Windows Forms
-* Windows Phone 8
 * Windows 8.1/Windows Phone 8.1 Universal
+* .NET Standard 1.0 and 1.4
 
 ## Cross-platform Image Loading
 

@@ -107,3 +107,17 @@ UpgradeLog*.XML
 
 # Mac Crap
 .DS_Store
+
+# Visual Studio 2015 cache
+.vs/
+
+# random build junk
+*.targets
+artifacts/
+
+# build tools
+tools/**/*
+!tools/nuget/NuGet.exe
+
+# generated assembly info
+src/Splat/GlobalAssemblyInfo.cs
