@@ -1,0 +1,12 @@
+{
+  "locked": false,
+  "version": 2,
+  "targets": {
+    "Xamarin.iOS,Version=v1.0": {}
+  },
+  "libraries": {},
+  "projectFileDependencyGroups": {
+    "": [],
+    "Xamarin.iOS,Version=v1.0": []
+  }
+}
