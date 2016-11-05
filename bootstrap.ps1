@@ -43,7 +43,7 @@ Function Install-AndroidSDK
 #Install-AndroidSDK 12
 #Install-AndroidSDK 13
 #Install-AndroidSDK 14
-Install-AndroidSDK 15
+#Install-AndroidSDK 15
 Install-AndroidSDK 16
 #Install-AndroidSDK 18
 #Install-AndroidSDK 19
@@ -53,4 +53,4 @@ Install-AndroidSDK 16
 #Install-AndroidSDK 21
 #Install-AndroidSDK 22
 #Install-AndroidSDK 23
-#Install-AndroidSDK 24
+Install-AndroidSDK 24
