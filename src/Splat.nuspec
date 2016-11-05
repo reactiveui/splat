@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Splat</id>
+        <version>$$version$$</version>
+        <authors>Paul Betts</authors>
+        <description>A library to make things cross-platform that should be</description>
+        <summary>A library to make things cross-platform that should be</summary>
+    </metadata>
+  <files>
+    <!-- Android -->
+    <file src="bin/Release/MonoAndroid403/Splat.dll" target="lib/MonoAndroid403/Splat.dll" />
+    <!-- iOS Unified API -->
+    <file src="bin/Release/Xamarin.iOS10/Splat.dll" target="lib/Xamarin.iOS10/Splat.dll" />
+    <!-- Mac Mobile Unified API -->
+    <file src="bin/Release/Xamarin.Mac20/Splat.dll" target="lib/Xamarin.Mac20/Splat.dll" /> 
+    <!-- Windows Store 8.1 -->
+    <file src="bin/Release/Portable-Win81+Wpa81/Splat.dll" target="lib/Portable-Win81+Wpa81/Splat.dll" />
+    <!-- Windows Universal -->
+    <!--<file src="bin/Release/UAP10.0/Splat.dll" target="lib/UAP10/Splat.dll" />-->
+    <!-- .NET 4.5 -->
+    <file src="bin/Release/Net45/Splat.dll" target="lib/Net45/Splat.dll" />
+    <!-- Portable PCL -->
+    <file src="bin/Release/netstandard1.1/Splat.dll" target="lib/netstandard1.1/Splat.dll" />
+    <!-- Source -->
+    <file src="*.cs" target="src" />
+  </files>
+</package>

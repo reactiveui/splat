@@ -1,0 +1,72 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "! Solution Items", "! Solution Items", "{43D7EB91-1B21-490D-9E25-8036E1B53A21}"
+	ProjectSection(SolutionItems) = preProject
+		Splat.nuspec = Splat.nuspec
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat-XamarinMac", "Splat\Splat-XamarinMac.csproj", "{990825BE-73ED-4A31-9178-B88119A72F61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat-XamarinIOS", "Splat\Splat-XamarinIOS.csproj", "{E5EEF584-2A8A-4067-8309-15FE4D65DD64}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat-wpa81", "Splat\Splat-wpa81.csproj", "{E3C22E93-6CA9-4781-A3DE-D6DF775E8AE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat-monoandroid", "Splat\Splat-monoandroid.csproj", "{E429F061-65F1-4B17-A122-F6115840D56D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat-Netstandard", "Splat\Splat-Netstandard.csproj", "{0EC8DBA1-D745-4EE5-993A-6026440EC3BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat-Net45", "Splat\Splat-Net45.csproj", "{252CE1C2-027A-4445-A3C2-E4D6C80A935A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "switch", "switch", "{720D8938-BF86-4858-843D-01C1B0338C2F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bait", "bait", "{118F6E22-751F-4CAF-B8C7-A8F592313494}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{990825BE-73ED-4A31-9178-B88119A72F61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{990825BE-73ED-4A31-9178-B88119A72F61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{990825BE-73ED-4A31-9178-B88119A72F61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{990825BE-73ED-4A31-9178-B88119A72F61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5EEF584-2A8A-4067-8309-15FE4D65DD64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5EEF584-2A8A-4067-8309-15FE4D65DD64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5EEF584-2A8A-4067-8309-15FE4D65DD64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5EEF584-2A8A-4067-8309-15FE4D65DD64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3C22E93-6CA9-4781-A3DE-D6DF775E8AE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3C22E93-6CA9-4781-A3DE-D6DF775E8AE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3C22E93-6CA9-4781-A3DE-D6DF775E8AE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3C22E93-6CA9-4781-A3DE-D6DF775E8AE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E429F061-65F1-4B17-A122-F6115840D56D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E429F061-65F1-4B17-A122-F6115840D56D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E429F061-65F1-4B17-A122-F6115840D56D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E429F061-65F1-4B17-A122-F6115840D56D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EC8DBA1-D745-4EE5-993A-6026440EC3BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EC8DBA1-D745-4EE5-993A-6026440EC3BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EC8DBA1-D745-4EE5-993A-6026440EC3BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EC8DBA1-D745-4EE5-993A-6026440EC3BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{252CE1C2-027A-4445-A3C2-E4D6C80A935A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{252CE1C2-027A-4445-A3C2-E4D6C80A935A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{252CE1C2-027A-4445-A3C2-E4D6C80A935A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{252CE1C2-027A-4445-A3C2-E4D6C80A935A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{990825BE-73ED-4A31-9178-B88119A72F61} = {720D8938-BF86-4858-843D-01C1B0338C2F}
+		{E5EEF584-2A8A-4067-8309-15FE4D65DD64} = {720D8938-BF86-4858-843D-01C1B0338C2F}
+		{E3C22E93-6CA9-4781-A3DE-D6DF775E8AE7} = {720D8938-BF86-4858-843D-01C1B0338C2F}
+		{E429F061-65F1-4B17-A122-F6115840D56D} = {720D8938-BF86-4858-843D-01C1B0338C2F}
+		{0EC8DBA1-D745-4EE5-993A-6026440EC3BF} = {118F6E22-751F-4CAF-B8C7-A8F592313494}
+		{252CE1C2-027A-4445-A3C2-E4D6C80A935A} = {720D8938-BF86-4858-843D-01C1B0338C2F}
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Splat\Splat-monotouch.csproj
+	EndGlobalSection
+EndGlobal
