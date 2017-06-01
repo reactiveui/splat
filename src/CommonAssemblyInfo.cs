@@ -6,8 +6,8 @@
 using System.Reflection;
 
 [assembly: AssemblyProduct("Splat")]
-[assembly: AssemblyVersion("1.7.0")]
-[assembly: AssemblyFileVersion("1.7.0")]
-[assembly: AssemblyInformationalVersion("1.7.0-alpha.89+Branch.develop.Sha.c1e6e78afeb6de65d597afa5907e9e266fb9ce7e")]
+[assembly: AssemblyVersion("2.1.0")]
+[assembly: AssemblyFileVersion("2.1.0")]
+[assembly: AssemblyInformationalVersion("2.1.0-alpha.1+Branch.develop.Sha.7dbf1d5e3745590ce4896e1a1d0ea3ada1be17eb")]
 [assembly: AssemblyCopyright("Copyright (c) Paul Betts")]
 
