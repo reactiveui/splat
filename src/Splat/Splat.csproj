@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.3;net45;Xamarin.iOS10;Xamarin.Mac20;Wpa81;MonoAndroid70</TargetFrameworks>
+    <TargetFrameworks>netstandard1.1</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -9,9 +9,12 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.1'">
+    <PackageReference Include="System.Diagnostics.Contracts" Version="4.0.1" />
+    <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.1.1" />
+    
     <Compile Include="Platforms\netstandard1.1\**\*.cs" />
     
-    <Compile Include="Platforms\ReflectionStubs.cs" />
+    <Compile Include="Platforms\ReflectionStubs.cs" />    
   </ItemGroup>  
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net45'">  
@@ -58,13 +61,9 @@
 
     <Compile Include="Platforms\PlatformModeDetector.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
-  </ItemGroup>
 
-  <ItemGroup>
     <Compile Include="Platforms\Android\Resources\Resource.designer.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="MSBuild.Sdk.Extras" Version="1.0.2" />
-  </ItemGroup>
+  <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 </Project>
