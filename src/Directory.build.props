@@ -1,0 +1,6 @@
+<Project>  
+   <ItemGroup>
+     <PackageReference Include="MSBuild.Sdk.Extras" Version="1.0.1" PrivateAssets="All" />
+   </ItemGroup>
+ </Project>
+ 

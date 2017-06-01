@@ -170,28 +170,14 @@ Task("RestorePackages").Does (() =>
     RestorePackages("./src/Splat.sln");
 });
 
-Task("RunUnitTests")
-    .IsDependentOn("Build")
-    .Does(() =>
-{
-    // Splat does not have unit tests
-    // XUnit2("./src/Splat.Tests/bin/x64/Release/Splat.Tests.dll", new XUnit2Settings {
-    //     OutputDirectory = artifactDirectory,
-    //     XmlReportV1 = false,
-    //     NoAppDomain = true
-    // });
-});
-
 Task("Package")
     .IsDependentOn("Build")
-    .IsDependentOn("RunUnitTests")
     .Does (() =>
 {
     Package("./src/Splat.nuspec", "./src/Splat");
 });
 
 Task("PublishPackages")
-    .IsDependentOn("RunUnitTests")
     .IsDependentOn("Package")
     .WithCriteria(() => !local)
     .WithCriteria(() => !isPullRequest)
@@ -232,7 +218,6 @@ Task("PublishPackages")
 });
 
 Task("CreateRelease")
-    .IsDependentOn("RunUnitTests")
     .IsDependentOn("Package")
     .WithCriteria(() => !local)
     .WithCriteria(() => !isPullRequest)
@@ -262,7 +247,6 @@ Task("CreateRelease")
 });
 
 Task("PublishRelease")
-    .IsDependentOn("RunUnitTests")
     .IsDependentOn("Package")
     .WithCriteria(() => !local)
     .WithCriteria(() => !isPullRequest)

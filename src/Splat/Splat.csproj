@@ -1,0 +1,70 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard1.3;net45;Xamarin.iOS10;Xamarin.Mac20;Wpa81;MonoAndroid70</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Platforms\**\*.cs" />
+    <None Include="Platforms\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.1'">
+    <Compile Include="Platforms\netstandard1.1\**\*.cs" />
+    
+    <Compile Include="Platforms\ReflectionStubs.cs" />
+  </ItemGroup>  
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">  
+    <Compile Include="Platforms\WinForms\**\*.cs" />
+    <Compile Include="Platforms\Xaml\**\*.cs" />
+
+    <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
+    <Compile Include="Platforms\PlatformModeDetector.cs" />
+    <Compile Include="Platforms\ReflectionStubs.cs" />
+
+    <Reference Include="WindowsBase" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />    
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'Wpa81'">  
+    <Compile Include="Platforms\WinRT\**\*.cs" />
+
+    <Compile Include="Platforms\netstandard1.1\Colors\**\*.cs" />
+    <Compile Include="Platforms\netstandard1.1\Points\**\*.cs" />
+
+    <TargetPlatform Include="Windows, Version=8.1" />
+    <TargetPlatform Include="WindowsPhoneApp, Version=8.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'Xamarin.iOS10'">  
+    <Compile Include="Platforms\Cocoa\**\*.cs" />
+    <Compile Include="Platforms\netstandard1.1\Colors\**\*.cs" />
+
+    <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
+    <Compile Include="Platforms\PlatformModeDetector.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'Xamarin.Mac20'">  
+    <Compile Include="Platforms\Cocoa\**\*.cs" />
+    <Compile Include="Platforms\netstandard1.1\Colors\**\*.cs" />
+
+    <Compile Include="Platforms\PlatformModeDetector.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid70'">  
+    <Compile Include="Platforms\Android\**\*.cs" />
+
+    <Compile Include="Platforms\PlatformModeDetector.cs" />
+    <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Platforms\Android\Resources\Resource.designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="MSBuild.Sdk.Extras" Version="1.0.2" />
+  </ItemGroup>
+</Project>
