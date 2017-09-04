@@ -121,3 +121,4 @@ tools/**/*
 
 # generated assembly info
 src/Splat/GlobalAssemblyInfo.cs
+splat\.binlog
