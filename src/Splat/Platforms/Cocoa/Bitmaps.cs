@@ -3,25 +3,15 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-#if UIKIT && !UNIFIED
-using MonoTouch.UIKit;
-using MonoTouch.Foundation;
-#elif UNIFIED && UIKIT
+#if UIKIT 
 using UIKit;
 using Foundation;
-#elif UNIFIED && !UIKIT
+#else
 using AppKit;
 using Foundation;
 
 using UIImage = AppKit.NSImage;
 using UIApplication = AppKit.NSApplication;
-#else
-using System.Drawing;
-using MonoMac.AppKit;
-using MonoMac.Foundation;
-
-using UIImage = MonoMac.AppKit.NSImage;
-using UIApplication = MonoMac.AppKit.NSApplication;
 #endif
 
 namespace Splat
@@ -105,11 +95,7 @@ namespace Splat
 
 #else
 
-#if UNIFIED
                 var rect = new CoreGraphics.CGRect();
-#else
-                var rect = new RectangleF();
-#endif
 
                 var cgImage = inner.AsCGImage(ref rect, null, null);
                 var imageRep = new NSBitmapImageRep(cgImage);
@@ -122,7 +108,7 @@ namespace Splat
 
                 var outData = imageRep.RepresentationUsingTypeProperties(type, props);
                 outData.AsStream().CopyTo(target);
-                #endif
+#endif
             });
         }
 

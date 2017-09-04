@@ -1,13 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "! Solution Items", "! Solution Items", "{43D7EB91-1B21-490D-9E25-8036E1B53A21}"
-	ProjectSection(SolutionItems) = preProject
-		Splat.nuspec = Splat.nuspec
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat", "Splat\Splat.csproj", "{8535BDE3-25B5-41D6-BF5D-2DF766AE879B}"
 EndProject
 Global
@@ -23,6 +18,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E833ED14-B971-4E09-B27E-76E99BC0FC10}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Splat\Splat-monotouch.csproj
