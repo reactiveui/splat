@@ -112,7 +112,6 @@ UpgradeLog*.XML
 .vs/
 
 # random build junk
-*.targets
 artifacts/
 
 # build tools
