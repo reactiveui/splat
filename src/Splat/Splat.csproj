@@ -57,6 +57,7 @@
     <Compile Include="Platforms\Cocoa\**\*.cs" />
     <Compile Include="Platforms\netstandard1.1\Colors\**\*.cs" />
     <Compile Include="Platforms\PlatformModeDetector.cs" />
+    
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
 
