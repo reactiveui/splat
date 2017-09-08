@@ -47,12 +47,6 @@
     <Compile Include="AssemblyFinder.cs" />
     <Compile Include="Bitmaps.cs" />
     <Compile Include="PointExtensions.cs" />
-    <Compile Include="Points\RectangleF.cs" />
-    <Compile Include="Points\Rectangle.cs" />
-    <Compile Include="Points\Size.cs" />
-    <Compile Include="Points\SizeF.cs" />
-    <Compile Include="Points\PointF.cs" />
-    <Compile Include="Points\Point.cs" />
     <Compile Include="Colors\Color.cs" />
     <Compile Include="Colors\KnownColor.cs" />
     <Compile Include="Colors\KnownColors.cs" />

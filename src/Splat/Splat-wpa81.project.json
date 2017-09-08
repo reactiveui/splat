@@ -1,6 +1,7 @@
 ﻿{
   "supports": {},
   "dependencies": {
+    "System.Drawing.Primitives": "4.3.0"
   },
   "frameworks": {
     ".NETPortable,Version=v4.6,Profile=Profile32": {}
