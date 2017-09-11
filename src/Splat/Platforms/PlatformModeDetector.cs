@@ -5,9 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-#if SILVERLIGHT
-using System.Windows;
-#elif NETFX_CORE
+#if NETFX_CORE
 using Windows.ApplicationModel;
 #endif
 
@@ -37,13 +35,7 @@ namespace Splat
 
         public bool? InDesignMode()
         {
-#if SILVERLIGHT
-            if (Application.Current.RootVisual != null) {
-                return System.ComponentModel.DesignerProperties.GetIsInDesignMode(Application.Current.RootVisual);
-            }
-
-            return false;
-#elif NETFX_CORE
+#if NETFX_CORE
             return DesignMode.DesignModeEnabled;
 #else
             var designEnvironments = new[] {
@@ -66,9 +58,7 @@ namespace Splat
 
         static bool searchForAssembly(IEnumerable<string> assemblyList)
         {
-#if SILVERLIGHT
-            return Deployment.Current.Parts.Select(x => x.Source.ToUpperInvariant()).Any(x => assemblyList.Any(name => x.Contains(name)));
-#elif NETFX_CORE
+#if NETFX_CORE
             var depPackages = Package.Current.Dependencies.Select(x => x.Id.FullName.ToUpperInvariant());
             if (depPackages.Any(x => assemblyList.Any(name => x.Contains(name)))) return true;
 

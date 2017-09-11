@@ -17,9 +17,7 @@ namespace Splat
         public static SolidColorBrush ToNativeBrush(this System.Drawing.Color This)
         {
             var ret = new SolidColorBrush(This.ToNative());
-#if !SILVERLIGHT
             ret.Freeze();
-#endif
             return ret;
         }
 

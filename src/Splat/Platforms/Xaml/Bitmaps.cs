@@ -15,11 +15,8 @@ namespace Splat
     {
         public Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
-#if SILVERLIGHT
-            return Deployment.Current.Dispatcher.InvokeAsync(() => {
-#else
+
             return Task.Run(() => {
-#endif
                 var ret = new BitmapImage();
 
                 withInit(ret, source => {
@@ -27,13 +24,8 @@ namespace Splat
                         source.DecodePixelWidth = (int)desiredWidth;
                         source.DecodePixelHeight = (int)desiredHeight;
                     }
-
-#if SILVERLIGHT
-                    source.SetSource(sourceStream);
-#else
                     source.StreamSource = sourceStream;
                     source.CacheOption = BitmapCacheOption.OnLoad;
-#endif
                 });
 
                 return (IBitmap) new BitmapSourceBitmap(ret);
@@ -42,11 +34,7 @@ namespace Splat
 
         public Task<IBitmap> LoadFromResource(string resource, float? desiredWidth, float? desiredHeight)
         {
-#if SILVERLIGHT
-            return Deployment.Current.Dispatcher.InvokeAsync(() => {
-#else
             return Task.Run(() => {
-#endif
                 var ret = new BitmapImage();
                 withInit(ret, x => {
                     if (desiredWidth != null) {
@@ -63,23 +51,15 @@ namespace Splat
 
         public IBitmap Create(float width, float height)
         {
-#if SILVERLIGHT
-            return (IBitmap)new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height));
-#else
             return (IBitmap) new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height, 96, 96, PixelFormats.Default, null));
-#endif
         }
 
         void withInit(BitmapImage source, Action<BitmapImage> block)
         {
-#if SILVERLIGHT
-            block(source);
-#else
             source.BeginInit();
             block(source);
             source.EndInit();
             source.Freeze();
-#endif
         }
     }
 
@@ -93,33 +73,19 @@ namespace Splat
         public BitmapSourceBitmap(BitmapSource bitmap)
         {
             inner = bitmap;
-#if SILVERLIGHT
-            Width = (float)inner.PixelWidth;
-            Height = (float)inner.PixelHeight;
-#else
             Width = (float)inner.Width;
             Height = (float)inner.Height;
-#endif
         }
 
         public Task Save(CompressedBitmapFormat format, float quality, Stream target)
         {
             return Task.Run(() => {
-#if SILVERLIGHT
-                if (format == CompressedBitmapFormat.Png) {
-                    throw new PlatformNotSupportedException("WP8 can't save PNGs.");
-                }
-
-                var wb = new WriteableBitmap(inner);
-                wb.SaveJpeg(target, wb.PixelWidth, wb.PixelHeight, 0, (int)(quality * 100.0f));
-#else
                 var encoder = format == CompressedBitmapFormat.Jpeg ?
                     (BitmapEncoder)new JpegBitmapEncoder() { QualityLevel = (int)(quality * 100.0f) } :
                     (BitmapEncoder)new PngBitmapEncoder();
 
                 encoder.Frames.Add(BitmapFrame.Create(inner));
                 encoder.Save(target);
-#endif
             });
         }
         public void Dispose()
