@@ -36,12 +36,12 @@ var isRunningOnWindows = IsRunningOnWindows();
 
 var isRunningOnAppVeyor = AppVeyor.IsRunningOnAppVeyor;
 var isPullRequest = AppVeyor.Environment.PullRequest.IsPullRequest;
-var isRepository = StringComparer.OrdinalIgnoreCase.Equals("paulcbetts/splat", AppVeyor.Environment.Repository.Name);
+var isRepository = StringComparer.OrdinalIgnoreCase.Equals("reactiveui/splat", AppVeyor.Environment.Repository.Name);
 
 var isReleaseBranch = StringComparer.OrdinalIgnoreCase.Equals("master", AppVeyor.Environment.Repository.Branch);
 var isTagged = AppVeyor.Environment.Repository.Tag.IsTag;
 
-var githubOwner = "paulcbetts";
+var githubOwner = "reactiveui";
 var githubRepository = "splat";
 var githubUrl = string.Format("https://github.com/{0}/{1}", githubOwner, githubRepository);
 
@@ -223,7 +223,6 @@ Task("Default")
     .IsDependentOn("PublishRelease")
     .Does (() =>
 {
-
 });
 
 
