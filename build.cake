@@ -52,14 +52,10 @@ var gitVersion = GitVersion();
 var majorMinorPatch = gitVersion.MajorMinorPatch;
 var informationalVersion = gitVersion.InformationalVersion;
 var nugetVersion = gitVersion.NuGetVersion;
-var buildVersion = gitVersion.FullBuildMetaData;
 
 // Artifacts
 var artifactDirectory = "./artifacts/";
 var packageWhitelist = new[] { "Splat" };
-
-// Macros
-Action Abort = () => { throw new Exception("a non-recoverable fatal error occurred."); };
 
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
@@ -102,13 +98,6 @@ Task("Build")
 
     build("./src/Splat.sln");
 
-});
-
-Task("UpdateAppVeyorBuildNumber")
-    .WithCriteria(() => isRunningOnAppVeyor)
-    .Does(() =>
-{
-    AppVeyor.UpdateBuildVersion(buildVersion);
 });
 
 Task("PublishPackages")
