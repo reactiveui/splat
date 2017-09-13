@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.1;net45;MonoAndroid70;Xamarin.iOS10;Xamarin.Mac20</TargetFrameworks>
+    <TargetFrameworks>netstandard1.1;net45;uap10.0;MonoAndroid70;Xamarin.iOS10;Xamarin.Mac20</TargetFrameworks>
     <AssemblyName>Splat</AssemblyName>
     <RootNamespace>Splat</RootNamespace>
     <Authors>Paul Betts</Authors>
@@ -36,14 +36,13 @@
     <Reference Include="PresentationFramework" />    
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'Wpa81'">  
+  <ItemGroup Condition="'$(TargetFramework)' == 'uap10.0'">  
     <Compile Include="Platforms\WinRT\**\*.cs" />
+    <Compile Include="Platforms\ReflectionStubs.cs" />
+
 
     <Compile Include="Platforms\netstandard1.1\Colors\**\*.cs" />
     <Compile Include="Platforms\netstandard1.1\Points\**\*.cs" />
-
-    <TargetPlatform Include="Windows, Version=8.1" />
-    <TargetPlatform Include="WindowsPhoneApp, Version=8.1" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'Xamarin.iOS10'">  
