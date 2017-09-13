@@ -16,7 +16,8 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.1'">
     <PackageReference Include="System.Diagnostics.Contracts" Version="4.0.1" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.1.1" />
-    
+    <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
+
     <Compile Include="Platforms\netstandard1.1\**\*.cs" />
     
     <Compile Include="Platforms\ReflectionStubs.cs" />    
@@ -40,9 +41,9 @@
     <Compile Include="Platforms\WinRT\**\*.cs" />
     <Compile Include="Platforms\ReflectionStubs.cs" />
 
-
     <Compile Include="Platforms\netstandard1.1\Colors\**\*.cs" />
-    <Compile Include="Platforms\netstandard1.1\Points\**\*.cs" />
+    
+    <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'Xamarin.iOS10'">  
