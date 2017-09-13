@@ -14,10 +14,7 @@
     NUGET_APIKEY:
       secure: 0g2AqQxgiAIFhqoJbbmEPrJa15Z8U5xYT6vQe43Gocuxbjw74hBAIKbU+Cj65UNd
   build_script:
-  - ps: >-
-      ./bootstrap.ps1
-
-      ./build.cmd
+  - ./build.cmd
   artifacts:
   - path: artifacts/*
   - path: '**/bin/*'
@@ -36,10 +33,7 @@
     NUGET_APIKEY:
       secure: YP/3KxC2ffsuHNaolPXj66JVGzSjON9FcR2S2OEzn9c6SV14oPzUh1ySyeT+G+aA
   build_script:
-  - ps: >-
-      ./bootstrap.ps1
-
-      ./build.cmd
+  - ./build.cmd
   artifacts:
   - path: artifacts/*
   - path: '**/bin/*'
