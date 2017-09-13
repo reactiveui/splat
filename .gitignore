@@ -117,6 +117,7 @@ artifacts/
 # build tools
 tools/**/*
 !tools/nuget/NuGet.exe
+!tools/packages.config
 
 # generated assembly info
 src/Splat/GlobalAssemblyInfo.cs
