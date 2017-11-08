@@ -130,7 +130,7 @@ namespace Splat
         public Task Save(CompressedBitmapFormat format, float quality, Stream target)
         {
             var fmt = format == CompressedBitmapFormat.Jpeg ? Bitmap.CompressFormat.Jpeg : Bitmap.CompressFormat.Png;
-            return Task.Run(() => { inner.Compress(fmt, (int)quality * 100, target); });
+            return Task.Run(() => { inner.Compress(fmt, (int)(quality * 100), target); });
         }
 
         public void Dispose()
