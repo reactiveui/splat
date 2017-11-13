@@ -55,6 +55,8 @@
     <Compile Include="Platforms\netstandard1.1\Colors\**\*.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
     <Compile Include="Platforms\PlatformModeDetector.cs" />
+    
+    <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'Xamarin.Mac20'">  
