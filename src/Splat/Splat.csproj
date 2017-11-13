@@ -23,6 +23,14 @@
     <Compile Include="Platforms\ReflectionStubs.cs" />    
   </ItemGroup>  
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Diagnostics.Contracts" Version="4.0.1" />
+    <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.1.1" />
+    <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
+
+    <Compile Include="Platforms\ReflectionStubs.cs" />    
+  </ItemGroup>  
+
   <ItemGroup Condition="'$(TargetFramework)' == 'net45'">  
     <Compile Include="Platforms\WinForms\**\*.cs" />
 
