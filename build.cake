@@ -77,7 +77,8 @@ Task("Build")
 
         MSBuild(solution, new MSBuildSettings() {
                 ToolPath = msBuildPath,
-                ArgumentCustomization = args => args.Append("/bl:splat.binlog")
+                ArgumentCustomization = args => args.Append("/bl:splat.binlog"),
+                MaxCpuCount = 0
             }
             .WithTarget("restore;build;pack")
             .WithProperty("PackageOutputPath",  MakeAbsolute(Directory(artifactDirectory)).ToString())
