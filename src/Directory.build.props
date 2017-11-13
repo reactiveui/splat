@@ -6,7 +6,7 @@
     <PackageIconUrl>http://f.cl.ly/items/1307401C3x2g3F2p2Z36/Logo.png</PackageIconUrl>
     <Authors>Paul Betts</Authors>
     <Owners>paulcbetts</Owners>
-    <PackageTags>drawing;colours;geometry;logging;unit test detection;service location;image handling;portable;xamarin;xamarin ios;xamarin mac;android;monodroid;uwp;net45;wpa81</PackageTags>
+    <PackageTags>drawing;colours;geometry;logging;unit test detection;service location;image handling;portable;xamarin;xamarin ios;xamarin mac;android;monodroid;uwp;net45</PackageTags>
     <PackageReleaseNotes>https://github.com/reactiveui/splat/releases</PackageReleaseNotes>
   </PropertyGroup>
   
