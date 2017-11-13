@@ -49,7 +49,7 @@ var nugetVersion = gitVersion.NuGetVersion;
 
 // Artifacts
 var artifactDirectory = "./artifacts/";
-var packageWhitelist = new[] { "Splat" };
+var packageWhitelist = new[] { "Splat", "Splat.WPF" };
 
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
@@ -92,7 +92,6 @@ Task("Build")
     };
 
     build("./src/Splat.sln");
-
 });
 
 Task("PublishPackages")

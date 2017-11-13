@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -16,11 +12,14 @@ namespace Splat
         public Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
 
-            return Task.Run(() => {
+            return Task.Run(() =>
+            {
                 var ret = new BitmapImage();
 
-                withInit(ret, source => {
-                    if (desiredWidth != null) {
+                withInit(ret, source =>
+                {
+                    if (desiredWidth != null)
+                    {
                         source.DecodePixelWidth = (int)desiredWidth;
                         source.DecodePixelHeight = (int)desiredHeight;
                     }
@@ -28,16 +27,19 @@ namespace Splat
                     source.CacheOption = BitmapCacheOption.OnLoad;
                 });
 
-                return (IBitmap) new BitmapSourceBitmap(ret);
+                return (IBitmap)new BitmapSourceBitmap(ret);
             });
         }
 
         public Task<IBitmap> LoadFromResource(string resource, float? desiredWidth, float? desiredHeight)
         {
-            return Task.Run(() => {
+            return Task.Run(() =>
+            {
                 var ret = new BitmapImage();
-                withInit(ret, x => {
-                    if (desiredWidth != null) {
+                withInit(ret, x =>
+                {
+                    if (desiredWidth != null)
+                    {
                         x.DecodePixelWidth = (int)desiredWidth;
                         x.DecodePixelHeight = (int)desiredHeight;
                     }
@@ -45,13 +47,13 @@ namespace Splat
                     x.UriSource = new Uri(resource, UriKind.RelativeOrAbsolute);
                 });
 
-                return (IBitmap) new BitmapSourceBitmap(ret);
+                return (IBitmap)new BitmapSourceBitmap(ret);
             });
         }
 
         public IBitmap Create(float width, float height)
         {
-            return (IBitmap) new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height, 96, 96, PixelFormats.Default, null));
+            return (IBitmap)new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height, 96, 96, PixelFormats.Default, null));
         }
 
         void withInit(BitmapImage source, Action<BitmapImage> block)
@@ -79,7 +81,8 @@ namespace Splat
 
         public Task Save(CompressedBitmapFormat format, float quality, Stream target)
         {
-            return Task.Run(() => {
+            return Task.Run(() =>
+            {
                 var encoder = format == CompressedBitmapFormat.Jpeg ?
                     (BitmapEncoder)new JpegBitmapEncoder() { QualityLevel = (int)(quality * 100.0f) } :
                     (BitmapEncoder)new PngBitmapEncoder();
@@ -113,10 +116,14 @@ namespace Splat
         {
             var tcs = new TaskCompletionSource<T>();
 
-            This.BeginInvoke(new Action(() => {
-                try {
+            This.BeginInvoke(new Action(() =>
+            {
+                try
+                {
                     tcs.SetResult(block());
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     tcs.SetException(ex);
                 }
             }));

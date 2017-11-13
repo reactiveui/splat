@@ -25,16 +25,12 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net45'">  
     <Compile Include="Platforms\WinForms\**\*.cs" />
-    <Compile Include="Platforms\Xaml\**\*.cs" />
 
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
     <Compile Include="Platforms\PlatformModeDetector.cs" />
     <Compile Include="Platforms\ReflectionStubs.cs" />
 
-    <Reference Include="WindowsBase" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />    
+    <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'uap10.0'">  
