@@ -2,8 +2,8 @@
 -
   configuration: Release
   branches:
-      only:
-        - master
+    only:
+      - master
   version: 1.0.{build}
   environment:
     GITHUB_USERNAME:
@@ -24,9 +24,10 @@
 -
   configuration: Development
   branches:
-      except:
-          - master
-          
+    except:
+      - master
+  on_finish:
+    - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   version: 1.0.{build}
   environment:
     NUGET_SOURCE: https://www.myget.org/F/splat/api/v2/package
@@ -38,9 +39,3 @@
   - path: artifacts/*
   - path: '**/bin/*'
   test: off
-
-# "fall back" configuration for all other branches
-# no "branches" section defined
-# do not deploy at all
--
-  configuration: Development
