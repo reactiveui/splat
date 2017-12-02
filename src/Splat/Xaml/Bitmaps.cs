@@ -25,6 +25,8 @@ namespace Splat
                 withInit(ret, source => {
                     if (desiredWidth != null) {
                         source.DecodePixelWidth = (int)desiredWidth;
+                    }
+                    if (desiredHeight != null) {
                         source.DecodePixelHeight = (int)desiredHeight;
                     }
 
@@ -51,6 +53,8 @@ namespace Splat
                 withInit(ret, x => {
                     if (desiredWidth != null) {
                         x.DecodePixelWidth = (int)desiredWidth;
+                    }
+                    if (desiredHeight != null) {
                         x.DecodePixelHeight = (int)desiredHeight;
                     }
 
