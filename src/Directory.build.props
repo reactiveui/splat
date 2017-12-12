@@ -1,7 +1,7 @@
 <Project>  
   <PropertyGroup>
     <Copyright>Copyright (c) .NET Foundation and Contributors</Copyright>
-    <PackageLicenseUrl>https://opensource.org/licenses/mit</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/reactiveui/splat/</PackageProjectUrl>
     <PackageIconUrl>http://f.cl.ly/items/1307401C3x2g3F2p2Z36/Logo.png</PackageIconUrl>
     <Authors>.NET Foundation and Contributors</Authors>
@@ -20,11 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nerdbank.GitVersioning" Version="2.2.33" PrivateAssets="all" />
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.3.38" PrivateAssets="all" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(IsTestProject)' != 'true' and '$(SourceLinkEnabled)' != 'false'">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" /> 
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" /> 
   </ItemGroup>
  </Project>
  
