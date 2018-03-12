@@ -49,7 +49,7 @@ var nugetVersion = gitVersion.NuGetVersion;
 
 // Artifacts
 var artifactDirectory = "./artifacts/";
-var packageWhitelist = new[] { "Splat", "Splat.WPF" };
+var packageWhitelist = new[] { "Splat" };
 
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
