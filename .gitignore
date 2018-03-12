@@ -112,7 +112,6 @@ UpgradeLog*.XML
 .vs/
 
 # random build junk
-*.targets
 artifacts/
 
 # build tools
@@ -121,3 +120,4 @@ tools/**/*
 
 # generated assembly info
 src/Splat/GlobalAssemblyInfo.cs
+splat\.binlog
