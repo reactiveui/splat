@@ -1,16 +1,10 @@
 //////////////////////////////////////////////////////////////////////
-// ADDINS
-//////////////////////////////////////////////////////////////////////
-
-#addin "Cake.FileHelpers"
-
-//////////////////////////////////////////////////////////////////////
 // TOOLS
 //////////////////////////////////////////////////////////////////////
 
 #tool "GitReleaseManager"
 #tool "GitVersion.CommandLine"
-#tool "GitLink"
+#tool "nuget:?package=vswhere"
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -36,70 +30,26 @@ var isRunningOnWindows = IsRunningOnWindows();
 
 var isRunningOnAppVeyor = AppVeyor.IsRunningOnAppVeyor;
 var isPullRequest = AppVeyor.Environment.PullRequest.IsPullRequest;
-var isRepository = StringComparer.OrdinalIgnoreCase.Equals("paulcbetts/splat", AppVeyor.Environment.Repository.Name);
+var isRepository = StringComparer.OrdinalIgnoreCase.Equals("reactiveui/splat", AppVeyor.Environment.Repository.Name);
 
 var isReleaseBranch = StringComparer.OrdinalIgnoreCase.Equals("master", AppVeyor.Environment.Repository.Branch);
 var isTagged = AppVeyor.Environment.Repository.Tag.IsTag;
 
-var githubOwner = "paulcbetts";
+var githubOwner = "reactiveui";
 var githubRepository = "splat";
 var githubUrl = string.Format("https://github.com/{0}/{1}", githubOwner, githubRepository);
+
+var msBuildPath = VSWhereLatest().CombineWithFilePath("./MSBuild/15.0/Bin/MSBuild.exe");
 
 // Version
 var gitVersion = GitVersion();
 var majorMinorPatch = gitVersion.MajorMinorPatch;
-var semVersion = gitVersion.SemVer;
 var informationalVersion = gitVersion.InformationalVersion;
 var nugetVersion = gitVersion.NuGetVersion;
-var buildVersion = gitVersion.FullBuildMetaData;
 
 // Artifacts
 var artifactDirectory = "./artifacts/";
 var packageWhitelist = new[] { "Splat" };
-
-// Macros
-Action Abort = () => { throw new Exception("a non-recoverable fatal error occurred."); };
-
-Action<string> RestorePackages = (solution) =>
-{
-    NuGetRestore(solution);
-};
-
-Action<string, string> Package = (nuspec, basePath) =>
-{
-    CreateDirectory(artifactDirectory);
-
-    Information("Packaging {0} using {1} as the BasePath.", nuspec, basePath);
-
-    NuGetPack(nuspec, new NuGetPackSettings {
-        Authors                  = new [] { "Paul Betts" },
-        Owners                   = new [] { "paulcbetts" },
-
-        ProjectUrl               = new Uri(githubUrl),
-        IconUrl                  = new Uri("http://f.cl.ly/items/1307401C3x2g3F2p2Z36/Logo.png"),
-        LicenseUrl               = new Uri("https://github.com/paulcbetts/splat/blob/master/LICENSE"),
-        Copyright                = "Copyright (c) Splat Contributors",
-        RequireLicenseAcceptance = false,
-
-        Version                  = nugetVersion,
-        Tags                     = new [] {  "drawing", "colours", "geometry", "logging", "unit test detection", "service location", "image handling", "portable", "xamarin", "xamarin ios", "xamarin mac", "android", "monodroid", "uwp", "net45", "wpa81" },
-        ReleaseNotes             = new [] { string.Format("{0}/releases", githubUrl) },
-
-        Symbols                  = false,
-        Verbosity                = NuGetVerbosity.Detailed,
-        OutputDirectory          = artifactDirectory,
-        BasePath                 = basePath,
-    });};
-
-Action<string> SourceLink = (solutionFileName) =>
-{
-    GitLink("./", new GitLinkSettings() {
-        RepositoryUrl = githubUrl,
-        SolutionFileName = solutionFileName,
-        ErrorsAsWarnings = treatWarningsAsErrors, 
-    });
-};
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
@@ -119,80 +69,33 @@ Teardown((context) =>
 //////////////////////////////////////////////////////////////////////
 
 Task("Build")
-    .IsDependentOn("RestorePackages")
-    .IsDependentOn("UpdateAssemblyInfo")
     .Does (() =>
 {
     Action<string> build = (solution) =>
     {
-        // UWP (project.json) needs to be restored before it will build.
-        RestorePackages(solution);
+        Information("Building {0} using {1}", solution, msBuildPath);
 
-        Information("Building {0}", solution);
-
-        MSBuild(solution, new MSBuildSettings()
-            .SetConfiguration("Release")
-            .WithProperty("NoWarn", "1591") // ignore missing XML doc warnings
+        MSBuild(solution, new MSBuildSettings() {
+                ToolPath = msBuildPath,
+                ArgumentCustomization = args => args.Append("/bl:splat.binlog"),
+                MaxCpuCount = 0
+            }
+            .WithTarget("restore;build;pack")
+            .WithProperty("PackageOutputPath",  MakeAbsolute(Directory(artifactDirectory)).ToString())
             .WithProperty("TreatWarningsAsErrors", treatWarningsAsErrors.ToString())
+            .SetConfiguration("Release")
+            // Due to https://github.com/NuGet/Home/issues/4790 and https://github.com/NuGet/Home/issues/4337 we
+            // have to pass a version explicitly
+            .WithProperty("Version", nugetVersion.ToString())
             .SetVerbosity(Verbosity.Minimal)
             .SetNodeReuse(false));
-
-        SourceLink(solution);
     };
 
     build("./src/Splat.sln");
 });
 
-Task("UpdateAppVeyorBuildNumber")
-    .WithCriteria(() => isRunningOnAppVeyor)
-    .Does(() =>
-{
-    AppVeyor.UpdateBuildVersion(buildVersion);
-});
-
-Task("UpdateAssemblyInfo")
-    .IsDependentOn("UpdateAppVeyorBuildNumber")
-    .Does (() =>
-{
-    var file = "./src/CommonAssemblyInfo.cs";
-
-    CreateAssemblyInfo(file, new AssemblyInfoSettings {
-        Product = "Splat",
-        Version = majorMinorPatch,
-        FileVersion = majorMinorPatch,
-        InformationalVersion = informationalVersion,
-        Copyright = "Copyright (c) Paul Betts"
-    });
-});
-
-Task("RestorePackages").Does (() =>
-{
-    RestorePackages("./src/Splat.sln");
-});
-
-Task("RunUnitTests")
-    .IsDependentOn("Build")
-    .Does(() =>
-{
-    // Splat does not have unit tests
-    // XUnit2("./src/Splat.Tests/bin/x64/Release/Splat.Tests.dll", new XUnit2Settings {
-    //     OutputDirectory = artifactDirectory,
-    //     XmlReportV1 = false,
-    //     NoAppDomain = true
-    // });
-});
-
-Task("Package")
-    .IsDependentOn("Build")
-    .IsDependentOn("RunUnitTests")
-    .Does (() =>
-{
-    Package("./src/Splat.nuspec", "./src/Splat");
-});
-
 Task("PublishPackages")
-    .IsDependentOn("RunUnitTests")
-    .IsDependentOn("Package")
+    .IsDependentOn("Build")
     .WithCriteria(() => !local)
     .WithCriteria(() => !isPullRequest)
     .WithCriteria(() => isRepository)
@@ -232,8 +135,7 @@ Task("PublishPackages")
 });
 
 Task("CreateRelease")
-    .IsDependentOn("RunUnitTests")
-    .IsDependentOn("Package")
+    .IsDependentOn("Build")
     .WithCriteria(() => !local)
     .WithCriteria(() => !isPullRequest)
     .WithCriteria(() => isRepository)
@@ -262,8 +164,7 @@ Task("CreateRelease")
 });
 
 Task("PublishRelease")
-    .IsDependentOn("RunUnitTests")
-    .IsDependentOn("Package")
+    .IsDependentOn("Build")
     .WithCriteria(() => !local)
     .WithCriteria(() => !isPullRequest)
     .WithCriteria(() => isRepository)
@@ -305,7 +206,6 @@ Task("Default")
     .IsDependentOn("PublishRelease")
     .Does (() =>
 {
-
 });
 
 
