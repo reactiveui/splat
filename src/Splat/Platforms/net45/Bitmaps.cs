@@ -21,6 +21,8 @@ namespace Splat
                     if (desiredWidth != null)
                     {
                         source.DecodePixelWidth = (int)desiredWidth;
+                    }
+                    if (desiredHeight != null) {
                         source.DecodePixelHeight = (int)desiredHeight;
                     }
                     source.StreamSource = sourceStream;
@@ -41,6 +43,8 @@ namespace Splat
                     if (desiredWidth != null)
                     {
                         x.DecodePixelWidth = (int)desiredWidth;
+                    }
+                    if (desiredHeight != null) {
                         x.DecodePixelHeight = (int)desiredHeight;
                     }
 
