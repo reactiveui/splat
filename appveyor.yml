@@ -10,10 +10,10 @@
     GITHUB_USERNAME:
       secure: 0Q9MvUId56SizmZwCf0cgg==
     GITHUB_TOKEN:
-      secure: R3xA9iMXfUUtFd3wuL38pcDa0/BjjpBvNcGShr5LRibZtBoOVSH47Jat75rwaGur
+      secure: ElDZgDnOX2sxb/c7ef4IhfseTL5Plkl/s/N7F3aE4LflxxO/Y0ru8DnKGmsFwrQ7
     NUGET_SOURCE: https://www.nuget.org/api/v2/package
     NUGET_APIKEY:
-      secure: 0g2AqQxgiAIFhqoJbbmEPrJa15Z8U5xYT6vQe43Gocuxbjw74hBAIKbU+Cj65UNd
+      secure: ELiBJuPIyjt3adBoySwp1ByTYk8IEUQSol07EzbDvOdhnxcSBmj3Itl4HPLtlbbG
   build_script:
   - ./build.cmd
   artifacts:
@@ -33,7 +33,7 @@
   environment:
     NUGET_SOURCE: https://www.myget.org/F/splat/api/v2/package
     NUGET_APIKEY:
-      secure: YP/3KxC2ffsuHNaolPXj66JVGzSjON9FcR2S2OEzn9c6SV14oPzUh1ySyeT+G+aA
+      secure: bws/D/nus12zFcbVqDfVbB/ye23dMyM/7g52dezibJ28FTjtjudwEWvm0Y4NHVfb
   build_script:
   - ./build.cmd
   artifacts:
