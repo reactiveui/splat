@@ -2,7 +2,7 @@
 
 ![](http://f.cl.ly/items/1307401C3x2g3F2p2Z36/Logo.png)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/i59faf63q00bm613?svg=true)](https://ci.appveyor.com/project/shiftkey/splat)
+[![Build status](https://ci.appveyor.com/api/projects/status/github/reactiveui/splat)](https://ci.appveyor.com/project/ghuntley/splat)
 
 Certain types of things are basically impossible to do in cross-platform
 mobile code today, yet there's no reason why. Writing a ViewModel that handles
