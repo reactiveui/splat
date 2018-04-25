@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net461;uap10.0.16299;MonoAndroid70;Xamarin.iOS10;Xamarin.Mac20;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net461;uap10.0.16299;MonoAndroid80;Xamarin.iOS10;Xamarin.Mac20;netstandard2.0</TargetFrameworks>
     <AssemblyName>Splat</AssemblyName>
     <RootNamespace>Splat</RootNamespace>
     <Authors>Paul Betts</Authors>
@@ -58,7 +58,7 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid70'">  
+  <ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid80'">  
     <Compile Include="Platforms\Android\**\*.cs" />
 
     <Compile Include="Platforms\PlatformModeDetector.cs" />
