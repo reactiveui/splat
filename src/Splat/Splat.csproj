@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net461;uap10.0.16299;MonoAndroid80;Xamarin.iOS10;Xamarin.Mac20;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net461;uap10.0.15063;MonoAndroid80;Xamarin.iOS10;Xamarin.Mac20;netstandard2.0</TargetFrameworks>
     <AssemblyName>Splat</AssemblyName>
     <RootNamespace>Splat</RootNamespace>
     <Authors>Paul Betts</Authors>
@@ -35,7 +35,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'uap10.0.16299'">  
+  <ItemGroup Condition="'$(TargetFramework)' == 'uap10.0.15063'">  
     <Compile Include="Platforms\WinRT\**\*.cs" />
     <Compile Include="Platforms\ReflectionStubs.cs" />
     <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
