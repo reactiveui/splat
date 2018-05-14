@@ -2,7 +2,7 @@
   <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
     <DefineConstants>$(DefineConstants);NET_45;XAML</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'uap10.0.16299'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'uap10.0.15063'">
     <DefineConstants>$(DefineConstants);NETFX_CORE;XAML;WINDOWS_UWP</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'Xamarin.iOS10'">
@@ -15,7 +15,7 @@
     <DefineConstants>$(DefineConstants);MONO;ANDROID</DefineConstants>
   </PropertyGroup>
   
-  <ItemGroup Condition=" '$(TargetFramework)' == 'uap10.0.16299' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'uap10.0.15063' ">
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform " Version="6.0.8" />
   </ItemGroup>
 </Project>
