@@ -10,7 +10,7 @@
     GITHUB_USERNAME:
       secure: 0Q9MvUId56SizmZwCf0cgg==
     GITHUB_TOKEN:
-      secure: ElDZgDnOX2sxb/c7ef4IhfseTL5Plkl/s/N7F3aE4LflxxO/Y0ru8DnKGmsFwrQ7
+      secure: cDWUFbL2fl7VaypzZWe4FjJccQX6T4N+UV9bM9iJtByttr5RhxtOROi5/fvnmp2i
     NUGET_SOURCE: https://www.nuget.org/api/v2/package
     NUGET_APIKEY:
       secure: ELiBJuPIyjt3adBoySwp1ByTYk8IEUQSol07EzbDvOdhnxcSBmj3Itl4HPLtlbbG
