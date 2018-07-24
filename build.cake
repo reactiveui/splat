@@ -1,10 +1,19 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+//////////////////////////////////////////////////////////////////////
+// ADDINS
+//////////////////////////////////////////////////////////////////////
+
+#addin "nuget:?package=Cake.FileHelpers&version=2.0.0"
+#addin "nuget:?package=Cake.Powershell&version=0.4.3"
+
 //////////////////////////////////////////////////////////////////////
 // TOOLS
 //////////////////////////////////////////////////////////////////////
 
-#tool "GitReleaseManager"
-#tool "GitVersion.CommandLine"
-#tool "nuget:?package=vswhere"
+#tool "nuget:?package=vswhere&version=2.4.1"
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -20,46 +29,41 @@ if (string.IsNullOrWhiteSpace(target))
 // PREPARATION
 //////////////////////////////////////////////////////////////////////
 
-// Should MSBuild & GitLink treat any errors as warnings?
+// Should MSBuild treat any errors as warnings?
 var treatWarningsAsErrors = false;
 
 // Build configuration
 var local = BuildSystem.IsLocalBuild;
-var isRunningOnUnix = IsRunningOnUnix();
-var isRunningOnWindows = IsRunningOnWindows();
-
-var isRunningOnAppVeyor = AppVeyor.IsRunningOnAppVeyor;
-var isPullRequest = AppVeyor.Environment.PullRequest.IsPullRequest;
-var isRepository = StringComparer.OrdinalIgnoreCase.Equals("reactiveui/splat", AppVeyor.Environment.Repository.Name);
-
-var isReleaseBranch = StringComparer.OrdinalIgnoreCase.Equals("master", AppVeyor.Environment.Repository.Branch);
-var isTagged = AppVeyor.Environment.Repository.Tag.IsTag;
-
-var githubOwner = "reactiveui";
-var githubRepository = "splat";
-var githubUrl = string.Format("https://github.com/{0}/{1}", githubOwner, githubRepository);
+var isPullRequest = !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("SYSTEM_PULLREQUEST_PULLREQUESTNUMBER"));
+var isRepository = StringComparer.OrdinalIgnoreCase.Equals("reactiveui/spalt", TFBuild.Environment.Repository.RepoName);
 
 var msBuildPath = VSWhereLatest().CombineWithFilePath("./MSBuild/15.0/Bin/MSBuild.exe");
 
-// Version
-var gitVersion = GitVersion();
-var majorMinorPatch = gitVersion.MajorMinorPatch;
-var informationalVersion = gitVersion.InformationalVersion;
-var nugetVersion = gitVersion.NuGetVersion;
+var informationalVersion = EnvironmentVariable("GitAssemblyInformationalVersion");
 
 // Artifacts
 var artifactDirectory = "./artifacts/";
-var packageWhitelist = new[] { "Splat" };
+var packageWhitelist = new[] { "splat" };
+
+// Define global marcos.
+Action Abort = () => { throw new Exception("a non-recoverable fatal error occurred."); };
 
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
 ///////////////////////////////////////////////////////////////////////////////
-Setup((context) =>
+Setup(context =>
 {
-    Information("Building version {0} of Splat. (isTagged: {1})", informationalVersion, isTagged);
+    if (!IsRunningOnWindows())
+    {
+        throw new NotImplementedException("Splat will only build on Windows (w/Xamarin installed) because it's not possible to target UWP, WPF and Windows Forms from UNIX.");
+    }
+
+    Information("Building version {0} of Splat.", informationalVersion);
+
+    CreateDirectory(artifactDirectory);
 });
 
-Teardown((context) =>
+Teardown(context =>
 {
     // Executed AFTER the last task.
 });
@@ -71,129 +75,43 @@ Teardown((context) =>
 Task("Build")
     .Does (() =>
 {
-    Action<string> build = (solution) =>
+    Action<string,string> build = (solution, name) =>
     {
         Information("Building {0} using {1}", solution, msBuildPath);
 
         MSBuild(solution, new MSBuildSettings() {
                 ToolPath = msBuildPath,
-                ArgumentCustomization = args => args.Append("/bl:splat.binlog"),
-                MaxCpuCount = 0
+                ArgumentCustomization = args => args.Append("/m /restore")
             }
-            .WithTarget("restore;build;pack")
-            .WithProperty("PackageOutputPath",  MakeAbsolute(Directory(artifactDirectory)).ToString())
+            .WithTarget("build;pack") 
+            .WithProperty("PackageOutputPath",  MakeAbsolute(Directory(artifactDirectory)).ToString().Quote())
             .WithProperty("TreatWarningsAsErrors", treatWarningsAsErrors.ToString())
-            .SetConfiguration("Release")
-            // Due to https://github.com/NuGet/Home/issues/4790 and https://github.com/NuGet/Home/issues/4337 we
-            // have to pass a version explicitly
-            .WithProperty("Version", nugetVersion.ToString())
+            .SetConfiguration("Release")                        
             .SetVerbosity(Verbosity.Minimal)
             .SetNodeReuse(false));
     };
 
-    build("./src/Splat.sln");
-});
-
-Task("PublishPackages")
-    .IsDependentOn("Build")
-    .WithCriteria(() => !local)
-    .WithCriteria(() => !isPullRequest)
-    .WithCriteria(() => isRepository)
-    .Does (() =>
-{
-    if (isReleaseBranch && !isTagged)
-    {
-        Information("Packages will not be published as this release has not been tagged.");
-        return;
-    }
-
-    // Resolve the API key.
-    var apiKey = EnvironmentVariable("NUGET_APIKEY");
-    if (string.IsNullOrEmpty(apiKey))
-    {
-        throw new Exception("The NUGET_APIKEY environment variable is not defined.");
-    }
-
-    var source = EnvironmentVariable("NUGET_SOURCE");
-    if (string.IsNullOrEmpty(source))
-    {
-        throw new Exception("The NUGET_SOURCE environment variable is not defined.");
-    }
-
-    // only push whitelisted packages.
     foreach(var package in packageWhitelist)
     {
-        // only push the package which was created during this build run.
-        var packagePath = artifactDirectory + File(string.Concat(package, ".", nugetVersion, ".nupkg"));
-
-        // Push the package.
-        NuGetPush(packagePath, new NuGetPushSettings {
-            Source = source,
-            ApiKey = apiKey
-        });
+        build("./src/" + package + "/" + package + ".csproj", package);
     }
 });
 
-Task("CreateRelease")
-    .IsDependentOn("Build")
+Task("SignPackages")
     .WithCriteria(() => !local)
     .WithCriteria(() => !isPullRequest)
-    .WithCriteria(() => isRepository)
-    .WithCriteria(() => isReleaseBranch)
-    .WithCriteria(() => !isTagged)
-    .Does (() =>
+    .Does(() =>
 {
-    var username = EnvironmentVariable("GITHUB_USERNAME");
-    if (string.IsNullOrEmpty(username))
+    StartPowershellFile("./SignPackages.ps1", args =>
     {
-        throw new Exception("The GITHUB_USERNAME environment variable is not defined.");
-    }
-
-    var token = EnvironmentVariable("GITHUB_TOKEN");
-    if (string.IsNullOrEmpty(token))
-    {
-        throw new Exception("The GITHUB_TOKEN environment variable is not defined.");
-    }
-
-    GitReleaseManagerCreate(username, token, githubOwner, githubRepository, new GitReleaseManagerCreateSettings {
-        Milestone         = majorMinorPatch,
-        Name              = majorMinorPatch,
-        Prerelease        = true,
-        TargetCommitish   = "master"
     });
 });
 
-Task("PublishRelease")
+Task("Package")
     .IsDependentOn("Build")
-    .WithCriteria(() => !local)
-    .WithCriteria(() => !isPullRequest)
-    .WithCriteria(() => isRepository)
-    .WithCriteria(() => isReleaseBranch)
-    .WithCriteria(() => isTagged)
+    .IsDependentOn("SignPackages")
     .Does (() =>
 {
-    var username = EnvironmentVariable("GITHUB_USERNAME");
-    if (string.IsNullOrEmpty(username))
-    {
-        throw new Exception("The GITHUB_USERNAME environment variable is not defined.");
-    }
-
-    var token = EnvironmentVariable("GITHUB_TOKEN");
-    if (string.IsNullOrEmpty(token))
-    {
-        throw new Exception("The GITHUB_TOKEN environment variable is not defined.");
-    }
-
-    // only push whitelisted packages.
-    foreach(var package in packageWhitelist)
-    {
-        // only push the package which was created during this build run.
-        var packagePath = artifactDirectory + File(string.Concat(package, ".", nugetVersion, ".nupkg"));
-
-        GitReleaseManagerAddAssets(username, token, githubOwner, githubRepository, majorMinorPatch, packagePath);
-    }
-
-    GitReleaseManagerClose(username, token, githubOwner, githubRepository, majorMinorPatch);
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -201,13 +119,10 @@ Task("PublishRelease")
 //////////////////////////////////////////////////////////////////////
 
 Task("Default")
-    .IsDependentOn("CreateRelease")
-    .IsDependentOn("PublishPackages")
-    .IsDependentOn("PublishRelease")
+    .IsDependentOn("Package")
     .Does (() =>
 {
 });
-
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION
