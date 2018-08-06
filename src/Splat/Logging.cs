@@ -25,6 +25,12 @@ namespace Splat
 
     public interface IFullLogger : ILogger
     {
+        bool IsDebugEnabled { get; }
+        bool IsInfoEnabled { get; }
+        bool IsWarnEnabled { get; }
+        bool IsErrorEnabled { get; }
+        bool IsFatalEnabled { get; }
+
         void Debug<T>(T value);
         void Debug<T>(IFormatProvider formatProvider, T value);
         void DebugException([Localizable(false)] string message, Exception exception);
@@ -232,6 +238,31 @@ namespace Splat
             sfArgs[1] = message;
             sfArgs[2] = args;
             return (string) stringFormat.Invoke(null, sfArgs);
+        }
+
+        public bool IsDebugEnabled
+        {
+            get { return Level <= LogLevel.Debug; }
+        }
+
+        public bool IsInfoEnabled
+        {
+            get { return Level <= LogLevel.Info; }
+        }
+
+        public bool IsWarnEnabled
+        {
+            get { return Level <= LogLevel.Warn; }
+        }
+
+        public bool IsErrorEnabled
+        {
+            get { return Level <= LogLevel.Error; }
+        }
+
+        public bool IsFatalEnabled
+        {
+            get { return Level <= LogLevel.Fatal; }
         }
 
         public void Debug<T>(T value)
