@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.build.targets = Directory.build.targets
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.NLog", "Splat.NLog\Splat.NLog.csproj", "{24BCC71A-0998-4B81-9A55-BC00C2A3F8CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{8535BDE3-25B5-41D6-BF5D-2DF766AE879B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8535BDE3-25B5-41D6-BF5D-2DF766AE879B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8535BDE3-25B5-41D6-BF5D-2DF766AE879B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24BCC71A-0998-4B81-9A55-BC00C2A3F8CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24BCC71A-0998-4B81-9A55-BC00C2A3F8CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24BCC71A-0998-4B81-9A55-BC00C2A3F8CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24BCC71A-0998-4B81-9A55-BC00C2A3F8CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
