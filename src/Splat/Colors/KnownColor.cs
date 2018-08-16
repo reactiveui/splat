@@ -1,5 +1,5 @@
 ﻿//
-// System.Drawing.Color.cs
+// System.Drawing.KnownColor.cs
 //
 // Author:
 // Dennis Hayes (dennish@raytek.com)
@@ -28,7 +28,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-namespace System.Drawing
+namespace Splat
 {
 
 #if ONLY_1_1

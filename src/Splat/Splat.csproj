@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Remove="Platforms\**\*.cs" />
     <None Include="Platforms\**\*.cs" />
+    <None Include="Colors\**\*.cs" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
@@ -43,7 +44,6 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'Xamarin.iOS10'">  
     <Compile Include="Platforms\Cocoa\**\*.cs" />
-    <Compile Include="Platforms\netstandard1.1\Colors\**\*.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
     <Compile Include="Platforms\PlatformModeDetector.cs" />
     
@@ -52,7 +52,6 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'Xamarin.Mac20'">  
     <Compile Include="Platforms\Cocoa\**\*.cs" />
-    <Compile Include="Platforms\netstandard1.1\Colors\**\*.cs" />
     <Compile Include="Platforms\PlatformModeDetector.cs" />
     
     <Reference Include="System.Runtime.Serialization" />
@@ -60,8 +59,9 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid80'">  
     <Compile Include="Platforms\Android\**\*.cs" />
-
     <Compile Include="Platforms\PlatformModeDetector.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
+
+    <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
 </Project>

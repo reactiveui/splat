@@ -28,7 +28,9 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-namespace System.Drawing
+using System;
+
+namespace Splat
 {
 
 #if NET_2_0
@@ -284,25 +286,25 @@ namespace System.Drawing
         }
 #endif
 
-        public static Color FromKnownColor(KnownColor kc)
+        public static SplatColor FromKnownColor(KnownColor kc)
         {
-            Color c;
+            SplatColor c;
             short n = (short)kc;
             if ((n <= 0) || (n >= ArgbValues.Length))
             {
                 // This is what it returns!
-                c = Color.FromArgb(0, 0, 0, 0);
+                c = SplatColor.FromArgb(0, 0, 0, 0);
 #if ONLY_1_1
         c.name = kc.ToString ();
 #endif
-                c.state |= (short)Color.ColorType.Named;
+                c.state |= (short)SplatColor.ColorType.Named;
             }
             else
             {
-                c = new Color();
-                c.state = (short)(Color.ColorType.ARGB | Color.ColorType.Known | Color.ColorType.Named);
+                c = new SplatColor();
+                c.state = (short)(SplatColor.ColorType.ARGB | SplatColor.ColorType.Known | SplatColor.ColorType.Named);
                 if ((n < 27) || (n > 169))
-                    c.state |= (short)Color.ColorType.System;
+                    c.state |= (short)SplatColor.ColorType.System;
                 c.Value = ArgbValues[n];
 #if ONLY_1_1
         c.name = GetName (n);
@@ -502,7 +504,7 @@ namespace System.Drawing
         }
 
         // FIXME: Linear scan
-        public static Color FindColorMatch(Color c)
+        public static SplatColor FindColorMatch(SplatColor c)
         {
             uint argb = (uint)c.ToArgb();
 
@@ -516,10 +518,10 @@ namespace System.Drawing
                     return KnownColors.FromKnownColor((KnownColor)i);
             }
 
-            return Color.Empty;
+            return SplatColor.Empty;
         }
 
-        // When this method is called, we teach any new color(s) to the Color class
+        // When this method is called, we teach any new color(s) to the SplatColor class
         // NOTE: This is called (reflection) by System.Windows.Forms.Theme (this isn't dead code)
         public static void Update(int knownColor, int color)
         {
