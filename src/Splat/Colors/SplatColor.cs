@@ -103,9 +103,9 @@ namespace Splat
           return String.Format ("{0:x}", ToArgb ());
 #else
                 // name is required for serialization under 1.x, but not under 2.0
-                if(name == null) {
+                if (name == null) {
                     // Can happen with stuff deserialized from MS
-                    if(IsNamedColor)
+                    if (IsNamedColor)
                         name = KnownColors.GetName(knownColor);
                     else
                         name = String.Format("{0:x}", ToArgb());
@@ -146,7 +146,7 @@ namespace Splat
             {
                 // Optimization for known colors that were deserialized
                 // from an MS serialized stream.  
-                if(value == 0 && IsKnownColor) {
+                if (value == 0 && IsKnownColor) {
                     value = KnownColors.FromKnownColor((KnownColor)knownColor).ToArgb() & 0xFFFFFFFF;
                 }
                 return value;
@@ -228,18 +228,18 @@ namespace Splat
 
         public static bool operator ==(SplatColor left, SplatColor right)
         {
-            if(left.Value != right.Value)
+            if (left.Value != right.Value)
                 return false;
-            if(left.IsNamedColor != right.IsNamedColor)
+            if (left.IsNamedColor != right.IsNamedColor)
                 return false;
-            if(left.IsSystemColor != right.IsSystemColor)
+            if (left.IsSystemColor != right.IsSystemColor)
                 return false;
-            if(left.IsEmpty != right.IsEmpty)
+            if (left.IsEmpty != right.IsEmpty)
                 return false;
-            if(left.IsNamedColor) {
+            if (left.IsNamedColor) {
                 // then both are named (see previous check) and so we need to compare them
                 // but otherwise we don't as it kills performance (Name calls String.Format)
-                if(left.Name != right.Name)
+                if (left.Name != right.Name)
                     return false;
             }
             return true;
@@ -273,11 +273,11 @@ namespace Splat
             byte minval = (byte)Math.Min(R, Math.Min(G, B));
             byte maxval = (byte)Math.Max(R, Math.Max(G, B));
 
-            if(maxval == minval)
+            if (maxval == minval)
                 return 0.0f;
 
             int sum = maxval + minval;
-            if(sum > 255)
+            if (sum > 255)
                 sum = 510 - sum;
 
             return (float)(maxval - minval) / sum;
@@ -291,7 +291,7 @@ namespace Splat
             byte minval = (byte)Math.Min(r, Math.Min(g, b));
             byte maxval = (byte)Math.Max(r, Math.Max(g, b));
 
-            if(maxval == minval)
+            if (maxval == minval)
                 return 0.0f;
 
             float diff = (float)(maxval - minval);
@@ -300,13 +300,13 @@ namespace Splat
             float bnorm = (maxval - b) / diff;
 
             float hue = 0.0f;
-            if(r == maxval)
+            if (r == maxval)
                 hue = 60.0f * (6.0f + bnorm - gnorm);
-            if(g == maxval)
+            if (g == maxval)
                 hue = 60.0f * (2.0f + rnorm - bnorm);
-            if(b == maxval)
+            if (b == maxval)
                 hue = 60.0f * (4.0f + gnorm - rnorm);
-            if(hue > 360.0f)
+            if (hue > 360.0f)
                 hue = hue - 360.0f;
 
             return hue;
@@ -374,7 +374,7 @@ namespace Splat
 
         public override bool Equals(object obj)
         {
-            if(!(obj is SplatColor))
+            if (!(obj is SplatColor))
                 return false;
             SplatColor c = (SplatColor)obj;
             return this == c;
@@ -408,7 +408,7 @@ namespace Splat
         public override int GetHashCode()
         {
             int hc = (int)(Value ^ (Value >> 32) ^ state ^ (knownColor >> 16));
-            if(IsNamedColor)
+            if (IsNamedColor)
                 hc ^= Name.GetHashCode();
             return hc;
         }
@@ -423,11 +423,11 @@ namespace Splat
 
         public override string ToString()
         {
-            if(IsEmpty)
+            if (IsEmpty)
                 return "SplatColor [Empty]";
 
             // Use the property here, not the field.
-            if(IsNamedColor)
+            if (IsNamedColor)
                 return "SplatColor [" + Name + "]";
 
             return String.Format("SplatColor [A={0}, R={1}, G={2}, B={3}]", A, R, G, B);
@@ -435,11 +435,11 @@ namespace Splat
 
         private static void CheckRGBValues(int red, int green, int blue)
         {
-            if((red > 255) || (red < 0))
+            if ((red > 255) || (red < 0))
                 throw CreateColorArgumentException(red, "red");
-            if((green > 255) || (green < 0))
+            if ((green > 255) || (green < 0))
                 throw CreateColorArgumentException(green, "green");
-            if((blue > 255) || (blue < 0))
+            if ((blue > 255) || (blue < 0))
                 throw CreateColorArgumentException(blue, "blue");
         }
 
@@ -452,7 +452,7 @@ namespace Splat
 
         private static void CheckARGBValues(int alpha, int red, int green, int blue)
         {
-            if((alpha > 255) || (alpha < 0))
+            if ((alpha > 255) || (alpha < 0))
                 throw CreateColorArgumentException(alpha, "alpha");
             CheckRGBValues(red, green, blue);
         }
