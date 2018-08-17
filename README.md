@@ -129,13 +129,32 @@ entry for.
 ```cs
 // This System.Drawing class works, even on WinRT or WP8 where it's not supposed to exist
 // Also, this works in a Portable Library, in your ViewModel
-ProfileBackgroundAccentColor = new Color(255, 255, 255, 255);
+ProfileBackgroundAccentColor = Color.FromArgb(255, 255, 255, 255);
 ```
 
 Later, in the view, we can use it:
 
 ```
 ImageView.Background = ViewModel.ProfileBackgroundAccentColor.ToNativeBrush();
+```
+
+If targeting iOS or Mac in a cross-platform solution (e.g. iOS & Android), use
+the SplatColor class to define colors in your netstandard library
+(since Cocoa doesn't include System.Drawing.Color).
+
+```cs
+// In a netstandard library
+SplatColor BackgroundColor = SplatColor.Red;
+```
+
+```
+// From an iOS project
+UIColor bgColor = ViewModel.BackgroundColor.ToNative();
+```
+
+```
+// From an Android project
+Android.Graphics.Color bgColor = ViewModel.BackgroundColor.ToNative();
 ```
 
 ## Detecting whether you're in a unit test runner

@@ -8,6 +8,8 @@
     <Owners>xpaulbettsx;ghuntley</Owners>
     <PackageTags>drawing;colours;geometry;logging;unit test detection;service location;image handling;portable;xamarin;xamarin ios;xamarin mac;android;monodroid;uwp;net45</PackageTags>
     <PackageReleaseNotes>https://github.com/reactiveui/splat/releases</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/reactiveui/splat</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
   
   <ItemGroup>

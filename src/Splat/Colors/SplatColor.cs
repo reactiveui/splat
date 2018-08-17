@@ -33,14 +33,15 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 
-namespace System.Drawing
+namespace Splat
 {
     [DataContract]
-    public struct Color
+    public struct SplatColor
     {
 
         // Private transparency (A) and R,G,B fields.
@@ -68,24 +69,24 @@ namespace System.Drawing
         internal string name;
         // #endif
 #if TARGET_JVM
-    internal java.awt.Color NativeObject {
+    internal java.awt.SplatColor NativeObject {
       get {
-        return new java.awt.Color (R, G, B, A);
+        return new java.awt.SplatColor (R, G, B, A);
       }
     }
 
-    internal static Color FromArgbNamed (int alpha, int red, int green, int blue, string name, KnownColor knownColor)
+    internal static SplatColor FromArgbNamed (int alpha, int red, int green, int blue, string name, KnownColor knownColor)
     {
-      Color color = FromArgb (alpha, red, green, blue);
+      SplatColor color = FromArgb (alpha, red, green, blue);
       color.state = (short) (ColorType.Known|ColorType.Named);
       color.name = KnownColors.GetName (knownColor);
       color.knownColor = (short) knownColor;
       return color;
     }
 
-    internal static Color FromArgbSystem (int alpha, int red, int green, int blue, string name, KnownColor knownColor)
+    internal static SplatColor FromArgbSystem (int alpha, int red, int green, int blue, string name, KnownColor knownColor)
     {
-      Color color = FromArgbNamed (alpha, red, green, blue, name, knownColor);
+      SplatColor color = FromArgbNamed (alpha, red, green, blue, name, knownColor);
       color.state |= (short) ColorType.System;
       return color;
     }
@@ -102,8 +103,7 @@ namespace System.Drawing
           return String.Format ("{0:x}", ToArgb ());
 #else
                 // name is required for serialization under 1.x, but not under 2.0
-                if (name == null)
-                {
+                if (name == null) {
                     // Can happen with stuff deserialized from MS
                     if (IsNamedColor)
                         name = KnownColors.GetName(knownColor);
@@ -146,8 +146,7 @@ namespace System.Drawing
             {
                 // Optimization for known colors that were deserialized
                 // from an MS serialized stream.  
-                if (value == 0 && IsKnownColor)
-                {
+                if (value == 0 && IsKnownColor) {
                     value = KnownColors.FromKnownColor((KnownColor)knownColor).ToArgb() & 0xFFFFFFFF;
                 }
                 return value;
@@ -155,15 +154,15 @@ namespace System.Drawing
             set { this.value = value; }
         }
 
-        public static Color FromArgb(int red, int green, int blue)
+        public static SplatColor FromArgb(int red, int green, int blue)
         {
             return FromArgb(255, red, green, blue);
         }
 
-        public static Color FromArgb(int alpha, int red, int green, int blue)
+        public static SplatColor FromArgb(int alpha, int red, int green, int blue)
         {
             CheckARGBValues(alpha, red, green, blue);
-            Color color = new Color();
+            SplatColor color = new SplatColor();
             color.state = (short)ColorType.ARGB;
             color.Value = (int)((uint)alpha << 24) + (red << 16) + (green << 8) + blue;
             return color;
@@ -174,32 +173,29 @@ namespace System.Drawing
             return (int)Value;
         }
 
-        public static Color FromArgb(int alpha, Color baseColor)
+        public static SplatColor FromArgb(int alpha, SplatColor baseColor)
         {
             return FromArgb(alpha, baseColor.R, baseColor.G, baseColor.B);
         }
 
-        public static Color FromArgb(int argb)
+        public static SplatColor FromArgb(int argb)
         {
             return FromArgb((argb >> 24) & 0x0FF, (argb >> 16) & 0x0FF, (argb >> 8) & 0x0FF, argb & 0x0FF);
         }
 
-        public static Color FromKnownColor(KnownColor color)
+        public static SplatColor FromKnownColor(KnownColor color)
         {
             return KnownColors.FromKnownColor(color);
         }
 
-        public static Color FromName(string name)
+        public static SplatColor FromName(string name)
         {
-            try
-            {
+            try {
                 KnownColor kc = (KnownColor)Enum.Parse(typeof(KnownColor), name, true);
                 return KnownColors.FromKnownColor(kc);
-            }
-            catch
-            {
+            } catch {
                 // This is what it returns! 	 
-                Color d = FromArgb(0, 0, 0, 0);
+                SplatColor d = FromArgb(0, 0, 0, 0);
                 d.name = name;
                 d.state |= (short)ColorType.Named;
                 return d;
@@ -215,22 +211,22 @@ namespace System.Drawing
         /// </summary>
         ///
         /// <remarks>
-        ///	An uninitialized Color Structure
+        ///	An uninitialized SplatColor Structure
         /// </remarks>
 
-        public static readonly Color Empty;
+        public static readonly SplatColor Empty;
 
         /// <summary>
         ///	Equality Operator
         /// </summary>
         ///
         /// <remarks>
-        ///	Compares two Color objects. The return value is
+        ///	Compares two SplatColor objects. The return value is
         ///	based on the equivalence of the A,R,G,B properties 
         ///	of the two Colors.
         /// </remarks>
 
-        public static bool operator ==(Color left, Color right)
+        public static bool operator ==(SplatColor left, SplatColor right)
         {
             if (left.Value != right.Value)
                 return false;
@@ -240,8 +236,7 @@ namespace System.Drawing
                 return false;
             if (left.IsEmpty != right.IsEmpty)
                 return false;
-            if (left.IsNamedColor)
-            {
+            if (left.IsNamedColor) {
                 // then both are named (see previous check) and so we need to compare them
                 // but otherwise we don't as it kills performance (Name calls String.Format)
                 if (left.Name != right.Name)
@@ -255,12 +250,12 @@ namespace System.Drawing
         /// </summary>
         ///
         /// <remarks>
-        ///	Compares two Color objects. The return value is
+        ///	Compares two SplatColor objects. The return value is
         ///	based on the equivalence of the A,R,G,B properties 
         ///	of the two colors.
         /// </remarks>
 
-        public static bool operator !=(Color left, Color right)
+        public static bool operator !=(SplatColor left, SplatColor right)
         {
             return !(left == right);
         }
@@ -374,14 +369,14 @@ namespace System.Drawing
         /// </summary>
         ///
         /// <remarks>
-        ///	Checks equivalence of this Color and another object.
+        ///	Checks equivalence of this SplatColor and another object.
         /// </remarks>
 
         public override bool Equals(object obj)
         {
-            if (!(obj is Color))
+            if (!(obj is SplatColor))
                 return false;
-            Color c = (Color)obj;
+            SplatColor c = (SplatColor)obj;
             return this == c;
         }
 
@@ -392,12 +387,12 @@ namespace System.Drawing
         /// </summary>
         ///
         /// <remarks>
-        ///	Checks equivalence of this Color and another object.
+        ///	Checks equivalence of this SplatColor and another object.
         /// </remarks>
         //public bool ReferenceEquals (object o)
         //{
-        //	if (!(o is Color))return false;
-        //	return (this == (Color) o);
+        //	if (!(o is SplatColor))return false;
+        //	return (this == (SplatColor) o);
         //}
 
 
@@ -423,19 +418,19 @@ namespace System.Drawing
         /// </summary>
         ///
         /// <remarks>
-        ///	Formats the Color as a string in ARGB notation.
+        ///	Formats the SplatColor as a string in ARGB notation.
         /// </remarks>
 
         public override string ToString()
         {
             if (IsEmpty)
-                return "Color [Empty]";
+                return "SplatColor [Empty]";
 
             // Use the property here, not the field.
             if (IsNamedColor)
-                return "Color [" + Name + "]";
+                return "SplatColor [" + Name + "]";
 
-            return String.Format("Color [A={0}, R={1}, G={2}, B={3}]", A, R, G, B);
+            return String.Format("SplatColor [A={0}, R={1}, G={2}, B={3}]", A, R, G, B);
         }
 
         private static void CheckRGBValues(int red, int green, int blue)
@@ -463,707 +458,707 @@ namespace System.Drawing
         }
 
 
-        static public Color Transparent
+        static public SplatColor Transparent
         {
             get { return KnownColors.FromKnownColor(KnownColor.Transparent); }
         }
 
-        static public Color AliceBlue
+        static public SplatColor AliceBlue
         {
             get { return KnownColors.FromKnownColor(KnownColor.AliceBlue); }
         }
 
-        static public Color AntiqueWhite
+        static public SplatColor AntiqueWhite
         {
             get { return KnownColors.FromKnownColor(KnownColor.AntiqueWhite); }
         }
 
-        static public Color Aqua
+        static public SplatColor Aqua
         {
             get { return KnownColors.FromKnownColor(KnownColor.Aqua); }
         }
 
-        static public Color Aquamarine
+        static public SplatColor Aquamarine
         {
             get { return KnownColors.FromKnownColor(KnownColor.Aquamarine); }
         }
 
-        static public Color Azure
+        static public SplatColor Azure
         {
             get { return KnownColors.FromKnownColor(KnownColor.Azure); }
         }
 
-        static public Color Beige
+        static public SplatColor Beige
         {
             get { return KnownColors.FromKnownColor(KnownColor.Beige); }
         }
 
-        static public Color Bisque
+        static public SplatColor Bisque
         {
             get { return KnownColors.FromKnownColor(KnownColor.Bisque); }
         }
 
-        static public Color Black
+        static public SplatColor Black
         {
             get { return KnownColors.FromKnownColor(KnownColor.Black); }
         }
 
-        static public Color BlanchedAlmond
+        static public SplatColor BlanchedAlmond
         {
             get { return KnownColors.FromKnownColor(KnownColor.BlanchedAlmond); }
         }
 
-        static public Color Blue
+        static public SplatColor Blue
         {
             get { return KnownColors.FromKnownColor(KnownColor.Blue); }
         }
 
-        static public Color BlueViolet
+        static public SplatColor BlueViolet
         {
             get { return KnownColors.FromKnownColor(KnownColor.BlueViolet); }
         }
 
-        static public Color Brown
+        static public SplatColor Brown
         {
             get { return KnownColors.FromKnownColor(KnownColor.Brown); }
         }
 
-        static public Color BurlyWood
+        static public SplatColor BurlyWood
         {
             get { return KnownColors.FromKnownColor(KnownColor.BurlyWood); }
         }
 
-        static public Color CadetBlue
+        static public SplatColor CadetBlue
         {
             get { return KnownColors.FromKnownColor(KnownColor.CadetBlue); }
         }
 
-        static public Color Chartreuse
+        static public SplatColor Chartreuse
         {
             get { return KnownColors.FromKnownColor(KnownColor.Chartreuse); }
         }
 
-        static public Color Chocolate
+        static public SplatColor Chocolate
         {
             get { return KnownColors.FromKnownColor(KnownColor.Chocolate); }
         }
 
-        static public Color Coral
+        static public SplatColor Coral
         {
             get { return KnownColors.FromKnownColor(KnownColor.Coral); }
         }
 
-        static public Color CornflowerBlue
+        static public SplatColor CornflowerBlue
         {
             get { return KnownColors.FromKnownColor(KnownColor.CornflowerBlue); }
         }
 
-        static public Color Cornsilk
+        static public SplatColor Cornsilk
         {
             get { return KnownColors.FromKnownColor(KnownColor.Cornsilk); }
         }
 
-        static public Color Crimson
+        static public SplatColor Crimson
         {
             get { return KnownColors.FromKnownColor(KnownColor.Crimson); }
         }
 
-        static public Color Cyan
+        static public SplatColor Cyan
         {
             get { return KnownColors.FromKnownColor(KnownColor.Cyan); }
         }
 
-        static public Color DarkBlue
+        static public SplatColor DarkBlue
         {
             get { return KnownColors.FromKnownColor(KnownColor.DarkBlue); }
         }
 
-        static public Color DarkCyan
+        static public SplatColor DarkCyan
         {
             get { return KnownColors.FromKnownColor(KnownColor.DarkCyan); }
         }
 
-        static public Color DarkGoldenrod
+        static public SplatColor DarkGoldenrod
         {
             get { return KnownColors.FromKnownColor(KnownColor.DarkGoldenrod); }
         }
 
-        static public Color DarkGray
+        static public SplatColor DarkGray
         {
             get { return KnownColors.FromKnownColor(KnownColor.DarkGray); }
         }
 
-        static public Color DarkGreen
+        static public SplatColor DarkGreen
         {
             get { return KnownColors.FromKnownColor(KnownColor.DarkGreen); }
         }
 
-        static public Color DarkKhaki
+        static public SplatColor DarkKhaki
         {
             get { return KnownColors.FromKnownColor(KnownColor.DarkKhaki); }
         }
 
-        static public Color DarkMagenta
+        static public SplatColor DarkMagenta
         {
             get { return KnownColors.FromKnownColor(KnownColor.DarkMagenta); }
         }
 
-        static public Color DarkOliveGreen
+        static public SplatColor DarkOliveGreen
         {
             get { return KnownColors.FromKnownColor(KnownColor.DarkOliveGreen); }
         }
 
-        static public Color DarkOrange
+        static public SplatColor DarkOrange
         {
             get { return KnownColors.FromKnownColor(KnownColor.DarkOrange); }
         }
 
-        static public Color DarkOrchid
+        static public SplatColor DarkOrchid
         {
             get { return KnownColors.FromKnownColor(KnownColor.DarkOrchid); }
         }
 
-        static public Color DarkRed
+        static public SplatColor DarkRed
         {
             get { return KnownColors.FromKnownColor(KnownColor.DarkRed); }
         }
 
-        static public Color DarkSalmon
+        static public SplatColor DarkSalmon
         {
             get { return KnownColors.FromKnownColor(KnownColor.DarkSalmon); }
         }
 
-        static public Color DarkSeaGreen
+        static public SplatColor DarkSeaGreen
         {
             get { return KnownColors.FromKnownColor(KnownColor.DarkSeaGreen); }
         }
 
-        static public Color DarkSlateBlue
+        static public SplatColor DarkSlateBlue
         {
             get { return KnownColors.FromKnownColor(KnownColor.DarkSlateBlue); }
         }
 
-        static public Color DarkSlateGray
+        static public SplatColor DarkSlateGray
         {
             get { return KnownColors.FromKnownColor(KnownColor.DarkSlateGray); }
         }
 
-        static public Color DarkTurquoise
+        static public SplatColor DarkTurquoise
         {
             get { return KnownColors.FromKnownColor(KnownColor.DarkTurquoise); }
         }
 
-        static public Color DarkViolet
+        static public SplatColor DarkViolet
         {
             get { return KnownColors.FromKnownColor(KnownColor.DarkViolet); }
         }
 
-        static public Color DeepPink
+        static public SplatColor DeepPink
         {
             get { return KnownColors.FromKnownColor(KnownColor.DeepPink); }
         }
 
-        static public Color DeepSkyBlue
+        static public SplatColor DeepSkyBlue
         {
             get { return KnownColors.FromKnownColor(KnownColor.DeepSkyBlue); }
         }
 
-        static public Color DimGray
+        static public SplatColor DimGray
         {
             get { return KnownColors.FromKnownColor(KnownColor.DimGray); }
         }
 
-        static public Color DodgerBlue
+        static public SplatColor DodgerBlue
         {
             get { return KnownColors.FromKnownColor(KnownColor.DodgerBlue); }
         }
 
-        static public Color Firebrick
+        static public SplatColor Firebrick
         {
             get { return KnownColors.FromKnownColor(KnownColor.Firebrick); }
         }
 
-        static public Color FloralWhite
+        static public SplatColor FloralWhite
         {
             get { return KnownColors.FromKnownColor(KnownColor.FloralWhite); }
         }
 
-        static public Color ForestGreen
+        static public SplatColor ForestGreen
         {
             get { return KnownColors.FromKnownColor(KnownColor.ForestGreen); }
         }
 
-        static public Color Fuchsia
+        static public SplatColor Fuchsia
         {
             get { return KnownColors.FromKnownColor(KnownColor.Fuchsia); }
         }
 
-        static public Color Gainsboro
+        static public SplatColor Gainsboro
         {
             get { return KnownColors.FromKnownColor(KnownColor.Gainsboro); }
         }
 
-        static public Color GhostWhite
+        static public SplatColor GhostWhite
         {
             get { return KnownColors.FromKnownColor(KnownColor.GhostWhite); }
         }
 
-        static public Color Gold
+        static public SplatColor Gold
         {
             get { return KnownColors.FromKnownColor(KnownColor.Gold); }
         }
 
-        static public Color Goldenrod
+        static public SplatColor Goldenrod
         {
             get { return KnownColors.FromKnownColor(KnownColor.Goldenrod); }
         }
 
-        static public Color Gray
+        static public SplatColor Gray
         {
             get { return KnownColors.FromKnownColor(KnownColor.Gray); }
         }
 
-        static public Color Green
+        static public SplatColor Green
         {
             get { return KnownColors.FromKnownColor(KnownColor.Green); }
         }
 
-        static public Color GreenYellow
+        static public SplatColor GreenYellow
         {
             get { return KnownColors.FromKnownColor(KnownColor.GreenYellow); }
         }
 
-        static public Color Honeydew
+        static public SplatColor Honeydew
         {
             get { return KnownColors.FromKnownColor(KnownColor.Honeydew); }
         }
 
-        static public Color HotPink
+        static public SplatColor HotPink
         {
             get { return KnownColors.FromKnownColor(KnownColor.HotPink); }
         }
 
-        static public Color IndianRed
+        static public SplatColor IndianRed
         {
             get { return KnownColors.FromKnownColor(KnownColor.IndianRed); }
         }
 
-        static public Color Indigo
+        static public SplatColor Indigo
         {
             get { return KnownColors.FromKnownColor(KnownColor.Indigo); }
         }
 
-        static public Color Ivory
+        static public SplatColor Ivory
         {
             get { return KnownColors.FromKnownColor(KnownColor.Ivory); }
         }
 
-        static public Color Khaki
+        static public SplatColor Khaki
         {
             get { return KnownColors.FromKnownColor(KnownColor.Khaki); }
         }
 
-        static public Color Lavender
+        static public SplatColor Lavender
         {
             get { return KnownColors.FromKnownColor(KnownColor.Lavender); }
         }
 
-        static public Color LavenderBlush
+        static public SplatColor LavenderBlush
         {
             get { return KnownColors.FromKnownColor(KnownColor.LavenderBlush); }
         }
 
-        static public Color LawnGreen
+        static public SplatColor LawnGreen
         {
             get { return KnownColors.FromKnownColor(KnownColor.LawnGreen); }
         }
 
-        static public Color LemonChiffon
+        static public SplatColor LemonChiffon
         {
             get { return KnownColors.FromKnownColor(KnownColor.LemonChiffon); }
         }
 
-        static public Color LightBlue
+        static public SplatColor LightBlue
         {
             get { return KnownColors.FromKnownColor(KnownColor.LightBlue); }
         }
 
-        static public Color LightCoral
+        static public SplatColor LightCoral
         {
             get { return KnownColors.FromKnownColor(KnownColor.LightCoral); }
         }
 
-        static public Color LightCyan
+        static public SplatColor LightCyan
         {
             get { return KnownColors.FromKnownColor(KnownColor.LightCyan); }
         }
 
-        static public Color LightGoldenrodYellow
+        static public SplatColor LightGoldenrodYellow
         {
             get { return KnownColors.FromKnownColor(KnownColor.LightGoldenrodYellow); }
         }
 
-        static public Color LightGreen
+        static public SplatColor LightGreen
         {
             get { return KnownColors.FromKnownColor(KnownColor.LightGreen); }
         }
 
-        static public Color LightGray
+        static public SplatColor LightGray
         {
             get { return KnownColors.FromKnownColor(KnownColor.LightGray); }
         }
 
-        static public Color LightPink
+        static public SplatColor LightPink
         {
             get { return KnownColors.FromKnownColor(KnownColor.LightPink); }
         }
 
-        static public Color LightSalmon
+        static public SplatColor LightSalmon
         {
             get { return KnownColors.FromKnownColor(KnownColor.LightSalmon); }
         }
 
-        static public Color LightSeaGreen
+        static public SplatColor LightSeaGreen
         {
             get { return KnownColors.FromKnownColor(KnownColor.LightSeaGreen); }
         }
 
-        static public Color LightSkyBlue
+        static public SplatColor LightSkyBlue
         {
             get { return KnownColors.FromKnownColor(KnownColor.LightSkyBlue); }
         }
 
-        static public Color LightSlateGray
+        static public SplatColor LightSlateGray
         {
             get { return KnownColors.FromKnownColor(KnownColor.LightSlateGray); }
         }
 
-        static public Color LightSteelBlue
+        static public SplatColor LightSteelBlue
         {
             get { return KnownColors.FromKnownColor(KnownColor.LightSteelBlue); }
         }
 
-        static public Color LightYellow
+        static public SplatColor LightYellow
         {
             get { return KnownColors.FromKnownColor(KnownColor.LightYellow); }
         }
 
-        static public Color Lime
+        static public SplatColor Lime
         {
             get { return KnownColors.FromKnownColor(KnownColor.Lime); }
         }
 
-        static public Color LimeGreen
+        static public SplatColor LimeGreen
         {
             get { return KnownColors.FromKnownColor(KnownColor.LimeGreen); }
         }
 
-        static public Color Linen
+        static public SplatColor Linen
         {
             get { return KnownColors.FromKnownColor(KnownColor.Linen); }
         }
 
-        static public Color Magenta
+        static public SplatColor Magenta
         {
             get { return KnownColors.FromKnownColor(KnownColor.Magenta); }
         }
 
-        static public Color Maroon
+        static public SplatColor Maroon
         {
             get { return KnownColors.FromKnownColor(KnownColor.Maroon); }
         }
 
-        static public Color MediumAquamarine
+        static public SplatColor MediumAquamarine
         {
             get { return KnownColors.FromKnownColor(KnownColor.MediumAquamarine); }
         }
 
-        static public Color MediumBlue
+        static public SplatColor MediumBlue
         {
             get { return KnownColors.FromKnownColor(KnownColor.MediumBlue); }
         }
 
-        static public Color MediumOrchid
+        static public SplatColor MediumOrchid
         {
             get { return KnownColors.FromKnownColor(KnownColor.MediumOrchid); }
         }
 
-        static public Color MediumPurple
+        static public SplatColor MediumPurple
         {
             get { return KnownColors.FromKnownColor(KnownColor.MediumPurple); }
         }
 
-        static public Color MediumSeaGreen
+        static public SplatColor MediumSeaGreen
         {
             get { return KnownColors.FromKnownColor(KnownColor.MediumSeaGreen); }
         }
 
-        static public Color MediumSlateBlue
+        static public SplatColor MediumSlateBlue
         {
             get { return KnownColors.FromKnownColor(KnownColor.MediumSlateBlue); }
         }
 
-        static public Color MediumSpringGreen
+        static public SplatColor MediumSpringGreen
         {
             get { return KnownColors.FromKnownColor(KnownColor.MediumSpringGreen); }
         }
 
-        static public Color MediumTurquoise
+        static public SplatColor MediumTurquoise
         {
             get { return KnownColors.FromKnownColor(KnownColor.MediumTurquoise); }
         }
 
-        static public Color MediumVioletRed
+        static public SplatColor MediumVioletRed
         {
             get { return KnownColors.FromKnownColor(KnownColor.MediumVioletRed); }
         }
 
-        static public Color MidnightBlue
+        static public SplatColor MidnightBlue
         {
             get { return KnownColors.FromKnownColor(KnownColor.MidnightBlue); }
         }
 
-        static public Color MintCream
+        static public SplatColor MintCream
         {
             get { return KnownColors.FromKnownColor(KnownColor.MintCream); }
         }
 
-        static public Color MistyRose
+        static public SplatColor MistyRose
         {
             get { return KnownColors.FromKnownColor(KnownColor.MistyRose); }
         }
 
-        static public Color Moccasin
+        static public SplatColor Moccasin
         {
             get { return KnownColors.FromKnownColor(KnownColor.Moccasin); }
         }
 
-        static public Color NavajoWhite
+        static public SplatColor NavajoWhite
         {
             get { return KnownColors.FromKnownColor(KnownColor.NavajoWhite); }
         }
 
-        static public Color Navy
+        static public SplatColor Navy
         {
             get { return KnownColors.FromKnownColor(KnownColor.Navy); }
         }
 
-        static public Color OldLace
+        static public SplatColor OldLace
         {
             get { return KnownColors.FromKnownColor(KnownColor.OldLace); }
         }
 
-        static public Color Olive
+        static public SplatColor Olive
         {
             get { return KnownColors.FromKnownColor(KnownColor.Olive); }
         }
 
-        static public Color OliveDrab
+        static public SplatColor OliveDrab
         {
             get { return KnownColors.FromKnownColor(KnownColor.OliveDrab); }
         }
 
-        static public Color Orange
+        static public SplatColor Orange
         {
             get { return KnownColors.FromKnownColor(KnownColor.Orange); }
         }
 
-        static public Color OrangeRed
+        static public SplatColor OrangeRed
         {
             get { return KnownColors.FromKnownColor(KnownColor.OrangeRed); }
         }
 
-        static public Color Orchid
+        static public SplatColor Orchid
         {
             get { return KnownColors.FromKnownColor(KnownColor.Orchid); }
         }
 
-        static public Color PaleGoldenrod
+        static public SplatColor PaleGoldenrod
         {
             get { return KnownColors.FromKnownColor(KnownColor.PaleGoldenrod); }
         }
 
-        static public Color PaleGreen
+        static public SplatColor PaleGreen
         {
             get { return KnownColors.FromKnownColor(KnownColor.PaleGreen); }
         }
 
-        static public Color PaleTurquoise
+        static public SplatColor PaleTurquoise
         {
             get { return KnownColors.FromKnownColor(KnownColor.PaleTurquoise); }
         }
 
-        static public Color PaleVioletRed
+        static public SplatColor PaleVioletRed
         {
             get { return KnownColors.FromKnownColor(KnownColor.PaleVioletRed); }
         }
 
-        static public Color PapayaWhip
+        static public SplatColor PapayaWhip
         {
             get { return KnownColors.FromKnownColor(KnownColor.PapayaWhip); }
         }
 
-        static public Color PeachPuff
+        static public SplatColor PeachPuff
         {
             get { return KnownColors.FromKnownColor(KnownColor.PeachPuff); }
         }
 
-        static public Color Peru
+        static public SplatColor Peru
         {
             get { return KnownColors.FromKnownColor(KnownColor.Peru); }
         }
 
-        static public Color Pink
+        static public SplatColor Pink
         {
             get { return KnownColors.FromKnownColor(KnownColor.Pink); }
         }
 
-        static public Color Plum
+        static public SplatColor Plum
         {
             get { return KnownColors.FromKnownColor(KnownColor.Plum); }
         }
 
-        static public Color PowderBlue
+        static public SplatColor PowderBlue
         {
             get { return KnownColors.FromKnownColor(KnownColor.PowderBlue); }
         }
 
-        static public Color Purple
+        static public SplatColor Purple
         {
             get { return KnownColors.FromKnownColor(KnownColor.Purple); }
         }
 
-        static public Color Red
+        static public SplatColor Red
         {
             get { return KnownColors.FromKnownColor(KnownColor.Red); }
         }
 
-        static public Color RosyBrown
+        static public SplatColor RosyBrown
         {
             get { return KnownColors.FromKnownColor(KnownColor.RosyBrown); }
         }
 
-        static public Color RoyalBlue
+        static public SplatColor RoyalBlue
         {
             get { return KnownColors.FromKnownColor(KnownColor.RoyalBlue); }
         }
 
-        static public Color SaddleBrown
+        static public SplatColor SaddleBrown
         {
             get { return KnownColors.FromKnownColor(KnownColor.SaddleBrown); }
         }
 
-        static public Color Salmon
+        static public SplatColor Salmon
         {
             get { return KnownColors.FromKnownColor(KnownColor.Salmon); }
         }
 
-        static public Color SandyBrown
+        static public SplatColor SandyBrown
         {
             get { return KnownColors.FromKnownColor(KnownColor.SandyBrown); }
         }
 
-        static public Color SeaGreen
+        static public SplatColor SeaGreen
         {
             get { return KnownColors.FromKnownColor(KnownColor.SeaGreen); }
         }
 
-        static public Color SeaShell
+        static public SplatColor SeaShell
         {
             get { return KnownColors.FromKnownColor(KnownColor.SeaShell); }
         }
 
-        static public Color Sienna
+        static public SplatColor Sienna
         {
             get { return KnownColors.FromKnownColor(KnownColor.Sienna); }
         }
 
-        static public Color Silver
+        static public SplatColor Silver
         {
             get { return KnownColors.FromKnownColor(KnownColor.Silver); }
         }
 
-        static public Color SkyBlue
+        static public SplatColor SkyBlue
         {
             get { return KnownColors.FromKnownColor(KnownColor.SkyBlue); }
         }
 
-        static public Color SlateBlue
+        static public SplatColor SlateBlue
         {
             get { return KnownColors.FromKnownColor(KnownColor.SlateBlue); }
         }
 
-        static public Color SlateGray
+        static public SplatColor SlateGray
         {
             get { return KnownColors.FromKnownColor(KnownColor.SlateGray); }
         }
 
-        static public Color Snow
+        static public SplatColor Snow
         {
             get { return KnownColors.FromKnownColor(KnownColor.Snow); }
         }
 
-        static public Color SpringGreen
+        static public SplatColor SpringGreen
         {
             get { return KnownColors.FromKnownColor(KnownColor.SpringGreen); }
         }
 
-        static public Color SteelBlue
+        static public SplatColor SteelBlue
         {
             get { return KnownColors.FromKnownColor(KnownColor.SteelBlue); }
         }
 
-        static public Color Tan
+        static public SplatColor Tan
         {
             get { return KnownColors.FromKnownColor(KnownColor.Tan); }
         }
 
-        static public Color Teal
+        static public SplatColor Teal
         {
             get { return KnownColors.FromKnownColor(KnownColor.Teal); }
         }
 
-        static public Color Thistle
+        static public SplatColor Thistle
         {
             get { return KnownColors.FromKnownColor(KnownColor.Thistle); }
         }
 
-        static public Color Tomato
+        static public SplatColor Tomato
         {
             get { return KnownColors.FromKnownColor(KnownColor.Tomato); }
         }
 
-        static public Color Turquoise
+        static public SplatColor Turquoise
         {
             get { return KnownColors.FromKnownColor(KnownColor.Turquoise); }
         }
 
-        static public Color Violet
+        static public SplatColor Violet
         {
             get { return KnownColors.FromKnownColor(KnownColor.Violet); }
         }
 
-        static public Color Wheat
+        static public SplatColor Wheat
         {
             get { return KnownColors.FromKnownColor(KnownColor.Wheat); }
         }
 
-        static public Color White
+        static public SplatColor White
         {
             get { return KnownColors.FromKnownColor(KnownColor.White); }
         }
 
-        static public Color WhiteSmoke
+        static public SplatColor WhiteSmoke
         {
             get { return KnownColors.FromKnownColor(KnownColor.WhiteSmoke); }
         }
 
-        static public Color Yellow
+        static public SplatColor Yellow
         {
             get { return KnownColors.FromKnownColor(KnownColor.Yellow); }
         }
 
-        static public Color YellowGreen
+        static public SplatColor YellowGreen
         {
             get { return KnownColors.FromKnownColor(KnownColor.YellowGreen); }
         }
