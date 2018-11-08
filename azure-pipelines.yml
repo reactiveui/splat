@@ -2,6 +2,10 @@ trigger:
 - master
 - rel/*
 
+pr:
+- master
+- rel/*
+
 pool:
   vmImage: vs2017-win2016
 
@@ -22,7 +26,6 @@ steps:
   
 - script: nbgv cloud
   displayName: Set Version
-  condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
 
 - script: build.cmd
   displayName: Build 
@@ -38,7 +41,6 @@ steps:
     Contents: 'artifacts/*.nupkg'
     TargetFolder: '$(build.artifactstagingdirectory)\packages'
     flattenFolders: true
-  condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Package Artifacts
@@ -46,4 +48,3 @@ steps:
     pathToPublish: '$(build.artifactstagingdirectory)\packages'
     artifactType: container
     artifactName: Packages
-  condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
