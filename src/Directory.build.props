@@ -10,6 +10,9 @@
     <PackageReleaseNotes>https://github.com/reactiveui/splat/releases</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/reactiveui/splat</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <DebugType>embedded</DebugType>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
   
   <ItemGroup>
@@ -17,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nerdbank.GitVersioning" Version="2.1.23" PrivateAssets="all" />
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.2.33" PrivateAssets="all" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(IsTestProject)' != 'true' and '$(SourceLinkEnabled)' != 'false'">
