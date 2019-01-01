@@ -1,6 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
-    <TargetFrameworks>net461;uap10.0.16299;MonoAndroid81;Xamarin.iOS10;Xamarin.Mac20;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net461;uap10.0.16299;MonoAndroid81;Xamarin.iOS10;Xamarin.Mac20;tizen40;netstandard2.0</TargetFrameworks>
     <AssemblyName>Splat</AssemblyName>
     <RootNamespace>Splat</RootNamespace>
     <Authors>Paul Betts</Authors>
@@ -14,7 +14,7 @@
     <None Include="Colors\**\*.cs" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('netstandard')) ">
     <PackageReference Include="System.Diagnostics.Contracts" Version="4.3.0" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
     <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
@@ -22,7 +22,7 @@
     <Compile Include="Platforms\ReflectionStubs.cs" />    
   </ItemGroup>  
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">  
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('net4')) ">  
     <Compile Include="Platforms\net461\**\*.cs" />
 
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
@@ -36,13 +36,13 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'uap10.0.16299'">  
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('uap')) ">  
     <Compile Include="Platforms\WinRT\**\*.cs" />
     <Compile Include="Platforms\ReflectionStubs.cs" />
     <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'Xamarin.iOS10'">  
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS')) ">  
     <Compile Include="Platforms\Cocoa\**\*.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
     <Compile Include="Platforms\PlatformModeDetector.cs" />
@@ -50,18 +50,23 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'Xamarin.Mac20'">  
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.Mac')) ">  
     <Compile Include="Platforms\Cocoa\**\*.cs" />
     <Compile Include="Platforms\PlatformModeDetector.cs" />
     
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid81'">  
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">  
     <Compile Include="Platforms\Android\**\*.cs" />
     <Compile Include="Platforms\PlatformModeDetector.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
 
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
+
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('tizen')) ">
+    <Compile Include="Platforms\Tizen\**\*.cs" />
+    <Compile Include="Platforms\PlatformModeDetector.cs" />
+  </ItemGroup>  
 </Project>
