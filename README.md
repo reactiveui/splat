@@ -2,7 +2,20 @@
 
 ![](http://f.cl.ly/items/1307401C3x2g3F2p2Z36/Logo.png)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/github/reactiveui/splat)](https://ci.appveyor.com/project/ghuntley/splat)
+[![NuGet Stats](https://img.shields.io/nuget/v/splat.svg)](https://www.nuget.org/packages/splat) [![Build Status](https://dev.azure.com/dotnet/ReactiveUI/_apis/build/status/Splat-CI)](https://dev.azure.com/dotnet/ReactiveUI/_build/latest?definitionId=48)
+<br>
+<a href="https://www.nuget.org/packages/splat">
+        <img src="https://img.shields.io/nuget/dt/splat.svg">
+</a>
+<a href="#backers">
+        <img src="https://opencollective.com/reactiveui/backers/badge.svg">
+</a>
+<a href="#sponsors">
+        <img src="https://opencollective.com/reactiveui/sponsors/badge.svg">
+</a>
+<a href="https://reactiveui.net/slack">
+        <img src="https://img.shields.io/badge/chat-slack-blue.svg">
+</a>
 
 Certain types of things are basically impossible to do in cross-platform
 mobile code today, yet there's no reason why. Writing a ViewModel that handles
