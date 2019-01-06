@@ -58,7 +58,7 @@ namespace Splat
             {
                 var exeName = new FileInfo(entry.Location).Name;
 
-                if (designEnvironments.Any(x => x.IndexOf(exeName, StringComparison.InvariantCulture) != -1))
+                if (designEnvironments.Any(x => x.IndexOf(exeName, StringComparison.InvariantCultureIgnoreCase) != -1))
                 {
                     return true;
                 }
@@ -83,7 +83,7 @@ namespace Splat
 #else
             return AppDomain.CurrentDomain.GetAssemblies()
                 .Select(x => x.FullName.ToUpperInvariant())
-                .Any(x => assemblyList.Any(name => x.IndexOf(name, StringComparison.InvariantCulture) != -1));
+                .Any(x => assemblyList.Any(name => x.IndexOf(name, StringComparison.InvariantCultureIgnoreCase) != -1));
 #endif
         }
     }
