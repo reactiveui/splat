@@ -1,6 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
-    <TargetFrameworks>net461;uap10.0.16299;MonoAndroid81;Xamarin.iOS10;Xamarin.Mac20;tizen40;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net461;uap10.0.16299;MonoAndroid81;Xamarin.iOS10;Xamarin.Mac20;Xamarin.TVOS10;tizen40;netstandard2.0</TargetFrameworks>
     <AssemblyName>Splat</AssemblyName>
     <RootNamespace>Splat</RootNamespace>
     <Authors>Paul Betts</Authors>
@@ -51,6 +51,14 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
 
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.TVOS')) ">
+    <Compile Include="Platforms\Cocoa\**\*.cs" />
+    <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
+    <Compile Include="Platforms\PlatformModeDetector.cs" />
+
+    <Reference Include="System.Runtime.Serialization" />
+  </ItemGroup>
+
   <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.Mac')) ">  
     <Compile Include="Platforms\Cocoa\**\*.cs" />
     <Compile Include="Platforms\PlatformModeDetector.cs" />
@@ -80,5 +88,9 @@
     <None Remove="Platforms\net461\Bitmaps\BitmapSourceBitmap.cs" />
     <None Remove="Platforms\net461\Bitmaps\PlatformBitmapLoader.cs" />
     <None Remove="Platforms\net461\Maths\SizeExtensions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Platforms\TVOS\" />
   </ItemGroup>  
 </Project>
