@@ -25,7 +25,7 @@ namespace Splat
             var data = NSData.FromStream(sourceStream);
 
             var tcs = new TaskCompletionSource<IBitmap>();
-            UIApplication.SharedApplication.InvokeOnMainThread(() =>
+            NSRunLoop.Main.BeginInvokeOnMainThread(() =>
             {
                 try
                 {
@@ -53,7 +53,7 @@ namespace Splat
         public Task<IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
         {
             var tcs = new TaskCompletionSource<IBitmap>();
-            UIApplication.SharedApplication.InvokeOnMainThread(() =>
+            NSRunLoop.Main.BeginInvokeOnMainThread(() =>
             {
                 try
                 {
