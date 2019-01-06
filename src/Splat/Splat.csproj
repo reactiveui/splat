@@ -6,6 +6,7 @@
     <Authors>Paul Betts</Authors>
     <Description>A library to make things cross-platform that should be</Description>
     <PackageId>Splat</PackageId>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -68,5 +69,16 @@
   <ItemGroup Condition=" $(TargetFramework.StartsWith('tizen')) ">
     <Compile Include="Platforms\Tizen\**\*.cs" />
     <Compile Include="Platforms\PlatformModeDetector.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Colors\SplatColor.KnownColors.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Platforms\net461\Bitmaps\BitmapMixins.cs" />
+    <None Remove="Platforms\net461\Bitmaps\BitmapSourceBitmap.cs" />
+    <None Remove="Platforms\net461\Bitmaps\PlatformBitmapLoader.cs" />
+    <None Remove="Platforms\net461\Maths\SizeExtensions.cs" />
   </ItemGroup>  
 </Project>

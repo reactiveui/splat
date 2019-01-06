@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Splat
 {
@@ -19,78 +19,97 @@ namespace Splat
     /// function.</typeparam>
     public class MemoizingMRUCache<TParam, TVal>
     {
-        private readonly Func<TParam, object, TVal> calculationFunction;
-        private readonly Action<TVal> releaseFunction;
-        private readonly int maxCacheSize;
+        private readonly Func<TParam, object, TVal> _calculationFunction;
+        private readonly Action<TVal> _releaseFunction;
+        private readonly int _maxCacheSize;
 
-        private LinkedList<TParam> cacheMRUList;
-        private Dictionary<TParam, Tuple<LinkedListNode<TParam>, TVal>> cacheEntries;
+        private LinkedList<TParam> _cacheMRUList;
+        private Dictionary<TParam, Tuple<LinkedListNode<TParam>, TVal>> _cacheEntries;
 
         /// <summary>
-        /// Constructor
+        /// Initializes a new instance of the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.
         /// </summary>
         /// <param name="calculationFunc">The function whose results you want to cache,
         /// which is provided the key value, and an Tag object that is
-        /// user-defined</param>
+        /// user-defined.</param>
         /// <param name="maxSize">The size of the cache to maintain, after which old
         /// items will start to be thrown out.</param>
         /// <param name="onRelease">A function to call when a result gets
         /// evicted from the cache (i.e. because Invalidate was called or the
-        /// cache is full)</param>
+        /// cache is full).</param>
         public MemoizingMRUCache(Func<TParam, object, TVal> calculationFunc, int maxSize, Action<TVal> onRelease = null)
         {
             Contract.Requires(calculationFunc != null);
             Contract.Requires(maxSize > 0);
 
-            calculationFunction = calculationFunc;
-            releaseFunction = onRelease;
-            maxCacheSize = maxSize;
+            _calculationFunction = calculationFunc;
+            _releaseFunction = onRelease;
+            _maxCacheSize = maxSize;
             InvalidateAll();
         }
 
-        public TVal Get(TParam key) { return Get(key, null); }
+        /// <summary>
+        /// Gets the value from the specified key.
+        /// </summary>
+        /// <param name="key">The value to pass to the calculation function.</param>
+        /// <returns>The value that we have got.</returns>
+        public TVal Get(TParam key)
+        {
+            return Get(key, null);
+        }
 
         /// <summary>
-        /// Evaluates the function provided, returning the cached value if possible
+        /// Evaluates the function provided, returning the cached value if possible.
         /// </summary>
         /// <param name="key">The value to pass to the calculation function.</param>
         /// <param name="context">An additional optional user-specific parameter.</param>
-        /// <returns></returns>
+        /// <returns>The value that we have got.</returns>
         public TVal Get(TParam key, object context = null)
         {
             Contract.Requires(key != null);
 
             Tuple<LinkedListNode<TParam>, TVal> found;
 
-            if (cacheEntries.TryGetValue(key, out found)) {
-                cacheMRUList.Remove(found.Item1);
-                cacheMRUList.AddFirst(found.Item1);
+            if (_cacheEntries.TryGetValue(key, out found))
+            {
+                _cacheMRUList.Remove(found.Item1);
+                _cacheMRUList.AddFirst(found.Item1);
                 return found.Item2;
             }
 
-            var result = calculationFunction(key, context);
+            var result = _calculationFunction(key, context);
 
             var node = new LinkedListNode<TParam>(key);
-            cacheMRUList.AddFirst(node);
-            cacheEntries[key] = new Tuple<LinkedListNode<TParam>, TVal>(node, result);
-            maintainCache();
+            _cacheMRUList.AddFirst(node);
+            _cacheEntries[key] = new Tuple<LinkedListNode<TParam>, TVal>(node, result);
+            MaintainCache();
 
             return result;
         }
 
+        /// <summary>
+        /// Tries to get the value if it's available.
+        /// </summary>
+        /// <param name="key">The input value of the key to use.</param>
+        /// <param name="result">The result if available, otherwise it will be the default value.</param>
+        /// <returns>If we were able to retrieve the value or not.</returns>
         public bool TryGet(TParam key, out TVal result)
         {
             Contract.Requires(key != null);
 
             Tuple<LinkedListNode<TParam>, TVal> output;
-            var ret = cacheEntries.TryGetValue(key, out output);
-            if (ret && output != null) {
-                cacheMRUList.Remove(output.Item1);
-                cacheMRUList.AddFirst(output.Item1);
+            var ret = _cacheEntries.TryGetValue(key, out output);
+            if (ret && output != null)
+            {
+                _cacheMRUList.Remove(output.Item1);
+                _cacheMRUList.AddFirst(output.Item1);
                 result = output.Item2;
-            } else {
+            }
+            else
+            {
                 result = default(TVal);
             }
+
             return ret;
         }
 
@@ -98,70 +117,76 @@ namespace Splat
         /// Ensure that the next time this key is queried, the calculation
         /// function will be called.
         /// </summary>
+        /// <param name="key">The key to invalidate the value for.</param>
         public void Invalidate(TParam key)
         {
             Contract.Requires(key != null);
 
             Tuple<LinkedListNode<TParam>, TVal> to_remove;
 
-            if (!cacheEntries.TryGetValue(key, out to_remove))
-                return;
-
-            if (releaseFunction != null)
-                releaseFunction(to_remove.Item2);
-
-            cacheMRUList.Remove(to_remove.Item1);
-            cacheEntries.Remove(key);
-        }
-
-        /// <summary>
-        /// Invalidate all items in the cache
-        /// </summary>
-        public void InvalidateAll()
-        {
-            if (releaseFunction == null || cacheEntries == null) {
-                cacheMRUList = new LinkedList<TParam>();
-                cacheEntries = new Dictionary<TParam, Tuple<LinkedListNode<TParam>, TVal>>();
+            if (!_cacheEntries.TryGetValue(key, out to_remove))
+            {
                 return;
             }
 
-            if (cacheEntries.Count == 0)
-                return;
+            _releaseFunction?.Invoke(to_remove.Item2);
 
-            /*             We have to remove them one-by-one to call the release function
-             * We ToArray() this so we don't get a "modifying collection while
-             * enumerating" exception. */
-            foreach (var v in cacheEntries.Keys.ToArray()) { Invalidate(v); }
+            _cacheMRUList.Remove(to_remove.Item1);
+            _cacheEntries.Remove(key);
         }
 
         /// <summary>
-        /// Returns all values currently in the cache
+        /// Invalidate all the items in the cache.
         /// </summary>
-        /// <returns></returns>
-        public IEnumerable<TVal> CachedValues()
+        public void InvalidateAll()
         {
-            return cacheEntries.Select(x => x.Value.Item2);
+            if (_releaseFunction == null || _cacheEntries == null)
+            {
+                _cacheMRUList = new LinkedList<TParam>();
+                _cacheEntries = new Dictionary<TParam, Tuple<LinkedListNode<TParam>, TVal>>();
+                return;
+            }
+
+            if (_cacheEntries.Count == 0)
+            {
+                return;
+            }
+
+            // We have to remove them one-by-one to call the release function
+            // We ToArray() this so we don't get a "modifying collection while
+            // enumerating" exception.
+            foreach (var v in _cacheEntries.Keys.ToArray())
+            {
+                Invalidate(v);
+            }
         }
 
-        void maintainCache()
+        /// <summary>
+        /// Returns all values currently in the cache.
+        /// </summary>
+        /// <returns>The values in the cache.</returns>
+        public IEnumerable<TVal> CachedValues()
         {
-            while (cacheMRUList.Count > maxCacheSize) {
-                var to_remove = cacheMRUList.Last.Value;
-                if (releaseFunction != null)
-                    releaseFunction(cacheEntries[to_remove].Item2);
+            return _cacheEntries.Select(x => x.Value.Item2);
+        }
 
-                cacheEntries.Remove(cacheMRUList.Last.Value);
-                cacheMRUList.RemoveLast();
+        private void MaintainCache()
+        {
+            while (_cacheMRUList.Count > _maxCacheSize)
+            {
+                var to_remove = _cacheMRUList.Last.Value;
+                _releaseFunction?.Invoke(_cacheEntries[to_remove].Item2);
+
+                _cacheEntries.Remove(_cacheMRUList.Last.Value);
+                _cacheMRUList.RemoveLast();
             }
         }
 
         [ContractInvariantMethod]
-        void Invariants()
+        private void Invariants()
         {
-            Contract.Invariant(cacheEntries.Count == cacheMRUList.Count);
-            Contract.Invariant(cacheEntries.Count <= maxCacheSize);
+            Contract.Invariant(_cacheEntries.Count == _cacheMRUList.Count);
+            Contract.Invariant(_cacheEntries.Count <= _maxCacheSize);
         }
     }
 }
-
-// vim: tw=120 ts=4 sw=4 et :

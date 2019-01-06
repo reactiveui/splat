@@ -1,12 +1,11 @@
-﻿//
-// System.Drawing.Color.cs
+﻿// System.Drawing.Color.cs
 //
 // Authors:
-// 	Dennis Hayes (dennish@raytek.com)
-// 	Ben Houston  (ben@exocortex.org)
-// 	Gonzalo Paniagua (gonzalo@ximian.com)
-// 	Juraj Skripsky (juraj@hotfeet.ch)
-//	Sebastien Pouliot  <sebastien@ximian.com>
+// Dennis Hayes (dennish@raytek.com)
+// Ben Houston  (ben@exocortex.org)
+// Gonzalo Paniagua (gonzalo@ximian.com)
+// Juraj Skripsky (juraj@hotfeet.ch)
+// Sebastien Pouliot  <sebastien@ximian.com>
 //
 // (C) 2002 Dennis Hayes
 // (c) 2002 Ximian, Inc. (http://www.ximiam.com)
@@ -20,10 +19,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -31,21 +30,39 @@
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
 
 using System;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Runtime.Serialization;
 
 namespace Splat
 {
+    /// <summary>
+    /// A platform independent color structure.
+    /// </summary>
     [DataContract]
-    public struct SplatColor
+    public partial struct SplatColor : IEquatable<SplatColor>
     {
-
         // Private transparency (A) and R,G,B fields.
-        private long value;
+        private long _value;
+
+        private short _state;
+        private short _knownColor;
+
+        // #if ONLY_1_1
+        // Mono bug #324144 is holding this change
+        // MS 1.1 requires this member to be present for serialization (not so in 2.0)
+        // however it's bad to keep a string (reference) in a struct
+        private string _name;
+
+        internal SplatColor(long value, short state, short knownColor, string name)
+        {
+            _value = value;
+            _state = state;
+            _knownColor = knownColor;
+            _name = name;
+        }
 
         // The specs also indicate that all three of these properties are true
         // if created with FromKnownColor or FromNamedColor, false otherwise (FromARGB).
@@ -60,21 +77,414 @@ namespace Splat
             System = 8
         }
 
-        internal short state;
-        internal short knownColor;
-        // #if ONLY_1_1
-        // Mono bug #324144 is holding this change
-        // MS 1.1 requires this member to be present for serialization (not so in 2.0)
-        // however it's bad to keep a string (reference) in a struct
-        internal string name;
-        // #endif
-#if TARGET_JVM
-    internal java.awt.SplatColor NativeObject {
-      get {
-        return new java.awt.SplatColor (R, G, B, A);
-      }
-    }
+        /// <summary>
+        /// Gets a full empty which is fully transparent.
+        /// </summary>
+        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1129: Do not use default empty constructor", Justification = "Deliberate, Empty member for users to use")]
+        public static SplatColor Empty { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether the current color is transparent black. Eg where R,G,B,A == 0.
+        /// </summary>
+        public bool IsEmpty => _state == (short)ColorType.Empty;
+
+        /// <summary>
+        /// Gets the alpha component of the color.
+        /// </summary>
+        public byte A => (byte)(Value >> 24);
+
+        /// <summary>
+        /// Gets the red component of the color.
+        /// </summary>
+        public byte R => (byte)(Value >> 16);
+
+        /// <summary>
+        /// Gets the green component of the color.
+        /// </summary>
+        public byte G => (byte)(Value >> 8);
+
+        /// <summary>
+        /// Gets the blue component of the color.
+        /// </summary>
+        public byte B => (byte)Value;
+
+        /// <summary>
+        /// Gets the name of the color if one is known. Otherwise will be the hex value.
+        /// </summary>
+        public string Name
+        {
+            get
+            {
+#if NET_2_0_ONCE_MONO_BUG_324144_IS_FIXED
+        if (IsNamedColor)
+          return KnownColors.GetName (knownColor);
+        else
+          return String.Format ("{0:x}", ToArgb ());
+#else
+                // name is required for serialization under 1.x, but not under 2.0
+                if (_name == null)
+                {
+                    // Can happen with stuff deserialized from MS
+                    if (IsNamedColor)
+                    {
+                        _name = KnownColors.GetName(_knownColor);
+                    }
+                    else
+                    {
+                        _name = $"{ToArgb():x}";
+                    }
+                }
+
+                return _name;
+#endif
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the color is part of the <see cref="ColorType.Known"/> group.
+        /// </summary>
+        public bool IsKnownColor => (_state & ((short)ColorType.Known)) != 0;
+
+        /// <summary>
+        /// Gets a value indicating whether the color is part of the <see cref="ColorType.System"/> group.
+        /// </summary>
+        public bool IsSystemColor => (_state & ((short)ColorType.System)) != 0;
+
+        /// <summary>
+        /// Gets a value indicating whether the color is par tof the <see cref="ColorType.Known"/> or <see cref="ColorType.Named"/> groups.
+        /// </summary>
+        public bool IsNamedColor => (_state & (short)(ColorType.Known | ColorType.Named)) != 0;
+
+#if TARGET_JVM
+        /// <summary>
+        /// Gets the java native object of the color.
+        /// </summary>
+        internal java.awt.SplatColor NativeObject => return new java.awt.SplatColor (R, G, B, A);
+#endif
+
+        /// <summary>
+        /// Gets or sets the value of the color.
+        /// </summary>
+        [DataMember]
+        internal long Value
+        {
+            get
+            {
+                // Optimization for known colors that were deserialized
+                // from an MS serialized stream.
+                if (_value == 0 && IsKnownColor)
+                {
+                    _value = KnownColors.FromKnownColor((KnownColor)_knownColor).ToArgb() & 0xFFFFFFFF;
+                }
+
+                return _value;
+            }
+
+            set => _value = value;
+        }
+
+        /// <summary>
+        /// Compares two SplatColor references and determines if they are equivalent based on their A,R,G,B values.
+        /// </summary>
+        /// <param name="left">The first SplatColor to compare.</param>
+        /// <param name="right">The second SplatColor to compare.</param>
+        /// <returns>If they are equivalent to each other.</returns>
+        public static bool operator ==(SplatColor left, SplatColor right)
+        {
+            // Equals handles case of null on right side.
+            return left.Equals(right);
+        }
+
+        /// <summary>
+        /// Compares two SplatColor references and determines if they are not equivalent based on their A,R,G,B values.
+        /// </summary>
+        /// <param name="left">The first SplatColor to compare.</param>
+        /// <param name="right">The second SplatColor to compare.</param>
+        /// <returns>If they are not equivalent to each other.</returns>
+        public static bool operator !=(SplatColor left, SplatColor right)
+        {
+            return !(left == right);
+        }
+
+        /// <summary>
+        /// Creates a SplatColor from the RGB values.
+        /// The alpha will be set to 255 for full alpha.
+        /// </summary>
+        /// <param name="red">The red channel of the color.</param>
+        /// <param name="green">The green channel of the color.</param>
+        /// <param name="blue">The blue channel of the color.</param>
+        /// <returns>A splat color from the specified channels.</returns>
+        public static SplatColor FromArgb(int red, int green, int blue)
+        {
+            return FromArgb(255, red, green, blue);
+        }
+
+        /// <summary>
+        /// Creates a SplatColor from the RGB values.
+        /// </summary>
+        /// <param name="alpha">The alpha channel of the color.</param>
+        /// <param name="red">The red channel of the color.</param>
+        /// <param name="green">The green channel of the color.</param>
+        /// <param name="blue">The blue channel of the color.</param>
+        /// <returns>A splat color from the specified channels.</returns>
+        public static SplatColor FromArgb(int alpha, int red, int green, int blue)
+        {
+            CheckARGBValues(alpha, red, green, blue);
+            return new SplatColor
+            {
+                _state = (short)ColorType.ARGB,
+                Value = (int)((uint)alpha << 24) + (red << 16) + (green << 8) + blue
+            };
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="SplatColor"/> from another <see cref="SplatColor"/>, replacing its alpha with one specified.
+        /// </summary>
+        /// <param name="alpha">The new alpha component to set for the new <see cref="SplatColor"/>.</param>
+        /// <param name="baseColor">The base color to use for the RGB values.</param>
+        /// <returns>The new <see cref="SplatColor"/>.</returns>
+        public static SplatColor FromArgb(int alpha, SplatColor baseColor)
+        {
+            return FromArgb(alpha, baseColor.R, baseColor.G, baseColor.B);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="SplatColor"/> from the specified int based ARGB value.
+        /// </summary>
+        /// <param name="argb">The int containing the ARGB values.</param>
+        /// <returns>The new <see cref="SplatColor"/>.</returns>
+        public static SplatColor FromArgb(int argb)
+        {
+            return FromArgb((argb >> 24) & 0x0FF, (argb >> 16) & 0x0FF, (argb >> 8) & 0x0FF, argb & 0x0FF);
+        }
+
+        /// <summary>
+        /// Gets a SplatColor from a <see cref="KnownColor"/> value.
+        /// </summary>
+        /// <param name="color">The color to generate.</param>
+        /// <returns>The generated SplatValue.</returns>
+        public static SplatColor FromKnownColor(KnownColor color)
+        {
+            short n = (short)color;
+            SplatColor c;
+            if ((n <= 0) || (n >= KnownColors.ArgbValues.Length))
+            {
+                // This is what it returns!
+                c = FromArgb(0, 0, 0, 0);
+                c._state |= (short)ColorType.Named;
+            }
+            else
+            {
+                c = SplatColor.Empty;
+                c._state = (short)(ColorType.ARGB | ColorType.Known | ColorType.Named);
+                if ((n < 27) || (n > 169))
+                {
+                    c._state |= (short)ColorType.System;
+                }
+
+                c.Value = KnownColors.ArgbValues[n];
+            }
+
+            c._knownColor = n;
+            return c;
+        }
+
+        /// <summary>
+        /// Gets a SplatColor from a name.
+        /// </summary>
+        /// <param name="name">The name of the color to generate.</param>
+        /// <returns>The generated SplatValue.</returns>
+        public static SplatColor FromName(string name)
+        {
+            try
+            {
+                KnownColor kc = (KnownColor)Enum.Parse(typeof(KnownColor), name, true);
+                return FromKnownColor(kc);
+            }
+            catch
+            {
+                // This is what it returns!
+                SplatColor d = FromArgb(0, 0, 0, 0);
+                d._name = name;
+                d._state |= (short)ColorType.Named;
+                return d;
+            }
+        }
+
+        /// <summary>
+        /// Gets the brightness of the color.
+        /// </summary>
+        /// <returns>The brightness of the value between 0 and 1.</returns>
+        public float GetBrightness()
+        {
+            byte minval = Math.Min(R, Math.Min(G, B));
+            byte maxval = Math.Max(R, Math.Max(G, B));
+
+            return (float)(maxval + minval) / 510;
+        }
+
+        /// <summary>
+        /// Gets the saturation of the color.
+        /// </summary>
+        /// <returns>The saturation of the value between 0 and 1.</returns>
+        public float GetSaturation()
+        {
+            byte minval = Math.Min(R, Math.Min(G, B));
+            byte maxval = Math.Max(R, Math.Max(G, B));
+
+            if (maxval == minval)
+            {
+                return 0.0f;
+            }
+
+            int sum = maxval + minval;
+            if (sum > 255)
+            {
+                sum = 510 - sum;
+            }
+
+            return (float)(maxval - minval) / sum;
+        }
+
+        /// <summary>
+        /// Gets the integer value of the color.
+        /// </summary>
+        /// <returns>The integer value.</returns>
+        public int ToArgb()
+        {
+            return (int)Value;
+        }
+
+        /// <summary>
+        /// Gets the hue of the color.
+        /// </summary>
+        /// <returns>The hue component of the color.</returns>
+        public float GetHue()
+        {
+            int r = R;
+            int g = G;
+            int b = B;
+            byte minval = (byte)Math.Min(r, Math.Min(g, b));
+            byte maxval = (byte)Math.Max(r, Math.Max(g, b));
+
+            if (maxval == minval)
+            {
+                return 0.0f;
+            }
+
+            float diff = maxval - minval;
+            float rnorm = (maxval - r) / diff;
+            float gnorm = (maxval - g) / diff;
+            float bnorm = (maxval - b) / diff;
+
+            float hue = 0.0f;
+            if (r == maxval)
+            {
+                hue = 60.0f * (6.0f + bnorm - gnorm);
+            }
+
+            if (g == maxval)
+            {
+                hue = 60.0f * (2.0f + rnorm - bnorm);
+            }
+
+            if (b == maxval)
+            {
+                hue = 60.0f * (4.0f + gnorm - rnorm);
+            }
+
+            if (hue > 360.0f)
+            {
+                hue -= 360.0f;
+            }
+
+            return hue;
+        }
+
+        /// <summary>Gets the <see cref="KnownColor"/> of the current value (if one is available).</summary>
+        /// <returns>Returns the KnownColor enum value for this color, 0 if is not known.</returns>
+        public KnownColor ToKnownColor()
+        {
+            return (KnownColor)_knownColor;
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            if (!(obj is SplatColor))
+            {
+                return false;
+            }
+
+            return Equals((SplatColor)obj);
+        }
+
+        /// <inheritdoc />
+        public bool Equals(SplatColor other)
+        {
+            if (Value != other.Value)
+            {
+                return false;
+            }
+
+            if (IsNamedColor != other.IsNamedColor)
+            {
+                return false;
+            }
+
+            if (IsSystemColor != other.IsSystemColor)
+            {
+                return false;
+            }
+
+            if (IsEmpty != other.IsEmpty)
+            {
+                return false;
+            }
+
+            if (IsNamedColor)
+            {
+                // then both are named (see previous check) and so we need to compare them
+                // but otherwise we don't as it kills performance (Name calls String.Format)
+                if (Name != other.Name)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            int hc = (int)(Value ^ (Value >> 32) ^ _state ^ (_knownColor >> 16));
+            if (IsNamedColor)
+            {
+                hc ^= StringComparer.OrdinalIgnoreCase.GetHashCode(Name);
+            }
+
+            return hc;
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            if (IsEmpty)
+            {
+                return "SplatColor [Empty]";
+            }
+
+            // Use the property here, not the field.
+            if (IsNamedColor)
+            {
+                return "SplatColor [" + Name + "]";
+            }
+
+            return $"SplatColor [A={A}, R={R}, G={G}, B={B}]";
+        }
+
+#if TARGET_JVM
     internal static SplatColor FromArgbNamed (int alpha, int red, int green, int blue, string name, KnownColor knownColor)
     {
       SplatColor color = FromArgb (alpha, red, green, blue);
@@ -92,1075 +502,37 @@ namespace Splat
     }
 #endif
 
-        public string Name
-        {
-            get
-            {
-#if NET_2_0_ONCE_MONO_BUG_324144_IS_FIXED
-        if (IsNamedColor)
-          return KnownColors.GetName (knownColor);
-        else
-          return String.Format ("{0:x}", ToArgb ());
-#else
-                // name is required for serialization under 1.x, but not under 2.0
-                if (name == null) {
-                    // Can happen with stuff deserialized from MS
-                    if (IsNamedColor)
-                        name = KnownColors.GetName(knownColor);
-                    else
-                        name = String.Format("{0:x}", ToArgb());
-                }
-                return name;
-#endif
-            }
-        }
-
-        public bool IsKnownColor
-        {
-            get
-            {
-                return (state & ((short)ColorType.Known)) != 0;
-            }
-        }
-
-        public bool IsSystemColor
-        {
-            get
-            {
-                return (state & ((short)ColorType.System)) != 0;
-            }
-        }
-
-        public bool IsNamedColor
-        {
-            get
-            {
-                return (state & (short)(ColorType.Known | ColorType.Named)) != 0;
-            }
-        }
-
-        [DataMember]
-        internal long Value
-        {
-            get
-            {
-                // Optimization for known colors that were deserialized
-                // from an MS serialized stream.  
-                if (value == 0 && IsKnownColor) {
-                    value = KnownColors.FromKnownColor((KnownColor)knownColor).ToArgb() & 0xFFFFFFFF;
-                }
-                return value;
-            }
-            set { this.value = value; }
-        }
-
-        public static SplatColor FromArgb(int red, int green, int blue)
-        {
-            return FromArgb(255, red, green, blue);
-        }
-
-        public static SplatColor FromArgb(int alpha, int red, int green, int blue)
-        {
-            CheckARGBValues(alpha, red, green, blue);
-            SplatColor color = new SplatColor();
-            color.state = (short)ColorType.ARGB;
-            color.Value = (int)((uint)alpha << 24) + (red << 16) + (green << 8) + blue;
-            return color;
-        }
-
-        public int ToArgb()
-        {
-            return (int)Value;
-        }
-
-        public static SplatColor FromArgb(int alpha, SplatColor baseColor)
-        {
-            return FromArgb(alpha, baseColor.R, baseColor.G, baseColor.B);
-        }
-
-        public static SplatColor FromArgb(int argb)
-        {
-            return FromArgb((argb >> 24) & 0x0FF, (argb >> 16) & 0x0FF, (argb >> 8) & 0x0FF, argb & 0x0FF);
-        }
-
-        public static SplatColor FromKnownColor(KnownColor color)
-        {
-            return KnownColors.FromKnownColor(color);
-        }
-
-        public static SplatColor FromName(string name)
-        {
-            try {
-                KnownColor kc = (KnownColor)Enum.Parse(typeof(KnownColor), name, true);
-                return KnownColors.FromKnownColor(kc);
-            } catch {
-                // This is what it returns! 	 
-                SplatColor d = FromArgb(0, 0, 0, 0);
-                d.name = name;
-                d.state |= (short)ColorType.Named;
-                return d;
-            }
-        }
-
-        // -----------------------
-        // Public Shared Members
-        // -----------------------
-
-        /// <summary>
-        ///	Empty Shared Field
-        /// </summary>
-        ///
-        /// <remarks>
-        ///	An uninitialized SplatColor Structure
-        /// </remarks>
-
-        public static readonly SplatColor Empty;
-
-        /// <summary>
-        ///	Equality Operator
-        /// </summary>
-        ///
-        /// <remarks>
-        ///	Compares two SplatColor objects. The return value is
-        ///	based on the equivalence of the A,R,G,B properties 
-        ///	of the two Colors.
-        /// </remarks>
-
-        public static bool operator ==(SplatColor left, SplatColor right)
-        {
-            if (left.Value != right.Value)
-                return false;
-            if (left.IsNamedColor != right.IsNamedColor)
-                return false;
-            if (left.IsSystemColor != right.IsSystemColor)
-                return false;
-            if (left.IsEmpty != right.IsEmpty)
-                return false;
-            if (left.IsNamedColor) {
-                // then both are named (see previous check) and so we need to compare them
-                // but otherwise we don't as it kills performance (Name calls String.Format)
-                if (left.Name != right.Name)
-                    return false;
-            }
-            return true;
-        }
-
-        /// <summary>
-        ///	Inequality Operator
-        /// </summary>
-        ///
-        /// <remarks>
-        ///	Compares two SplatColor objects. The return value is
-        ///	based on the equivalence of the A,R,G,B properties 
-        ///	of the two colors.
-        /// </remarks>
-
-        public static bool operator !=(SplatColor left, SplatColor right)
-        {
-            return !(left == right);
-        }
-
-        public float GetBrightness()
-        {
-            byte minval = Math.Min(R, Math.Min(G, B));
-            byte maxval = Math.Max(R, Math.Max(G, B));
-
-            return (float)(maxval + minval) / 510;
-        }
-
-        public float GetSaturation()
-        {
-            byte minval = (byte)Math.Min(R, Math.Min(G, B));
-            byte maxval = (byte)Math.Max(R, Math.Max(G, B));
-
-            if (maxval == minval)
-                return 0.0f;
-
-            int sum = maxval + minval;
-            if (sum > 255)
-                sum = 510 - sum;
-
-            return (float)(maxval - minval) / sum;
-        }
-
-        public float GetHue()
-        {
-            int r = R;
-            int g = G;
-            int b = B;
-            byte minval = (byte)Math.Min(r, Math.Min(g, b));
-            byte maxval = (byte)Math.Max(r, Math.Max(g, b));
-
-            if (maxval == minval)
-                return 0.0f;
-
-            float diff = (float)(maxval - minval);
-            float rnorm = (maxval - r) / diff;
-            float gnorm = (maxval - g) / diff;
-            float bnorm = (maxval - b) / diff;
-
-            float hue = 0.0f;
-            if (r == maxval)
-                hue = 60.0f * (6.0f + bnorm - gnorm);
-            if (g == maxval)
-                hue = 60.0f * (2.0f + rnorm - bnorm);
-            if (b == maxval)
-                hue = 60.0f * (4.0f + gnorm - rnorm);
-            if (hue > 360.0f)
-                hue = hue - 360.0f;
-
-            return hue;
-        }
-
-        // -----------------------
-        // Public Instance Members
-        // -----------------------
-
-        /// <summary>
-        ///	ToKnownColor method
-        /// </summary>
-        ///
-        /// <remarks>
-        ///	Returns the KnownColor enum value for this color, 0 if is not known.
-        /// </remarks>
-        public KnownColor ToKnownColor()
-        {
-            return (KnownColor)knownColor;
-        }
-
-        /// <summary>
-        ///	IsEmpty Property
-        /// </summary>
-        ///
-        /// <remarks>
-        ///	Indicates transparent black. R,G,B = 0; A=0?
-        /// </remarks>
-
-        public bool IsEmpty
-        {
-            get
-            {
-                return state == (short)ColorType.Empty;
-            }
-        }
-
-        public byte A
-        {
-            get { return (byte)(Value >> 24); }
-        }
-
-        public byte R
-        {
-            get { return (byte)(Value >> 16); }
-        }
-
-        public byte G
-        {
-            get { return (byte)(Value >> 8); }
-        }
-
-        public byte B
-        {
-            get { return (byte)Value; }
-        }
-
-        /// <summary>
-        ///	Equals Method
-        /// </summary>
-        ///
-        /// <remarks>
-        ///	Checks equivalence of this SplatColor and another object.
-        /// </remarks>
-
-        public override bool Equals(object obj)
-        {
-            if (!(obj is SplatColor))
-                return false;
-            SplatColor c = (SplatColor)obj;
-            return this == c;
-        }
-
-        /// <summary>
-        ///	Reference Equals Method
-        ///	Is commented out because this is handled by the base class.
-        ///	TODO: Is it correct to let the base class handel reference equals
-        /// </summary>
-        ///
-        /// <remarks>
-        ///	Checks equivalence of this SplatColor and another object.
-        /// </remarks>
-        //public bool ReferenceEquals (object o)
-        //{
-        //	if (!(o is SplatColor))return false;
-        //	return (this == (SplatColor) o);
-        //}
-
-
-
-        /// <summary>
-        ///	GetHashCode Method
-        /// </summary>
-        ///
-        /// <remarks>
-        ///	Calculates a hashing value.
-        /// </remarks>
-
-        public override int GetHashCode()
-        {
-            int hc = (int)(Value ^ (Value >> 32) ^ state ^ (knownColor >> 16));
-            if (IsNamedColor)
-                hc ^= Name.GetHashCode();
-            return hc;
-        }
-
-        /// <summary>
-        ///	ToString Method
-        /// </summary>
-        ///
-        /// <remarks>
-        ///	Formats the SplatColor as a string in ARGB notation.
-        /// </remarks>
-
-        public override string ToString()
-        {
-            if (IsEmpty)
-                return "SplatColor [Empty]";
-
-            // Use the property here, not the field.
-            if (IsNamedColor)
-                return "SplatColor [" + Name + "]";
-
-            return String.Format("SplatColor [A={0}, R={1}, G={2}, B={3}]", A, R, G, B);
-        }
-
         private static void CheckRGBValues(int red, int green, int blue)
         {
             if ((red > 255) || (red < 0))
+            {
                 throw CreateColorArgumentException(red, "red");
+            }
+
             if ((green > 255) || (green < 0))
+            {
                 throw CreateColorArgumentException(green, "green");
+            }
+
             if ((blue > 255) || (blue < 0))
+            {
                 throw CreateColorArgumentException(blue, "blue");
+            }
         }
 
         private static ArgumentException CreateColorArgumentException(int value, string color)
         {
-            return new ArgumentException(string.Format("'{0}' is not a valid"
-              + " value for '{1}'. '{1}' should be greater or equal to 0 and"
-              + " less than or equal to 255.", value, color));
+            return new ArgumentException($"'{value}' is not a valid value for '{color}'. '{color}' should be greater or equal to 0 and less than or equal to 255.");
         }
 
         private static void CheckARGBValues(int alpha, int red, int green, int blue)
         {
             if ((alpha > 255) || (alpha < 0))
+            {
                 throw CreateColorArgumentException(alpha, "alpha");
+            }
+
             CheckRGBValues(red, green, blue);
-        }
-
-
-        static public SplatColor Transparent
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Transparent); }
-        }
-
-        static public SplatColor AliceBlue
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.AliceBlue); }
-        }
-
-        static public SplatColor AntiqueWhite
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.AntiqueWhite); }
-        }
-
-        static public SplatColor Aqua
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Aqua); }
-        }
-
-        static public SplatColor Aquamarine
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Aquamarine); }
-        }
-
-        static public SplatColor Azure
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Azure); }
-        }
-
-        static public SplatColor Beige
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Beige); }
-        }
-
-        static public SplatColor Bisque
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Bisque); }
-        }
-
-        static public SplatColor Black
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Black); }
-        }
-
-        static public SplatColor BlanchedAlmond
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.BlanchedAlmond); }
-        }
-
-        static public SplatColor Blue
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Blue); }
-        }
-
-        static public SplatColor BlueViolet
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.BlueViolet); }
-        }
-
-        static public SplatColor Brown
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Brown); }
-        }
-
-        static public SplatColor BurlyWood
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.BurlyWood); }
-        }
-
-        static public SplatColor CadetBlue
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.CadetBlue); }
-        }
-
-        static public SplatColor Chartreuse
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Chartreuse); }
-        }
-
-        static public SplatColor Chocolate
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Chocolate); }
-        }
-
-        static public SplatColor Coral
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Coral); }
-        }
-
-        static public SplatColor CornflowerBlue
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.CornflowerBlue); }
-        }
-
-        static public SplatColor Cornsilk
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Cornsilk); }
-        }
-
-        static public SplatColor Crimson
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Crimson); }
-        }
-
-        static public SplatColor Cyan
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Cyan); }
-        }
-
-        static public SplatColor DarkBlue
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DarkBlue); }
-        }
-
-        static public SplatColor DarkCyan
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DarkCyan); }
-        }
-
-        static public SplatColor DarkGoldenrod
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DarkGoldenrod); }
-        }
-
-        static public SplatColor DarkGray
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DarkGray); }
-        }
-
-        static public SplatColor DarkGreen
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DarkGreen); }
-        }
-
-        static public SplatColor DarkKhaki
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DarkKhaki); }
-        }
-
-        static public SplatColor DarkMagenta
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DarkMagenta); }
-        }
-
-        static public SplatColor DarkOliveGreen
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DarkOliveGreen); }
-        }
-
-        static public SplatColor DarkOrange
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DarkOrange); }
-        }
-
-        static public SplatColor DarkOrchid
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DarkOrchid); }
-        }
-
-        static public SplatColor DarkRed
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DarkRed); }
-        }
-
-        static public SplatColor DarkSalmon
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DarkSalmon); }
-        }
-
-        static public SplatColor DarkSeaGreen
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DarkSeaGreen); }
-        }
-
-        static public SplatColor DarkSlateBlue
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DarkSlateBlue); }
-        }
-
-        static public SplatColor DarkSlateGray
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DarkSlateGray); }
-        }
-
-        static public SplatColor DarkTurquoise
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DarkTurquoise); }
-        }
-
-        static public SplatColor DarkViolet
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DarkViolet); }
-        }
-
-        static public SplatColor DeepPink
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DeepPink); }
-        }
-
-        static public SplatColor DeepSkyBlue
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DeepSkyBlue); }
-        }
-
-        static public SplatColor DimGray
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DimGray); }
-        }
-
-        static public SplatColor DodgerBlue
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.DodgerBlue); }
-        }
-
-        static public SplatColor Firebrick
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Firebrick); }
-        }
-
-        static public SplatColor FloralWhite
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.FloralWhite); }
-        }
-
-        static public SplatColor ForestGreen
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.ForestGreen); }
-        }
-
-        static public SplatColor Fuchsia
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Fuchsia); }
-        }
-
-        static public SplatColor Gainsboro
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Gainsboro); }
-        }
-
-        static public SplatColor GhostWhite
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.GhostWhite); }
-        }
-
-        static public SplatColor Gold
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Gold); }
-        }
-
-        static public SplatColor Goldenrod
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Goldenrod); }
-        }
-
-        static public SplatColor Gray
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Gray); }
-        }
-
-        static public SplatColor Green
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Green); }
-        }
-
-        static public SplatColor GreenYellow
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.GreenYellow); }
-        }
-
-        static public SplatColor Honeydew
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Honeydew); }
-        }
-
-        static public SplatColor HotPink
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.HotPink); }
-        }
-
-        static public SplatColor IndianRed
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.IndianRed); }
-        }
-
-        static public SplatColor Indigo
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Indigo); }
-        }
-
-        static public SplatColor Ivory
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Ivory); }
-        }
-
-        static public SplatColor Khaki
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Khaki); }
-        }
-
-        static public SplatColor Lavender
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Lavender); }
-        }
-
-        static public SplatColor LavenderBlush
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.LavenderBlush); }
-        }
-
-        static public SplatColor LawnGreen
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.LawnGreen); }
-        }
-
-        static public SplatColor LemonChiffon
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.LemonChiffon); }
-        }
-
-        static public SplatColor LightBlue
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.LightBlue); }
-        }
-
-        static public SplatColor LightCoral
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.LightCoral); }
-        }
-
-        static public SplatColor LightCyan
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.LightCyan); }
-        }
-
-        static public SplatColor LightGoldenrodYellow
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.LightGoldenrodYellow); }
-        }
-
-        static public SplatColor LightGreen
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.LightGreen); }
-        }
-
-        static public SplatColor LightGray
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.LightGray); }
-        }
-
-        static public SplatColor LightPink
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.LightPink); }
-        }
-
-        static public SplatColor LightSalmon
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.LightSalmon); }
-        }
-
-        static public SplatColor LightSeaGreen
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.LightSeaGreen); }
-        }
-
-        static public SplatColor LightSkyBlue
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.LightSkyBlue); }
-        }
-
-        static public SplatColor LightSlateGray
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.LightSlateGray); }
-        }
-
-        static public SplatColor LightSteelBlue
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.LightSteelBlue); }
-        }
-
-        static public SplatColor LightYellow
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.LightYellow); }
-        }
-
-        static public SplatColor Lime
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Lime); }
-        }
-
-        static public SplatColor LimeGreen
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.LimeGreen); }
-        }
-
-        static public SplatColor Linen
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Linen); }
-        }
-
-        static public SplatColor Magenta
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Magenta); }
-        }
-
-        static public SplatColor Maroon
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Maroon); }
-        }
-
-        static public SplatColor MediumAquamarine
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.MediumAquamarine); }
-        }
-
-        static public SplatColor MediumBlue
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.MediumBlue); }
-        }
-
-        static public SplatColor MediumOrchid
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.MediumOrchid); }
-        }
-
-        static public SplatColor MediumPurple
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.MediumPurple); }
-        }
-
-        static public SplatColor MediumSeaGreen
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.MediumSeaGreen); }
-        }
-
-        static public SplatColor MediumSlateBlue
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.MediumSlateBlue); }
-        }
-
-        static public SplatColor MediumSpringGreen
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.MediumSpringGreen); }
-        }
-
-        static public SplatColor MediumTurquoise
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.MediumTurquoise); }
-        }
-
-        static public SplatColor MediumVioletRed
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.MediumVioletRed); }
-        }
-
-        static public SplatColor MidnightBlue
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.MidnightBlue); }
-        }
-
-        static public SplatColor MintCream
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.MintCream); }
-        }
-
-        static public SplatColor MistyRose
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.MistyRose); }
-        }
-
-        static public SplatColor Moccasin
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Moccasin); }
-        }
-
-        static public SplatColor NavajoWhite
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.NavajoWhite); }
-        }
-
-        static public SplatColor Navy
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Navy); }
-        }
-
-        static public SplatColor OldLace
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.OldLace); }
-        }
-
-        static public SplatColor Olive
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Olive); }
-        }
-
-        static public SplatColor OliveDrab
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.OliveDrab); }
-        }
-
-        static public SplatColor Orange
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Orange); }
-        }
-
-        static public SplatColor OrangeRed
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.OrangeRed); }
-        }
-
-        static public SplatColor Orchid
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Orchid); }
-        }
-
-        static public SplatColor PaleGoldenrod
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.PaleGoldenrod); }
-        }
-
-        static public SplatColor PaleGreen
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.PaleGreen); }
-        }
-
-        static public SplatColor PaleTurquoise
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.PaleTurquoise); }
-        }
-
-        static public SplatColor PaleVioletRed
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.PaleVioletRed); }
-        }
-
-        static public SplatColor PapayaWhip
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.PapayaWhip); }
-        }
-
-        static public SplatColor PeachPuff
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.PeachPuff); }
-        }
-
-        static public SplatColor Peru
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Peru); }
-        }
-
-        static public SplatColor Pink
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Pink); }
-        }
-
-        static public SplatColor Plum
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Plum); }
-        }
-
-        static public SplatColor PowderBlue
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.PowderBlue); }
-        }
-
-        static public SplatColor Purple
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Purple); }
-        }
-
-        static public SplatColor Red
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Red); }
-        }
-
-        static public SplatColor RosyBrown
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.RosyBrown); }
-        }
-
-        static public SplatColor RoyalBlue
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.RoyalBlue); }
-        }
-
-        static public SplatColor SaddleBrown
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.SaddleBrown); }
-        }
-
-        static public SplatColor Salmon
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Salmon); }
-        }
-
-        static public SplatColor SandyBrown
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.SandyBrown); }
-        }
-
-        static public SplatColor SeaGreen
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.SeaGreen); }
-        }
-
-        static public SplatColor SeaShell
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.SeaShell); }
-        }
-
-        static public SplatColor Sienna
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Sienna); }
-        }
-
-        static public SplatColor Silver
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Silver); }
-        }
-
-        static public SplatColor SkyBlue
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.SkyBlue); }
-        }
-
-        static public SplatColor SlateBlue
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.SlateBlue); }
-        }
-
-        static public SplatColor SlateGray
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.SlateGray); }
-        }
-
-        static public SplatColor Snow
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Snow); }
-        }
-
-        static public SplatColor SpringGreen
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.SpringGreen); }
-        }
-
-        static public SplatColor SteelBlue
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.SteelBlue); }
-        }
-
-        static public SplatColor Tan
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Tan); }
-        }
-
-        static public SplatColor Teal
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Teal); }
-        }
-
-        static public SplatColor Thistle
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Thistle); }
-        }
-
-        static public SplatColor Tomato
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Tomato); }
-        }
-
-        static public SplatColor Turquoise
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Turquoise); }
-        }
-
-        static public SplatColor Violet
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Violet); }
-        }
-
-        static public SplatColor Wheat
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Wheat); }
-        }
-
-        static public SplatColor White
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.White); }
-        }
-
-        static public SplatColor WhiteSmoke
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.WhiteSmoke); }
-        }
-
-        static public SplatColor Yellow
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Yellow); }
-        }
-
-        static public SplatColor YellowGreen
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.YellowGreen); }
         }
     }
 }

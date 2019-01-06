@@ -1,8 +1,8 @@
 using System;
-using System.IO;
-using System.Reflection;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 #if NETFX_CORE
@@ -11,11 +11,16 @@ using Windows.ApplicationModel;
 
 namespace Splat
 {
+    /// <summary>
+    /// Detects if we are in design mode or unit test mode based on the current platform.
+    /// </summary>
     public class PlatformModeDetector : IModeDetector
     {
+        /// <inheritdoc />
         public bool? InUnitTestRunner()
         {
-            var testAssemblies = new[] {
+            var testAssemblies = new[]
+            {
                 "CSUNIT",
                 "NUNIT",
                 "XUNIT",
@@ -26,28 +31,35 @@ namespace Splat
                 "NCRUNCH",
             };
 
-            try {
-                return searchForAssembly(testAssemblies);
-            } catch (Exception) {
+            try
+            {
+                return SearchForAssembly(testAssemblies);
+            }
+            catch (Exception)
+            {
                 return null;
             }
         }
 
+        /// <inheritdoc />
         public bool? InDesignMode()
         {
 #if NETFX_CORE
             return DesignMode.DesignModeEnabled;
 #else
-            var designEnvironments = new[] {
+            var designEnvironments = new[]
+            {
                 "BLEND.EXE",
                 "XDESPROC.EXE",
             };
 
             var entry = Assembly.GetEntryAssembly();
-            if (entry != null) {
-                var exeName = (new FileInfo(entry.Location)).Name.ToUpperInvariant();
+            if (entry != null)
+            {
+                var exeName = new FileInfo(entry.Location).Name;
 
-                if (designEnvironments.Any(x => x.Contains(exeName))) {
+                if (designEnvironments.Any(x => x.IndexOf(exeName, StringComparison.InvariantCulture) != -1))
+                {
                     return true;
                 }
             }
@@ -56,7 +68,7 @@ namespace Splat
 #endif
         }
 
-        static bool searchForAssembly(IEnumerable<string> assemblyList)
+        private static bool SearchForAssembly(IEnumerable<string> assemblyList)
         {
 #if NETFX_CORE
             var depPackages = Package.Current.Dependencies.Select(x => x.Id.FullName.ToUpperInvariant());
@@ -67,11 +79,11 @@ namespace Splat
                 return files.Select(x => x.Path).ToArray();
             }, TaskCreationOptions.HideScheduler).Unwrap();
 
-            return fileTask.Result.Any(x => assemblyList.Any(name => x.ToUpperInvariant().Contains(name)));
+            return fileTask.Result.Any(x => assemblyList.Any(name => x.Contains(name, StringComparison.InvariantCulture)));
 #else
             return AppDomain.CurrentDomain.GetAssemblies()
                 .Select(x => x.FullName.ToUpperInvariant())
-                .Any(x => assemblyList.Any(name => x.Contains(name)));
+                .Any(x => assemblyList.Any(name => x.IndexOf(name, StringComparison.InvariantCulture) != -1));
 #endif
         }
     }
