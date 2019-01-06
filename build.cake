@@ -7,13 +7,31 @@
 //////////////////////////////////////////////////////////////////////
 
 #addin "nuget:?package=Cake.FileHelpers&version=3.1.0"
-#addin "nuget:?package=Cake.Powershell&version=0.4.7"
+#addin "nuget:?package=Cake.Codecov&version=0.5.0"
+#addin "nuget:?package=Cake.Coverlet&version=2.1.2"
+
+//////////////////////////////////////////////////////////////////////
+// MODULES
+//////////////////////////////////////////////////////////////////////
+
+#module nuget:?package=Cake.DotNetTool.Module&version=0.1.0
 
 //////////////////////////////////////////////////////////////////////
 // TOOLS
 //////////////////////////////////////////////////////////////////////
 
 #tool "nuget:?package=vswhere&version=2.5.2"
+#tool "nuget:?package=OpenCover&version=4.6.519"
+#tool "nuget:?package=xunit.runner.console&version=2.4.1"
+#tool "nuget:?package=Codecov&version=1.1.0"
+
+//////////////////////////////////////////////////////////////////////
+// DOTNET TOOLS
+//////////////////////////////////////////////////////////////////////
+
+#tool "dotnet:?package=SignClient&version=1.0.82"
+#tool "dotnet:?package=coverlet.console&version=1.4.0"
+#tool "dotnet:?package=nbgv&version=2.3.38"
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -23,6 +41,12 @@ var target = Argument("target", "Default");
 if (string.IsNullOrWhiteSpace(target))
 {
     target = "Default";
+}
+
+var configuration = Argument("configuration", "Release");
+if (string.IsNullOrWhiteSpace(configuration))
+{
+    configuration = "Release";
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -41,9 +65,28 @@ var msBuildPath = VSWhereLatest().CombineWithFilePath("./MSBuild/15.0/Bin/MSBuil
 
 var informationalVersion = EnvironmentVariable("GitAssemblyInformationalVersion");
 
+// OpenCover file location
+var testCoverageOutputFile = MakeAbsolute(File(testsArtifactDirectory + "OpenCover.xml"));
+
 // Artifacts
 var artifactDirectory = "./artifacts/";
-var packageWhitelist = new[] { "splat" };
+var testsArtifactDirectory = artifactDirectory + "tests/";
+var binariesArtifactDirectory = artifactDirectory + "binaries/";
+var packagesArtifactDirectory = artifactDirectory + "packages/";
+
+// Whitelisted Packages
+var packageWhitelist = new[] 
+{ 
+    "Splat",
+};
+
+var packageTestWhitelist = new[]
+{
+    "Splat.Tests", 
+};
+
+var testFrameworks = new[] { "netcoreapp2.2", "net472" };
+
 
 // Define global marcos.
 Action Abort = () => { throw new Exception("a non-recoverable fatal error occurred."); };
@@ -60,7 +103,10 @@ Setup(context =>
 
     Information("Building version {0} of Splat.", informationalVersion);
 
-    CreateDirectory(artifactDirectory);
+    CleanDirectories(artifactDirectory);
+    CreateDirectory(testsArtifactDirectory);
+    CreateDirectory(binariesArtifactDirectory);
+    CreateDirectory(packagesArtifactDirectory);
 });
 
 Teardown(context =>
@@ -69,42 +115,136 @@ Teardown(context =>
 });
 
 //////////////////////////////////////////////////////////////////////
+// HELPER METHODS
+//////////////////////////////////////////////////////////////////////
+Action<string, string, bool> Build = (solution, packageOutputPath, doNotOptimise) =>
+{
+    Information("Building {0} using {1}", solution, msBuildPath);
+
+    var msBuildSettings = new MSBuildSettings() {
+            ToolPath = msBuildPath,
+            ArgumentCustomization = args => args.Append("/m /NoWarn:VSX1000"),
+            NodeReuse = false,
+            Restore = true
+        }
+        .WithProperty("TreatWarningsAsErrors", treatWarningsAsErrors.ToString())
+        .SetConfiguration(configuration)     
+        .WithTarget("build;pack")                   
+        .SetVerbosity(Verbosity.Minimal);
+
+    if (!string.IsNullOrWhiteSpace(packageOutputPath))
+    {
+        msBuildSettings = msBuildSettings.WithProperty("PackageOutputPath",  MakeAbsolute(Directory(packageOutputPath)).ToString().Quote());
+    }
+
+    if (doNotOptimise)
+    {
+        msBuildSettings = msBuildSettings.WithProperty("Optimize",  "False");
+    }
+
+    MSBuild(solution, msBuildSettings);
+};
+
+//////////////////////////////////////////////////////////////////////
 // TASKS
 //////////////////////////////////////////////////////////////////////
 
 Task("Build")
     .Does (() =>
 {
-    Action<string,string> build = (solution, name) =>
-    {
-        Information("Building {0} using {1}", solution, msBuildPath);
+    // Clean the directories since we'll need to re-generate the debug type.
+    CleanDirectories($"./src/**/obj/{configuration}");
+    CleanDirectories($"./src/**/bin/{configuration}");
 
-        MSBuild(solution, new MSBuildSettings() {
-                ToolPath = msBuildPath,
-                ArgumentCustomization = args => args.Append("/m /restore")
-            }
-            .WithTarget("build;pack") 
-            .WithProperty("PackageOutputPath",  MakeAbsolute(Directory(artifactDirectory)).ToString().Quote())
-            .WithProperty("TreatWarningsAsErrors", treatWarningsAsErrors.ToString())
-            .SetConfiguration("Release")                        
-            .SetVerbosity(Verbosity.Minimal)
-            .SetNodeReuse(false));
-    };
-
-    foreach(var package in packageWhitelist)
+    foreach(var packageName in packageWhitelist)
     {
-        build("./src/" + package + "/" + package + ".csproj", package);
+        Build($"./src/{packageName}/{packageName}.csproj", packagesArtifactDirectory, false);
     }
+
+    CopyFiles(GetFiles($"./src/**/bin/{configuration}/**/*"), Directory(binariesArtifactDirectory), true);
 });
+
+// Task("RunUnitTests")
+//     .Does(() =>
+// {
+//     // Clean the directories since we'll need to re-generate the debug type.
+//     CleanDirectories($"./src/**/obj/{configuration}");
+//     CleanDirectories($"./src/**/bin/{configuration}");
+
+//     var coverletSettings = new CoverletSettings {
+//             CollectCoverage = true,
+//             CoverletOutputFormat = CoverletOutputFormat.opencover,
+//             CoverletOutputDirectory = Directory(testsArtifactDirectory),
+//             MergeWithFile = testCoverageOutputFile,
+//             CoverletOutputName = "opencover.xml"
+//         }
+//         .WithInclusion("[Splat*]*")
+//         .WithFilter("[*.Tests*]*")
+//         .WithFilter("[*.Tests*]*")
+//         //.ExcludeByAttribute("*.ExcludeFromCodeCoverage*")
+//         .WithFileExclusion("*/*Designer.cs")
+//         .WithFileExclusion("*/*.g.cs")
+//         .WithFileExclusion("*/*.g.i.cs")
+//         .WithFileExclusion("*ApprovalTests*");
+
+//     foreach (var packageName in packageTestWhitelist)
+//     {
+//         var projectName = $"./src/{packageName}/{packageName}.csproj";
+//         Build(projectName, null, true);
+
+//         foreach (var testFramework in testFrameworks)
+//         {
+//             var testSettings = new DotNetCoreTestSettings {
+//                 NoBuild = true,
+//                 Framework = testFramework,
+//                 Configuration = configuration,
+//                 TestAdapterPath = GetDirectories("./tools/xunit.runner.console*/**/net472").FirstOrDefault(),        
+//             };
+
+//             var testFile = $"./src/{packageName}/bin/{configuration}/{testFramework}/{packageName}.dll";
+//             Information($"Generate Coverlet information for {testFile} for {testFramework}");
+//             Coverlet(testFile, projectName, testSettings, coverletSettings);
+//         }
+//     }
+
+//     ReportGenerator(testCoverageOutputFile, testsArtifactDirectory + "Report/");
+// }).ReportError(exception =>
+// {
+//     var apiApprovals = GetFiles("./**/ApiApprovalTests.*");
+//     CopyFiles(apiApprovals, artifactDirectory);
+// });
 
 Task("SignPackages")
     .WithCriteria(() => !local)
     .WithCriteria(() => !isPullRequest)
     .Does(() =>
 {
-    StartPowershellFile("./SignPackages.ps1", args =>
+    if(EnvironmentVariable("SIGNCLIENT_SECRET") == null)
     {
-    });
+        throw new Exception("Client Secret not found, not signing packages.");
+    }
+
+    var nupkgs = GetFiles(packagesArtifactDirectory + "/*.nupkg");
+    foreach(FilePath nupkg in nupkgs)
+    {
+        var packageName = nupkg.GetFilenameWithoutExtension();
+        Information($"Submitting {packageName} for signing");
+
+        DotNetCoreTool("SignClient", new DotNetCoreToolSettings{
+            ArgumentCustomization = args =>
+                args.AppendSwitch("-c", "./SignPackages.json")
+                    .AppendSwitch("-i", nupkg.FullPath)
+                    .AppendSwitch("-r", EnvironmentVariable("SIGNCLIENT_USER"))
+                    .AppendSwitch("-s", EnvironmentVariable("SIGNCLIENT_SECRET"))
+                    .AppendSwitch("-n", "ReactiveUI")
+                    .AppendSwitch("-d", "ReactiveUI")
+                    .AppendSwitch("-u", "https://reactiveui.net")
+                });
+
+        Information($"Finished signing {packageName}");
+    }
+    
+    Information("Sign-package complete");
 });
 
 Task("Package")
@@ -120,6 +260,7 @@ Task("Package")
 
 Task("Default")
     .IsDependentOn("Package")
+    //.IsDependentOn("RunUnitTests")
     .Does (() =>
 {
 });

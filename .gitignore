@@ -248,3 +248,6 @@ src/*.Tests/API/*.received.txt
 
 # Fody Weavers (for tests)
 src/Tools/
+
+# Local packages (for testing only)
+LocalPackages/
