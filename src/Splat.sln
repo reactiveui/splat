@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.build.targets = Directory.build.targets
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Tests", "Splat.Tests\Splat.Tests.csproj", "{6CAD2584-AA69-4A36-8AD4-A90D040003CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{8535BDE3-25B5-41D6-BF5D-2DF766AE879B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8535BDE3-25B5-41D6-BF5D-2DF766AE879B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8535BDE3-25B5-41D6-BF5D-2DF766AE879B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CAD2584-AA69-4A36-8AD4-A90D040003CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CAD2584-AA69-4A36-8AD4-A90D040003CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CAD2584-AA69-4A36-8AD4-A90D040003CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CAD2584-AA69-4A36-8AD4-A90D040003CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

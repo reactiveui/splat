@@ -1,0 +1,548 @@
+[assembly: System.Resources.NeutralResourcesLanguageAttribute("en-US")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleToAttribute("Splat.Tests")]
+[assembly: System.Runtime.Versioning.TargetFrameworkAttribute(".NETStandard,Version=v2.0", FrameworkDisplayName="")]
+namespace Splat
+{
+    public class static BitmapLoader
+    {
+        public static Splat.IBitmapLoader Current { get; set; }
+    }
+    public class BitmapLoaderException : System.Exception
+    {
+        public BitmapLoaderException() { }
+        public BitmapLoaderException(string message) { }
+        public BitmapLoaderException(string message, System.Exception innerException) { }
+        protected BitmapLoaderException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
+    }
+    public enum CompressedBitmapFormat
+    {
+        Png = 0,
+        Jpeg = 1,
+    }
+    public class DebugLogger : Splat.ILogger
+    {
+        public DebugLogger() { }
+        public Splat.LogLevel Level { get; set; }
+        public void Write(string message, Splat.LogLevel logLevel) { }
+    }
+    public class DefaultLogManager : Splat.ILogManager
+    {
+        public DefaultLogManager(Splat.IDependencyResolver dependencyResolver = null) { }
+        public Splat.IFullLogger GetLogger(System.Type type) { }
+    }
+    public class static DependencyResolverMixins
+    {
+        public static T GetService<T>(this Splat.IDependencyResolver resolver, string contract = null) { }
+        public static System.Collections.Generic.IEnumerable<T> GetServices<T>(this Splat.IDependencyResolver resolver, string contract = null) { }
+        public static void InitializeSplat(this Splat.IMutableDependencyResolver resolver) { }
+        public static void Register<T>(this Splat.IMutableDependencyResolver resolver, System.Func<T> factory, string contract = null) { }
+        public static void RegisterConstant(this Splat.IMutableDependencyResolver resolver, object value, System.Type serviceType, string contract = null) { }
+        public static void RegisterConstant<T>(this Splat.IMutableDependencyResolver resolver, T value, string contract = null) { }
+        public static void RegisterLazySingleton(this Splat.IMutableDependencyResolver resolver, System.Func<object> valueFactory, System.Type serviceType, string contract = null) { }
+        public static void RegisterLazySingleton<T>(this Splat.IMutableDependencyResolver resolver, System.Func<T> valueFactory, string contract = null) { }
+        public static System.IDisposable ServiceRegistrationCallback(this Splat.IMutableDependencyResolver resolver, System.Type serviceType, System.Action<System.IDisposable> callback) { }
+        public static System.IDisposable WithResolver(this Splat.IDependencyResolver resolver) { }
+    }
+    public class FuncDependencyResolver : Splat.IDependencyResolver, Splat.IMutableDependencyResolver, System.IDisposable
+    {
+        public FuncDependencyResolver(System.Func<System.Type, string, System.Collections.Generic.IEnumerable<object>> getAllServices, System.Action<System.Func<object>, System.Type, string> register = null, System.IDisposable toDispose = null) { }
+        public void Dispose() { }
+        protected virtual void Dispose(bool isDisposing) { }
+        public object GetService(System.Type serviceType, string contract = null) { }
+        public System.Collections.Generic.IEnumerable<object> GetServices(System.Type serviceType, string contract = null) { }
+        public void Register(System.Func<object> factory, System.Type serviceType, string contract = null) { }
+        public System.IDisposable ServiceRegistrationCallback(System.Type serviceType, string contract, System.Action<System.IDisposable> callback) { }
+    }
+    public class FuncLogManager : Splat.ILogManager
+    {
+        public FuncLogManager(System.Func<System.Type, Splat.IFullLogger> getLoggerFunc) { }
+        public Splat.IFullLogger GetLogger(System.Type type) { }
+    }
+    public interface IBitmap : System.IDisposable
+    {
+        float Height { get; }
+        float Width { get; }
+        System.Threading.Tasks.Task Save(Splat.CompressedBitmapFormat format, float quality, System.IO.Stream target);
+    }
+    public interface IBitmapLoader
+    {
+        Splat.IBitmap Create(float width, float height);
+        System.Threading.Tasks.Task<Splat.IBitmap> Load(System.IO.Stream sourceStream, System.Nullable<float> desiredWidth, System.Nullable<float> desiredHeight);
+        System.Threading.Tasks.Task<Splat.IBitmap> LoadFromResource(string source, System.Nullable<float> desiredWidth, System.Nullable<float> desiredHeight);
+    }
+    public interface IDependencyResolver : System.IDisposable
+    {
+        object GetService(System.Type serviceType, string contract = null);
+        System.Collections.Generic.IEnumerable<object> GetServices(System.Type serviceType, string contract = null);
+    }
+    [System.Runtime.InteropServices.ComVisibleAttribute(false)]
+    public interface IEnableLogger { }
+    public interface IFullLogger : Splat.ILogger
+    {
+        bool IsDebugEnabled { get; }
+        bool IsErrorEnabled { get; }
+        bool IsFatalEnabled { get; }
+        bool IsInfoEnabled { get; }
+        bool IsWarnEnabled { get; }
+        void Debug<T>(T value);
+        void Debug<T>(System.IFormatProvider formatProvider, T value);
+        void Debug(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
+        void Debug([System.ComponentModel.LocalizableAttribute(false)] string message);
+        void Debug([System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
+        void Debug<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
+        void Debug<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
+        void Debug<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
+        void Debug<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
+        void Debug<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void Debug<TArgument1, TArgument2, TArgument3>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void DebugException([System.ComponentModel.LocalizableAttribute(false)] string message, System.Exception exception);
+        void Error<T>(T value);
+        void Error<T>(System.IFormatProvider formatProvider, T value);
+        void Error(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
+        void Error([System.ComponentModel.LocalizableAttribute(false)] string message);
+        void Error([System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
+        void Error<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
+        void Error<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
+        void Error<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
+        void Error<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
+        void Error<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void Error<TArgument1, TArgument2, TArgument3>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void ErrorException([System.ComponentModel.LocalizableAttribute(false)] string message, System.Exception exception);
+        void Fatal<T>(T value);
+        void Fatal<T>(System.IFormatProvider formatProvider, T value);
+        void Fatal(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
+        void Fatal([System.ComponentModel.LocalizableAttribute(false)] string message);
+        void Fatal([System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
+        void Fatal<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
+        void Fatal<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
+        void Fatal<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
+        void Fatal<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
+        void Fatal<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void Fatal<TArgument1, TArgument2, TArgument3>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void FatalException([System.ComponentModel.LocalizableAttribute(false)] string message, System.Exception exception);
+        void Info<T>(T value);
+        void Info<T>(System.IFormatProvider formatProvider, T value);
+        void Info(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
+        void Info([System.ComponentModel.LocalizableAttribute(false)] string message);
+        void Info([System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
+        void Info<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
+        void Info<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
+        void Info<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
+        void Info<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
+        void Info<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void Info<TArgument1, TArgument2, TArgument3>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void InfoException([System.ComponentModel.LocalizableAttribute(false)] string message, System.Exception exception);
+        void Warn<T>(T value);
+        void Warn<T>(System.IFormatProvider formatProvider, T value);
+        void Warn(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
+        void Warn([System.ComponentModel.LocalizableAttribute(false)] string message);
+        void Warn([System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
+        void Warn<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
+        void Warn<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
+        void Warn<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
+        void Warn<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
+        void Warn<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void Warn<TArgument1, TArgument2, TArgument3>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void WarnException([System.ComponentModel.LocalizableAttribute(false)] string message, System.Exception exception);
+    }
+    public interface ILogger
+    {
+        Splat.LogLevel Level { get; set; }
+        void Write([System.ComponentModel.LocalizableAttribute(false)] string message, Splat.LogLevel logLevel);
+    }
+    public interface ILogManager
+    {
+        Splat.IFullLogger GetLogger(System.Type type);
+    }
+    public interface IModeDetector
+    {
+        System.Nullable<bool> InDesignMode();
+        System.Nullable<bool> InUnitTestRunner();
+    }
+    public interface IMutableDependencyResolver : Splat.IDependencyResolver, System.IDisposable
+    {
+        void Register(System.Func<object> factory, System.Type serviceType, string contract = null);
+        System.IDisposable ServiceRegistrationCallback(System.Type serviceType, string contract, System.Action<System.IDisposable> callback);
+    }
+    public enum KnownColor
+    {
+        ActiveBorder = 1,
+        ActiveCaption = 2,
+        ActiveCaptionText = 3,
+        AppWorkspace = 4,
+        Control = 5,
+        ControlDark = 6,
+        ControlDarkDark = 7,
+        ControlLight = 8,
+        ControlLightLight = 9,
+        ControlText = 10,
+        Desktop = 11,
+        GrayText = 12,
+        Highlight = 13,
+        HighlightText = 14,
+        HotTrack = 15,
+        InactiveBorder = 16,
+        InactiveCaption = 17,
+        InactiveCaptionText = 18,
+        Info = 19,
+        InfoText = 20,
+        Menu = 21,
+        MenuText = 22,
+        ScrollBar = 23,
+        Window = 24,
+        WindowFrame = 25,
+        WindowText = 26,
+        Transparent = 27,
+        AliceBlue = 28,
+        AntiqueWhite = 29,
+        Aqua = 30,
+        Aquamarine = 31,
+        Azure = 32,
+        Beige = 33,
+        Bisque = 34,
+        Black = 35,
+        BlanchedAlmond = 36,
+        Blue = 37,
+        BlueViolet = 38,
+        Brown = 39,
+        BurlyWood = 40,
+        CadetBlue = 41,
+        Chartreuse = 42,
+        Chocolate = 43,
+        Coral = 44,
+        CornflowerBlue = 45,
+        Cornsilk = 46,
+        Crimson = 47,
+        Cyan = 48,
+        DarkBlue = 49,
+        DarkCyan = 50,
+        DarkGoldenrod = 51,
+        DarkGray = 52,
+        DarkGreen = 53,
+        DarkKhaki = 54,
+        DarkMagenta = 55,
+        DarkOliveGreen = 56,
+        DarkOrange = 57,
+        DarkOrchid = 58,
+        DarkRed = 59,
+        DarkSalmon = 60,
+        DarkSeaGreen = 61,
+        DarkSlateBlue = 62,
+        DarkSlateGray = 63,
+        DarkTurquoise = 64,
+        DarkViolet = 65,
+        DeepPink = 66,
+        DeepSkyBlue = 67,
+        DimGray = 68,
+        DodgerBlue = 69,
+        Firebrick = 70,
+        FloralWhite = 71,
+        ForestGreen = 72,
+        Fuchsia = 73,
+        Gainsboro = 74,
+        GhostWhite = 75,
+        Gold = 76,
+        Goldenrod = 77,
+        Gray = 78,
+        Green = 79,
+        GreenYellow = 80,
+        Honeydew = 81,
+        HotPink = 82,
+        IndianRed = 83,
+        Indigo = 84,
+        Ivory = 85,
+        Khaki = 86,
+        Lavender = 87,
+        LavenderBlush = 88,
+        LawnGreen = 89,
+        LemonChiffon = 90,
+        LightBlue = 91,
+        LightCoral = 92,
+        LightCyan = 93,
+        LightGoldenrodYellow = 94,
+        LightGray = 95,
+        LightGreen = 96,
+        LightPink = 97,
+        LightSalmon = 98,
+        LightSeaGreen = 99,
+        LightSkyBlue = 100,
+        LightSlateGray = 101,
+        LightSteelBlue = 102,
+        LightYellow = 103,
+        Lime = 104,
+        LimeGreen = 105,
+        Linen = 106,
+        Magenta = 107,
+        Maroon = 108,
+        MediumAquamarine = 109,
+        MediumBlue = 110,
+        MediumOrchid = 111,
+        MediumPurple = 112,
+        MediumSeaGreen = 113,
+        MediumSlateBlue = 114,
+        MediumSpringGreen = 115,
+        MediumTurquoise = 116,
+        MediumVioletRed = 117,
+        MidnightBlue = 118,
+        MintCream = 119,
+        MistyRose = 120,
+        Moccasin = 121,
+        NavajoWhite = 122,
+        Navy = 123,
+        OldLace = 124,
+        Olive = 125,
+        OliveDrab = 126,
+        Orange = 127,
+        OrangeRed = 128,
+        Orchid = 129,
+        PaleGoldenrod = 130,
+        PaleGreen = 131,
+        PaleTurquoise = 132,
+        PaleVioletRed = 133,
+        PapayaWhip = 134,
+        PeachPuff = 135,
+        Peru = 136,
+        Pink = 137,
+        Plum = 138,
+        PowderBlue = 139,
+        Purple = 140,
+        Red = 141,
+        RosyBrown = 142,
+        RoyalBlue = 143,
+        SaddleBrown = 144,
+        Salmon = 145,
+        SandyBrown = 146,
+        SeaGreen = 147,
+        SeaShell = 148,
+        Sienna = 149,
+        Silver = 150,
+        SkyBlue = 151,
+        SlateBlue = 152,
+        SlateGray = 153,
+        Snow = 154,
+        SpringGreen = 155,
+        SteelBlue = 156,
+        Tan = 157,
+        Teal = 158,
+        Thistle = 159,
+        Tomato = 160,
+        Turquoise = 161,
+        Violet = 162,
+        Wheat = 163,
+        White = 164,
+        WhiteSmoke = 165,
+        Yellow = 166,
+        YellowGreen = 167,
+        ButtonFace = 168,
+        ButtonHighlight = 169,
+        ButtonShadow = 170,
+        GradientActiveCaption = 171,
+        GradientInactiveCaption = 172,
+        MenuBar = 173,
+        MenuHighlight = 174,
+    }
+    public class static Locator
+    {
+        public static Splat.IDependencyResolver Current { get; set; }
+        public static Splat.IMutableDependencyResolver CurrentMutable { get; set; }
+        public static System.IDisposable RegisterResolverCallbackChanged(System.Action callback) { }
+    }
+    public class LoggingException : System.Exception
+    {
+        public LoggingException() { }
+        public LoggingException(string message) { }
+        public LoggingException(string message, System.Exception innerException) { }
+        protected LoggingException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
+    }
+    public class static LogHost
+    {
+        public static Splat.IFullLogger Default { get; }
+        public static Splat.IFullLogger Log<T>(this T logClassInstance)
+            where T : Splat.IEnableLogger { }
+    }
+    public enum LogLevel
+    {
+        Debug = 1,
+        Info = 2,
+        Warn = 3,
+        Error = 4,
+        Fatal = 5,
+    }
+    public class static LogManagerMixin
+    {
+        public static Splat.IFullLogger GetLogger<T>(this Splat.ILogManager logManager) { }
+    }
+    public class MemoizingMRUCache<TParam, TVal>
+    {
+        public MemoizingMRUCache(System.Func<TParam, object, TVal> calculationFunc, int maxSize, System.Action<TVal> onRelease = null) { }
+        public System.Collections.Generic.IEnumerable<TVal> CachedValues() { }
+        public TVal Get(TParam key) { }
+        public TVal Get(TParam key, object context = null) { }
+        public void Invalidate(TParam key) { }
+        public void InvalidateAll() { }
+        public bool TryGet(TParam key, out TVal result) { }
+    }
+    public class static ModeDetector
+    {
+        public static bool InDesignMode() { }
+        public static bool InUnitTestRunner() { }
+        public static void OverrideModeDetector(Splat.IModeDetector modeDetector) { }
+    }
+    public class ModernDependencyResolver : Splat.IDependencyResolver, Splat.IMutableDependencyResolver, System.IDisposable
+    {
+        public ModernDependencyResolver() { }
+        protected ModernDependencyResolver(System.Collections.Generic.Dictionary<System.Tuple<System.Type, string>, System.Collections.Generic.List<System.Func<object>>> registry) { }
+        public void Dispose() { }
+        protected virtual void Dispose(bool isDisposing) { }
+        public Splat.ModernDependencyResolver Duplicate() { }
+        public object GetService(System.Type serviceType, string contract = null) { }
+        public System.Collections.Generic.IEnumerable<object> GetServices(System.Type serviceType, string contract = null) { }
+        public void Register(System.Func<object> factory, System.Type serviceType, string contract = null) { }
+        public System.IDisposable ServiceRegistrationCallback(System.Type serviceType, string contract, System.Action<System.IDisposable> callback) { }
+    }
+    public class NullLogger : Splat.ILogger
+    {
+        public NullLogger() { }
+        public Splat.LogLevel Level { get; set; }
+        public void Write(string message, Splat.LogLevel logLevel) { }
+    }
+    public class static PointMathExtensions
+    {
+        public static float AngleInDegrees(this System.Drawing.PointF value) { }
+        public static float DistanceTo(this System.Drawing.PointF value, System.Drawing.PointF other) { }
+        public static float DotProduct(this System.Drawing.PointF value, System.Drawing.PointF other) { }
+        public static System.Drawing.PointF Floor(this System.Drawing.Point value) { }
+        public static float Length(this System.Drawing.PointF value) { }
+        public static System.Drawing.PointF Normalize(this System.Drawing.PointF value) { }
+        public static System.Drawing.PointF ProjectAlong(this System.Drawing.PointF value, System.Drawing.PointF direction) { }
+        public static System.Drawing.PointF ProjectAlongAngle(this System.Drawing.PointF value, float angleInDegrees) { }
+        public static System.Drawing.PointF ScaledBy(this System.Drawing.PointF value, float factor) { }
+        public static bool WithinEpsilonOf(this System.Drawing.PointF value, System.Drawing.PointF other, float epsilon) { }
+    }
+    public class static RectangleMathExtensions
+    {
+        public static System.Drawing.PointF Center(this System.Drawing.RectangleF value) { }
+        public static System.Drawing.RectangleF Copy(this System.Drawing.RectangleF value, System.Nullable<float> x = null, System.Nullable<float> y = null, System.Nullable<float> width = null, System.Nullable<float> height = null, System.Nullable<float> top = null, System.Nullable<float> bottom = null) { }
+        public static System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF> Divide(this System.Drawing.RectangleF value, float amount, Splat.RectEdge fromEdge) { }
+        public static System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF> DivideWithPadding(this System.Drawing.RectangleF value, float sliceAmount, float padding, Splat.RectEdge fromEdge) { }
+        public static System.Drawing.RectangleF InvertWithin(this System.Drawing.RectangleF value, System.Drawing.RectangleF containingRect) { }
+    }
+    public enum RectEdge
+    {
+        Left = 0,
+        Top = 1,
+        Right = 2,
+        Bottom = 3,
+    }
+    public class static SizeMathExtensions
+    {
+        public static System.Drawing.SizeF ScaledBy(this System.Drawing.SizeF value, float factor) { }
+        public static bool WithinEpsilonOf(this System.Drawing.SizeF value, System.Drawing.SizeF other, float epsilon) { }
+    }
+    [System.Runtime.Serialization.DataContractAttribute()]
+    public struct SplatColor : System.IEquatable<Splat.SplatColor>
+    {
+        public byte A { get; }
+        public byte B { get; }
+        public static Splat.SplatColor Empty { get; }
+        public byte G { get; }
+        public bool IsEmpty { get; }
+        public bool IsKnownColor { get; }
+        public bool IsNamedColor { get; }
+        public bool IsSystemColor { get; }
+        public string Name { get; }
+        public byte R { get; }
+        public override bool Equals(object obj) { }
+        public bool Equals(Splat.SplatColor other) { }
+        public static Splat.SplatColor FromArgb(int red, int green, int blue) { }
+        public static Splat.SplatColor FromArgb(int alpha, int red, int green, int blue) { }
+        public static Splat.SplatColor FromArgb(int alpha, Splat.SplatColor baseColor) { }
+        public static Splat.SplatColor FromArgb(int argb) { }
+        public static Splat.SplatColor FromKnownColor(Splat.KnownColor color) { }
+        public static Splat.SplatColor FromName(string name) { }
+        public float GetBrightness() { }
+        public override int GetHashCode() { }
+        public float GetHue() { }
+        public float GetSaturation() { }
+        public static bool ==(Splat.SplatColor left, Splat.SplatColor right) { }
+        public static bool !=(Splat.SplatColor left, Splat.SplatColor right) { }
+        public int ToArgb() { }
+        public Splat.KnownColor ToKnownColor() { }
+        public override string ToString() { }
+    }
+    public class static TargetFrameworkExtensions
+    {
+        public static string GetTargetFrameworkName(this System.Reflection.Assembly assembly) { }
+    }
+    public class WrappingFullLogger : Splat.IFullLogger, Splat.ILogger
+    {
+        public WrappingFullLogger(Splat.ILogger inner, System.Type callingType) { }
+        public bool IsDebugEnabled { get; }
+        public bool IsErrorEnabled { get; }
+        public bool IsFatalEnabled { get; }
+        public bool IsInfoEnabled { get; }
+        public bool IsWarnEnabled { get; }
+        public Splat.LogLevel Level { get; set; }
+        public void Debug<T>(T value) { }
+        public void Debug<T>(System.IFormatProvider formatProvider, T value) { }
+        public void Debug(System.IFormatProvider formatProvider, string message, params object[] args) { }
+        public void Debug(string message) { }
+        public void Debug(string message, params object[] args) { }
+        public void Debug<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument) { }
+        public void Debug<TArgument>(string message, TArgument argument) { }
+        public void Debug<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
+        public void Debug<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2) { }
+        public void Debug<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void Debug<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void DebugException(string message, System.Exception exception) { }
+        public void Error<T>(T value) { }
+        public void Error<T>(System.IFormatProvider formatProvider, T value) { }
+        public void Error(System.IFormatProvider formatProvider, string message, params object[] args) { }
+        public void Error(string message) { }
+        public void Error(string message, params object[] args) { }
+        public void Error<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument) { }
+        public void Error<TArgument>(string message, TArgument argument) { }
+        public void Error<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
+        public void Error<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2) { }
+        public void Error<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void Error<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void ErrorException(string message, System.Exception exception) { }
+        public void Fatal<T>(T value) { }
+        public void Fatal<T>(System.IFormatProvider formatProvider, T value) { }
+        public void Fatal(System.IFormatProvider formatProvider, string message, params object[] args) { }
+        public void Fatal(string message) { }
+        public void Fatal(string message, params object[] args) { }
+        public void Fatal<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument) { }
+        public void Fatal<TArgument>(string message, TArgument argument) { }
+        public void Fatal<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
+        public void Fatal<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2) { }
+        public void Fatal<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void Fatal<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void FatalException(string message, System.Exception exception) { }
+        public void Info<T>(T value) { }
+        public void Info<T>(System.IFormatProvider formatProvider, T value) { }
+        public void Info(System.IFormatProvider formatProvider, string message, params object[] args) { }
+        public void Info(string message) { }
+        public void Info(string message, params object[] args) { }
+        public void Info<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument) { }
+        public void Info<TArgument>(string message, TArgument argument) { }
+        public void Info<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
+        public void Info<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2) { }
+        public void Info<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void Info<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void InfoException(string message, System.Exception exception) { }
+        public void Warn<T>(T value) { }
+        public void Warn<T>(System.IFormatProvider formatProvider, T value) { }
+        public void Warn(System.IFormatProvider formatProvider, string message, params object[] args) { }
+        public void Warn(string message) { }
+        public void Warn(string message, params object[] args) { }
+        public void Warn<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument) { }
+        public void Warn<TArgument>(string message, TArgument argument) { }
+        public void Warn<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
+        public void Warn<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2) { }
+        public void Warn<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void Warn<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void WarnException(string message, System.Exception exception) { }
+        public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, Splat.LogLevel logLevel) { }
+    }
+}
