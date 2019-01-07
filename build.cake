@@ -31,7 +31,7 @@
 
 #tool "dotnet:?package=SignClient&version=1.0.82"
 #tool "dotnet:?package=coverlet.console&version=1.4.0"
-#tool "dotnet:?package=nbgv&version=2.3.38"
+#tool dotnet:?package=nbgv&version=2.3.38
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -107,6 +107,8 @@ Setup(context =>
     CreateDirectory(testsArtifactDirectory);
     CreateDirectory(binariesArtifactDirectory);
     CreateDirectory(packagesArtifactDirectory);
+
+    StartProcess(Context.Tools.Resolve("nbgv.*").ToString(), "cloud");
 });
 
 Teardown(context =>
@@ -152,6 +154,7 @@ Action<string, string, bool> Build = (solution, packageOutputPath, doNotOptimise
 Task("Build")
     .Does (() =>
 {
+
     // Clean the directories since we'll need to re-generate the debug type.
     CleanDirectories($"./src/**/obj/{configuration}");
     CleanDirectories($"./src/**/bin/{configuration}");
