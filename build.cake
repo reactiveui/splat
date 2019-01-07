@@ -235,15 +235,18 @@ Task("SignPackages")
         Information($"Submitting {packageName} for signing");
 
         StartProcess(Context.Tools.Resolve("SignClient.*").ToString(), new ProcessSettings {
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
             Arguments = new ProcessArgumentBuilder()
-                    .AppendSwitch("-c", "./SignPackages.json")
-                    .AppendSwitch("-i", nupkg.FullPath)
-                    .AppendSwitch("-r", EnvironmentVariable("SIGNCLIENT_USER"))
-                    .AppendSwitch("-s", EnvironmentVariable("SIGNCLIENT_SECRET"))
-                    .AppendSwitch("-n", "ReactiveUI")
-                    .AppendSwitch("-d", "ReactiveUI")
-                    .AppendSwitch("-u", "https://reactiveui.net")
-                });
+                .Append("sign")
+                .AppendSwitch("-c", "./SignPackages.json")
+                .AppendSwitch("-i", nupkg.FullPath)
+                .AppendSwitch("-r", EnvironmentVariable("SIGNCLIENT_USER"))
+                .AppendSwitch("-s", EnvironmentVariable("SIGNCLIENT_SECRET"))
+                .AppendSwitch("-n", "ReactiveUI")
+                .AppendSwitch("-d", "ReactiveUI")
+                .AppendSwitch("-u", "https://reactiveui.net")
+            });
 
         Information($"Finished signing {packageName}");
     }
