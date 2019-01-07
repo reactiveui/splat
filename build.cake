@@ -31,7 +31,7 @@
 
 #tool "dotnet:?package=SignClient&version=1.0.82"
 #tool "dotnet:?package=coverlet.console&version=1.4.0"
-#tool dotnet:?package=nbgv&version=2.3.38
+#tool "dotnet:?package=nbgv&version=2.3.38"
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -218,6 +218,7 @@ Task("Build")
 // });
 
 Task("SignPackages")
+    .IsDependentOn("Build")
     .WithCriteria(() => !local)
     .WithCriteria(() => !isPullRequest)
     .Does(() =>
@@ -227,15 +228,15 @@ Task("SignPackages")
         throw new Exception("Client Secret not found, not signing packages.");
     }
 
-    var nupkgs = GetFiles(packagesArtifactDirectory + "/*.nupkg");
+    var nupkgs = GetFiles(packagesArtifactDirectory + "*.nupkg");
     foreach(FilePath nupkg in nupkgs)
     {
         var packageName = nupkg.GetFilenameWithoutExtension();
         Information($"Submitting {packageName} for signing");
 
-        DotNetCoreTool("SignClient", new DotNetCoreToolSettings{
-            ArgumentCustomization = args =>
-                args.AppendSwitch("-c", "./SignPackages.json")
+        StartProcess(Context.Tools.Resolve("SignClient.*").ToString(), new ProcessSettings {
+            Arguments = new ProcessArgumentBuilder()
+                    .AppendSwitch("-c", "./SignPackages.json")
                     .AppendSwitch("-i", nupkg.FullPath)
                     .AppendSwitch("-r", EnvironmentVariable("SIGNCLIENT_USER"))
                     .AppendSwitch("-s", EnvironmentVariable("SIGNCLIENT_SECRET"))
