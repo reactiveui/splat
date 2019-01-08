@@ -28,10 +28,9 @@
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.console" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
-    <PackageReference Include="Xunit.StaFact" Version="0.3.5" />
+    <PackageReference Include="Xunit.StaFact" Version="0.3.13" />
     <PackageReference Include="Shouldly" Version=" 3.0.2" />
-    <PackageReference Include="Microsoft.Reactive.Testing" Version="4.0.0" />
-    <PackageReference Include="PublicApiGenerator" Version="8.0.1" />
+    <PackageReference Include="PublicApiGenerator" Version="8.1.0" />
   </ItemGroup>
 
   <ItemGroup Condition="$(IsTestProject)">

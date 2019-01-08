@@ -8,7 +8,7 @@
 
 #addin "nuget:?package=Cake.FileHelpers&version=3.1.0"
 #addin "nuget:?package=Cake.Codecov&version=0.5.0"
-#addin "nuget:?package=Cake.Coverlet&version=2.1.2"
+//#addin "nuget:?package=Cake.Coverlet&version=2.2.0-g8e2ea2e891"
 
 //////////////////////////////////////////////////////////////////////
 // MODULES
@@ -20,8 +20,7 @@
 // TOOLS
 //////////////////////////////////////////////////////////////////////
 
-#tool "nuget:?package=vswhere&version=2.5.2"
-#tool "nuget:?package=OpenCover&version=4.6.519"
+#tool "nuget:?package=vswhere&version=2.5.9"
 #tool "nuget:?package=xunit.runner.console&version=2.4.1"
 #tool "nuget:?package=Codecov&version=1.1.0"
 
@@ -30,7 +29,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #tool "dotnet:?package=SignClient&version=1.0.82"
-#tool "dotnet:?package=coverlet.console&version=1.4.0"
+// #tool "dotnet:?package=coverlet.console&version=1.4.0"
 #tool "dotnet:?package=nbgv&version=2.3.38"
 
 //////////////////////////////////////////////////////////////////////
@@ -85,7 +84,7 @@ var packageTestWhitelist = new[]
     "Splat.Tests", 
 };
 
-var testFrameworks = new[] { "netcoreapp2.2", "net472" };
+var testFrameworks = new[] { "netcoreapp2.1", "net472" };
 
 
 // Define global marcos.
@@ -167,55 +166,58 @@ Task("Build")
     CopyFiles(GetFiles($"./src/**/bin/{configuration}/**/*"), Directory(binariesArtifactDirectory), true);
 });
 
-// Task("RunUnitTests")
-//     .Does(() =>
-// {
-//     // Clean the directories since we'll need to re-generate the debug type.
-//     CleanDirectories($"./src/**/obj/{configuration}");
-//     CleanDirectories($"./src/**/bin/{configuration}");
+Task("RunUnitTests")
+    .Does(() =>
+{
+    // Clean the directories since we'll need to re-generate the debug type.
+    CleanDirectories($"./src/**/obj/{configuration}");
+    CleanDirectories($"./src/**/bin/{configuration}");
 
-//     var coverletSettings = new CoverletSettings {
-//             CollectCoverage = true,
-//             CoverletOutputFormat = CoverletOutputFormat.opencover,
-//             CoverletOutputDirectory = Directory(testsArtifactDirectory),
-//             MergeWithFile = testCoverageOutputFile,
-//             CoverletOutputName = "opencover.xml"
-//         }
-//         .WithInclusion("[Splat*]*")
-//         .WithFilter("[*.Tests*]*")
-//         .WithFilter("[*.Tests*]*")
-//         //.ExcludeByAttribute("*.ExcludeFromCodeCoverage*")
-//         .WithFileExclusion("*/*Designer.cs")
-//         .WithFileExclusion("*/*.g.cs")
-//         .WithFileExclusion("*/*.g.i.cs")
-//         .WithFileExclusion("*ApprovalTests*");
+    // var coverletSettings = new CoverletSettings {
+    //         CollectCoverage = true,
+    //         CoverletOutputFormat = CoverletOutputFormat.opencover,
+    //         CoverletOutputDirectory = Directory(testsArtifactDirectory),
+    //         MergeWithFile = testCoverageOutputFile,
+    //         CoverletOutputName = "opencover.xml"
+    //     }
+    //     .WithInclusion("[Splat*]*")
+    //     .WithFilter("[*.Tests*]*")
+    //     .WithFilter("[*.Tests*]*")
+    //     //.ExcludeByAttribute("*.ExcludeFromCodeCoverage*")
+    //     .WithFileExclusion("*/*Designer.cs")
+    //     .WithFileExclusion("*/*.g.cs")
+    //     .WithFileExclusion("*/*.g.i.cs")
+    //     .WithFileExclusion("*ApprovalTests*");
 
-//     foreach (var packageName in packageTestWhitelist)
-//     {
-//         var projectName = $"./src/{packageName}/{packageName}.csproj";
-//         Build(projectName, null, true);
+    foreach (var packageName in packageTestWhitelist)
+    {
+        var projectName = $"./src/{packageName}/{packageName}.csproj";
+        Build(projectName, null, true);
 
-//         foreach (var testFramework in testFrameworks)
-//         {
-//             var testSettings = new DotNetCoreTestSettings {
-//                 NoBuild = true,
-//                 Framework = testFramework,
-//                 Configuration = configuration,
-//                 TestAdapterPath = GetDirectories("./tools/xunit.runner.console*/**/net472").FirstOrDefault(),        
-//             };
+        foreach (var testFramework in testFrameworks)
+        {
+            var testSettings = new DotNetCoreTestSettings {
+                NoBuild = true,
+                Framework = testFramework,
+                Configuration = configuration,
+                // TestAdapterPath = GetDirectories("./tools/xunit.runner.console*/**/net472").FirstOrDefault(),        
+            };
 
-//             var testFile = $"./src/{packageName}/bin/{configuration}/{testFramework}/{packageName}.dll";
-//             Information($"Generate Coverlet information for {testFile} for {testFramework}");
-//             Coverlet(testFile, projectName, testSettings, coverletSettings);
-//         }
-//     }
+            // var testFile = $"./src/{packageName}/bin/{configuration}/{testFramework}/{packageName}.dll";
+            // Information($"Generate Coverlet information for {testFile} for {testFramework}");
+            // Coverlet(testFile, projectName, testSettings, coverletSettings);
 
-//     ReportGenerator(testCoverageOutputFile, testsArtifactDirectory + "Report/");
-// }).ReportError(exception =>
+            DotNetCoreTest(projectName, testSettings);
+        }
+    }
+
+//    ReportGenerator(testCoverageOutputFile, testsArtifactDirectory + "Report/");
+// })
+// .ReportError(exception =>
 // {
 //     var apiApprovals = GetFiles("./**/ApiApprovalTests.*");
 //     CopyFiles(apiApprovals, artifactDirectory);
-// });
+});
 
 Task("SignPackages")
     .IsDependentOn("Build")
@@ -267,7 +269,7 @@ Task("Package")
 
 Task("Default")
     .IsDependentOn("Package")
-    //.IsDependentOn("RunUnitTests")
+    .IsDependentOn("RunUnitTests")
     .Does (() =>
 {
 });

@@ -110,7 +110,10 @@ namespace Splat
 
             // NB: We always immediately invoke the callback to set up the
             // current resolver with whatever we've got
-            callback();
+            if (AreResolverCallbackChangedNotificationsEnabled())
+            {
+                callback();
+            }
 
             return new ActionDisposable(() =>
             {
@@ -129,9 +132,9 @@ namespace Splat
         /// notification is no longer needed.</returns>
         public static IDisposable SuppressResolverCallbackChangedNotifications()
         {
-            _resolverChangedNotificationSuspendCount++;
+            Interlocked.Increment(ref _resolverChangedNotificationSuspendCount);
 
-            return new ActionDisposable(() => _resolverChangedNotificationSuspendCount--);
+            return new ActionDisposable(() => Interlocked.Decrement(ref _resolverChangedNotificationSuspendCount));
         }
 
         /// <summary>
