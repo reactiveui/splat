@@ -23,7 +23,7 @@
     <Compile Include="Platforms\ReflectionStubs.cs" />    
   </ItemGroup>  
 
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('net4')) ">  
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('net4')) ">
     <Compile Include="Platforms\net461\**\*.cs" />
 
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />

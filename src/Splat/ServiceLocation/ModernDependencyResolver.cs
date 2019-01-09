@@ -1,8 +1,11 @@
-﻿using System;
+﻿// Copyright (c) 2019 .NET Foundation and Contributors. All rights reserved.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Splat
 {
@@ -15,6 +18,8 @@ namespace Splat
     /// Unless you have a very compelling reason not to, this is the only class
     /// you need in order to do dependency resolution, don't bother with using
     /// a full IoC container.
+    ///
+    /// This container is not thread safe.
     /// </summary>
     public class ModernDependencyResolver : IMutableDependencyResolver
     {
@@ -61,12 +66,11 @@ namespace Splat
 
                 foreach (var callback in _callbackRegistry[pair])
                 {
-                    var remove = false;
-                    var disp = new ActionDisposable(() => remove = true);
+                    var disp = new BooleanDisposable();
 
                     callback(disp);
 
-                    if (remove)
+                    if (disp.IsDisposed)
                     {
                         if (toRemove == null)
                         {
@@ -110,6 +114,27 @@ namespace Splat
             }
 
             return _registry[pair].Select(x => x()).ToList();
+        }
+
+        /// <inheritdoc />
+        public void UnregisterCurrent(Type serviceType, string contract = null)
+        {
+            var pair = Tuple.Create(serviceType, contract ?? string.Empty);
+
+            if (!_registry.TryGetValue(pair, out var list))
+            {
+                return;
+            }
+
+            list.RemoveAt(list.Count - 1);
+        }
+
+        /// <inheritdoc />
+        public void UnregisterAll(Type serviceType, string contract = null)
+        {
+            var pair = Tuple.Create(serviceType, contract ?? string.Empty);
+
+            _registry[pair] = new List<Func<object>>();
         }
 
         /// <inheritdoc />

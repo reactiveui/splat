@@ -1,9 +1,12 @@
-﻿using System;
+﻿// Copyright (c) 2019 .NET Foundation and Contributors. All rights reserved.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Splat
 {
@@ -129,6 +132,28 @@ namespace Splat
         public static void RegisterLazySingleton<T>(this IMutableDependencyResolver resolver, Func<T> valueFactory, string contract = null)
         {
             RegisterLazySingleton(resolver, () => valueFactory(), typeof(T), contract);
+        }
+
+        /// <summary>
+        /// Unregisters the current the value for the specified type and the optional contract.
+        /// </summary>
+        /// <typeparam name="T">The type of item to unregister.</typeparam>
+        /// <param name="resolver">The resolver to unregister the service with.</param>
+        /// <param name="contract">A optional contract which indicates to only removed the item registered with this contract.</param>
+        public static void UnregisterCurrent<T>(this IMutableDependencyResolver resolver, string contract = null)
+        {
+            resolver.UnregisterCurrent(typeof(T), contract);
+        }
+
+        /// <summary>
+        /// Unregisters the all the values for the specified type and the optional contract.
+        /// </summary>
+        /// <typeparam name="T">The type of items to unregister.</typeparam>
+        /// <param name="resolver">The resolver to unregister the services with.</param>
+        /// <param name="contract">A optional contract which indicates to only removed those items registered with this contract.</param>
+        public static void UnregisterAll<T>(this IMutableDependencyResolver resolver, string contract = null)
+        {
+            resolver.UnregisterAll(typeof(T), contract);
         }
 
         /// <summary>
