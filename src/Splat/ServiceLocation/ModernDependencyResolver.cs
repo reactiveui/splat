@@ -139,7 +139,7 @@ namespace Splat
 
         /// <summary>
         /// Generates a duplicate of the resolver with all the current registrations.
-        /// Useful if you want to generate temporary resolver using the <see cref="DependencyResolverMixins.WithResolver(IDependencyResolver)"/> method.
+        /// Useful if you want to generate temporary resolver using the <see cref="DependencyResolverMixins.WithResolver(IDependencyResolver, bool)"/> method.
         /// </summary>
         /// <returns>The newly generated <see cref="ModernDependencyResolver"/> class with the current registrations.</returns>
         public ModernDependencyResolver Duplicate()

@@ -52,7 +52,7 @@ namespace Splat
         public static void RegisterLazySingleton(this Splat.IMutableDependencyResolver resolver, System.Func<object> valueFactory, System.Type serviceType, string contract = null) { }
         public static void RegisterLazySingleton<T>(this Splat.IMutableDependencyResolver resolver, System.Func<T> valueFactory, string contract = null) { }
         public static System.IDisposable ServiceRegistrationCallback(this Splat.IMutableDependencyResolver resolver, System.Type serviceType, System.Action<System.IDisposable> callback) { }
-        public static System.IDisposable WithResolver(this Splat.IDependencyResolver resolver) { }
+        public static System.IDisposable WithResolver(this Splat.IDependencyResolver resolver, bool suppressResolverCallback = True) { }
     }
     public class FuncDependencyResolver : Splat.IDependencyResolver, Splat.IMutableDependencyResolver, System.IDisposable
     {
@@ -356,7 +356,9 @@ namespace Splat
     {
         public static Splat.IDependencyResolver Current { get; set; }
         public static Splat.IMutableDependencyResolver CurrentMutable { get; set; }
+        public static bool AreResolverCallbackChangedNotificationsEnabled() { }
         public static System.IDisposable RegisterResolverCallbackChanged(System.Action callback) { }
+        public static System.IDisposable SuppressResolverCallbackChangedNotifications() { }
     }
     public class LoggingException : System.Exception
     {

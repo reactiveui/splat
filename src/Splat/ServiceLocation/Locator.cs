@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Splat
@@ -12,6 +13,7 @@ namespace Splat
     public static class Locator
     {
         private static readonly List<Action> _resolverChanged = new List<Action>();
+        private static volatile int _resolverChangedNotificationSuspendCount;
 
         [ThreadStatic]
         private static IDependencyResolver _unitTestDependencyResolver;
@@ -59,17 +61,20 @@ namespace Splat
                     _dependencyResolver = value;
                 }
 
-                var currentCallbacks = default(Action[]);
-                lock (_resolverChanged)
+                if (AreResolverCallbackChangedNotificationsEnabled())
                 {
-                    // NB: Prevent deadlocks should we reenter this setter from
-                    // the callbacks
-                    currentCallbacks = _resolverChanged.ToArray();
-                }
+                    var currentCallbacks = default(Action[]);
+                    lock (_resolverChanged)
+                    {
+                        // NB: Prevent deadlocks should we reenter this setter from
+                        // the callbacks
+                        currentCallbacks = _resolverChanged.ToArray();
+                    }
 
-                foreach (var block in currentCallbacks)
-                {
-                    block();
+                    foreach (var block in currentCallbacks)
+                    {
+                        block();
+                    }
                 }
             }
         }
@@ -105,7 +110,10 @@ namespace Splat
 
             // NB: We always immediately invoke the callback to set up the
             // current resolver with whatever we've got
-            callback();
+            if (AreResolverCallbackChangedNotificationsEnabled())
+            {
+                callback();
+            }
 
             return new ActionDisposable(() =>
             {
@@ -114,6 +122,28 @@ namespace Splat
                     _resolverChanged.Remove(callback);
                 }
             });
+        }
+
+        /// <summary>
+        /// This method will prevent resolver changed notifications from happening until
+        /// the returned <see cref="IDisposable"/> is disposed.
+        /// </summary>
+        /// <returns>A disposable which when disposed will indicate the change
+        /// notification is no longer needed.</returns>
+        public static IDisposable SuppressResolverCallbackChangedNotifications()
+        {
+            Interlocked.Increment(ref _resolverChangedNotificationSuspendCount);
+
+            return new ActionDisposable(() => Interlocked.Decrement(ref _resolverChangedNotificationSuspendCount));
+        }
+
+        /// <summary>
+        /// Indicates if the we are notifying external classes of updates to the resolver being changed.
+        /// </summary>
+        /// <returns>A value indicating whether the notifications are happening.</returns>
+        public static bool AreResolverCallbackChangedNotificationsEnabled()
+        {
+            return _resolverChangedNotificationSuspendCount == 0;
         }
     }
 }

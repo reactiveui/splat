@@ -97,8 +97,4 @@
     <None Remove="Platforms\net461\Bitmaps\PlatformBitmapLoader.cs" />
     <None Remove="Platforms\net461\Maths\SizeExtensions.cs" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Platforms\TVOS\" />
-  </ItemGroup>  
 </Project>

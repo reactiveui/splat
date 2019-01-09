@@ -56,13 +56,16 @@ namespace Splat
         /// is disposed.
         /// </summary>
         /// <param name="resolver">The test resolver to use.</param>
+        /// <param name="suppressResolverCallback">If we should suppress the resolver callback notify.</param>
         /// <returns>A disposable which will reset the resolver back to the original.</returns>
-        public static IDisposable WithResolver(this IDependencyResolver resolver)
+        public static IDisposable WithResolver(this IDependencyResolver resolver, bool suppressResolverCallback = true)
         {
+            var notificationDisposable = suppressResolverCallback ? Locator.SuppressResolverCallbackChangedNotifications() : new ActionDisposable(() => { });
+
             var origResolver = Locator.Current;
             Locator.Current = resolver;
 
-            return new ActionDisposable(() => Locator.Current = origResolver);
+            return new CompositeDisposable(new ActionDisposable(() => Locator.Current = origResolver), notificationDisposable);
         }
 
         /// <summary>
