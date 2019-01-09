@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// Copyright (c) 2019 .NET Foundation and Contributors. All rights reserved.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System;
 
 namespace Splat
 {
@@ -16,11 +17,26 @@ namespace Splat
         /// for the specified service type.
         /// Optionally a contract can be registered which will indicate
         /// that that registration will only work with that contract.
+        /// Most implementations will use a stack based approach to allow for multile items to be registered.
         /// </summary>
         /// <param name="factory">The factory function which generates our object.</param>
         /// <param name="serviceType">The type which is used for the registration.</param>
         /// <param name="contract">A optional contract value which will indicates to only generate the value if this contract is specified.</param>
         void Register(Func<object> factory, Type serviceType, string contract = null);
+
+        /// <summary>
+        /// Unregisters the current item based on the specified type and contract.
+        /// </summary>
+        /// <param name="serviceType">The service type to unregister.</param>
+        /// <param name="contract">The optional contract value, which will only remove the value associated with the contract.</param>
+        void UnregisterCurrent(Type serviceType, string contract = null);
+
+        /// <summary>
+        /// Unregisters all the values associated with the specified type and contract.
+        /// </summary>
+        /// <param name="serviceType">The service type to unregister.</param>
+        /// <param name="contract">The optional contract value, which will only remove the value associated with the contract.</param>
+        void UnregisterAll(Type serviceType, string contract = null);
 
         /// <summary>
         /// Register a callback to be called when a new service matching the type

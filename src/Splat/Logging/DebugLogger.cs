@@ -1,4 +1,7 @@
-﻿// Taken from https://github.com/aspnet/Logging/blob/dev/src/Microsoft.Extensions.Logging.Debug
+﻿// Copyright (c) 2019 .NET Foundation and Contributors. All rights reserved.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
 
 // We need to define the DEBUG symbol because we want the logger
 // to work even when this package is compiled on release. Otherwise,

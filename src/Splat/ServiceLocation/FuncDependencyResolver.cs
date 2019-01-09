@@ -1,20 +1,26 @@
-﻿using System;
+﻿// Copyright (c) 2019 .NET Foundation and Contributors. All rights reserved.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Splat
 {
     /// <summary>
     /// A simple dependency resolver which takes Funcs for all its actions.
     /// GetService is always implemented via GetServices().LastOrDefault().
+    /// This container is not thread safe.
     /// </summary>
     public class FuncDependencyResolver : IMutableDependencyResolver
     {
         private readonly Func<Type, string, IEnumerable<object>> _innerGetServices;
         private readonly Action<Func<object>, Type, string> _innerRegister;
+        private readonly Action<Type, string> _unregisterCurrent;
+        private readonly Action<Type, string> _unregisterAll;
         private readonly Dictionary<Tuple<Type, string>, List<Action<IDisposable>>> _callbackRegistry = new Dictionary<Tuple<Type, string>, List<Action<IDisposable>>>();
 
         private IDisposable _inner;
@@ -25,14 +31,20 @@ namespace Splat
         /// </summary>
         /// <param name="getAllServices">A func which will return all the services contained for the specified service type and contract.</param>
         /// <param name="register">A func which will be called when a service type and contract are registered.</param>
+        /// <param name="unregisterCurrent">A func which will unregister the current registered element for a service type and contract.</param>
+        /// <param name="unregisterAll">A func which will unregister all the registered elements for a service type and contract.</param>
         /// <param name="toDispose">A optional disposable which is called when this resolver is disposed.</param>
         public FuncDependencyResolver(
             Func<Type, string, IEnumerable<object>> getAllServices,
             Action<Func<object>, Type, string> register = null,
+            Action<Type, string> unregisterCurrent = null,
+            Action<Type, string> unregisterAll = null,
             IDisposable toDispose = null)
         {
             _innerGetServices = getAllServices;
             _innerRegister = register;
+            _unregisterCurrent = unregisterCurrent;
+            _unregisterAll = unregisterAll;
             _inner = toDispose ?? ActionDisposable.Empty;
         }
 
@@ -66,12 +78,11 @@ namespace Splat
 
                 foreach (var callback in _callbackRegistry[pair])
                 {
-                    var remove = false;
-                    var disp = new ActionDisposable(() => remove = true);
+                    var disp = new BooleanDisposable();
 
                     callback(disp);
 
-                    if (remove)
+                    if (disp.IsDisposed)
                     {
                         if (toRemove == null)
                         {
@@ -90,6 +101,28 @@ namespace Splat
                     }
                 }
             }
+        }
+
+        /// <inheritdoc />
+        public void UnregisterCurrent(Type serviceType, string contract = null)
+        {
+            if (_unregisterCurrent == null)
+            {
+                throw new NotImplementedException();
+            }
+
+            _unregisterCurrent.Invoke(serviceType, contract);
+        }
+
+        /// <inheritdoc />
+        public void UnregisterAll(Type serviceType, string contract = null)
+        {
+            if (_unregisterAll == null)
+            {
+                throw new NotImplementedException();
+            }
+
+            _unregisterAll.Invoke(serviceType, contract);
         }
 
         /// <inheritdoc />
