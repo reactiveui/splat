@@ -603,4 +603,10 @@ namespace Splat
         public void WarnException(string message, System.Exception exception) { }
         public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, Splat.LogLevel logLevel) { }
     }
+    public class WrappingPrefixLogger : Splat.ILogger
+    {
+        public WrappingPrefixLogger(Splat.ILogger inner, System.Type callingType) { }
+        public Splat.LogLevel Level { get; set; }
+        public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, Splat.LogLevel logLevel) { }
+    }
 }
