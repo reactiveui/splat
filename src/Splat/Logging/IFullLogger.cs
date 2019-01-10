@@ -83,11 +83,26 @@ namespace Splat
         void Debug([Localizable(false)] string message);
 
         /// <summary>
+        /// Emits a message to the debug log.
+        /// </summary>
+        /// <typeparam name="T">The calling type.</typeparam>
+        /// <param name="message">A non-localizable message to send to the log.</param>
+        void Debug<T>([Localizable(false)] string message);
+
+        /// <summary>
         /// Emits a message using formatting to the debug log.
         /// </summary>
         /// <param name="message">A non-localizable message to emit to the log which includes the standard formatting tags.</param>
         /// <param name="args">The arguments for formatting purposes.</param>
         void Debug([Localizable(false)] string message, params object[] args);
+
+        /// <summary>
+        /// Emits a message using formatting to the debug log.
+        /// </summary>
+        /// <typeparam name="T">The calling type.</typeparam>
+        /// <param name="message">A non-localizable message to emit to the log which includes the standard formatting tags.</param>
+        /// <param name="args">The arguments for formatting purposes.</param>
+        void Debug<T>([Localizable(false)] string message, params object[] args);
 
         /// <summary>
         /// Emits a message using formatting to the debug log.
@@ -193,11 +208,26 @@ namespace Splat
         void Info([Localizable(false)] string message);
 
         /// <summary>
+        /// Emits a message to the info log.
+        /// </summary>
+        /// <typeparam name="T">The calling type.</typeparam>
+        /// <param name="message">A non-localizable message to send to the log.</param>
+        void Info<T>([Localizable(false)] string message);
+
+        /// <summary>
         /// Emits a message using formatting to the info log.
         /// </summary>
         /// <param name="message">A non-localizable message to emit to the log which includes the standard formatting tags.</param>
         /// <param name="args">The arguments for formatting purposes.</param>
         void Info([Localizable(false)] string message, params object[] args);
+
+        /// <summary>
+        /// Emits a message using formatting to the info log.
+        /// </summary>
+        /// <typeparam name="T">The calling type.</typeparam>
+        /// <param name="message">A non-localizable message to emit to the log which includes the standard formatting tags.</param>
+        /// <param name="args">The arguments for formatting purposes.</param>
+        void Info<T>([Localizable(false)] string message, params object[] args);
 
         /// <summary>
         /// Emits a message using formatting to the info log.
@@ -303,11 +333,26 @@ namespace Splat
         void Warn([Localizable(false)] string message);
 
         /// <summary>
+        /// Emits a message to the warning log.
+        /// </summary>
+        /// <typeparam name="T">The calling type.</typeparam>
+        /// <param name="message">A non-localizable message to send to the log.</param>
+        void Warn<T>([Localizable(false)] string message);
+
+        /// <summary>
         /// Emits a message using formatting to the warning log.
         /// </summary>
         /// <param name="message">A non-localizable message to emit to the log which includes the standard formatting tags.</param>
         /// <param name="args">The arguments for formatting purposes.</param>
         void Warn([Localizable(false)] string message, params object[] args);
+
+        /// <summary>
+        /// Emits a message using formatting to the warning log.
+        /// </summary>
+        /// <typeparam name="T">The calling type.</typeparam>
+        /// <param name="message">A non-localizable message to emit to the log which includes the standard formatting tags.</param>
+        /// <param name="args">The arguments for formatting purposes.</param>
+        void Warn<T>([Localizable(false)] string message, params object[] args);
 
         /// <summary>
         /// Emits a message using formatting to the warning log.
@@ -413,11 +458,26 @@ namespace Splat
         void Error([Localizable(false)] string message);
 
         /// <summary>
+        /// Emits a message to the error log.
+        /// </summary>
+        /// <typeparam name="T">The calling type.</typeparam>
+        /// <param name="message">A non-localizable message to send to the log.</param>
+        void Error<T>([Localizable(false)] string message);
+
+        /// <summary>
         /// Emits a message using formatting to the error log.
         /// </summary>
         /// <param name="message">A non-localizable message to emit to the log which includes the standard formatting tags.</param>
         /// <param name="args">The arguments for formatting purposes.</param>
         void Error([Localizable(false)] string message, params object[] args);
+
+        /// <summary>
+        /// Emits a message using formatting to the error log.
+        /// </summary>
+        /// <typeparam name="T">The calling type.</typeparam>
+        /// <param name="message">A non-localizable message to emit to the log which includes the standard formatting tags.</param>
+        /// <param name="args">The arguments for formatting purposes.</param>
+        void Error<T>([Localizable(false)] string message, params object[] args);
 
         /// <summary>
         /// Emits a message using formatting to the error log.
@@ -523,11 +583,26 @@ namespace Splat
         void Fatal([Localizable(false)] string message);
 
         /// <summary>
+        /// Emits a message to the fatal log.
+        /// </summary>
+        /// <typeparam name="T">The calling type.</typeparam>
+        /// <param name="message">A non-localizable message to send to the log.</param>
+        void Fatal<T>([Localizable(false)] string message);
+
+        /// <summary>
         /// Emits a message using formatting to the fatal log.
         /// </summary>
         /// <param name="message">A non-localizable message to emit to the log which includes the standard formatting tags.</param>
         /// <param name="args">The arguments for formatting purposes.</param>
         void Fatal([Localizable(false)] string message, params object[] args);
+
+        /// <summary>
+        /// Emits a message using formatting to the fatal log.
+        /// </summary>
+        /// <typeparam name="T">The calling type.</typeparam>
+        /// <param name="message">A non-localizable message to emit to the log which includes the standard formatting tags.</param>
+        /// <param name="args">The arguments for formatting purposes.</param>
+        void Fatal<T>([Localizable(false)] string message, params object[] args);
 
         /// <summary>
         /// Emits a message using formatting to the fatal log.

@@ -38,8 +38,8 @@ namespace Splat
         /// <inheritdoc />
         public LogLevel Level
         {
-            get { return _inner.Level; }
-            set { _inner.Level = value; }
+            get => _inner.Level;
+            set => _inner.Level = value;
         }
 
         /// <inheritdoc />
@@ -90,10 +90,23 @@ namespace Splat
         }
 
         /// <inheritdoc />
+        public void Debug<T>(string message)
+        {
+            _inner.Write(message, typeof(T), LogLevel.Debug);
+        }
+
+        /// <inheritdoc />
         public void Debug(string message, params object[] args)
         {
             var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
             _inner.Write(_prefix + result, LogLevel.Debug);
+        }
+
+        /// <inheritdoc />
+        public void Debug<T>(string message, params object[] args)
+        {
+            var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
+            _inner.Write(result, typeof(T), LogLevel.Debug);
         }
 
         /// <inheritdoc />
@@ -164,10 +177,23 @@ namespace Splat
         }
 
         /// <inheritdoc />
+        public void Info<T>(string message)
+        {
+            _inner.Write(message, typeof(T), LogLevel.Info);
+        }
+
+        /// <inheritdoc />
         public void Info(string message, params object[] args)
         {
             var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
             _inner.Write(_prefix + result, LogLevel.Info);
+        }
+
+        /// <inheritdoc />
+        public void Info<T>(string message, params object[] args)
+        {
+            var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
+            _inner.Write(result, typeof(T), LogLevel.Info);
         }
 
         /// <inheritdoc />
@@ -238,10 +264,23 @@ namespace Splat
         }
 
         /// <inheritdoc />
+        public void Warn<T>(string message)
+        {
+            _inner.Write(message, typeof(T), LogLevel.Warn);
+        }
+
+        /// <inheritdoc />
         public void Warn(string message, params object[] args)
         {
             var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
             _inner.Write(_prefix + result, LogLevel.Warn);
+        }
+
+        /// <inheritdoc />
+        public void Warn<T>(string message, params object[] args)
+        {
+            var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
+            _inner.Write(result, typeof(T), LogLevel.Warn);
         }
 
         /// <inheritdoc />
@@ -312,10 +351,23 @@ namespace Splat
         }
 
         /// <inheritdoc />
+        public void Error<T>(string message)
+        {
+            _inner.Write(message, typeof(T), LogLevel.Error);
+        }
+
+        /// <inheritdoc />
         public void Error(string message, params object[] args)
         {
             var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
             _inner.Write(_prefix + result, LogLevel.Error);
+        }
+
+        /// <inheritdoc />
+        public void Error<T>(string message, params object[] args)
+        {
+            var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
+            _inner.Write(result, typeof(T), LogLevel.Error);
         }
 
         /// <inheritdoc />
@@ -386,10 +438,23 @@ namespace Splat
         }
 
         /// <inheritdoc />
+        public void Fatal<T>(string message)
+        {
+            _inner.Write(message, typeof(T), LogLevel.Fatal);
+        }
+
+        /// <inheritdoc />
         public void Fatal(string message, params object[] args)
         {
             var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
             _inner.Write(_prefix + result, LogLevel.Fatal);
+        }
+
+        /// <inheritdoc />
+        public void Fatal<T>(string message, params object[] args)
+        {
+            var result = InvokeStringFormat(CultureInfo.InvariantCulture, message, args);
+            _inner.Write(result, typeof(T), LogLevel.Fatal);
         }
 
         /// <inheritdoc />
@@ -432,6 +497,12 @@ namespace Splat
         public void Write([Localizable(false)] string message, LogLevel logLevel)
         {
             _inner.Write(message, logLevel);
+        }
+
+        /// <inheritdoc />
+        public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
+        {
+            _inner.Write(message, type, logLevel);
         }
 
         private string InvokeStringFormat(IFormatProvider formatProvider, string message, object[] args)
