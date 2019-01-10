@@ -34,7 +34,7 @@ namespace Splat
                         throw new LoggingException("Couldn't find an ILogger. This should never happen, your dependency resolver is probably broken.");
                     }
 
-                    return new WrappingFullLogger(ret, type);
+                    return new WrappingFullLogger(new WrappingPrefixLogger(ret, type), type);
                 }, 64);
         }
 
