@@ -25,9 +25,9 @@ steps:
     COVERALLS_TOKEN: $(COVERALLS_TOKEN)
     ArtifactDirectory: $(System.DefaultWorkingDirectory)\Artifacts
 
-- task: PublishTestResults@2
+- task: Publish Test Results@2
   inputs:
-    testResultsFormat: 'JUnit' # Options: JUnit, NUnit, VSTest, xUnit
+    testResultsFormat: 'TRX' # Options: JUnit, NUnit, VSTest, xUnit
     testResultsFiles: '**/testresults-*.trx' 
     searchFolder: $(System.DefaultWorkingDirectory)\Artifacts\tests' # Optional
     #mergeTestResults: false # Optional
