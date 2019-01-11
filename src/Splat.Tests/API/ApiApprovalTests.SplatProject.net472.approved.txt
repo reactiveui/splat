@@ -3,6 +3,13 @@
 [assembly: System.Runtime.Versioning.TargetFrameworkAttribute(".NETFramework,Version=v4.6.1", FrameworkDisplayName=".NET Framework 4.6.1")]
 namespace Splat
 {
+    public class ActionLogger : Splat.ILogger
+    {
+        public ActionLogger(System.Action<string, Splat.LogLevel> writeNoType, System.Action<string, System.Type, Splat.LogLevel> writeWithType) { }
+        public Splat.LogLevel Level { get; set; }
+        public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, Splat.LogLevel logLevel) { }
+        public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
+    }
     public class static BitmapLoader
     {
         public static Splat.IBitmapLoader Current { get; set; }
