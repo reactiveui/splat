@@ -28,14 +28,9 @@ steps:
 - task: PublishTestResults@2
   displayName: Publish Test Results
   inputs:
-    testResultsFormat: 'TRX' # Options: JUnit, NUnit, VSTest, xUnit, TRX
     testResultsFiles: '**/testresults-*.trx' 
-    searchFolder: '$(System.DefaultWorkingDirectory)\artifacts\tests' # Optional
-    #mergeTestResults: false # Optional
-    #testRunTitle: # Optional
-    #buildPlatform: # Optional
-    #buildConfiguration: # Optional
-    #publishRunAttachments: true # Optional    
+    searchFolder: '$(System.DefaultWorkingDirectory)\artifacts\tests'
+
 - task: CopyFiles@2
   inputs:
     Contents: 'artifacts/packages/*.nupkg'
