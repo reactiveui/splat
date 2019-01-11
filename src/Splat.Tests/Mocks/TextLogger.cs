@@ -13,6 +13,7 @@ namespace Splat.Tests.Mocks
     {
         private readonly StringBuilder _stringBuilder;
         private TextWriter _writer;
+        private List<Type> _types = new List<Type>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TextLogger"/> class.
@@ -29,6 +30,11 @@ namespace Splat.Tests.Mocks
         /// </summary>
         public string Value => _stringBuilder.ToString();
 
+        /// <summary>
+        /// Gets the passed types.
+        /// </summary>
+        public IEnumerable<Type> PassedTypes => _types;
+
         /// <inheritdoc />
         public LogLevel Level { get; set; }
 
@@ -41,7 +47,8 @@ namespace Splat.Tests.Mocks
         /// <inheritdoc />
         public void Write(string message, Type type, LogLevel logLevel)
         {
-            _writer.WriteLine($"{type.Name}: {message}");
+            _writer.WriteLine(message);
+            _types.Add(type);
         }
 
         /// <inheritdoc />

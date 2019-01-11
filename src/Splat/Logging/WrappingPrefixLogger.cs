@@ -26,7 +26,7 @@ namespace Splat
         public WrappingPrefixLogger(ILogger inner, Type callingType)
         {
             _inner = inner;
-            _prefix = string.Format(CultureInfo.InvariantCulture, "{0}: ", callingType.Name);
+            _prefix = $"{callingType.Name}: ";
         }
 
         /// <inheritdoc />
@@ -40,6 +40,12 @@ namespace Splat
         public void Write([Localizable(false)]string message, LogLevel logLevel)
         {
             _inner.Write(_prefix + message, logLevel);
+        }
+
+        /// <inheritdoc />
+        public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
+        {
+            _inner.Write($"{type.Name}: {message}", type, logLevel);
         }
     }
 }

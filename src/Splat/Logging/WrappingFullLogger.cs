@@ -23,8 +23,7 @@ namespace Splat
         /// Initializes a new instance of the <see cref="WrappingFullLogger"/> class.
         /// </summary>
         /// <param name="inner">The <see cref="ILogger"/> to wrap in this class.</param>
-        /// <param name="callingType">The type which will be calling this logger.</param>
-        public WrappingFullLogger(ILogger inner, Type callingType)
+        public WrappingFullLogger(ILogger inner)
         {
             _inner = inner;
 
