@@ -22,7 +22,6 @@ steps:
   env:
     SIGNCLIENT_SECRET: $(SignClientSecret)
     SIGNCLIENT_USER: $(SignClientUser)
-    VSTS_ACCESS_TOKEN: $(System.AccessToken)
     COVERALLS_TOKEN: $(COVERALLS_TOKEN)
     ArtifactDirectory: $(System.DefaultWorkingDirectory)\Artifacts
 
