@@ -29,7 +29,7 @@ steps:
   inputs:
     testResultsFormat: 'JUnit' # Options: JUnit, NUnit, VSTest, xUnit
     testResultsFiles: '**/testresults-*.trx' 
-    searchFolder: artifacts/tests/' # Optional
+    searchFolder: $(System.DefaultWorkingDirectory)\Artifacts\tests' # Optional
     #mergeTestResults: false # Optional
     #testRunTitle: # Optional
     #buildPlatform: # Optional
