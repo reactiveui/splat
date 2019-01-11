@@ -14,7 +14,7 @@ using Xunit;
 namespace Splat.Tests.Logging
 {
     /// <summary>
-    /// Tests that verify the wrapping full logger is working.
+    /// Tests that verify the <see cref="WrappingFullLogger"/> class.
     /// </summary>
     public class WrappingFullLoggerTests
     {

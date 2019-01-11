@@ -16,24 +16,22 @@ namespace Splat.Tests.Mocks
     /// <seealso cref="Splat.ILogger" />
     public class TextLogger : ILogger, IDisposable
     {
-        private readonly StringBuilder _stringBuilder;
-        private TextWriter _writer;
-        private List<Type> _types = new List<Type>();
+        private readonly Lazy<StringBuilder> _stringBuilder = new Lazy<StringBuilder>();
+        private readonly List<Type> _types = new List<Type>();
+        private Lazy<TextWriter> _writer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TextLogger"/> class.
         /// </summary>
         public TextLogger()
         {
-            _stringBuilder = new StringBuilder();
-
-            _writer = new StringWriter(_stringBuilder);
+            _writer = new Lazy<TextWriter>(() => new StringWriter(_stringBuilder.Value));
         }
 
         /// <summary>
         /// Gets the value of the text writer.
         /// </summary>
-        public string Value => _stringBuilder.ToString();
+        public string Value => _stringBuilder.IsValueCreated ? _stringBuilder.Value.ToString() : null;
 
         /// <summary>
         /// Gets the passed types.
@@ -46,13 +44,13 @@ namespace Splat.Tests.Mocks
         /// <inheritdoc />
         public void Write(string message, LogLevel logLevel)
         {
-            _writer.WriteLine(message);
+            _writer.Value.WriteLine(message);
         }
 
         /// <inheritdoc />
         public void Write(string message, Type type, LogLevel logLevel)
         {
-            _writer.WriteLine(message);
+            _writer.Value.WriteLine(message);
             _types.Add(type);
         }
 
@@ -73,7 +71,7 @@ namespace Splat.Tests.Mocks
             {
                 if (_writer != null)
                 {
-                    _writer.Dispose();
+                    _writer.Value.Dispose();
                     _writer = null;
                 }
             }

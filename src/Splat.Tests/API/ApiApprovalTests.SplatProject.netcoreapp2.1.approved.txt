@@ -53,6 +53,24 @@ namespace Splat
         public static void UnregisterCurrent<T>(this Splat.IMutableDependencyResolver resolver, string contract = null) { }
         public static System.IDisposable WithResolver(this Splat.IDependencyResolver resolver, bool suppressResolverCallback = True) { }
     }
+    public class static FullLoggerExtensions
+    {
+        public static void Debug(this Splat.IFullLogger logger, System.Func<string> function) { }
+        public static void Debug<T>(this Splat.IFullLogger logger, System.Func<string> function) { }
+        public static void DebugException(this Splat.IFullLogger logger, System.Func<string> function, System.Exception exception) { }
+        public static void Error(this Splat.IFullLogger logger, System.Func<string> function) { }
+        public static void Error<T>(this Splat.IFullLogger logger, System.Func<string> function) { }
+        public static void ErrorException(this Splat.IFullLogger logger, System.Func<string> function, System.Exception exception) { }
+        public static void Fatal(this Splat.IFullLogger logger, System.Func<string> function) { }
+        public static void Fatal<T>(this Splat.IFullLogger logger, System.Func<string> function) { }
+        public static void FatalException(this Splat.IFullLogger logger, System.Func<string> function, System.Exception exception) { }
+        public static void Info(this Splat.IFullLogger logger, System.Func<string> function) { }
+        public static void Info<T>(this Splat.IFullLogger logger, System.Func<string> function) { }
+        public static void InfoException(this Splat.IFullLogger logger, System.Func<string> function, System.Exception exception) { }
+        public static void Warn(this Splat.IFullLogger logger, System.Func<string> function) { }
+        public static void Warn<T>(this Splat.IFullLogger logger, System.Func<string> function) { }
+        public static void WarnException(this Splat.IFullLogger logger, System.Func<string> function, System.Exception exception) { }
+    }
     public class FuncDependencyResolver : Splat.IDependencyResolver, Splat.IMutableDependencyResolver, System.IDisposable
     {
         public FuncDependencyResolver(System.Func<System.Type, string, System.Collections.Generic.IEnumerable<object>> getAllServices, System.Action<System.Func<object>, System.Type, string> register = null, System.Action<System.Type, string> unregisterCurrent = null, System.Action<System.Type, string> unregisterAll = null, System.IDisposable toDispose = null) { }
