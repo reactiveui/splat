@@ -3,6 +3,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
+
 namespace Splat
 {
     /// <summary>
@@ -15,6 +17,11 @@ namespace Splat
 
         /// <inheritdoc />
         public void Write(string message, LogLevel logLevel)
+        {
+        }
+
+        /// <inheritdoc />
+        public void Write(string message, Type type, LogLevel logLevel)
         {
         }
     }
