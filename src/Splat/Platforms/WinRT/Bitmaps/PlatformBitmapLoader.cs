@@ -38,17 +38,27 @@ namespace Splat
 
                     var decoder = await BitmapDecoder.CreateAsync(rwStream);
 
+                    int targetWidth = (int)(desiredWidth ?? decoder.OrientedPixelWidth);
+                    int targetHeight = (int)(desiredHeight ?? decoder.OrientedPixelHeight);
+
                     var transform = new BitmapTransform
                     {
-                        ScaledWidth = (uint)(desiredWidth ?? decoder.OrientedPixelWidth),
-                        ScaledHeight = (uint)(desiredHeight ?? decoder.OrientedPixelHeight),
+                        ScaledWidth = (uint)targetWidth,
+                        ScaledHeight = (uint)targetHeight,
                         InterpolationMode = BitmapInterpolationMode.Fant
                     };
+
+                    if (decoder.OrientedPixelHeight != decoder.PixelHeight)
+                    {
+                        // if Exif orientation indicates 90 or 270 degrees rotation we swap width and height for the transformation.
+                        transform.ScaledWidth = (uint)targetHeight;
+                        transform.ScaledHeight = (uint)targetWidth;
+                    }
 
                     var pixelData = await decoder.GetPixelDataAsync(decoder.BitmapPixelFormat, BitmapAlphaMode.Premultiplied, transform, ExifOrientationMode.RespectExifOrientation, ColorManagementMode.ColorManageToSRgb);
                     var pixels = pixelData.DetachPixelData();
 
-                    var bmp = new WriteableBitmap((int)transform.ScaledWidth, (int)transform.ScaledHeight);
+                    var bmp = new WriteableBitmap(targetWidth, targetHeight);
                     using (var bmpStream = bmp.PixelBuffer.AsStream())
                     {
                         bmpStream.Seek(0, SeekOrigin.Begin);
