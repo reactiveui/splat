@@ -28,9 +28,9 @@ steps:
 - task: PublishTestResults@2
   displayName: Publish Test Results
   inputs:
-    testResultsFormat: 'TRX' # Options: JUnit, NUnit, VSTest, xUnit
+    testResultsFormat: 'TRX' # Options: JUnit, NUnit, VSTest, xUnit, TRX
     testResultsFiles: '**/testresults-*.trx' 
-    searchFolder: $(System.DefaultWorkingDirectory)\Artifacts\tests' # Optional
+    searchFolder: '$(System.DefaultWorkingDirectory)\artifacts\tests' # Optional
     #mergeTestResults: false # Optional
     #testRunTitle: # Optional
     #buildPlatform: # Optional
