@@ -26,7 +26,6 @@
   <ItemGroup Condition="$(IsTestProject)">
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.console" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
     <PackageReference Include="Xunit.StaFact" Version="0.3.13" />
     <PackageReference Include="Shouldly" Version=" 3.0.2" />
@@ -51,7 +50,7 @@
 
   <ItemGroup>
     <PackageReference Include="stylecop.analyzers" Version="1.1.1-beta.61" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.2" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.3" PrivateAssets="all" />
     <PackageReference Include="Roslynator.Analyzers" Version="2.0.0" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
