@@ -8,6 +8,8 @@
 // the call to Debug.WriteLine will not be in the release binary
 #define DEBUG
 
+using System;
+
 namespace Splat
 {
     /// <summary>
@@ -27,6 +29,17 @@ namespace Splat
             }
 
             System.Diagnostics.Debug.WriteLine(message);
+        }
+
+        /// <inheritdoc />
+        public void Write(string message, Type type, LogLevel logLevel)
+        {
+            if ((int)logLevel < (int)Level)
+            {
+                return;
+            }
+
+            System.Diagnostics.Debug.WriteLine(message, type.Name);
         }
     }
 }

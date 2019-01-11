@@ -200,6 +200,8 @@ Task("RunUnitTests")
                 NoBuild = true,
                 Framework = testFramework,
                 Configuration = configuration,
+                ResultsDirectory = testsArtifactDirectory,
+                Logger = $"trx;LogFileName=testresults-{testFramework}.trx",
                 // TestAdapterPath = GetDirectories("./tools/xunit.runner.console*/**/net472").FirstOrDefault(),        
             };
 

@@ -24,6 +24,7 @@ namespace Splat
         public DebugLogger() { }
         public Splat.LogLevel Level { get; set; }
         public void Write(string message, Splat.LogLevel logLevel) { }
+        public void Write(string message, System.Type type, Splat.LogLevel logLevel) { }
     }
     public class DefaultLogManager : Splat.ILogManager
     {
@@ -92,7 +93,9 @@ namespace Splat
         void Debug<T>(System.IFormatProvider formatProvider, T value);
         void Debug(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
         void Debug([System.ComponentModel.LocalizableAttribute(false)] string message);
+        void Debug<T>([System.ComponentModel.LocalizableAttribute(false)] string message);
         void Debug([System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
+        void Debug<T>([System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
         void Debug<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
         void Debug<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
         void Debug<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
@@ -104,7 +107,9 @@ namespace Splat
         void Error<T>(System.IFormatProvider formatProvider, T value);
         void Error(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
         void Error([System.ComponentModel.LocalizableAttribute(false)] string message);
+        void Error<T>([System.ComponentModel.LocalizableAttribute(false)] string message);
         void Error([System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
+        void Error<T>([System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
         void Error<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
         void Error<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
         void Error<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
@@ -116,7 +121,9 @@ namespace Splat
         void Fatal<T>(System.IFormatProvider formatProvider, T value);
         void Fatal(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
         void Fatal([System.ComponentModel.LocalizableAttribute(false)] string message);
+        void Fatal<T>([System.ComponentModel.LocalizableAttribute(false)] string message);
         void Fatal([System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
+        void Fatal<T>([System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
         void Fatal<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
         void Fatal<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
         void Fatal<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
@@ -128,7 +135,9 @@ namespace Splat
         void Info<T>(System.IFormatProvider formatProvider, T value);
         void Info(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
         void Info([System.ComponentModel.LocalizableAttribute(false)] string message);
+        void Info<T>([System.ComponentModel.LocalizableAttribute(false)] string message);
         void Info([System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
+        void Info<T>([System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
         void Info<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
         void Info<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
         void Info<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
@@ -140,7 +149,9 @@ namespace Splat
         void Warn<T>(System.IFormatProvider formatProvider, T value);
         void Warn(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
         void Warn([System.ComponentModel.LocalizableAttribute(false)] string message);
+        void Warn<T>([System.ComponentModel.LocalizableAttribute(false)] string message);
         void Warn([System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
+        void Warn<T>([System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
         void Warn<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
         void Warn<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
         void Warn<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
@@ -153,6 +164,7 @@ namespace Splat
     {
         Splat.LogLevel Level { get; set; }
         void Write([System.ComponentModel.LocalizableAttribute(false)] string message, Splat.LogLevel logLevel);
+        void Write([System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel);
     }
     public interface ILogManager
     {
@@ -415,6 +427,7 @@ namespace Splat
         public NullLogger() { }
         public Splat.LogLevel Level { get; set; }
         public void Write(string message, Splat.LogLevel logLevel) { }
+        public void Write(string message, System.Type type, Splat.LogLevel logLevel) { }
     }
     public class static PointMathExtensions
     {
@@ -497,7 +510,9 @@ namespace Splat
         public void Debug<T>(System.IFormatProvider formatProvider, T value) { }
         public void Debug(System.IFormatProvider formatProvider, string message, params object[] args) { }
         public void Debug(string message) { }
+        public void Debug<T>(string message) { }
         public void Debug(string message, params object[] args) { }
+        public void Debug<T>(string message, params object[] args) { }
         public void Debug<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument) { }
         public void Debug<TArgument>(string message, TArgument argument) { }
         public void Debug<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
@@ -509,7 +524,9 @@ namespace Splat
         public void Error<T>(System.IFormatProvider formatProvider, T value) { }
         public void Error(System.IFormatProvider formatProvider, string message, params object[] args) { }
         public void Error(string message) { }
+        public void Error<T>(string message) { }
         public void Error(string message, params object[] args) { }
+        public void Error<T>(string message, params object[] args) { }
         public void Error<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument) { }
         public void Error<TArgument>(string message, TArgument argument) { }
         public void Error<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
@@ -521,7 +538,9 @@ namespace Splat
         public void Fatal<T>(System.IFormatProvider formatProvider, T value) { }
         public void Fatal(System.IFormatProvider formatProvider, string message, params object[] args) { }
         public void Fatal(string message) { }
+        public void Fatal<T>(string message) { }
         public void Fatal(string message, params object[] args) { }
+        public void Fatal<T>(string message, params object[] args) { }
         public void Fatal<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument) { }
         public void Fatal<TArgument>(string message, TArgument argument) { }
         public void Fatal<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
@@ -533,7 +552,9 @@ namespace Splat
         public void Info<T>(System.IFormatProvider formatProvider, T value) { }
         public void Info(System.IFormatProvider formatProvider, string message, params object[] args) { }
         public void Info(string message) { }
+        public void Info<T>(string message) { }
         public void Info(string message, params object[] args) { }
+        public void Info<T>(string message, params object[] args) { }
         public void Info<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument) { }
         public void Info<TArgument>(string message, TArgument argument) { }
         public void Info<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
@@ -545,7 +566,9 @@ namespace Splat
         public void Warn<T>(System.IFormatProvider formatProvider, T value) { }
         public void Warn(System.IFormatProvider formatProvider, string message, params object[] args) { }
         public void Warn(string message) { }
+        public void Warn<T>(string message) { }
         public void Warn(string message, params object[] args) { }
+        public void Warn<T>(string message, params object[] args) { }
         public void Warn<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument) { }
         public void Warn<TArgument>(string message, TArgument argument) { }
         public void Warn<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
@@ -554,6 +577,7 @@ namespace Splat
         public void Warn<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
         public void WarnException(string message, System.Exception exception) { }
         public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, Splat.LogLevel logLevel) { }
+        public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
     }
     public class WrappingPrefixLogger : Splat.ILogger
     {

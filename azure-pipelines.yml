@@ -22,9 +22,15 @@ steps:
   env:
     SIGNCLIENT_SECRET: $(SignClientSecret)
     SIGNCLIENT_USER: $(SignClientUser)
-    VSTS_ACCESS_TOKEN: $(System.AccessToken)
     COVERALLS_TOKEN: $(COVERALLS_TOKEN)
     ArtifactDirectory: $(System.DefaultWorkingDirectory)\Artifacts
+
+- task: PublishTestResults@2
+  displayName: Publish Test Results
+  inputs:
+    testResultsFormat: 'VSTest'
+    testResultsFiles: '**/testresults-*.trx' 
+    searchFolder: '$(System.DefaultWorkingDirectory)\artifacts\tests'
 
 - task: CopyFiles@2
   inputs:
