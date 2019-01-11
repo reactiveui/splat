@@ -499,7 +499,7 @@ namespace Splat
     }
     public class WrappingFullLogger : Splat.IFullLogger, Splat.ILogger
     {
-        public WrappingFullLogger(Splat.ILogger inner, System.Type callingType) { }
+        public WrappingFullLogger(Splat.ILogger inner) { }
         public bool IsDebugEnabled { get; }
         public bool IsErrorEnabled { get; }
         public bool IsFatalEnabled { get; }
@@ -576,6 +576,13 @@ namespace Splat
         public void Warn<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
         public void Warn<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
         public void WarnException(string message, System.Exception exception) { }
+        public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, Splat.LogLevel logLevel) { }
+        public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
+    }
+    public class WrappingPrefixLogger : Splat.ILogger
+    {
+        public WrappingPrefixLogger(Splat.ILogger inner, System.Type callingType) { }
+        public Splat.LogLevel Level { get; set; }
         public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, Splat.LogLevel logLevel) { }
         public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
     }

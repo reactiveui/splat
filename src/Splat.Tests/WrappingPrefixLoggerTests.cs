@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
 using Splat.Tests.Mocks;
 using Xunit;
@@ -9,9 +7,9 @@ using Xunit;
 namespace Splat.Tests
 {
     /// <summary>
-    /// Tests that verify the wrapping full logger is working.
+    /// Tests the <see cref="WrappingPrefixLogger"/> class.
     /// </summary>
-    public class WrappingFullLoggerTests
+    public class WrappingPrefixLoggerTests
     {
         /// <summary>
         /// Test to make sure the message writes.
@@ -20,11 +18,11 @@ namespace Splat.Tests
         public void Write_Should_Write_Message()
         {
             var textLogger = new TextLogger();
-            var logger = new WrappingFullLogger(textLogger);
+            var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
             logger.Write("This is a test.", LogLevel.Debug);
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
+            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.\r\n", textLogger.Value);
         }
 
         /// <summary>
@@ -34,11 +32,11 @@ namespace Splat.Tests
         public void Write_Should_Write_Message_And_Type()
         {
             var textLogger = new TextLogger();
-            var logger = new WrappingFullLogger(textLogger);
+            var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
-            logger.Write("This is a test.", LogLevel.Debug);
+            logger.Write("This is a test.", typeof(DummyObjectClass1), LogLevel.Debug);
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
+            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.\r\n", textLogger.Value);
         }
 
         /// <summary>
@@ -48,12 +46,11 @@ namespace Splat.Tests
         public void Debug_With_Generic_Type_Should_Write_Message_And_Type()
         {
             var textLogger = new TextLogger();
-            var logger = new WrappingFullLogger(textLogger);
+            var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
             logger.Debug<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
-            Assert.Equal(typeof(DummyObjectClass1), textLogger.PassedTypes.FirstOrDefault());
+            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.\r\n", textLogger.Value);
         }
 
         /// <summary>
@@ -63,12 +60,11 @@ namespace Splat.Tests
         public void Debug_With_Generic_Type_Should_Write_Message_And_Type_Provided()
         {
             var textLogger = new TextLogger();
-            var logger = new WrappingFullLogger(textLogger);
+            var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
             logger.Debug<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
-            Assert.Equal(typeof(DummyObjectClass2), textLogger.PassedTypes.FirstOrDefault());
+            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.\r\n", textLogger.Value);
         }
 
         /// <summary>
@@ -78,12 +74,11 @@ namespace Splat.Tests
         public void Info_With_Generic_Type_Should_Write_Message_And_Type()
         {
             var textLogger = new TextLogger();
-            var logger = new WrappingFullLogger(textLogger);
+            var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
             logger.Info<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
-            Assert.Equal(typeof(DummyObjectClass1), textLogger.PassedTypes.FirstOrDefault());
+            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.\r\n", textLogger.Value);
         }
 
         /// <summary>
@@ -93,12 +88,11 @@ namespace Splat.Tests
         public void Info_With_Generic_Type_Should_Write_Message_And_Type_Provided()
         {
             var textLogger = new TextLogger();
-            var logger = new WrappingFullLogger(textLogger);
+            var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
             logger.Info<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
-            Assert.Equal(typeof(DummyObjectClass2), textLogger.PassedTypes.FirstOrDefault());
+            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.\r\n", textLogger.Value);
         }
 
         /// <summary>
@@ -108,12 +102,11 @@ namespace Splat.Tests
         public void Warn_With_Generic_Type_Should_Write_Message_And_Type()
         {
             var textLogger = new TextLogger();
-            var logger = new WrappingFullLogger(textLogger);
+            var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
             logger.Warn<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
-            Assert.Equal(typeof(DummyObjectClass1), textLogger.PassedTypes.FirstOrDefault());
+            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.\r\n", textLogger.Value);
         }
 
         /// <summary>
@@ -123,12 +116,11 @@ namespace Splat.Tests
         public void Warn_With_Generic_Type_Should_Write_Message_And_Type_Provided()
         {
             var textLogger = new TextLogger();
-            var logger = new WrappingFullLogger(textLogger);
+            var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
             logger.Warn<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
-            Assert.Equal(typeof(DummyObjectClass2), textLogger.PassedTypes.FirstOrDefault());
+            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.\r\n", textLogger.Value);
         }
 
         /// <summary>
@@ -138,12 +130,11 @@ namespace Splat.Tests
         public void Error_With_Generic_Type_Should_Write_Message_And_Type()
         {
             var textLogger = new TextLogger();
-            var logger = new WrappingFullLogger(textLogger);
+            var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
             logger.Error<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
-            Assert.Equal(typeof(DummyObjectClass1), textLogger.PassedTypes.FirstOrDefault());
+            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.\r\n", textLogger.Value);
         }
 
         /// <summary>
@@ -153,12 +144,11 @@ namespace Splat.Tests
         public void Error_With_Generic_Type_Should_Write_Message_And_Type_Provided()
         {
             var textLogger = new TextLogger();
-            var logger = new WrappingFullLogger(textLogger);
+            var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
             logger.Error<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
-            Assert.Equal(typeof(DummyObjectClass2), textLogger.PassedTypes.FirstOrDefault());
+            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.\r\n", textLogger.Value);
         }
 
         /// <summary>
@@ -168,12 +158,11 @@ namespace Splat.Tests
         public void Fatal_With_Generic_Type_Should_Write_Message_And_Type()
         {
             var textLogger = new TextLogger();
-            var logger = new WrappingFullLogger(textLogger);
+            var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
             logger.Fatal<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
-            Assert.Equal(typeof(DummyObjectClass1), textLogger.PassedTypes.FirstOrDefault());
+            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.\r\n", textLogger.Value);
         }
 
         /// <summary>
@@ -183,12 +172,11 @@ namespace Splat.Tests
         public void Fatal_With_Generic_Type_Should_Write_Message_And_Type_Provided()
         {
             var textLogger = new TextLogger();
-            var logger = new WrappingFullLogger(textLogger);
+            var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
             logger.Fatal<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
-            Assert.Equal(typeof(DummyObjectClass2), textLogger.PassedTypes.FirstOrDefault());
+            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.\r\n", textLogger.Value);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Splat
     /// </summary>
     public class DefaultLogManager : ILogManager
     {
-        private static readonly IFullLogger _nullLogger = new WrappingFullLogger(new NullLogger(), typeof(MemoizingMRUCache<Type, IFullLogger>));
+        private static readonly IFullLogger _nullLogger = new WrappingFullLogger(new NullLogger());
         private readonly MemoizingMRUCache<Type, IFullLogger> _loggerCache;
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace Splat
                         throw new LoggingException("Couldn't find an ILogger. This should never happen, your dependency resolver is probably broken.");
                     }
 
-                    return new WrappingFullLogger(ret, type);
+                    return new WrappingFullLogger(new WrappingPrefixLogger(ret, type));
                 }, 64);
         }
 
