@@ -30,11 +30,11 @@ namespace Splat
             var data = NSData.FromStream(sourceStream);
 
             var tcs = new TaskCompletionSource<IBitmap>();
-            NSRunLoop.Main.BeginInvokeOnMainThread(() =>
+#if UIKIT
+            NSRunLoop.InvokeInBackground(() =>
             {
                 try
                 {
-#if UIKIT
                     var bitmap = UIImage.LoadFromData(data);
                     if (bitmap == null)
                     {
@@ -42,15 +42,15 @@ namespace Splat
                     }
 
                     tcs.TrySetResult(new CocoaBitmap(bitmap));
-#else
-                    tcs.TrySetResult(new CocoaBitmap(new UIImage(data)));
-#endif
                 }
                 catch (Exception ex)
                 {
                     tcs.TrySetException(ex);
                 }
             });
+#else
+            tcs.TrySetResult(new CocoaBitmap(new UIImage(data)));
+#endif
             return tcs.Task;
         }
 
@@ -58,15 +58,13 @@ namespace Splat
         public Task<IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
         {
             var tcs = new TaskCompletionSource<IBitmap>();
-            NSRunLoop.Main.BeginInvokeOnMainThread(() =>
+
+#if UIKIT
+            NSRunLoop.InvokeInBackground(() =>
             {
                 try
                 {
-#if UIKIT
                     var bitmap = UIImage.FromBundle(source);
-#else
-                    var bitmap = UIImage.ImageNamed(source);
-#endif
                     if (bitmap == null)
                     {
                         throw new Exception("Failed to load image from resource: " + source);
@@ -79,6 +77,25 @@ namespace Splat
                     tcs.TrySetException(ex);
                 }
             });
+#else
+            NSRunLoop.Main.BeginInvokeOnMainThread(() =>
+            {
+                try
+                {
+                    var bitmap = UIImage.ImageNamed(source);
+                    if (bitmap == null)
+                    {
+                        throw new Exception("Failed to load image from resource: " + source);
+                    }
+
+                    tcs.TrySetResult(new CocoaBitmap(bitmap));
+                }
+                catch (Exception ex)
+                {
+                    tcs.TrySetException(ex);
+                }
+            });
+#endif
             return tcs.Task;
         }
 
