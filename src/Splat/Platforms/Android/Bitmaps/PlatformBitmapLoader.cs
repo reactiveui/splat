@@ -26,11 +26,11 @@ namespace Splat
         /// </summary>
         static PlatformBitmapLoader()
         {
-            // NB: This is some hacky shit, but on MonoAndroid at the moment,
+            // NB: This is hacky, but on MonoAndroid at the moment,
             // this is always the entry assembly.
-            var assembly = AppDomain.CurrentDomain.GetAssemblies()[1];
+            var assembly = AppDomain.CurrentDomain.GetAssemblies().Skip(1).FirstOrDefault();
 
-            // drawableType will be null if there are no files in the drawable folder;
+            // GetNestedType("Drawable") will be null if there are no files in the drawable folder;
             // hense, the null-conditional operator.
             _drawableList = assembly.GetModules()
                 .SelectMany(x => x.GetTypes())
@@ -44,11 +44,11 @@ namespace Splat
         /// <inheritdoc />
         public async Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
+            sourceStream.Position = 0;
             Bitmap bitmap = null;
 
             if (desiredWidth == null)
             {
-                sourceStream.Position = 0;
                 bitmap = await Task.Run(() => BitmapFactory.DecodeStream(sourceStream)).ConfigureAwait(false);
             }
             else
