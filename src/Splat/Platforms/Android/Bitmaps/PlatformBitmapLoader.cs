@@ -48,6 +48,7 @@ namespace Splat
 
             if (desiredWidth == null)
             {
+                sourceStream.Position = 0;
                 bitmap = await Task.Run(() => BitmapFactory.DecodeStream(sourceStream)).ConfigureAwait(true);
             }
             else
