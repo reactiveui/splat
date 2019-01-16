@@ -26,13 +26,17 @@ namespace Splat
         /// </summary>
         static PlatformBitmapLoader()
         {
-            // NB: This is some hacky shit, but on MonoAndroid at the moment,
+            // NB: This is hacky, but on MonoAndroid at the moment,
             // this is always the entry assembly.
-            var assm = AppDomain.CurrentDomain.GetAssemblies()[1];
+            var assembly = AppDomain.CurrentDomain.GetAssemblies().Skip(1).FirstOrDefault();
 
-            var resources = assm.GetModules().SelectMany(x => x.GetTypes()).First(x => x.Name == "Resource");
-
-            _drawableList = resources.GetNestedType("Drawable").GetFields()
+            // GetNestedType("Drawable") will be null if there are no files in the drawable folder;
+            // hense, the null-conditional operator.
+            _drawableList = assembly.GetModules()
+                .SelectMany(x => x.GetTypes())
+                .First(x => x.Name == "Resource")
+                .GetNestedType("Drawable")
+                ?.GetFields()
                 .Where(x => x.FieldType == typeof(int))
                 .ToDictionary(k => k.Name, v => (int)v.GetRawConstantValue());
         }
@@ -40,11 +44,12 @@ namespace Splat
         /// <inheritdoc />
         public async Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
+            sourceStream.Position = 0;
             Bitmap bitmap = null;
 
             if (desiredWidth == null)
             {
-                bitmap = await Task.Run(() => BitmapFactory.DecodeStream(sourceStream)).ConfigureAwait(true);
+                bitmap = await Task.Run(() => BitmapFactory.DecodeStream(sourceStream)).ConfigureAwait(false);
             }
             else
             {
@@ -69,6 +74,11 @@ namespace Splat
         /// <inheritdoc />
         public Task<IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
         {
+            if (_drawableList == null)
+            {
+                throw new InvalidOperationException("No resources found in any of the drawable folders.");
+            }
+
             var res = Application.Context.Resources;
             var theme = Application.Context.Theme;
 
