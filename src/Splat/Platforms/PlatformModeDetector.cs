@@ -10,6 +10,8 @@ using System.Linq;
 using System.Reflection;
 
 #if NETFX_CORE
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 #endif
 
@@ -31,6 +33,7 @@ namespace Splat
                 "MBUNIT",
                 "NBEHAVE",
                 "VISUALSTUDIO.QUALITYTOOLS",
+                "VISUALSTUDIO.TESTPLATFORM",
                 "FIXIE",
                 "NCRUNCH",
             };
@@ -76,14 +79,24 @@ namespace Splat
         {
 #if NETFX_CORE
             var depPackages = Package.Current.Dependencies.Select(x => x.Id.FullName.ToUpperInvariant());
-            if (depPackages.Any(x => assemblyList.Any(name => x.Contains(name)))) return true;
+            if (depPackages.Any(x => assemblyList.Any(name => x.Contains(name, StringComparison.InvariantCultureIgnoreCase))))
+            {
+                return true;
+            }
 
-            var fileTask = Task.Factory.StartNew(async () => {
-                var files = await Package.Current.InstalledLocation.GetFilesAsync();
-                return files.Select(x => x.Path).ToArray();
-            }, TaskCreationOptions.HideScheduler).Unwrap();
+            var results = Task.Factory.StartNew(
+                async () =>
+                {
+                    var files = await Package.Current.InstalledLocation.GetFilesAsync();
+                    return files.Select(x => x.Path).ToArray();
+                },
+                CancellationToken.None,
+                TaskCreationOptions.HideScheduler,
+                TaskScheduler.Default)
+                .Unwrap()
+                .Result;
 
-            return fileTask.Result.Any(x => assemblyList.Any(name => x.Contains(name, StringComparison.InvariantCulture)));
+            return results.Any(x => assemblyList.Any(name => x.Contains(name, StringComparison.InvariantCultureIgnoreCase)));
 #else
             return AppDomain.CurrentDomain.GetAssemblies()
                 .Select(x => x.FullName.ToUpperInvariant())

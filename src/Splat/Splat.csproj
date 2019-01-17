@@ -40,6 +40,7 @@
   <ItemGroup Condition=" $(TargetFramework.StartsWith('uap')) ">  
     <Compile Include="Platforms\WinRT\**\*.cs" />
     <Compile Include="Platforms\ReflectionStubs.cs" />
+    <Compile Include="Platforms\PlatformModeDetector.cs" />
     <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
   </ItemGroup>
 
