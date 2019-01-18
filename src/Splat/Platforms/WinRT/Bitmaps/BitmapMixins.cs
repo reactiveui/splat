@@ -5,7 +5,7 @@
 
 using Windows.UI.Xaml.Media.Imaging;
 
-namespace Splat.Platforms.WinRT.Bitmaps
+namespace Splat
 {
     /// <summary>
     /// Extension methods to assist with dealing with Bitmaps.
