@@ -4,16 +4,12 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
-using Windows.Storage.Streams;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Media.Imaging;
 
@@ -29,14 +25,10 @@ namespace Splat
         {
             return GetDispatcher().RunTaskAsync(async () =>
             {
-                using (var rwStream = new InMemoryRandomAccessStream())
+                using (var randomAccessStream = sourceStream.AsRandomAccessStream())
                 {
-                    var writer = rwStream.AsStreamForWrite();
-                    await sourceStream.CopyToAsync(writer).ConfigureAwait(true);
-                    await writer.FlushAsync().ConfigureAwait(true);
-                    rwStream.Seek(0);
-
-                    var decoder = await BitmapDecoder.CreateAsync(rwStream);
+                    randomAccessStream.Seek(0);
+                    var decoder = await BitmapDecoder.CreateAsync(randomAccessStream);
 
                     int targetWidth = (int)(desiredWidth ?? decoder.OrientedPixelWidth);
                     int targetHeight = (int)(desiredHeight ?? decoder.OrientedPixelHeight);
