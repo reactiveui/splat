@@ -11,17 +11,18 @@ namespace Splat.NLog
     public static class Helpers
     {
         /// <summary>
-        /// Simple helper to initialize NLog within Splat.
+        /// Simple helper to initialize NLog within Splat with the Wrapping Full Logger.
         /// </summary>
         /// <remarks>
         /// You should configure NLog prior to calling this method.
         /// </remarks>
-        public static void UseNLog()
+        public static void UseNLogWithWrappingFullLogger()
         {
             var funcLogManager = new FuncLogManager(type =>
             {
                 var actualLogger = global::NLog.LogManager.GetLogger(type.ToString());
-                return new NLogSplatLogger(actualLogger);
+                var miniLoggingWrapper = new NLogLogger(actualLogger);
+                return new WrappingFullLogger(miniLoggingWrapper);
             });
 
             Locator.CurrentMutable.RegisterConstant(funcLogManager, typeof(ILogManager));
