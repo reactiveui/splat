@@ -17,28 +17,24 @@ steps:
     modifyEnvironment: true
   displayName: Setup Environment Variables
 
-- task: DotNetCoreCLI@2  
-  inputs:
-    command: custom
-    custom: tool
-    arguments: install --tool-path . nbgv
-  displayName: Install NBGV tool
-  
-- script: nbgv cloud
-  displayName: Set Version
-
 - script: build.cmd
   displayName: Build 
   env:
     SIGNCLIENT_SECRET: $(SignClientSecret)
     SIGNCLIENT_USER: $(SignClientUser)
-    VSTS_ACCESS_TOKEN: $(System.AccessToken)
     COVERALLS_TOKEN: $(COVERALLS_TOKEN)
     ArtifactDirectory: $(System.DefaultWorkingDirectory)\Artifacts
 
+- task: PublishTestResults@2
+  displayName: Publish Test Results
+  inputs:
+    testResultsFormat: 'VSTest'
+    testResultsFiles: '**/testresults-*.trx' 
+    searchFolder: '$(System.DefaultWorkingDirectory)\artifacts\tests'
+
 - task: CopyFiles@2
   inputs:
-    Contents: 'artifacts/*.nupkg'
+    Contents: 'artifacts/packages/*.nupkg'
     TargetFolder: '$(build.artifactstagingdirectory)\packages'
     flattenFolders: true
 
@@ -48,3 +44,15 @@ steps:
     pathToPublish: '$(build.artifactstagingdirectory)\packages'
     artifactType: container
     artifactName: Packages
+
+- task: CopyFiles@2
+  inputs:
+    Contents: 'artifacts/binaries/**/*'
+    TargetFolder: '$(build.artifactstagingdirectory)\binaries'
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Binaries
+  inputs:
+    pathToPublish: '$(build.artifactstagingdirectory)\binaries'
+    artifactType: container
+    artifactName: Binaries

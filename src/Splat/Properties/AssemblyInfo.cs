@@ -1,6 +1,10 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Resources;
+﻿// Copyright (c) 2019 .NET Foundation and Contributors. All rights reserved.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
 
-[assembly: NeutralResourcesLanguageAttribute("en-US")]
+using System.Resources;
+using System.Runtime.CompilerServices;
+
+[assembly: NeutralResourcesLanguage("en-US")]
+[assembly: InternalsVisibleTo("Splat.Tests")]

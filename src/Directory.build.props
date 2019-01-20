@@ -1,7 +1,8 @@
 <Project>  
   <PropertyGroup>
     <Copyright>Copyright (c) .NET Foundation and Contributors</Copyright>
-    <PackageLicenseUrl>https://opensource.org/licenses/mit</PackageLicenseUrl>
+    <Product>Splat ($(TargetFramework))</Product>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/reactiveui/splat/</PackageProjectUrl>
     <PackageIconUrl>http://f.cl.ly/items/1307401C3x2g3F2p2Z36/Logo.png</PackageIconUrl>
     <Authors>.NET Foundation and Contributors</Authors>
@@ -10,21 +11,50 @@
     <PackageReleaseNotes>https://github.com/reactiveui/splat/releases</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/reactiveui/splat</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <DebugType>embedded</DebugType>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)analyzers.ruleset</CodeAnalysisRuleSet>
+    <IsTestProject>$(MSBuildProjectName.Contains('Tests'))</IsTestProject>
+    <DebugType>Embedded</DebugType>
+    <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!-- Optional: Include PDB in the built .nupkg -->
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>  
   </PropertyGroup>
-  
-  <ItemGroup>
-    <None Include="..\..\LICENSE" Pack="true" PackagePath="LICENSE" />
+
+  <ItemGroup Condition="$(IsTestProject)">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.0-preview-20181205-02" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
+    <PackageReference Include="Xunit.StaFact" Version="0.3.13" />
+    <PackageReference Include="Shouldly" Version=" 3.0.2" />
+    <PackageReference Include="PublicApiGenerator" Version="8.1.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(IsTestProject)">
+    <Compile Include="$(MSBuildThisFileDirectory)ApiGeneratorGlobalSuppressions.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nerdbank.GitVersioning" Version="2.2.33" PrivateAssets="all" />
+    <None Include="$(MSBuildThisFileDirectory)..\LICENSE" Pack="true" PackagePath="LICENSE" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.3.38" PrivateAssets="all" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(IsTestProject)' != 'true' and '$(SourceLinkEnabled)' != 'false'">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" /> 
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" /> 
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="stylecop.analyzers" Version="1.1.1-beta.61" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.3" PrivateAssets="all" />
+    <PackageReference Include="Roslynator.Analyzers" Version="2.0.0" PrivateAssets="All" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
   </ItemGroup>
  </Project>
  

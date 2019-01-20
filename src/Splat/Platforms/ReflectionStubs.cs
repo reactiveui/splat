@@ -1,96 +1,102 @@
-﻿using System;
+﻿// Copyright (c) 2019 .NET Foundation and Contributors. All rights reserved.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Splat
 {
-    internal enum BindingFlags
-    {
-        Public = 1,
-        NonPublic = 1 << 1,
-        Instance = 1 << 2,
-        Static = 1 << 3,
-        FlattenHierarchy = 1 << 4
-    }
-
     internal static class ReflectionStubs
     {
-        public static FieldInfo GetField(this Type This, string name, BindingFlags flags = default(BindingFlags))
+        public static FieldInfo GetField(this Type value, string name, BindingFlags flags = default(BindingFlags))
         {
-            var ti = This.GetTypeInfo();
+            var ti = value.GetTypeInfo();
             var ret = ti.GetDeclaredField(name);
-            if (ret != null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType == null) return ret;
+            if (ret != null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType == null)
+            {
+                return ret;
+            }
 
             return ti.BaseType.GetField(name, flags);
         }
 
-        public static MethodInfo GetMethod(this Type This, string name, BindingFlags flags = default(BindingFlags))
+        public static MethodInfo GetMethod(this Type value, string name, BindingFlags flags = default(BindingFlags))
         {
-            var ti = This.GetTypeInfo();
+            var ti = value.GetTypeInfo();
             var ret = ti.GetDeclaredMethod(name);
-            if (ret != null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType == null) return ret;
+            if (ret != null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType == null)
+            {
+                return ret;
+            }
 
             return ti.BaseType.GetMethod(name, flags);
         }
 
-        public static PropertyInfo GetProperty(this Type This, string name, BindingFlags flags = default(BindingFlags))
+        public static PropertyInfo GetProperty(this Type value, string name, BindingFlags flags = default(BindingFlags))
         {
-            var ti = This.GetTypeInfo();
+            var ti = value.GetTypeInfo();
             var ret = ti.GetDeclaredProperty(name);
-            if (ret != null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType == null) return ret;
+            if (ret != null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType == null)
+            {
+                return ret;
+            }
 
             return ti.BaseType.GetProperty(name, flags);
         }
 
-        public static EventInfo GetEvent(this Type This, string name, BindingFlags flags = default(BindingFlags))
+        public static EventInfo GetEvent(this Type value, string name, BindingFlags flags = default(BindingFlags))
         {
-            var ti = This.GetTypeInfo();
+            var ti = value.GetTypeInfo();
             var ret = ti.GetDeclaredEvent(name);
-            if (ret != null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType == null) return ret;
+            if (ret != null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType == null)
+            {
+                return ret;
+            }
 
             return ti.BaseType.GetEvent(name, flags);
         }
 
-        public static IEnumerable<PropertyInfo> GetProperties(this Type This, BindingFlags flags = default(BindingFlags))
+        public static IEnumerable<PropertyInfo> GetProperties(this Type value)
         {
-            return This.GetTypeInfo().DeclaredProperties;
+            return value.GetTypeInfo().DeclaredProperties;
         }
 
-        public static IEnumerable<FieldInfo> GetFields(this Type This, BindingFlags flags = default(BindingFlags))
+        public static IEnumerable<FieldInfo> GetFields(this Type value)
         {
-            return This.GetTypeInfo().DeclaredFields;
+            return value.GetTypeInfo().DeclaredFields;
         }
 
-
-        public static MethodInfo GetMethod(this Type This, string methodName, Type[] paramTypes, BindingFlags flags = default(BindingFlags))
+        public static MethodInfo GetMethod(this Type value, string methodName, Type[] paramTypes, BindingFlags flags = default(BindingFlags))
         {
-            var ti = This.GetTypeInfo();
+            var ti = value.GetTypeInfo();
             var ret = ti.GetDeclaredMethods(methodName)
-                .FirstOrDefault(x =>
-                {
-                    return paramTypes.Zip(x.GetParameters().Select(y => y.ParameterType), (l, r) => l == r).All(y => y != false);
-                });
+                .FirstOrDefault(x => paramTypes.Zip(x.GetParameters().Select(y => y.ParameterType), (l, r) => l == r).All(y => y));
 
-            if (ret != null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType == null) return ret;
+            if (ret != null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType == null)
+            {
+                return ret;
+            }
+
             return ti.BaseType.GetMethod(methodName, paramTypes, flags);
         }
 
-        public static IEnumerable<MethodInfo> GetMethods(this Type This)
+        public static IEnumerable<MethodInfo> GetMethods(this Type value)
         {
-            return This.GetTypeInfo().DeclaredMethods;
+            return value.GetTypeInfo().DeclaredMethods;
         }
 
-        public static IEnumerable<object> GetCustomAttributes(this Type This, Type attributeType, bool inherit)
+        public static IEnumerable<object> GetCustomAttributes(this Type value, Type attributeType, bool inherit)
         {
-            return This.GetTypeInfo().GetCustomAttributes(attributeType, inherit);
+            return value.GetTypeInfo().GetCustomAttributes(attributeType, inherit);
         }
 
-        public static bool IsAssignableFrom(this Type This, Type anotherType)
+        public static bool IsAssignableFrom(this Type value, Type anotherType)
         {
-            return This.GetTypeInfo().IsAssignableFrom(anotherType.GetTypeInfo());
+            return value.GetTypeInfo().IsAssignableFrom(anotherType.GetTypeInfo());
         }
     }
 }
