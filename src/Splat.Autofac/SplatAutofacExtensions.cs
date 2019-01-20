@@ -10,7 +10,7 @@ namespace Splat.Autofac
     /// <summary>
     /// Extension methods for the Autofac adapter.
     /// </summary>
-    public static class SplatAutofacExtension
+    public static class SplatAutofacExtensions
     {
         /// <summary>
         /// Initializes an instance of <see cref="AutofacDependencyResolver"/> that overrides the default <see cref="Locator"/>.

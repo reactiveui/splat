@@ -78,12 +78,14 @@ var packageWhitelist = new[]
 { 
     "Splat",
     "Splat.Autofac",
+    "Splat.SimpleInjector",
 };
 
 var packageTestWhitelist = new[]
 {
-    "Splat.Tests", 
+    "Splat.Tests",
     "Splat.Autofac.Tests",
+    "Splat.SimpleInjector.Tests",
 };
 
 var testFrameworks = new[] { "netcoreapp2.1", "net472" };
