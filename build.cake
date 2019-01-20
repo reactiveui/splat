@@ -77,11 +77,13 @@ var packagesArtifactDirectory = artifactDirectory + "packages/";
 var packageWhitelist = new[] 
 { 
     "Splat",
+    "Splat.Autofac",
 };
 
 var packageTestWhitelist = new[]
 {
     "Splat.Tests", 
+    "Splat.Autofac.Tests",
 };
 
 var testFrameworks = new[] { "netcoreapp2.1", "net472" };
