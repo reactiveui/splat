@@ -15,9 +15,9 @@ namespace Splat.NLog
     /// NLog Logger taken from ReactiveUI 5.
     /// </summary>
     [DebuggerDisplay("Name={_inner.Name} Level={Level}")]
-    internal sealed class NLogLogger : ILogger
+    public sealed class NLogLogger : ILogger
     {
-        private readonly global::NLog.Logger _inner;
+        private readonly global::NLog.ILogger _inner;
         private LogLevel _level;
 
         /// <summary>
@@ -25,14 +25,12 @@ namespace Splat.NLog
         /// </summary>
         /// <param name="inner">The actual nlog logger.</param>
         /// <exception cref="ArgumentNullException">NLog logger not passed.</exception>
-        public NLogLogger(global::NLog.Logger inner)
+        public NLogLogger(global::NLog.ILogger inner)
         {
             _inner = inner ?? throw new ArgumentNullException(nameof(inner));
         }
 
-        /// <summary>
-        /// Gets or sets the logging level.
-        /// </summary>
+        /// <inheritdoc />
         public LogLevel Level
         {
             get => _level;
@@ -51,16 +49,13 @@ namespace Splat.NLog
             }
         }
 
-        /// <summary>
-        /// Writes a message at the specified log level.
-        /// </summary>
-        /// <param name="message">The message to write.</param>
-        /// <param name="logLevel">The log level to write the message at.</param>
+        /// <inheritdoc />
         public void Write(string message, LogLevel logLevel)
         {
             _inner.Log(RxUitoNLogLevel(logLevel), message);
         }
 
+        /// <inheritdoc />
         public void Write(string message, Type type, LogLevel logLevel)
         {
             _inner.Log(RxUitoNLogLevel(logLevel), $"{type.Name}: {message}");
