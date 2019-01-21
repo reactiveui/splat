@@ -44,7 +44,7 @@ namespace Splat.NLog
                 _level = value;
                 foreach (var configurationLoggingRule in _inner.Factory.Configuration.LoggingRules)
                 {
-                    configurationLoggingRule.SetLoggingLevels(RxUitoNLogLevel(value), global::NLog.LogLevel.Fatal);
+                    configurationLoggingRule.SetLoggingLevels(SplatLogLevelToNLogLevel(value), global::NLog.LogLevel.Fatal);
                 }
             }
         }
@@ -52,16 +52,16 @@ namespace Splat.NLog
         /// <inheritdoc />
         public void Write(string message, LogLevel logLevel)
         {
-            _inner.Log(RxUitoNLogLevel(logLevel), message);
+            _inner.Log(SplatLogLevelToNLogLevel(logLevel), message);
         }
 
         /// <inheritdoc />
         public void Write(string message, Type type, LogLevel logLevel)
         {
-            _inner.Log(RxUitoNLogLevel(logLevel), $"{type.Name}: {message}");
+            _inner.Log(SplatLogLevelToNLogLevel(logLevel), $"{type.Name}: {message}");
         }
 
-        private static global::NLog.LogLevel RxUitoNLogLevel(LogLevel logLevel)
+        private static global::NLog.LogLevel SplatLogLevelToNLogLevel(LogLevel logLevel)
         {
             var mappings = new[]
                                {
