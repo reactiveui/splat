@@ -6,9 +6,9 @@
 namespace Splat.NLog
 {
     /// <summary>
-    /// Helper for using NLog with Splat.
+    /// NLog specific extensions for the Mutable Dependency Resolver.
     /// </summary>
-    public static class Helpers
+    public static class MutableDependencyResolverExtensions
     {
         /// <summary>
         /// Simple helper to initialize NLog within Splat with the Wrapping Full Logger.
@@ -16,7 +16,15 @@ namespace Splat.NLog
         /// <remarks>
         /// You should configure NLog prior to calling this method.
         /// </remarks>
-        public static void UseNLogWithWrappingFullLogger()
+        /// <param name="instance">
+        /// An instance of Mutable Dependency Resolver.
+        /// </param>
+        /// <example>
+        /// <code>
+        /// Locator.CurrentMutable.UseNLogWithWrappingFullLogger();
+        /// </code>
+        /// </example>
+        public static void UseNLogWithWrappingFullLogger(this IMutableDependencyResolver instance)
         {
             var funcLogManager = new FuncLogManager(type =>
             {
@@ -25,7 +33,7 @@ namespace Splat.NLog
                 return new WrappingFullLogger(miniLoggingWrapper);
             });
 
-            Locator.CurrentMutable.RegisterConstant(funcLogManager, typeof(ILogManager));
+            instance.RegisterConstant(funcLogManager, typeof(ILogManager));
         }
     }
 }
