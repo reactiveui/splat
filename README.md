@@ -50,6 +50,19 @@ Splat currently supports:
 * Xamarin (Android, iOS and Mac)
 * .NET Standard 1.0 and 2.0
 
+### Dependency Resolver Packages
+For each of the provided dependency resolver adapters, there is a specific package that allows the service locator to be implemented by another ioc container.
+
+| Container | NuGet |
+|---------|-------|
+| [Splat.Autofac][SplatAutofacNuGet] | [![SplatAutofacBadge]][SplatAutofacNuGet]
+| [Splat.SimpleInjector][SplatSimpleInjectorNuGet] | [![SplatSimpleInjectorBadge]][SplatSimpleInjectorNuGet] |
+
+[SplatAutofacNuGet]: https://www.nuget.org/packages/Splat.Autofac/
+[SplatAutofacBadge]: https://img.shields.io/nuget/v/Splat.Autofac.svg
+[SplatSimpleInjectorNuGet]: https://www.nuget.org/packages/Splat.SimpleInjector/
+[SplatSimpleInjectorBadge]: https://img.shields.io/nuget/v/Splat.SimpleInjector.svg
+
 ## Cross-platform Image Loading
 
 ```cs
