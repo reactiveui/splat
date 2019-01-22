@@ -13,6 +13,14 @@ namespace Splat.Simplnjector
     /// <seealso cref="ReactiveUI.IViewFor{Splat.Simplnjector.ViewModel}" />
     public class View : IViewFor<ViewModel>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="View"/> class.
+        /// </summary>
+        public View()
+        {
+            this.Bind(ViewModel, x => x.Text, x => x.Text);
+        }
+
         /// <inheritdoc />
         object IViewFor.ViewModel
         {
@@ -22,5 +30,10 @@ namespace Splat.Simplnjector
 
         /// <inheritdoc />
         public ViewModel ViewModel { get; set; }
+
+        /// <summary>
+        /// Gets or sets text. TextBox.Text for example.
+        /// </summary>
+        public string Text { get; set; }
     }
 }
