@@ -48,10 +48,22 @@ namespace Splat.Tests.Mocks
         }
 
         /// <inheritdoc />
+        public void Write(string message, LogLevel logLevel, Exception exception)
+        {
+            Write($"{message} - {exception}", logLevel);
+        }
+
+        /// <inheritdoc />
         public void Write(string message, Type type, LogLevel logLevel)
         {
             _writer.Value.WriteLine(message);
             _types.Add(type);
+        }
+
+        /// <inheritdoc />
+        public void Write(string message, Type type, LogLevel logLevel, Exception exception)
+        {
+            Write($"{message} - {exception}", type, logLevel);
         }
 
         /// <inheritdoc />

@@ -74,7 +74,7 @@ namespace Splat
         /// <inheritdoc />
         public void DebugException(string message, Exception exception)
         {
-            _inner.Write($"{message}: {exception}", LogLevel.Debug);
+            _inner.Write($"{message}: {exception}", LogLevel.Debug, exception);
         }
 
         /// <inheritdoc />
@@ -167,7 +167,7 @@ namespace Splat
         /// <inheritdoc />
         public void InfoException(string message, Exception exception)
         {
-            _inner.Write($"{message}: {exception}", LogLevel.Info);
+            _inner.Write($"{message}: {exception}", LogLevel.Info, exception);
         }
 
         /// <inheritdoc />
@@ -259,7 +259,7 @@ namespace Splat
         /// <inheritdoc />
         public void WarnException(string message, Exception exception)
         {
-            _inner.Write($"{message}: {exception}", LogLevel.Warn);
+            _inner.Write($"{message}: {exception}", LogLevel.Warn, exception);
         }
 
         /// <inheritdoc />
@@ -351,7 +351,7 @@ namespace Splat
         /// <inheritdoc />
         public void ErrorException(string message, Exception exception)
         {
-            _inner.Write($"{message}: {exception}", LogLevel.Error);
+            _inner.Write($"{message}: {exception}", LogLevel.Error, exception);
         }
 
         /// <inheritdoc />
@@ -443,7 +443,7 @@ namespace Splat
         /// <inheritdoc />
         public void FatalException(string message, Exception exception)
         {
-            _inner.Write($"{message}: {exception}", LogLevel.Fatal);
+            _inner.Write($"{message}: {exception}", LogLevel.Fatal, exception);
         }
 
         /// <inheritdoc />
@@ -522,9 +522,21 @@ namespace Splat
         }
 
         /// <inheritdoc />
+        public void Write([Localizable(false)] string message, LogLevel logLevel, Exception exception)
+        {
+            _inner.Write(message, logLevel, exception);
+        }
+
+        /// <inheritdoc />
         public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
         {
             _inner.Write(message, type, logLevel);
+        }
+
+        /// <inheritdoc />
+        public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel, Exception exception)
+        {
+            _inner.Write(message, type, logLevel, exception);
         }
 
         private string InvokeStringFormat(IFormatProvider formatProvider, string message, object[] args)

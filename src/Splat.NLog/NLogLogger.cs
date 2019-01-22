@@ -6,8 +6,6 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using NLog;
 
 namespace Splat.NLog
 {
@@ -56,9 +54,21 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc />
+        public void Write(string message, LogLevel logLevel, Exception exception)
+        {
+            _inner.Log(SplatLogLevelToNLogLevel(logLevel), exception, message);
+        }
+
+        /// <inheritdoc />
         public void Write(string message, Type type, LogLevel logLevel)
         {
             _inner.Log(SplatLogLevelToNLogLevel(logLevel), $"{type.Name}: {message}");
+        }
+
+        /// <inheritdoc />
+        public void Write(string message, Type type, LogLevel logLevel, Exception exception)
+        {
+            _inner.Log(SplatLogLevelToNLogLevel(logLevel), exception, $"{type.Name}: {message}");
         }
 
         private static global::NLog.LogLevel SplatLogLevelToNLogLevel(LogLevel logLevel)
