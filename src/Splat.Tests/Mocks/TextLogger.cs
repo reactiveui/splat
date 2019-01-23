@@ -48,7 +48,7 @@ namespace Splat.Tests.Mocks
         }
 
         /// <inheritdoc />
-        public void Write(string message, LogLevel logLevel, Exception exception)
+        public void Write(Exception exception, string message, LogLevel logLevel)
         {
             Write($"{message} - {exception}", logLevel);
         }
@@ -61,7 +61,7 @@ namespace Splat.Tests.Mocks
         }
 
         /// <inheritdoc />
-        public void Write(string message, Type type, LogLevel logLevel, Exception exception)
+        public void Write(Exception exception, string message, Type type, LogLevel logLevel)
         {
             Write($"{message} - {exception}", type, logLevel);
         }

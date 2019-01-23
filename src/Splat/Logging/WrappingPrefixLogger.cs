@@ -43,9 +43,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Write([Localizable(false)]string message, LogLevel logLevel, Exception exception)
+        public void Write(Exception exception, [Localizable(false)]string message, LogLevel logLevel)
         {
-            _inner.Write(_prefix + message, logLevel, exception);
+            _inner.Write(exception, _prefix + message, logLevel);
         }
 
         /// <inheritdoc />
@@ -55,9 +55,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel, Exception exception)
+        public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
         {
-            _inner.Write($"{type.Name}: {message}", type, logLevel, exception);
+            _inner.Write(exception, $"{type.Name}: {message}", type, logLevel);
         }
     }
 }

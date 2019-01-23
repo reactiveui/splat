@@ -54,7 +54,7 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc />
-        public void Write(string message, LogLevel logLevel, Exception exception)
+        public void Write(Exception exception, string message, LogLevel logLevel)
         {
             _inner.Log(SplatLogLevelToNLogLevel(logLevel), exception, message);
         }
@@ -66,7 +66,7 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc />
-        public void Write(string message, Type type, LogLevel logLevel, Exception exception)
+        public void Write(Exception exception, string message, Type type, LogLevel logLevel)
         {
             _inner.Log(SplatLogLevelToNLogLevel(logLevel), exception, $"{type.Name}: {message}");
         }

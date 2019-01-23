@@ -21,7 +21,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Write(string message, LogLevel logLevel, Exception exception)
+        public void Write(Exception exception, string message, LogLevel logLevel)
         {
         }
 
@@ -31,7 +31,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Write(string message, Type type, LogLevel logLevel, Exception exception)
+        public void Write(Exception exception, string message, Type type, LogLevel logLevel)
         {
         }
     }

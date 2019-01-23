@@ -32,7 +32,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Write(string message, LogLevel logLevel, Exception exception)
+        public void Write(Exception exception, string message, LogLevel logLevel)
         {
             if ((int)logLevel < (int)Level)
             {
@@ -54,7 +54,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Write(string message, Type type, LogLevel logLevel, Exception exception)
+        public void Write(Exception exception, string message, Type type, LogLevel logLevel)
         {
             System.Diagnostics.Debug.WriteLine($"{message} - {exception}", type.Name);
         }

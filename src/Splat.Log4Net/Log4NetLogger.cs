@@ -80,7 +80,7 @@ namespace Splat.Log4Net
         }
 
         /// <inheritdoc />
-        public void Write(string message, LogLevel logLevel, Exception exception)
+        public void Write(Exception exception, string message, LogLevel logLevel)
         {
             switch (logLevel)
             {
@@ -136,9 +136,9 @@ namespace Splat.Log4Net
         }
 
         /// <inheritdoc />
-        public void Write(string message, Type type, LogLevel logLevel, Exception exception)
+        public void Write(Exception exception, string message, Type type, LogLevel logLevel)
         {
-            Write($"{type.Name}: {message}", logLevel, exception);
+            Write(exception, $"{type.Name}: {message}", logLevel);
         }
     }
 }

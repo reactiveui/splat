@@ -14,22 +14,22 @@ namespace Splat
     public class ActionLogger : ILogger
     {
         private readonly Action<string, LogLevel> _writeNoType;
-        private readonly Action<string, LogLevel, Exception> _writeNoTypeWithException;
+        private readonly Action<Exception, string, LogLevel> _writeNoTypeWithException;
         private readonly Action<string, Type, LogLevel> _writeWithType;
-        private readonly Action<string, Type, LogLevel, Exception> _writeWithTypeAndException;
+        private readonly Action<Exception, string, Type, LogLevel> _writeWithTypeAndException;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ActionLogger"/> class.
         /// </summary>
         /// <param name="writeNoType">A action which is called when the <see cref="Write(string, LogLevel)"/> is called.</param>
         /// <param name="writeWithType">A action which is called when the <see cref="Write(string, Type, LogLevel)"/> is called.</param>
-        /// <param name="writeNoTypeWithException">A action which is called when the <see cref="Write(string, LogLevel, Exception)"/> is called.</param>
-        /// <param name="writeWithTypeAndException">A action which is called when the <see cref="Write(string, Type, LogLevel, Exception)"/> is called.</param>
+        /// <param name="writeNoTypeWithException">A action which is called when the <see cref="Write(Exception, string, LogLevel)"/> is called.</param>
+        /// <param name="writeWithTypeAndException">A action which is called when the <see cref="Write(Exception, string, Type, LogLevel)"/> is called.</param>
         public ActionLogger(
             Action<string, LogLevel> writeNoType,
             Action<string, Type, LogLevel> writeWithType,
-            Action<string, LogLevel, Exception> writeNoTypeWithException,
-            Action<string, Type, LogLevel, Exception> writeWithTypeAndException)
+            Action<Exception, string, LogLevel> writeNoTypeWithException,
+            Action<Exception, string, Type, LogLevel> writeWithTypeAndException)
         {
             _writeNoType = writeNoType;
             _writeWithType = writeWithType;
@@ -47,9 +47,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Write([Localizable(false)] string message, LogLevel logLevel, Exception exception)
+        public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel)
         {
-            _writeNoTypeWithException?.Invoke(message, logLevel, exception);
+            _writeNoTypeWithException?.Invoke(exception, message, logLevel);
         }
 
         /// <inheritdoc />
@@ -59,9 +59,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel, Exception exception)
+        public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
         {
-            _writeWithTypeAndException?.Invoke(message, type, logLevel, exception);
+            _writeWithTypeAndException?.Invoke(exception, message, type, logLevel);
         }
     }
 }
