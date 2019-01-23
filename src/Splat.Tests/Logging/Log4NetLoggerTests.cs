@@ -241,7 +241,7 @@ namespace Splat.Tests.Logging
             var memory = new global::log4net.Appender.MemoryAppender();
             memory.ActivateOptions();
 
-            var hierarchy = (global::log4net.Repository.Hierarchy.Hierarchy)global::log4net.LogManager.GetRepository("TestRepository");
+            var hierarchy = (global::log4net.Repository.Hierarchy.Hierarchy)global::log4net.LogManager.CreateRepository("TestRepository");
             hierarchy.Root.AddAppender(memory);
             hierarchy.Root.Level = global::log4net.Core.Level.Trace;
             hierarchy.Configured = true;
