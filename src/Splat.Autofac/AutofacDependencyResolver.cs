@@ -81,6 +81,10 @@ namespace Splat.Autofac
             {
                 builder.Register(x => factory()).Named(contract, serviceType).AsImplementedInterfaces();
             }
+
+#pragma warning disable CS0618 // Type or member is obsolete
+            builder.Update(_container);
+#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         /// <summary>

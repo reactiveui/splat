@@ -3,6 +3,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
+using System.Linq;
 using Autofac;
 using ReactiveUI;
 using Shouldly;
@@ -83,6 +85,46 @@ namespace Splat.Autofac.Tests
 
             screen.ShouldNotBeNull();
             screen.ShouldBeOfType<MockScreen>();
+        }
+
+        /// <summary>
+        /// Shoulds the register Reactive UI binding type converters.
+        /// </summary>
+        [Fact]
+        public void AutofacDependencyResolver_Should_Register_ReactiveUI_BindingTypeConverters()
+        {
+            var builder = new ContainerBuilder();
+            var scheduler = RxApp.MainThreadScheduler; // invoke RxApp static constructor
+            var container = builder.Build();
+            var resolver = new AutofacDependencyResolver(container);
+            resolver.InitializeReactiveUI();
+            Locator.Current = resolver;
+
+            var converters = container.Resolve<IEnumerable<IBindingTypeConverter>>().ToList();
+
+            converters.ShouldNotBeNull();
+            converters.ShouldContain(x => x.GetType() == typeof(StringConverter));
+            converters.ShouldContain(x => x.GetType() == typeof(EqualityTypeConverter));
+        }
+
+        /// <summary>
+        /// Shoulds the register Reactive UI creates command bindings.
+        /// </summary>
+        [Fact]
+        public void AutofacDependencyResolver_Should_Register_ReactiveUI_CreatesCommandBinding()
+        {
+            var builder = new ContainerBuilder();
+            var scheduler = RxApp.MainThreadScheduler; // invoke RxApp static constructor
+            var container = builder.Build();
+            var resolver = new AutofacDependencyResolver(container);
+            resolver.InitializeReactiveUI();
+            Locator.Current = resolver;
+
+            var converters = container.Resolve<IEnumerable<ICreatesCommandBinding>>().ToList();
+
+            converters.ShouldNotBeNull();
+            converters.ShouldContain(x => x.GetType() == typeof(CreatesCommandBindingViaEvent));
+            converters.ShouldContain(x => x.GetType() == typeof(CreatesCommandBindingViaCommandParameter));
         }
     }
 }
