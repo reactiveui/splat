@@ -88,17 +88,16 @@ namespace Splat.Autofac.Tests
         }
 
         /// <summary>
-        /// Shoulds the register Reactive UI binding type converters.
+        /// Shoulds register ReactiveUI binding type converters.
         /// </summary>
         [Fact]
         public void AutofacDependencyResolver_Should_Register_ReactiveUI_BindingTypeConverters()
         {
+            // Invoke RxApp which initializes the ReactiveUI platform.
+            var scheduler = RxApp.MainThreadScheduler;
             var builder = new ContainerBuilder();
-            var scheduler = RxApp.MainThreadScheduler; // invoke RxApp static constructor
             var container = builder.Build();
-            var resolver = new AutofacDependencyResolver(container);
-            resolver.InitializeReactiveUI();
-            Locator.Current = resolver;
+            Locator.Current = new AutofacDependencyResolver(container);
 
             var converters = container.Resolve<IEnumerable<IBindingTypeConverter>>().ToList();
 
@@ -108,17 +107,16 @@ namespace Splat.Autofac.Tests
         }
 
         /// <summary>
-        /// Shoulds the register Reactive UI creates command bindings.
+        /// Shoulds register ReactiveUI creates command bindings.
         /// </summary>
         [Fact]
         public void AutofacDependencyResolver_Should_Register_ReactiveUI_CreatesCommandBinding()
         {
+            // Invoke RxApp which initializes the ReactiveUI platform.
+            var scheduler = RxApp.MainThreadScheduler;
             var builder = new ContainerBuilder();
-            var scheduler = RxApp.MainThreadScheduler; // invoke RxApp static constructor
             var container = builder.Build();
-            var resolver = new AutofacDependencyResolver(container);
-            resolver.InitializeReactiveUI();
-            Locator.Current = resolver;
+            Locator.Current = new AutofacDependencyResolver(container);
 
             var converters = container.Resolve<IEnumerable<ICreatesCommandBinding>>().ToList();
 
