@@ -6,6 +6,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac;
 using Autofac.Core;
@@ -70,6 +71,7 @@ namespace Splat.Autofac
         /// <param name="factory">The factory function which generates our object.</param>
         /// <param name="serviceType">The type which is used for the registration.</param>
         /// <param name="contract">A optional contract value which will indicates to only generate the value if this contract is specified.</param>
+        [SuppressMessage("Design", "CS0168: Obsolete method call", Justification = "Needed for container generation")]
         public virtual void Register(Func<object> factory, Type serviceType, string contract = null)
         {
             var builder = new ContainerBuilder();
@@ -82,9 +84,7 @@ namespace Splat.Autofac
                 builder.Register(x => factory()).Named(contract, serviceType).AsImplementedInterfaces();
             }
 
-#pragma warning disable CS0618 // Type or member is obsolete
             builder.Update(_container);
-#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         /// <summary>
