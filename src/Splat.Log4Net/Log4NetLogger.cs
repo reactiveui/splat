@@ -70,10 +70,7 @@ namespace Splat.Log4Net
 
                     break;
                 default:
-                    if (Level <= LogLevel.Debug)
-                    {
-                        _inner.Debug(message);
-                    }
+                    _inner.Debug(message);
 
                     break;
             }
@@ -120,10 +117,7 @@ namespace Splat.Log4Net
 
                     break;
                 default:
-                    if (Level <= LogLevel.Debug)
-                    {
-                        _inner.Debug(message, exception);
-                    }
+                    _inner.Debug(message, exception);
 
                     break;
             }
