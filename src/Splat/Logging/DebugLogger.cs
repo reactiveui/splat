@@ -57,6 +57,11 @@ namespace Splat
         /// <inheritdoc />
         public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
         {
+            if ((int)logLevel < (int)Level)
+            {
+                return;
+            }
+
             System.Diagnostics.Debug.WriteLine($"{message} - {exception}", type.Name);
         }
     }
