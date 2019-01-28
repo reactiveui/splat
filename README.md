@@ -183,7 +183,7 @@ Locator.CurrentMutable.UseLog4NetWithWrappingFullLogger();
 
 ### NLog
 
-First configure log4net. For guidance see https://github.com/nlog/nlog/wiki/Tutorial and https://github.com/nlog/nlog/wiki/Configuration-file
+First configure NLog. For guidance see https://github.com/nlog/nlog/wiki/Tutorial and https://github.com/nlog/nlog/wiki/Configuration-file
 
 ```cs
 using Splat.NLog;
