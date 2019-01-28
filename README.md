@@ -150,6 +150,48 @@ this.Log().ErrorException("Tried to do a thing and failed", exception);
 For static methods, `LogHost.Default` can be used as the object to write a log
 entry for. 
 
+### Available logging adapters
+
+Splat has support for the following logging frameworks
+
+| Target | Package | NuGet |
+|---------|-------|
+| Debug | [Splat][SplatNuGet] | [![SplatBadge]][SplatNuGet] |
+| Log4Net | [Splat.Log4Net][SplatLog4NetNuGet] | Coming Soon! |
+| NLog | [Splat.NLog][SplatNLogNuGet] | Coming Soon! |
+| Serilog | [Splat.Serilog][SplatSerilogNuGet] | Coming Soon! |
+
+[SplatNuGet]: https://www.nuget.org/packages/Splat/
+[SplatBadge]: https://img.shields.io/nuget/v/Splat.svg
+[SplatLog4NetNuGet]: https://www.nuget.org/packages/Splat.Log4Net/
+[SplatLog4NetBadge]: https://img.shields.io/nuget/v/Splat.Log4Net.svg
+[SplatNLogNuGet]: https://www.nuget.org/packages/Splat.NLog/
+[SplatNLogBadge]: https://img.shields.io/nuget/v/Splat.NLog.svg
+[SplatSerilogNuGet]: https://www.nuget.org/packages/Splat.Serilog/
+[SplatSerilogBadge]: https://img.shields.io/nuget/v/Splat.Serilog.svg
+
+### Log4Net
+
+First configure Log4Net. For guidance see https://logging.apache.org/log4net/release/manual/configuration.html
+
+```cs
+using Splat.Log4Net;
+
+///  then in your service locator initialisation
+Locator.CurrentMutable.UseLog4NetWithWrappingFullLogger();
+```
+
+### NLog
+
+First configure log4net. For guidance see https://github.com/nlog/nlog/wiki/Tutorial and https://github.com/nlog/nlog/wiki/Configuration-file
+
+```cs
+using Splat.NLog;
+
+///  then in your service locator initialisation
+Locator.CurrentMutable.UseNLogWithWrappingFullLogger();
+```
+
 ## Using Cross-Platform Colors and Geometry
 
 ```cs
