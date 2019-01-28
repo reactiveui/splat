@@ -4,6 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.ComponentModel;
 
 namespace Splat
 {
@@ -16,12 +17,22 @@ namespace Splat
         public LogLevel Level { get; set; }
 
         /// <inheritdoc />
-        public void Write(string message, LogLevel logLevel)
+        public void Write([Localizable(false)] string message, LogLevel logLevel)
         {
         }
 
         /// <inheritdoc />
-        public void Write(string message, Type type, LogLevel logLevel)
+        public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel)
+        {
+        }
+
+        /// <inheritdoc />
+        public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
+        {
+        }
+
+        /// <inheritdoc />
+        public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
         {
         }
     }

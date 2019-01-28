@@ -32,6 +32,8 @@ namespace Splat.Tests.Logging
                     passedMessage = message;
                     passedLevel = level;
                 },
+                null,
+                null,
                 null);
 
             var fullLogger = new WrappingFullLogger(logger);
@@ -59,7 +61,9 @@ namespace Splat.Tests.Logging
                     passedMessage = message;
                     passedType = type;
                     passedLevel = level;
-                });
+                },
+                null,
+                null);
 
             var fullLogger = new WrappingFullLogger(logger);
 
@@ -87,7 +91,9 @@ namespace Splat.Tests.Logging
                     passedMessage = message;
                     passedType = type;
                     passedLevel = level;
-                });
+                },
+                null,
+                null);
 
             var fullLogger = new WrappingFullLogger(logger);
 
@@ -115,7 +121,9 @@ namespace Splat.Tests.Logging
                     passedMessage = message;
                     passedType = type;
                     passedLevel = level;
-                });
+                },
+                null,
+                null);
 
             var fullLogger = new WrappingFullLogger(logger);
 
@@ -143,7 +151,9 @@ namespace Splat.Tests.Logging
                     passedMessage = message;
                     passedType = type;
                     passedLevel = level;
-                });
+                },
+                null,
+                null);
 
             var fullLogger = new WrappingFullLogger(logger);
 
@@ -171,7 +181,9 @@ namespace Splat.Tests.Logging
                     passedMessage = message;
                     passedType = type;
                     passedLevel = level;
-                });
+                },
+                null,
+                null);
 
             var fullLogger = new WrappingFullLogger(logger);
 
@@ -199,7 +211,9 @@ namespace Splat.Tests.Logging
                     passedMessage = message;
                     passedType = type;
                     passedLevel = level;
-                });
+                },
+                null,
+                null);
 
             var fullLogger = new WrappingFullLogger(logger);
 
@@ -227,7 +241,9 @@ namespace Splat.Tests.Logging
                     passedMessage = message;
                     passedType = type;
                     passedLevel = level;
-                });
+                },
+                null,
+                null);
 
             var fullLogger = new WrappingFullLogger(logger);
 
@@ -255,7 +271,9 @@ namespace Splat.Tests.Logging
                     passedMessage = message;
                     passedType = type;
                     passedLevel = level;
-                });
+                },
+                null,
+                null);
 
             var fullLogger = new WrappingFullLogger(logger);
 
@@ -283,7 +301,9 @@ namespace Splat.Tests.Logging
                     passedMessage = message;
                     passedType = type;
                     passedLevel = level;
-                });
+                },
+                null,
+                null);
 
             var fullLogger = new WrappingFullLogger(logger);
 
@@ -311,7 +331,9 @@ namespace Splat.Tests.Logging
                     passedMessage = message;
                     passedType = type;
                     passedLevel = level;
-                });
+                },
+                null,
+                null);
 
             var fullLogger = new WrappingFullLogger(logger);
 

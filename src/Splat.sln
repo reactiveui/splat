@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.SimpleInjector.Tests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.NLog", "Splat.NLog\Splat.NLog.csproj", "{24BCC71A-0998-4B81-9A55-BC00C2A3F8CE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Log4Net", "Splat.Log4Net\Splat.Log4Net.csproj", "{E6EA3895-DB97-43A0-8140-EB4789796EEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,14 @@ Global
 		{E85B3A4E-6ECA-4171-8605-55792187FAB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E85B3A4E-6ECA-4171-8605-55792187FAB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E85B3A4E-6ECA-4171-8605-55792187FAB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24BCC71A-0998-4B81-9A55-BC00C2A3F8CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24BCC71A-0998-4B81-9A55-BC00C2A3F8CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24BCC71A-0998-4B81-9A55-BC00C2A3F8CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24BCC71A-0998-4B81-9A55-BC00C2A3F8CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6EA3895-DB97-43A0-8140-EB4789796EEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6EA3895-DB97-43A0-8140-EB4789796EEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6EA3895-DB97-43A0-8140-EB4789796EEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6EA3895-DB97-43A0-8140-EB4789796EEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -26,11 +26,28 @@ namespace Splat
         void Write([Localizable(false)] string message, LogLevel logLevel);
 
         /// <summary>
+        /// Writes a message to the target.
+        /// </summary>
+        /// <param name="exception">The exception that occured.</param>
+        /// <param name="message">The message to write.</param>
+        /// <param name="logLevel">The severity level of the log message.</param>
+        void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel);
+
+        /// <summary>
         /// Writes a messge to the target.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="type">The type.</param>
         /// <param name="logLevel">The log level.</param>
         void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel);
+
+        /// <summary>
+        /// Writes a messge to the target.
+        /// </summary>
+        /// <param name="exception">The exception that occured.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="type">The type.</param>
+        /// <param name="logLevel">The log level.</param>
+        void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel);
     }
 }

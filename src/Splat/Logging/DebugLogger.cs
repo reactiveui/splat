@@ -9,6 +9,7 @@
 #define DEBUG
 
 using System;
+using System.ComponentModel;
 
 namespace Splat
 {
@@ -21,7 +22,7 @@ namespace Splat
         public LogLevel Level { get; set; }
 
         /// <inheritdoc />
-        public void Write(string message, LogLevel logLevel)
+        public void Write([Localizable(false)] string message, LogLevel logLevel)
         {
             if ((int)logLevel < (int)Level)
             {
@@ -32,7 +33,18 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Write(string message, Type type, LogLevel logLevel)
+        public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel)
+        {
+            if ((int)logLevel < (int)Level)
+            {
+                return;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"{message} - {exception}");
+        }
+
+        /// <inheritdoc />
+        public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
         {
             if ((int)logLevel < (int)Level)
             {
@@ -40,6 +52,17 @@ namespace Splat
             }
 
             System.Diagnostics.Debug.WriteLine(message, type.Name);
+        }
+
+        /// <inheritdoc />
+        public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
+        {
+            if ((int)logLevel < (int)Level)
+            {
+                return;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"{message} - {exception}", type.Name);
         }
     }
 }
