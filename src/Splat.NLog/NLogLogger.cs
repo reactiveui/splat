@@ -16,7 +16,6 @@ namespace Splat.NLog
     public sealed class NLogLogger : ILogger
     {
         private readonly global::NLog.ILogger _inner;
-        private LogLevel _level;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NLogLogger"/> class.
@@ -29,45 +28,49 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc />
-        public LogLevel Level
-        {
-            get => _level;
-
-            set
-            {
-                // would it be better for ILogger to have a readonly property?
-                // rather than a rather blunt way to adjust the level?
-                // another considerationwas i didn't want to add a dependency on System.Reactive
-                // up to you
-                _level = value;
-                foreach (var configurationLoggingRule in _inner.Factory.Configuration.LoggingRules)
-                {
-                    configurationLoggingRule.SetLoggingLevels(SplatLogLevelToNLogLevel(value), global::NLog.LogLevel.Fatal);
-                }
-            }
-        }
+        public LogLevel Level { get; set; }
 
         /// <inheritdoc />
         public void Write(string message, LogLevel logLevel)
         {
+            if ((int)logLevel < (int)Level)
+            {
+                return;
+            }
+
             _inner.Log(SplatLogLevelToNLogLevel(logLevel), message);
         }
 
         /// <inheritdoc />
         public void Write(Exception exception, string message, LogLevel logLevel)
         {
+            if ((int)logLevel < (int)Level)
+            {
+                return;
+            }
+
             _inner.Log(SplatLogLevelToNLogLevel(logLevel), exception, message);
         }
 
         /// <inheritdoc />
         public void Write(string message, Type type, LogLevel logLevel)
         {
+            if ((int)logLevel < (int)Level)
+            {
+                return;
+            }
+
             _inner.Log(SplatLogLevelToNLogLevel(logLevel), $"{type.Name}: {message}");
         }
 
         /// <inheritdoc />
         public void Write(Exception exception, string message, Type type, LogLevel logLevel)
         {
+            if ((int)logLevel < (int)Level)
+            {
+                return;
+            }
+
             _inner.Log(SplatLogLevelToNLogLevel(logLevel), exception, $"{type.Name}: {message}");
         }
 
