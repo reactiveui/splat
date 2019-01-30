@@ -38,7 +38,7 @@ namespace Splat.NLog
         /// <inheritdoc />
         public void Dispose()
         {
-            _inner.LoggerReconfigured += OnInnerLoggerReconfigured;
+            _inner.LoggerReconfigured -= OnInnerLoggerReconfigured;
         }
 
         /// <inheritdoc />
