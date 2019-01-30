@@ -30,11 +30,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public LogLevel Level
-        {
-            get { return _inner.Level; }
-            set { _inner.Level = value; }
-        }
+        public LogLevel Level => _inner.Level;
 
         /// <inheritdoc />
         public void Write([Localizable(false)]string message, LogLevel logLevel)

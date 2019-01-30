@@ -14,9 +14,9 @@ namespace Splat
     public interface ILogger
     {
         /// <summary>
-        /// Gets or sets the level at which the target will emit messages.
+        /// Gets the level at which the target will emit messages.
         /// </summary>
-        LogLevel Level { get; set; }
+        LogLevel Level { get; }
 
         /// <summary>
         /// Writes a message to the target.

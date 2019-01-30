@@ -13,7 +13,7 @@ namespace Splat.NLog
     /// NLog Logger taken from ReactiveUI 5.
     /// </summary>
     [DebuggerDisplay("Name={_inner.Name} Level={Level}")]
-    public sealed class NLogLogger : ILogger
+    public sealed class NLogLogger : ILogger, IDisposable
     {
         private readonly global::NLog.ILogger _inner;
 
@@ -25,10 +25,21 @@ namespace Splat.NLog
         public NLogLogger(global::NLog.ILogger inner)
         {
             _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+            SetLogLevel();
+            _inner.LoggerReconfigured += OnInnerLoggerReconfigured;
         }
 
         /// <inheritdoc />
-        public LogLevel Level { get; set; }
+        public LogLevel Level
+        {
+            get; private set;
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _inner.LoggerReconfigured += OnInnerLoggerReconfigured;
+        }
 
         /// <inheritdoc />
         public void Write(string message, LogLevel logLevel)
@@ -86,6 +97,37 @@ namespace Splat.NLog
                                };
 
             return mappings.First(x => x.Item1 == logLevel).Item2;
+        }
+
+        private void OnInnerLoggerReconfigured(object sender, EventArgs e)
+        {
+            SetLogLevel();
+        }
+
+        /// <summary>
+        /// Works out the log level.
+        /// </summary>
+        /// <remarks>
+        /// This was done so the Level property doesn't keep getting re-evaluated each time a Write method is called.
+        /// </remarks>
+        private void SetLogLevel()
+        {
+            if (_inner.IsDebugEnabled)
+            {
+                Level = LogLevel.Debug;
+            }
+
+            if (_inner.IsInfoEnabled)
+            {
+                Level = LogLevel.Info;
+            }
+
+            if (_inner.IsWarnEnabled)
+            {
+                Level = LogLevel.Warn;
+            }
+
+            Level = _inner.IsErrorEnabled ? LogLevel.Error : LogLevel.Fatal;
         }
     }
 }

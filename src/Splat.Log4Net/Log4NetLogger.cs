@@ -5,6 +5,7 @@
 
 using System;
 using System.Diagnostics;
+using log4net;
 
 namespace Splat.Log4Net
 {
@@ -12,7 +13,7 @@ namespace Splat.Log4Net
     /// Log4Net Logger integration into Splat.
     /// </summary>
     [DebuggerDisplay("Name={_inner.Logger.Name} Level={Level}")]
-    public sealed class Log4NetLogger : ILogger
+    public sealed class Log4NetLogger : ILogger, IDisposable
     {
         private readonly global::log4net.ILog _inner;
 
@@ -24,10 +25,18 @@ namespace Splat.Log4Net
         public Log4NetLogger(global::log4net.ILog inner)
         {
             _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+            SetLogLevel();
+            _inner.Logger.Repository.ConfigurationChanged += OnInnerLoggerReconfigured;
         }
 
         /// <inheritdoc />
         public LogLevel Level { get; set; }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _inner.Logger.Repository.ConfigurationChanged -= OnInnerLoggerReconfigured;
+        }
 
         /// <inheritdoc />
         public void Write(string message, LogLevel logLevel)
@@ -133,6 +142,37 @@ namespace Splat.Log4Net
         public void Write(Exception exception, string message, Type type, LogLevel logLevel)
         {
             Write(exception, $"{type.Name}: {message}", logLevel);
+        }
+
+        /// <summary>
+        /// Works out the log level.
+        /// </summary>
+        /// <remarks>
+        /// This was done so the Level property doesn't keep getting re-evaluated each time a Write method is called.
+        /// </remarks>
+        private void SetLogLevel()
+        {
+            if (_inner.IsDebugEnabled)
+            {
+                Level = LogLevel.Debug;
+            }
+
+            if (_inner.IsInfoEnabled)
+            {
+                Level = LogLevel.Info;
+            }
+
+            if (_inner.IsWarnEnabled)
+            {
+                Level = LogLevel.Warn;
+            }
+
+            Level = _inner.IsErrorEnabled ? LogLevel.Error : LogLevel.Fatal;
+        }
+
+        private void OnInnerLoggerReconfigured(object sender, EventArgs e)
+        {
+            SetLogLevel();
         }
     }
 }
