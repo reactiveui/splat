@@ -19,7 +19,7 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1116:Split parameters should start on line after declaration", Justification = "Third Party Dependency")]
 [assembly: SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1117:Parameters should be on same line or separate lines", Justification = "Third Party Dependency")]
 [assembly: SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1118:ParameterMustNotSpanMultipleLines", Justification = "Third Party Dependency")]
-[assembly: SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1119:Statement should not use unnecessary parenthesis", Justification = "Third Party Dependency")]
+[assembly: SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1119:Statement should not use unnecessary par", Justification = "Third Party Dependency")]
 [assembly: SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1120:Commends should contain text", Justification = "Third Party Dependency")]
 [assembly: SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1121:UseBuiltInTypeAlias", Justification = "Third Party Dependency")]
 [assembly: SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1122:UseStringEmptyForEmptyStrings", Justification = "Third Party Dependency")]
@@ -84,3 +84,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Redundancy", "RCS1163:Unused parameter.", Justification = "Third Party Dependency")]
 
 [assembly: SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "Third Party Dependency")]
+[assembly: SuppressMessage("Design", "CA1801:Parameter bodyExpr of method TryCompile is never used. Remove the parameter or use it in the method body", Justification = "Third Party Dependency")]
