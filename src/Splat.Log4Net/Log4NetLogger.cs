@@ -155,19 +155,28 @@ namespace Splat.Log4Net
             if (_inner.IsDebugEnabled)
             {
                 Level = LogLevel.Debug;
+                return;
             }
 
             if (_inner.IsInfoEnabled)
             {
                 Level = LogLevel.Info;
+                return;
             }
 
             if (_inner.IsWarnEnabled)
             {
                 Level = LogLevel.Warn;
+                return;
             }
 
-            Level = _inner.IsErrorEnabled ? LogLevel.Error : LogLevel.Fatal;
+            if (_inner.IsErrorEnabled)
+            {
+                Level = LogLevel.Error;
+                return;
+            }
+
+            Level = LogLevel.Fatal;
         }
 
         private void OnInnerLoggerReconfigured(object sender, EventArgs e)
