@@ -21,7 +21,7 @@ namespace Splat.Serilog
         /// </param>
         /// <example>
         /// <code>
-        /// Locator.CurrentMutable.UseNLogWithWrappingFullLogger();
+        /// Locator.CurrentMutable.UseSerilogWithWrappingFullLogger();
         /// </code>
         /// </example>
         public static void UseSerilogWithWrappingFullLogger(this IMutableDependencyResolver instance)
