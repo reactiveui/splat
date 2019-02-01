@@ -11,7 +11,7 @@ namespace Splat.Serilog
     public static class MutableDependencyResolverExtensions
     {
         /// <summary>
-        /// Simple helper to initialize NLog within Splat with the Wrapping Full Logger.
+        /// Simple helper to initialize Serilog within Splat with the Wrapping Full Logger.
         /// </summary>
         /// <remarks>
         /// You should configure NLog prior to calling this method.
