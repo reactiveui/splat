@@ -78,6 +78,7 @@ var packageWhitelist = new[]
 { 
     "Splat",
     "Splat.Autofac",
+    "Splat.DryIoc",
     "Splat.SimpleInjector",
 };
 
@@ -85,6 +86,7 @@ var packageTestWhitelist = new[]
 {
     "Splat.Tests",
     "Splat.Autofac.Tests",
+    "Splat.DryIoc.Tests",
     "Splat.SimpleInjector.Tests",
 };
 
