@@ -14,7 +14,7 @@ namespace Splat.Serilog
         /// Simple helper to initialize Serilog within Splat with the Wrapping Full Logger.
         /// </summary>
         /// <remarks>
-        /// You should configure NLog prior to calling this method.
+        /// You should configure Serilog prior to calling this method.
         /// </remarks>
         /// <param name="instance">
         /// An instance of Mutable Dependency Resolver.
