@@ -6,7 +6,7 @@
 namespace Splat.Serilog
 {
     /// <summary>
-    /// NLog specific extensions for the Mutable Dependency Resolver.
+    /// Serilog specific extensions for the Mutable Dependency Resolver.
     /// </summary>
     public static class MutableDependencyResolverExtensions
     {
