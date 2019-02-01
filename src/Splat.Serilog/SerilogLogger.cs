@@ -31,7 +31,7 @@ namespace Splat.Serilog
         /// Initializes a new instance of the <see cref="SerilogLogger"/> class.
         /// </summary>
         /// <param name="inner">The actual serilog logger.</param>
-        /// <exception cref="ArgumentNullException">NLog logger not passed.</exception>
+        /// <exception cref="ArgumentNullException">Serilog logger not passed.</exception>
         public SerilogLogger(global::Serilog.ILogger inner)
         {
             _inner = inner ?? throw new ArgumentNullException(nameof(inner));
