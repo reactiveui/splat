@@ -53,11 +53,6 @@ namespace Splat.Serilog
                 // Default to Fatal, it should always be enabled anyway.
                 return LogLevel.Fatal;
             }
-
-            set
-            {
-                // Do nothing. set is going soon anyway.
-            }
         }
 
         /// <inheritdoc />
