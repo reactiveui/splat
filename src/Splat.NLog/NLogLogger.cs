@@ -4,6 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -15,6 +16,15 @@ namespace Splat.NLog
     [DebuggerDisplay("Name={_inner.Name} Level={Level}")]
     public sealed class NLogLogger : ILogger, IDisposable
     {
+        private static readonly KeyValuePair<LogLevel, global::NLog.LogLevel>[] _mappings = new[]
+        {
+            new KeyValuePair<LogLevel, global::NLog.LogLevel>(LogLevel.Debug, global::NLog.LogLevel.Debug),
+            new KeyValuePair<LogLevel, global::NLog.LogLevel>(LogLevel.Info, global::NLog.LogLevel.Info),
+            new KeyValuePair<LogLevel, global::NLog.LogLevel>(LogLevel.Warn, global::NLog.LogLevel.Warn),
+            new KeyValuePair<LogLevel, global::NLog.LogLevel>(LogLevel.Error, global::NLog.LogLevel.Error),
+            new KeyValuePair<LogLevel, global::NLog.LogLevel>(LogLevel.Fatal, global::NLog.LogLevel.Fatal)
+        };
+
         private readonly global::NLog.ILogger _inner;
 
         /// <summary>
@@ -87,16 +97,7 @@ namespace Splat.NLog
 
         private static global::NLog.LogLevel SplatLogLevelToNLogLevel(LogLevel logLevel)
         {
-            var mappings = new[]
-                               {
-                                   new Tuple<LogLevel, global::NLog.LogLevel>(LogLevel.Debug, global::NLog.LogLevel.Debug),
-                                   new Tuple<LogLevel, global::NLog.LogLevel>(LogLevel.Info, global::NLog.LogLevel.Info),
-                                   new Tuple<LogLevel, global::NLog.LogLevel>(LogLevel.Warn, global::NLog.LogLevel.Warn),
-                                   new Tuple<LogLevel, global::NLog.LogLevel>(LogLevel.Error, global::NLog.LogLevel.Error),
-                                   new Tuple<LogLevel, global::NLog.LogLevel>(LogLevel.Fatal, global::NLog.LogLevel.Fatal)
-                               };
-
-            return mappings.First(x => x.Item1 == logLevel).Item2;
+            return _mappings.First(x => x.Key == logLevel).Value;
         }
 
         private void OnInnerLoggerReconfigured(object sender, EventArgs e)

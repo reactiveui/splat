@@ -181,6 +181,8 @@ using Splat.Log4Net;
 Locator.CurrentMutable.UseLog4NetWithWrappingFullLogger();
 ```
 
+Thanks to @dpvreony for first creating this logger.
+
 ### NLog
 
 First configure NLog. For guidance see https://github.com/nlog/nlog/wiki/Tutorial and https://github.com/nlog/nlog/wiki/Configuration-file
@@ -191,6 +193,21 @@ using Splat.NLog;
 ///  then in your service locator initialisation
 Locator.CurrentMutable.UseNLogWithWrappingFullLogger();
 ```
+
+Thanks to @dpvreony for first creating this logger.
+
+### Serilog
+
+First configure Serilog. For guidance see https://github.com/serilog/serilog/wiki/Configuration-Basics
+
+```cs
+using Splat.Serilog;
+
+/// Then in your service locator initialisation
+locator.CurrentMutable.UseSerilogWithWrappingFullLogger();
+```
+
+Thanks to @joelweiss for first creating this logger.
 
 ## Using Cross-Platform Colors and Geometry
 
@@ -234,3 +251,16 @@ ModeDetector.InUnitTestRunner();
 // If true, we are running inside Blend, so don't do anything
 ModeDetector.InDesignMode();
 ```
+
+## Contribute
+
+Splat is developed under an OSI-approved open source license, making it freely usable and distributable, even for commercial use. Because of our Open Collective model for funding and transparency, we are able to funnel support and funds through to our contributors and community. We ❤ the people who are involved in this project, and we’d love to have you on board, especially if you are just getting started or have never contributed to open-source before.
+
+So here's to you, lovely person who wants to join us — this is how you can support us:
+
+* [Responding to questions on StackOverflow](https://stackoverflow.com/questions/tagged/splat)
+* [Passing on knowledge and teaching the next generation of developers](http://ericsink.com/entries/dont_use_rxui.html)
+* [Donations](https://reactiveui.net/donate) and [Corporate Sponsorships](https://reactiveui.net/sponsorship)
+* [Asking your employer to reciprocate and contribute to open-source](https://github.com/github/balanced-employee-ip-agreement)
+* Submitting documentation updates where you see fit or lacking.
+* Making contributions to the code base.

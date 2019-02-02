@@ -25,9 +25,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.NLog", "Splat.NLog\Sp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.DryIoc", "Splat.DryIoc\Splat.DryIoc.csproj", "{941DAAE2-EDCA-41A8-93FF-0C4178639A47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.DryIoc.Tests", "Splat.DryIoc.Tests\Splat.DryIoc.Tests.csproj", "{E1777877-6F56-46D0-8747-4BB921ED4C8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.DryIoc.Tests", "Splat.DryIoc.Tests\Splat.DryIoc.Tests.csproj", "{E1777877-6F56-46D0-8747-4BB921ED4C8E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Log4Net", "Splat.Log4Net\Splat.Log4Net.csproj", "{D65C61D8-C073-4761-9BA3-C595A079C42E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Serilog", "Splat.Serilog\Splat.Serilog.csproj", "{75538893-9968-45F1-9C05-EDB837FE0CFE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,10 @@ Global
 		{D65C61D8-C073-4761-9BA3-C595A079C42E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D65C61D8-C073-4761-9BA3-C595A079C42E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D65C61D8-C073-4761-9BA3-C595A079C42E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75538893-9968-45F1-9C05-EDB837FE0CFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75538893-9968-45F1-9C05-EDB837FE0CFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75538893-9968-45F1-9C05-EDB837FE0CFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75538893-9968-45F1-9C05-EDB837FE0CFE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
