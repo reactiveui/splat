@@ -15,13 +15,13 @@ namespace Splat.Serilog
     /// <remarks><seealso cref="ILogger" /></remarks>
     public sealed class SerilogLogger : ILogger
     {
-        private static readonly Dictionary<LogLevel, LogEventLevel> _levelMapping = new Dictionary<LogLevel, LogEventLevel>()
+        private static readonly Dictionary<int, LogEventLevel> _levelMapping = new Dictionary<int, LogEventLevel>()
         {
-            { LogLevel.Debug, LogEventLevel.Debug },
-            { LogLevel.Info, LogEventLevel.Information },
-            { LogLevel.Warn, LogEventLevel.Warning },
-            { LogLevel.Error, LogEventLevel.Error },
-            { LogLevel.Fatal, LogEventLevel.Fatal },
+            { (int)LogLevel.Debug, LogEventLevel.Debug },
+            { (int)LogLevel.Info, LogEventLevel.Information },
+            { (int)LogLevel.Warn, LogEventLevel.Warning },
+            { (int)LogLevel.Error, LogEventLevel.Error },
+            { (int)LogLevel.Fatal, LogEventLevel.Fatal },
         };
 
         private readonly global::Serilog.ILogger _inner;
@@ -85,7 +85,7 @@ namespace Splat.Serilog
 
         private static LogEventLevel SplatLogLevelToSerilogLevel(LogLevel logLevel)
         {
-            return _levelMapping[logLevel];
+            return _levelMapping[(int)logLevel];
         }
     }
 }

@@ -15,13 +15,13 @@ namespace Splat.NLog
     [DebuggerDisplay("Name={_inner.Name} Level={Level}")]
     public sealed class NLogLogger : ILogger
     {
-        private static readonly Dictionary<LogLevel, global::NLog.LogLevel> _levelMapping = new Dictionary<LogLevel, global::NLog.LogLevel>()
+        private static readonly Dictionary<int, global::NLog.LogLevel> _levelMapping = new Dictionary<int, global::NLog.LogLevel>()
         {
-            { LogLevel.Debug, global::NLog.LogLevel.Debug },
-            { LogLevel.Info, global::NLog.LogLevel.Info },
-            { LogLevel.Warn, global::NLog.LogLevel.Warn },
-            { LogLevel.Error, global::NLog.LogLevel.Error },
-            { LogLevel.Fatal, global::NLog.LogLevel.Fatal },
+            { (int)LogLevel.Debug, global::NLog.LogLevel.Debug },
+            { (int)LogLevel.Info, global::NLog.LogLevel.Info },
+            { (int)LogLevel.Warn, global::NLog.LogLevel.Warn },
+            { (int)LogLevel.Error, global::NLog.LogLevel.Error },
+            { (int)LogLevel.Fatal, global::NLog.LogLevel.Fatal },
         };
 
         private readonly global::NLog.ILogger _inner;
@@ -85,7 +85,7 @@ namespace Splat.NLog
 
         private static global::NLog.LogLevel SplatLogLevelToNLogLevel(LogLevel logLevel)
         {
-            return _levelMapping[logLevel];
+            return _levelMapping[(int)logLevel];
         }
     }
 }
