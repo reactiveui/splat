@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Serilog.Events;
 
 namespace Splat.Serilog
@@ -16,13 +15,13 @@ namespace Splat.Serilog
     /// <remarks><seealso cref="ILogger" /></remarks>
     public sealed class SerilogLogger : ILogger
     {
-        private static readonly KeyValuePair<LogLevel, LogEventLevel>[] _mappings = new[]
+        private static readonly Dictionary<LogLevel, LogEventLevel> _levelMapping = new Dictionary<LogLevel, LogEventLevel>()
         {
-            new KeyValuePair<LogLevel, LogEventLevel>(LogLevel.Debug, LogEventLevel.Debug),
-            new KeyValuePair<LogLevel, LogEventLevel>(LogLevel.Info, LogEventLevel.Information),
-            new KeyValuePair<LogLevel, LogEventLevel>(LogLevel.Warn, LogEventLevel.Warning),
-            new KeyValuePair<LogLevel, LogEventLevel>(LogLevel.Error, LogEventLevel.Error),
-            new KeyValuePair<LogLevel, LogEventLevel>(LogLevel.Fatal, LogEventLevel.Fatal)
+            { LogLevel.Debug, LogEventLevel.Debug },
+            { LogLevel.Info, LogEventLevel.Information },
+            { LogLevel.Warn, LogEventLevel.Warning },
+            { LogLevel.Error, LogEventLevel.Error },
+            { LogLevel.Fatal, LogEventLevel.Fatal },
         };
 
         private readonly global::Serilog.ILogger _inner;
@@ -38,27 +37,7 @@ namespace Splat.Serilog
         }
 
         /// <inheritdoc />
-        public LogLevel Level
-        {
-            get
-            {
-                foreach (var mapping in _mappings)
-                {
-                    if (_inner.IsEnabled(mapping.Value))
-                    {
-                        return mapping.Key;
-                    }
-                }
-
-                // Default to Fatal, it should always be enabled anyway.
-                return LogLevel.Fatal;
-            }
-
-            set
-            {
-                // Do nothing. set is going soon anyway.
-            }
-        }
+        public LogLevel Level { get; set; }
 
         /// <inheritdoc />
         public void Write(string message, LogLevel logLevel)
@@ -106,7 +85,7 @@ namespace Splat.Serilog
 
         private static LogEventLevel SplatLogLevelToSerilogLevel(LogLevel logLevel)
         {
-            return _mappings.First(x => x.Key == logLevel).Value;
+            return _levelMapping[logLevel];
         }
     }
 }

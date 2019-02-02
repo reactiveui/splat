@@ -6,7 +6,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace Splat.NLog
 {
@@ -16,13 +15,13 @@ namespace Splat.NLog
     [DebuggerDisplay("Name={_inner.Name} Level={Level}")]
     public sealed class NLogLogger : ILogger
     {
-        private static readonly KeyValuePair<LogLevel, global::NLog.LogLevel>[] _mappings = new[]
+        private static readonly Dictionary<LogLevel, global::NLog.LogLevel> _levelMapping = new Dictionary<LogLevel, global::NLog.LogLevel>()
         {
-            new KeyValuePair<LogLevel, global::NLog.LogLevel>(LogLevel.Debug, global::NLog.LogLevel.Debug),
-            new KeyValuePair<LogLevel, global::NLog.LogLevel>(LogLevel.Info, global::NLog.LogLevel.Info),
-            new KeyValuePair<LogLevel, global::NLog.LogLevel>(LogLevel.Warn, global::NLog.LogLevel.Warn),
-            new KeyValuePair<LogLevel, global::NLog.LogLevel>(LogLevel.Error, global::NLog.LogLevel.Error),
-            new KeyValuePair<LogLevel, global::NLog.LogLevel>(LogLevel.Fatal, global::NLog.LogLevel.Fatal)
+            { LogLevel.Debug, global::NLog.LogLevel.Debug },
+            { LogLevel.Info, global::NLog.LogLevel.Info },
+            { LogLevel.Warn, global::NLog.LogLevel.Warn },
+            { LogLevel.Error, global::NLog.LogLevel.Error },
+            { LogLevel.Fatal, global::NLog.LogLevel.Fatal },
         };
 
         private readonly global::NLog.ILogger _inner;
@@ -86,7 +85,7 @@ namespace Splat.NLog
 
         private static global::NLog.LogLevel SplatLogLevelToNLogLevel(LogLevel logLevel)
         {
-            return _mappings.First(x => x.Key == logLevel).Value;
+            return _levelMapping[logLevel];
         }
     }
 }
