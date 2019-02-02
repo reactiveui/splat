@@ -26,7 +26,7 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Write_Should_Write_Message()
         {
-            var serilogLoggerAndTarget = GetSplatNLogLoggerAndMemoryTarget();
+            var serilogLoggerAndTarget = GetSplatSerilogLoggerAndTarget();
             var logger = new WrappingFullLogger(serilogLoggerAndTarget.Logger);
             var target = serilogLoggerAndTarget.Target;
 
@@ -45,7 +45,7 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Write_Should_Write_Message_And_Type()
         {
-            var serilogLoggerAndTarget = GetSplatNLogLoggerAndMemoryTarget();
+            var serilogLoggerAndTarget = GetSplatSerilogLoggerAndTarget();
             var logger = new WrappingFullLogger(serilogLoggerAndTarget.Logger);
             var target = serilogLoggerAndTarget.Target;
 
@@ -64,7 +64,7 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Debug_With_Generic_Type_Should_Write_Message_And_Type()
         {
-            var serilogLoggerAndTarget = GetSplatNLogLoggerAndMemoryTarget();
+            var serilogLoggerAndTarget = GetSplatSerilogLoggerAndTarget();
             var logger = new WrappingFullLogger(serilogLoggerAndTarget.Logger);
             var target = serilogLoggerAndTarget.Target;
 
@@ -83,7 +83,7 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Debug_With_Generic_Type_Should_Write_Message_And_Type_Provided()
         {
-            var serilogLoggerAndTarget = GetSplatNLogLoggerAndMemoryTarget();
+            var serilogLoggerAndTarget = GetSplatSerilogLoggerAndTarget();
             var logger = new WrappingFullLogger(serilogLoggerAndTarget.Logger);
             var target = serilogLoggerAndTarget.Target;
 
@@ -102,7 +102,7 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Info_With_Generic_Type_Should_Write_Message_And_Type()
         {
-            var serilogLoggerAndTarget = GetSplatNLogLoggerAndMemoryTarget();
+            var serilogLoggerAndTarget = GetSplatSerilogLoggerAndTarget();
             var logger = new WrappingFullLogger(serilogLoggerAndTarget.Logger);
             var target = serilogLoggerAndTarget.Target;
 
@@ -121,7 +121,7 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Info_With_Generic_Type_Should_Write_Message_And_Type_Provided()
         {
-            var serilogLoggerAndTarget = GetSplatNLogLoggerAndMemoryTarget();
+            var serilogLoggerAndTarget = GetSplatSerilogLoggerAndTarget();
             var logger = new WrappingFullLogger(serilogLoggerAndTarget.Logger);
             var target = serilogLoggerAndTarget.Target;
 
@@ -140,7 +140,7 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Warn_With_Generic_Type_Should_Write_Message_And_Type()
         {
-            var serilogLoggerAndTarget = GetSplatNLogLoggerAndMemoryTarget();
+            var serilogLoggerAndTarget = GetSplatSerilogLoggerAndTarget();
             var logger = new WrappingFullLogger(serilogLoggerAndTarget.Logger);
             var target = serilogLoggerAndTarget.Target;
 
@@ -159,7 +159,7 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Warn_With_Generic_Type_Should_Write_Message_And_Type_Provided()
         {
-            var serilogLoggerAndTarget = GetSplatNLogLoggerAndMemoryTarget();
+            var serilogLoggerAndTarget = GetSplatSerilogLoggerAndTarget();
             var logger = new WrappingFullLogger(serilogLoggerAndTarget.Logger);
             var target = serilogLoggerAndTarget.Target;
 
@@ -177,7 +177,7 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Error_With_Generic_Type_Should_Write_Message_And_Type()
         {
-            var serilogLoggerAndTarget = GetSplatNLogLoggerAndMemoryTarget();
+            var serilogLoggerAndTarget = GetSplatSerilogLoggerAndTarget();
             var logger = new WrappingFullLogger(serilogLoggerAndTarget.Logger);
             var target = serilogLoggerAndTarget.Target;
 
@@ -195,7 +195,7 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Error_With_Generic_Type_Should_Write_Message_And_Type_Provided()
         {
-            var serilogLoggerAndTarget = GetSplatNLogLoggerAndMemoryTarget();
+            var serilogLoggerAndTarget = GetSplatSerilogLoggerAndTarget();
             var logger = new WrappingFullLogger(serilogLoggerAndTarget.Logger);
             var target = serilogLoggerAndTarget.Target;
 
@@ -213,7 +213,7 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Fatal_With_Generic_Type_Should_Write_Message_And_Type()
         {
-            var serilogLoggerAndTarget = GetSplatNLogLoggerAndMemoryTarget();
+            var serilogLoggerAndTarget = GetSplatSerilogLoggerAndTarget();
             var logger = new WrappingFullLogger(serilogLoggerAndTarget.Logger);
             var target = serilogLoggerAndTarget.Target;
 
@@ -231,7 +231,7 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Fatal_With_Generic_Type_Should_Write_Message_And_Type_Provided()
         {
-            var serilogLoggerAndTarget = GetSplatNLogLoggerAndMemoryTarget();
+            var serilogLoggerAndTarget = GetSplatSerilogLoggerAndTarget();
             var logger = new WrappingFullLogger(serilogLoggerAndTarget.Logger);
             var target = serilogLoggerAndTarget.Target;
 
@@ -255,7 +255,7 @@ namespace Splat.Tests.Logging
             return (log, messages);
         }
 
-        private static (ILogger Logger, LogTarget Target) GetSplatNLogLoggerAndMemoryTarget()
+        private static (ILogger Logger, LogTarget Target) GetSplatSerilogLoggerAndTarget()
         {
             var actualSerilogLogger = GetActualSerilogLoggerAndTarget();
             return (new SerilogLogger(actualSerilogLogger.Logger), actualSerilogLogger.Target);
