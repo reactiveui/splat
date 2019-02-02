@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Serilog.Events;
 
 namespace Splat.Serilog
@@ -38,27 +37,7 @@ namespace Splat.Serilog
         }
 
         /// <inheritdoc />
-        public LogLevel Level
-        {
-            get
-            {
-                foreach (var mapping in _mappings)
-                {
-                    if (_inner.IsEnabled(mapping.Value))
-                    {
-                        return mapping.Key;
-                    }
-                }
-
-                // Default to Fatal, it should always be enabled anyway.
-                return LogLevel.Fatal;
-            }
-
-            set
-            {
-                // Do nothing. set is going soon anyway.
-            }
-        }
+        public LogLevel Level { get; set; }
 
         /// <inheritdoc />
         public void Write(string message, LogLevel logLevel)
@@ -106,7 +85,13 @@ namespace Splat.Serilog
 
         private static LogEventLevel SplatLogLevelToSerilogLevel(LogLevel logLevel)
         {
-            return _mappings.First(x => x.Key == logLevel).Value;
+            foreach (var logLevel in _mappings)
+            {
+                if (logLevel.Key == logLevel)
+                    return logLevel.Value;
+            }
+
+            return LogEventLevel.Fatal;
         }
     }
 }

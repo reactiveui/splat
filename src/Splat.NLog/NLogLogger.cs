@@ -6,7 +6,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace Splat.NLog
 {
@@ -86,7 +85,13 @@ namespace Splat.NLog
 
         private static global::NLog.LogLevel SplatLogLevelToNLogLevel(LogLevel logLevel)
         {
-            return _mappings.First(x => x.Key == logLevel).Value;
+            foreach (var logLevel in _mappings)
+            {
+                if (logLevel.Key == logLevel)
+                    return logLevel.Value;
+            }
+
+            return global::NLog.LogLevel.Fatal;
         }
     }
 }
