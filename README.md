@@ -181,6 +181,8 @@ using Splat.Log4Net;
 Locator.CurrentMutable.UseLog4NetWithWrappingFullLogger();
 ```
 
+Thanks to @dpvreony for first creating this logger.
+
 ### NLog
 
 First configure NLog. For guidance see https://github.com/nlog/nlog/wiki/Tutorial and https://github.com/nlog/nlog/wiki/Configuration-file
@@ -191,6 +193,21 @@ using Splat.NLog;
 ///  then in your service locator initialisation
 Locator.CurrentMutable.UseNLogWithWrappingFullLogger();
 ```
+
+Thanks to @dpvreony for first creating this logger.
+
+### Serilog
+
+First configure Serilog. For guidance see https://github.com/serilog/serilog/wiki/Configuration-Basics
+
+```cs
+using Splat.Serilog;
+
+/// Then in your service locator initialisation
+locator.CurrentMutable.UseSerilogWithWrappingFullLogger();
+```
+
+Thanks to @joelweiss for first creating this logger.
 
 ## Using Cross-Platform Colors and Geometry
 

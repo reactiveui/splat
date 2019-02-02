@@ -1,0 +1,17 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras">
+  <PropertyGroup>
+    <TargetFrameworks>MonoAndroid80;Xamarin.iOS10;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net461;uap10.0.16299</TargetFrameworks>
+    <AssemblyName>Splat.Serilog</AssemblyName>
+    <RootNamespace>Splat</RootNamespace>
+    <Authors>Paul Betts</Authors>
+    <Description>Serilog integrations for Splat</Description>
+    <PackageId>Splat.Serilog</PackageId>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="2.8.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Splat\Splat.csproj" />
+  </ItemGroup>
+</Project>
