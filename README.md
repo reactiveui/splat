@@ -53,13 +53,17 @@ Splat currently supports:
 ### Dependency Resolver Packages
 For each of the provided dependency resolver adapters, there is a specific package that allows the service locator to be implemented by another ioc container.
 
-| Container | NuGet |
-|---------|-------|
-| [Splat.Autofac][SplatAutofacNuGet] | [![SplatAutofacBadge]][SplatAutofacNuGet]
-| [Splat.SimpleInjector][SplatSimpleInjectorNuGet] | [![SplatSimpleInjectorBadge]][SplatSimpleInjectorNuGet] |
+| Container | NuGet | Read Me
+|---------|-------|-------|
+| [Splat.Autofac][SplatAutofacNuGet] | [![SplatAutofacBadge]][SplatAutofacNuGet] |
+| [Splat.DryIoc][SplatDryIocNuGet] | [![SplatDryIocBadge]][SplatDryIocNuGet] | [Setup DryIoc][SplatDryIocReadme]
+| [Splat.SimpleInjector][SplatSimpleInjectorNuGet] | [![SplatSimpleInjectorBadge]][SplatSimpleInjectorNuGet] | |
 
 [SplatAutofacNuGet]: https://www.nuget.org/packages/Splat.Autofac/
 [SplatAutofacBadge]: https://img.shields.io/nuget/v/Splat.Autofac.svg
+[SplatDryIocNuGet]: https://www.nuget.org/packages/Splat.DryIoc/
+[SplatDryIocBadge]: https://img.shields.io/nuget/v/Splat.DryIoc.svg
+[SplatDryIocReadme]: ./src/Splat.DryIoc/README.md
 [SplatSimpleInjectorNuGet]: https://www.nuget.org/packages/Splat.SimpleInjector/
 [SplatSimpleInjectorBadge]: https://img.shields.io/nuget/v/Splat.SimpleInjector.svg
 

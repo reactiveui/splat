@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 
@@ -24,6 +25,8 @@ namespace Splat.NLog
             new KeyValuePair<LogLevel, global::NLog.LogLevel>(LogLevel.Error, global::NLog.LogLevel.Error),
             new KeyValuePair<LogLevel, global::NLog.LogLevel>(LogLevel.Fatal, global::NLog.LogLevel.Fatal)
         };
+
+        private static readonly ImmutableDictionary<LogLevel, global::NLog.LogLevel> _mappingsDictionary = _mappings.ToImmutableDictionary();
 
         private readonly global::NLog.ILogger _inner;
 
@@ -59,7 +62,7 @@ namespace Splat.NLog
                 return;
             }
 
-            _inner.Log(SplatLogLevelToNLogLevel(logLevel), message);
+            _inner.Log(_mappingsDictionary[logLevel], message);
         }
 
         /// <inheritdoc />
@@ -70,7 +73,7 @@ namespace Splat.NLog
                 return;
             }
 
-            _inner.Log(SplatLogLevelToNLogLevel(logLevel), exception, message);
+            _inner.Log(_mappingsDictionary[logLevel], exception, message);
         }
 
         /// <inheritdoc />
@@ -81,7 +84,7 @@ namespace Splat.NLog
                 return;
             }
 
-            _inner.Log(SplatLogLevelToNLogLevel(logLevel), $"{type.Name}: {message}");
+            _inner.Log(_mappingsDictionary[logLevel], $"{type.Name}: {message}");
         }
 
         /// <inheritdoc />
@@ -92,12 +95,7 @@ namespace Splat.NLog
                 return;
             }
 
-            _inner.Log(SplatLogLevelToNLogLevel(logLevel), exception, $"{type.Name}: {message}");
-        }
-
-        private static global::NLog.LogLevel SplatLogLevelToNLogLevel(LogLevel logLevel)
-        {
-            return _mappings.First(x => x.Key == logLevel).Value;
+            _inner.Log(_mappingsDictionary[logLevel], exception, $"{type.Name}: {message}");
         }
 
         private void OnInnerLoggerReconfigured(object sender, EventArgs e)
@@ -113,31 +111,16 @@ namespace Splat.NLog
         /// </remarks>
         private void SetLogLevel()
         {
-            if (_inner.IsDebugEnabled)
-            {
-                Level = LogLevel.Debug;
-                return;
-            }
+              foreach (var mapping in _mappings)
+              {
+                  if (_inner.IsEnabled(mapping.Value))
+                  {
+                      Level = mapping.Key;
+                  }
+              }
 
-            if (_inner.IsInfoEnabled)
-            {
-                Level = LogLevel.Info;
-                return;
-            }
-
-            if (_inner.IsWarnEnabled)
-            {
-                Level = LogLevel.Warn;
-                return;
-            }
-
-            if (_inner.IsErrorEnabled)
-            {
-                Level = LogLevel.Error;
-                return;
-            }
-
-            Level = LogLevel.Fatal;
+              // Default to Fatal, it should always be enabled anyway.
+              Level = LogLevel.Fatal;
         }
     }
 }
