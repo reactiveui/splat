@@ -23,7 +23,7 @@ namespace Splat.Serilog
         [Obsolete("This method will be removed in the future, Use Splat.Locator.CurrentMutable.UseSerilogWithWrappingFullLogger() instead.")]
         public static void Register(global::Serilog.ILogger logger)
         {
-            Locator.CurrentMutable.UseSerilogWithWrappingFullLogger(logger);
+            Locator.CurrentMutable.UseSerilogFullLogger(logger);
         }
     }
 }

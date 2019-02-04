@@ -22,13 +22,12 @@ namespace Splat.Serilog
         /// Locator.CurrentMutable.UseSerilogWithWrappingFullLogger();
         /// </code>
         /// </example>
-        public static void UseSerilogWithWrappingFullLogger(this IMutableDependencyResolver instance)
+        public static void UseSerilogFullLogger(this IMutableDependencyResolver instance)
         {
             var funcLogManager = new FuncLogManager(type =>
             {
                 var actualLogger = global::Serilog.Log.ForContext(type);
-                var miniLoggingWrapper = new SerilogLogger(actualLogger);
-                return new WrappingFullLogger(miniLoggingWrapper);
+                return new SerilogFullLogger(actualLogger);
             });
 
             instance.RegisterConstant(funcLogManager, typeof(ILogManager));
@@ -47,10 +46,11 @@ namespace Splat.Serilog
         /// Locator.CurrentMutable.UseSerilogWithWrappingFullLogger();
         /// </code>
         /// </example>
-        public static void UseSerilogWithWrappingFullLogger(this IMutableDependencyResolver instance, global::Serilog.ILogger actualLogger)
+        public static void UseSerilogFullLogger(this IMutableDependencyResolver instance, global::Serilog.ILogger actualLogger)
         {
-            var miniLoggingWrapper = new SerilogLogger(actualLogger);
-            instance.RegisterConstant(new WrappingFullLogger(miniLoggingWrapper), typeof(ILogManager));
+            var funcLogManager = new FuncLogManager(type => new SerilogFullLogger(actualLogger.ForContext(type)));
+
+            instance.RegisterConstant(funcLogManager, typeof(ILogManager));
         }
     }
 }

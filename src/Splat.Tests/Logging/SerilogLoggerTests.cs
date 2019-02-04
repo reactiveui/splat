@@ -9,6 +9,7 @@ using System.Linq;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
+using Serilog.Formatting;
 using Splat.Serilog;
 using Splat.Tests.Mocks;
 using Xunit;
@@ -74,7 +75,7 @@ namespace Splat.Tests.Logging
 
             Assert.Equal(1, target.Logs.Count);
 
-            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", target.Logs.First());
+            Assert.Equal($"{typeof(DummyObjectClass1).FullName}: This is a test.", target.Logs.First());
         }
 
         /// <summary>
@@ -93,7 +94,7 @@ namespace Splat.Tests.Logging
 
             Assert.Equal(1, target.Logs.Count);
 
-            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", target.Logs.First());
+            Assert.Equal($"{typeof(DummyObjectClass2).FullName}: This is a test.", target.Logs.First());
         }
 
         /// <summary>
@@ -112,7 +113,7 @@ namespace Splat.Tests.Logging
 
             Assert.Equal(1, target.Logs.Count);
 
-            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", target.Logs.First());
+            Assert.Equal($"{typeof(DummyObjectClass1).FullName}: This is a test.", target.Logs.First());
         }
 
         /// <summary>
@@ -131,7 +132,7 @@ namespace Splat.Tests.Logging
 
             Assert.Equal(1, target.Logs.Count);
 
-            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", target.Logs.First());
+            Assert.Equal($"{typeof(DummyObjectClass2).FullName}: This is a test.", target.Logs.First());
         }
 
         /// <summary>
@@ -150,7 +151,7 @@ namespace Splat.Tests.Logging
 
             Assert.Equal(1, target.Logs.Count);
 
-            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", target.Logs.First());
+            Assert.Equal($"{typeof(DummyObjectClass1).FullName}: This is a test.", target.Logs.First());
         }
 
         /// <summary>
@@ -168,7 +169,7 @@ namespace Splat.Tests.Logging
             logger.Warn<DummyObjectClass2>("This is a test.");
 
             Assert.Equal(1, target.Logs.Count);
-            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", target.Logs.First());
+            Assert.Equal($"{typeof(DummyObjectClass2).FullName}: This is a test.", target.Logs.First());
         }
 
         /// <summary>
@@ -186,7 +187,7 @@ namespace Splat.Tests.Logging
             logger.Error<DummyObjectClass1>("This is a test.");
 
             Assert.Equal(1, target.Logs.Count);
-            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", target.Logs.First());
+            Assert.Equal($"{typeof(DummyObjectClass1).FullName}: This is a test.", target.Logs.First());
         }
 
         /// <summary>
@@ -204,7 +205,7 @@ namespace Splat.Tests.Logging
             logger.Error<DummyObjectClass2>("This is a test.");
 
             Assert.Equal(1, target.Logs.Count);
-            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", target.Logs.First());
+            Assert.Equal($"{typeof(DummyObjectClass2).FullName}: This is a test.", target.Logs.First());
         }
 
         /// <summary>
@@ -222,7 +223,7 @@ namespace Splat.Tests.Logging
             logger.Fatal<DummyObjectClass1>("This is a test.");
 
             Assert.Equal(1, target.Logs.Count);
-            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", target.Logs.First());
+            Assert.Equal($"{typeof(DummyObjectClass1).FullName}: This is a test.", target.Logs.First());
         }
 
         /// <summary>
@@ -240,7 +241,48 @@ namespace Splat.Tests.Logging
             logger.Fatal<DummyObjectClass2>("This is a test.");
 
             Assert.Equal(1, target.Logs.Count);
-            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", target.Logs.First());
+            Assert.Equal($"{typeof(DummyObjectClass2).FullName}: This is a test.", target.Logs.First());
+        }
+
+        /// <summary>
+        /// Test to make sure the calling `UseSerilogWithWrappingFullLogger` logs.
+        /// </summary>
+        [Fact]
+        public void Configuring_With_Static_Log_Should_Write_Message()
+        {
+            var serilogLoggerAndTarget = GetActualSerilogLoggerAndTarget();
+            Log.Logger = serilogLoggerAndTarget.Logger;
+            var target = serilogLoggerAndTarget.Target;
+            Locator.CurrentMutable.UseSerilogFullLogger();
+
+            Assert.Equal(0, target.Logs.Count);
+
+            IEnableLogger logger = null;
+            logger.Log().Debug<DummyObjectClass2>("This is a test.");
+
+            Assert.Equal(1, target.Logs.Count);
+            Assert.Equal($"{typeof(DummyObjectClass2).FullName}: This is a test.", target.Logs.First());
+        }
+
+        /// <summary>
+        /// Test to make calling `UseSerilogWithWrappingFullLogger(Serilog.ILogger)` logs.
+        /// </summary>
+        [Fact]
+        public void Configuring_With_PreConfigured_Log_Should_Write_Message()
+        {
+            var serilogLoggerAndTarget = GetActualSerilogLoggerAndTarget();
+            var target = serilogLoggerAndTarget.Target;
+            Locator.CurrentMutable.UseSerilogFullLogger(serilogLoggerAndTarget.Logger);
+
+            Assert.Equal(0, target.Logs.Count);
+
+            IEnableLogger logger = null;
+
+            // Will Fail
+            logger.Log().Debug<DummyObjectClass2>("This is a test.");
+
+            Assert.Equal(1, target.Logs.Count);
+            Assert.Equal($"{typeof(DummyObjectClass2).FullName}: This is a test.", target.Logs.First());
         }
 
         private static (global::Serilog.ILogger Logger, LogTarget Target) GetActualSerilogLoggerAndTarget()
@@ -258,7 +300,7 @@ namespace Splat.Tests.Logging
         private static (ILogger Logger, LogTarget Target) GetSplatSerilogLoggerAndTarget()
         {
             var actualSerilogLogger = GetActualSerilogLoggerAndTarget();
-            return (new SerilogLogger(actualSerilogLogger.Logger), actualSerilogLogger.Target);
+            return (new SerilogFullLogger(actualSerilogLogger.Logger), actualSerilogLogger.Target);
         }
 
         private class LogTarget : ILogEventSink
@@ -267,7 +309,14 @@ namespace Splat.Tests.Logging
 
             public void Emit(LogEvent logEvent)
             {
-                Logs.Add(logEvent.RenderMessage());
+                if (logEvent.Properties.TryGetValue("SourceContext", out var value))
+                {
+                    Logs.Add(value.ToString().Trim('"').Trim() + ": " + logEvent.RenderMessage());
+                }
+                else
+                {
+                    Logs.Add(logEvent.RenderMessage());
+                }
             }
         }
     }
