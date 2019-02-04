@@ -111,16 +111,17 @@ namespace Splat.NLog
         /// </remarks>
         private void SetLogLevel()
         {
-              foreach (var mapping in _mappings)
+            foreach (var mapping in _mappings)
+            {
+              if (_inner.IsEnabled(mapping.Value))
               {
-                  if (_inner.IsEnabled(mapping.Value))
-                  {
-                      Level = mapping.Key;
-                  }
+                  Level = mapping.Key;
+                  return;
               }
+            }
 
-              // Default to Fatal, it should always be enabled anyway.
-              Level = LogLevel.Fatal;
+            // Default to Fatal, it should always be enabled anyway.
+            Level = LogLevel.Fatal;
         }
     }
 }
