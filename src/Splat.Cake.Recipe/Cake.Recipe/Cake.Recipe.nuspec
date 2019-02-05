@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>Splat.Cake.Recipe</id>
+    <version>0.1.0</version>
+    <authors>glennawatson</authors>
+    <owners>glennawatson;reactiveui</owners>
+    <description>Re-usable build script for Cake that can be used for numerous projects in the ReactiveUI family.</description>
+    <iconUrl>https://cdn.jsdelivr.net/gh/cake-contrib/graphics@a5cf0f881c390650144b2243ae551d5b9f836196/png/cake-contrib-medium.png</iconUrl>
+    <tags>ReactiveUI Build Cake Splat</tags>
+  </metadata>
+</package>
