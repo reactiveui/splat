@@ -16,15 +16,6 @@ namespace Splat.Serilog
     /// <remarks><seealso cref="ILogger" /></remarks>
     public sealed class SerilogLogger : ILogger
     {
-        private static readonly KeyValuePair<LogLevel, LogEventLevel>[] _mappings = new[]
-        {
-            new KeyValuePair<LogLevel, LogEventLevel>(LogLevel.Debug, LogEventLevel.Debug),
-            new KeyValuePair<LogLevel, LogEventLevel>(LogLevel.Info, LogEventLevel.Information),
-            new KeyValuePair<LogLevel, LogEventLevel>(LogLevel.Warn, LogEventLevel.Warning),
-            new KeyValuePair<LogLevel, LogEventLevel>(LogLevel.Error, LogEventLevel.Error),
-            new KeyValuePair<LogLevel, LogEventLevel>(LogLevel.Fatal, LogEventLevel.Fatal)
-        };
-
         private readonly global::Serilog.ILogger _inner;
 
         /// <summary>
@@ -42,7 +33,7 @@ namespace Splat.Serilog
         {
             get
             {
-                foreach (var mapping in _mappings)
+                foreach (var mapping in SerilogHelper.Mappings)
                 {
                     if (_inner.IsEnabled(mapping.Value))
                     {
@@ -68,7 +59,7 @@ namespace Splat.Serilog
                 return;
             }
 
-            _inner.Write(SplatLogLevelToSerilogLevel(logLevel), message);
+            _inner.Write(SerilogHelper.MappingsDictionary[logLevel], message);
         }
 
         /// <inheritdoc />
@@ -79,7 +70,7 @@ namespace Splat.Serilog
                 return;
             }
 
-            _inner.Write(SplatLogLevelToSerilogLevel(logLevel), exception, message);
+            _inner.Write(SerilogHelper.MappingsDictionary[logLevel], exception, message);
         }
 
         /// <inheritdoc />
@@ -90,7 +81,7 @@ namespace Splat.Serilog
                 return;
             }
 
-            _inner.Write(SplatLogLevelToSerilogLevel(logLevel), $"{type.Name}: {message}");
+            _inner.Write(SerilogHelper.MappingsDictionary[logLevel], $"{type.Name}: {message}");
         }
 
         /// <inheritdoc />
@@ -101,12 +92,7 @@ namespace Splat.Serilog
                 return;
             }
 
-            _inner.Write(SplatLogLevelToSerilogLevel(logLevel), exception, $"{type.Name}: {message}");
-        }
-
-        private static LogEventLevel SplatLogLevelToSerilogLevel(LogLevel logLevel)
-        {
-            return _mappings.First(x => x.Key == logLevel).Value;
+            _inner.Write(SerilogHelper.MappingsDictionary[logLevel], exception, $"{type.Name}: {message}");
         }
     }
 }
