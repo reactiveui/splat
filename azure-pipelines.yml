@@ -53,7 +53,7 @@ jobs:
        flattenFolders: true
 
   - task: PublishBuildArtifacts@1
-    displayName: Publish Package Artifacts
+    displayName: Publish Package Build Artifacts
     inputs:
        pathToPublish: '$(build.artifactstagingdirectory)\packages'
        artifactType: container
@@ -65,11 +65,23 @@ jobs:
        TargetFolder: '$(build.artifactstagingdirectory)\binaries'
 
   - task: PublishBuildArtifacts@1
-    displayName: Publish Binaries
+    displayName: Publish Binaries Build Artifacts
     inputs:
        pathToPublish: '$(build.artifactstagingdirectory)\binaries'
        artifactType: container
        artifactName: Binaries
+  - task: CopyFiles@2
+    inputs:
+       Contents: 'artifacts/tests/**/*'
+       TargetFolder: '$(build.artifactstagingdirectory)\tests'
+
+  - task: PublishBuildArtifacts@1
+    displayName: Publish Test Results Build Artifacts
+    inputs:
+       pathToPublish: '$(build.artifactstagingdirectory)\tests'
+       artifactType: container
+       artifactName: Tests
+
 - job: Mac
   pool:
     vmImage: 'macOS-10.13'
