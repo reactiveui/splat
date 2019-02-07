@@ -1,20 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;net472</TargetFrameworks>
-
-    <IsPackable>false</IsPackable>
+    <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net472</TargetFrameworks>
     <NoWarn>$(NoWarn);1591;CA1707;SA1633</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SimpleInjector" Version="4.4.3" />
     <PackageReference Include="ReactiveUI" Version="*" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Splat.SimpleInjector\Splat.SimpleInjector.csproj" />
-    <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>
   
   <ItemGroup>
