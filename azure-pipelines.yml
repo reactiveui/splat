@@ -36,14 +36,14 @@ jobs:
     displayName: Publish Test Results
     inputs:
        testResultsFormat: 'VSTest'
-       testResultsFiles: '**/testresult.trx' 
+       testResultsFiles: '**\testresults.trx' 
        searchFolder: '$(System.DefaultWorkingDirectory)\artifacts\tests'
 
   - task: PublishCodeCoverageResults@1
     displayName: Publish Coverage Results
     inputs:
        codeCoverageTool: 'cobertura'
-       summaryFileLocation: 'artifacts\tests\TestCoverage.xml'
+       summaryFileLocation: 'artifacts\tests\Report\Cobertura.xml'
        reportDirectory: 'artifacts\tests\Report'
 
   - task: CopyFiles@2
