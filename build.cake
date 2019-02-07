@@ -5,21 +5,21 @@ Environment.SetVariableNames();
 // Whitelisted Packages
 var packageWhitelist = new[] 
 { 
-    File("./src/Splat/Splat.csproj").Path,
-    File("./src/Splat.Autofac/Splat.Autofac.csproj").Path,
-    File("./src/Splat.DryIoc/Splat.DryIOC.csproj").Path,
-    File("./src/Splat.SimpleInjector/Splat.SimpleInjector.csproj").Path,
-    File("./src/Splat.Log4Net/Splat.Log4Net.csproj").Path,
-    File("./src/Splat.NLog/Splat.NLog.csproj").Path,
-    File("./src/Splat.Serilog/Splat.Serilog.csproj").Path,
+    MakeAbsolute(File("./src/Splat/Splat.csproj")),
+    MakeAbsolute(File("./src/Splat.Autofac/Splat.Autofac.csproj")),
+    MakeAbsolute(File("./src/Splat.DryIoc/Splat.DryIOC.csproj")),
+    MakeAbsolute(File("./src/Splat.SimpleInjector/Splat.SimpleInjector.csproj")),
+    MakeAbsolute(File("./src/Splat.Log4Net/Splat.Log4Net.csproj")),
+    MakeAbsolute(File("./src/Splat.NLog/Splat.NLog.csproj")),
+    MakeAbsolute(File("./src/Splat.Serilog/Splat.Serilog.csproj")),
 };
 
 var packageTestWhitelist = new[]
 {
-    File("./src/Splat.Tests/Splat.Tests.csproj").Path,
-    File("./src/Splat.Autofac.Tests/Splat.Autofac.Tests.csproj").Path,
-    File("./src/Splat.DryIoc.Tests/Splat.DryIoc.Tests.csproj").Path,
-    File("./src/Splat.SimpleInjector.Tests/Splat.SimpleInjector.Tests.csproj").Path,
+    MakeAbsolute(File("./src/Splat.Tests/Splat.Tests.csproj")),
+    MakeAbsolute(File("./src/Splat.Autofac.Tests/Splat.Autofac.Tests.csproj")),
+    MakeAbsolute(File("./src/Splat.DryIoc.Tests/Splat.DryIoc.Tests.csproj")),
+    MakeAbsolute(File("./src/Splat.SimpleInjector.Tests/Splat.SimpleInjector.Tests.csproj")),
 };
 
 BuildParameters.SetParameters(context: Context, 
