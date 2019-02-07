@@ -34,9 +34,16 @@ steps:
   displayName: Publish Test Results
   inputs:
     testResultsFormat: 'VSTest'
-    testResultsFiles: '**/testresults-*.trx' 
+    testResultsFiles: '**/testresult.trx' 
     searchFolder: '$(System.DefaultWorkingDirectory)\artifacts\tests'
 
+- task: PublishCodeCoverageResults@1
+  displayName: Publish Coverage Results
+  inputs:
+    codeCoverageTool: 'cobertura'
+    summaryFileLocation: 'artifacts\tests\TestCoverage.xml'
+    reportDirectory: 'artifacts\tests\Report'
+    
 - task: CopyFiles@2
   inputs:
     Contents: 'artifacts/packages/*.nupkg'
