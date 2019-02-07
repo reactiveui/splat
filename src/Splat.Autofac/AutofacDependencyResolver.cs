@@ -11,6 +11,8 @@ using System.Linq;
 using Autofac;
 using Autofac.Core;
 
+#pragma warning disable CS0618 // Obsolete values.
+
 namespace Splat.Autofac
 {
     /// <summary>
@@ -71,7 +73,6 @@ namespace Splat.Autofac
         /// <param name="factory">The factory function which generates our object.</param>
         /// <param name="serviceType">The type which is used for the registration.</param>
         /// <param name="contract">A optional contract value which will indicates to only generate the value if this contract is specified.</param>
-        [SuppressMessage("Design", "CS0168: Obsolete method call", Justification = "Needed for container generation")]
         public virtual void Register(Func<object> factory, Type serviceType, string contract = null)
         {
             var builder = new ContainerBuilder();
