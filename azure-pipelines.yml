@@ -24,7 +24,7 @@ jobs:
       modifyEnvironment: true
     displayName: Setup Environment Variables
 
-  - script: build.cmd
+  - script: build.cmd -Verbosity Diagnostic
     displayName: Build 
     env:
        SIGNCLIENT_SECRET: $(SignClientSecret)
