@@ -1,8 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
-
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,5 +10,4 @@
   <ItemGroup>
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>
-
 </Project>

@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Splat.DryIoc\Splat.DryIoc.csproj" />
-    <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>
 
   <ItemGroup>
