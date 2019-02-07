@@ -30,8 +30,6 @@ BuildParameters.SetParameters(context: Context,
                             artifactsDirectory: "./artifacts",
                             sourceDirectory: "./src");
 
-BuildParameters.PrintParameters(Context);
-
 ToolSettings.SetToolSettings(context: Context);
 
 Build.Run();
