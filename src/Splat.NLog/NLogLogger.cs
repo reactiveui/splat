@@ -15,7 +15,7 @@ namespace Splat.NLog
     /// NLog Logger taken from ReactiveUI 5.
     /// </summary>
     [DebuggerDisplay("Name={_inner.Name} Level={Level}")]
-    public sealed class NLogLogger : ILogger
+    public sealed class NLogLogger : ILogger, IDisposable
     {
         private static readonly KeyValuePair<LogLevel, global::NLog.LogLevel>[] _mappings = new[]
         {
@@ -38,29 +38,20 @@ namespace Splat.NLog
         public NLogLogger(global::NLog.ILogger inner)
         {
             _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+            SetLogLevel();
+            _inner.LoggerReconfigured += OnInnerLoggerReconfigured;
         }
 
         /// <inheritdoc />
         public LogLevel Level
         {
-            get
-            {
-                foreach (var mapping in _mappings)
-                {
-                    if (_inner.IsEnabled(mapping.Value))
-                    {
-                        return mapping.Key;
-                    }
-                }
+            get; private set;
+        }
 
-                // Default to Fatal, it should always be enabled anyway.
-                return LogLevel.Fatal;
-            }
-
-            set
-            {
-                // To be removed.
-            }
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _inner.LoggerReconfigured -= OnInnerLoggerReconfigured;
         }
 
         /// <inheritdoc />
@@ -105,6 +96,32 @@ namespace Splat.NLog
             }
 
             _inner.Log(_mappingsDictionary[logLevel], exception, $"{type.Name}: {message}");
+        }
+
+        private void OnInnerLoggerReconfigured(object sender, EventArgs e)
+        {
+            SetLogLevel();
+        }
+
+        /// <summary>
+        /// Works out the log level.
+        /// </summary>
+        /// <remarks>
+        /// This was done so the Level property doesn't keep getting re-evaluated each time a Write method is called.
+        /// </remarks>
+        private void SetLogLevel()
+        {
+            foreach (var mapping in _mappings)
+            {
+              if (_inner.IsEnabled(mapping.Value))
+              {
+                  Level = mapping.Key;
+                  return;
+              }
+            }
+
+            // Default to Fatal, it should always be enabled anyway.
+            Level = LogLevel.Fatal;
         }
     }
 }

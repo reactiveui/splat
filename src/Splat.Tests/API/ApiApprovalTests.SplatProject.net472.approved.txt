@@ -202,7 +202,7 @@ namespace Splat
     }
     public interface ILogger
     {
-        Splat.LogLevel Level { get; set; }
+        Splat.LogLevel Level { get; }
         void Write([System.ComponentModel.LocalizableAttribute(false)] string message, Splat.LogLevel logLevel);
         void Write(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string message, Splat.LogLevel logLevel);
         void Write([System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel);
@@ -586,7 +586,7 @@ namespace Splat
         public bool IsFatalEnabled { get; }
         public bool IsInfoEnabled { get; }
         public bool IsWarnEnabled { get; }
-        public Splat.LogLevel Level { get; set; }
+        public Splat.LogLevel Level { get; }
         public void Debug<T>(T value) { }
         public void Debug<T>(System.IFormatProvider formatProvider, T value) { }
         public void Debug(System.IFormatProvider formatProvider, string message, params object[] args) { }
@@ -665,7 +665,7 @@ namespace Splat
     public class WrappingPrefixLogger : Splat.ILogger
     {
         public WrappingPrefixLogger(Splat.ILogger inner, System.Type callingType) { }
-        public Splat.LogLevel Level { get; set; }
+        public Splat.LogLevel Level { get; }
         public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, Splat.LogLevel logLevel) { }
         public void Write(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string message, Splat.LogLevel logLevel) { }
         public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }

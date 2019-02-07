@@ -33,11 +33,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public LogLevel Level
-        {
-            get => _inner.Level;
-            set => _inner.Level = value;
-        }
+        public LogLevel Level => _inner.Level;
 
         /// <inheritdoc />
         public bool IsDebugEnabled => Level <= LogLevel.Debug;

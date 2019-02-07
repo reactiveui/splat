@@ -159,7 +159,7 @@ entry for.
 Splat has support for the following logging frameworks
 
 | Target | Package | NuGet |
-|---------|-------|
+|---------|-------|------|
 | Debug | [Splat][SplatNuGet] | [![SplatBadge]][SplatNuGet] |
 | Log4Net | [Splat.Log4Net][SplatLog4NetNuGet] | Coming Soon! |
 | NLog | [Splat.NLog][SplatNLogNuGet] | Coming Soon! |

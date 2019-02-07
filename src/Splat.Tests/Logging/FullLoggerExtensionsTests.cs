@@ -27,7 +27,7 @@ namespace Splat.Tests.Logging
             var textLogger = new TextLogger();
             var logger = new WrappingFullLogger(textLogger);
             var invoked = false;
-            logger.Level = LogLevel.Fatal;
+            textLogger.Level = LogLevel.Fatal;
 
             logger.Debug<DummyObjectClass1>(
                 () =>
@@ -50,7 +50,7 @@ namespace Splat.Tests.Logging
             var textLogger = new TextLogger();
             bool invoked = false;
             var logger = new WrappingFullLogger(textLogger);
-            logger.Level = LogLevel.Debug;
+            textLogger.Level = LogLevel.Debug;
 
             logger.Debug<DummyObjectClass1>(
                 () =>
@@ -73,7 +73,7 @@ namespace Splat.Tests.Logging
             var textLogger = new TextLogger();
             var logger = new WrappingFullLogger(textLogger);
             var invoked = false;
-            logger.Level = LogLevel.Fatal;
+            textLogger.Level = LogLevel.Fatal;
 
             logger.Info<DummyObjectClass1>(
                 () =>
@@ -96,7 +96,7 @@ namespace Splat.Tests.Logging
             var textLogger = new TextLogger();
             bool invoked = false;
             var logger = new WrappingFullLogger(textLogger);
-            logger.Level = LogLevel.Debug;
+            textLogger.Level = LogLevel.Debug;
 
             logger.Info<DummyObjectClass1>(
                 () =>
@@ -119,7 +119,7 @@ namespace Splat.Tests.Logging
             var textLogger = new TextLogger();
             var logger = new WrappingFullLogger(textLogger);
             var invoked = false;
-            logger.Level = LogLevel.Fatal;
+            textLogger.Level = LogLevel.Fatal;
 
             logger.Warn<DummyObjectClass1>(
                 () =>
@@ -142,7 +142,7 @@ namespace Splat.Tests.Logging
             var textLogger = new TextLogger();
             bool invoked = false;
             var logger = new WrappingFullLogger(textLogger);
-            logger.Level = LogLevel.Debug;
+            textLogger.Level = LogLevel.Debug;
 
             logger.Warn<DummyObjectClass1>(
                 () =>
@@ -165,7 +165,7 @@ namespace Splat.Tests.Logging
             var textLogger = new TextLogger();
             var logger = new WrappingFullLogger(textLogger);
             var invoked = false;
-            logger.Level = LogLevel.Fatal;
+            textLogger.Level = LogLevel.Fatal;
 
             logger.Error<DummyObjectClass1>(
                 () =>
@@ -188,7 +188,7 @@ namespace Splat.Tests.Logging
             var textLogger = new TextLogger();
             bool invoked = false;
             var logger = new WrappingFullLogger(textLogger);
-            logger.Level = LogLevel.Debug;
+            textLogger.Level = LogLevel.Debug;
 
             logger.Error<DummyObjectClass1>(
                 () =>
@@ -211,7 +211,7 @@ namespace Splat.Tests.Logging
             var textLogger = new TextLogger();
             bool invoked = false;
             var logger = new WrappingFullLogger(textLogger);
-            logger.Level = LogLevel.Fatal;
+            textLogger.Level = LogLevel.Fatal;
 
             logger.Fatal<DummyObjectClass1>(
                 () =>
