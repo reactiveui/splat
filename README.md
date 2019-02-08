@@ -97,10 +97,10 @@ Desktop and Mobile applications, while still remaining reasonably flexible.
 
 There are 2 parts to the locator design:
 
-| Locator.Current | The property to use to *resolve* services |
-| Locator.CurrentMutable | The property to use to *register* services |
+**Locator.Current** The property to use to **retrieve** services
+**Locator.CurrentMutable** The property to use to **register** services
 
-*Note:* Currently these properties point to the same object and you can use CurrentMutable to also GetServices, but this is not the intention and the interfaces may be adjusted in future to lock this down.
+**Note:** Currently these properties point to the same object and you can use CurrentMutable to also GetServices, but this is not the intention and the interfaces may be adjusted in future to lock this down.
 
 To get a service:
 
