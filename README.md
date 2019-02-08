@@ -50,23 +50,6 @@ Splat currently supports:
 * Xamarin (Android, iOS and Mac)
 * .NET Standard 1.0 and 2.0
 
-### Dependency Resolver Packages
-For each of the provided dependency resolver adapters, there is a specific package that allows the service locator to be implemented by another ioc container.
-
-| Container | NuGet | Read Me
-|---------|-------|-------|
-| [Splat.Autofac][SplatAutofacNuGet] | [![SplatAutofacBadge]][SplatAutofacNuGet] |
-| [Splat.DryIoc][SplatDryIocNuGet] | [![SplatDryIocBadge]][SplatDryIocNuGet] | [Setup DryIoc][SplatDryIocReadme]
-| [Splat.SimpleInjector][SplatSimpleInjectorNuGet] | [![SplatSimpleInjectorBadge]][SplatSimpleInjectorNuGet] | |
-
-[SplatAutofacNuGet]: https://www.nuget.org/packages/Splat.Autofac/
-[SplatAutofacBadge]: https://img.shields.io/nuget/v/Splat.Autofac.svg
-[SplatDryIocNuGet]: https://www.nuget.org/packages/Splat.DryIoc/
-[SplatDryIocBadge]: https://img.shields.io/nuget/v/Splat.DryIoc.svg
-[SplatDryIocReadme]: ./src/Splat.DryIoc/README.md
-[SplatSimpleInjectorNuGet]: https://www.nuget.org/packages/Splat.SimpleInjector/
-[SplatSimpleInjectorBadge]: https://img.shields.io/nuget/v/Splat.SimpleInjector.svg
-
 ## Cross-platform Image Loading
 
 ```cs
@@ -110,16 +93,27 @@ await blankImage.Save(CompressedBitmapFormat.Png, 0.0, File.Open("ItsBlank.png")
 ## Service Location
 
 Splat provides a simple service location implementation that is optimized for
-Desktop and Mobile applications, while still remaining reasonably flexible. To
-get a type:
+Desktop and Mobile applications, while still remaining reasonably flexible.
+
+There are 2 parts to the locator design:
+
+* **Locator.Current** The property to use to **retrieve** services. Locator.Current is a static variable that can be set on startup, to adapt Splat to other DI/IoC frameworks. We're currently working from v7 onward to make it easier to use your DI/IoC framework of choice. (see below)
+* **Locator.CurrentMutable** The property to use to **register** services
+
+**Note:** Currently these properties point to the same object and you can use CurrentMutable to also GetServices, but this is not the intention and the interfaces may be adjusted in future to lock this down (and make it more obvious what the use cases are).
+
+To get a service:
 
 ```cs
+// To get a single service registration
 var toaster = Locator.Current.GetService<IToaster>();
+
+// To get all service registrations
 var allToasterImpls = Locator.Current.GetServices<IToaster>();
 ```
 
 Locator.Current is a static variable that can be set on startup, to adapt Splat
-to other DI/IoC frameworks. This is usually a bad idea.
+to other DI/IoC frameworks. We're currently working from v7 onward to make it easier to use your DI/IoC framework of choice.
 
 The default implementation of Service Location also allows new types to be
 registered at runtime.
@@ -134,6 +128,23 @@ Locator.CurrentMutable.RegisterConstant(new ExtraGoodToaster(), typeof(IToaster)
 // Register a singleton which won't get created until the first user accesses it
 Locator.CurrentMutable.RegisterLazySingleton(() => new LazyToaster(), typeof(IToaster));
 ```
+
+### Dependency Resolver Packages
+For each of the provided dependency resolver adapters, there is a specific package that allows the service locator to be implemented by another ioc container.
+
+| Container | NuGet | Read Me
+|---------|-------|-------|
+| [Splat.Autofac][SplatAutofacNuGet] | [![SplatAutofacBadge]][SplatAutofacNuGet] |
+| [Splat.DryIoc][SplatDryIocNuGet] | [![SplatDryIocBadge]][SplatDryIocNuGet] | [Setup DryIoc][SplatDryIocReadme]
+| [Splat.SimpleInjector][SplatSimpleInjectorNuGet] | [![SplatSimpleInjectorBadge]][SplatSimpleInjectorNuGet] | |
+
+[SplatAutofacNuGet]: https://www.nuget.org/packages/Splat.Autofac/
+[SplatAutofacBadge]: https://img.shields.io/nuget/v/Splat.Autofac.svg
+[SplatDryIocNuGet]: https://www.nuget.org/packages/Splat.DryIoc/
+[SplatDryIocBadge]: https://img.shields.io/nuget/v/Splat.DryIoc.svg
+[SplatDryIocReadme]: ./src/Splat.DryIoc/README.md
+[SplatSimpleInjectorNuGet]: https://www.nuget.org/packages/Splat.SimpleInjector/
+[SplatSimpleInjectorBadge]: https://img.shields.io/nuget/v/Splat.SimpleInjector.svg
 
 ## Logging
 
