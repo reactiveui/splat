@@ -9,7 +9,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 
-namespace Splat
+namespace Splat.Microsoft.Extensions.Logging
 {
     /// <summary>
     /// Microsoft.Extensions.Logging Logger integration into Splat.
@@ -89,11 +89,6 @@ namespace Splat
             }
 
             _inner.Log(_mappingsDictionary[logLevel], exception, $"{type.Name}: {message}");
-        }
-
-        private void OnInnerLoggerReconfigured(object sender, EventArgs e)
-        {
-            SetLogLevel();
         }
 
         /// <summary>
