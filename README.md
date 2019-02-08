@@ -97,10 +97,10 @@ Desktop and Mobile applications, while still remaining reasonably flexible.
 
 There are 2 parts to the locator design:
 
-**Locator.Current** The property to use to **retrieve** services
-**Locator.CurrentMutable** The property to use to **register** services
+* **Locator.Current** The property to use to **retrieve** services. Locator.Current is a static variable that can be set on startup, to adapt Splat to other DI/IoC frameworks. We're currently working from v7 onward to make it easier to use your DI/IoC framework of choice. (see below)
+* **Locator.CurrentMutable** The property to use to **register** services
 
-**Note:** Currently these properties point to the same object and you can use CurrentMutable to also GetServices, but this is not the intention and the interfaces may be adjusted in future to lock this down.
+**Note:** Currently these properties point to the same object and you can use CurrentMutable to also GetServices, but this is not the intention and the interfaces may be adjusted in future to lock this down (and make it more obvious what the use cases are).
 
 To get a service:
 
