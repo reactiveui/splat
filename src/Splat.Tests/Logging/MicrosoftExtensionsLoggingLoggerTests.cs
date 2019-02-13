@@ -9,7 +9,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using Microsoft.Extensions.Logging;
-using Moq;
 using Splat.Microsoft.Extensions.Logging;
 using Splat.Tests.Mocks;
 using Xunit;
@@ -244,7 +243,7 @@ namespace Splat.Tests.Logging
             Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", memoryTarget.First());
         }
 
-        private static (global::Microsoft.Extensions.Logging.ILogger Logger, IList<string> MemoryTarget) GetActualloggerAndMemoryTarget()
+        private static (global::Microsoft.Extensions.Logging.ILogger Logger, IList<string> MemoryTarget) GetActualLoggerAndMemoryTarget()
         {
             var memoryTarget = new List<string>();
             var mockLogger = new MockActualMicrosoftExtensionsLoggingLogger(memoryTarget);
@@ -254,7 +253,7 @@ namespace Splat.Tests.Logging
 
         private static (ILogger Logger, IList<string> MemoryTarget) GetSplatLoggerAndMemoryTarget()
         {
-            var actualLogger = GetActualloggerAndMemoryTarget();
+            var actualLogger = GetActualLoggerAndMemoryTarget();
             return (new MicrosoftExtensionsLoggingLogger(actualLogger.Logger), actualLogger.MemoryTarget);
         }
     }
