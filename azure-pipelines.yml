@@ -13,6 +13,7 @@ resources:
     - repository: templates
       type: github
       name: ReactiveUI/ReactiveUI.Cake.Recipe
+      endpoint: reactiveui
 
 jobs:
 - template: Azure/azure-pipelines.yaml@templates  # Template reference
