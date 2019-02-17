@@ -11,7 +11,7 @@ var kernel = new StandardKernel();
 kernel.Bind<IViewFor<MainViewModel>>().To<MainPage>();
 kernel.Bind<IViewFor<SecondaryViewModel>>().To<SecondaryPage>();
 kernel.Bind<MainViewModel>().ToSelf();
-kernel.Bind<SecondaryViewModel>()ToSelf();
+kernel.Bind<SecondaryViewModel>().ToSelf();
 ```
 
 ### Register the Adapter to Splat
