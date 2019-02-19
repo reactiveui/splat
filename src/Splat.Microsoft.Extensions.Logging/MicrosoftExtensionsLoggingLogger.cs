@@ -38,78 +38,48 @@ namespace Splat.Microsoft.Extensions.Logging
         public MicrosoftExtensionsLoggingLogger(global::Microsoft.Extensions.Logging.ILogger inner)
         {
             _inner = inner ?? throw new ArgumentNullException(nameof(inner));
-            SetLogLevel();
         }
 
         /// <inheritdoc />
         public LogLevel Level
         {
-            get; private set;
+            get
+            {
+                foreach (var mapping in _mappings)
+                {
+                    if (_inner.IsEnabled(mapping.Value))
+                    {
+                        return mapping.Key;
+                    }
+                }
+
+                // Default to Fatal, it should always be enabled anyway.
+                return LogLevel.Fatal;
+            }
         }
 
         /// <inheritdoc />
         public void Write(string message, LogLevel logLevel)
         {
-            if ((int)logLevel < (int)Level)
-            {
-                return;
-            }
-
             _inner.Log(_mappingsDictionary[logLevel], message);
         }
 
         /// <inheritdoc />
         public void Write(Exception exception, string message, LogLevel logLevel)
         {
-            if ((int)logLevel < (int)Level)
-            {
-                return;
-            }
-
             _inner.Log(_mappingsDictionary[logLevel], exception, message);
         }
 
         /// <inheritdoc />
         public void Write(string message, Type type, LogLevel logLevel)
         {
-            if ((int)logLevel < (int)Level)
-            {
-                return;
-            }
-
             _inner.Log(_mappingsDictionary[logLevel], $"{type.Name}: {message}");
         }
 
         /// <inheritdoc />
         public void Write(Exception exception, string message, Type type, LogLevel logLevel)
         {
-            if ((int)logLevel < (int)Level)
-            {
-                return;
-            }
-
             _inner.Log(_mappingsDictionary[logLevel], exception, $"{type.Name}: {message}");
-        }
-
-        /// <summary>
-        /// Works out the log level.
-        /// </summary>
-        /// <remarks>
-        /// This was done so the Level property doesn't keep getting re-evaluated each time a Write method is called.
-        /// </remarks>
-        private void SetLogLevel()
-        {
-            foreach (var mapping in _mappings)
-            {
-              if (_inner.IsEnabled(mapping.Value))
-              {
-                  Level = mapping.Key;
-                  return;
-              }
-            }
-
-            // Default to Fatal, it should always be enabled anyway.
-            Level = LogLevel.Fatal;
         }
     }
 }
