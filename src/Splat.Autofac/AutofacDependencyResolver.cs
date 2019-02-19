@@ -16,9 +16,9 @@ using Autofac.Core;
 namespace Splat.Autofac
 {
     /// <summary>
-    /// Autofac implementation for <see cref="IMutableDependencyResolver"/>.
+    /// Autofac implementation for <see cref="IDependencyResolver"/>.
     /// </summary>
-    public class AutofacDependencyResolver : IMutableDependencyResolver
+    public class AutofacDependencyResolver : IDependencyResolver
     {
         private IContainer _container;
 

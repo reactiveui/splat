@@ -13,8 +13,8 @@ namespace Splat.DryIoc
     /// DryIoc implementation for <see cref="IMutableDependencyResolver"/>.
     /// https://bitbucket.org/dadhi/dryioc/wiki/Home.
     /// </summary>
-    /// <seealso cref="Splat.IMutableDependencyResolver" />
-    public class DryIocDependencyResolver : IMutableDependencyResolver
+    /// <seealso cref="Splat.IDependencyResolver" />
+    public class DryIocDependencyResolver : IDependencyResolver
     {
         private Container _container;
 

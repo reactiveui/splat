@@ -21,7 +21,7 @@ namespace Splat
     ///
     /// This container is not thread safe.
     /// </summary>
-    public class ModernDependencyResolver : IMutableDependencyResolver
+    public class ModernDependencyResolver : IDependencyResolver
     {
         private Dictionary<Tuple<Type, string>, List<Func<object>>> _registry;
         private Dictionary<Tuple<Type, string>, List<Action<IDisposable>>> _callbackRegistry;

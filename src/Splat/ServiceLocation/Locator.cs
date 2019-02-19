@@ -41,55 +41,59 @@ namespace Splat
         }
 
         /// <summary>
-        /// Gets or sets the dependency resolver. This class is used throughout
+        /// Gets the read only dependency resolver. This class is used throughout
         /// libraries for many internal operations as well as for general use
         /// by applications. If this isn't assigned on startup, a default, highly
         /// capable implementation will be used, and it is advised for most people
         /// to simply use the default implementation.
         /// </summary>
         /// <value>The dependency resolver.</value>
-        public static IDependencyResolver Current
-        {
-            get => _unitTestDependencyResolver ?? _dependencyResolver;
-            set
-            {
-                if (ModeDetector.InUnitTestRunner())
-                {
-                    _unitTestDependencyResolver = value;
-                    _dependencyResolver = _dependencyResolver ?? value;
-                }
-                else
-                {
-                    _dependencyResolver = value;
-                }
-
-                if (AreResolverCallbackChangedNotificationsEnabled())
-                {
-                    var currentCallbacks = default(Action[]);
-                    lock (_resolverChanged)
-                    {
-                        // NB: Prevent deadlocks should we reenter this setter from
-                        // the callbacks
-                        currentCallbacks = _resolverChanged.ToArray();
-                    }
-
-                    foreach (var block in currentCallbacks)
-                    {
-                        block();
-                    }
-                }
-            }
-        }
+        public static IReadonlyDependencyResolver Current => _dependencyResolver;
 
         /// <summary>
-        /// Gets or sets the mutable dependency resolver.
+        /// Gets the mutable dependency resolver.
         /// The default resolver is also a mutable resolver, so this will be non-null.
         /// Use this to register new types on startup if you are using the default resolver.
         /// </summary>
-        public static IMutableDependencyResolver CurrentMutable
+        public static IMutableDependencyResolver CurrentMutable => _dependencyResolver;
+
+        internal static IDependencyResolver Internal => _dependencyResolver;
+
+        /// <summary>
+        /// Allows setting the dependency resolver.
+        /// </summary>
+        /// <param name="dependencyResolver">The dependency resolver to set.</param>
+        public static void SetLocator(IDependencyResolver dependencyResolver)
         {
-            get => Current as IMutableDependencyResolver;
-            set => Current = value;
+            _dependencyResolver = dependencyResolver ?? throw new ArgumentNullException(nameof(dependencyResolver));
+
+            // DV: is this needed if we're changing the behaviour of setlocator?
+            /*
+            if (ModeDetector.InUnitTestRunner())
+            {
+                _unitTestDependencyResolver = value;
+                _dependencyResolver = _dependencyResolver ?? value;
+            }
+            else
+            {
+                _dependencyResolver = value;
+            }
+            */
+            if (AreResolverCallbackChangedNotificationsEnabled())
+            {
+                var currentCallbacks = default(Action[]);
+                lock (_resolverChanged)
+                {
+                    // NB: Prevent deadlocks should we reenter this setter from
+                    // the callbacks
+                    currentCallbacks = _resolverChanged.ToArray();
+                }
+
+                foreach (var block in currentCallbacks)
+                {
+                    block();
+                }
+            }
         }
 
         /// <summary>
