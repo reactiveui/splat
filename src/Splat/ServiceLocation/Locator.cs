@@ -14,30 +14,11 @@ namespace Splat
     /// </summary>
     public static class Locator
     {
-        private static readonly List<Action> _resolverChanged = new List<Action>();
-        private static volatile int _resolverChangedNotificationSuspendCount;
+        private static readonly InternalLocator _locator;
 
-        [ThreadStatic]
-        private static IDependencyResolver _unitTestDependencyResolver;
-        private static IDependencyResolver _dependencyResolver;
-
-        /// <summary>
-        /// Initializes static members of the <see cref="Locator"/> class.
-        /// This will by default register a <see cref="ModernDependencyResolver"/>.
-        /// </summary>
         static Locator()
         {
-            _dependencyResolver = new ModernDependencyResolver();
-
-            RegisterResolverCallbackChanged(() =>
-            {
-                if (CurrentMutable == null)
-                {
-                    return;
-                }
-
-                CurrentMutable.InitializeSplat();
-            });
+            _locator = new InternalLocator();
         }
 
         /// <summary>
@@ -48,16 +29,16 @@ namespace Splat
         /// to simply use the default implementation.
         /// </summary>
         /// <value>The dependency resolver.</value>
-        public static IReadonlyDependencyResolver Current => _dependencyResolver;
+        public static IReadonlyDependencyResolver Current => _locator.Current;
 
         /// <summary>
         /// Gets the mutable dependency resolver.
         /// The default resolver is also a mutable resolver, so this will be non-null.
         /// Use this to register new types on startup if you are using the default resolver.
         /// </summary>
-        public static IMutableDependencyResolver CurrentMutable => _dependencyResolver;
+        public static IMutableDependencyResolver CurrentMutable => _locator.CurrentMutable;
 
-        internal static IDependencyResolver Internal => _dependencyResolver;
+        internal static IDependencyResolver Internal => _locator.Internal;
 
         /// <summary>
         /// Allows setting the dependency resolver.
@@ -65,35 +46,7 @@ namespace Splat
         /// <param name="dependencyResolver">The dependency resolver to set.</param>
         public static void SetLocator(IDependencyResolver dependencyResolver)
         {
-            _dependencyResolver = dependencyResolver ?? throw new ArgumentNullException(nameof(dependencyResolver));
-
-            // DV: is this needed if we're changing the behaviour of setlocator?
-            /*
-            if (ModeDetector.InUnitTestRunner())
-            {
-                _unitTestDependencyResolver = value;
-                _dependencyResolver = _dependencyResolver ?? value;
-            }
-            else
-            {
-                _dependencyResolver = value;
-            }
-            */
-            if (AreResolverCallbackChangedNotificationsEnabled())
-            {
-                var currentCallbacks = default(Action[]);
-                lock (_resolverChanged)
-                {
-                    // NB: Prevent deadlocks should we reenter this setter from
-                    // the callbacks
-                    currentCallbacks = _resolverChanged.ToArray();
-                }
-
-                foreach (var block in currentCallbacks)
-                {
-                    block();
-                }
-            }
+            _locator.SetLocator(dependencyResolver);
         }
 
         /// <summary>
@@ -109,25 +62,7 @@ namespace Splat
         /// ignore this.</returns>
         public static IDisposable RegisterResolverCallbackChanged(Action callback)
         {
-            lock (_resolverChanged)
-            {
-                _resolverChanged.Add(callback);
-            }
-
-            // NB: We always immediately invoke the callback to set up the
-            // current resolver with whatever we've got
-            if (AreResolverCallbackChangedNotificationsEnabled())
-            {
-                callback();
-            }
-
-            return new ActionDisposable(() =>
-            {
-                lock (_resolverChanged)
-                {
-                    _resolverChanged.Remove(callback);
-                }
-            });
+            return _locator.RegisterResolverCallbackChanged(callback);
         }
 
         /// <summary>
@@ -138,9 +73,7 @@ namespace Splat
         /// notification is no longer needed.</returns>
         public static IDisposable SuppressResolverCallbackChangedNotifications()
         {
-            Interlocked.Increment(ref _resolverChangedNotificationSuspendCount);
-
-            return new ActionDisposable(() => Interlocked.Decrement(ref _resolverChangedNotificationSuspendCount));
+            return _locator.SuppressResolverCallbackChangedNotifications();
         }
 
         /// <summary>
@@ -149,7 +82,7 @@ namespace Splat
         /// <returns>A value indicating whether the notifications are happening.</returns>
         public static bool AreResolverCallbackChangedNotificationsEnabled()
         {
-            return _resolverChangedNotificationSuspendCount == 0;
+            return _locator.AreResolverCallbackChangedNotificationsEnabled();
         }
     }
 }

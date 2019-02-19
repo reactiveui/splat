@@ -24,8 +24,10 @@ namespace Splat.Tests
         [Fact]
         public void InitializeSplat_RegistrationsNotEmptyNoRegistrations()
         {
-            var logManager = Locator.Current.GetService(typeof(ILogManager));
-            var logger = Locator.Current.GetService(typeof(ILogger));
+            // this is using the internal constructor
+            var testLocator = new InternalLocator();
+            var logManager = testLocator.Current.GetService(typeof(ILogManager));
+            var logger = testLocator.Current.GetService(typeof(ILogger));
 
             Assert.NotNull(logManager);
             Assert.NotNull(logger);
@@ -40,8 +42,9 @@ namespace Splat.Tests
         [Fact]
         public void InitializeSplat_ContractRegistrationsNullNoRegistration()
         {
-            var logManager = Locator.Current.GetService(typeof(ILogManager), "test");
-            var logger = Locator.Current.GetService(typeof(ILogger), "test");
+            var testLocator = new InternalLocator();
+            var logManager = testLocator.Current.GetService(typeof(ILogManager), "test");
+            var logger = testLocator.Current.GetService(typeof(ILogger), "test");
 
             Assert.Null(logManager);
             Assert.Null(logger);
@@ -53,8 +56,9 @@ namespace Splat.Tests
         [Fact]
         public void InitializeSplat_ExtensionMethodsNotNull()
         {
-            var logManager = Locator.Current.GetService<ILogManager>();
-            var logger = Locator.Current.GetService<ILogger>();
+            var testLocator = new InternalLocator();
+            var logManager = testLocator.Current.GetService<ILogManager>();
+            var logger = testLocator.Current.GetService<ILogger>();
 
             Assert.NotNull(logManager);
             Assert.NotNull(logger);
@@ -69,20 +73,21 @@ namespace Splat.Tests
         [Fact]
         public void WithoutSuppress_NotificationsHappen()
         {
-            var originalLocator = Locator.Internal;
+            var testLocator = new InternalLocator();
+            var originalLocator = testLocator.Internal;
 
             int numberNotifications = 0;
             Action notificationAction = () => numberNotifications++;
 
-            Locator.RegisterResolverCallbackChanged(notificationAction);
+            testLocator.RegisterResolverCallbackChanged(notificationAction);
 
-            Locator.SetLocator(new ModernDependencyResolver());
-            Locator.SetLocator(new ModernDependencyResolver());
+            testLocator.SetLocator(new ModernDependencyResolver());
+            testLocator.SetLocator(new ModernDependencyResolver());
 
             // 2 for the changes, 1 for the callback being immediately called.
             Assert.Equal(3, numberNotifications);
 
-            Locator.SetLocator(originalLocator);
+            testLocator.SetLocator(originalLocator);
         }
 
         /// <summary>
@@ -91,21 +96,22 @@ namespace Splat.Tests
         [Fact]
         public void WithSuppression_NotificationsDontHappen()
         {
-            var originalLocator = Locator.Internal;
+            var testLocator = new InternalLocator();
+            var originalLocator = testLocator.Internal;
 
-            using (Locator.SuppressResolverCallbackChangedNotifications())
+            using (testLocator.SuppressResolverCallbackChangedNotifications())
             {
                 int numberNotifications = 0;
                 Action notificationAction = () => numberNotifications++;
 
-                Locator.RegisterResolverCallbackChanged(notificationAction);
+                testLocator.RegisterResolverCallbackChanged(notificationAction);
 
-                Locator.SetLocator(new ModernDependencyResolver());
-                Locator.SetLocator(new ModernDependencyResolver());
+                testLocator.SetLocator(new ModernDependencyResolver());
+                testLocator.SetLocator(new ModernDependencyResolver());
 
                 Assert.Equal(0, numberNotifications);
 
-                Locator.SetLocator(originalLocator);
+                testLocator.SetLocator(originalLocator);
             }
         }
 
@@ -118,11 +124,12 @@ namespace Splat.Tests
             int numberNotifications = 0;
             Action notificationAction = () => numberNotifications++;
 
-            Locator.RegisterResolverCallbackChanged(notificationAction);
+            var testLocator = new InternalLocator();
+            testLocator.RegisterResolverCallbackChanged(notificationAction);
 
-            using (Locator.Internal.WithResolver())
+            using (testLocator.Internal.WithResolver())
             {
-                using (Locator.Internal.WithResolver())
+                using (testLocator.Internal.WithResolver())
                 {
                 }
             }
@@ -140,11 +147,12 @@ namespace Splat.Tests
             int numberNotifications = 0;
             Action notificationAction = () => numberNotifications++;
 
-            Locator.RegisterResolverCallbackChanged(notificationAction);
+            var testLocator = new InternalLocator();
+            testLocator.RegisterResolverCallbackChanged(notificationAction);
 
-            using (Locator.Internal.WithResolver(false))
+            using (testLocator.Internal.WithResolver(false))
             {
-                using (Locator.Internal.WithResolver(false))
+                using (testLocator.Internal.WithResolver(false))
                 {
                 }
             }
