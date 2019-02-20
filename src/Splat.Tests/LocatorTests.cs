@@ -147,12 +147,11 @@ namespace Splat.Tests
             int numberNotifications = 0;
             Action notificationAction = () => numberNotifications++;
 
-            var testLocator = new InternalLocator();
-            testLocator.RegisterResolverCallbackChanged(notificationAction);
+            Locator.RegisterResolverCallbackChanged(notificationAction);
 
-            using (testLocator.Internal.WithResolver(false))
+            using (Locator.Internal.WithResolver(false))
             {
-                using (testLocator.Internal.WithResolver(false))
+                using (Locator.Internal.WithResolver(false))
                 {
                 }
             }
