@@ -8,8 +8,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C7B370F1-BEF3-4AB7-BA08-CC5D83E74598}"
 	ProjectSection(SolutionItems) = preProject
 		analyzers.ruleset = analyzers.ruleset
+		ApiGeneratorGlobalSuppressions.cs = ApiGeneratorGlobalSuppressions.cs
 		Directory.build.props = Directory.build.props
 		Directory.build.targets = Directory.build.targets
+		global.json = global.json
+		stylecop.json = stylecop.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Tests", "Splat.Tests\Splat.Tests.csproj", "{6CAD2584-AA69-4A36-8AD4-A90D040003CA}"
