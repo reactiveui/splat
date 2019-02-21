@@ -7,7 +7,7 @@ var packageWhitelist = new[]
 { 
     MakeAbsolute(File("./src/Splat/Splat.csproj")),
     MakeAbsolute(File("./src/Splat.Autofac/Splat.Autofac.csproj")),
-    MakeAbsolute(File("./src/Splat.DryIoc/Splat.DryIOC.csproj")),
+    MakeAbsolute(File("./src/Splat.DryIoc/Splat.DryIoc.csproj")),
     MakeAbsolute(File("./src/Splat.SimpleInjector/Splat.SimpleInjector.csproj")),
     MakeAbsolute(File("./src/Splat.Log4Net/Splat.Log4Net.csproj")),
     MakeAbsolute(File("./src/Splat.NLog/Splat.NLog.csproj")),
