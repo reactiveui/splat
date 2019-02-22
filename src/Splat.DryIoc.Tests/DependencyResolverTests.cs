@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DryIoc;
 using Shouldly;
-using Splat.Common.Testing;
+using Splat.Common.Test;
 using Xunit;
 
 namespace Splat.DryIoc.Tests

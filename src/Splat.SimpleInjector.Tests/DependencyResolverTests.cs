@@ -5,7 +5,7 @@
 
 using Shouldly;
 using SimpleInjector;
-using Splat.Common.Testing;
+using Splat.Common.Test;
 using Splat.SimpleInjector;
 using Xunit;
 

@@ -8,7 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using Autofac;
 using Shouldly;
-using Splat.Common.Testing;
+using Splat.Common.Test;
 using Xunit;
 
 namespace Splat.Autofac.Tests

@@ -3,13 +3,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-namespace Splat.Common.Testing
+namespace Splat.Common.Test
 {
     /// <summary>
-    /// An <see cref="IScreen"/> implementation.
+    /// Represents a screen.
     /// </summary>
-    /// <seealso cref="IScreen" />
-    public class MockScreen : IScreen
+    public interface IScreen
     {
     }
 }
