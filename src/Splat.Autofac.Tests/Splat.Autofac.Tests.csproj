@@ -10,11 +10,11 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />
-    <PackageReference Include="ReactiveUI" Version="*" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Splat.Autofac\Splat.Autofac.csproj" />
+    <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />
   </ItemGroup>
   
   <ItemGroup>

@@ -7,10 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ReactiveUI" Version="*" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />
     <ProjectReference Include="..\Splat.DryIoc\Splat.DryIoc.csproj" />
   </ItemGroup>
 
