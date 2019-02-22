@@ -3,19 +3,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using ReactiveUI;
-
-namespace Splat.Autofac.Tests
+namespace Splat.Common.Testing
 {
     /// <summary>
-    /// An <see cref="IScreen"/> implementation.
+    /// Represents a screen.
     /// </summary>
-    /// <seealso cref="IScreen" />
-    public class MockScreen : IScreen
+    public interface IScreen
     {
-        /// <summary>
-        /// Gets the Router associated with this Screen.
-        /// </summary>
-        public RoutingState Router { get; }
     }
 }

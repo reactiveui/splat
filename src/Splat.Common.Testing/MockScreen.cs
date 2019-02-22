@@ -3,9 +3,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using ReactiveUI;
-
-namespace Splat.DryIoc.Tests
+namespace Splat.Common.Testing
 {
     /// <summary>
     /// An <see cref="IScreen"/> implementation.
@@ -13,9 +11,5 @@ namespace Splat.DryIoc.Tests
     /// <seealso cref="IScreen" />
     public class MockScreen : IScreen
     {
-        /// <summary>
-        /// Gets the Router associated with this Screen.
-        /// </summary>
-        public RoutingState Router { get; }
     }
 }

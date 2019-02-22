@@ -3,21 +3,22 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using ReactiveUI;
-
-namespace Splat.DryIoc.Tests
+namespace Splat.Common.Testing
 {
     /// <summary>
-    /// View Model Two.
+    /// View Two.
     /// </summary>
-    /// <seealso cref="ReactiveObject" />
-    /// <seealso cref="IRoutableViewModel" />
-    public class ViewModelTwo : ReactiveObject, IRoutableViewModel
+    /// <seealso cref="ViewModelTwo" />
+    public class ViewTwo : IViewFor<ViewModelTwo>
     {
         /// <inheritdoc />
-        public string UrlPathSegment { get; }
+        object IViewFor.ViewModel
+        {
+            get => ViewModel;
+            set => ViewModel = (ViewModelTwo)value;
+        }
 
         /// <inheritdoc />
-        public IScreen HostScreen { get; }
+        public ViewModelTwo ViewModel { get; set; }
     }
 }

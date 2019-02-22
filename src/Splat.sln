@@ -39,6 +39,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{651320D6-104
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{3F8EA9C2-D6D1-4B18-8670-DFC24B96972E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Common.Testing", "Splat.Common.Testing\Splat.Common.Testing.csproj", "{AD64CB59-26F2-4C95-8BEC-D935EFF4E59D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,6 +91,10 @@ Global
 		{75538893-9968-45F1-9C05-EDB837FE0CFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75538893-9968-45F1-9C05-EDB837FE0CFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75538893-9968-45F1-9C05-EDB837FE0CFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD64CB59-26F2-4C95-8BEC-D935EFF4E59D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD64CB59-26F2-4C95-8BEC-D935EFF4E59D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD64CB59-26F2-4C95-8BEC-D935EFF4E59D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD64CB59-26F2-4C95-8BEC-D935EFF4E59D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -105,6 +111,7 @@ Global
 		{E1777877-6F56-46D0-8747-4BB921ED4C8E} = {3F8EA9C2-D6D1-4B18-8670-DFC24B96972E}
 		{D65C61D8-C073-4761-9BA3-C595A079C42E} = {651320D6-1048-4F87-9D8E-75134FAFABDA}
 		{75538893-9968-45F1-9C05-EDB837FE0CFE} = {651320D6-1048-4F87-9D8E-75134FAFABDA}
+		{AD64CB59-26F2-4C95-8BEC-D935EFF4E59D} = {3F8EA9C2-D6D1-4B18-8670-DFC24B96972E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E833ED14-B971-4E09-B27E-76E99BC0FC10}
