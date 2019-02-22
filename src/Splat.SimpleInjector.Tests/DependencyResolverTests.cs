@@ -3,9 +3,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using ReactiveUI;
 using Shouldly;
 using SimpleInjector;
+using Splat.Common.Test;
 using Splat.SimpleInjector;
 using Xunit;
 
@@ -23,13 +23,13 @@ namespace Splat.Simplnjector
         public void SimpleInjectorDependencyResolver_Should_Resolve_View_Model()
         {
             var container = new Container();
-            container.Register<ViewModel>();
+            container.Register<ViewModelOne>();
             container.UseSimpleInjectorDependencyResolver();
 
-            var viewModel = Locator.Current.GetService(typeof(ViewModel));
+            var viewModel = Locator.Current.GetService(typeof(ViewModelOne));
 
             viewModel.ShouldNotBeNull();
-            viewModel.ShouldBeOfType<ViewModel>();
+            viewModel.ShouldBeOfType<ViewModelOne>();
         }
 
         /// <summary>
@@ -39,13 +39,13 @@ namespace Splat.Simplnjector
         public void SimpleInjectorDependencyResolver_Should_Resolve_View()
         {
             var container = new Container();
-            container.Register<IViewFor<ViewModel>, View>();
+            container.Register<IViewFor<ViewModelOne>, ViewOne>();
             container.UseSimpleInjectorDependencyResolver();
 
-            var view = Locator.Current.GetService(typeof(IViewFor<ViewModel>));
+            var view = Locator.Current.GetService(typeof(IViewFor<ViewModelOne>));
 
             view.ShouldNotBeNull();
-            view.ShouldBeOfType<View>();
+            view.ShouldBeOfType<ViewOne>();
         }
 
         /// <summary>

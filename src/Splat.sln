@@ -8,8 +8,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C7B370F1-BEF3-4AB7-BA08-CC5D83E74598}"
 	ProjectSection(SolutionItems) = preProject
 		analyzers.ruleset = analyzers.ruleset
+		ApiGeneratorGlobalSuppressions.cs = ApiGeneratorGlobalSuppressions.cs
 		Directory.build.props = Directory.build.props
 		Directory.build.targets = Directory.build.targets
+		global.json = global.json
+		stylecop.json = stylecop.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Tests", "Splat.Tests\Splat.Tests.csproj", "{6CAD2584-AA69-4A36-8AD4-A90D040003CA}"
@@ -35,6 +38,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{651320D6-1048-4F87-9D8E-75134FAFABDA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{3F8EA9C2-D6D1-4B18-8670-DFC24B96972E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Common.Test", "Splat.Common.Test\Splat.Common.Test.csproj", "{4B86E6E5-40EA-44F1-BC72-0D6ECCCC8AE7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -86,6 +91,10 @@ Global
 		{75538893-9968-45F1-9C05-EDB837FE0CFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75538893-9968-45F1-9C05-EDB837FE0CFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75538893-9968-45F1-9C05-EDB837FE0CFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B86E6E5-40EA-44F1-BC72-0D6ECCCC8AE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B86E6E5-40EA-44F1-BC72-0D6ECCCC8AE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B86E6E5-40EA-44F1-BC72-0D6ECCCC8AE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B86E6E5-40EA-44F1-BC72-0D6ECCCC8AE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,6 +111,7 @@ Global
 		{E1777877-6F56-46D0-8747-4BB921ED4C8E} = {3F8EA9C2-D6D1-4B18-8670-DFC24B96972E}
 		{D65C61D8-C073-4761-9BA3-C595A079C42E} = {651320D6-1048-4F87-9D8E-75134FAFABDA}
 		{75538893-9968-45F1-9C05-EDB837FE0CFE} = {651320D6-1048-4F87-9D8E-75134FAFABDA}
+		{4B86E6E5-40EA-44F1-BC72-0D6ECCCC8AE7} = {3F8EA9C2-D6D1-4B18-8670-DFC24B96972E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E833ED14-B971-4E09-B27E-76E99BC0FC10}
