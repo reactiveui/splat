@@ -2,7 +2,7 @@
 
 ![](http://f.cl.ly/items/1307401C3x2g3F2p2Z36/Logo.png)
 
-[![NuGet Stats](https://img.shields.io/nuget/v/splat.svg)](https://www.nuget.org/packages/splat) [![Build Status](https://dev.azure.com/dotnet/ReactiveUI/_apis/build/status/Splat-CI)](https://dev.azure.com/dotnet/ReactiveUI/_build/latest?definitionId=48)
+[![NuGet Stats](https://img.shields.io/nuget/v/splat.svg)](https://www.nuget.org/packages/splat) [![Build Status](https://dev.azure.com/dotnet/ReactiveUI/_apis/build/status/Splat-CI)](https://dev.azure.com/dotnet/ReactiveUI/_build/latest?definitionId=48) [![Code Coverage](https://codecov.io/gh/reactiveui/splat/branch/master/graph/badge.svg)](https://codecov.io/gh/reactiveui/splat)
 <br>
 <a href="https://www.nuget.org/packages/splat">
         <img src="https://img.shields.io/nuget/dt/splat.svg">
