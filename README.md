@@ -173,6 +173,7 @@ Splat has support for the following logging frameworks
 |---------|-------|------|
 | Debug | [Splat][SplatNuGet] | [![SplatBadge]][SplatNuGet] |
 | Log4Net | [Splat.Log4Net][SplatLog4NetNuGet] | Coming Soon! |
+| Microsoft Extensions Logging | [Splat.Microsoft.Extensions.Logging][SplatMicrosoftExtensionsLoggingNuGet] | Coming Soon! |
 | NLog | [Splat.NLog][SplatNLogNuGet] | Coming Soon! |
 | Serilog | [Splat.Serilog][SplatSerilogNuGet] | Coming Soon! |
 
@@ -180,6 +181,8 @@ Splat has support for the following logging frameworks
 [SplatBadge]: https://img.shields.io/nuget/v/Splat.svg
 [SplatLog4NetNuGet]: https://www.nuget.org/packages/Splat.Log4Net/
 [SplatLog4NetBadge]: https://img.shields.io/nuget/v/Splat.Log4Net.svg
+[SplatMicrosoftExtensionsLoggingNuGet]: https://www.nuget.org/packages/Splat.Microsoft.Extensions.Logging/
+[SplatMicrosoftExtensionsLoggingBadge]: https://img.shields.io/nuget/v/Splat.Microsoft.Extensions.Logging.svg
 [SplatNLogNuGet]: https://www.nuget.org/packages/Splat.NLog/
 [SplatNLogBadge]: https://img.shields.io/nuget/v/Splat.NLog.svg
 [SplatSerilogNuGet]: https://www.nuget.org/packages/Splat.Serilog/
@@ -192,8 +195,29 @@ First configure Log4Net. For guidance see https://logging.apache.org/log4net/rel
 ```cs
 using Splat.Log4Net;
 
-///  then in your service locator initialisation
+// then in your service locator initialisation
 Locator.CurrentMutable.UseLog4NetWithWrappingFullLogger();
+```
+
+Thanks to @dpvreony for first creating this logger.
+
+### Microsoft.Extensions.Logging
+
+First configure Microsoft.Extensions.Logging. For guidance see https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/
+
+```cs
+using Splat.Microsoft.Extensions.Logging;
+
+// note: this is different from the other adapter extension methods
+//       as it needs knowledge of the logger factory
+//       also the "container" is how you configured the Microsoft.Logging.Extensions
+var loggerFactory = container.Resolve<ILoggerFactory>();
+// in theory it could also be
+// var loggerFactory = new LoggerFactory();
+
+
+/// then in your service locator initialisation
+Locator.CurrentMutable.UseMicrosoftExtensionsLoggingWithWrappingFullLogger(loggerFactory);
 ```
 
 Thanks to @dpvreony for first creating this logger.
@@ -205,7 +229,7 @@ First configure NLog. For guidance see https://github.com/nlog/nlog/wiki/Tutoria
 ```cs
 using Splat.NLog;
 
-///  then in your service locator initialisation
+//  then in your service locator initialisation
 Locator.CurrentMutable.UseNLogWithWrappingFullLogger();
 ```
 
@@ -218,7 +242,7 @@ First configure Serilog. For guidance see https://github.com/serilog/serilog/wik
 ```cs
 using Splat.Serilog;
 
-/// Then in your service locator initialisation
+// Then in your service locator initialisation
 locator.CurrentMutable.UseSerilogWithWrappingFullLogger();
 ```
 
