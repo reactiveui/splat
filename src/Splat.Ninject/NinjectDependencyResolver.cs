@@ -27,32 +27,32 @@ namespace Splat.Ninject
         }
 
         /// <inheritdoc />
-        public object GetService(Type serviceType, string contract = null) =>
+        public virtual object GetService(Type serviceType, string contract = null) =>
             string.IsNullOrEmpty(contract)
                 ? _kernel.Get(serviceType)
                 : _kernel.Get(serviceType, contract);
 
         /// <inheritdoc />
-        public IEnumerable<object> GetServices(Type serviceType, string contract = null) =>
+        public virtual IEnumerable<object> GetServices(Type serviceType, string contract = null) =>
             string.IsNullOrEmpty(contract)
                 ? _kernel.GetAll(serviceType)
                 : _kernel.GetAll(serviceType, contract);
 
         /// <inheritdoc />
-        public void Register(Func<object> factory, Type serviceType, string contract = null) =>
+        public virtual void Register(Func<object> factory, Type serviceType, string contract = null) =>
             _kernel.Bind(serviceType).ToMethod(_ => factory());
 
         /// <inheritdoc />
-        public void UnregisterCurrent(Type serviceType, string contract = null)
+        public virtual void UnregisterCurrent(Type serviceType, string contract = null)
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc />
-        public void UnregisterAll(Type serviceType, string contract = null) => _kernel.Unbind(serviceType);
+        public virtual void UnregisterAll(Type serviceType, string contract = null) => _kernel.Unbind(serviceType);
 
         /// <inheritdoc />
-        public IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
+        public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
         {
             throw new NotImplementedException();
         }

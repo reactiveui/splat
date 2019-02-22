@@ -7,8 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Ninject;
-using ReactiveUI;
 using Shouldly;
+using Splat.Common.Test;
 using Xunit;
 
 namespace Splat.Ninject.Tests
@@ -19,7 +19,7 @@ namespace Splat.Ninject.Tests
     public class DependencyResolverTests
     {
         /// <summary>
-        /// Shoulds the resolve views.
+        /// Should resolve views.
         /// </summary>
         [Fact]
         public void NinjectDependencyResolver_Should_Resolve_Views()
@@ -39,7 +39,7 @@ namespace Splat.Ninject.Tests
         }
 
         /// <summary>
-        /// Shoulds the resolve views.
+        /// Should resolve views.
         /// </summary>
         [Fact]
         public void NinjectDependencyResolver_Should_Resolve_Named_View()
@@ -55,7 +55,7 @@ namespace Splat.Ninject.Tests
         }
 
         /// <summary>
-        /// Shoulds the resolve view models.
+        /// Should resolve view models.
         /// </summary>
         [Fact]
         public void NinjectDependencyResolver_Should_Resolve_View_Models()
@@ -73,7 +73,7 @@ namespace Splat.Ninject.Tests
         }
 
         /// <summary>
-        /// Shoulds the resolve screen.
+        /// Should resolve screen.
         /// </summary>
         [Fact]
         public void NinjectDependencyResolver_Should_Resolve_Screen()
@@ -89,39 +89,56 @@ namespace Splat.Ninject.Tests
         }
 
         /// <summary>
-        /// Shoulds register ReactiveUI binding type converters.
+        /// Should throw an exception if service registration call back called.
         /// </summary>
         [Fact]
-        public void NinjectDependencyResolver_Should_Register_ReactiveUI_BindingTypeConverters()
+        public void NinjectDependencyResolver_Should_Throw_If_UnregisterCurrent_Called()
         {
-            // Invoke RxApp which initializes the ReactiveUI platform.
-            var scheduler = RxApp.MainThreadScheduler;
             var container = new StandardKernel();
             container.UseNinjectDependencyResolver();
 
-            var converters = container.GetAll<IBindingTypeConverter>().ToList();
+            var result = Record.Exception(() =>
+                Locator.CurrentMutable.UnregisterCurrent(typeof(IScreen)));
 
-            converters.ShouldNotBeNull();
-            converters.ShouldContain(x => x.GetType() == typeof(StringConverter));
-            converters.ShouldContain(x => x.GetType() == typeof(EqualityTypeConverter));
+            result.ShouldBeOfType<NotImplementedException>();
         }
 
         /// <summary>
-        /// Shoulds register ReactiveUI creates command bindings.
+        /// Should unregister all.
         /// </summary>
         [Fact]
-        public void NinjectDependencyResolver_Should_Register_ReactiveUI_CreatesCommandBinding()
+        public void NinjectDependencyResolver_Should_Unregister_All()
         {
-            // Invoke RxApp which initializes the ReactiveUI platform.
-            var scheduler = RxApp.MainThreadScheduler;
+            var container = new StandardKernel();
+            container.Bind<IScreen>().ToConstant(new MockScreen());
+            container.UseNinjectDependencyResolver();
+
+            var screen = Locator.Current.GetService<IScreen>();
+
+            screen.ShouldNotBeNull();
+            screen.ShouldBeOfType<MockScreen>();
+
+            Locator.CurrentMutable.UnregisterAll(typeof(IScreen));
+
+            var result = Record.Exception(() => Locator.Current.GetService<IScreen>());
+
+            result.ShouldBeOfType<ActivationException>();
+            result.Message.ShouldStartWith("Error activating IScreen");
+        }
+
+        /// <summary>
+        /// Should throw an exception if service registration call back called.
+        /// </summary>
+        [Fact]
+        public void NinjectDependencyResolver_Should_Throw_If_ServiceRegistionCallback_Called()
+        {
             var container = new StandardKernel();
             container.UseNinjectDependencyResolver();
 
-            var converters = container.GetAll<ICreatesCommandBinding>().ToList();
+            var result = Record.Exception(() =>
+                Locator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
 
-            converters.ShouldNotBeNull();
-            converters.ShouldContain(x => x.GetType() == typeof(CreatesCommandBindingViaEvent));
-            converters.ShouldContain(x => x.GetType() == typeof(CreatesCommandBindingViaCommandParameter));
+            result.ShouldBeOfType<NotImplementedException>();
         }
     }
 }
