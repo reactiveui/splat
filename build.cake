@@ -12,6 +12,7 @@ var packageWhitelist = new[]
     MakeAbsolute(File("./src/Splat.Log4Net/Splat.Log4Net.csproj")),
     MakeAbsolute(File("./src/Splat.NLog/Splat.NLog.csproj")),
     MakeAbsolute(File("./src/Splat.Serilog/Splat.Serilog.csproj")),
+    MakeAbsolute(File("./src/Splat.Microsoft.Extensions.Logging/Splat.Microsoft.Extensions.Logging.csproj")),
 };
 
 var packageTestWhitelist = new[]
