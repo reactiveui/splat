@@ -1,8 +1,8 @@
 {
-  "version": "6.1",
+  "version": "8.0.0-dotnet3-preview.{height}",
   "publicReleaseRefSpec": [
     "^refs/heads/master$", // we release out of master
-    "^refs/heads/develop$", // we release out of develop
+    "^refs/heads/preview/.*", // we release previews
     "^refs/heads/rel/\\d+\\.\\d+\\.\\d+" // we also release branches starting with rel/N.N.N
   ],
   "nugetPackageVersion":{
