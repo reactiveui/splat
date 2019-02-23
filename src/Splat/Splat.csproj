@@ -10,7 +10,7 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
   
-  <PropertyGroup Condition=" $(TargetFramework.StartsWith('netcoreapp3')) ">
+  <PropertyGroup Condition=" $(TargetFramework.StartsWith('netcoreapp3')) and '$(OS)' == 'Windows_NT' ">
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
@@ -44,7 +44,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
 
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('netcoreapp3')) ">
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('netcoreapp3')) and '$(OS)' == 'Windows_NT' ">
     <Compile Include="Platforms\netcoreapp3\**\*.cs" />
 
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
