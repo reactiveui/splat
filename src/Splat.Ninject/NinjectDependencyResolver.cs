@@ -13,7 +13,7 @@ namespace Splat.Ninject
     /// Ninject implementation for <see cref="IMutableDependencyResolver"/>.
     /// </summary>
     /// <seealso cref="IMutableDependencyResolver" />
-    public class NinjectDependencyResolver : IMutableDependencyResolver
+    public class NinjectDependencyResolver : IDependencyResolver
     {
         private IKernel _kernel;
 

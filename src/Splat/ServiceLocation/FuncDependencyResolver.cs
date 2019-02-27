@@ -15,7 +15,7 @@ namespace Splat
     /// GetService is always implemented via GetServices().LastOrDefault().
     /// This container is not thread safe.
     /// </summary>
-    public class FuncDependencyResolver : IMutableDependencyResolver
+    public class FuncDependencyResolver : IDependencyResolver
     {
         private readonly Func<Type, string, IEnumerable<object>> _innerGetServices;
         private readonly Action<Func<object>, Type, string> _innerRegister;
