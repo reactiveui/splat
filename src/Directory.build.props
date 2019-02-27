@@ -27,10 +27,10 @@
   </PropertyGroup>
 
   <ItemGroup Condition="$(IsTestProject)">
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.0-preview-20181205-02" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
-    <PackageReference Include="Xunit.StaFact" Version="0.3.13" />
+    <PackageReference Include="Xunit.StaFact" Version="0.3.18" />
     <PackageReference Include="Shouldly" Version=" 3.0.2" />
     <PackageReference Include="PublicApiGenerator" Version="8.1.0" />
   </ItemGroup>
