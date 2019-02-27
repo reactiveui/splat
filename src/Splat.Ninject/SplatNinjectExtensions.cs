@@ -17,6 +17,6 @@ namespace Splat.Ninject
         /// </summary>
         /// <param name="kernel">The kernel.</param>
         public static void UseNinjectDependencyResolver(this IKernel kernel) =>
-            Locator.CurrentMutable = new NinjectDependencyResolver(kernel);
+            Locator.SetLocator(new NinjectDependencyResolver(kernel));
     }
 }

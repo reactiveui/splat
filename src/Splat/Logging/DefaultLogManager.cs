@@ -21,7 +21,7 @@ namespace Splat
         /// Initializes a new instance of the <see cref="DefaultLogManager"/> class.
         /// </summary>
         /// <param name="dependencyResolver">A dependency resolver for testing purposes, will use the default Locator if null.</param>
-        public DefaultLogManager(IDependencyResolver dependencyResolver = null)
+        public DefaultLogManager(IReadonlyDependencyResolver dependencyResolver = null)
         {
             dependencyResolver = dependencyResolver ?? Locator.Current;
 

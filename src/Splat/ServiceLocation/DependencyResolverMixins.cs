@@ -23,7 +23,7 @@ namespace Splat
         /// <param name="resolver">The resolver we are getting the service from.</param>
         /// <param name="contract">A optional value which will retrieve only a object registered with the same contract.</param>
         /// <returns>The requested object, if found; <c>null</c> otherwise.</returns>
-        public static T GetService<T>(this IDependencyResolver resolver, string contract = null)
+        public static T GetService<T>(this IReadonlyDependencyResolver resolver, string contract = null)
         {
             return (T)resolver.GetService(typeof(T), contract);
         }
@@ -37,7 +37,7 @@ namespace Splat
         /// <param name="contract">A optional value which will retrieve only a object registered with the same contract.</param>
         /// <returns>A sequence of instances of the requested <typeparamref name="T"/>. The sequence
         /// should be empty (not <c>null</c>) if no objects of the given type are available.</returns>
-        public static IEnumerable<T> GetServices<T>(this IDependencyResolver resolver, string contract = null)
+        public static IEnumerable<T> GetServices<T>(this IReadonlyDependencyResolver resolver, string contract = null)
         {
             return resolver.GetServices(typeof(T), contract).Cast<T>();
         }
@@ -65,10 +65,10 @@ namespace Splat
         {
             var notificationDisposable = suppressResolverCallback ? Locator.SuppressResolverCallbackChangedNotifications() : new ActionDisposable(() => { });
 
-            var origResolver = Locator.Current;
-            Locator.Current = resolver;
+            var origResolver = Locator.Internal;
+            Locator.SetLocator(resolver);
 
-            return new CompositeDisposable(new ActionDisposable(() => Locator.Current = origResolver), notificationDisposable);
+            return new CompositeDisposable(new ActionDisposable(() => Locator.SetLocator(origResolver)), notificationDisposable);
         }
 
         /// <summary>

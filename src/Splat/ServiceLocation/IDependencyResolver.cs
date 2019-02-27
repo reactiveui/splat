@@ -12,25 +12,7 @@ namespace Splat
     /// Represents a dependency resolver, a service to look up global class
     /// instances or types.
     /// </summary>
-    public interface IDependencyResolver : IDisposable
+    public interface IDependencyResolver : IReadonlyDependencyResolver, IMutableDependencyResolver, IDisposable
     {
-        /// <summary>
-        /// Gets an instance of the given <paramref name="serviceType"/>. Must return <c>null</c>
-        /// if the service is not available (must not throw).
-        /// </summary>
-        /// <param name="serviceType">The object type.</param>
-        /// <param name="contract">A optional value which will retrieve only a object registered with the same contract.</param>
-        /// <returns>The requested object, if found; <c>null</c> otherwise.</returns>
-        object GetService(Type serviceType, string contract = null);
-
-        /// <summary>
-        /// Gets all instances of the given <paramref name="serviceType"/>. Must return an empty
-        /// collection if the service is not available (must not return <c>null</c> or throw).
-        /// </summary>
-        /// <param name="serviceType">The object type.</param>
-        /// <param name="contract">A optional value which will retrieve only objects registered with the same contract.</param>
-        /// <returns>A sequence of instances of the requested <paramref name="serviceType"/>. The sequence
-        /// should be empty (not <c>null</c>) if no objects of the given type are available.</returns>
-        IEnumerable<object> GetServices(Type serviceType, string contract = null);
     }
 }
