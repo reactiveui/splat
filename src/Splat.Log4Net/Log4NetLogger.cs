@@ -30,7 +30,7 @@ namespace Splat.Log4Net
         }
 
         /// <inheritdoc />
-        public LogLevel Level { get; set; }
+        public LogLevel Level { get; private set; }
 
         /// <inheritdoc />
         public void Dispose()
