@@ -29,7 +29,7 @@ namespace Splat.Tests.Logging
 
             logger.Write("This is a test.", LogLevel.Debug);
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
+            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Splat.Tests.Logging
 
             logger.Write("This is a test.", LogLevel.Debug);
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
+            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace Splat.Tests.Logging
 
             logger.Debug<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
+            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
             Assert.Equal(typeof(DummyObjectClass1), textLogger.PassedTypes.FirstOrDefault());
         }
 
@@ -72,7 +72,7 @@ namespace Splat.Tests.Logging
 
             logger.Debug<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
+            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
             Assert.Equal(typeof(DummyObjectClass2), textLogger.PassedTypes.FirstOrDefault());
         }
 
@@ -87,7 +87,7 @@ namespace Splat.Tests.Logging
 
             logger.Info<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
+            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
             Assert.Equal(typeof(DummyObjectClass1), textLogger.PassedTypes.FirstOrDefault());
         }
 
@@ -102,7 +102,7 @@ namespace Splat.Tests.Logging
 
             logger.Info<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
+            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
             Assert.Equal(typeof(DummyObjectClass2), textLogger.PassedTypes.FirstOrDefault());
         }
 
@@ -117,7 +117,7 @@ namespace Splat.Tests.Logging
 
             logger.Warn<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
+            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
             Assert.Equal(typeof(DummyObjectClass1), textLogger.PassedTypes.FirstOrDefault());
         }
 
@@ -132,7 +132,7 @@ namespace Splat.Tests.Logging
 
             logger.Warn<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
+            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
             Assert.Equal(typeof(DummyObjectClass2), textLogger.PassedTypes.FirstOrDefault());
         }
 
@@ -147,7 +147,7 @@ namespace Splat.Tests.Logging
 
             logger.Error<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
+            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
             Assert.Equal(typeof(DummyObjectClass1), textLogger.PassedTypes.FirstOrDefault());
         }
 
@@ -162,7 +162,7 @@ namespace Splat.Tests.Logging
 
             logger.Error<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
+            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
             Assert.Equal(typeof(DummyObjectClass2), textLogger.PassedTypes.FirstOrDefault());
         }
 
@@ -177,7 +177,7 @@ namespace Splat.Tests.Logging
 
             logger.Fatal<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
+            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
             Assert.Equal(typeof(DummyObjectClass1), textLogger.PassedTypes.FirstOrDefault());
         }
 
@@ -192,7 +192,7 @@ namespace Splat.Tests.Logging
 
             logger.Fatal<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
+            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
             Assert.Equal(typeof(DummyObjectClass2), textLogger.PassedTypes.FirstOrDefault());
         }
     }

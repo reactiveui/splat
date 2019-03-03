@@ -59,7 +59,7 @@ namespace Splat.Tests.Logging
                     return "This is a test.";
                 });
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
+            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
             Assert.Equal(typeof(DummyObjectClass1), textLogger.PassedTypes.FirstOrDefault());
             Assert.True(invoked);
         }
@@ -105,7 +105,7 @@ namespace Splat.Tests.Logging
                     return "This is a test.";
                 });
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
+            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
             Assert.Equal(typeof(DummyObjectClass1), textLogger.PassedTypes.FirstOrDefault());
             Assert.True(invoked);
         }
@@ -151,7 +151,7 @@ namespace Splat.Tests.Logging
                     return "This is a test.";
                 });
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
+            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
             Assert.Equal(typeof(DummyObjectClass1), textLogger.PassedTypes.FirstOrDefault());
             Assert.True(invoked);
         }
@@ -197,7 +197,7 @@ namespace Splat.Tests.Logging
                     return "This is a test.";
                 });
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
+            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
             Assert.Equal(typeof(DummyObjectClass1), textLogger.PassedTypes.FirstOrDefault());
             Assert.True(invoked);
         }
@@ -220,7 +220,7 @@ namespace Splat.Tests.Logging
                     return "This is a test.";
                 });
 
-            Assert.Equal("This is a test.\r\n", textLogger.Value);
+            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
             Assert.Equal(typeof(DummyObjectClass1), textLogger.PassedTypes.FirstOrDefault());
             Assert.True(invoked);
         }
