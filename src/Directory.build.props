@@ -40,6 +40,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Workaround https://github.com/dotnet/sdk/issues/2976 -->
+    <PackageReference Update="Microsoft.NETCore.Platforms" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)..\LICENSE" Pack="true" PackagePath="LICENSE" />
   </ItemGroup>
 
