@@ -12,8 +12,8 @@ namespace Splat.SimpleInjector
     /// <summary>
     /// Simple Injector implementation for <see cref="IMutableDependencyResolver"/>.
     /// </summary>
-    /// <seealso cref="Splat.IMutableDependencyResolver" />
-    public class SimpleInjectorDependencyResolver : IMutableDependencyResolver
+    /// <seealso cref="Splat.IDependencyResolver" />
+    public class SimpleInjectorDependencyResolver : IDependencyResolver
     {
         private Container _container;
 

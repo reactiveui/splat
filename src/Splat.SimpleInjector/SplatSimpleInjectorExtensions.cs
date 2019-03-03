@@ -17,6 +17,6 @@ namespace Splat.SimpleInjector
         /// </summary>
         /// <param name="container">Simple Injector container.</param>
         public static void UseSimpleInjectorDependencyResolver(this Container container) =>
-            Locator.Current = new SimpleInjectorDependencyResolver(container);
+            Locator.SetLocator(new SimpleInjectorDependencyResolver(container));
     }
 }

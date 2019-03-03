@@ -20,6 +20,6 @@ namespace Splat.DryIoc
         /// </summary>
         /// <param name="container">The container.</param>
         public static void UseDryIocDependencyResolver(this Container container) =>
-            Locator.CurrentMutable = new DryIocDependencyResolver(container);
+            Locator.SetLocator(new DryIocDependencyResolver(container));
     }
 }

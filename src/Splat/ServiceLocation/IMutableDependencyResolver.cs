@@ -10,7 +10,7 @@ namespace Splat
     /// <summary>
     /// Represents a dependency resolver where types can be registered after setup.
     /// </summary>
-    public interface IMutableDependencyResolver : IDependencyResolver
+    public interface IMutableDependencyResolver
     {
         /// <summary>
         /// Register a function with the resolver which will generate a object
