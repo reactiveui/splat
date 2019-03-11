@@ -11,6 +11,8 @@ namespace Splat.Tests.Logging
     /// </summary>
     public class AllocationFreeLoggerBaseTests
     {
+        private static char[] NewLine => Environment.NewLine.ToCharArray();
+
         /// <summary>
         /// Tests that check the functionality of the debug method with four arguments.
         /// </summary>
@@ -28,7 +30,7 @@ namespace Splat.Tests.Logging
 
                 logger.Debug("{0}", 1);
 
-                Assert.Equal("1\r\n", inner.Value);
+                Assert.Equal("1", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -64,7 +66,7 @@ namespace Splat.Tests.Logging
 
                 logger.Debug("{0}, {1}", 1, 2);
 
-                Assert.Equal("1, 2\r\n", inner.Value);
+                Assert.Equal("1, 2", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -100,7 +102,7 @@ namespace Splat.Tests.Logging
 
                 logger.Debug("{0}, {1}, {2}", 1, 2, 3);
 
-                Assert.Equal("1, 2, 3\r\n", inner.Value);
+                Assert.Equal("1, 2, 3", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -136,7 +138,7 @@ namespace Splat.Tests.Logging
 
                 logger.Debug("{0}, {1}, {2}, {3}", 1, 2, 3, 4);
 
-                Assert.Equal("1, 2, 3, 4\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -172,7 +174,7 @@ namespace Splat.Tests.Logging
 
                 logger.Debug("{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
 
-                Assert.Equal("1, 2, 3, 4, 5\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -208,7 +210,7 @@ namespace Splat.Tests.Logging
 
                 logger.Debug("{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -244,7 +246,7 @@ namespace Splat.Tests.Logging
 
                 logger.Debug("{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -280,7 +282,7 @@ namespace Splat.Tests.Logging
 
                 logger.Debug("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -316,7 +318,7 @@ namespace Splat.Tests.Logging
 
                 logger.Debug("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -352,7 +354,7 @@ namespace Splat.Tests.Logging
 
                 logger.Debug("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9, 10\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9, 10", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -388,7 +390,7 @@ namespace Splat.Tests.Logging
 
                 logger.Info("{0}", 1);
 
-                Assert.Equal("1\r\n", inner.Value);
+                Assert.Equal("1", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -424,7 +426,7 @@ namespace Splat.Tests.Logging
 
                 logger.Info("{0}, {1}", 1, 2);
 
-                Assert.Equal("1, 2\r\n", inner.Value);
+                Assert.Equal("1, 2", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -460,7 +462,7 @@ namespace Splat.Tests.Logging
 
                 logger.Info("{0}, {1}, {2}", 1, 2, 3);
 
-                Assert.Equal("1, 2, 3\r\n", inner.Value);
+                Assert.Equal("1, 2, 3", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -496,7 +498,7 @@ namespace Splat.Tests.Logging
 
                 logger.Info("{0}, {1}, {2}, {3}", 1, 2, 3, 4);
 
-                Assert.Equal("1, 2, 3, 4\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -532,7 +534,7 @@ namespace Splat.Tests.Logging
 
                 logger.Info("{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
 
-                Assert.Equal("1, 2, 3, 4, 5\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -568,7 +570,7 @@ namespace Splat.Tests.Logging
 
                 logger.Info("{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -604,7 +606,7 @@ namespace Splat.Tests.Logging
 
                 logger.Info("{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -640,7 +642,7 @@ namespace Splat.Tests.Logging
 
                 logger.Info("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -676,7 +678,7 @@ namespace Splat.Tests.Logging
 
                 logger.Info("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -712,7 +714,7 @@ namespace Splat.Tests.Logging
 
                 logger.Info("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9, 10\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9, 10", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -748,7 +750,7 @@ namespace Splat.Tests.Logging
 
                 logger.Warn("{0}", 1);
 
-                Assert.Equal("1\r\n", inner.Value);
+                Assert.Equal("1", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -784,7 +786,7 @@ namespace Splat.Tests.Logging
 
                 logger.Warn("{0}, {1}", 1, 2);
 
-                Assert.Equal("1, 2\r\n", inner.Value);
+                Assert.Equal("1, 2", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -820,7 +822,7 @@ namespace Splat.Tests.Logging
 
                 logger.Warn("{0}, {1}, {2}", 1, 2, 3);
 
-                Assert.Equal("1, 2, 3\r\n", inner.Value);
+                Assert.Equal("1, 2, 3", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -856,7 +858,7 @@ namespace Splat.Tests.Logging
 
                 logger.Warn("{0}, {1}, {2}, {3}", 1, 2, 3, 4);
 
-                Assert.Equal("1, 2, 3, 4\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -892,7 +894,7 @@ namespace Splat.Tests.Logging
 
                 logger.Warn("{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
 
-                Assert.Equal("1, 2, 3, 4, 5\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -928,7 +930,7 @@ namespace Splat.Tests.Logging
 
                 logger.Warn("{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -964,7 +966,7 @@ namespace Splat.Tests.Logging
 
                 logger.Warn("{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1000,7 +1002,7 @@ namespace Splat.Tests.Logging
 
                 logger.Warn("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1036,7 +1038,7 @@ namespace Splat.Tests.Logging
 
                 logger.Warn("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1072,7 +1074,7 @@ namespace Splat.Tests.Logging
 
                 logger.Warn("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9, 10\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9, 10", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1108,7 +1110,7 @@ namespace Splat.Tests.Logging
 
                 logger.Error("{0}", 1);
 
-                Assert.Equal("1\r\n", inner.Value);
+                Assert.Equal("1", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1144,7 +1146,7 @@ namespace Splat.Tests.Logging
 
                 logger.Error("{0}, {1}", 1, 2);
 
-                Assert.Equal("1, 2\r\n", inner.Value);
+                Assert.Equal("1, 2", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1180,7 +1182,7 @@ namespace Splat.Tests.Logging
 
                 logger.Error("{0}, {1}, {2}", 1, 2, 3);
 
-                Assert.Equal("1, 2, 3\r\n", inner.Value);
+                Assert.Equal("1, 2, 3", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1216,7 +1218,7 @@ namespace Splat.Tests.Logging
 
                 logger.Error("{0}, {1}, {2}, {3}", 1, 2, 3, 4);
 
-                Assert.Equal("1, 2, 3, 4\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1252,7 +1254,7 @@ namespace Splat.Tests.Logging
 
                 logger.Error("{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
 
-                Assert.Equal("1, 2, 3, 4, 5\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1288,7 +1290,7 @@ namespace Splat.Tests.Logging
 
                 logger.Error("{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1324,7 +1326,7 @@ namespace Splat.Tests.Logging
 
                 logger.Error("{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1360,7 +1362,7 @@ namespace Splat.Tests.Logging
 
                 logger.Error("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1396,7 +1398,7 @@ namespace Splat.Tests.Logging
 
                 logger.Error("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1432,7 +1434,7 @@ namespace Splat.Tests.Logging
 
                 logger.Error("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9, 10\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9, 10", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1468,7 +1470,7 @@ namespace Splat.Tests.Logging
 
                 logger.Fatal("{0}", 1);
 
-                Assert.Equal("1\r\n", inner.Value);
+                Assert.Equal("1", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1483,7 +1485,7 @@ namespace Splat.Tests.Logging
 
                 logger.Fatal("{0}", 1);
 
-                Assert.Equal("1\r\n", inner.Value);
+                Assert.Equal("1", inner.Value.TrimEnd(NewLine));
             }
         }
 
@@ -1504,7 +1506,7 @@ namespace Splat.Tests.Logging
 
                 logger.Fatal("{0}, {1}", 1, 2);
 
-                Assert.Equal("1, 2\r\n", inner.Value);
+                Assert.Equal("1, 2", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1519,7 +1521,7 @@ namespace Splat.Tests.Logging
 
                 logger.Fatal("{0}, {1}", 1, 2);
 
-                Assert.Equal("1, 2\r\n", inner.Value);
+                Assert.Equal("1, 2", inner.Value.TrimEnd(NewLine));
             }
         }
 
@@ -1540,7 +1542,7 @@ namespace Splat.Tests.Logging
 
                 logger.Fatal("{0}, {1}, {2}", 1, 2, 3);
 
-                Assert.Equal("1, 2, 3\r\n", inner.Value);
+                Assert.Equal("1, 2, 3", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1555,7 +1557,7 @@ namespace Splat.Tests.Logging
 
                 logger.Fatal("{0}, {1}, {2}", 1, 2, 3);
 
-                Assert.Equal("1, 2, 3\r\n", inner.Value);
+                Assert.Equal("1, 2, 3", inner.Value.TrimEnd(NewLine));
             }
         }
 
@@ -1576,7 +1578,7 @@ namespace Splat.Tests.Logging
 
                 logger.Fatal("{0}, {1}, {2}, {3}", 1, 2, 3, 4);
 
-                Assert.Equal("1, 2, 3, 4\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1591,7 +1593,7 @@ namespace Splat.Tests.Logging
 
                 logger.Fatal("{0}, {1}, {2}, {3}", 1, 2, 3, 4);
 
-                Assert.Equal("1, 2, 3, 4\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4", inner.Value.TrimEnd(NewLine));
             }
         }
 
@@ -1612,7 +1614,7 @@ namespace Splat.Tests.Logging
 
                 logger.Fatal("{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
 
-                Assert.Equal("1, 2, 3, 4, 5\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1627,7 +1629,7 @@ namespace Splat.Tests.Logging
 
                 logger.Fatal("{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
 
-                Assert.Equal("1, 2, 3, 4, 5\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5", inner.Value.TrimEnd(NewLine));
             }
         }
 
@@ -1648,7 +1650,7 @@ namespace Splat.Tests.Logging
 
                 logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1663,7 +1665,7 @@ namespace Splat.Tests.Logging
 
                 logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6", inner.Value.TrimEnd(NewLine));
             }
         }
 
@@ -1684,7 +1686,7 @@ namespace Splat.Tests.Logging
 
                 logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1699,7 +1701,7 @@ namespace Splat.Tests.Logging
 
                 logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7", inner.Value.TrimEnd(NewLine));
             }
         }
 
@@ -1720,7 +1722,7 @@ namespace Splat.Tests.Logging
 
                 logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1735,7 +1737,7 @@ namespace Splat.Tests.Logging
 
                 logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8", inner.Value.TrimEnd(NewLine));
             }
         }
 
@@ -1756,7 +1758,7 @@ namespace Splat.Tests.Logging
 
                 logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1771,7 +1773,7 @@ namespace Splat.Tests.Logging
 
                 logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9", inner.Value.TrimEnd(NewLine));
             }
         }
 
@@ -1792,7 +1794,7 @@ namespace Splat.Tests.Logging
 
                 logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9, 10\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9, 10", inner.Value.TrimEnd(NewLine));
             }
 
             /// <summary>
@@ -1807,7 +1809,7 @@ namespace Splat.Tests.Logging
 
                 logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9, 10\r\n", inner.Value);
+                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9, 10", inner.Value.TrimEnd(NewLine));
             }
         }
     }

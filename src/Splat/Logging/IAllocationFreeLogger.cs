@@ -15,8 +15,33 @@ namespace Splat
     /// A <see cref="WrappingFullLogger"/> will wrap simple loggers into a full logger.
     /// </summary>
     [SuppressMessage("Naming", "CA1716: Do not use built in identifiers", Justification = "Deliberate usage")]
-    public interface IAllocationFreeLogger : IFullLogger
+    public interface IAllocationFreeLogger : ILogger
     {
+        /// <summary>
+        /// Gets a value indicating whether the logger currently emits debug logs.
+        /// </summary>
+        bool IsDebugEnabled { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the logger currently emits information logs.
+        /// </summary>
+        bool IsInfoEnabled { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the logger currently emits warning logs.
+        /// </summary>
+        bool IsWarnEnabled { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the logger currently emits error logs.
+        /// </summary>
+        bool IsErrorEnabled { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the logger currently emits fatal logs.
+        /// </summary>
+        bool IsFatalEnabled { get; }
+
         /// <summary>
         /// Emits a message using formatting to the debug log.
         /// </summary>

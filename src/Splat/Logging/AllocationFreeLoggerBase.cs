@@ -16,9 +16,8 @@ namespace Splat
     /// <summary>
     /// Base class for a logger the provides allocation free logging.
     /// </summary>
-    /// <seealso cref="Splat.WrappingFullLogger" />
-    /// <seealso cref="Splat.IAllocationFreeLogger" />
-    public class AllocationFreeLoggerBase : WrappingFullLogger, IAllocationFreeLogger
+    /// <seealso cref="IAllocationFreeLogger" />
+    public class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         private readonly ILogger _inner;
 
@@ -27,10 +26,27 @@ namespace Splat
         /// </summary>
         /// <param name="inner">The <see cref="T:Splat.ILogger" /> to wrap in this class.</param>
         public AllocationFreeLoggerBase(ILogger inner)
-            : base(inner)
         {
             _inner = inner;
         }
+
+        /// <inheritdoc />
+        public LogLevel Level => _inner.Level;
+
+        /// <inheritdoc />
+        public bool IsDebugEnabled => Level <= LogLevel.Debug;
+
+        /// <inheritdoc />
+        public bool IsInfoEnabled => Level <= LogLevel.Info;
+
+        /// <inheritdoc />
+        public bool IsWarnEnabled => Level <= LogLevel.Warn;
+
+        /// <inheritdoc />
+        public bool IsErrorEnabled => Level <= LogLevel.Error;
+
+        /// <inheritdoc />
+        public bool IsFatalEnabled => Level <= LogLevel.Fatal;
 
         /// <inheritdoc />
         public virtual void Debug<TArgument>([Localizable(false)] string message, TArgument argument)
@@ -1153,6 +1169,30 @@ namespace Splat
                         argument10),
                     LogLevel.Fatal);
             }
+        }
+
+        /// <inheritdoc />
+        public void Write([Localizable(false)] string message, LogLevel logLevel)
+        {
+            _inner.Write(message, logLevel);
+        }
+
+        /// <inheritdoc />
+        public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel)
+        {
+            _inner.Write(exception, message, logLevel);
+        }
+
+        /// <inheritdoc />
+        public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
+        {
+            _inner.Write(message, type, logLevel);
+        }
+
+        /// <inheritdoc />
+        public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
+        {
+            _inner.Write(exception, message, type, logLevel);
         }
     }
 }

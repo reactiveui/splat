@@ -14,7 +14,7 @@ namespace Splat
     /// <summary>
     /// A full logger which wraps a <see cref="ILogger"/>.
     /// </summary>
-    public class WrappingFullLogger : IFullLogger
+    public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         private readonly ILogger _inner;
         private readonly MethodInfo _stringFormat;
@@ -24,6 +24,7 @@ namespace Splat
         /// </summary>
         /// <param name="inner">The <see cref="ILogger"/> to wrap in this class.</param>
         public WrappingFullLogger(ILogger inner)
+            : base(inner)
         {
             _inner = inner;
 
@@ -31,24 +32,6 @@ namespace Splat
             Contract.Requires(inner != null);
             Contract.Requires(_stringFormat != null);
         }
-
-        /// <inheritdoc />
-        public LogLevel Level => _inner.Level;
-
-        /// <inheritdoc />
-        public bool IsDebugEnabled => Level <= LogLevel.Debug;
-
-        /// <inheritdoc />
-        public bool IsInfoEnabled => Level <= LogLevel.Info;
-
-        /// <inheritdoc />
-        public bool IsWarnEnabled => Level <= LogLevel.Warn;
-
-        /// <inheritdoc />
-        public bool IsErrorEnabled => Level <= LogLevel.Error;
-
-        /// <inheritdoc />
-        public bool IsFatalEnabled => Level <= LogLevel.Fatal;
 
         /// <inheritdoc />
         public void Debug<T>(T value)
@@ -419,30 +402,6 @@ namespace Splat
         public void Fatal<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
         {
             _inner.Write(string.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Fatal);
-        }
-
-        /// <inheritdoc />
-        public void Write([Localizable(false)] string message, LogLevel logLevel)
-        {
-            _inner.Write(message, logLevel);
-        }
-
-        /// <inheritdoc />
-        public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel)
-        {
-            _inner.Write(exception, message, logLevel);
-        }
-
-        /// <inheritdoc />
-        public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
-        {
-            _inner.Write(message, type, logLevel);
-        }
-
-        /// <inheritdoc />
-        public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
-        {
-            _inner.Write(exception, message, type, logLevel);
         }
 
         private string InvokeStringFormat(IFormatProvider formatProvider, string message, object[] args)
