@@ -240,13 +240,8 @@ namespace Splat
     public interface IDependencyResolver : Splat.IMutableDependencyResolver, Splat.IReadonlyDependencyResolver, System.IDisposable { }
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public interface IEnableLogger { }
-    public interface IFullLogger : Splat.ILogger
+    public interface IFullLogger : Splat.IAllocationFreeLogger, Splat.ILogger
     {
-        bool IsDebugEnabled { get; }
-        bool IsErrorEnabled { get; }
-        bool IsFatalEnabled { get; }
-        bool IsInfoEnabled { get; }
-        bool IsWarnEnabled { get; }
         void Debug<T>(T value);
         void Debug<T>(System.IFormatProvider formatProvider, T value);
         void Debug(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
@@ -687,7 +682,7 @@ namespace Splat
     {
         public static string GetTargetFrameworkName(this System.Reflection.Assembly assembly) { }
     }
-    public class WrappingFullLogger : Splat.AllocationFreeLoggerBase, Splat.IFullLogger, Splat.ILogger
+    public class WrappingFullLogger : Splat.AllocationFreeLoggerBase, Splat.IAllocationFreeLogger, Splat.IFullLogger, Splat.ILogger
     {
         public WrappingFullLogger(Splat.ILogger inner) { }
         public void Debug<T>(T value) { }

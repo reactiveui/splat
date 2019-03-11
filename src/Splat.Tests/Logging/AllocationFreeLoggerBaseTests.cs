@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Splat.Tests.Mocks;
 using Xunit;
@@ -9,7 +10,8 @@ namespace Splat.Tests.Logging
     /// <summary>
     /// Tests that check the functionality of the <see cref="AllocationFreeLoggerBase"/> class.
     /// </summary>
-    public class AllocationFreeLoggerBaseTests
+    [SuppressMessage("Naming", "CA1034: Do not nest type", Justification = "Deliberate usage")]
+    public static class AllocationFreeLoggerBaseTests
     {
         private static char[] NewLine => Environment.NewLine.ToCharArray();
 

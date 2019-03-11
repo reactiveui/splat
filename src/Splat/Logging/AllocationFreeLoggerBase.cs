@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,7 @@ namespace Splat
     /// Base class for a logger the provides allocation free logging.
     /// </summary>
     /// <seealso cref="IAllocationFreeLogger" />
+    [SuppressMessage("Naming", "CA1716: Do not use built in identifiers", Justification = "Deliberate usage")]
     public class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         private readonly ILogger _inner;
@@ -24,7 +26,7 @@ namespace Splat
         /// <summary>
         /// Initializes a new instance of the <see cref="AllocationFreeLoggerBase"/> class.
         /// </summary>
-        /// <param name="inner">The <see cref="T:Splat.ILogger" /> to wrap in this class.</param>
+        /// <param name="inner">The <see cref="Splat.ILogger" /> to wrap in this class.</param>
         public AllocationFreeLoggerBase(ILogger inner)
         {
             _inner = inner;
