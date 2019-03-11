@@ -49,7 +49,7 @@ namespace Splat
         {
             if (logger.IsDebugEnabled)
             {
-                logger.Debug(function.Invoke(), exception);
+                logger.DebugException(function.Invoke(), exception);
             }
         }
 
@@ -90,7 +90,7 @@ namespace Splat
         {
             if (logger.IsInfoEnabled)
             {
-                logger.Info(function.Invoke(), exception);
+                logger.InfoException(function.Invoke(), exception);
             }
         }
 
@@ -131,7 +131,7 @@ namespace Splat
         {
             if (logger.IsWarnEnabled)
             {
-                logger.Warn(function.Invoke(), exception);
+                logger.WarnException(function.Invoke(), exception);
             }
         }
 
