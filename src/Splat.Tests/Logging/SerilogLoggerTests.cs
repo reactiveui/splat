@@ -250,18 +250,28 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Configuring_With_Static_Log_Should_Write_Message()
         {
-            var serilogLoggerAndTarget = GetActualSerilogLoggerAndTarget();
-            Log.Logger = serilogLoggerAndTarget.Logger;
-            var target = serilogLoggerAndTarget.Target;
-            Locator.CurrentMutable.UseSerilogFullLogger();
+            var originalLocator = Locator.InternalLocator;
+            try
+            {
+                Locator.InternalLocator = new InternalLocator();
+                var serilogLoggerAndTarget = GetActualSerilogLoggerAndTarget();
+                Log.Logger = serilogLoggerAndTarget.Logger;
+                var target = serilogLoggerAndTarget.Target;
 
-            Assert.Equal(0, target.Logs.Count);
+                Locator.CurrentMutable.UseSerilogFullLogger();
 
-            IEnableLogger logger = null;
-            logger.Log().Debug<DummyObjectClass2>("This is a test.");
+                Assert.Equal(0, target.Logs.Count);
 
-            Assert.Equal(1, target.Logs.Count);
-            Assert.Equal($"{typeof(DummyObjectClass2).FullName}: This is a test.", target.Logs.First());
+                IEnableLogger logger = null;
+                logger.Log().Debug<DummyObjectClass2>("This is a test.");
+
+                Assert.Equal(1, target.Logs.Count);
+                Assert.Equal($"{typeof(DummyObjectClass2).FullName}: This is a test.", target.Logs.First());
+            }
+            finally
+            {
+                Locator.InternalLocator = originalLocator;
+            }
         }
 
         /// <summary>
@@ -270,19 +280,27 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Configuring_With_PreConfigured_Log_Should_Write_Message()
         {
-            var serilogLoggerAndTarget = GetActualSerilogLoggerAndTarget();
-            var target = serilogLoggerAndTarget.Target;
-            Locator.CurrentMutable.UseSerilogFullLogger(serilogLoggerAndTarget.Logger);
+            var originalLocator = Locator.InternalLocator;
+            try
+            {
+                Locator.InternalLocator = new InternalLocator();
+                var serilogLoggerAndTarget = GetActualSerilogLoggerAndTarget();
+                var target = serilogLoggerAndTarget.Target;
+                Locator.CurrentMutable.UseSerilogFullLogger(serilogLoggerAndTarget.Logger);
 
-            Assert.Equal(0, target.Logs.Count);
+                Assert.Equal(0, target.Logs.Count);
 
-            IEnableLogger logger = null;
+                IEnableLogger logger = null;
 
-            // Will Fail
-            logger.Log().Debug<DummyObjectClass2>("This is a test.");
+                logger.Log().Debug<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal(1, target.Logs.Count);
-            Assert.Equal($"{typeof(DummyObjectClass2).FullName}: This is a test.", target.Logs.First());
+                Assert.Equal(1, target.Logs.Count);
+                Assert.Equal($"{typeof(DummyObjectClass2).FullName}: This is a test.", target.Logs.First());
+            }
+            finally
+            {
+                Locator.InternalLocator = originalLocator;
+            }
         }
 
         private static (global::Serilog.ILogger Logger, LogTarget Target) GetActualSerilogLoggerAndTarget()
