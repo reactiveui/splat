@@ -38,7 +38,7 @@ namespace Splat.Tests
         /// Checks to ensure a value is returned for 2 duplicate calls.
         /// </summary>
         [Fact]
-        public void ReturnsSameValue()
+        public void GetReturnsSameValue()
         {
             var instance = GetTestInstance();
             var result1 = instance.Get("Test1");
@@ -52,7 +52,7 @@ namespace Splat.Tests
         /// Checks to ensure 2 different values are returned for 2 different calls.
         /// </summary>
         [Fact]
-        public void ReturnsDifferentValues()
+        public void GetReturnsDifferentValues()
         {
             var instance = GetTestInstance();
             var result1 = instance.Get("Test1");
@@ -60,6 +60,41 @@ namespace Splat.Tests
             var result2 = instance.Get("Test2");
             Assert.NotNull(result2);
             Assert.NotSame(result1, result2);
+        }
+
+        /// <summary>
+        /// Checks to ensure a value is returned for 2 duplicate calls.
+        /// </summary>
+        [Fact]
+        public void TryGetReturnsSameValue()
+        {
+            var instance = GetTestInstance();
+            var result1 = instance.Get("Test1");
+            Assert.NotNull(result1);
+            instance.TryGet("Test1", out var result2);
+            Assert.NotNull(result2);
+            Assert.Same(result1, result2);
+        }
+
+        /// <summary>
+        /// Checks to ensure 2 different values are returned for 2 different calls.
+        /// </summary>
+        [Fact]
+        public void TryGetReturnsDifferentValues()
+        {
+            var instance = GetTestInstance();
+            var p1 = instance.Get("Test1");
+            var p2 = instance.Get("Test2");
+
+            var result1 = instance.Get("Test1");
+            Assert.NotNull(result1);
+
+            var result2 = instance.Get("Test2");
+            Assert.NotNull(result2);
+
+            Assert.NotSame(result1, result2);
+            Assert.Same(p1, result1);
+            Assert.Same(p2, result2);
         }
 
         /// <summary>
@@ -83,7 +118,7 @@ namespace Splat.Tests
         }
 
         /// <summary>
-        /// Crude test for checking thread safety when using Get.
+        /// Crude test for checking thread safety when using Get and TryGet.
         /// </summary>
         [Fact]
         public void ThreadSafeRetrievalTestWithGetAndTryGet()
