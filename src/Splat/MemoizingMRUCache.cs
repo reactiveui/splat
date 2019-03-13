@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Threading;
 
 namespace Splat
 {
@@ -22,8 +23,9 @@ namespace Splat
     /// <typeparam name="TParam">The type of the parameter to the calculation function.</typeparam>
     /// <typeparam name="TVal">The type of the value returned by the calculation
     /// function.</typeparam>
-    public class MemoizingMRUCache<TParam, TVal>
+    public sealed class MemoizingMRUCache<TParam, TVal> : IDisposable
     {
+        private readonly ReaderWriterLockSlim _readerWriterLock = new ReaderWriterLockSlim();
         private readonly Func<TParam, object, TVal> _calculationFunction;
         private readonly Action<TVal> _releaseFunction;
         private readonly int _maxCacheSize;
@@ -53,6 +55,12 @@ namespace Splat
             InvalidateAll();
         }
 
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            _readerWriterLock?.Dispose();
+        }
+
         /// <summary>
         /// Gets the value from the specified key.
         /// </summary>
@@ -75,21 +83,37 @@ namespace Splat
 
             Tuple<LinkedListNode<TParam>, TVal> found;
 
-            if (_cacheEntries.TryGetValue(key, out found))
+            _readerWriterLock.EnterUpgradeableReadLock();
+            try
             {
-                _cacheMRUList.Remove(found.Item1);
-                _cacheMRUList.AddFirst(found.Item1);
-                return found.Item2;
+                if (_cacheEntries.TryGetValue(key, out found))
+                {
+                    RefreshEntry(found.Item1);
+
+                    return found.Item2;
+                }
+
+                _readerWriterLock.EnterWriteLock();
+                try
+                {
+                    var result = _calculationFunction(key, context);
+
+                    var node = new LinkedListNode<TParam>(key);
+                    _cacheMRUList.AddFirst(node);
+                    _cacheEntries[key] = new Tuple<LinkedListNode<TParam>, TVal>(node, result);
+                    MaintainCache();
+
+                    return result;
+                }
+                finally
+                {
+                    _readerWriterLock.ExitWriteLock();
+                }
             }
-
-            var result = _calculationFunction(key, context);
-
-            var node = new LinkedListNode<TParam>(key);
-            _cacheMRUList.AddFirst(node);
-            _cacheEntries[key] = new Tuple<LinkedListNode<TParam>, TVal>(node, result);
-            MaintainCache();
-
-            return result;
+            finally
+            {
+                _readerWriterLock.ExitUpgradeableReadLock();
+            }
         }
 
         /// <summary>
@@ -106,8 +130,7 @@ namespace Splat
             var ret = _cacheEntries.TryGetValue(key, out output);
             if (ret && output != null)
             {
-                _cacheMRUList.Remove(output.Item1);
-                _cacheMRUList.AddFirst(output.Item1);
+                RefreshEntry(output.Item1);
                 result = output.Item2;
             }
             else
@@ -184,6 +207,16 @@ namespace Splat
 
                 _cacheEntries.Remove(_cacheMRUList.Last.Value);
                 _cacheMRUList.RemoveLast();
+            }
+        }
+
+        private void RefreshEntry(LinkedListNode<TParam> item)
+        {
+            // only juggle entries if more than 1 of them.
+            if (_cacheEntries.Count > 1)
+            {
+                _cacheMRUList.Remove(item);
+                _cacheMRUList.AddFirst(item);
             }
         }
 
