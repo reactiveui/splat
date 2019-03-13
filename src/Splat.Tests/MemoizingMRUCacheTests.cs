@@ -82,6 +82,38 @@ namespace Splat.Tests
             }
         }
 
+        /// <summary>
+        /// Crude test for checking thread safety when using Get.
+        /// </summary>
+        [Fact]
+        public void ThreadSafeRetrievalTestWithGetAndTryGet()
+        {
+            var instance = GetTestInstance();
+
+            var tests = Enumerable.Range(0, 100);
+
+            var results = tests.AsParallel().Select(i =>
+            {
+                if (i % 2 == 0)
+                {
+                    return instance.Get("Test1");
+                }
+
+                instance.TryGet("Test1", out var result);
+                return result;
+            }).ToList();
+
+            var first = results.First(x => x != null);
+
+            foreach (var dummyObjectClass1 in results)
+            {
+                if (dummyObjectClass1 != null)
+                {
+                    Assert.Same(first, dummyObjectClass1);
+                }
+            }
+        }
+
         private MemoizingMRUCache<string, DummyObjectClass1> GetTestInstance()
         {
             return new MemoizingMRUCache<string, DummyObjectClass1>(

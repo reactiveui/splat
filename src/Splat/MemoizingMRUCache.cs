@@ -127,18 +127,27 @@ namespace Splat
             Contract.Requires(key != null);
 
             Tuple<LinkedListNode<TParam>, TVal> output;
-            var ret = _cacheEntries.TryGetValue(key, out output);
-            if (ret && output != null)
-            {
-                RefreshEntry(output.Item1);
-                result = output.Item2;
-            }
-            else
-            {
-                result = default(TVal);
-            }
 
-            return ret;
+            _readerWriterLock.EnterReadLock();
+            try
+            {
+                var ret = _cacheEntries.TryGetValue(key, out output);
+                if (ret && output != null)
+                {
+                    RefreshEntry(output.Item1);
+                    result = output.Item2;
+                }
+                else
+                {
+                    result = default(TVal);
+                }
+
+                return ret;
+            }
+            finally
+            {
+                _readerWriterLock.ExitReadLock();
+            }
         }
 
         /// <summary>
