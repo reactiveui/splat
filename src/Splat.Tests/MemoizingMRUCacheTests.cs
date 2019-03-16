@@ -149,6 +149,25 @@ namespace Splat.Tests
             }
         }
 
+        /// <summary>
+        /// Check that invalidate all plays nicely.
+        /// </summary>
+        [Fact]
+        public void GetsDifferentInstancesWhenInvalidateAllAndGetAreUsed()
+        {
+            var instance = GetTestInstance();
+
+            var tests = Enumerable.Range(0, 100);
+
+            var results = tests.AsParallel().Select(i =>
+            {
+                instance.InvalidateAll();
+                return instance.Get("Test1");
+            }).ToList();
+
+            Assert.Equal(results.Count, results.Cast<object>().Distinct().Count());
+        }
+
         private MemoizingMRUCache<string, DummyObjectClass1> GetTestInstance()
         {
             return new MemoizingMRUCache<string, DummyObjectClass1>(
