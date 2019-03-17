@@ -162,7 +162,7 @@ namespace Splat
         public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
         public void Write(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
     }
-    public class DefaultLogManager : Splat.ILogManager
+    public sealed class DefaultLogManager : Splat.ILogManager
     {
         public DefaultLogManager(Splat.IReadonlyDependencyResolver dependencyResolver = null) { }
         public Splat.IFullLogger GetLogger(System.Type type) { }
@@ -651,14 +651,14 @@ namespace Splat
     {
         public static Splat.IFullLogger GetLogger<T>(this Splat.ILogManager logManager) { }
     }
-    public class MemoizingMRUCache<TParam, TVal>
+    public sealed class MemoizingMRUCache<TParam, TVal>
     {
         public MemoizingMRUCache(System.Func<TParam, object, TVal> calculationFunc, int maxSize, System.Action<TVal> onRelease = null) { }
         public System.Collections.Generic.IEnumerable<TVal> CachedValues() { }
         public TVal Get(TParam key) { }
         public TVal Get(TParam key, object context = null) { }
         public void Invalidate(TParam key) { }
-        public void InvalidateAll() { }
+        public void InvalidateAll(bool aggregateReleaseExceptions = False) { }
         public bool TryGet(TParam key, out TVal result) { }
     }
     public class static ModeDetector
