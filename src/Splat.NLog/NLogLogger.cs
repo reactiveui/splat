@@ -432,6 +432,12 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc/>
+        public void Debug(Exception exception, string message)
+        {
+            _inner.Debug(exception, message);
+        }
+
+        /// <inheritdoc/>
         public void Debug(IFormatProvider formatProvider, string message, params object[] args)
         {
             _inner.Debug(formatProvider, message, args);
@@ -493,6 +499,12 @@ namespace Splat.NLog
 
         /// <inheritdoc/>
         public void InfoException(string message, Exception exception)
+        {
+            _inner.Info(exception, message);
+        }
+
+        /// <inheritdoc/>
+        public void Info(Exception exception, string message)
         {
             _inner.Info(exception, message);
         }
@@ -564,6 +576,12 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc/>
+        public void Warn(Exception exception, string message)
+        {
+            _inner.Warn(exception, message);
+        }
+
+        /// <inheritdoc/>
         public void Warn(IFormatProvider formatProvider, string message, params object[] args)
         {
             _inner.Warn(formatProvider, message, args);
@@ -630,6 +648,12 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc/>
+        public void Error(Exception exception, string message)
+        {
+            _inner.Error(exception, message);
+        }
+
+        /// <inheritdoc/>
         public void Error(IFormatProvider formatProvider, string message, params object[] args)
         {
             _inner.Warn(formatProvider, message, args);
@@ -691,6 +715,12 @@ namespace Splat.NLog
 
         /// <inheritdoc/>
         public void FatalException(string message, Exception exception)
+        {
+            _inner.Fatal(exception, message);
+        }
+
+        /// <inheritdoc/>
+        public void Fatal(Exception exception, string message)
         {
             _inner.Fatal(exception, message);
         }
