@@ -190,6 +190,12 @@ namespace Splat
         }
 
         /// <inheritdoc />
+        public void Debug(Exception exception, [Localizable(false)] string message)
+        {
+            _logger.Debug(exception, message);
+        }
+
+        /// <inheritdoc />
         public void Error<T>(T value)
         {
             _logger.Error(value.ToString());
@@ -199,6 +205,12 @@ namespace Splat
         public void Error<T>(IFormatProvider formatProvider, T value)
         {
            _logger.Error(string.Format(formatProvider, "{0}", value));
+        }
+
+        /// <inheritdoc />
+        public void Error(Exception exception, string message)
+        {
+            _logger.Error(exception, message);
         }
 
         /// <inheritdoc />
@@ -328,6 +340,12 @@ namespace Splat
         }
 
         /// <inheritdoc />
+        public void Fatal(Exception exception, string message)
+        {
+            _logger.Fatal(exception, message);
+        }
+
+        /// <inheritdoc />
         public void Fatal(IFormatProvider formatProvider, [Localizable(false)] string message, params object[] args)
         {
            _logger.Fatal(string.Format(formatProvider, message, args));
@@ -454,6 +472,12 @@ namespace Splat
         }
 
         /// <inheritdoc />
+        public void Info(Exception exception, string message)
+        {
+            _logger.Information(exception, message);
+        }
+
+        /// <inheritdoc />
         public void Info(IFormatProvider formatProvider, [Localizable(false)] string message, params object[] args)
         {
            _logger.Information(string.Format(formatProvider, message, args));
@@ -577,6 +601,12 @@ namespace Splat
         public void Warn<T>(IFormatProvider formatProvider, T value)
         {
            _logger.Warning(string.Format(formatProvider, "{0}", value));
+        }
+
+        /// <inheritdoc />
+        public void Warn(Exception exception, string message)
+        {
+            _logger.Warning(exception, message);
         }
 
         /// <inheritdoc />

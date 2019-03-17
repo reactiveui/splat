@@ -50,7 +50,7 @@ namespace Splat.Tests.Mocks
         /// <inheritdoc />
         public void Write(Exception exception, string message, LogLevel logLevel)
         {
-            Write($"{message} - {exception}", logLevel);
+            Write($"{exception}: {message}", logLevel);
         }
 
         /// <inheritdoc />

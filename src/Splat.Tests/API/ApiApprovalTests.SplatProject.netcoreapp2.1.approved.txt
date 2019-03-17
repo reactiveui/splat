@@ -12,7 +12,7 @@ namespace Splat
         public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
         public void Write(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
     }
-    public class AllocationFreeLoggerBase : Splat.IAllocationFreeLogger, Splat.ILogger
+    public class AllocationFreeLoggerBase : Splat.IAllocationFreeErrorLogger, Splat.IAllocationFreeLogger, Splat.ILogger
     {
         public AllocationFreeLoggerBase(Splat.ILogger inner) { }
         public bool IsDebugEnabled { get; }
@@ -21,60 +21,110 @@ namespace Splat
         public bool IsInfoEnabled { get; }
         public bool IsWarnEnabled { get; }
         public Splat.LogLevel Level { get; }
-        public virtual void Debug<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument) { }
-        public virtual void Debug<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2) { }
-        public virtual void Debug<TArgument1, TArgument2, TArgument3>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public virtual void Debug<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument argument) { }
+        public virtual void Debug<TArgument>(System.Exception exception, string messageFormat, TArgument argument) { }
+        public virtual void Debug<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        public void Debug<TArgument1, TArgument2>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        public virtual void Debug<TArgument1, TArgument2, TArgument3>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void Debug<TArgument1, TArgument2, TArgument3>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
         public virtual void Debug<TArgument1, TArgument2, TArgument3, TArgument4>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
         public virtual void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
         public virtual void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
         public virtual void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
         public virtual void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
         public virtual void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
         public virtual void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
-        public virtual void Error<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument) { }
-        public virtual void Error<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2) { }
-        public virtual void Error<TArgument1, TArgument2, TArgument3>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        public virtual void Error<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument argument) { }
+        public void Error<TArgument>(System.Exception exception, string messageFormat, TArgument argument) { }
+        public virtual void Error<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        public void Error<TArgument1, TArgument2>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        public virtual void Error<TArgument1, TArgument2, TArgument3>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void Error<TArgument1, TArgument2, TArgument3>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
         public virtual void Error<TArgument1, TArgument2, TArgument3, TArgument4>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
         public virtual void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
         public virtual void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
         public virtual void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
         public virtual void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
         public virtual void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
         public virtual void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
-        public virtual void Fatal<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument) { }
-        public virtual void Fatal<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2) { }
-        public virtual void Fatal<TArgument1, TArgument2, TArgument3>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        public virtual void Fatal<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument argument) { }
+        public void Fatal<TArgument>(System.Exception exception, string messageFormat, TArgument argument) { }
+        public virtual void Fatal<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        public void Fatal<TArgument1, TArgument2>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        public virtual void Fatal<TArgument1, TArgument2, TArgument3>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void Fatal<TArgument1, TArgument2, TArgument3>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
         public virtual void Fatal<TArgument1, TArgument2, TArgument3, TArgument4>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
         public virtual void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
         public virtual void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
         public virtual void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
         public virtual void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
         public virtual void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
         public virtual void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
-        public virtual void Info<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument) { }
-        public virtual void Info<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2) { }
-        public virtual void Info<TArgument1, TArgument2, TArgument3>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        public virtual void Info<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument argument) { }
+        public void Info<TArgument>(System.Exception exception, string messageFormat, TArgument argument) { }
+        public virtual void Info<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        public void Info<TArgument1, TArgument2>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        public virtual void Info<TArgument1, TArgument2, TArgument3>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void Info<TArgument1, TArgument2, TArgument3>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
         public virtual void Info<TArgument1, TArgument2, TArgument3, TArgument4>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
         public virtual void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
         public virtual void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
         public virtual void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
         public virtual void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
         public virtual void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
         public virtual void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
-        public virtual void Warn<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument) { }
-        public virtual void Warn<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2) { }
-        public virtual void Warn<TArgument1, TArgument2, TArgument3>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        public virtual void Warn<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument argument) { }
+        public void Warn<TArgument>(System.Exception exception, string messageFormat, TArgument argument) { }
+        public virtual void Warn<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        public void Warn<TArgument1, TArgument2>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        public virtual void Warn<TArgument1, TArgument2, TArgument3>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void Warn<TArgument1, TArgument2, TArgument3>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
         public virtual void Warn<TArgument1, TArgument2, TArgument3, TArgument4>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
         public virtual void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
         public virtual void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
         public virtual void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
         public virtual void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
         public virtual void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
         public virtual void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
-        public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, Splat.LogLevel logLevel) { }
-        public void Write(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string message, Splat.LogLevel logLevel) { }
-        public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
-        public void Write(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        public void Write([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, Splat.LogLevel logLevel) { }
+        public void Write([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
     }
     public class static BitmapLoader
     {
@@ -156,6 +206,59 @@ namespace Splat
         public FuncLogManager(System.Func<System.Type, Splat.IFullLogger> getLoggerFunc) { }
         public Splat.IFullLogger GetLogger(System.Type type) { }
     }
+    public interface IAllocationFreeErrorLogger : Splat.ILogger
+    {
+        void Debug<TArgument>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument argument);
+        void Debug<TArgument1, TArgument2>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2);
+        void Debug<TArgument1, TArgument2, TArgument3>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4);
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5);
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6);
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7);
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8);
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9);
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10);
+        void Error<TArgument>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument argument);
+        void Error<TArgument1, TArgument2>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2);
+        void Error<TArgument1, TArgument2, TArgument3>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4);
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5);
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6);
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7);
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8);
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9);
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10);
+        void Fatal<TArgument>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument argument);
+        void Fatal<TArgument1, TArgument2>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2);
+        void Fatal<TArgument1, TArgument2, TArgument3>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4);
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5);
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6);
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7);
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8);
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9);
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10);
+        void Info<TArgument>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument argument);
+        void Info<TArgument1, TArgument2>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2);
+        void Info<TArgument1, TArgument2, TArgument3>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4);
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5);
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6);
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7);
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8);
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9);
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10);
+        void Warn<TArgument>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument argument);
+        void Warn<TArgument1, TArgument2>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2);
+        void Warn<TArgument1, TArgument2, TArgument3>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4);
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5);
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6);
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7);
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8);
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9);
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10);
+    }
     public interface IAllocationFreeLogger : Splat.ILogger
     {
         bool IsDebugEnabled { get; }
@@ -163,8 +266,8 @@ namespace Splat
         bool IsFatalEnabled { get; }
         bool IsInfoEnabled { get; }
         bool IsWarnEnabled { get; }
-        void Debug<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
-        void Debug<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
+        void Debug<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument argument);
+        void Debug<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2);
         void Debug<TArgument1, TArgument2, TArgument3>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
         void Debug<TArgument1, TArgument2, TArgument3, TArgument4>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4);
         void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5);
@@ -173,8 +276,8 @@ namespace Splat
         void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8);
         void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9);
         void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10);
-        void Error<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
-        void Error<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
+        void Error<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument argument);
+        void Error<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2);
         void Error<TArgument1, TArgument2, TArgument3>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
         void Error<TArgument1, TArgument2, TArgument3, TArgument4>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4);
         void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5);
@@ -183,8 +286,8 @@ namespace Splat
         void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8);
         void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9);
         void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10);
-        void Fatal<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
-        void Fatal<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
+        void Fatal<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument argument);
+        void Fatal<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2);
         void Fatal<TArgument1, TArgument2, TArgument3>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
         void Fatal<TArgument1, TArgument2, TArgument3, TArgument4>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4);
         void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5);
@@ -193,8 +296,8 @@ namespace Splat
         void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8);
         void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9);
         void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10);
-        void Info<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
-        void Info<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
+        void Info<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument argument);
+        void Info<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2);
         void Info<TArgument1, TArgument2, TArgument3>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
         void Info<TArgument1, TArgument2, TArgument3, TArgument4>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4);
         void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5);
@@ -203,8 +306,8 @@ namespace Splat
         void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8);
         void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9);
         void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10);
-        void Warn<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
-        void Warn<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
+        void Warn<TArgument>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument argument);
+        void Warn<TArgument1, TArgument2>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2);
         void Warn<TArgument1, TArgument2, TArgument3>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
         void Warn<TArgument1, TArgument2, TArgument3, TArgument4>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4);
         void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5);
@@ -233,6 +336,7 @@ namespace Splat
     {
         void Debug<T>(T value);
         void Debug<T>(System.IFormatProvider formatProvider, T value);
+        void Debug(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string message);
         void Debug(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
         void Debug([System.ComponentModel.LocalizableAttribute(false)] string message);
         void Debug<T>([System.ComponentModel.LocalizableAttribute(false)] string message);
@@ -241,9 +345,11 @@ namespace Splat
         void Debug<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
         void Debug<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
         void Debug<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        [System.ObsoleteAttribute("Use void Debug(Exception exception, [Localizable(false)] string message)")]
         void DebugException([System.ComponentModel.LocalizableAttribute(false)] string message, System.Exception exception);
         void Error<T>(T value);
         void Error<T>(System.IFormatProvider formatProvider, T value);
+        void Error(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string message);
         void Error(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
         void Error([System.ComponentModel.LocalizableAttribute(false)] string message);
         void Error<T>([System.ComponentModel.LocalizableAttribute(false)] string message);
@@ -252,9 +358,11 @@ namespace Splat
         void Error<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
         void Error<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
         void Error<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        [System.ObsoleteAttribute("Use void Error(Exception exception, [Localizable(false)] string message)")]
         void ErrorException([System.ComponentModel.LocalizableAttribute(false)] string message, System.Exception exception);
         void Fatal<T>(T value);
         void Fatal<T>(System.IFormatProvider formatProvider, T value);
+        void Fatal(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string message);
         void Fatal(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
         void Fatal([System.ComponentModel.LocalizableAttribute(false)] string message);
         void Fatal<T>([System.ComponentModel.LocalizableAttribute(false)] string message);
@@ -263,9 +371,11 @@ namespace Splat
         void Fatal<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
         void Fatal<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
         void Fatal<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        [System.ObsoleteAttribute("Use void Fatal(Exception exception, [Localizable(false)] string message)")]
         void FatalException([System.ComponentModel.LocalizableAttribute(false)] string message, System.Exception exception);
         void Info<T>(T value);
         void Info<T>(System.IFormatProvider formatProvider, T value);
+        void Info(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string message);
         void Info(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
         void Info([System.ComponentModel.LocalizableAttribute(false)] string message);
         void Info<T>([System.ComponentModel.LocalizableAttribute(false)] string message);
@@ -274,9 +384,11 @@ namespace Splat
         void Info<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
         void Info<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
         void Info<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        [System.ObsoleteAttribute("Use void Info(Exception exception, [Localizable(false)] string message)")]
         void InfoException([System.ComponentModel.LocalizableAttribute(false)] string message, System.Exception exception);
         void Warn<T>(T value);
         void Warn<T>(System.IFormatProvider formatProvider, T value);
+        void Warn(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string message);
         void Warn(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, params object[] args);
         void Warn([System.ComponentModel.LocalizableAttribute(false)] string message);
         void Warn<T>([System.ComponentModel.LocalizableAttribute(false)] string message);
@@ -285,6 +397,7 @@ namespace Splat
         void Warn<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument argument);
         void Warn<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2);
         void Warn<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, [System.ComponentModel.LocalizableAttribute(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+        [System.ObsoleteAttribute("Use void Warn(Exception exception, [Localizable(false)] string message)")]
         void WarnException([System.ComponentModel.LocalizableAttribute(false)] string message, System.Exception exception);
     }
     public interface ILogger
@@ -639,6 +752,7 @@ namespace Splat
         public WrappingFullLogger(Splat.ILogger inner) { }
         public void Debug<T>(T value) { }
         public void Debug<T>(System.IFormatProvider formatProvider, T value) { }
+        public void Debug(System.Exception exception, string message) { }
         public void Debug(System.IFormatProvider formatProvider, string message, params object[] args) { }
         public void Debug(string message) { }
         public void Debug<T>(string message) { }
@@ -650,6 +764,7 @@ namespace Splat
         public void DebugException(string message, System.Exception exception) { }
         public void Error<T>(T value) { }
         public void Error<T>(System.IFormatProvider formatProvider, T value) { }
+        public void Error(System.Exception exception, string message) { }
         public void Error(System.IFormatProvider formatProvider, string message, params object[] args) { }
         public void Error(string message) { }
         public void Error<T>(string message) { }
@@ -661,6 +776,7 @@ namespace Splat
         public void ErrorException(string message, System.Exception exception) { }
         public void Fatal<T>(T value) { }
         public void Fatal<T>(System.IFormatProvider formatProvider, T value) { }
+        public void Fatal(System.Exception exception, string message) { }
         public void Fatal(System.IFormatProvider formatProvider, string message, params object[] args) { }
         public void Fatal(string message) { }
         public void Fatal<T>(string message) { }
@@ -672,6 +788,7 @@ namespace Splat
         public void FatalException(string message, System.Exception exception) { }
         public void Info<T>(T value) { }
         public void Info<T>(System.IFormatProvider formatProvider, T value) { }
+        public void Info(System.Exception exception, string message) { }
         public void Info(System.IFormatProvider formatProvider, string message, params object[] args) { }
         public void Info(string message) { }
         public void Info<T>(string message) { }
@@ -683,6 +800,7 @@ namespace Splat
         public void InfoException(string message, System.Exception exception) { }
         public void Warn<T>(T value) { }
         public void Warn<T>(System.IFormatProvider formatProvider, T value) { }
+        public void Warn(System.Exception exception, string message) { }
         public void Warn(System.IFormatProvider formatProvider, string message, params object[] args) { }
         public void Warn(string message) { }
         public void Warn<T>(string message) { }
