@@ -150,10 +150,60 @@ namespace Splat.Tests
         }
 
         /// <summary>
+        /// Check that invalidate plays nicely.
+        /// </summary>
+        [Fact]
+        public void GetsResultsFromCacheValuesWhenInvalidateAndGetAreUsed()
+        {
+            var instance = GetTestInstance();
+
+            var tests = Enumerable.Range(0, 100);
+
+            var results = tests.AsParallel().Select(i =>
+            {
+                instance.Invalidate("Test1");
+                instance.Get("Test1");
+
+                return instance.CachedValues();
+            }).ToList();
+
+            // This is actually a crude test of a misuse case.
+            // There's no guarantee what comes out is entirely different for every task\thread.
+            // Just make sure it doesn't throw an exception.
+            Assert.NotNull(results);
+        }
+
+        /// <summary>
+        /// Check that invalidate plays nicely.
+        /// </summary>
+        [Fact]
+        public void GetsResultsWhenInvalidateAndGetAreUsed()
+        {
+            var instance = GetTestInstance();
+
+            var tests = Enumerable.Range(0, 100);
+
+            var results = tests.AsParallel().Select(i =>
+            {
+                instance.Invalidate("Test1");
+                var result = instance.Get("Test1");
+
+                // this is here just simply to test cache values plays nicely as well.
+                var cachedValues = instance.CachedValues();
+                return result;
+            }).ToList();
+
+            // This is actually a crude test of a misuse case.
+            // There's no guarantee what comes out is entirely different for every task\thread.
+            // Just make sure it doesn't throw an exception.
+            Assert.NotNull(results);
+        }
+
+        /// <summary>
         /// Check that invalidate all plays nicely.
         /// </summary>
         [Fact]
-        public void GetsDifferentInstancesWhenInvalidateAllAndGetAreUsed()
+        public void GetsResultsWhenInvalidateAllAndGetAreUsed()
         {
             var instance = GetTestInstance();
 
@@ -165,7 +215,10 @@ namespace Splat.Tests
                 return instance.Get("Test1");
             }).ToList();
 
-            Assert.Equal(results.Count, results.Cast<object>().Distinct().Count());
+            // This is actually a crude test of a misuse case.
+            // There's no guarantee what comes out is entirely different for every task\thread.
+            // Just make sure it doesn't throw an exception.
+            Assert.NotNull(results);
         }
 
         private MemoizingMRUCache<string, DummyObjectClass1> GetTestInstance()
