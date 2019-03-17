@@ -29,8 +29,7 @@ namespace Splat.NLog
             var funcLogManager = new FuncLogManager(type =>
             {
                 var actualLogger = global::NLog.LogManager.GetLogger(type.ToString());
-                var miniLoggingWrapper = new NLogLogger(actualLogger);
-                return new WrappingFullLogger(miniLoggingWrapper);
+                return new NLogLogger(actualLogger);
             });
 
             instance.RegisterConstant(funcLogManager, typeof(ILogManager));
