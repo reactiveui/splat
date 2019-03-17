@@ -7,16 +7,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using Splat.Tests.Mocks;
 using Xunit;
 
 namespace Splat.Tests.Logging
 {
     /// <summary>
-    /// Tests that check the functionality of the <see cref="FullLoggerExtensions"/> class.
+    /// A base class for testing full loggers that are available.
     /// </summary>
-    public class FullLoggerExtensionsTests
+    /// <typeparam name="T">The type of logger.</typeparam>
+    public abstract class FullLoggerTestBase<T>
+        where T : IFullLogger, new()
     {
         /// <summary>
         /// Test to make sure the debug emits nothing when not enabled.
@@ -24,21 +25,19 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Debug_Disabled_Should_Not_Emit()
         {
-            var textLogger = new TextLogger();
-            var logger = new WrappingFullLogger(textLogger);
-            var invoked = false;
-            textLogger.Level = LogLevel.Fatal;
+            var (logger, target) = GetLogger(LogLevel.Fatal);
+            bool invoked = false;
 
-            logger.Debug<DummyObjectClass1>(
+            logger.Warn<DummyObjectClass1>(
                 () =>
                 {
                     invoked = true;
                     return "This is a test.";
                 });
 
-            Assert.Null(textLogger.Value);
-            Assert.Null(textLogger.PassedTypes.FirstOrDefault());
-            Assert.False(invoked);
+            Assert.Equal("This is a test." + Environment.NewLine, target.Logs.Last().message);
+            Assert.Equal(typeof(DummyObjectClass1), target.PassedTypes.FirstOrDefault());
+            Assert.True(invoked);
         }
 
         /// <summary>
@@ -47,10 +46,8 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Debug_Enabled_Should_Emit()
         {
-            var textLogger = new TextLogger();
+            var (logger, target) = GetLogger(LogLevel.Debug);
             bool invoked = false;
-            var logger = new WrappingFullLogger(textLogger);
-            textLogger.Level = LogLevel.Debug;
 
             logger.Debug<DummyObjectClass1>(
                 () =>
@@ -59,8 +56,8 @@ namespace Splat.Tests.Logging
                     return "This is a test.";
                 });
 
-            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
-            Assert.Equal(typeof(DummyObjectClass1), textLogger.PassedTypes.FirstOrDefault());
+            Assert.Equal("This is a test." + Environment.NewLine, target.Logs.Last().message);
+            Assert.Equal(typeof(DummyObjectClass1), target.PassedTypes.FirstOrDefault());
             Assert.True(invoked);
         }
 
@@ -70,10 +67,8 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Info_Disabled_Should_Not_Emit()
         {
-            var textLogger = new TextLogger();
-            var logger = new WrappingFullLogger(textLogger);
-            var invoked = false;
-            textLogger.Level = LogLevel.Fatal;
+            var (logger, target) = GetLogger(LogLevel.Fatal);
+            bool invoked = false;
 
             logger.Info<DummyObjectClass1>(
                 () =>
@@ -82,9 +77,9 @@ namespace Splat.Tests.Logging
                     return "This is a test.";
                 });
 
-            Assert.Null(textLogger.Value);
-            Assert.Null(textLogger.PassedTypes.FirstOrDefault());
-            Assert.False(invoked);
+            Assert.Equal("This is a test." + Environment.NewLine, target.Logs.Last().message);
+            Assert.Equal(typeof(DummyObjectClass1), target.PassedTypes.FirstOrDefault());
+            Assert.True(invoked);
         }
 
         /// <summary>
@@ -93,10 +88,8 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Info_Enabled_Should_Emit()
         {
-            var textLogger = new TextLogger();
+            var (logger, target) = GetLogger(LogLevel.Debug);
             bool invoked = false;
-            var logger = new WrappingFullLogger(textLogger);
-            textLogger.Level = LogLevel.Debug;
 
             logger.Info<DummyObjectClass1>(
                 () =>
@@ -105,8 +98,8 @@ namespace Splat.Tests.Logging
                     return "This is a test.";
                 });
 
-            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
-            Assert.Equal(typeof(DummyObjectClass1), textLogger.PassedTypes.FirstOrDefault());
+            Assert.Equal("This is a test." + Environment.NewLine, target.Logs.Last().message);
+            Assert.Equal(typeof(DummyObjectClass1), target.PassedTypes.FirstOrDefault());
             Assert.True(invoked);
         }
 
@@ -116,10 +109,8 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Warn_Disabled_Should_Not_Emit()
         {
-            var textLogger = new TextLogger();
-            var logger = new WrappingFullLogger(textLogger);
-            var invoked = false;
-            textLogger.Level = LogLevel.Fatal;
+            var (logger, target) = GetLogger(LogLevel.Fatal);
+            bool invoked = false;
 
             logger.Warn<DummyObjectClass1>(
                 () =>
@@ -128,9 +119,9 @@ namespace Splat.Tests.Logging
                     return "This is a test.";
                 });
 
-            Assert.Null(textLogger.Value);
-            Assert.Null(textLogger.PassedTypes.FirstOrDefault());
-            Assert.False(invoked);
+            Assert.Equal("This is a test." + Environment.NewLine, target.Logs.Last().message);
+            Assert.Equal(typeof(DummyObjectClass1), target.PassedTypes.FirstOrDefault());
+            Assert.True(invoked);
         }
 
         /// <summary>
@@ -139,10 +130,8 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Warn_Enabled_Should_Emit()
         {
-            var textLogger = new TextLogger();
+            var (logger, target) = GetLogger(LogLevel.Debug);
             bool invoked = false;
-            var logger = new WrappingFullLogger(textLogger);
-            textLogger.Level = LogLevel.Debug;
 
             logger.Warn<DummyObjectClass1>(
                 () =>
@@ -151,8 +140,8 @@ namespace Splat.Tests.Logging
                     return "This is a test.";
                 });
 
-            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
-            Assert.Equal(typeof(DummyObjectClass1), textLogger.PassedTypes.FirstOrDefault());
+            Assert.Equal("This is a test." + Environment.NewLine, target.Logs.Last().message);
+            Assert.Equal(typeof(DummyObjectClass1), target.PassedTypes.FirstOrDefault());
             Assert.True(invoked);
         }
 
@@ -162,10 +151,8 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Error_Disabled_Should_Not_Emit()
         {
-            var textLogger = new TextLogger();
-            var logger = new WrappingFullLogger(textLogger);
-            var invoked = false;
-            textLogger.Level = LogLevel.Fatal;
+            var (logger, target) = GetLogger(LogLevel.Fatal);
+            bool invoked = false;
 
             logger.Error<DummyObjectClass1>(
                 () =>
@@ -174,9 +161,9 @@ namespace Splat.Tests.Logging
                     return "This is a test.";
                 });
 
-            Assert.Null(textLogger.Value);
-            Assert.Null(textLogger.PassedTypes.FirstOrDefault());
-            Assert.False(invoked);
+            Assert.Equal("This is a test." + Environment.NewLine, target.Logs.Last().message);
+            Assert.Equal(typeof(DummyObjectClass1), target.PassedTypes.FirstOrDefault());
+            Assert.True(invoked);
         }
 
         /// <summary>
@@ -185,10 +172,8 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Error_Enabled_Should_Emit()
         {
-            var textLogger = new TextLogger();
+            var (logger, target) = GetLogger(LogLevel.Debug);
             bool invoked = false;
-            var logger = new WrappingFullLogger(textLogger);
-            textLogger.Level = LogLevel.Debug;
 
             logger.Error<DummyObjectClass1>(
                 () =>
@@ -197,8 +182,8 @@ namespace Splat.Tests.Logging
                     return "This is a test.";
                 });
 
-            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
-            Assert.Equal(typeof(DummyObjectClass1), textLogger.PassedTypes.FirstOrDefault());
+            Assert.Equal("This is a test." + Environment.NewLine, target.Logs.Last().message);
+            Assert.Equal(typeof(DummyObjectClass1), target.PassedTypes.FirstOrDefault());
             Assert.True(invoked);
         }
 
@@ -208,10 +193,8 @@ namespace Splat.Tests.Logging
         [Fact]
         public void Fatal_Enabled_Should_Emit()
         {
-            var textLogger = new TextLogger();
+            var (logger, target) = GetLogger(LogLevel.Fatal);
             bool invoked = false;
-            var logger = new WrappingFullLogger(textLogger);
-            textLogger.Level = LogLevel.Fatal;
 
             logger.Fatal<DummyObjectClass1>(
                 () =>
@@ -220,9 +203,16 @@ namespace Splat.Tests.Logging
                     return "This is a test.";
                 });
 
-            Assert.Equal("This is a test." + Environment.NewLine, textLogger.Value);
-            Assert.Equal(typeof(DummyObjectClass1), textLogger.PassedTypes.FirstOrDefault());
+            Assert.Equal("This is a test." + Environment.NewLine, target.Logs.Last().message);
+            Assert.Equal(typeof(DummyObjectClass1), target.PassedTypes.FirstOrDefault());
             Assert.True(invoked);
         }
+
+        /// <summary>
+        /// Gets the logger to test.
+        /// </summary>
+        /// <param name="minimumLogLevel">The minimum log level.</param>
+        /// <returns>The logger.</returns>
+        protected abstract (IFullLogger, IMockLogTarget) GetLogger(LogLevel minimumLogLevel);
     }
 }
