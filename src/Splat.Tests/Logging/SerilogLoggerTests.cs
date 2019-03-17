@@ -9,6 +9,7 @@ using System.Linq;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
+using Serilog.Exceptions;
 using Serilog.Formatting;
 using Splat.Serilog;
 using Splat.Tests.Mocks;
@@ -98,6 +99,25 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Test to make sure the error is passed to the logger.
+        /// </summary>
+        [Fact]
+        public void Debug_With_Exception_Should_Write_Exception_Message_And_Provided()
+        {
+            var serilogLoggerAndTarget = GetSplatSerilogLoggerAndTarget();
+            var logger = new WrappingFullLogger(serilogLoggerAndTarget.Logger);
+            var target = serilogLoggerAndTarget.Target;
+
+            Assert.Equal(0, target.Logs.Count);
+
+            logger.Debug(new Exception(), "This is a test.");
+
+            Assert.Equal(1, target.Logs.Count);
+
+            Assert.Equal("[(\"Type\": \"System.Exception\"), (\"HResult\": -2146233088), (\"Message\": \"Exception of type 'System.Exception' was thrown.\"), (\"Source\": null)]: This is a test.", target.Logs.First());
+        }
+
+        /// <summary>
         /// Test to make sure the generic type parameter is passed to the logger.
         /// </summary>
         [Fact]
@@ -133,6 +153,25 @@ namespace Splat.Tests.Logging
             Assert.Equal(1, target.Logs.Count);
 
             Assert.Equal($"{typeof(DummyObjectClass2).FullName}: This is a test.", target.Logs.First());
+        }
+
+        /// <summary>
+        /// Test to make sure the error is passed to the logger.
+        /// </summary>
+        [Fact]
+        public void Info_With_Exception_Should_Write_Exception_Message_And_Provided()
+        {
+            var serilogLoggerAndTarget = GetSplatSerilogLoggerAndTarget();
+            var logger = new WrappingFullLogger(serilogLoggerAndTarget.Logger);
+            var target = serilogLoggerAndTarget.Target;
+
+            Assert.Equal(0, target.Logs.Count);
+
+            logger.Info(new Exception(), "This is a test.");
+
+            Assert.Equal(1, target.Logs.Count);
+
+            Assert.Equal("[(\"Type\": \"System.Exception\"), (\"HResult\": -2146233088), (\"Message\": \"Exception of type 'System.Exception' was thrown.\"), (\"Source\": null)]: This is a test.", target.Logs.First());
         }
 
         /// <summary>
@@ -173,6 +212,25 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Test to make sure the error is passed to the logger.
+        /// </summary>
+        [Fact]
+        public void Warn_With_Exception_Should_Write_Exception_Message_And_Provided()
+        {
+            var serilogLoggerAndTarget = GetSplatSerilogLoggerAndTarget();
+            var logger = new WrappingFullLogger(serilogLoggerAndTarget.Logger);
+            var target = serilogLoggerAndTarget.Target;
+
+            Assert.Equal(0, target.Logs.Count);
+
+            logger.Warn(new Exception(), "This is a test.");
+
+            Assert.Equal(1, target.Logs.Count);
+
+            Assert.Equal("[(\"Type\": \"System.Exception\"), (\"HResult\": -2146233088), (\"Message\": \"Exception of type 'System.Exception' was thrown.\"), (\"Source\": null)]: This is a test.", target.Logs.First());
+        }
+
+        /// <summary>
         /// Test to make sure the generic type parameter is passed to the logger.
         /// </summary>
         [Fact]
@@ -209,6 +267,25 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Test to make sure the error is passed to the logger.
+        /// </summary>
+        [Fact]
+        public void Error_With_Exception_Should_Write_Exception_Message_And_Provided()
+        {
+            var serilogLoggerAndTarget = GetSplatSerilogLoggerAndTarget();
+            var logger = new WrappingFullLogger(serilogLoggerAndTarget.Logger);
+            var target = serilogLoggerAndTarget.Target;
+
+            Assert.Equal(0, target.Logs.Count);
+
+            logger.Error(new Exception(), "This is a test.");
+
+            Assert.Equal(1, target.Logs.Count);
+
+            Assert.Equal("[(\"Type\": \"System.Exception\"), (\"HResult\": -2146233088), (\"Message\": \"Exception of type 'System.Exception' was thrown.\"), (\"Source\": null)]: This is a test.", target.Logs.First());
+        }
+
+        /// <summary>
         /// Test to make sure the generic type parameter is passed to the logger.
         /// </summary>
         [Fact]
@@ -242,6 +319,25 @@ namespace Splat.Tests.Logging
 
             Assert.Equal(1, target.Logs.Count);
             Assert.Equal($"{typeof(DummyObjectClass2).FullName}: This is a test.", target.Logs.First());
+        }
+
+        /// <summary>
+        /// Test to make sure the error is passed to the logger.
+        /// </summary>
+        [Fact]
+        public void Fatal_With_Exception_Should_Write_Exception_Message_And_Provided()
+        {
+            var serilogLoggerAndTarget = GetSplatSerilogLoggerAndTarget();
+            var logger = new WrappingFullLogger(serilogLoggerAndTarget.Logger);
+            var target = serilogLoggerAndTarget.Target;
+
+            Assert.Equal(0, target.Logs.Count);
+
+            logger.Fatal(new Exception(), "This is a test.");
+
+            Assert.Equal(1, target.Logs.Count);
+
+            Assert.Equal("[(\"Type\": \"System.Exception\"), (\"HResult\": -2146233088), (\"Message\": \"Exception of type 'System.Exception' was thrown.\"), (\"Source\": null)]: This is a test.", target.Logs.First());
         }
 
         /// <summary>
@@ -308,8 +404,12 @@ namespace Splat.Tests.Logging
             var messages = new LogTarget();
 
             var log = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.Sink(messages)
+                .Enrich
+                .WithExceptionDetails()
+                .MinimumLevel
+                .Debug()
+                .WriteTo
+                .Sink(messages)
                 .CreateLogger();
 
             return (log, messages);
@@ -327,9 +427,13 @@ namespace Splat.Tests.Logging
 
             public void Emit(LogEvent logEvent)
             {
-                if (logEvent.Properties.TryGetValue("SourceContext", out var value))
+                if (logEvent.Properties.TryGetValue("SourceContext", out var context))
                 {
-                    Logs.Add(value.ToString().Trim('"').Trim() + ": " + logEvent.RenderMessage());
+                    Logs.Add(context.ToString().Trim('"').Trim() + ": " + logEvent.RenderMessage());
+                }
+                else if (logEvent.Properties.TryGetValue("ExceptionDetail", out var error))
+                {
+                    Logs.Add(error.ToString().Trim('"').Trim() + ": " + logEvent.RenderMessage());
                 }
                 else
                 {

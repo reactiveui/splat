@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Serilog.Exceptions" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Splat.Log4Net\Splat.Log4Net.csproj" />
     <ProjectReference Include="..\Splat.Microsoft.Extensions.Logging\Splat.Microsoft.Extensions.Logging.csproj" />
     <ProjectReference Include="..\Splat.NLog\Splat.NLog.csproj" />

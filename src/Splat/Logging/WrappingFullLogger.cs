@@ -57,6 +57,12 @@ namespace Splat
         }
 
         /// <inheritdoc />
+        public void Debug(Exception exception, string message)
+        {
+            _inner.Write(exception, $"{message}", LogLevel.Debug);
+        }
+
+        /// <inheritdoc />
         public void Debug(IFormatProvider formatProvider, string message, params object[] args)
         {
             var result = InvokeStringFormat(formatProvider, message, args);
@@ -129,6 +135,12 @@ namespace Splat
         public void InfoException(string message, Exception exception)
         {
             _inner.Write(exception, $"{message}: {exception}", LogLevel.Info);
+        }
+
+        /// <inheritdoc />
+        public void Info(Exception exception, string message)
+        {
+            _inner.Write(exception, $"{message}", LogLevel.Info);
         }
 
         /// <inheritdoc />
@@ -206,6 +218,12 @@ namespace Splat
         }
 
         /// <inheritdoc />
+        public void Warn(Exception exception, string message)
+        {
+            _inner.Write(exception, $"{message}", LogLevel.Warn);
+        }
+
+        /// <inheritdoc />
         public void Warn(IFormatProvider formatProvider, string message, params object[] args)
         {
             var result = InvokeStringFormat(formatProvider, message, args);
@@ -280,6 +298,12 @@ namespace Splat
         }
 
         /// <inheritdoc />
+        public void Error(Exception exception, string message)
+        {
+            _inner.Write(exception, $"{message}", LogLevel.Error);
+        }
+
+        /// <inheritdoc />
         public void Error(IFormatProvider formatProvider, string message, params object[] args)
         {
             var result = InvokeStringFormat(formatProvider, message, args);
@@ -351,6 +375,12 @@ namespace Splat
         public void FatalException(string message, Exception exception)
         {
             _inner.Write(exception, $"{message}: {exception}", LogLevel.Fatal);
+        }
+
+        /// <inheritdoc />
+        public void Fatal(Exception exception, string message)
+        {
+            _inner.Write(exception, $"{message}", LogLevel.Fatal);
         }
 
         /// <inheritdoc />

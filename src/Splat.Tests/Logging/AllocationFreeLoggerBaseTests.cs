@@ -15,8 +15,10 @@ namespace Splat.Tests.Logging
     {
         private static char[] NewLine => Environment.NewLine.ToCharArray();
 
+        private static Exception Exception => new Exception();
+
         /// <summary>
-        /// Tests that check the functionality of the debug method with four arguments.
+        /// Tests that check the functionality of the debug method with one argument.
         /// </summary>
         public class DebugOneArgumentMethod
         {
@@ -46,6 +48,42 @@ namespace Splat.Tests.Logging
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Debug("{0}", 1);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class DebugExceptionOneArgumentMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}", 1);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Info;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}", 1);
 
                 Assert.Null(inner.Value);
             }
@@ -88,6 +126,42 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class DebugExceptionTwoArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}, {1}", 1, 2);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Info;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}, {1}", 1, 2);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
         /// Tests that check the functionality of the debug method with six arguments.
         /// </summary>
         public class DebugThreeArgumentsMethod
@@ -118,6 +192,42 @@ namespace Splat.Tests.Logging
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Debug("{0}, {1}, {2}", 1, 2, 3);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class DebugExceptionThreeArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}, {1}, {2}", 1, 2, 3);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Info;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}, {1}, {2}", 1, 2, 3);
 
                 Assert.Null(inner.Value);
             }
@@ -160,6 +270,42 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class DebugExceptionFourArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Info;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
         /// Tests that check the functionality of the debug method with five arguments.
         /// </summary>
         public class DebugFiveArgumentsMethod
@@ -190,6 +336,42 @@ namespace Splat.Tests.Logging
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Debug("{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class DebugExceptionFiveArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Info;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
 
                 Assert.Null(inner.Value);
             }
@@ -232,6 +414,42 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class DebugExceptionSixArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Info;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
         /// Tests that check the functionality of the debug method with seven arguments.
         /// </summary>
         public class DebugSevenArgumentsMethod
@@ -261,7 +479,43 @@ namespace Splat.Tests.Logging
                 inner.Level = LogLevel.Fatal;
                 var logger = new AllocationFreeLoggerBase(inner);
 
-                logger.Error("{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
+                logger.Debug("{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class DebugExceptionSevenArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6, 7", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Info;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
 
                 Assert.Null(inner.Value);
             }
@@ -270,7 +524,7 @@ namespace Splat.Tests.Logging
         /// <summary>
         /// Tests that check the functionality of the debug method with eight arguments.
         /// </summary>
-        public class DebugEighthArgumentsMethod
+        public class DebugEightArgumentsMethod
         {
             /// <summary>
             /// Tests the inner logger writes eight arguments.
@@ -297,7 +551,43 @@ namespace Splat.Tests.Logging
                 inner.Level = LogLevel.Fatal;
                 var logger = new AllocationFreeLoggerBase(inner);
 
-                logger.Error("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
+                logger.Debug("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class DebugExceptionEightArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6, 7, 8", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Info;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
 
                 Assert.Null(inner.Value);
             }
@@ -333,7 +623,43 @@ namespace Splat.Tests.Logging
                 inner.Level = LogLevel.Fatal;
                 var logger = new AllocationFreeLoggerBase(inner);
 
-                logger.Error("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
+                logger.Debug("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class DebugExceptionNineArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6, 7, 8, 9", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Info;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
                 Assert.Null(inner.Value);
             }
@@ -369,7 +695,43 @@ namespace Splat.Tests.Logging
                 inner.Level = LogLevel.Fatal;
                 var logger = new AllocationFreeLoggerBase(inner);
 
-                logger.Error("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+                logger.Debug("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class DebugExceptionTenArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Info;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
                 Assert.Null(inner.Value);
             }
@@ -412,6 +774,42 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class InfoExceptionOneArgumentMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}", 1);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}", 1);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
         /// Tests that check the functionality of the info method with two arguments.
         /// </summary>
         public class InfoTwoArgumentsMethod
@@ -442,6 +840,42 @@ namespace Splat.Tests.Logging
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Info("{0}, {1}", 1, 2);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class InfoExceptionTwoArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}", 1, 2);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}", 1, 2);
 
                 Assert.Null(inner.Value);
             }
@@ -484,6 +918,42 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class InfoExceptionThreeArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}, {2}", 1, 2, 3);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}, {2}", 1, 2, 3);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
         /// Tests that check the functionality of the debug method with four arguments.
         /// </summary>
         public class InfoFourArgumentsMethod
@@ -514,6 +984,42 @@ namespace Splat.Tests.Logging
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Info("{0}, {1}, {2}, {3}", 1, 2, 3, 4);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class InfoExceptionFourArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
 
                 Assert.Null(inner.Value);
             }
@@ -556,6 +1062,42 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class InfoExceptionFiveArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
         /// Tests that check the functionality of the debug method with six arguments.
         /// </summary>
         public class InfoSixArgumentsMethod
@@ -586,6 +1128,42 @@ namespace Splat.Tests.Logging
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Info("{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class InfoExceptionSixArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
 
                 Assert.Null(inner.Value);
             }
@@ -628,9 +1206,45 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class InfoExceptionSevenArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6, 7", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Info;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Debug(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
         /// Tests that check the functionality of the info method with eight arguments.
         /// </summary>
-        public class InfoEighthArgumentsMethod
+        public class InfoEightArgumentsMethod
         {
             /// <summary>
             /// Tests the inner logger writes eight arguments.
@@ -658,6 +1272,42 @@ namespace Splat.Tests.Logging
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Info("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class InfoExceptionEightArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6, 7, 8", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
 
                 Assert.Null(inner.Value);
             }
@@ -700,6 +1350,42 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class InfoExceptionNineArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6, 7, 8, 9", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
         /// Tests that check the functionality of the info method with ten arguments.
         /// </summary>
         public class InfoTenArgumentsMethod
@@ -730,6 +1416,42 @@ namespace Splat.Tests.Logging
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Info("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class InfoExceptionTenArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
                 Assert.Null(inner.Value);
             }
@@ -772,6 +1494,42 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class WarnExceptionOneArgumentMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Warn(Exception, "{0}", 1);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Warn(Exception, "{0}", 1);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
         /// Tests that check the functionality of the warn method with two arguments.
         /// </summary>
         public class WarnTwoArgumentsMethod
@@ -802,6 +1560,42 @@ namespace Splat.Tests.Logging
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Warn("{0}, {1}", 1, 2);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class WarnExceptionTwoArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Warn(Exception, "{0}, {1}", 1, 2);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Warn(Exception, "{0}, {1}", 1, 2);
 
                 Assert.Null(inner.Value);
             }
@@ -844,6 +1638,42 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class WarnExceptionThreeArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Warn(Exception, "{0}, {1}, {2}", 1, 2, 3);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Warn(Exception, "{0}, {1}, {2}", 1, 2, 3);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
         /// Tests that check the functionality of the debug method with four arguments.
         /// </summary>
         public class WarnFourArgumentsMethod
@@ -874,6 +1704,42 @@ namespace Splat.Tests.Logging
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Info("{0}, {1}, {2}, {3}", 1, 2, 3, 4);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class WarnExceptionFourArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
 
                 Assert.Null(inner.Value);
             }
@@ -916,6 +1782,42 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class WarnExceptionFiveArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Warn(Exception, "{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Warn(Exception, "{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
         /// Tests that check the functionality of the debug method with six arguments.
         /// </summary>
         public class WarnSixArgumentsMethod
@@ -946,6 +1848,42 @@ namespace Splat.Tests.Logging
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Info("{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class WarnExceptionSixArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info(Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
 
                 Assert.Null(inner.Value);
             }
@@ -988,9 +1926,45 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class WarnExceptionSevenArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Warn(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6, 7", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Warn(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
         /// Tests that check the functionality of the warn method with eighth arguments.
         /// </summary>
-        public class WarnEighthArgumentsMethod
+        public class WarnEightArgumentsMethod
         {
             /// <summary>
             /// Tests the inner logger writes eighth arguments.
@@ -1018,6 +1992,42 @@ namespace Splat.Tests.Logging
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Warn("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class WarnExceptionEightArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Warn(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6, 7, 8", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Warn(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8);
 
                 Assert.Null(inner.Value);
             }
@@ -1060,6 +2070,42 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class WarnExceptionNineArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Warn(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6, 7, 8, 9", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Warn(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
         /// Tests that check the functionality of the warn method with ten arguments.
         /// </summary>
         public class WarnTenArgumentsMethod
@@ -1096,6 +2142,42 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class WarnExceptionTenArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Warn(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Warn(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
         /// Tests that check the functionality of the error method with one argument.
         /// </summary>
         public class ErrorOneArgumentMethod
@@ -1107,7 +2189,7 @@ namespace Splat.Tests.Logging
             public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Error;
+                inner.Level = LogLevel.Warn;
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Error("{0}", 1);
@@ -1132,6 +2214,42 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Tests that check the functionality of the error method with one argument.
+        /// </summary>
+        public class ErrorExceptionOneArgumentMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Error(Exception, "{0}", 1);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Error(Exception, "{0}", 1);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
         /// Tests that check the functionality of the error method with two arguments.
         /// </summary>
         public class ErrorTwoArgumentsMethod
@@ -1143,7 +2261,7 @@ namespace Splat.Tests.Logging
             public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Error;
+                inner.Level = LogLevel.Warn;
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Error("{0}, {1}", 1, 2);
@@ -1168,6 +2286,42 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Tests that check the functionality of the error method with one argument.
+        /// </summary>
+        public class ErrorExceptionTwoArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Error(Exception, "{0}, {1}", 1, 2);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Error(Exception, "{0}, {1}", 1, 2);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
         /// Tests that check the functionality of the error method with three arguments.
         /// </summary>
         public class ErrorThreeArgumentsMethod
@@ -1179,7 +2333,7 @@ namespace Splat.Tests.Logging
             public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Error;
+                inner.Level = LogLevel.Warn;
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Error("{0}, {1}, {2}", 1, 2, 3);
@@ -1204,7 +2358,43 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
-        /// Tests that check the functionality of the debug method with four arguments.
+        /// Tests that check the functionality of the error method with one argument.
+        /// </summary>
+        public class ErrorExceptionThreeArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Error(Exception, "{0}, {1}, {2}", 1, 2, 3);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Error(Exception, "{0}, {1}, {2}", 1, 2, 3);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the error method with four arguments.
         /// </summary>
         public class ErrorFourArgumentsMethod
         {
@@ -1215,7 +2405,7 @@ namespace Splat.Tests.Logging
             public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Error;
+                inner.Level = LogLevel.Warn;
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Error("{0}, {1}, {2}, {3}", 1, 2, 3, 4);
@@ -1230,17 +2420,53 @@ namespace Splat.Tests.Logging
             public void Should_Not_Write_If_Higher_Level()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Fatal;
+                inner.Level = LogLevel.Error;
                 var logger = new AllocationFreeLoggerBase(inner);
 
-                logger.Error("{0}, {1}, {2}, {3}", 1, 2, 3, 4);
+                logger.Info("{0}, {1}, {2}, {3}", 1, 2, 3, 4);
 
                 Assert.Null(inner.Value);
             }
         }
 
         /// <summary>
-        /// Tests that check the functionality of the debug method with five arguments.
+        /// Tests that check the functionality of the error method with one argument.
+        /// </summary>
+        public class ErrorExceptionFourArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Error(Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Error(Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the error method with five arguments.
         /// </summary>
         public class ErrorFiveArgumentsMethod
         {
@@ -1251,7 +2477,7 @@ namespace Splat.Tests.Logging
             public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Error;
+                inner.Level = LogLevel.Warn;
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Error("{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
@@ -1266,17 +2492,53 @@ namespace Splat.Tests.Logging
             public void Should_Not_Write_If_Higher_Level()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Fatal;
+                inner.Level = LogLevel.Error;
                 var logger = new AllocationFreeLoggerBase(inner);
 
-                logger.Error("{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
+                logger.Info("{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
 
                 Assert.Null(inner.Value);
             }
         }
 
         /// <summary>
-        /// Tests that check the functionality of the debug method with six arguments.
+        /// Tests that check the functionality of the error method with one argument.
+        /// </summary>
+        public class ErrorExceptionFiveArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Error(Exception, "{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Error(Exception, "{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the error method with six arguments.
         /// </summary>
         public class ErrorSixArgumentsMethod
         {
@@ -1287,7 +2549,7 @@ namespace Splat.Tests.Logging
             public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Error;
+                inner.Level = LogLevel.Warn;
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Error("{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
@@ -1302,10 +2564,46 @@ namespace Splat.Tests.Logging
             public void Should_Not_Write_If_Higher_Level()
             {
                 var inner = new TextLogger();
+                inner.Level = LogLevel.Error;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Info("{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the error method with one argument.
+        /// </summary>
+        public class ErrorExceptionSixArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Error(Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
                 inner.Level = LogLevel.Fatal;
                 var logger = new AllocationFreeLoggerBase(inner);
 
-                logger.Error("{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
+                logger.Error(Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
 
                 Assert.Null(inner.Value);
             }
@@ -1323,7 +2621,7 @@ namespace Splat.Tests.Logging
             public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Error;
+                inner.Level = LogLevel.Warn;
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Error("{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
@@ -1348,9 +2646,45 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Tests that check the functionality of the error method with one argument.
+        /// </summary>
+        public class ErrorExceptionSevenArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Error(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6, 7", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Error(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
         /// Tests that check the functionality of the error method with eighth arguments.
         /// </summary>
-        public class ErrorEighthArgumentsMethod
+        public class ErrorEightArgumentsMethod
         {
             /// <summary>
             /// Tests the inner logger writes eighth arguments.
@@ -1359,7 +2693,7 @@ namespace Splat.Tests.Logging
             public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Error;
+                inner.Level = LogLevel.Warn;
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Error("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
@@ -1384,6 +2718,42 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Tests that check the functionality of the error method with one argument.
+        /// </summary>
+        public class ErrorExceptionEightArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Error(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6, 7, 8", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Error(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
         /// Tests that check the functionality of the error method with nine arguments.
         /// </summary>
         public class ErrorNineArgumentsMethod
@@ -1395,7 +2765,7 @@ namespace Splat.Tests.Logging
             public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Error;
+                inner.Level = LogLevel.Warn;
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Error("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
@@ -1413,7 +2783,43 @@ namespace Splat.Tests.Logging
                 inner.Level = LogLevel.Fatal;
                 var logger = new AllocationFreeLoggerBase(inner);
 
-                logger.Error("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
+                logger.Error("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the error method with one argument.
+        /// </summary>
+        public class ErrorExceptionNineArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Error(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6, 7, 8, 9", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Error(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
                 Assert.Null(inner.Value);
             }
@@ -1431,7 +2837,7 @@ namespace Splat.Tests.Logging
             public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Error;
+                inner.Level = LogLevel.Warn;
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Error("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
@@ -1456,6 +2862,42 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
+        /// Tests that check the functionality of the error method with one argument.
+        /// </summary>
+        public class ErrorExceptionTenArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Error(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10", inner.Value.TrimEnd(NewLine));
+            }
+
+            /// <summary>
+            /// Tests the inner logger writes three arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Not_Write_If_Higher_Level()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Fatal;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Error(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+                Assert.Null(inner.Value);
+            }
+        }
+
+        /// <summary>
         /// Tests that check the functionality of the fatal method with one argument.
         /// </summary>
         public class FatalOneArgumentMethod
@@ -1467,27 +2909,33 @@ namespace Splat.Tests.Logging
             public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Fatal;
+                inner.Level = LogLevel.Warn;
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Fatal("{0}", 1);
 
                 Assert.Equal("1", inner.Value.TrimEnd(NewLine));
             }
+        }
 
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class FatalExceptionOneArgumentMethod
+        {
             /// <summary>
             /// Tests the inner logger writes three arguments.
             /// </summary>
             [Fact]
-            public void Should_Write_If_Lower_Level()
+            public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Fatal;
+                inner.Level = LogLevel.Debug;
                 var logger = new AllocationFreeLoggerBase(inner);
 
-                logger.Fatal("{0}", 1);
+                logger.Fatal(Exception, "{0}", 1);
 
-                Assert.Equal("1", inner.Value.TrimEnd(NewLine));
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1", inner.Value.TrimEnd(NewLine));
             }
         }
 
@@ -1503,27 +2951,33 @@ namespace Splat.Tests.Logging
             public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Fatal;
+                inner.Level = LogLevel.Warn;
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Fatal("{0}, {1}", 1, 2);
 
                 Assert.Equal("1, 2", inner.Value.TrimEnd(NewLine));
             }
+        }
 
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class FatalExceptionTwoArgumentsMethod
+        {
             /// <summary>
             /// Tests the inner logger writes three arguments.
             /// </summary>
             [Fact]
-            public void Should_Write_If_Lower_Level()
+            public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Fatal;
+                inner.Level = LogLevel.Debug;
                 var logger = new AllocationFreeLoggerBase(inner);
 
-                logger.Fatal("{0}, {1}", 1, 2);
+                logger.Fatal(Exception, "{0}, {1}", 1, 2);
 
-                Assert.Equal("1, 2", inner.Value.TrimEnd(NewLine));
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2", inner.Value.TrimEnd(NewLine));
             }
         }
 
@@ -1539,27 +2993,33 @@ namespace Splat.Tests.Logging
             public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Fatal;
+                inner.Level = LogLevel.Warn;
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Fatal("{0}, {1}, {2}", 1, 2, 3);
 
                 Assert.Equal("1, 2, 3", inner.Value.TrimEnd(NewLine));
             }
+        }
 
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class FatalExceptionThreeArgumentsMethod
+        {
             /// <summary>
             /// Tests the inner logger writes three arguments.
             /// </summary>
             [Fact]
-            public void Should_Write_If_Lower_Level()
+            public void Should_Write_Message()
             {
                 var inner = new TextLogger();
                 inner.Level = LogLevel.Debug;
                 var logger = new AllocationFreeLoggerBase(inner);
 
-                logger.Fatal("{0}, {1}, {2}", 1, 2, 3);
+                logger.Fatal(Exception, "{0}, {1}, {2}", 1, 2, 3);
 
-                Assert.Equal("1, 2, 3", inner.Value.TrimEnd(NewLine));
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3", inner.Value.TrimEnd(NewLine));
             }
         }
 
@@ -1575,27 +3035,33 @@ namespace Splat.Tests.Logging
             public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Fatal;
+                inner.Level = LogLevel.Warn;
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Fatal("{0}, {1}, {2}, {3}", 1, 2, 3, 4);
 
                 Assert.Equal("1, 2, 3, 4", inner.Value.TrimEnd(NewLine));
             }
+        }
 
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class FatalExceptionFourArgumentsMethod
+        {
             /// <summary>
             /// Tests the inner logger writes three arguments.
             /// </summary>
             [Fact]
-            public void Should_Write_If_Lower_Level()
+            public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Fatal;
+                inner.Level = LogLevel.Debug;
                 var logger = new AllocationFreeLoggerBase(inner);
 
-                logger.Fatal("{0}, {1}, {2}, {3}", 1, 2, 3, 4);
+                logger.Info(Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
 
-                Assert.Equal("1, 2, 3, 4", inner.Value.TrimEnd(NewLine));
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4", inner.Value.TrimEnd(NewLine));
             }
         }
 
@@ -1611,27 +3077,33 @@ namespace Splat.Tests.Logging
             public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Fatal;
+                inner.Level = LogLevel.Warn;
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Fatal("{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
 
                 Assert.Equal("1, 2, 3, 4, 5", inner.Value.TrimEnd(NewLine));
             }
+        }
 
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class FatalExceptionFiveArgumentsMethod
+        {
             /// <summary>
             /// Tests the inner logger writes three arguments.
             /// </summary>
             [Fact]
-            public void Should_Write_If_Lower_Level()
+            public void Should_Write_Message()
             {
                 var inner = new TextLogger();
                 inner.Level = LogLevel.Debug;
                 var logger = new AllocationFreeLoggerBase(inner);
 
-                logger.Fatal("{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
+                logger.Fatal(Exception, "{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
 
-                Assert.Equal("1, 2, 3, 4, 5", inner.Value.TrimEnd(NewLine));
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5", inner.Value.TrimEnd(NewLine));
             }
         }
 
@@ -1654,20 +3126,26 @@ namespace Splat.Tests.Logging
 
                 Assert.Equal("1, 2, 3, 4, 5, 6", inner.Value.TrimEnd(NewLine));
             }
+        }
 
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class FatalExceptionSixArgumentsMethod
+        {
             /// <summary>
             /// Tests the inner logger writes three arguments.
             /// </summary>
             [Fact]
-            public void Should_Write_If_Lower_Level()
+            public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Fatal;
+                inner.Level = LogLevel.Debug;
                 var logger = new AllocationFreeLoggerBase(inner);
 
-                logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
+                logger.Info(Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6", inner.Value.TrimEnd(NewLine));
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6", inner.Value.TrimEnd(NewLine));
             }
         }
 
@@ -1683,22 +3161,7 @@ namespace Splat.Tests.Logging
             public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Fatal;
-                var logger = new AllocationFreeLoggerBase(inner);
-
-                logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
-
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7", inner.Value.TrimEnd(NewLine));
-            }
-
-            /// <summary>
-            /// Tests the inner logger writes seven arguments.
-            /// </summary>
-            [Fact]
-            public void Should_Write_If_Lower_Level()
-            {
-                var inner = new TextLogger();
-                inner.Level = LogLevel.Debug;
+                inner.Level = LogLevel.Warn;
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
@@ -1708,38 +3171,65 @@ namespace Splat.Tests.Logging
         }
 
         /// <summary>
-        /// Tests that check the functionality of the fatal method with eighth arguments.
+        /// Tests that check the functionality of the debug method with one argument.
         /// </summary>
-        public class FatalEighthArgumentsMethod
+        public class FatalExceptionSevenArgumentsMethod
         {
             /// <summary>
-            /// Tests the inner logger writes eight arguments.
+            /// Tests the inner logger writes three arguments.
             /// </summary>
             [Fact]
             public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Fatal;
+                inner.Level = LogLevel.Debug;
+                var logger = new AllocationFreeLoggerBase(inner);
+
+                logger.Fatal(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
+
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6, 7", inner.Value.TrimEnd(NewLine));
+            }
+        }
+
+        /// <summary>
+        /// Tests that check the functionality of the fatal method with eighth arguments.
+        /// </summary>
+        public class FatalEightArgumentsMethod
+        {
+            /// <summary>
+            /// Tests the inner logger writes eighth arguments.
+            /// </summary>
+            [Fact]
+            public void Should_Write_Message()
+            {
+                var inner = new TextLogger();
+                inner.Level = LogLevel.Warn;
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
 
                 Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8", inner.Value.TrimEnd(NewLine));
             }
+        }
 
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class FatalExceptionEightArgumentsMethod
+        {
             /// <summary>
-            /// Tests the inner logger writes eight arguments.
+            /// Tests the inner logger writes three arguments.
             /// </summary>
             [Fact]
-            public void Should_Write_If_Lower_Level()
+            public void Should_Write_Message()
             {
                 var inner = new TextLogger();
                 inner.Level = LogLevel.Debug;
                 var logger = new AllocationFreeLoggerBase(inner);
 
-                logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
+                logger.Fatal(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8", inner.Value.TrimEnd(NewLine));
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6, 7, 8", inner.Value.TrimEnd(NewLine));
             }
         }
 
@@ -1755,27 +3245,33 @@ namespace Splat.Tests.Logging
             public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Fatal;
+                inner.Level = LogLevel.Warn;
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
                 Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9", inner.Value.TrimEnd(NewLine));
             }
+        }
 
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class FatalExceptionNineArgumentsMethod
+        {
             /// <summary>
-            /// Tests the inner logger writes nine arguments.
+            /// Tests the inner logger writes three arguments.
             /// </summary>
             [Fact]
-            public void Should_Write_If_Lower_Level()
+            public void Should_Write_Message()
             {
                 var inner = new TextLogger();
                 inner.Level = LogLevel.Debug;
                 var logger = new AllocationFreeLoggerBase(inner);
 
-                logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
+                logger.Fatal(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9", inner.Value.TrimEnd(NewLine));
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6, 7, 8, 9", inner.Value.TrimEnd(NewLine));
             }
         }
 
@@ -1791,27 +3287,33 @@ namespace Splat.Tests.Logging
             public void Should_Write_Message()
             {
                 var inner = new TextLogger();
-                inner.Level = LogLevel.Fatal;
+                inner.Level = LogLevel.Warn;
                 var logger = new AllocationFreeLoggerBase(inner);
 
                 logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
                 Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9, 10", inner.Value.TrimEnd(NewLine));
             }
+        }
 
+        /// <summary>
+        /// Tests that check the functionality of the debug method with one argument.
+        /// </summary>
+        public class FatalExceptionTenArgumentsMethod
+        {
             /// <summary>
-            /// Tests the inner logger writes ten arguments.
+            /// Tests the inner logger writes three arguments.
             /// </summary>
             [Fact]
-            public void Should_Write_If_Lower_Level()
+            public void Should_Write_Message()
             {
                 var inner = new TextLogger();
                 inner.Level = LogLevel.Debug;
                 var logger = new AllocationFreeLoggerBase(inner);
 
-                logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+                logger.Fatal(Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-                Assert.Equal("1, 2, 3, 4, 5, 6, 7, 8, 9, 10", inner.Value.TrimEnd(NewLine));
+                Assert.Equal("System.Exception: Exception of type 'System.Exception' was thrown.: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10", inner.Value.TrimEnd(NewLine));
             }
         }
     }
