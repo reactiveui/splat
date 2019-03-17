@@ -23,9 +23,9 @@ namespace Splat
     /// <typeparam name="TParam">The type of the parameter to the calculation function.</typeparam>
     /// <typeparam name="TVal">The type of the value returned by the calculation
     /// function.</typeparam>
-    public sealed class MemoizingMRUCache<TParam, TVal> : IDisposable
+    public sealed class MemoizingMRUCache<TParam, TVal>
     {
-        private readonly ReaderWriterLockSlim _readerWriterLock = new ReaderWriterLockSlim();
+        private readonly object _lockObject = new object();
         private readonly Func<TParam, object, TVal> _calculationFunction;
         private readonly Action<TVal> _releaseFunction;
         private readonly int _maxCacheSize;
@@ -55,12 +55,6 @@ namespace Splat
             InvalidateAll();
         }
 
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            _readerWriterLock?.Dispose();
-        }
-
         /// <summary>
         /// Gets the value from the specified key.
         /// </summary>
@@ -83,8 +77,7 @@ namespace Splat
 
             Tuple<LinkedListNode<TParam>, TVal> found;
 
-            _readerWriterLock.EnterUpgradeableReadLock();
-            try
+            lock (_lockObject)
             {
                 if (_cacheEntries.TryGetValue(key, out found))
                 {
@@ -93,26 +86,14 @@ namespace Splat
                     return found.Item2;
                 }
 
-                _readerWriterLock.EnterWriteLock();
-                try
-                {
-                    var result = _calculationFunction(key, context);
+                var result = _calculationFunction(key, context);
 
-                    var node = new LinkedListNode<TParam>(key);
-                    _cacheMRUList.AddFirst(node);
-                    _cacheEntries[key] = new Tuple<LinkedListNode<TParam>, TVal>(node, result);
-                    MaintainCache();
+                var node = new LinkedListNode<TParam>(key);
+                _cacheMRUList.AddFirst(node);
+                _cacheEntries[key] = new Tuple<LinkedListNode<TParam>, TVal>(node, result);
+                MaintainCache();
 
-                    return result;
-                }
-                finally
-                {
-                    _readerWriterLock.ExitWriteLock();
-                }
-            }
-            finally
-            {
-                _readerWriterLock.ExitUpgradeableReadLock();
+                return result;
             }
         }
 
@@ -128,8 +109,7 @@ namespace Splat
 
             Tuple<LinkedListNode<TParam>, TVal> output;
 
-            _readerWriterLock.EnterReadLock();
-            try
+            lock (_lockObject)
             {
                 var ret = _cacheEntries.TryGetValue(key, out output);
                 if (ret && output != null)
@@ -144,10 +124,6 @@ namespace Splat
 
                 return ret;
             }
-            finally
-            {
-                _readerWriterLock.ExitReadLock();
-            }
         }
 
         /// <summary>
@@ -161,34 +137,21 @@ namespace Splat
 
             Tuple<LinkedListNode<TParam>, TVal> to_remove;
 
-            _readerWriterLock.EnterUpgradeableReadLock();
-            try
+            lock (_lockObject)
             {
                 if (!_cacheEntries.TryGetValue(key, out to_remove))
                 {
                     return;
                 }
 
-                _readerWriterLock.EnterWriteLock();
-                try
-                {
-                    var releaseVar = to_remove.Item2;
+                var releaseVar = to_remove.Item2;
 
-                    _cacheMRUList.Remove(to_remove.Item1);
-                    _cacheEntries.Remove(key);
+                _cacheMRUList.Remove(to_remove.Item1);
+                _cacheEntries.Remove(key);
 
-                    // moved down to allow removal from list
-                    // even if the release call fails.
-                    _releaseFunction?.Invoke(releaseVar);
-                }
-                finally
-                {
-                    _readerWriterLock.ExitWriteLock();
-                }
-            }
-            finally
-            {
-                _readerWriterLock.ExitUpgradeableReadLock();
+                // moved down to allow removal from list
+                // even if the release call fails.
+                _releaseFunction?.Invoke(releaseVar);
             }
         }
 
@@ -201,10 +164,8 @@ namespace Splat
         /// </param>
         public void InvalidateAll(bool aggregateReleaseExceptions = false)
         {
-            _readerWriterLock.EnterWriteLock();
-
             Dictionary<TParam, Tuple<LinkedListNode<TParam>, TVal>> oldCacheToClear = null;
-            try
+            lock (_lockObject)
             {
                 if (_releaseFunction == null || _cacheEntries == null)
                 {
@@ -228,10 +189,6 @@ namespace Splat
 
                 _cacheMRUList = new LinkedList<TParam>();
                 _cacheEntries = new Dictionary<TParam, Tuple<LinkedListNode<TParam>, TVal>>();
-            }
-            finally
-            {
-                _readerWriterLock.ExitWriteLock();
             }
 
             if (oldCacheToClear == null)
@@ -277,15 +234,9 @@ namespace Splat
         /// <returns>The values in the cache.</returns>
         public IEnumerable<TVal> CachedValues()
         {
-            _readerWriterLock.EnterReadLock();
-
-            try
+            lock (_lockObject)
             {
                 return _cacheEntries.Select(x => x.Value.Item2);
-            }
-            finally
-            {
-                _readerWriterLock.ExitReadLock();
             }
         }
 

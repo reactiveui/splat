@@ -12,7 +12,7 @@ namespace Splat
     /// This log manager will cache the loggers for each type,
     /// This will use the default registered <see cref="ILogger"/> inside the <see cref="Locator"/>.
     /// </summary>
-    public sealed class DefaultLogManager : ILogManager, IDisposable
+    public sealed class DefaultLogManager : ILogManager
     {
         private static readonly IFullLogger _nullLogger = new WrappingFullLogger(new NullLogger());
         private readonly MemoizingMRUCache<Type, IFullLogger> _loggerCache;
@@ -36,12 +36,6 @@ namespace Splat
 
                     return new WrappingFullLogger(new WrappingPrefixLogger(ret, type));
                 }, 64);
-        }
-
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            _loggerCache?.Dispose();
         }
 
         /// <inheritdoc />
