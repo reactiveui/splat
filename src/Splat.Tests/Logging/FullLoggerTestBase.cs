@@ -4,9 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Splat.Tests.Mocks;
 using Xunit;
 
@@ -213,6 +211,6 @@ namespace Splat.Tests.Logging
         /// </summary>
         /// <param name="minimumLogLevel">The minimum log level.</param>
         /// <returns>The logger.</returns>
-        protected abstract (IFullLogger, IMockLogTarget) GetLogger(LogLevel minimumLogLevel);
+        protected abstract (T, IMockLogTarget) GetLogger(LogLevel minimumLogLevel);
     }
 }
