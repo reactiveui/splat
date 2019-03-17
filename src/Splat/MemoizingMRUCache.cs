@@ -161,40 +161,113 @@ namespace Splat
 
             Tuple<LinkedListNode<TParam>, TVal> to_remove;
 
-            if (!_cacheEntries.TryGetValue(key, out to_remove))
+            _readerWriterLock.EnterUpgradeableReadLock();
+            try
             {
-                return;
+                if (!_cacheEntries.TryGetValue(key, out to_remove))
+                {
+                    return;
+                }
+
+                _readerWriterLock.EnterWriteLock();
+                try
+                {
+                    var releaseVar = to_remove.Item2;
+
+                    _cacheMRUList.Remove(to_remove.Item1);
+                    _cacheEntries.Remove(key);
+
+                    // moved down to allow removal from list
+                    // even if the release call fails.
+                    _releaseFunction?.Invoke(releaseVar);
+                }
+                finally
+                {
+                    _readerWriterLock.ExitWriteLock();
+                }
             }
-
-            _releaseFunction?.Invoke(to_remove.Item2);
-
-            _cacheMRUList.Remove(to_remove.Item1);
-            _cacheEntries.Remove(key);
+            finally
+            {
+                _readerWriterLock.ExitUpgradeableReadLock();
+            }
         }
 
         /// <summary>
         /// Invalidate all the items in the cache.
         /// </summary>
-        public void InvalidateAll()
+        /// <param name="aggregateReleaseExceptions">
+        /// Flag to indicate whether Exceptions during the resource Release call should not fail on the first item.
+        /// But should try all items then throw an aggregate exception.
+        /// </param>
+        public void InvalidateAll(bool aggregateReleaseExceptions = false)
         {
-            if (_releaseFunction == null || _cacheEntries == null)
+            _readerWriterLock.EnterWriteLock();
+
+            Dictionary<TParam, Tuple<LinkedListNode<TParam>, TVal>> oldCacheToClear = null;
+            try
             {
+                if (_releaseFunction == null || _cacheEntries == null)
+                {
+                    _cacheMRUList = new LinkedList<TParam>();
+                    _cacheEntries = new Dictionary<TParam, Tuple<LinkedListNode<TParam>, TVal>>();
+                    return;
+                }
+
+                if (_cacheEntries.Count == 0)
+                {
+                    return;
+                }
+
+                // by moving to a temp variable
+                // can free up the lock quicker for other calls to MRU
+                if (_releaseFunction != null)
+                {
+                    // no point doing it, if nothing to release
+                    oldCacheToClear = _cacheEntries;
+                }
+
                 _cacheMRUList = new LinkedList<TParam>();
                 _cacheEntries = new Dictionary<TParam, Tuple<LinkedListNode<TParam>, TVal>>();
-                return;
+            }
+            finally
+            {
+                _readerWriterLock.ExitWriteLock();
             }
 
-            if (_cacheEntries.Count == 0)
+            if (oldCacheToClear == null)
             {
                 return;
             }
 
-            // We have to remove them one-by-one to call the release function
-            // We ToArray() this so we don't get a "modifying collection while
-            // enumerating" exception.
-            foreach (var v in _cacheEntries.Keys.ToArray())
+            if (aggregateReleaseExceptions)
             {
-                Invalidate(v);
+                var exceptions = new List<Exception>(oldCacheToClear.Count);
+                foreach (var item in oldCacheToClear)
+                {
+                    try
+                    {
+                        _releaseFunction?.Invoke(item.Value.Item2);
+                    }
+                    catch (Exception e)
+                    {
+                        exceptions.Add(e);
+                    }
+                }
+
+                if (exceptions.Count > 0)
+                {
+                    throw new AggregateException("Exceptions throw during MRU Cache Invalidate All Item Release.", exceptions);
+                }
+
+                return;
+            }
+
+            // release mechanism that will throw on first failure.
+            // but they've still been removed from the active cache
+            // as the cache field was reassigned.
+            foreach (var item in oldCacheToClear)
+            {
+                _releaseFunction?.Invoke(item.Value.Item2);
             }
         }
 
@@ -204,7 +277,16 @@ namespace Splat
         /// <returns>The values in the cache.</returns>
         public IEnumerable<TVal> CachedValues()
         {
-            return _cacheEntries.Select(x => x.Value.Item2);
+            _readerWriterLock.EnterReadLock();
+
+            try
+            {
+                return _cacheEntries.Select(x => x.Value.Item2);
+            }
+            finally
+            {
+                _readerWriterLock.ExitReadLock();
+            }
         }
 
         private void MaintainCache()
