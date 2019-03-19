@@ -17,7 +17,7 @@ namespace Splat.NLog
     [DebuggerDisplay("Name={_inner.Name} Level={Level}")]
     public sealed class NLogLogger : IFullLogger, IDisposable
     {
-        private static readonly KeyValuePair<LogLevel, global::NLog.LogLevel>[] _mappings = new[]
+        private static readonly KeyValuePair<LogLevel, global::NLog.LogLevel>[] _mappings =
         {
             new KeyValuePair<LogLevel, global::NLog.LogLevel>(LogLevel.Debug, global::NLog.LogLevel.Debug),
             new KeyValuePair<LogLevel, global::NLog.LogLevel>(LogLevel.Info, global::NLog.LogLevel.Info),
@@ -72,45 +72,25 @@ namespace Splat.NLog
         /// <inheritdoc />
         public void Write(string message, LogLevel logLevel)
         {
-            if ((int)logLevel < (int)Level)
-            {
-                return;
-            }
-
             _inner.Log(_mappingsDictionary[logLevel], message);
         }
 
         /// <inheritdoc />
         public void Write(Exception exception, string message, LogLevel logLevel)
         {
-            if ((int)logLevel < (int)Level)
-            {
-                return;
-            }
-
             _inner.Log(_mappingsDictionary[logLevel], exception, message);
         }
 
         /// <inheritdoc />
         public void Write(string message, Type type, LogLevel logLevel)
         {
-            if ((int)logLevel < (int)Level)
-            {
-                return;
-            }
-
-            _inner.Log(_mappingsDictionary[logLevel], $"{type.Name}: {message}");
+            LogResolver.Resolve(type).Log(_mappingsDictionary[logLevel], message);
         }
 
         /// <inheritdoc />
         public void Write(Exception exception, string message, Type type, LogLevel logLevel)
         {
-            if ((int)logLevel < (int)Level)
-            {
-                return;
-            }
-
-            _inner.Log(_mappingsDictionary[logLevel], exception, $"{type.Name}: {message}");
+            LogResolver.Resolve(type).Log(_mappingsDictionary[logLevel], exception, message);
         }
 
         /// <inheritdoc/>
@@ -452,7 +432,7 @@ namespace Splat.NLog
         /// <inheritdoc/>
         public void Debug<T>(string message)
         {
-            _inner.Factory.GetLogger(typeof(T).ToString()).Debug(message);
+            LogResolver.Resolve(typeof(T)).Debug(message);
         }
 
         /// <inheritdoc/>
@@ -464,7 +444,7 @@ namespace Splat.NLog
         /// <inheritdoc/>
         public void Debug<T>(string message, params object[] args)
         {
-            _inner.Factory.GetLogger(typeof(T).ToString()).Debug(CultureInfo.InvariantCulture, message, args);
+            LogResolver.Resolve(typeof(T)).Debug(CultureInfo.InvariantCulture, message, args);
         }
 
         /// <inheritdoc/>
@@ -488,7 +468,7 @@ namespace Splat.NLog
         /// <inheritdoc/>
         public void Info<T>(T value)
         {
-            _inner.Factory.GetLogger(typeof(T).ToString()).Info(value);
+            LogResolver.Resolve(typeof(T)).Info(value);
         }
 
         /// <inheritdoc/>
@@ -524,7 +504,7 @@ namespace Splat.NLog
         /// <inheritdoc/>
         public void Info<T>(string message)
         {
-            _inner.Factory.GetLogger(typeof(T).ToString()).Info(message);
+            LogResolver.Resolve(typeof(T)).Info(message);
         }
 
         /// <inheritdoc/>
@@ -536,7 +516,7 @@ namespace Splat.NLog
         /// <inheritdoc/>
         public void Info<T>(string message, params object[] args)
         {
-            _inner.Factory.GetLogger(typeof(T).ToString()).Info(CultureInfo.InvariantCulture, message, args);
+            LogResolver.Resolve(typeof(T)).Info(CultureInfo.InvariantCulture, message, args);
         }
 
         /// <inheritdoc/>
@@ -560,7 +540,7 @@ namespace Splat.NLog
         /// <inheritdoc/>
         public void Warn<T>(T value)
         {
-            _inner.Factory.GetLogger(typeof(T).ToString()).Warn(value);
+            LogResolver.Resolve(typeof(T)).Warn(value);
         }
 
         /// <inheritdoc/>
@@ -596,7 +576,7 @@ namespace Splat.NLog
         /// <inheritdoc/>
         public void Warn<T>(string message)
         {
-            _inner.Factory.GetLogger(typeof(T).ToString()).Warn(message);
+            LogResolver.Resolve(typeof(T)).Warn(message);
         }
 
         /// <inheritdoc/>
@@ -608,7 +588,7 @@ namespace Splat.NLog
         /// <inheritdoc/>
         public void Warn<T>(string message, params object[] args)
         {
-            _inner.Factory.GetLogger(typeof(T).ToString()).Warn(CultureInfo.InvariantCulture, message, args);
+            LogResolver.Resolve(typeof(T)).Warn(CultureInfo.InvariantCulture, message, args);
         }
 
         /// <inheritdoc/>
@@ -632,7 +612,7 @@ namespace Splat.NLog
         /// <inheritdoc/>
         public void Error<T>(T value)
         {
-            _inner.Factory.GetLogger(typeof(T).ToString()).Error(value);
+            LogResolver.Resolve(typeof(T)).Error(value);
         }
 
         /// <inheritdoc/>
@@ -656,7 +636,7 @@ namespace Splat.NLog
         /// <inheritdoc/>
         public void Error(IFormatProvider formatProvider, string message, params object[] args)
         {
-            _inner.Warn(formatProvider, message, args);
+            _inner.Error(formatProvider, message, args);
         }
 
         /// <inheritdoc/>
@@ -668,7 +648,7 @@ namespace Splat.NLog
         /// <inheritdoc/>
         public void Error<T>(string message)
         {
-            _inner.Factory.GetLogger(typeof(T).ToString()).Error(message);
+            LogResolver.Resolve(typeof(T)).Error(message);
         }
 
         /// <inheritdoc/>
@@ -680,7 +660,7 @@ namespace Splat.NLog
         /// <inheritdoc/>
         public void Error<T>(string message, params object[] args)
         {
-            _inner.Factory.GetLogger(typeof(T).ToString()).Error(CultureInfo.InvariantCulture, message, args);
+            LogResolver.Resolve(typeof(T)).Error(CultureInfo.InvariantCulture, message, args);
         }
 
         /// <inheritdoc/>
@@ -704,7 +684,7 @@ namespace Splat.NLog
         /// <inheritdoc/>
         public void Fatal<T>(T value)
         {
-            _inner.Factory.GetLogger(typeof(T).ToString()).Fatal(value);
+            LogResolver.Resolve(typeof(T)).Fatal(value);
         }
 
         /// <inheritdoc/>
@@ -740,7 +720,7 @@ namespace Splat.NLog
         /// <inheritdoc/>
         public void Fatal<T>(string message)
         {
-            _inner.Factory.GetLogger(typeof(T).ToString()).Fatal(message);
+            LogResolver.Resolve(typeof(T)).Fatal(message);
         }
 
         /// <inheritdoc/>
@@ -752,7 +732,7 @@ namespace Splat.NLog
         /// <inheritdoc/>
         public void Fatal<T>(string message, params object[] args)
         {
-            _inner.Factory.GetLogger(typeof(T).ToString()).Fatal(CultureInfo.InvariantCulture, message, args);
+            LogResolver.Resolve(typeof(T)).Fatal(CultureInfo.InvariantCulture, message, args);
         }
 
         /// <inheritdoc/>
@@ -771,6 +751,306 @@ namespace Splat.NLog
         public void Fatal<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
         {
             _inner.Fatal(formatProvider, message, argument1, argument2, argument3);
+        }
+
+        /// <inheritdoc/>
+        public void Debug<TArgument>(Exception exception, string messageFormat, TArgument argument)
+        {
+            _inner.Debug(exception, messageFormat, argument);
+        }
+
+        /// <inheritdoc/>
+        public void Debug<TArgument1, TArgument2>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2)
+        {
+            _inner.Debug(exception, messageFormat, argument1, argument2);
+        }
+
+        /// <inheritdoc/>
+        public void Debug<TArgument1, TArgument2, TArgument3>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
+        {
+            _inner.Debug(exception, messageFormat, argument1, argument2, argument3);
+        }
+
+        /// <inheritdoc/>
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4)
+        {
+            _inner.Debug(exception, messageFormat, argument1, argument2, argument3, argument4);
+        }
+
+        /// <inheritdoc/>
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5)
+        {
+            _inner.Debug(exception, messageFormat, argument1, argument2, argument3, argument4, argument5);
+        }
+
+        /// <inheritdoc/>
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6)
+        {
+            _inner.Debug(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6);
+        }
+
+        /// <inheritdoc/>
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7)
+        {
+            _inner.Debug(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7);
+        }
+
+        /// <inheritdoc/>
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8)
+        {
+            _inner.Debug(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8);
+        }
+
+        /// <inheritdoc/>
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9)
+        {
+            _inner.Debug(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9);
+        }
+
+        /// <inheritdoc/>
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10)
+        {
+            _inner.Debug(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10);
+        }
+
+        /// <inheritdoc/>
+        public void Info<TArgument>(Exception exception, string messageFormat, TArgument argument)
+        {
+            _inner.Info(exception, messageFormat, argument);
+        }
+
+        /// <inheritdoc/>
+        public void Info<TArgument1, TArgument2>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2)
+        {
+            _inner.Info(exception, messageFormat, argument1, argument2);
+        }
+
+        /// <inheritdoc/>
+        public void Info<TArgument1, TArgument2, TArgument3>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
+        {
+            _inner.Info(exception, messageFormat, argument1, argument2, argument3);
+        }
+
+        /// <inheritdoc/>
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4)
+        {
+            _inner.Info(exception, messageFormat, argument1, argument2, argument3, argument4);
+        }
+
+        /// <inheritdoc/>
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5)
+        {
+            _inner.Info(exception, messageFormat, argument1, argument2, argument3, argument4, argument5);
+        }
+
+        /// <inheritdoc/>
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6)
+        {
+            _inner.Info(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6);
+        }
+
+        /// <inheritdoc/>
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7)
+        {
+            _inner.Info(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7);
+        }
+
+        /// <inheritdoc/>
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8)
+        {
+            _inner.Info(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8);
+        }
+
+        /// <inheritdoc/>
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9)
+        {
+            _inner.Info(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9);
+        }
+
+        /// <inheritdoc/>
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10)
+        {
+            _inner.Info(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10);
+        }
+
+        /// <inheritdoc/>
+        public void Warn<TArgument>(Exception exception, string messageFormat, TArgument argument)
+        {
+            _inner.Warn(exception, messageFormat, argument);
+        }
+
+        /// <inheritdoc/>
+        public void Warn<TArgument1, TArgument2>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2)
+        {
+            _inner.Warn(exception, messageFormat, argument1, argument2);
+        }
+
+        /// <inheritdoc/>
+        public void Warn<TArgument1, TArgument2, TArgument3>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
+        {
+            _inner.Warn(exception, messageFormat, argument1, argument2, argument3);
+        }
+
+        /// <inheritdoc/>
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4)
+        {
+            _inner.Warn(exception, messageFormat, argument1, argument2, argument3, argument4);
+        }
+
+        /// <inheritdoc/>
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5)
+        {
+            _inner.Warn(exception, messageFormat, argument1, argument2, argument3, argument4, argument5);
+        }
+
+        /// <inheritdoc/>
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6)
+        {
+            _inner.Warn(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6);
+        }
+
+        /// <inheritdoc/>
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7)
+        {
+            _inner.Warn(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7);
+        }
+
+        /// <inheritdoc/>
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8)
+        {
+            _inner.Warn(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8);
+        }
+
+        /// <inheritdoc/>
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9)
+        {
+            _inner.Warn(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9);
+        }
+
+        /// <inheritdoc/>
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10)
+        {
+            _inner.Warn(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10);
+        }
+
+        /// <inheritdoc/>
+        public void Error<TArgument>(Exception exception, string messageFormat, TArgument argument)
+        {
+            _inner.Error(exception, messageFormat, argument);
+        }
+
+        /// <inheritdoc/>
+        public void Error<TArgument1, TArgument2>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2)
+        {
+            _inner.Error(exception, messageFormat, argument1, argument2);
+        }
+
+        /// <inheritdoc/>
+        public void Error<TArgument1, TArgument2, TArgument3>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
+        {
+            _inner.Error(exception, messageFormat, argument1, argument2, argument3);
+        }
+
+        /// <inheritdoc/>
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4)
+        {
+            _inner.Error(exception, messageFormat, argument1, argument2, argument3, argument4);
+        }
+
+        /// <inheritdoc/>
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5)
+        {
+            _inner.Error(exception, messageFormat, argument1, argument2, argument3, argument4, argument5);
+        }
+
+        /// <inheritdoc/>
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6)
+        {
+            _inner.Error(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6);
+        }
+
+        /// <inheritdoc/>
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7)
+        {
+            _inner.Error(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7);
+        }
+
+        /// <inheritdoc/>
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8)
+        {
+            _inner.Error(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8);
+        }
+
+        /// <inheritdoc/>
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9)
+        {
+            _inner.Error(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9);
+        }
+
+        /// <inheritdoc/>
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10)
+        {
+            _inner.Error(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10);
+        }
+
+        /// <inheritdoc/>
+        public void Fatal<TArgument>(Exception exception, string messageFormat, TArgument argument)
+        {
+            _inner.Fatal(exception, messageFormat, argument);
+        }
+
+        /// <inheritdoc/>
+        public void Fatal<TArgument1, TArgument2>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2)
+        {
+            _inner.Fatal(exception, messageFormat, argument1, argument2);
+        }
+
+        /// <inheritdoc/>
+        public void Fatal<TArgument1, TArgument2, TArgument3>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
+        {
+            _inner.Fatal(exception, messageFormat, argument1, argument2, argument3);
+        }
+
+        /// <inheritdoc/>
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4)
+        {
+            _inner.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4);
+        }
+
+        /// <inheritdoc/>
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5)
+        {
+            _inner.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5);
+        }
+
+        /// <inheritdoc/>
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6)
+        {
+            _inner.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6);
+        }
+
+        /// <inheritdoc/>
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7)
+        {
+            _inner.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7);
+        }
+
+        /// <inheritdoc/>
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8)
+        {
+            _inner.Error(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8);
+        }
+
+        /// <inheritdoc/>
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9)
+        {
+            _inner.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9);
+        }
+
+        /// <inheritdoc/>
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10)
+        {
+            _inner.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10);
         }
 
         private void OnInnerLoggerReconfigured(object sender, EventArgs e)

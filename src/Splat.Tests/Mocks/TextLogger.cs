@@ -6,7 +6,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace Splat.Tests.Mocks
 {
@@ -16,7 +15,6 @@ namespace Splat.Tests.Mocks
     /// <seealso cref="Splat.ILogger" />
     public class TextLogger : ILogger, IMockLogTarget
     {
-        private readonly Lazy<StringBuilder> _stringBuilder = new Lazy<StringBuilder>();
         private readonly List<Type> _types = new List<Type>();
         private readonly List<(LogLevel, string)> _logs = new List<(LogLevel, string)>();
 
@@ -28,10 +26,7 @@ namespace Splat.Tests.Mocks
         }
 
         /// <inheritdoc />
-        public ICollection<Type> PassedTypes => _types;
-
-        /// <inheritdoc />
-        public ICollection<(LogLevel, string)> Logs => _logs;
+        public ICollection<(LogLevel logLevel, string message)> Logs => _logs;
 
         /// <inheritdoc />
         public LogLevel Level { get; set; }
@@ -45,7 +40,7 @@ namespace Splat.Tests.Mocks
         /// <inheritdoc />
         public void Write(Exception exception, string message, LogLevel logLevel)
         {
-            Write($"{exception}: {message}", logLevel);
+            Write($"{message} {exception}", logLevel);
         }
 
         /// <inheritdoc />
@@ -58,7 +53,7 @@ namespace Splat.Tests.Mocks
         /// <inheritdoc />
         public void Write(Exception exception, string message, Type type, LogLevel logLevel)
         {
-            Write($"{message} - {exception}", type, logLevel);
+            Write($"{message} {exception}", type, logLevel);
         }
     }
 }

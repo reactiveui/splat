@@ -3,9 +3,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Splat.Tests.Mocks
 {
@@ -14,11 +12,6 @@ namespace Splat.Tests.Mocks
     /// </summary>
     public interface IMockLogTarget
     {
-        /// <summary>
-        /// Gets the passed types.
-        /// </summary>
-        ICollection<Type> PassedTypes { get; }
-
         /// <summary>
         /// Gets the logs that have been sent.
         /// </summary>

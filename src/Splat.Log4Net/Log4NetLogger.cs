@@ -5,7 +5,6 @@
 
 using System;
 using System.Diagnostics;
-using log4net;
 
 namespace Splat.Log4Net
 {
@@ -44,38 +43,23 @@ namespace Splat.Log4Net
             switch (logLevel)
             {
                 case LogLevel.Debug:
-                    if (Level <= LogLevel.Debug)
-                    {
-                        _inner.Debug(message);
-                    }
+                    _inner.Debug(message);
 
                     break;
                 case LogLevel.Info:
-                    if (Level <= LogLevel.Info)
-                    {
-                        _inner.Info(message);
-                    }
+                    _inner.Info(message);
 
                     break;
                 case LogLevel.Warn:
-                    if (Level <= LogLevel.Warn)
-                    {
-                        _inner.Info(message);
-                    }
+                    _inner.Warn(message);
 
                     break;
                 case LogLevel.Error:
-                    if (Level <= LogLevel.Error)
-                    {
-                        _inner.Error(message);
-                    }
+                    _inner.Error(message);
 
                     break;
                 case LogLevel.Fatal:
-                    if (Level <= LogLevel.Fatal)
-                    {
-                        _inner.Fatal(message);
-                    }
+                    _inner.Fatal(message);
 
                     break;
                 default:
@@ -91,38 +75,22 @@ namespace Splat.Log4Net
             switch (logLevel)
             {
                 case LogLevel.Debug:
-                    if (Level <= LogLevel.Debug)
-                    {
-                        _inner.Debug(message, exception);
-                    }
-
+                    _inner.Debug(message, exception);
                     break;
                 case LogLevel.Info:
-                    if (Level <= LogLevel.Info)
-                    {
-                        _inner.Info(message, exception);
-                    }
+                    _inner.Info(message, exception);
 
                     break;
                 case LogLevel.Warn:
-                    if (Level <= LogLevel.Warn)
-                    {
-                        _inner.Info(message, exception);
-                    }
+                    _inner.Warn(message, exception);
 
                     break;
                 case LogLevel.Error:
-                    if (Level <= LogLevel.Error)
-                    {
-                        _inner.Error(message, exception);
-                    }
+                    _inner.Error(message, exception);
 
                     break;
                 case LogLevel.Fatal:
-                    if (Level <= LogLevel.Fatal)
-                    {
-                        _inner.Fatal(message, exception);
-                    }
+                    _inner.Fatal(message, exception);
 
                     break;
                 default:
@@ -135,13 +103,65 @@ namespace Splat.Log4Net
         /// <inheritdoc />
         public void Write(string message, Type type, LogLevel logLevel)
         {
-            Write($"{type.Name}: {message}", logLevel);
+            var logger = LogResolver.Resolve(type);
+            switch (logLevel)
+            {
+                case LogLevel.Debug:
+                    logger.Debug(message);
+                    break;
+                case LogLevel.Info:
+                    logger.Info(message);
+
+                    break;
+                case LogLevel.Warn:
+                    logger.Warn(message);
+
+                    break;
+                case LogLevel.Error:
+                    logger.Error(message);
+
+                    break;
+                case LogLevel.Fatal:
+                    logger.Fatal(message);
+
+                    break;
+                default:
+                    logger.Debug(message);
+
+                    break;
+            }
         }
 
         /// <inheritdoc />
         public void Write(Exception exception, string message, Type type, LogLevel logLevel)
         {
-            Write(exception, $"{type.Name}: {message}", logLevel);
+            var logger = LogResolver.Resolve(type);
+            switch (logLevel)
+            {
+                case LogLevel.Debug:
+                    logger.Debug(message, exception);
+                    break;
+                case LogLevel.Info:
+                    logger.Info(message, exception);
+
+                    break;
+                case LogLevel.Warn:
+                    logger.Warn(message, exception);
+
+                    break;
+                case LogLevel.Error:
+                    logger.Error(message, exception);
+
+                    break;
+                case LogLevel.Fatal:
+                    logger.Fatal(message, exception);
+
+                    break;
+                default:
+                    logger.Debug(message, exception);
+
+                    break;
+            }
         }
 
         /// <summary>

@@ -12,9 +12,9 @@ namespace Splat
         public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
         public void Write(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
     }
-    public class AllocationFreeLoggerBase : Splat.IAllocationFreeErrorLogger, Splat.IAllocationFreeLogger, Splat.ILogger
+    public abstract class AllocationFreeLoggerBase : Splat.IAllocationFreeErrorLogger, Splat.IAllocationFreeLogger, Splat.ILogger
     {
-        public AllocationFreeLoggerBase(Splat.ILogger inner) { }
+        protected AllocationFreeLoggerBase(Splat.ILogger inner) { }
         public bool IsDebugEnabled { get; }
         public bool IsErrorEnabled { get; }
         public bool IsFatalEnabled { get; }
@@ -270,7 +270,7 @@ namespace Splat
         void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9);
         void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10);
     }
-    public interface IAllocationFreeLogger : Splat.ILogger
+    public interface IAllocationFreeLogger : Splat.IAllocationFreeErrorLogger, Splat.ILogger
     {
         bool IsDebugEnabled { get; }
         bool IsErrorEnabled { get; }
@@ -343,7 +343,7 @@ namespace Splat
     public interface IDependencyResolver : Splat.IMutableDependencyResolver, Splat.IReadonlyDependencyResolver, System.IDisposable { }
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public interface IEnableLogger { }
-    public interface IFullLogger : Splat.IAllocationFreeLogger, Splat.ILogger
+    public interface IFullLogger : Splat.IAllocationFreeErrorLogger, Splat.IAllocationFreeLogger, Splat.ILogger
     {
         void Debug<T>(T value);
         void Debug<T>(System.IFormatProvider formatProvider, T value);
@@ -795,7 +795,7 @@ namespace Splat
     {
         public static string GetTargetFrameworkName(this System.Reflection.Assembly assembly) { }
     }
-    public class WrappingFullLogger : Splat.AllocationFreeLoggerBase, Splat.IAllocationFreeLogger, Splat.IFullLogger, Splat.ILogger
+    public class WrappingFullLogger : Splat.AllocationFreeLoggerBase, Splat.IAllocationFreeErrorLogger, Splat.IAllocationFreeLogger, Splat.IFullLogger, Splat.ILogger
     {
         public WrappingFullLogger(Splat.ILogger inner) { }
         public void Debug<T>(T value) { }

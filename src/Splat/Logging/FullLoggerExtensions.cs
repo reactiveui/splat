@@ -4,6 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Splat
 {
@@ -49,7 +50,9 @@ namespace Splat
         {
             if (logger.IsDebugEnabled)
             {
+#pragma warning disable CS0618 // Type or member is obsolete
                 logger.DebugException(function.Invoke(), exception);
+#pragma warning restore CS0618 // Type or member is obsolete
             }
         }
 
@@ -90,7 +93,9 @@ namespace Splat
         {
             if (logger.IsInfoEnabled)
             {
+#pragma warning disable CS0618 // Type or member is obsolete
                 logger.InfoException(function.Invoke(), exception);
+#pragma warning restore CS0618 // Type or member is obsolete
             }
         }
 
@@ -131,7 +136,9 @@ namespace Splat
         {
             if (logger.IsWarnEnabled)
             {
+#pragma warning disable CS0618 // Type or member is obsolete
                 logger.WarnException(function.Invoke(), exception);
+#pragma warning restore CS0618 // Type or member is obsolete
             }
         }
 
@@ -172,7 +179,9 @@ namespace Splat
         {
             if (logger.IsErrorEnabled)
             {
+#pragma warning disable CS0618 // Type or member is obsolete
                 logger.ErrorException(function.Invoke(), exception);
+#pragma warning restore CS0618 // Type or member is obsolete
             }
         }
 
@@ -213,7 +222,9 @@ namespace Splat
         {
             if (logger.IsFatalEnabled)
             {
+#pragma warning disable CS0618 // Type or member is obsolete
                 logger.ErrorException(function.Invoke(), exception);
+#pragma warning restore CS0618 // Type or member is obsolete
             }
         }
     }

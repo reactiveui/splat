@@ -15,7 +15,7 @@ namespace Splat
     /// A <see cref="WrappingFullLogger"/> will wrap simple loggers into a full logger.
     /// </summary>
     [SuppressMessage("Naming", "CA1716: Do not use built in identifiers", Justification = "Deliberate usage")]
-    public interface IAllocationFreeLogger : ILogger
+    public interface IAllocationFreeLogger : IAllocationFreeErrorLogger
     {
         /// <summary>
         /// Gets a value indicating whether the logger currently emits debug logs.

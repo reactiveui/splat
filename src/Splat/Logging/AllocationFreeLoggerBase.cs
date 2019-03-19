@@ -15,7 +15,7 @@ namespace Splat
     /// </summary>
     /// <seealso cref="IAllocationFreeLogger" />
     [SuppressMessage("Naming", "CA1716: Do not use built in identifiers", Justification = "Deliberate usage")]
-    public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger, IAllocationFreeErrorLogger
+    public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         private readonly ILogger _inner;
 
@@ -23,7 +23,7 @@ namespace Splat
         /// Initializes a new instance of the <see cref="AllocationFreeLoggerBase"/> class.
         /// </summary>
         /// <param name="inner">The <see cref="Splat.ILogger" /> to wrap in this class.</param>
-        public AllocationFreeLoggerBase(ILogger inner)
+        protected AllocationFreeLoggerBase(ILogger inner)
         {
             _inner = inner;
         }
