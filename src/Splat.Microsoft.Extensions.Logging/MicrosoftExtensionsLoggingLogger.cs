@@ -17,7 +17,7 @@ namespace Splat.Microsoft.Extensions.Logging
     [DebuggerDisplay("Name={_inner.GetType()} Level={Level}")]
     public sealed class MicrosoftExtensionsLoggingLogger : ILogger
     {
-        private static readonly KeyValuePair<LogLevel, global::Microsoft.Extensions.Logging.LogLevel>[] _mappings = new[]
+        private static readonly KeyValuePair<LogLevel, global::Microsoft.Extensions.Logging.LogLevel>[] _mappings =
         {
             new KeyValuePair<LogLevel, global::Microsoft.Extensions.Logging.LogLevel>(LogLevel.Debug, global::Microsoft.Extensions.Logging.LogLevel.Debug),
             new KeyValuePair<LogLevel, global::Microsoft.Extensions.Logging.LogLevel>(LogLevel.Info, global::Microsoft.Extensions.Logging.LogLevel.Information),
@@ -73,13 +73,19 @@ namespace Splat.Microsoft.Extensions.Logging
         /// <inheritdoc />
         public void Write(string message, Type type, LogLevel logLevel)
         {
-            _inner.Log(_mappingsDictionary[logLevel], $"{type.Name}: {message}");
+            using (_inner.BeginScope(type.ToString()))
+            {
+                _inner.Log(_mappingsDictionary[logLevel], message);
+            }
         }
 
         /// <inheritdoc />
         public void Write(Exception exception, string message, Type type, LogLevel logLevel)
         {
-            _inner.Log(_mappingsDictionary[logLevel], exception, $"{type.Name}: {message}");
+            using (_inner.BeginScope(type.ToString()))
+            {
+                _inner.Log(_mappingsDictionary[logLevel], exception, message);
+            }
         }
     }
 }

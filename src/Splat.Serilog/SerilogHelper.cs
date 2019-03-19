@@ -16,9 +16,9 @@ namespace Splat
     internal static class SerilogHelper
     {
         /// <summary>
-        /// Gets a list of mappings of Serilog levels and equilavent Splat log levels.
+        /// Gets a list of mappings of Serilog levels and equivalent Splat log levels.
         /// </summary>
-        public static KeyValuePair<LogLevel, LogEventLevel>[] Mappings { get; } = new[]
+        public static KeyValuePair<LogLevel, LogEventLevel>[] Mappings { get; } =
         {
             new KeyValuePair<LogLevel, LogEventLevel>(LogLevel.Debug, LogEventLevel.Debug),
             new KeyValuePair<LogLevel, LogEventLevel>(LogLevel.Info, LogEventLevel.Information),

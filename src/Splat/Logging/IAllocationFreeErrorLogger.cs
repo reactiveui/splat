@@ -4,11 +4,8 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Splat
 {
@@ -17,6 +14,7 @@ namespace Splat
     /// Often not needed for your own loggers.
     /// A <see cref="WrappingFullLogger"/> will wrap simple loggers into a full logger.
     /// </summary>
+    [SuppressMessage("Naming", "CA1716: Do not use built in identifiers", Justification = "Deliberate usage")]
     public interface IAllocationFreeErrorLogger : ILogger
     {
         /// <summary>

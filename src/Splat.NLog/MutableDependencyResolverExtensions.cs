@@ -26,12 +26,7 @@ namespace Splat.NLog
         /// </example>
         public static void UseNLogWithWrappingFullLogger(this IMutableDependencyResolver instance)
         {
-            var funcLogManager = new FuncLogManager(type =>
-            {
-                var actualLogger = global::NLog.LogManager.GetLogger(type.ToString());
-                var miniLoggingWrapper = new NLogLogger(actualLogger);
-                return new WrappingFullLogger(miniLoggingWrapper);
-            });
+            var funcLogManager = new FuncLogManager(type => new NLogLogger(LogResolver.Resolve(type)));
 
             instance.RegisterConstant(funcLogManager, typeof(ILogManager));
         }
