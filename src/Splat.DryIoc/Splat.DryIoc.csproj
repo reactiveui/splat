@@ -1,7 +1,8 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+<Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <NoWarn>$(NoWarn);CA1801</NoWarn>
+    <Description>DryIoc adapter for Splat</Description>
   </PropertyGroup>
 
   <ItemGroup>
