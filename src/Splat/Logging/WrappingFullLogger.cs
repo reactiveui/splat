@@ -14,7 +14,7 @@ namespace Splat
     /// <summary>
     /// A full logger which wraps a <see cref="ILogger"/>.
     /// </summary>
-    public class WrappingFullLogger : IFullLogger
+    public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         private readonly ILogger _inner;
         private readonly MethodInfo _stringFormat;
@@ -24,6 +24,7 @@ namespace Splat
         /// </summary>
         /// <param name="inner">The <see cref="ILogger"/> to wrap in this class.</param>
         public WrappingFullLogger(ILogger inner)
+            : base(inner)
         {
             _inner = inner;
 
@@ -31,24 +32,6 @@ namespace Splat
             Contract.Requires(inner != null);
             Contract.Requires(_stringFormat != null);
         }
-
-        /// <inheritdoc />
-        public LogLevel Level => _inner.Level;
-
-        /// <inheritdoc />
-        public bool IsDebugEnabled => Level <= LogLevel.Debug;
-
-        /// <inheritdoc />
-        public bool IsInfoEnabled => Level <= LogLevel.Info;
-
-        /// <inheritdoc />
-        public bool IsWarnEnabled => Level <= LogLevel.Warn;
-
-        /// <inheritdoc />
-        public bool IsErrorEnabled => Level <= LogLevel.Error;
-
-        /// <inheritdoc />
-        public bool IsFatalEnabled => Level <= LogLevel.Fatal;
 
         /// <inheritdoc />
         public void Debug<T>(T value)
@@ -71,6 +54,12 @@ namespace Splat
         public void DebugException(string message, Exception exception)
         {
             _inner.Write(exception, $"{message}: {exception}", LogLevel.Debug);
+        }
+
+        /// <inheritdoc />
+        public void Debug(Exception exception, string message)
+        {
+            _inner.Write(exception, $"{message}", LogLevel.Debug);
         }
 
         /// <inheritdoc />
@@ -114,33 +103,15 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Debug<TArgument>(string message, TArgument argument)
-        {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, message, argument), LogLevel.Debug);
-        }
-
-        /// <inheritdoc />
         public void Debug<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2)
         {
             _inner.Write(string.Format(formatProvider, message, argument1, argument2), LogLevel.Debug);
         }
 
         /// <inheritdoc />
-        public void Debug<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
-        {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, message, argument1, argument2), LogLevel.Debug);
-        }
-
-        /// <inheritdoc />
         public void Debug<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
         {
             _inner.Write(string.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Debug);
-        }
-
-        /// <inheritdoc />
-        public void Debug<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
-        {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3), LogLevel.Debug);
         }
 
         /// <inheritdoc />
@@ -164,6 +135,12 @@ namespace Splat
         public void InfoException(string message, Exception exception)
         {
             _inner.Write(exception, $"{message}: {exception}", LogLevel.Info);
+        }
+
+        /// <inheritdoc />
+        public void Info(Exception exception, string message)
+        {
+            _inner.Write(exception, $"{message}", LogLevel.Info);
         }
 
         /// <inheritdoc />
@@ -206,33 +183,15 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Info<TArgument>(string message, TArgument argument)
-        {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, message, argument), LogLevel.Info);
-        }
-
-        /// <inheritdoc />
         public void Info<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2)
         {
             _inner.Write(string.Format(formatProvider, message, argument1, argument2), LogLevel.Info);
         }
 
         /// <inheritdoc />
-        public void Info<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
-        {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, message, argument1, argument2), LogLevel.Info);
-        }
-
-        /// <inheritdoc />
         public void Info<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
         {
             _inner.Write(string.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Info);
-        }
-
-        /// <inheritdoc />
-        public void Info<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
-        {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3), LogLevel.Info);
         }
 
         /// <inheritdoc />
@@ -256,6 +215,12 @@ namespace Splat
         public void WarnException(string message, Exception exception)
         {
             _inner.Write(exception, $"{message}: {exception}", LogLevel.Warn);
+        }
+
+        /// <inheritdoc />
+        public void Warn(Exception exception, string message)
+        {
+            _inner.Write(exception, $"{message}", LogLevel.Warn);
         }
 
         /// <inheritdoc />
@@ -298,33 +263,15 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Warn<TArgument>(string message, TArgument argument)
-        {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, message, argument), LogLevel.Warn);
-        }
-
-        /// <inheritdoc />
         public void Warn<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2)
         {
             _inner.Write(string.Format(formatProvider, message, argument1, argument2), LogLevel.Warn);
         }
 
         /// <inheritdoc />
-        public void Warn<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
-        {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, message, argument1, argument2), LogLevel.Warn);
-        }
-
-        /// <inheritdoc />
         public void Warn<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
         {
             _inner.Write(string.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Warn);
-        }
-
-        /// <inheritdoc />
-        public void Warn<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
-        {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3), LogLevel.Warn);
         }
 
         /// <inheritdoc />
@@ -348,6 +295,12 @@ namespace Splat
         public void ErrorException(string message, Exception exception)
         {
             _inner.Write(exception, $"{message}: {exception}", LogLevel.Error);
+        }
+
+        /// <inheritdoc />
+        public void Error(Exception exception, string message)
+        {
+            _inner.Write(exception, $"{message}", LogLevel.Error);
         }
 
         /// <inheritdoc />
@@ -390,33 +343,15 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Error<TArgument>(string message, TArgument argument)
-        {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, message, argument), LogLevel.Error);
-        }
-
-        /// <inheritdoc />
         public void Error<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2)
         {
             _inner.Write(string.Format(formatProvider, message, argument1, argument2), LogLevel.Error);
         }
 
         /// <inheritdoc />
-        public void Error<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
-        {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, message, argument1, argument2), LogLevel.Error);
-        }
-
-        /// <inheritdoc />
         public void Error<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
         {
             _inner.Write(string.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Error);
-        }
-
-        /// <inheritdoc />
-        public void Error<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
-        {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3), LogLevel.Error);
         }
 
         /// <inheritdoc />
@@ -440,6 +375,12 @@ namespace Splat
         public void FatalException(string message, Exception exception)
         {
             _inner.Write(exception, $"{message}: {exception}", LogLevel.Fatal);
+        }
+
+        /// <inheritdoc />
+        public void Fatal(Exception exception, string message)
+        {
+            _inner.Write(exception, $"{message}", LogLevel.Fatal);
         }
 
         /// <inheritdoc />
@@ -482,57 +423,15 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Fatal<TArgument>(string message, TArgument argument)
-        {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, message, argument), LogLevel.Fatal);
-        }
-
-        /// <inheritdoc />
         public void Fatal<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2)
         {
             _inner.Write(string.Format(formatProvider, message, argument1, argument2), LogLevel.Fatal);
         }
 
         /// <inheritdoc />
-        public void Fatal<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
-        {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, message, argument1, argument2), LogLevel.Fatal);
-        }
-
-        /// <inheritdoc />
         public void Fatal<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
         {
             _inner.Write(string.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Fatal);
-        }
-
-        /// <inheritdoc />
-        public void Fatal<TArgument1, TArgument2, TArgument3>(string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
-        {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, message, argument1, argument2, argument3), LogLevel.Fatal);
-        }
-
-        /// <inheritdoc />
-        public void Write([Localizable(false)] string message, LogLevel logLevel)
-        {
-            _inner.Write(message, logLevel);
-        }
-
-        /// <inheritdoc />
-        public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel)
-        {
-            _inner.Write(exception, message, logLevel);
-        }
-
-        /// <inheritdoc />
-        public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
-        {
-            _inner.Write(message, type, logLevel);
-        }
-
-        /// <inheritdoc />
-        public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
-        {
-            _inner.Write(exception, message, type, logLevel);
         }
 
         private string InvokeStringFormat(IFormatProvider formatProvider, string message, object[] args)

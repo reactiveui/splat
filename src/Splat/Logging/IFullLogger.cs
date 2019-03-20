@@ -15,33 +15,8 @@ namespace Splat
     /// A <see cref="WrappingFullLogger"/> will wrap simple loggers into a full logger.
     /// </summary>
     [SuppressMessage("Naming", "CA1716: Do not use built in identifiers", Justification = "Deliberate usage")]
-    public interface IFullLogger : ILogger
+    public interface IFullLogger : IAllocationFreeLogger, IAllocationFreeErrorLogger
     {
-        /// <summary>
-        /// Gets a value indicating whether the logger currently emits debug logs.
-        /// </summary>
-        bool IsDebugEnabled { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether the logger currently emits information logs.
-        /// </summary>
-        bool IsInfoEnabled { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether the logger currently emits warning logs.
-        /// </summary>
-        bool IsWarnEnabled { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether the logger currently emits error logs.
-        /// </summary>
-        bool IsErrorEnabled { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether the logger currently emits fatal logs.
-        /// </summary>
-        bool IsFatalEnabled { get; }
-
         /// <summary>
         /// Emits a debug log message.
         /// This will emit the public contents of the object provided to the log.
@@ -66,7 +41,15 @@ namespace Splat
         /// </summary>
         /// <param name="message">A message to emit.</param>
         /// <param name="exception">The exception which to emit in the log.</param>
+        [Obsolete("Use void Debug(Exception exception, [Localizable(false)] string message)")]
         void DebugException([Localizable(false)] string message, Exception exception);
+
+        /// <summary>
+        /// Emits a debug log message with an exception.
+        /// </summary>
+        /// <param name="exception">The exception.</param>
+        /// <param name="message">The message.</param>
+        void Debug(Exception exception, [Localizable(false)] string message);
 
         /// <summary>
         /// Emits a message using formatting to the debug log.
@@ -116,14 +99,6 @@ namespace Splat
         /// <summary>
         /// Emits a message using formatting to the debug log.
         /// </summary>
-        /// <typeparam name="TArgument">The type of the argument which is used in the formatting.</typeparam>
-        /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-        /// <param name="argument">The argument for formatting purposes.</param>
-        void Debug<TArgument>([Localizable(false)] string message, TArgument argument);
-
-        /// <summary>
-        /// Emits a message using formatting to the debug log.
-        /// </summary>
         /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
         /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
         /// <param name="formatProvider">The format provider to use.</param>
@@ -137,16 +112,6 @@ namespace Splat
         /// </summary>
         /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
         /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
-        /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-        /// <param name="argument1">The first argument for formatting purposes.</param>
-        /// <param name="argument2">The second argument for formatting purposes.</param>
-        void Debug<TArgument1, TArgument2>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2);
-
-        /// <summary>
-        /// Emits a message using formatting to the debug log.
-        /// </summary>
-        /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
-        /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
         /// <typeparam name="TArgument3">The type of the third argument which is used in the formatting.</typeparam>
         /// <param name="formatProvider">The format provider to use.</param>
         /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
@@ -154,18 +119,6 @@ namespace Splat
         /// <param name="argument2">The second argument for formatting purposes.</param>
         /// <param name="argument3">The third argument for formatting purposes.</param>
         void Debug<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
-
-        /// <summary>
-        /// Emits a message using formatting to the debug log.
-        /// </summary>
-        /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
-        /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
-        /// <typeparam name="TArgument3">The type of the third argument which is used in the formatting.</typeparam>
-        /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-        /// <param name="argument1">The first argument for formatting purposes.</param>
-        /// <param name="argument2">The second argument for formatting purposes.</param>
-        /// <param name="argument3">The third argument for formatting purposes.</param>
-        void Debug<TArgument1, TArgument2, TArgument3>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
         /// <summary>
         /// Emits a info log message.
@@ -191,7 +144,17 @@ namespace Splat
         /// </summary>
         /// <param name="message">A message to emit.</param>
         /// <param name="exception">The exception which to emit in the log.</param>
+        [Obsolete("Use void Info(Exception exception, [Localizable(false)] string message)")]
         void InfoException([Localizable(false)] string message, Exception exception);
+
+        /// <summary>
+        /// Emits a info log message with exception.
+        /// This will emit details about a exception.
+        /// This type of logging is not able to be localized.
+        /// </summary>
+        /// <param name="exception">The exception which to emit in the log.</param>
+        /// <param name="message">A message to emit.</param>
+        void Info(Exception exception, [Localizable(false)] string message);
 
         /// <summary>
         /// Emits a message using formatting to the info log.
@@ -241,14 +204,6 @@ namespace Splat
         /// <summary>
         /// Emits a message using formatting to the info log.
         /// </summary>
-        /// <typeparam name="TArgument">The type of the argument which is used in the formatting.</typeparam>
-        /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-        /// <param name="argument">The argument for formatting purposes.</param>
-        void Info<TArgument>([Localizable(false)] string message, TArgument argument);
-
-        /// <summary>
-        /// Emits a message using formatting to the info log.
-        /// </summary>
         /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
         /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
         /// <param name="formatProvider">The format provider to use.</param>
@@ -262,16 +217,6 @@ namespace Splat
         /// </summary>
         /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
         /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
-        /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-        /// <param name="argument1">The first argument for formatting purposes.</param>
-        /// <param name="argument2">The second argument for formatting purposes.</param>
-        void Info<TArgument1, TArgument2>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2);
-
-        /// <summary>
-        /// Emits a message using formatting to the info log.
-        /// </summary>
-        /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
-        /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
         /// <typeparam name="TArgument3">The type of the third argument which is used in the formatting.</typeparam>
         /// <param name="formatProvider">The format provider to use.</param>
         /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
@@ -279,18 +224,6 @@ namespace Splat
         /// <param name="argument2">The second argument for formatting purposes.</param>
         /// <param name="argument3">The third argument for formatting purposes.</param>
         void Info<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
-
-        /// <summary>
-        /// Emits a message using formatting to the debug log.
-        /// </summary>
-        /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
-        /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
-        /// <typeparam name="TArgument3">The type of the third argument which is used in the formatting.</typeparam>
-        /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-        /// <param name="argument1">The first argument for formatting purposes.</param>
-        /// <param name="argument2">The second argument for formatting purposes.</param>
-        /// <param name="argument3">The third argument for formatting purposes.</param>
-        void Info<TArgument1, TArgument2, TArgument3>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
         /// <summary>
         /// Emits a warning log message.
@@ -316,7 +249,17 @@ namespace Splat
         /// </summary>
         /// <param name="message">A message to emit.</param>
         /// <param name="exception">The exception which to emit in the log.</param>
+        [Obsolete("Use void Warn(Exception exception, [Localizable(false)] string message)")]
         void WarnException([Localizable(false)] string message, Exception exception);
+
+        /// <summary>
+        /// Emits a warning log message with exception.
+        /// This will emit details about a exception.
+        /// This type of logging is not able to be localized.
+        /// </summary>
+        /// <param name="exception">The exception which to emit in the log.</param>
+        /// <param name="message">A message to emit.</param>
+        void Warn(Exception exception, [Localizable(false)] string message);
 
         /// <summary>
         /// Emits a message using formatting to the warning log.
@@ -366,14 +309,6 @@ namespace Splat
         /// <summary>
         /// Emits a message using formatting to the warning log.
         /// </summary>
-        /// <typeparam name="TArgument">The type of the argument which is used in the formatting.</typeparam>
-        /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-        /// <param name="argument">The argument for formatting purposes.</param>
-        void Warn<TArgument>([Localizable(false)] string message, TArgument argument);
-
-        /// <summary>
-        /// Emits a message using formatting to the warning log.
-        /// </summary>
         /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
         /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
         /// <param name="formatProvider">The format provider to use.</param>
@@ -387,16 +322,6 @@ namespace Splat
         /// </summary>
         /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
         /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
-        /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-        /// <param name="argument1">The first argument for formatting purposes.</param>
-        /// <param name="argument2">The second argument for formatting purposes.</param>
-        void Warn<TArgument1, TArgument2>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2);
-
-        /// <summary>
-        /// Emits a message using formatting to the warning log.
-        /// </summary>
-        /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
-        /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
         /// <typeparam name="TArgument3">The type of the third argument which is used in the formatting.</typeparam>
         /// <param name="formatProvider">The format provider to use.</param>
         /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
@@ -404,18 +329,6 @@ namespace Splat
         /// <param name="argument2">The second argument for formatting purposes.</param>
         /// <param name="argument3">The third argument for formatting purposes.</param>
         void Warn<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
-
-        /// <summary>
-        /// Emits a message using formatting to the warning log.
-        /// </summary>
-        /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
-        /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
-        /// <typeparam name="TArgument3">The type of the third argument which is used in the formatting.</typeparam>
-        /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-        /// <param name="argument1">The first argument for formatting purposes.</param>
-        /// <param name="argument2">The second argument for formatting purposes.</param>
-        /// <param name="argument3">The third argument for formatting purposes.</param>
-        void Warn<TArgument1, TArgument2, TArgument3>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
         /// <summary>
         /// Emits a error log message.
@@ -441,7 +354,17 @@ namespace Splat
         /// </summary>
         /// <param name="message">A message to emit.</param>
         /// <param name="exception">The exception which to emit in the log.</param>
+        [Obsolete("Use void Error(Exception exception, [Localizable(false)] string message)")]
         void ErrorException([Localizable(false)] string message, Exception exception);
+
+        /// <summary>
+        /// Emits a error log message with exception.
+        /// This will emit details about a exception.
+        /// This type of logging is not able to be localized.
+        /// </summary>
+        /// <param name="exception">The exception which to emit in the log.</param>
+        /// <param name="message">A message to emit.</param>
+        void Error(Exception exception, [Localizable(false)] string message);
 
         /// <summary>
         /// Emits a message using formatting to the error log.
@@ -491,14 +414,6 @@ namespace Splat
         /// <summary>
         /// Emits a message using formatting to the error log.
         /// </summary>
-        /// <typeparam name="TArgument">The type of the argument which is used in the formatting.</typeparam>
-        /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-        /// <param name="argument">The argument for formatting purposes.</param>
-        void Error<TArgument>([Localizable(false)] string message, TArgument argument);
-
-        /// <summary>
-        /// Emits a message using formatting to the error log.
-        /// </summary>
         /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
         /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
         /// <param name="formatProvider">The format provider to use.</param>
@@ -512,16 +427,6 @@ namespace Splat
         /// </summary>
         /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
         /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
-        /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-        /// <param name="argument1">The first argument for formatting purposes.</param>
-        /// <param name="argument2">The second argument for formatting purposes.</param>
-        void Error<TArgument1, TArgument2>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2);
-
-        /// <summary>
-        /// Emits a message using formatting to the error log.
-        /// </summary>
-        /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
-        /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
         /// <typeparam name="TArgument3">The type of the third argument which is used in the formatting.</typeparam>
         /// <param name="formatProvider">The format provider to use.</param>
         /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
@@ -529,18 +434,6 @@ namespace Splat
         /// <param name="argument2">The second argument for formatting purposes.</param>
         /// <param name="argument3">The third argument for formatting purposes.</param>
         void Error<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
-
-        /// <summary>
-        /// Emits a message using formatting to the error log.
-        /// </summary>
-        /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
-        /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
-        /// <typeparam name="TArgument3">The type of the third argument which is used in the formatting.</typeparam>
-        /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-        /// <param name="argument1">The first argument for formatting purposes.</param>
-        /// <param name="argument2">The second argument for formatting purposes.</param>
-        /// <param name="argument3">The third argument for formatting purposes.</param>
-        void Error<TArgument1, TArgument2, TArgument3>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
         /// <summary>
         /// Emits a fatal log message.
@@ -566,7 +459,17 @@ namespace Splat
         /// </summary>
         /// <param name="message">A message to emit.</param>
         /// <param name="exception">The exception which to emit in the log.</param>
+        [Obsolete("Use void Fatal(Exception exception, [Localizable(false)] string message)")]
         void FatalException([Localizable(false)] string message, Exception exception);
+
+        /// <summary>
+        /// Emits a fatal log message with exception.
+        /// This will emit details about a exception.
+        /// This type of logging is not able to be localized.
+        /// </summary>
+        /// <param name="exception">The exception which to emit in the log.</param>
+        /// <param name="message">A message to emit.</param>
+        void Fatal(Exception exception, [Localizable(false)] string message);
 
         /// <summary>
         /// Emits a message using formatting to the fatal log.
@@ -616,14 +519,6 @@ namespace Splat
         /// <summary>
         /// Emits a message using formatting to the fatal log.
         /// </summary>
-        /// <typeparam name="TArgument">The type of the argument which is used in the formatting.</typeparam>
-        /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-        /// <param name="argument">The argument for formatting purposes.</param>
-        void Fatal<TArgument>([Localizable(false)] string message, TArgument argument);
-
-        /// <summary>
-        /// Emits a message using formatting to the fatal log.
-        /// </summary>
         /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
         /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
         /// <param name="formatProvider">The format provider to use.</param>
@@ -637,16 +532,6 @@ namespace Splat
         /// </summary>
         /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
         /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
-        /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-        /// <param name="argument1">The first argument for formatting purposes.</param>
-        /// <param name="argument2">The second argument for formatting purposes.</param>
-        void Fatal<TArgument1, TArgument2>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2);
-
-        /// <summary>
-        /// Emits a message using formatting to the fatal log.
-        /// </summary>
-        /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
-        /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
         /// <typeparam name="TArgument3">The type of the third argument which is used in the formatting.</typeparam>
         /// <param name="formatProvider">The format provider to use.</param>
         /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
@@ -654,17 +539,5 @@ namespace Splat
         /// <param name="argument2">The second argument for formatting purposes.</param>
         /// <param name="argument3">The third argument for formatting purposes.</param>
         void Fatal<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
-
-        /// <summary>
-        /// Emits a message using formatting to the fatal log.
-        /// </summary>
-        /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
-        /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
-        /// <typeparam name="TArgument3">The type of the third argument which is used in the formatting.</typeparam>
-        /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-        /// <param name="argument1">The first argument for formatting purposes.</param>
-        /// <param name="argument2">The second argument for formatting purposes.</param>
-        /// <param name="argument3">The third argument for formatting purposes.</param>
-        void Fatal<TArgument1, TArgument2, TArgument3>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
     }
 }

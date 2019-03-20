@@ -134,12 +134,13 @@ For each of the provided dependency resolver adapters, there is a specific packa
 
 | Container | NuGet | Read Me
 |---------|-------|-------|
-| [Splat.Autofac][SplatAutofacNuGet] | [![SplatAutofacBadge]][SplatAutofacNuGet] |
+| [Splat.Autofac][SplatAutofacNuGet] | [![SplatAutofacBadge]][SplatAutofacNuGet] | [Setup Autofac][SplatAutofacReadme]
 | [Splat.DryIoc][SplatDryIocNuGet] | [![SplatDryIocBadge]][SplatDryIocNuGet] | [Setup DryIoc][SplatDryIocReadme]
 | [Splat.SimpleInjector][SplatSimpleInjectorNuGet] | [![SplatSimpleInjectorBadge]][SplatSimpleInjectorNuGet] | |
 
 [SplatAutofacNuGet]: https://www.nuget.org/packages/Splat.Autofac/
 [SplatAutofacBadge]: https://img.shields.io/nuget/v/Splat.Autofac.svg
+[SplatAutofacReadme]: ./src/Splat.Autofac/README.md
 [SplatDryIocNuGet]: https://www.nuget.org/packages/Splat.DryIoc/
 [SplatDryIocBadge]: https://img.shields.io/nuget/v/Splat.DryIoc.svg
 [SplatDryIocReadme]: ./src/Splat.DryIoc/README.md

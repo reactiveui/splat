@@ -3,12 +3,18 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
+
 namespace Splat.Tests.Mocks
 {
     /// <summary>
-    /// A dummy interface used during Locator testing.
+    /// A target with our desired logs.
     /// </summary>
-    internal interface IDummyInterface
+    public interface IMockLogTarget
     {
+        /// <summary>
+        /// Gets the logs that have been sent.
+        /// </summary>
+        ICollection<(LogLevel logLevel, string message)> Logs { get; }
     }
 }
