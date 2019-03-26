@@ -19,7 +19,7 @@ namespace Splat.DryIoc.Tests
     public class DependencyResolverTests
     {
         /// <summary>
-        /// Shoulds the resolve views.
+        /// Should resolve the views.
         /// </summary>
         [Fact]
         public void DryIocDependencyResolver_Should_Resolve_Views()
@@ -39,7 +39,7 @@ namespace Splat.DryIoc.Tests
         }
 
         /// <summary>
-        /// Shoulds the resolve views.
+        /// Should resolve the views.
         /// </summary>
         [Fact]
         public void DryIocDependencyResolver_Should_Resolve_Named_View()
@@ -55,7 +55,7 @@ namespace Splat.DryIoc.Tests
         }
 
         /// <summary>
-        /// Shoulds the resolve view models.
+        /// Should resolve the view models.
         /// </summary>
         [Fact]
         public void DryIocDependencyResolver_Should_Resolve_View_Models()
@@ -73,7 +73,7 @@ namespace Splat.DryIoc.Tests
         }
 
         /// <summary>
-        /// Shoulds the resolve screen.
+        /// Should resolve the screen.
         /// </summary>
         [Fact]
         public void DryIocDependencyResolver_Should_Resolve_Screen()
@@ -86,6 +86,89 @@ namespace Splat.DryIoc.Tests
 
             screen.ShouldNotBeNull();
             screen.ShouldBeOfType<MockScreen>();
+        }
+
+        /// <summary>
+        /// Should unregister the screen.
+        /// </summary>
+        [Fact]
+        public void DryIocDependencyResolver_Should_UnregisterCurrent_Screen()
+        {
+            var builder = new Container();
+            builder.Register<IScreen, MockScreen>(Reuse.Singleton);
+            builder.UseDryIocDependencyResolver();
+
+            Locator.Current.GetService<IScreen>().ShouldNotBeNull();
+
+            Locator.CurrentMutable.UnregisterCurrent(typeof(IScreen));
+
+            Locator.Current.GetService<IScreen>().ShouldBeNull();
+        }
+
+        /// <summary>
+        /// Should unregister the screen.
+        /// </summary>
+        [Fact]
+        public void DryIocDependencyResolver_Should_UnregisterCurrent_Screen_With_Contract()
+        {
+            var builder = new Container();
+            builder.Register<IScreen, MockScreen>(Reuse.Singleton, serviceKey: nameof(MockScreen));
+            builder.UseDryIocDependencyResolver();
+
+            Locator.Current.GetService<IScreen>(nameof(MockScreen)).ShouldNotBeNull();
+
+            Locator.CurrentMutable.UnregisterCurrent(typeof(IScreen), nameof(MockScreen));
+
+            Locator.Current.GetService<IScreen>(nameof(MockScreen)).ShouldBeNull();
+        }
+
+        /// <summary>
+        /// Should unregister the screen.
+        /// </summary>
+        [Fact]
+        public void DryIocDependencyResolver_Should_UnregisterAll_Screen()
+        {
+            var builder = new Container();
+            builder.Register<IScreen, MockScreen>(Reuse.Singleton);
+            builder.UseDryIocDependencyResolver();
+
+            Locator.Current.GetService<IScreen>().ShouldNotBeNull();
+
+            Locator.CurrentMutable.UnregisterAll(typeof(IScreen));
+
+            Locator.Current.GetService<IScreen>().ShouldBeNull();
+        }
+
+        /// <summary>
+        /// Should unregister the screen.
+        /// </summary>
+        [Fact]
+        public void DryIocDependencyResolver_Should_UnregisterAll_Screen_With_Contract()
+        {
+            var builder = new Container();
+            builder.Register<IScreen, MockScreen>(Reuse.Singleton, serviceKey: nameof(MockScreen));
+            builder.UseDryIocDependencyResolver();
+
+            Locator.Current.GetService<IScreen>(nameof(MockScreen)).ShouldNotBeNull();
+
+            Locator.CurrentMutable.UnregisterAll(typeof(IScreen), nameof(MockScreen));
+
+            Locator.Current.GetService<IScreen>(nameof(MockScreen)).ShouldBeNull();
+        }
+
+        /// <summary>
+        /// Should throw an exception if service registration call back called.
+        /// </summary>
+        [Fact]
+        public void DryIocDependencyResolver_Should_Throw_If_ServiceRegistionCallback_Called()
+        {
+            var container = new Container();
+            container.UseDryIocDependencyResolver();
+
+            var result = Record.Exception(() =>
+                Locator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
+
+            result.ShouldBeOfType<NotImplementedException>();
         }
     }
 }

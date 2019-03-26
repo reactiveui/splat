@@ -28,19 +28,19 @@ namespace Splat.DryIoc
         }
 
         /// <inheritdoc />
-        public object GetService(Type serviceType, string contract = null) =>
+        public virtual object GetService(Type serviceType, string contract = null) =>
             string.IsNullOrEmpty(contract)
                 ? _container.Resolve(serviceType, IfUnresolved.ReturnDefault)
                 : _container.Resolve(serviceType, contract, IfUnresolved.ReturnDefault);
 
         /// <inheritdoc />
-        public IEnumerable<object> GetServices(Type serviceType, string contract = null) =>
+        public virtual IEnumerable<object> GetServices(Type serviceType, string contract = null) =>
             string.IsNullOrEmpty(contract)
                 ? _container.ResolveMany(serviceType)
                 : _container.ResolveMany(serviceType, serviceKey: contract);
 
         /// <inheritdoc />
-        public void Register(Func<object> factory, Type serviceType, string contract = null)
+        public virtual void Register(Func<object> factory, Type serviceType, string contract = null)
         {
             if (string.IsNullOrEmpty(contract))
             {
@@ -53,7 +53,7 @@ namespace Splat.DryIoc
         }
 
         /// <inheritdoc />
-        public void UnregisterCurrent(Type serviceType, string contract = null)
+        public virtual void UnregisterCurrent(Type serviceType, string contract = null)
         {
             if (string.IsNullOrEmpty(contract))
             {
@@ -66,20 +66,20 @@ namespace Splat.DryIoc
         }
 
         /// <inheritdoc />
-        public void UnregisterAll(Type serviceType, string contract = null)
+        public virtual void UnregisterAll(Type serviceType, string contract = null)
         {
             if (string.IsNullOrEmpty(contract))
             {
-                _container.Unregister(serviceType, condition: x => x.ImplementationType == serviceType);
+                _container.Unregister(serviceType);
             }
             else
             {
-                _container.Unregister(serviceType, contract, condition: x => x.ImplementationType == serviceType);
+                _container.Unregister(serviceType, contract);
             }
         }
 
         /// <inheritdoc />
-        public IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
+        public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
         {
             throw new NotImplementedException();
         }
