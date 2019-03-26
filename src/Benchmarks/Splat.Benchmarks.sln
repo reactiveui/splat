@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Benchmarks", "Splat.Benchmarks.csproj", "{4FDA89BA-2364-49C9-B028-16EEFFF321D5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BC92BB8B-EE02-4EBC-BAE5-FEEF3F5C6C77}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", "{8C2A8595-B0D8-482A-BA20-D0DD08070F33}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat", "..\Splat\Splat.csproj", "{BE855F74-28F3-47C9-BCA9-957287356FB6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4FDA89BA-2364-49C9-B028-16EEFFF321D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FDA89BA-2364-49C9-B028-16EEFFF321D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FDA89BA-2364-49C9-B028-16EEFFF321D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FDA89BA-2364-49C9-B028-16EEFFF321D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE855F74-28F3-47C9-BCA9-957287356FB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE855F74-28F3-47C9-BCA9-957287356FB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE855F74-28F3-47C9-BCA9-957287356FB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE855F74-28F3-47C9-BCA9-957287356FB6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4FDA89BA-2364-49C9-B028-16EEFFF321D5} = {8C2A8595-B0D8-482A-BA20-D0DD08070F33}
+		{BE855F74-28F3-47C9-BCA9-957287356FB6} = {BC92BB8B-EE02-4EBC-BAE5-FEEF3F5C6C77}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {65D72301-907A-4438-AA68-5A98B6EA8041}
+	EndGlobalSection
+EndGlobal
