@@ -99,7 +99,7 @@ namespace Splat
 
         internal static Dictionary<string, int> GetDrawableList()
         {
-            var log = Splat.LogHost.Log(typeof(PlatformBitmapLoader));
+            var log = Splat.LogHost.Default;
 
             // VS2019 onward
             var assemblies = AppDomain.CurrentDomain.GetAssemblies()
