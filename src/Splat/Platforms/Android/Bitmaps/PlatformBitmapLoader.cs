@@ -99,14 +99,31 @@ namespace Splat
 
         internal static Dictionary<string, int> GetDrawableList()
         {
+            var log = Splat.LogHost.Log(typeof(PlatformBitmapLoader));
+
             // VS2019 onward
-            var result = AppDomain.CurrentDomain.GetAssemblies()
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(x => x.GetTypes())
                 .Where(x => x.Name == "Resource" && x.GetNestedType("Drawable") != null)
                 .Select(x => x.GetNestedType("Drawable"))
+                .ToArray();
+
+            log.Debug("DrawableList. Got " + result.Count + " assemblies.");
+            foreach (var assembly in assemblies)
+            {
+                log.Debug("DrawableList Assembly: " + assembly.Name);
+            }
+
+            var result = assemblies
                 .SelectMany(x => x.GetFields())
                 .Where(x => x.FieldType == typeof(int) && x.IsLiteral)
                 .ToDictionary(k => k.Name, v => (int)v.GetRawConstantValue());
+
+            log.Debug("DrawableList. Got " + result.Count + " items.");
+            foreach (var keyValuePair in result)
+            {
+                log.Debug("DrawableList Item: " + keyValuePair.Key);
+            }
 
             return result;
         }
