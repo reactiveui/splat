@@ -108,10 +108,10 @@ namespace Splat
                 .Select(x => x.GetNestedType("Drawable"))
                 .ToArray();
 
-            log.Debug("DrawableList. Got " + result.Count + " assemblies.");
+            log.Debug(() => "DrawableList. Got " + assemblies.Length + " assemblies.");
             foreach (var assembly in assemblies)
             {
-                log.Debug("DrawableList Assembly: " + assembly.Name);
+                log.Debug(() => "DrawableList Assembly: " + assembly.Name);
             }
 
             var result = assemblies
@@ -119,10 +119,10 @@ namespace Splat
                 .Where(x => x.FieldType == typeof(int) && x.IsLiteral)
                 .ToDictionary(k => k.Name, v => (int)v.GetRawConstantValue());
 
-            log.Debug("DrawableList. Got " + result.Count + " items.");
+            log.Debug(() => "DrawableList. Got " + result.Count + " items.");
             foreach (var keyValuePair in result)
             {
-                log.Debug("DrawableList Item: " + keyValuePair.Key);
+                log.Debug(() => "DrawableList Item: " + keyValuePair.Key);
             }
 
             return result;
