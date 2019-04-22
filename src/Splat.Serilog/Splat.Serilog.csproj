@@ -4,7 +4,7 @@
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net461;uap10.0.16299</TargetFrameworks>
     <AssemblyName>Splat.Serilog</AssemblyName>
     <RootNamespace>Splat</RootNamespace>
-    <Authors>Paul Betts</Authors>
+    <Authors>.NET Foundation and Contributors</Authors>
     <Description>Serilog integrations for Splat</Description>
     <PackageId>Splat.Serilog</PackageId>
   </PropertyGroup>
