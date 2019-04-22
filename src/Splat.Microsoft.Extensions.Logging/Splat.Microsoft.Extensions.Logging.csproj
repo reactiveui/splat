@@ -4,7 +4,7 @@
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net461;uap10.0.17763</TargetFrameworks>
     <AssemblyName>Splat.Microsoft.Extensions.Logging</AssemblyName>
     <RootNamespace>Splat</RootNamespace>
-    <Authors>Paul Betts</Authors>
+    <Authors>.NET Foundation and Contributors</Authors>
     <Description>Microsoft Logging Extensions integrations for Splat</Description>
     <PackageId>Splat.Microsoft.Extensions.Logging</PackageId>
   </PropertyGroup>
