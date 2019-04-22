@@ -1,10 +1,6 @@
-$DotNetInstallerUri = 'https://dot.net/v1/dotnet-install.ps1';
-$DotNetUnixInstallerUri = 'https://dot.net/v1/dotnet-install.sh'
-$DotNetChannel = 'LTS'
 $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
 
 [string] $CakeVersion = ''
-[string] $DotNetVersion= ''
 foreach($line in Get-Content "$PSScriptRoot\build.config")
 {
   if ($line -like 'CAKE_VERSION=*') {
