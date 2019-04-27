@@ -134,15 +134,20 @@ For each of the provided dependency resolver adapters, there is a specific packa
 
 | Container | NuGet | Read Me
 |---------|-------|-------|
-| [Splat.Autofac][SplatAutofacNuGet] | [![SplatAutofacBadge]][SplatAutofacNuGet] |
+| [Splat.Autofac][SplatAutofacNuGet] | [![SplatAutofacBadge]][SplatAutofacNuGet] | [Setup Autofac][SplatAutofacReadme]
 | [Splat.DryIoc][SplatDryIocNuGet] | [![SplatDryIocBadge]][SplatDryIocNuGet] | [Setup DryIoc][SplatDryIocReadme]
+| [Splat.Ninject][SplatNinjectNuGet] | [![SplatNinjectBadge]][SplatNinjectNuGet] | [Setup Ninject][SplatNinjectReadme]
 | [Splat.SimpleInjector][SplatSimpleInjectorNuGet] | [![SplatSimpleInjectorBadge]][SplatSimpleInjectorNuGet] | |
 
 [SplatAutofacNuGet]: https://www.nuget.org/packages/Splat.Autofac/
 [SplatAutofacBadge]: https://img.shields.io/nuget/v/Splat.Autofac.svg
+[SplatAutofacReadme]: ./src/Splat.Autofac/README.md
 [SplatDryIocNuGet]: https://www.nuget.org/packages/Splat.DryIoc/
 [SplatDryIocBadge]: https://img.shields.io/nuget/v/Splat.DryIoc.svg
 [SplatDryIocReadme]: ./src/Splat.DryIoc/README.md
+[SplatNinjectNuGet]: https://www.nuget.org/packages/Splat.Ninject/
+[SplatNinjectBadge]: https://img.shields.io/nuget/v/Splat.Ninject.svg
+[SplatNinjectReadme]: ./src/Splat.Ninject/README.md
 [SplatSimpleInjectorNuGet]: https://www.nuget.org/packages/Splat.SimpleInjector/
 [SplatSimpleInjectorBadge]: https://img.shields.io/nuget/v/Splat.SimpleInjector.svg
 
@@ -172,10 +177,10 @@ Splat has support for the following logging frameworks
 | Target | Package | NuGet |
 |---------|-------|------|
 | Debug | [Splat][SplatNuGet] | [![SplatBadge]][SplatNuGet] |
-| Log4Net | [Splat.Log4Net][SplatLog4NetNuGet] | Coming Soon! |
-| Microsoft Extensions Logging | [Splat.Microsoft.Extensions.Logging][SplatMicrosoftExtensionsLoggingNuGet] | Coming Soon! |
-| NLog | [Splat.NLog][SplatNLogNuGet] | Coming Soon! |
-| Serilog | [Splat.Serilog][SplatSerilogNuGet] | Coming Soon! |
+| Log4Net | [Splat.Log4Net][SplatLog4NetNuGet] | [![SplatLog4NetBadge]][SplatLog4NetNuGet]  |
+| Microsoft Extensions Logging | [Splat.Microsoft.Extensions.Logging][SplatMicrosoftExtensionsLoggingNuGet] | [![SplatMicrosoftExtensionsLoggingBadge]][SplatMicrosoftExtensionsLoggingNuGet] |
+| NLog | [Splat.NLog][SplatNLogNuGet] | [![SplatNLogBadge]][SplatNLogNuGet] |
+| Serilog | [Splat.Serilog][SplatSerilogNuGet] | [![SplatSerilogBadge]][SplatSerilogNuGet] |
 
 [SplatNuGet]: https://www.nuget.org/packages/Splat/
 [SplatBadge]: https://img.shields.io/nuget/v/Splat.svg

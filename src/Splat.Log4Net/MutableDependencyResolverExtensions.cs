@@ -26,12 +26,7 @@ namespace Splat.Log4Net
         /// </example>
         public static void UseLog4NetWithWrappingFullLogger(this IMutableDependencyResolver instance)
         {
-            var funcLogManager = new FuncLogManager(type =>
-            {
-                var actualLogger = global::log4net.LogManager.GetLogger(type);
-                var miniLoggingWrapper = new Log4NetLogger(actualLogger);
-                return new WrappingFullLogger(miniLoggingWrapper);
-            });
+            var funcLogManager = new FuncLogManager(type => new WrappingFullLogger(new Log4NetLogger(LogResolver.Resolve(type))));
 
             instance.RegisterConstant(funcLogManager, typeof(ILogManager));
         }

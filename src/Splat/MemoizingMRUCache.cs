@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Threading;
 
 namespace Splat
 {
@@ -22,8 +23,9 @@ namespace Splat
     /// <typeparam name="TParam">The type of the parameter to the calculation function.</typeparam>
     /// <typeparam name="TVal">The type of the value returned by the calculation
     /// function.</typeparam>
-    public class MemoizingMRUCache<TParam, TVal>
+    public sealed class MemoizingMRUCache<TParam, TVal>
     {
+        private readonly object _lockObject = new object();
         private readonly Func<TParam, object, TVal> _calculationFunction;
         private readonly Action<TVal> _releaseFunction;
         private readonly int _maxCacheSize;
@@ -75,21 +77,24 @@ namespace Splat
 
             Tuple<LinkedListNode<TParam>, TVal> found;
 
-            if (_cacheEntries.TryGetValue(key, out found))
+            lock (_lockObject)
             {
-                _cacheMRUList.Remove(found.Item1);
-                _cacheMRUList.AddFirst(found.Item1);
-                return found.Item2;
+                if (_cacheEntries.TryGetValue(key, out found))
+                {
+                    RefreshEntry(found.Item1);
+
+                    return found.Item2;
+                }
+
+                var result = _calculationFunction(key, context);
+
+                var node = new LinkedListNode<TParam>(key);
+                _cacheMRUList.AddFirst(node);
+                _cacheEntries[key] = new Tuple<LinkedListNode<TParam>, TVal>(node, result);
+                MaintainCache();
+
+                return result;
             }
-
-            var result = _calculationFunction(key, context);
-
-            var node = new LinkedListNode<TParam>(key);
-            _cacheMRUList.AddFirst(node);
-            _cacheEntries[key] = new Tuple<LinkedListNode<TParam>, TVal>(node, result);
-            MaintainCache();
-
-            return result;
         }
 
         /// <summary>
@@ -103,19 +108,22 @@ namespace Splat
             Contract.Requires(key != null);
 
             Tuple<LinkedListNode<TParam>, TVal> output;
-            var ret = _cacheEntries.TryGetValue(key, out output);
-            if (ret && output != null)
-            {
-                _cacheMRUList.Remove(output.Item1);
-                _cacheMRUList.AddFirst(output.Item1);
-                result = output.Item2;
-            }
-            else
-            {
-                result = default(TVal);
-            }
 
-            return ret;
+            lock (_lockObject)
+            {
+                var ret = _cacheEntries.TryGetValue(key, out output);
+                if (ret && output != null)
+                {
+                    RefreshEntry(output.Item1);
+                    result = output.Item2;
+                }
+                else
+                {
+                    result = default(TVal);
+                }
+
+                return ret;
+            }
         }
 
         /// <summary>
@@ -129,40 +137,94 @@ namespace Splat
 
             Tuple<LinkedListNode<TParam>, TVal> to_remove;
 
-            if (!_cacheEntries.TryGetValue(key, out to_remove))
+            lock (_lockObject)
             {
-                return;
+                if (!_cacheEntries.TryGetValue(key, out to_remove))
+                {
+                    return;
+                }
+
+                var releaseVar = to_remove.Item2;
+
+                _cacheMRUList.Remove(to_remove.Item1);
+                _cacheEntries.Remove(key);
+
+                // moved down to allow removal from list
+                // even if the release call fails.
+                _releaseFunction?.Invoke(releaseVar);
             }
-
-            _releaseFunction?.Invoke(to_remove.Item2);
-
-            _cacheMRUList.Remove(to_remove.Item1);
-            _cacheEntries.Remove(key);
         }
 
         /// <summary>
         /// Invalidate all the items in the cache.
         /// </summary>
-        public void InvalidateAll()
+        /// <param name="aggregateReleaseExceptions">
+        /// Flag to indicate whether Exceptions during the resource Release call should not fail on the first item.
+        /// But should try all items then throw an aggregate exception.
+        /// </param>
+        public void InvalidateAll(bool aggregateReleaseExceptions = false)
         {
-            if (_releaseFunction == null || _cacheEntries == null)
+            Dictionary<TParam, Tuple<LinkedListNode<TParam>, TVal>> oldCacheToClear = null;
+            lock (_lockObject)
             {
+                if (_releaseFunction == null || _cacheEntries == null)
+                {
+                    _cacheMRUList = new LinkedList<TParam>();
+                    _cacheEntries = new Dictionary<TParam, Tuple<LinkedListNode<TParam>, TVal>>();
+                    return;
+                }
+
+                if (_cacheEntries.Count == 0)
+                {
+                    return;
+                }
+
+                // by moving to a temp variable
+                // can free up the lock quicker for other calls to MRU
+                if (_releaseFunction != null)
+                {
+                    // no point doing it, if nothing to release
+                    oldCacheToClear = _cacheEntries;
+                }
+
                 _cacheMRUList = new LinkedList<TParam>();
                 _cacheEntries = new Dictionary<TParam, Tuple<LinkedListNode<TParam>, TVal>>();
-                return;
             }
 
-            if (_cacheEntries.Count == 0)
+            if (oldCacheToClear == null)
             {
                 return;
             }
 
-            // We have to remove them one-by-one to call the release function
-            // We ToArray() this so we don't get a "modifying collection while
-            // enumerating" exception.
-            foreach (var v in _cacheEntries.Keys.ToArray())
+            if (aggregateReleaseExceptions)
             {
-                Invalidate(v);
+                var exceptions = new List<Exception>(oldCacheToClear.Count);
+                foreach (var item in oldCacheToClear)
+                {
+                    try
+                    {
+                        _releaseFunction?.Invoke(item.Value.Item2);
+                    }
+                    catch (Exception e)
+                    {
+                        exceptions.Add(e);
+                    }
+                }
+
+                if (exceptions.Count > 0)
+                {
+                    throw new AggregateException("Exceptions throw during MRU Cache Invalidate All Item Release.", exceptions);
+                }
+
+                return;
+            }
+
+            // release mechanism that will throw on first failure.
+            // but they've still been removed from the active cache
+            // as the cache field was reassigned.
+            foreach (var item in oldCacheToClear)
+            {
+                _releaseFunction?.Invoke(item.Value.Item2);
             }
         }
 
@@ -172,7 +234,10 @@ namespace Splat
         /// <returns>The values in the cache.</returns>
         public IEnumerable<TVal> CachedValues()
         {
-            return _cacheEntries.Select(x => x.Value.Item2);
+            lock (_lockObject)
+            {
+                return _cacheEntries.Select(x => x.Value.Item2);
+            }
         }
 
         private void MaintainCache()
@@ -184,6 +249,16 @@ namespace Splat
 
                 _cacheEntries.Remove(_cacheMRUList.Last.Value);
                 _cacheMRUList.RemoveLast();
+            }
+        }
+
+        private void RefreshEntry(LinkedListNode<TParam> item)
+        {
+            // only juggle entries if more than 1 of them.
+            if (_cacheEntries.Count > 1)
+            {
+                _cacheMRUList.Remove(item);
+                _cacheMRUList.AddFirst(item);
             }
         }
 

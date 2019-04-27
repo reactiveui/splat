@@ -4,8 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using Splat.Tests.Mocks;
 using Xunit;
 
@@ -16,6 +15,8 @@ namespace Splat.Tests.Logging
     /// </summary>
     public class WrappingPrefixLoggerTests
     {
+        private static char[] NewLine => Environment.NewLine.ToCharArray();
+
         /// <summary>
         /// Test to make sure the message writes.
         /// </summary>
@@ -27,7 +28,7 @@ namespace Splat.Tests.Logging
 
             logger.Write("This is a test.", LogLevel.Debug);
 
-            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test." + Environment.NewLine, textLogger.Value);
+            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
 
         /// <summary>
@@ -41,7 +42,7 @@ namespace Splat.Tests.Logging
 
             logger.Write("This is a test.", typeof(DummyObjectClass1), LogLevel.Debug);
 
-            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test." + Environment.NewLine, textLogger.Value);
+            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
 
         /// <summary>
@@ -55,7 +56,7 @@ namespace Splat.Tests.Logging
 
             logger.Debug<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test." + Environment.NewLine, textLogger.Value);
+            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
 
         /// <summary>
@@ -69,7 +70,7 @@ namespace Splat.Tests.Logging
 
             logger.Debug<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test." + Environment.NewLine, textLogger.Value);
+            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
 
         /// <summary>
@@ -83,7 +84,7 @@ namespace Splat.Tests.Logging
 
             logger.Info<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test." + Environment.NewLine, textLogger.Value);
+            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
 
         /// <summary>
@@ -97,7 +98,7 @@ namespace Splat.Tests.Logging
 
             logger.Info<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test." + Environment.NewLine, textLogger.Value);
+            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
 
         /// <summary>
@@ -111,7 +112,7 @@ namespace Splat.Tests.Logging
 
             logger.Warn<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test." + Environment.NewLine, textLogger.Value);
+            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
 
         /// <summary>
@@ -125,7 +126,7 @@ namespace Splat.Tests.Logging
 
             logger.Warn<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test." + Environment.NewLine, textLogger.Value);
+            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
 
         /// <summary>
@@ -139,7 +140,7 @@ namespace Splat.Tests.Logging
 
             logger.Error<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test." + Environment.NewLine, textLogger.Value);
+            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
 
         /// <summary>
@@ -153,7 +154,7 @@ namespace Splat.Tests.Logging
 
             logger.Error<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test." + Environment.NewLine, textLogger.Value);
+            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
 
         /// <summary>
@@ -167,7 +168,7 @@ namespace Splat.Tests.Logging
 
             logger.Fatal<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test." + Environment.NewLine, textLogger.Value);
+            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
 
         /// <summary>
@@ -181,7 +182,7 @@ namespace Splat.Tests.Logging
 
             logger.Fatal<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test." + Environment.NewLine, textLogger.Value);
+            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
     }
 }

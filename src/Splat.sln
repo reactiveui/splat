@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat", "Splat\Splat.csproj", "{8535BDE3-25B5-41D6-BF5D-2DF766AE879B}"
 EndProject
@@ -46,10 +46,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Ninject.Tests", "Splat.Ninject.Tests\Splat.Ninject.Tests.csproj", "{104B9795-FFBD-46C2-ACB2-318216EC8EEC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Common.Test", "Splat.Common.Test\Splat.Common.Test.csproj", "{4B86E6E5-40EA-44F1-BC72-0D6ECCCC8AE7}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.ApplicationInsights", "Splat.ApplicationInsights\Splat.ApplicationInsights.csproj", "{E954F5DC-5F2C-4A9F-92A7-FBD813F8D57C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Exceptionless", "Splat.Exceptionless\Splat.Exceptionless.csproj", "{6954E347-AFB7-495C-9421-FFE6BCA82765}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
