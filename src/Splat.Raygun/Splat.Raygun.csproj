@@ -1,16 +1,18 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <AssemblyName>Splat.ApplicationInsights</AssemblyName>
+    <AssemblyName>Splat.Raygun</AssemblyName>
     <RootNamespace>Splat</RootNamespace>
     <Authors>.NET Foundation and Contributors</Authors>
-    <Description>ApplicationInsights integrations for Splat</Description>
-    <PackageId>Splat.ApplicationInsights</PackageId>
+    <Description>Raygun integrations for Splat</Description>
+    <PackageId>Splat.Raygun</PackageId>
   </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.9.1" />
+    <PackageReference Include="Mindscape.Raygun4Net" Version="5.7.0" />
   </ItemGroup>
- 
+
   <ItemGroup>
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>

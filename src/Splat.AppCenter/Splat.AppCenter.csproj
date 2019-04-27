@@ -1,14 +1,16 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <AssemblyName>Splat.ApplicationInsights</AssemblyName>
+    <AssemblyName>Splat.AppCenter</AssemblyName>
     <RootNamespace>Splat</RootNamespace>
     <Authors>.NET Foundation and Contributors</Authors>
-    <Description>ApplicationInsights integrations for Splat</Description>
-    <PackageId>Splat.ApplicationInsights</PackageId>
+    <Description>Visual Studio AppCenter integrations for Splat</Description>
+    <PackageId>Splat.AppCenter</PackageId>
   </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.9.1" />
+    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="1.14.0" />
   </ItemGroup>
  
   <ItemGroup>
