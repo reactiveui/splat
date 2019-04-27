@@ -15,8 +15,8 @@ namespace Splat.ApplicationPerformanceMonitoring
         /// <summary>
         /// Generate a <see cref="IFeatureUsageTrackingSession"/> for the specified type.
         /// </summary>
-        /// <param name="type">The type to generate the feature usage tracking session for.</param>
-        /// <returns>The <see cref="IFeatureUsageTrackingSession"/> for the specified type.</returns>
-        IFeatureUsageTrackingSession GetFeatureUsageTrackingSession(Type type);
+        /// <param name="featureName">The name of the feature.</param>
+        /// <returns>The <see cref="IFeatureUsageTrackingSession"/>.</returns>
+        IFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName);
     }
 }

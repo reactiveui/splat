@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Splat.ApplicationPerformanceMonitoring;
 
 namespace Splat
 {
@@ -164,6 +165,7 @@ namespace Splat
         {
             resolver.Register(() => new DefaultLogManager(), typeof(ILogManager));
             resolver.RegisterConstant(new DebugLogger(), typeof(ILogger));
+            resolver.RegisterConstant(new DefaultFeatureUsageTrackingManager(), typeof(IFeatureUsageTrackingManager));
         }
     }
 }
