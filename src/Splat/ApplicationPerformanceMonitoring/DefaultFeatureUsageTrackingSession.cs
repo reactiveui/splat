@@ -32,13 +32,7 @@ namespace Splat.ApplicationPerformanceMonitoring
             FeatureName = featureName;
             FeatureReference = Guid.NewGuid();
 
-            var message = $"Feature Start. Reference={FeatureReference}";
-            if (ParentReference != Guid.Empty)
-            {
-                message += $", Parent Reference={ParentReference}";
-            }
-
-            this.Log().Info(() => message);
+            this.Log().Info(GetSessionStartLogMessage);
         }
 
         /// <inheritdoc />
@@ -69,6 +63,18 @@ namespace Splat.ApplicationPerformanceMonitoring
         public void Dispose()
         {
             this.Log().Info(() => $"Feature Finish: {FeatureReference}");
+        }
+
+        private string GetSessionStartLogMessage()
+        {
+            var message =
+                $"Feature Start. Reference={FeatureReference}{(ParentReference != Guid.Empty ? $", Parent Reference={ParentReference}" : null)}";
+            if (ParentReference != Guid.Empty)
+            {
+                message += $", Parent Reference={ParentReference}";
+            }
+
+            return message;
         }
     }
 }
