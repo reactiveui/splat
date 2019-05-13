@@ -176,6 +176,7 @@ Splat has support for the following logging frameworks
 
 | Target | Package | NuGet |
 |---------|-------|------|
+| Console | [Splat][SplatNuGet] | [![SplatBadge]][SplatNuGet] |
 | Debug | [Splat][SplatNuGet] | [![SplatBadge]][SplatNuGet] |
 | Log4Net | [Splat.Log4Net][SplatLog4NetNuGet] | [![SplatLog4NetBadge]][SplatLog4NetNuGet]  |
 | Microsoft Extensions Logging | [Splat.Microsoft.Extensions.Logging][SplatMicrosoftExtensionsLoggingNuGet] | [![SplatMicrosoftExtensionsLoggingBadge]][SplatMicrosoftExtensionsLoggingNuGet] |
