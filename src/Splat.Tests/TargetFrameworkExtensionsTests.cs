@@ -12,9 +12,9 @@ namespace Splat.Tests
     public class TargetFrameworkExtensionsTests
     {
         /// <summary>
-        /// Test source data for Framework names.
+        /// Gets the test source data for Framework names.
         /// </summary>
-        public static IEnumerable<object[]> FrameworkNamesTestSource = new[]
+        public static IEnumerable<object[]> FrameworkNamesTestSource { get; } = new[]
         {
             new object[]
             {

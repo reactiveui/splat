@@ -14,9 +14,9 @@ namespace Splat.Tests.Colors
     public class SplatColorTests
     {
         /// <summary>
-        /// Test data for FromKnownColor.
+        /// Gets the test data for FromKnownColor.
         /// </summary>
-        public static IEnumerable<object[]> KnownColorEnums = XUnitHelpers.GetEnumAsTestTheory<KnownColor>();
+        public static IEnumerable<object[]> KnownColorEnums { get; } = XUnitHelpers.GetEnumAsTestTheory<KnownColor>();
 
         /// <summary>
         /// Tests to check you can get a SplatColor from a KnownColor.
