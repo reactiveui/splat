@@ -153,6 +153,16 @@ namespace Splat
         Png = 0,
         Jpeg = 1,
     }
+    public class ConsoleLogger : Splat.ILogger
+    {
+        public ConsoleLogger() { }
+        public string ExceptionMessageFormat { get; set; }
+        public Splat.LogLevel Level { get; set; }
+        public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string message, Splat.LogLevel logLevel) { }
+        public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
+    }
     public class DebugLogger : Splat.ILogger
     {
         public DebugLogger() { }
@@ -858,6 +868,15 @@ namespace Splat
         public void Warn<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
         public void Warn<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
         public void WarnException(string message, System.Exception exception) { }
+    }
+    public class WrappingLogLevelLogger : Splat.ILogger
+    {
+        public WrappingLogLevelLogger(Splat.ILogger inner) { }
+        public Splat.LogLevel Level { get; }
+        public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string message, Splat.LogLevel logLevel) { }
+        public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
     }
     public class WrappingPrefixLogger : Splat.ILogger
     {

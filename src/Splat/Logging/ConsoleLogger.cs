@@ -5,6 +5,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace Splat
 {
@@ -13,6 +14,12 @@ namespace Splat
     /// </summary>
     public class ConsoleLogger : ILogger
     {
+        /// <summary>
+        /// Gets or sets the exception message format.
+        /// First parameter will be the message, second will be the exception.
+        /// </summary>
+        public string ExceptionMessageFormat { get; set; } = "{0] - {1}";
+
         /// <inheritdoc />
         public LogLevel Level { get; set; }
 
@@ -35,7 +42,7 @@ namespace Splat
                 return;
             }
 
-            Console.WriteLine($"{message} - {exception}");
+            Console.WriteLine(string.Format(CultureInfo.InvariantCulture, ExceptionMessageFormat, message, exception));
         }
 
         /// <inheritdoc />
@@ -46,7 +53,7 @@ namespace Splat
                 return;
             }
 
-            Console.WriteLine(message, type.Name);
+            Console.WriteLine(message);
         }
 
         /// <inheritdoc />
@@ -57,7 +64,7 @@ namespace Splat
                 return;
             }
 
-            Console.WriteLine($"{message} - {exception}", type.Name);
+            Console.WriteLine(string.Format(CultureInfo.InvariantCulture, ExceptionMessageFormat, message, exception));
         }
     }
 }
