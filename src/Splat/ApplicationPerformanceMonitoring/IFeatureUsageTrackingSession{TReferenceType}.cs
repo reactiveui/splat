@@ -22,10 +22,5 @@ namespace Splat.ApplicationPerformanceMonitoring
         /// Gets the unique reference for the Parent Tracking Session, if any.
         /// </summary>
         TReferenceType ParentReference { get; }
-
-        /// <summary>
-        /// Gets the name of the Feature being tracked.
-        /// </summary>
-        string FeatureName { get; }
     }
 }

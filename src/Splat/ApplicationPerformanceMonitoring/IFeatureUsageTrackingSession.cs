@@ -13,6 +13,11 @@ namespace Splat.ApplicationPerformanceMonitoring
     public interface IFeatureUsageTrackingSession : IDisposable
     {
         /// <summary>
+        /// Gets the name of the Feature being tracked.
+        /// </summary>
+        string FeatureName { get; }
+
+        /// <summary>
         /// Starts a sub-feature usage tracking session on the current session.
         /// </summary>
         /// <param name="description">Description of the sub-feature.</param>
