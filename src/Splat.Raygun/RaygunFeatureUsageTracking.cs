@@ -4,26 +4,32 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using Exceptionless;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Mindscape.Raygun4Net;
 using Splat.ApplicationPerformanceMonitoring;
 
 namespace Splat
 {
     /// <summary>
-    /// Feature Usage Tracking integration for Exceptionless.
+    /// Feature Usage Tracking integration for Raygun.
     /// </summary>
-    public sealed class ExceptionlessFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
+    public sealed class RaygunFeatureUsageTracking : IFeatureUsageTrackingSession<Guid>
     {
+        private readonly RaygunClient _raygunClient;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExceptionlessFeatureUsageTrackingSession"/> class.
+        /// Initializes a new instance of the <see cref="RaygunFeatureUsageTracking"/> class.
         /// </summary>
         /// <param name="featureName">Name of the feature.</param>
-        public ExceptionlessFeatureUsageTrackingSession(string featureName)
+        public RaygunFeatureUsageTracking(string featureName)
             : this(featureName, Guid.Empty)
         {
         }
 
-        internal ExceptionlessFeatureUsageTrackingSession(
+        internal RaygunFeatureUsageTracking(
             string featureName,
             Guid parentReference)
         {
@@ -36,16 +42,27 @@ namespace Splat
             FeatureName = featureName;
             FeatureReference = Guid.NewGuid();
 
-            var client = ExceptionlessClient.Default;
-            var eventBuilder = client.CreateFeatureUsage(featureName);
-
-            if (!parentReference.Equals(Guid.Empty))
+            var userCustomData = new Dictionary<string, string>
             {
-                eventBuilder.SetEventReference(FeatureName, FeatureReference.ToString());
-            }
+                { "EventType", "FeatureUsage" },
+                { "EventReference", FeatureReference.ToString() },
+                { "ParentReference", parentReference.ToString() }
+            };
 
-            eventBuilder.SetReferenceId(FeatureReference.ToString());
-            eventBuilder.Submit();
+            // keep an eye on
+            // https://raygun.com/forums/thread/92182
+#if NETSTANDARD2_0
+            // TODO: check about settings in netstandard version
+            var raygunSettings = new RaygunSettings();
+            var messageBuilder = RaygunMessageBuilder.New(raygunSettings)
+#else
+            var messageBuilder = RaygunMessageBuilder.New
+#endif
+                .SetClientDetails()
+                .SetEnvironmentDetails()
+                .SetUserCustomData(userCustomData);
+            var raygunMessage = messageBuilder.Build();
+            _raygunClient.SendInBackground(raygunMessage);
         }
 
         /// <inheritdoc />
@@ -60,7 +77,7 @@ namespace Splat
         /// <inheritdoc />
         public IFeatureUsageTrackingSession SubFeature(string name)
         {
-            return new ExceptionlessFeatureUsageTrackingSession(
+            return new RaygunFeatureUsageTracking(
                 name,
                 FeatureReference);
         }
@@ -68,11 +85,7 @@ namespace Splat
         /// <inheritdoc />
         public void OnException(Exception exception)
         {
-            var eventBuilder = exception.ToExceptionless()
-                .SetEventReference(FeatureName, ParentReference.ToString())
-                .SetReferenceId(FeatureReference.ToString());
-
-            eventBuilder.Submit();
+            _raygunClient.SendInBackground(exception);
         }
 
         /// <inheritdoc />
