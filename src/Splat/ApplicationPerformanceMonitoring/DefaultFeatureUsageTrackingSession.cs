@@ -53,7 +53,6 @@ namespace Splat.ApplicationPerformanceMonitoring
         /// <inheritdoc />
         public void OnException(Exception exception)
         {
-            // vs getting confused over IEnable... interfaces and extension methods
             this.Log().InfoException(
                 () => "Feature Usage Tracking Exception",
                 exception);
