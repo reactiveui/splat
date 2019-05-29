@@ -3,6 +3,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Splat.Microsoft.Extensions.Logging
@@ -10,7 +11,7 @@ namespace Splat.Microsoft.Extensions.Logging
     /// <summary>
     /// Microsoft.Extensions.Logging specific extensions for the Mutable Dependency Resolver.
     /// </summary>
-    public static class MutableDependencyResolverExtensions
+    public static class MicrosoftExtensionsLoggingExtensions
     {
         /// <summary>
         /// Simple helper to initialize Microsoft.Extensions.Logging within Splat with the Wrapping Full Logger.
@@ -41,6 +42,29 @@ namespace Splat.Microsoft.Extensions.Logging
             });
 
             instance.RegisterConstant(funcLogManager, typeof(ILogManager));
+        }
+
+        /// <summary>
+        /// Registers a <see cref="MicrosoftExtensionsLogProvider"/> with the service collection.
+        /// </summary>
+        /// <param name="builder">The logging builder to register.</param>
+        /// <returns>The logging builder.</returns>
+        public static ILoggingBuilder AddSplat(this ILoggingBuilder builder)
+        {
+            builder.Services.AddSingleton<ILoggerProvider, MicrosoftExtensionsLogProvider>();
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Adds a <see cref="MicrosoftExtensionsLogProvider"/> to the logger factory.
+        /// </summary>
+        /// <param name="loggerFactory">Our logger provider.</param>
+        /// <returns>The factory.</returns>
+        public static ILoggerFactory AddSplat(this ILoggerFactory loggerFactory)
+        {
+            loggerFactory.AddProvider(new MicrosoftExtensionsLogProvider());
+            return loggerFactory;
         }
     }
 }

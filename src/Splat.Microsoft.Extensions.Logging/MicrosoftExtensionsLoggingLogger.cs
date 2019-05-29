@@ -17,17 +17,6 @@ namespace Splat.Microsoft.Extensions.Logging
     [DebuggerDisplay("Name={_inner.GetType()} Level={Level}")]
     public sealed class MicrosoftExtensionsLoggingLogger : ILogger
     {
-        private static readonly KeyValuePair<LogLevel, global::Microsoft.Extensions.Logging.LogLevel>[] _mappings =
-        {
-            new KeyValuePair<LogLevel, global::Microsoft.Extensions.Logging.LogLevel>(LogLevel.Debug, global::Microsoft.Extensions.Logging.LogLevel.Debug),
-            new KeyValuePair<LogLevel, global::Microsoft.Extensions.Logging.LogLevel>(LogLevel.Info, global::Microsoft.Extensions.Logging.LogLevel.Information),
-            new KeyValuePair<LogLevel, global::Microsoft.Extensions.Logging.LogLevel>(LogLevel.Warn, global::Microsoft.Extensions.Logging.LogLevel.Warning),
-            new KeyValuePair<LogLevel, global::Microsoft.Extensions.Logging.LogLevel>(LogLevel.Error, global::Microsoft.Extensions.Logging.LogLevel.Error),
-            new KeyValuePair<LogLevel, global::Microsoft.Extensions.Logging.LogLevel>(LogLevel.Fatal, global::Microsoft.Extensions.Logging.LogLevel.Critical)
-        };
-
-        private static readonly ImmutableDictionary<LogLevel, global::Microsoft.Extensions.Logging.LogLevel> _mappingsDictionary = _mappings.ToImmutableDictionary();
-
         private readonly global::Microsoft.Extensions.Logging.ILogger _inner;
 
         /// <summary>
@@ -45,7 +34,7 @@ namespace Splat.Microsoft.Extensions.Logging
         {
             get
             {
-                foreach (var mapping in _mappings)
+                foreach (var mapping in MsLoggingHelpers.Mappings)
                 {
                     if (_inner.IsEnabled(mapping.Value))
                     {
@@ -61,13 +50,13 @@ namespace Splat.Microsoft.Extensions.Logging
         /// <inheritdoc />
         public void Write(string message, LogLevel logLevel)
         {
-            _inner.Log(_mappingsDictionary[logLevel], message);
+            _inner.Log(MsLoggingHelpers.Splat2MsLogDictionary[logLevel], message);
         }
 
         /// <inheritdoc />
         public void Write(Exception exception, string message, LogLevel logLevel)
         {
-            _inner.Log(_mappingsDictionary[logLevel], exception, message);
+            _inner.Log(MsLoggingHelpers.Splat2MsLogDictionary[logLevel], exception, message);
         }
 
         /// <inheritdoc />
@@ -75,7 +64,7 @@ namespace Splat.Microsoft.Extensions.Logging
         {
             using (_inner.BeginScope(type.ToString()))
             {
-                _inner.Log(_mappingsDictionary[logLevel], message);
+                _inner.Log(MsLoggingHelpers.Splat2MsLogDictionary[logLevel], message);
             }
         }
 
@@ -84,7 +73,7 @@ namespace Splat.Microsoft.Extensions.Logging
         {
             using (_inner.BeginScope(type.ToString()))
             {
-                _inner.Log(_mappingsDictionary[logLevel], exception, message);
+                _inner.Log(MsLoggingHelpers.Splat2MsLogDictionary[logLevel], exception, message);
             }
         }
     }
