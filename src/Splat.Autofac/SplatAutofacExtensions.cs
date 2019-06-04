@@ -3,6 +3,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using Autofac;
 
 namespace Splat.Autofac
@@ -15,9 +16,9 @@ namespace Splat.Autofac
         /// <summary>
         /// Initializes an instance of <see cref="AutofacDependencyResolver"/> that overrides the default <see cref="Locator"/>.
         /// </summary>
-        /// <param name="container">Autofac container.</param>
-        public static void UseAutofacDependencyResolver(this IContainer container) =>
-            Locator.SetLocator(new AutofacDependencyResolver(container));
+        /// <param name="componentContext">Autofac component context.</param>
+        public static void UseAutofacDependencyResolver(this IComponentContext componentContext) =>
+            Locator.SetLocator(new AutofacDependencyResolver(componentContext));
 
         /// <summary>
         /// Initializes an instance of <see cref="AutofacDependencyResolver"/> that overrides the default <see cref="Locator"/>.
