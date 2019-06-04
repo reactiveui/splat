@@ -19,7 +19,7 @@ namespace Splat.DryIoc
         /// Initializes an instance of <see cref="DryIocDependencyResolver"/> that overrides the default <see cref="Locator"/>.
         /// </summary>
         /// <param name="container">The container.</param>
-        public static void UseDryIocDependencyResolver(this Container container) =>
+        public static void UseDryIocDependencyResolver(this IContainer container) =>
             Locator.SetLocator(new DryIocDependencyResolver(container));
     }
 }
