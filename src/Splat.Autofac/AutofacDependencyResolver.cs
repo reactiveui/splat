@@ -20,15 +20,15 @@ namespace Splat.Autofac
     /// </summary>
     public class AutofacDependencyResolver : IDependencyResolver
     {
-        private IContainer _container;
+        private readonly IComponentContext _componentContext;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AutofacDependencyResolver"/> class.
+        /// Initializes a new instance of the <see cref="AutofacDependencyResolver" /> class.
         /// </summary>
-        /// <param name="container">The container.</param>
-        public AutofacDependencyResolver(IContainer container)
+        /// <param name="componentContext">The component context.</param>
+        public AutofacDependencyResolver(IComponentContext componentContext)
         {
-            _container = container;
+            _componentContext = componentContext;
         }
 
         /// <inheritdoc />
@@ -37,8 +37,8 @@ namespace Splat.Autofac
             try
             {
                 return string.IsNullOrEmpty(contract)
-                    ? _container.Resolve(serviceType)
-                    : _container.ResolveNamed(contract, serviceType);
+                    ? _componentContext.Resolve(serviceType)
+                    : _componentContext.ResolveNamed(contract, serviceType);
             }
             catch (DependencyResolutionException)
             {
@@ -53,8 +53,8 @@ namespace Splat.Autofac
             {
                 var enumerableType = typeof(IEnumerable<>).MakeGenericType(serviceType);
                 object instance = string.IsNullOrEmpty(contract)
-                    ? _container.Resolve(enumerableType)
-                    : _container.ResolveNamed(contract, enumerableType);
+                    ? _componentContext.Resolve(enumerableType)
+                    : _componentContext.ResolveNamed(contract, enumerableType);
                 return ((IEnumerable)instance).Cast<object>();
             }
             catch (DependencyResolutionException)
@@ -85,7 +85,7 @@ namespace Splat.Autofac
                 builder.Register(x => factory()).Named(contract, serviceType).AsImplementedInterfaces();
             }
 
-            builder.Update(_container);
+            builder.Update(_componentContext.ComponentRegistry);
         }
 
         /// <summary>
@@ -136,8 +136,7 @@ namespace Splat.Autofac
         {
             if (disposing)
             {
-                _container?.Dispose();
-                _container = null;
+                _componentContext.ComponentRegistry?.Dispose();
             }
         }
     }
