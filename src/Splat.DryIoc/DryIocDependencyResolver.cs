@@ -16,13 +16,13 @@ namespace Splat.DryIoc
     /// <seealso cref="Splat.IDependencyResolver" />
     public class DryIocDependencyResolver : IDependencyResolver
     {
-        private Container _container;
+        private IContainer _container;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DryIocDependencyResolver" /> class.
         /// </summary>
         /// <param name="container">The container.</param>
-        public DryIocDependencyResolver(Container container = null)
+        public DryIocDependencyResolver(IContainer container = null)
         {
             _container = container ?? new Container();
         }
