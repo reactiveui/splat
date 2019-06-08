@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Graphics;
@@ -103,7 +104,8 @@ namespace Splat
 
             // VS2019 onward
             var assemblies = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(x => x.GetTypes())
+                .Where(t => !t.IsDynamic)
+                .SelectMany(GetTypesFromAssembly)
                 .Where(x => x.Name == "Resource" && x.GetNestedType("Drawable") != null)
                 .Select(x => x.GetNestedType("Drawable"))
                 .ToArray();
@@ -126,6 +128,30 @@ namespace Splat
             }
 
             return result;
+        }
+
+        internal static Type[] GetTypesFromAssembly(Assembly assembly)
+        {
+            try
+            {
+                // could this be assembly.GetExportedTypes() ?
+                return assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                // The array returned by the Types property of this exception contains a Type
+                // object for each type that was loaded and null for each type that could not
+                // be loaded, while the LoaderExceptions property contains an exception for
+                // each type that could not be loaded.
+                Splat.LogHost.Default.Warn(e, "Exception while detecting drawing types.");
+
+                foreach (var loaderException in e.LoaderExceptions)
+                {
+                    Splat.LogHost.Default.Warn(loaderException, "Inner Exception for detecting drawing types.");
+                }
+
+                return e.Types.Where(x => x != null).ToArray();
+            }
         }
     }
 }
