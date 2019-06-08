@@ -34,7 +34,7 @@ namespace Splat.Tests
             CheckApproval(typeof(AssemblyFinder).Assembly);
         }
 
-        protected static void CheckApproval(Assembly assembly, [CallerMemberName]string memberName = null, [CallerFilePath]string filePath = null)
+        private static void CheckApproval(Assembly assembly, [CallerMemberName]string memberName = null, [CallerFilePath]string filePath = null)
         {
             var targetFrameworkName = Assembly.GetExecutingAssembly().GetTargetFrameworkName();
 
