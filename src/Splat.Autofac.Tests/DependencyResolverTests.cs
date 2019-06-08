@@ -3,6 +3,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -86,6 +87,51 @@ namespace Splat.Autofac.Tests
 
             screen.ShouldNotBeNull();
             screen.ShouldBeOfType<MockScreen>();
+        }
+
+        /// <summary>
+        /// Should throw an exception if service registration call back called.
+        /// </summary>
+        [Fact]
+        public void AutofacDependencyResolver_Should_Throw_If_UnregisterCurrent_Called()
+        {
+            var container = new ContainerBuilder();
+            container.UseAutofacDependencyResolver();
+
+            var result = Record.Exception(() =>
+                Locator.CurrentMutable.UnregisterCurrent(typeof(IScreen)));
+
+            result.ShouldBeOfType<NotImplementedException>();
+        }
+
+        /// <summary>
+        /// Should unregister all.
+        /// </summary>
+        [Fact]
+        public void AutofacDependencyResolver_Should_UnregisterAll_Called()
+        {
+            var container = new ContainerBuilder();
+            container.UseAutofacDependencyResolver();
+
+            var result = Record.Exception(() =>
+                Locator.CurrentMutable.UnregisterCurrent(typeof(IScreen)));
+
+            result.ShouldBeOfType<NotImplementedException>();
+        }
+
+        /// <summary>
+        /// Should throw an exception if service registration call back called.
+        /// </summary>
+        [Fact]
+        public void AutofacDependencyResolver_Should_Throw_If_ServiceRegistionCallback_Called()
+        {
+            var container = new ContainerBuilder();
+            container.UseAutofacDependencyResolver();
+
+            var result = Record.Exception(() =>
+                Locator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
+
+            result.ShouldBeOfType<NotImplementedException>();
         }
     }
 }

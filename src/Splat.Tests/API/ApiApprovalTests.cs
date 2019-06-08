@@ -4,6 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -42,14 +43,45 @@ namespace Splat.Tests
             var approvedFileName = Path.Combine(sourceDirectory, $"ApiApprovalTests.{memberName}.{targetFrameworkName}.approved.txt");
             var receivedFileName = Path.Combine(sourceDirectory, $"ApiApprovalTests.{memberName}.{targetFrameworkName}.received.txt");
 
-            var approvedPublicApi = File.ReadAllText(approvedFileName);
+            string approvedPublicApi = string.Empty;
+
+            if (File.Exists(approvedFileName))
+            {
+                approvedPublicApi = File.ReadAllText(approvedFileName);
+            }
 
             var receivedPublicApi = Filter(ApiGenerator.GeneratePublicApi(assembly));
 
             if (!string.Equals(receivedPublicApi, approvedPublicApi, StringComparison.InvariantCulture))
             {
                 File.WriteAllText(receivedFileName, receivedPublicApi);
-                ShouldlyConfiguration.DiffTools.GetDiffTool().Open(receivedFileName, approvedFileName, true);
+                try
+                {
+                    ShouldlyConfiguration.DiffTools.GetDiffTool().Open(receivedFileName, approvedFileName, true);
+                }
+                catch (ShouldAssertException)
+                {
+                    var process = new Process
+                    {
+                      StartInfo = new ProcessStartInfo
+                      {
+                          Arguments = $"\"{approvedFileName}\" \"{receivedFileName}\"",
+                          UseShellExecute = false,
+                          RedirectStandardOutput = true,
+                          CreateNoWindow = true
+                      }
+                    };
+#if NET_461
+                    process.StartInfo.FileName = "FC";
+#else
+                    process.StartInfo.FileName = "diff";
+#endif
+                    process.Start();
+                    string output = process.StandardOutput.ReadToEnd();
+                    process.WaitForExit();
+
+                    throw new Exception("Invalid API configuration: " + Environment.NewLine + output);
+                }
             }
 
             Assert.Equal(approvedPublicApi, receivedPublicApi);

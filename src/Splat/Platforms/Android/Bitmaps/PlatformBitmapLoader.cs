@@ -25,19 +25,7 @@ namespace Splat
         /// </summary>
         static PlatformBitmapLoader()
         {
-            // NB: This is hacky, but on MonoAndroid at the moment,
-            // this is always the entry assembly.
-            var assembly = AppDomain.CurrentDomain.GetAssemblies().Skip(1).FirstOrDefault();
-
-            // GetNestedType("Drawable") will be null if there are no files in the drawable folder;
-            // hense, the null-conditional operator.
-            _drawableList = assembly.GetModules()
-                .SelectMany(x => x.GetTypes())
-                .First(x => x.Name == "Resource")
-                .GetNestedType("Drawable")
-                ?.GetFields()
-                .Where(x => x.FieldType == typeof(int))
-                .ToDictionary(k => k.Name, v => (int)v.GetRawConstantValue());
+            _drawableList = GetDrawableList();
         }
 
         /// <inheritdoc />
@@ -107,6 +95,37 @@ namespace Splat
         public IBitmap Create(float width, float height)
         {
             return Bitmap.CreateBitmap((int)width, (int)height, Bitmap.Config.Argb8888).FromNative();
+        }
+
+        internal static Dictionary<string, int> GetDrawableList()
+        {
+            var log = Splat.LogHost.Default;
+
+            // VS2019 onward
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(x => x.GetTypes())
+                .Where(x => x.Name == "Resource" && x.GetNestedType("Drawable") != null)
+                .Select(x => x.GetNestedType("Drawable"))
+                .ToArray();
+
+            log.Debug(() => "DrawableList. Got " + assemblies.Length + " assemblies.");
+            foreach (var assembly in assemblies)
+            {
+                log.Debug(() => "DrawableList Assembly: " + assembly.Name);
+            }
+
+            var result = assemblies
+                .SelectMany(x => x.GetFields())
+                .Where(x => x.FieldType == typeof(int) && x.IsLiteral)
+                .ToDictionary(k => k.Name, v => (int)v.GetRawConstantValue());
+
+            log.Debug(() => "DrawableList. Got " + result.Count + " items.");
+            foreach (var keyValuePair in result)
+            {
+                log.Debug(() => "DrawableList Item: " + keyValuePair.Key);
+            }
+
+            return result;
         }
     }
 }

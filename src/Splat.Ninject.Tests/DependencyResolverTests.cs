@@ -107,7 +107,7 @@ namespace Splat.Ninject.Tests
         /// Should unregister all.
         /// </summary>
         [Fact]
-        public void NinjectDependencyResolver_Should_Unregister_All()
+        public void NinjectDependencyResolver_Should_UnregisterAll()
         {
             var container = new StandardKernel();
             container.Bind<IScreen>().ToConstant(new MockScreen());
