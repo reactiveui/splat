@@ -104,7 +104,6 @@ namespace Splat
         {
             // VS2019 onward
             var assemblies = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(t => !t.IsDynamic)
                 .SelectMany(GetTypesFromAssembly)
                 .Where(x => x.Name == "Resource" && x.GetNestedType("Drawable") != null)
                 .Select(x => x.GetNestedType("Drawable"))
