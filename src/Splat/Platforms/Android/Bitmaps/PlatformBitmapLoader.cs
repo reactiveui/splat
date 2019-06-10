@@ -20,12 +20,14 @@ namespace Splat
     public class PlatformBitmapLoader : IBitmapLoader
     {
         private static readonly Dictionary<string, int> _drawableList;
+        private static readonly IFullLogger _log;
 
         /// <summary>
         /// Initializes static members of the <see cref="PlatformBitmapLoader"/> class.
         /// </summary>
         static PlatformBitmapLoader()
         {
+            _log = Locator.Current.GetService<ILogManager>().GetLogger(typeof(PlatformBitmapLoader));
             _drawableList = GetDrawableList();
         }
 
@@ -100,8 +102,6 @@ namespace Splat
 
         internal static Dictionary<string, int> GetDrawableList()
         {
-            var log = Splat.LogHost.Default;
-
             // VS2019 onward
             var assemblies = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(t => !t.IsDynamic)
@@ -110,10 +110,10 @@ namespace Splat
                 .Select(x => x.GetNestedType("Drawable"))
                 .ToArray();
 
-            log.Debug(() => "DrawableList. Got " + assemblies.Length + " assemblies.");
+            _log.Debug(() => "DrawableList. Got " + assemblies.Length + " assemblies.");
             foreach (var assembly in assemblies)
             {
-                log.Debug(() => "DrawableList Assembly: " + assembly.Name);
+                _log.Debug(() => "DrawableList Assembly: " + assembly.Name);
             }
 
             var result = assemblies
@@ -121,10 +121,10 @@ namespace Splat
                 .Where(x => x.FieldType == typeof(int) && x.IsLiteral)
                 .ToDictionary(k => k.Name, v => (int)v.GetRawConstantValue());
 
-            log.Debug(() => "DrawableList. Got " + result.Count + " items.");
+            _log.Debug(() => "DrawableList. Got " + result.Count + " items.");
             foreach (var keyValuePair in result)
             {
-                log.Debug(() => "DrawableList Item: " + keyValuePair.Key);
+                _log.Debug(() => "DrawableList Item: " + keyValuePair.Key);
             }
 
             return result;
@@ -134,7 +134,6 @@ namespace Splat
         {
             try
             {
-                // could this be assembly.GetExportedTypes() ?
                 return assembly.GetTypes();
             }
             catch (ReflectionTypeLoadException e)
@@ -143,11 +142,11 @@ namespace Splat
                 // object for each type that was loaded and null for each type that could not
                 // be loaded, while the LoaderExceptions property contains an exception for
                 // each type that could not be loaded.
-                Splat.LogHost.Default.Warn(e, "Exception while detecting drawing types.");
+                _log.Warn(e, "Exception while detecting drawing types.");
 
                 foreach (var loaderException in e.LoaderExceptions)
                 {
-                    Splat.LogHost.Default.Warn(loaderException, "Inner Exception for detecting drawing types.");
+                    _log.Warn(loaderException, "Inner Exception for detecting drawing types.");
                 }
 
                 return e.Types.Where(x => x != null).ToArray();
