@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Graphics;
@@ -19,12 +20,14 @@ namespace Splat
     public class PlatformBitmapLoader : IBitmapLoader
     {
         private static readonly Dictionary<string, int> _drawableList;
+        private static readonly IFullLogger _log;
 
         /// <summary>
         /// Initializes static members of the <see cref="PlatformBitmapLoader"/> class.
         /// </summary>
         static PlatformBitmapLoader()
         {
+            _log = Locator.Current.GetService<ILogManager>().GetLogger(typeof(PlatformBitmapLoader));
             _drawableList = GetDrawableList();
         }
 
@@ -99,19 +102,17 @@ namespace Splat
 
         internal static Dictionary<string, int> GetDrawableList()
         {
-            var log = Splat.LogHost.Default;
-
             // VS2019 onward
             var assemblies = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(x => x.GetTypes())
+                .SelectMany(GetTypesFromAssembly)
                 .Where(x => x.Name == "Resource" && x.GetNestedType("Drawable") != null)
                 .Select(x => x.GetNestedType("Drawable"))
                 .ToArray();
 
-            log.Debug(() => "DrawableList. Got " + assemblies.Length + " assemblies.");
+            _log.Debug(() => "DrawableList. Got " + assemblies.Length + " assemblies.");
             foreach (var assembly in assemblies)
             {
-                log.Debug(() => "DrawableList Assembly: " + assembly.Name);
+                _log.Debug(() => "DrawableList Assembly: " + assembly.Name);
             }
 
             var result = assemblies
@@ -119,13 +120,36 @@ namespace Splat
                 .Where(x => x.FieldType == typeof(int) && x.IsLiteral)
                 .ToDictionary(k => k.Name, v => (int)v.GetRawConstantValue());
 
-            log.Debug(() => "DrawableList. Got " + result.Count + " items.");
+            _log.Debug(() => "DrawableList. Got " + result.Count + " items.");
             foreach (var keyValuePair in result)
             {
-                log.Debug(() => "DrawableList Item: " + keyValuePair.Key);
+                _log.Debug(() => "DrawableList Item: " + keyValuePair.Key);
             }
 
             return result;
+        }
+
+        internal static Type[] GetTypesFromAssembly(Assembly assembly)
+        {
+            try
+            {
+                return assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                // The array returned by the Types property of this exception contains a Type
+                // object for each type that was loaded and null for each type that could not
+                // be loaded, while the LoaderExceptions property contains an exception for
+                // each type that could not be loaded.
+                _log.Warn(e, "Exception while detecting drawing types.");
+
+                foreach (var loaderException in e.LoaderExceptions)
+                {
+                    _log.Warn(loaderException, "Inner Exception for detecting drawing types.");
+                }
+
+                return e.Types.Where(x => x != null).ToArray();
+            }
         }
     }
 }
