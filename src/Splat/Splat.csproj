@@ -31,6 +31,7 @@
     <Compile Include="Platforms\PlatformModeDetector.cs" />
     <Compile Include="Platforms\ReflectionStubs.cs" />
 
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
     <Reference Include="WindowsBase" />
     <Reference Include="System.Xaml" />
