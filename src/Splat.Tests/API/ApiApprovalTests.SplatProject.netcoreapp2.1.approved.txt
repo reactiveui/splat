@@ -652,7 +652,10 @@ namespace Splat
     }
     public sealed class MemoizingMRUCache<TParam, TVal>
     {
-        public MemoizingMRUCache(System.Func<TParam, object, TVal> calculationFunc, int maxSize, System.Action<TVal> onRelease = null, System.Collections.Generic.IEqualityComparer<TParam> paramComparer = null) { }
+        public MemoizingMRUCache(System.Func<TParam, object, TVal> calculationFunc, int maxSize) { }
+        public MemoizingMRUCache(System.Func<TParam, object, TVal> calculationFunc, int maxSize, System.Action<TVal> onRelease) { }
+        public MemoizingMRUCache(System.Func<TParam, object, TVal> calculationFunc, int maxSize, System.Collections.Generic.IEqualityComparer<TParam> paramComparer) { }
+        public MemoizingMRUCache(System.Func<TParam, object, TVal> calculationFunc, int maxSize, System.Action<TVal> onRelease, System.Collections.Generic.IEqualityComparer<TParam> paramComparer) { }
         public System.Collections.Generic.IEnumerable<TVal> CachedValues() { }
         public TVal Get(TParam key) { }
         public TVal Get(TParam key, object context = null) { }
