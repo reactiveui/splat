@@ -36,7 +36,7 @@
   </PropertyGroup>
   
   <ItemGroup Condition="$(IsTestProject)">
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.console" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
@@ -68,8 +68,8 @@
 
   <ItemGroup>
     <PackageReference Include="stylecop.analyzers" Version="1.1.118" PrivateAssets="all" />
+    <PackageReference Include="Roslynator.Analyzers" Version="2.1.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.3" PrivateAssets="all" />
-    <PackageReference Include="Roslynator.Analyzers" Version="2.1.0-rc" PrivateAssets="All" />
     <PackageReference Condition="'$(OS)' == 'Windows_NT'" Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.3" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
