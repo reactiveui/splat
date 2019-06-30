@@ -421,6 +421,10 @@ namespace Splat
         [System.ObsoleteAttribute("Use void Warn(Exception exception, [Localizable(false)] string message)")]
         void WarnException([System.ComponentModel.LocalizableAttribute(false)] string message, System.Exception exception);
     }
+    public interface ILogManager
+    {
+        Splat.IFullLogger GetLogger(System.Type type);
+    }
     public interface ILogger
     {
         Splat.LogLevel Level { get; }
@@ -428,10 +432,6 @@ namespace Splat
         void Write(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string message, Splat.LogLevel logLevel);
         void Write([System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel);
         void Write(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel);
-    }
-    public interface ILogManager
-    {
-        Splat.IFullLogger GetLogger(System.Type type);
     }
     public interface IModeDetector
     {
@@ -636,13 +636,6 @@ namespace Splat
         public static void SetLocator(Splat.IDependencyResolver dependencyResolver) { }
         public static System.IDisposable SuppressResolverCallbackChangedNotifications() { }
     }
-    public class LoggingException : System.Exception
-    {
-        public LoggingException() { }
-        public LoggingException(string message) { }
-        public LoggingException(string message, System.Exception innerException) { }
-        protected LoggingException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
-    }
     public class static LogHost
     {
         public static Splat.IFullLogger Default { get; }
@@ -661,9 +654,16 @@ namespace Splat
     {
         public static Splat.IFullLogger GetLogger<T>(this Splat.ILogManager logManager) { }
     }
+    public class LoggingException : System.Exception
+    {
+        public LoggingException() { }
+        public LoggingException(string message) { }
+        public LoggingException(string message, System.Exception innerException) { }
+        protected LoggingException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
+    }
     public sealed class MemoizingMRUCache<TParam, TVal>
     {
-        public MemoizingMRUCache(System.Func<TParam, object, TVal> calculationFunc, int maxSize, System.Action<TVal> onRelease = null) { }
+        public MemoizingMRUCache(System.Func<TParam, object, TVal> calculationFunc, int maxSize, System.Action<TVal> onRelease = null, System.Collections.Generic.IEqualityComparer<TParam> paramComparer = null) { }
         public System.Collections.Generic.IEnumerable<TVal> CachedValues() { }
         public TVal Get(TParam key) { }
         public TVal Get(TParam key, object context = null) { }
@@ -732,14 +732,6 @@ namespace Splat
         public static System.Drawing.PointF ScaledBy(this System.Drawing.PointF value, float factor) { }
         public static bool WithinEpsilonOf(this System.Drawing.PointF value, System.Drawing.PointF other, float epsilon) { }
     }
-    public class static RectangleMathExtensions
-    {
-        public static System.Drawing.PointF Center(this System.Drawing.RectangleF value) { }
-        public static System.Drawing.RectangleF Copy(this System.Drawing.RectangleF value, System.Nullable<float> x = null, System.Nullable<float> y = null, System.Nullable<float> width = null, System.Nullable<float> height = null, System.Nullable<float> top = null, System.Nullable<float> bottom = null) { }
-        public static System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF> Divide(this System.Drawing.RectangleF value, float amount, Splat.RectEdge fromEdge) { }
-        public static System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF> DivideWithPadding(this System.Drawing.RectangleF value, float sliceAmount, float padding, Splat.RectEdge fromEdge) { }
-        public static System.Drawing.RectangleF InvertWithin(this System.Drawing.RectangleF value, System.Drawing.RectangleF containingRect) { }
-    }
     public enum RectEdge
     {
         Left = 0,
@@ -752,6 +744,14 @@ namespace Splat
         public static System.Drawing.RectangleF FromNative(this System.Windows.Rect value) { }
         public static System.Windows.Rect ToNative(this System.Drawing.Rectangle value) { }
         public static System.Windows.Rect ToNative(this System.Drawing.RectangleF value) { }
+    }
+    public class static RectangleMathExtensions
+    {
+        public static System.Drawing.PointF Center(this System.Drawing.RectangleF value) { }
+        public static System.Drawing.RectangleF Copy(this System.Drawing.RectangleF value, System.Nullable<float> x = null, System.Nullable<float> y = null, System.Nullable<float> width = null, System.Nullable<float> height = null, System.Nullable<float> top = null, System.Nullable<float> bottom = null) { }
+        public static System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF> Divide(this System.Drawing.RectangleF value, float amount, Splat.RectEdge fromEdge) { }
+        public static System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF> DivideWithPadding(this System.Drawing.RectangleF value, float sliceAmount, float padding, Splat.RectEdge fromEdge) { }
+        public static System.Drawing.RectangleF InvertWithin(this System.Drawing.RectangleF value, System.Drawing.RectangleF containingRect) { }
     }
     public class static SizeExtensions
     {
@@ -789,11 +789,11 @@ namespace Splat
         public override int GetHashCode() { }
         public float GetHue() { }
         public float GetSaturation() { }
-        public static bool ==(Splat.SplatColor left, Splat.SplatColor right) { }
-        public static bool !=(Splat.SplatColor left, Splat.SplatColor right) { }
         public int ToArgb() { }
         public Splat.KnownColor ToKnownColor() { }
         public override string ToString() { }
+        public static bool ==(Splat.SplatColor left, Splat.SplatColor right) { }
+        public static bool !=(Splat.SplatColor left, Splat.SplatColor right) { }
     }
     public class static SplatColorExtensions
     {

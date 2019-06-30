@@ -1,10 +1,8 @@
 <Project>
-  <!-- This props all need to be set in targets as they depend on the values set earlier -->
-  
   <PropertyGroup>  
     <Product>$(AssemblyName) ($(TargetFramework))</Product>
   </PropertyGroup>
-  
+
   <PropertyGroup Condition="$(TargetFramework.StartsWith('net4'))">
     <DefineConstants>$(DefineConstants);NET_45;XAML</DefineConstants>
   </PropertyGroup>
@@ -30,20 +28,4 @@
   <PropertyGroup Condition="$(TargetFramework.StartsWith('tizen'))">
     <DefineConstants>$(DefineConstants);TIZEN</DefineConstants>
   </PropertyGroup>
-
-  <ItemGroup>
-    <!-- Workaround https://github.com/dotnet/sdk/issues/2976 -->
-    <PackageReference Update="Microsoft.NETCore.Platforms" PrivateAssets="All" />
-  </ItemGroup>
-
-
-  <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.0'">
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All"/>
-    <PackageReference Include="Nerdbank.GitVersioning" Version="2.3.105" PrivateAssets="all" />
-  </ItemGroup>
-
 </Project>
