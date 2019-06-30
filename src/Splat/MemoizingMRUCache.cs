@@ -43,11 +43,54 @@ namespace Splat
         /// user-defined.</param>
         /// <param name="maxSize">The size of the cache to maintain, after which old
         /// items will start to be thrown out.</param>
+        public MemoizingMRUCache(Func<TParam, object, TVal> calculationFunc, int maxSize)
+            : this(calculationFunc, maxSize, null, EqualityComparer<TParam>.Default)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.
+        /// </summary>
+        /// <param name="calculationFunc">The function whose results you want to cache,
+        /// which is provided the key value, and an Tag object that is
+        /// user-defined.</param>
+        /// <param name="maxSize">The size of the cache to maintain, after which old
+        /// items will start to be thrown out.</param>
+        /// <param name="onRelease">A function to call when a result gets
+        /// evicted from the cache (i.e. because Invalidate was called or the
+        /// cache is full).</param>
+        public MemoizingMRUCache(Func<TParam, object, TVal> calculationFunc, int maxSize, Action<TVal> onRelease)
+            : this(calculationFunc, maxSize, onRelease, EqualityComparer<TParam>.Default)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.
+        /// </summary>
+        /// <param name="calculationFunc">The function whose results you want to cache,
+        /// which is provided the key value, and an Tag object that is
+        /// user-defined.</param>
+        /// <param name="maxSize">The size of the cache to maintain, after which old
+        /// items will start to be thrown out.</param>
+        /// <param name="paramComparer">A comparer for the parameter.</param>
+        public MemoizingMRUCache(Func<TParam, object, TVal> calculationFunc, int maxSize, IEqualityComparer<TParam> paramComparer)
+            : this(calculationFunc, maxSize, null, paramComparer)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.
+        /// </summary>
+        /// <param name="calculationFunc">The function whose results you want to cache,
+        /// which is provided the key value, and an Tag object that is
+        /// user-defined.</param>
+        /// <param name="maxSize">The size of the cache to maintain, after which old
+        /// items will start to be thrown out.</param>
         /// <param name="onRelease">A function to call when a result gets
         /// evicted from the cache (i.e. because Invalidate was called or the
         /// cache is full).</param>
         /// <param name="paramComparer">A comparer for the parameter.</param>
-        public MemoizingMRUCache(Func<TParam, object, TVal> calculationFunc, int maxSize, Action<TVal> onRelease = null, IEqualityComparer<TParam> paramComparer = null)
+        public MemoizingMRUCache(Func<TParam, object, TVal> calculationFunc, int maxSize, Action<TVal> onRelease, IEqualityComparer<TParam> paramComparer)
         {
             Contract.Requires(calculationFunc != null);
             Contract.Requires(maxSize > 0);
