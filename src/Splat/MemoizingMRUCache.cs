@@ -30,8 +30,23 @@ namespace Splat
         private readonly Action<TVal> _releaseFunction;
         private readonly int _maxCacheSize;
 
+        private readonly IEqualityComparer<TParam> _comparer;
+
         private LinkedList<TParam> _cacheMRUList;
-        private Dictionary<TParam, Tuple<LinkedListNode<TParam>, TVal>> _cacheEntries;
+        private Dictionary<TParam, (LinkedListNode<TParam> param, TVal value)> _cacheEntries;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.
+        /// </summary>
+        /// <param name="calculationFunc">The function whose results you want to cache,
+        /// which is provided the key value, and an Tag object that is
+        /// user-defined.</param>
+        /// <param name="maxSize">The size of the cache to maintain, after which old
+        /// items will start to be thrown out.</param>
+        public MemoizingMRUCache(Func<TParam, object, TVal> calculationFunc, int maxSize)
+            : this(calculationFunc, maxSize, null, EqualityComparer<TParam>.Default)
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.
@@ -44,7 +59,38 @@ namespace Splat
         /// <param name="onRelease">A function to call when a result gets
         /// evicted from the cache (i.e. because Invalidate was called or the
         /// cache is full).</param>
-        public MemoizingMRUCache(Func<TParam, object, TVal> calculationFunc, int maxSize, Action<TVal> onRelease = null)
+        public MemoizingMRUCache(Func<TParam, object, TVal> calculationFunc, int maxSize, Action<TVal> onRelease)
+            : this(calculationFunc, maxSize, onRelease, EqualityComparer<TParam>.Default)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.
+        /// </summary>
+        /// <param name="calculationFunc">The function whose results you want to cache,
+        /// which is provided the key value, and an Tag object that is
+        /// user-defined.</param>
+        /// <param name="maxSize">The size of the cache to maintain, after which old
+        /// items will start to be thrown out.</param>
+        /// <param name="paramComparer">A comparer for the parameter.</param>
+        public MemoizingMRUCache(Func<TParam, object, TVal> calculationFunc, int maxSize, IEqualityComparer<TParam> paramComparer)
+            : this(calculationFunc, maxSize, null, paramComparer)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.
+        /// </summary>
+        /// <param name="calculationFunc">The function whose results you want to cache,
+        /// which is provided the key value, and an Tag object that is
+        /// user-defined.</param>
+        /// <param name="maxSize">The size of the cache to maintain, after which old
+        /// items will start to be thrown out.</param>
+        /// <param name="onRelease">A function to call when a result gets
+        /// evicted from the cache (i.e. because Invalidate was called or the
+        /// cache is full).</param>
+        /// <param name="paramComparer">A comparer for the parameter.</param>
+        public MemoizingMRUCache(Func<TParam, object, TVal> calculationFunc, int maxSize, Action<TVal> onRelease, IEqualityComparer<TParam> paramComparer)
         {
             Contract.Requires(calculationFunc != null);
             Contract.Requires(maxSize > 0);
@@ -52,6 +98,7 @@ namespace Splat
             _calculationFunction = calculationFunc;
             _releaseFunction = onRelease;
             _maxCacheSize = maxSize;
+            _comparer = paramComparer ?? EqualityComparer<TParam>.Default;
             InvalidateAll();
         }
 
@@ -75,22 +122,20 @@ namespace Splat
         {
             Contract.Requires(key != null);
 
-            Tuple<LinkedListNode<TParam>, TVal> found;
-
             lock (_lockObject)
             {
-                if (_cacheEntries.TryGetValue(key, out found))
+                if (_cacheEntries.TryGetValue(key, out var found))
                 {
-                    RefreshEntry(found.Item1);
+                    RefreshEntry(found.param);
 
-                    return found.Item2;
+                    return found.value;
                 }
 
                 var result = _calculationFunction(key, context);
 
                 var node = new LinkedListNode<TParam>(key);
                 _cacheMRUList.AddFirst(node);
-                _cacheEntries[key] = new Tuple<LinkedListNode<TParam>, TVal>(node, result);
+                _cacheEntries[key] = (node, result);
                 MaintainCache();
 
                 return result;
@@ -107,15 +152,13 @@ namespace Splat
         {
             Contract.Requires(key != null);
 
-            Tuple<LinkedListNode<TParam>, TVal> output;
-
             lock (_lockObject)
             {
-                var ret = _cacheEntries.TryGetValue(key, out output);
-                if (ret && output != null)
+                var ret = _cacheEntries.TryGetValue(key, out var output);
+                if (ret)
                 {
-                    RefreshEntry(output.Item1);
-                    result = output.Item2;
+                    RefreshEntry(output.param);
+                    result = output.value;
                 }
                 else
                 {
@@ -135,18 +178,16 @@ namespace Splat
         {
             Contract.Requires(key != null);
 
-            Tuple<LinkedListNode<TParam>, TVal> to_remove;
-
             lock (_lockObject)
             {
-                if (!_cacheEntries.TryGetValue(key, out to_remove))
+                if (!_cacheEntries.TryGetValue(key, out var toRemove))
                 {
                     return;
                 }
 
-                var releaseVar = to_remove.Item2;
+                var releaseVar = toRemove.value;
 
-                _cacheMRUList.Remove(to_remove.Item1);
+                _cacheMRUList.Remove(toRemove.param);
                 _cacheEntries.Remove(key);
 
                 // moved down to allow removal from list
@@ -164,13 +205,13 @@ namespace Splat
         /// </param>
         public void InvalidateAll(bool aggregateReleaseExceptions = false)
         {
-            Dictionary<TParam, Tuple<LinkedListNode<TParam>, TVal>> oldCacheToClear = null;
+            Dictionary<TParam, (LinkedListNode<TParam> param, TVal value)> oldCacheToClear = null;
             lock (_lockObject)
             {
                 if (_releaseFunction == null || _cacheEntries == null)
                 {
                     _cacheMRUList = new LinkedList<TParam>();
-                    _cacheEntries = new Dictionary<TParam, Tuple<LinkedListNode<TParam>, TVal>>();
+                    _cacheEntries = new Dictionary<TParam, (LinkedListNode<TParam> param, TVal value)>(_comparer);
                     return;
                 }
 
@@ -188,7 +229,7 @@ namespace Splat
                 }
 
                 _cacheMRUList = new LinkedList<TParam>();
-                _cacheEntries = new Dictionary<TParam, Tuple<LinkedListNode<TParam>, TVal>>();
+                _cacheEntries = new Dictionary<TParam, (LinkedListNode<TParam> param, TVal value)>(_comparer);
             }
 
             if (oldCacheToClear == null)
@@ -203,7 +244,7 @@ namespace Splat
                 {
                     try
                     {
-                        _releaseFunction?.Invoke(item.Value.Item2);
+                        _releaseFunction?.Invoke(item.Value.value);
                     }
                     catch (Exception e)
                     {
@@ -224,7 +265,7 @@ namespace Splat
             // as the cache field was reassigned.
             foreach (var item in oldCacheToClear)
             {
-                _releaseFunction?.Invoke(item.Value.Item2);
+                _releaseFunction?.Invoke(item.Value.value);
             }
         }
 
@@ -236,7 +277,7 @@ namespace Splat
         {
             lock (_lockObject)
             {
-                return _cacheEntries.Select(x => x.Value.Item2);
+                return _cacheEntries.Select(x => x.Value.value);
             }
         }
 
@@ -245,7 +286,7 @@ namespace Splat
             while (_cacheMRUList.Count > _maxCacheSize)
             {
                 var to_remove = _cacheMRUList.Last.Value;
-                _releaseFunction?.Invoke(_cacheEntries[to_remove].Item2);
+                _releaseFunction?.Invoke(_cacheEntries[to_remove].value);
 
                 _cacheEntries.Remove(_cacheMRUList.Last.Value);
                 _cacheMRUList.RemoveLast();

@@ -1,6 +1,6 @@
 [assembly: System.Resources.NeutralResourcesLanguageAttribute("en-US")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleToAttribute("Splat.Tests")]
-[assembly: System.Runtime.Versioning.TargetFrameworkAttribute(".NETStandard,Version=v2.0", FrameworkDisplayName="")]
+[assembly: System.Runtime.Versioning.TargetFrameworkAttribute(".NETCoreApp,Version=v3.0", FrameworkDisplayName="")]
 namespace Splat
 {
     public class ActionLogger : Splat.ILogger
@@ -136,6 +136,17 @@ namespace Splat
         public BitmapLoaderException(string message) { }
         public BitmapLoaderException(string message, System.Exception innerException) { }
         protected BitmapLoaderException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
+    }
+    public class static BitmapMixins
+    {
+        public static Splat.IBitmap FromNative(this System.Windows.Media.Imaging.BitmapSource value) { }
+        public static System.Windows.Media.Imaging.BitmapSource ToNative(this Splat.IBitmap value) { }
+    }
+    public class static ColorExtensions
+    {
+        public static System.Drawing.Color FromNative(this System.Windows.Media.Color value) { }
+        public static System.Windows.Media.Color ToNative(this System.Drawing.Color value) { }
+        public static System.Windows.Media.SolidColorBrush ToNativeBrush(this System.Drawing.Color value) { }
     }
     public enum CompressedBitmapFormat
     {
@@ -692,6 +703,25 @@ namespace Splat
         public void Write([System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
         public void Write(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
     }
+    public class PlatformBitmapLoader : Splat.IBitmapLoader
+    {
+        public PlatformBitmapLoader() { }
+        public Splat.IBitmap Create(float width, float height) { }
+        public System.Threading.Tasks.Task<Splat.IBitmap> Load(System.IO.Stream sourceStream, System.Nullable<float> desiredWidth, System.Nullable<float> desiredHeight) { }
+        public System.Threading.Tasks.Task<Splat.IBitmap> LoadFromResource(string resource, System.Nullable<float> desiredWidth, System.Nullable<float> desiredHeight) { }
+    }
+    public class PlatformModeDetector : Splat.IModeDetector
+    {
+        public PlatformModeDetector() { }
+        public System.Nullable<bool> InDesignMode() { }
+        public System.Nullable<bool> InUnitTestRunner() { }
+    }
+    public class static PointExtensions
+    {
+        public static System.Drawing.PointF FromNative(this System.Windows.Point value) { }
+        public static System.Windows.Point ToNative(this System.Drawing.Point value) { }
+        public static System.Windows.Point ToNative(this System.Drawing.PointF value) { }
+    }
     public class static PointMathExtensions
     {
         public static float AngleInDegrees(this System.Drawing.PointF value) { }
@@ -712,6 +742,12 @@ namespace Splat
         Right = 2,
         Bottom = 3,
     }
+    public class static RectExtensions
+    {
+        public static System.Drawing.RectangleF FromNative(this System.Windows.Rect value) { }
+        public static System.Windows.Rect ToNative(this System.Drawing.Rectangle value) { }
+        public static System.Windows.Rect ToNative(this System.Drawing.RectangleF value) { }
+    }
     public class static RectangleMathExtensions
     {
         public static System.Drawing.PointF Center(this System.Drawing.RectangleF value) { }
@@ -719,6 +755,12 @@ namespace Splat
         public static System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF> Divide(this System.Drawing.RectangleF value, float amount, Splat.RectEdge fromEdge) { }
         public static System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF> DivideWithPadding(this System.Drawing.RectangleF value, float sliceAmount, float padding, Splat.RectEdge fromEdge) { }
         public static System.Drawing.RectangleF InvertWithin(this System.Drawing.RectangleF value, System.Drawing.RectangleF containingRect) { }
+    }
+    public class static SizeExtensions
+    {
+        public static System.Drawing.SizeF FromNative(this System.Windows.Size value) { }
+        public static System.Windows.Size ToNative(this System.Drawing.Size value) { }
+        public static System.Windows.Size ToNative(this System.Drawing.SizeF value) { }
     }
     public class static SizeMathExtensions
     {
@@ -755,6 +797,12 @@ namespace Splat
         public override string ToString() { }
         public static bool ==(Splat.SplatColor left, Splat.SplatColor right) { }
         public static bool !=(Splat.SplatColor left, Splat.SplatColor right) { }
+    }
+    public class static SplatColorExtensions
+    {
+        public static Splat.SplatColor FromNative(this System.Windows.Media.Color value) { }
+        public static System.Windows.Media.Color ToNative(this Splat.SplatColor value) { }
+        public static System.Windows.Media.SolidColorBrush ToNativeBrush(this Splat.SplatColor value) { }
     }
     public class static TargetFrameworkExtensions
     {

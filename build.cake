@@ -1,4 +1,4 @@
-#load nuget:https://www.myget.org/F/reactiveui/api/v2?package=ReactiveUI.Cake.Recipe&prerelease
+#load nuget:https://www.myget.org/F/reactiveui?package=ReactiveUI.Cake.Recipe&prerelease
 
 Environment.SetVariableNames();
 
@@ -33,6 +33,6 @@ BuildParameters.SetParameters(context: Context,
                             artifactsDirectory: "./artifacts",
                             sourceDirectory: "./src");
 
-ToolSettings.SetToolSettings(context: Context);
+ToolSettings.SetToolSettings(context: Context, usePrereleaseMsBuild: true);
 
 Build.Run();

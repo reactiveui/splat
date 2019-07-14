@@ -1,13 +1,13 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;MonoAndroid81</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0;MonoAndroid81</TargetFrameworks>
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net472</TargetFrameworks>
     <NoWarn>$(NoWarn);1591;CA1707;SA1633</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Serilog.Exceptions" Version="5.0.0" />
+    <PackageReference Include="Serilog.Exceptions" Version="5.3.0" />
   </ItemGroup>
 
   <ItemGroup>
