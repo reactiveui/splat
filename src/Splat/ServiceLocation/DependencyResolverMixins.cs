@@ -167,7 +167,7 @@ namespace Splat
 
 #if !NETSTANDARD
             // not supported in netstandard2.0
-            resolver.RegisterConstant(new PlatformBitmapLoader(), typeof(IBitmapLoader));
+            resolver.RegisterLazySingleton(() => new PlatformBitmapLoader(), typeof(IBitmapLoader));
 #endif
         }
     }
