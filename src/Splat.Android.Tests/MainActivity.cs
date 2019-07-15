@@ -29,8 +29,6 @@ namespace Splat.Android.Tests
         /// <inheritdoc/>
         protected override void OnCreate(Bundle bundle)
         {
-            AddTestAssembly(Assembly.GetExecutingAssembly());
-
             AddExecutionAssembly(typeof(ExtensibilityPointFactory).Assembly);
 
             AddTestAssembly(typeof(Splat.Tests.LocatorTests).Assembly);
