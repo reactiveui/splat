@@ -164,6 +164,11 @@ namespace Splat
         {
             resolver.Register(() => new DefaultLogManager(), typeof(ILogManager));
             resolver.RegisterConstant(new DebugLogger(), typeof(ILogger));
+
+#if !NETSTANDARD
+            // not supported in netstandard2.0
+            resolver.RegisterConstant(new PlatformBitmapLoader(), typeof(IBitmapLoader));
+#endif
         }
     }
 }
