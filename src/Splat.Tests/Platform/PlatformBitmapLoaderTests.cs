@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Text;
 using Xunit;
 
@@ -10,16 +12,48 @@ namespace Splat.Tests.Platform
     /// </summary>
     public sealed class PlatformBitmapLoaderTests
     {
+#if !NETSTANDARD
+        /// <summary>
+        /// Check to ensure an instance is returned.
+        /// </summary>
+        [Fact]
+        public void Constructor_ReturnsInstance()
+        {
+            var instance = new Splat.PlatformBitmapLoader();
+            Assert.NotNull(instance);
+        }
+#endif
+
 #if ANDROID
         /// <summary>
-        /// Checks to ensure an instance is returned.
+        /// Checks to ensure a dynamic assembly behaves on android.
+        /// </summary>
+        /// <remarks>
+        /// Introduced because of Splat #330.
+        /// </remarks>
+        [Fact]
+        public void GetTypesFromAssembly_ReturnsResultsOnDynamicAssembly()
+        {
+            var name = new AssemblyName("SomeRandomDynamicAssembly");
+            var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
+                name, AssemblyBuilderAccess.Run);
+
+            // can't test with a logger, as it invokes the splat init, which puts the test in a false state as it will init the platform bitmap loader
+            var drawableList = Splat.PlatformBitmapLoader.GetTypesFromAssembly(assemblyBuilder, null);
+            Assert.NotNull(drawableList);
+            Assert.Equal(0, drawableList.Length);
+        }
+
+        /// <summary>
+        /// Checks to ensure a list of drawable items is returned.
         /// </summary>
         [Fact]
         public void GetDrawableList_ReturnsResults()
         {
-           var drawableList = Splat.PlatformBitmapLoader.GetDrawableList();
-           Assert.NotNull(drawableList);
-           Assert.True(drawableList.Count > 0);
+            // can't test with a logger, as it invokes the splat init, which puts the test in a false state as it will init the platform bitmap loader
+            var drawableList = Splat.PlatformBitmapLoader.GetDrawableList(null);
+            Assert.NotNull(drawableList);
+            Assert.True(drawableList.Count > 0);
         }
 #endif
     }
