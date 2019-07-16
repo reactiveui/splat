@@ -100,8 +100,6 @@ There are 2 parts to the locator design:
 * **Locator.Current** The property to use to **retrieve** services. Locator.Current is a static variable that can be set on startup, to adapt Splat to other DI/IoC frameworks. We're currently working from v7 onward to make it easier to use your DI/IoC framework of choice. (see below)
 * **Locator.CurrentMutable** The property to use to **register** services
 
-**Note:** Currently these properties point to the same object and you can use CurrentMutable to also GetServices, but this is not the intention and the interfaces may be adjusted in future to lock this down (and make it more obvious what the use cases are).
-
 To get a service:
 
 ```cs
@@ -131,6 +129,10 @@ Locator.CurrentMutable.RegisterLazySingleton(() => new LazyToaster(), typeof(ITo
 
 ### Dependency Resolver Packages
 For each of the provided dependency resolver adapters, there is a specific package that allows the service locator to be implemented by another ioc container.
+
+Please note: If you are adjusting behaviours of Splat by working with your custom container directly. Please read the relevant projects documentation on
+REPLACING the registration. If the container supports appending\ multiple registrations you may get undesired behaviours, such as the wrong logger factory
+being used.
 
 | Container | NuGet | Read Me
 |---------|-------|-------|
