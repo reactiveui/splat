@@ -217,6 +217,7 @@ namespace Splat
         protected virtual void Dispose(bool isDisposing) { }
         public object GetService(System.Type serviceType, string contract = null) { }
         public System.Collections.Generic.IEnumerable<object> GetServices(System.Type serviceType, string contract = null) { }
+        public bool HasRegistration(System.Type serviceType) { }
         public void Register(System.Func<object> factory, System.Type serviceType, string contract = null) { }
         public System.IDisposable ServiceRegistrationCallback(System.Type serviceType, string contract, System.Action<System.IDisposable> callback) { }
         public void UnregisterAll(System.Type serviceType, string contract = null) { }
@@ -440,6 +441,7 @@ namespace Splat
     }
     public interface IMutableDependencyResolver
     {
+        bool HasRegistration(System.Type serviceType);
         void Register(System.Func<object> factory, System.Type serviceType, string contract = null);
         System.IDisposable ServiceRegistrationCallback(System.Type serviceType, string contract, System.Action<System.IDisposable> callback);
         void UnregisterAll(System.Type serviceType, string contract = null);
@@ -689,6 +691,7 @@ namespace Splat
         public Splat.ModernDependencyResolver Duplicate() { }
         public object GetService(System.Type serviceType, string contract = null) { }
         public System.Collections.Generic.IEnumerable<object> GetServices(System.Type serviceType, string contract = null) { }
+        public bool HasRegistration(System.Type serviceType) { }
         public void Register(System.Func<object> factory, System.Type serviceType, string contract = null) { }
         public System.IDisposable ServiceRegistrationCallback(System.Type serviceType, string contract, System.Action<System.IDisposable> callback) { }
         public void UnregisterAll(System.Type serviceType, string contract = null) { }

@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DryIoc;
 
 namespace Splat.DryIoc
@@ -40,15 +41,21 @@ namespace Splat.DryIoc
                 : _container.ResolveMany(serviceType, serviceKey: contract);
 
         /// <inheritdoc />
+        public bool HasRegistration(Type serviceType)
+        {
+            return _container.GetServiceRegistrations().Any(x => x.ServiceType == serviceType);
+        }
+
+        /// <inheritdoc />
         public virtual void Register(Func<object> factory, Type serviceType, string contract = null)
         {
             if (string.IsNullOrEmpty(contract))
             {
-                _container.UseInstance(serviceType, factory(), IfAlreadyRegistered.AppendNewImplementation);
+                _container.UseInstance(serviceType, factory(), IfAlreadyRegistered.Replace);
             }
             else
             {
-                _container.UseInstance(serviceType, factory(), IfAlreadyRegistered.AppendNewImplementation, serviceKey: contract);
+                _container.UseInstance(serviceType, factory(), IfAlreadyRegistered.Replace, serviceKey: contract);
             }
         }
 

@@ -63,6 +63,12 @@ namespace Splat.Autofac
             }
         }
 
+        /// <inheritdoc />
+        public bool HasRegistration(Type serviceType)
+        {
+            return _componentContext.IsRegistered(serviceType);
+        }
+
         /// <summary>
         /// Register a function with the resolver which will generate a object
         /// for the specified service type.

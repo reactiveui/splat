@@ -50,6 +50,12 @@ namespace Splat
         }
 
         /// <inheritdoc />
+        public bool HasRegistration(Type serviceType)
+        {
+            return _registry.Any(x => x.Key.Item1 == serviceType);
+        }
+
+        /// <inheritdoc />
         public void Register(Func<object> factory, Type serviceType, string contract = null)
         {
             var pair = Tuple.Create(serviceType, contract ?? string.Empty);
