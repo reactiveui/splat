@@ -23,8 +23,8 @@ namespace Splat
     /// </summary>
     public class ModernDependencyResolver : IDependencyResolver
     {
-        private Dictionary<Tuple<Type, string>, List<Func<object>>> _registry;
-        private Dictionary<Tuple<Type, string>, List<Action<IDisposable>>> _callbackRegistry;
+        private Dictionary<ValueTuple<Type, string>, List<Func<object>>> _registry;
+        private Dictionary<ValueTuple<Type, string>, List<Action<IDisposable>>> _callbackRegistry;
 
         private bool _isDisposed;
 
@@ -40,26 +40,26 @@ namespace Splat
         /// Initializes a new instance of the <see cref="ModernDependencyResolver"/> class.
         /// </summary>
         /// <param name="registry">A registry of services.</param>
-        protected ModernDependencyResolver(Dictionary<Tuple<Type, string>, List<Func<object>>> registry)
+        protected ModernDependencyResolver(Dictionary<ValueTuple<Type, string>, List<Func<object>>> registry)
         {
             _registry = registry != null ?
                 registry.ToDictionary(k => k.Key, v => v.Value.ToList()) :
-                new Dictionary<Tuple<Type, string>, List<Func<object>>>();
+                new Dictionary<ValueTuple<Type, string>, List<Func<object>>>();
 
-            _callbackRegistry = new Dictionary<Tuple<Type, string>, List<Action<IDisposable>>>();
+            _callbackRegistry = new Dictionary<ValueTuple<Type, string>, List<Action<IDisposable>>>();
         }
 
         /// <inheritdoc />
         public bool HasRegistration(Type serviceType)
         {
-            var pair = Tuple.Create(serviceType, string.Empty);
+            var pair = ValueTuple.Create(serviceType, string.Empty);
             return _registry.ContainsKey(pair);
         }
 
         /// <inheritdoc />
         public void Register(Func<object> factory, Type serviceType, string contract = null)
         {
-            var pair = Tuple.Create(serviceType, contract ?? string.Empty);
+            var pair = ValueTuple.Create(serviceType, contract ?? string.Empty);
             if (!_registry.ContainsKey(pair))
             {
                 _registry[pair] = new List<Func<object>>();
@@ -101,7 +101,7 @@ namespace Splat
         /// <inheritdoc />
         public object GetService(Type serviceType, string contract = null)
         {
-            var pair = Tuple.Create(serviceType, contract ?? string.Empty);
+            var pair = ValueTuple.Create(serviceType, contract ?? string.Empty);
             if (!_registry.ContainsKey(pair))
             {
                 return default(object);
@@ -114,7 +114,7 @@ namespace Splat
         /// <inheritdoc />
         public IEnumerable<object> GetServices(Type serviceType, string contract = null)
         {
-            var pair = Tuple.Create(serviceType, contract ?? string.Empty);
+            var pair = ValueTuple.Create(serviceType, contract ?? string.Empty);
             if (!_registry.ContainsKey(pair))
             {
                 return Enumerable.Empty<object>();
@@ -126,7 +126,7 @@ namespace Splat
         /// <inheritdoc />
         public void UnregisterCurrent(Type serviceType, string contract = null)
         {
-            var pair = Tuple.Create(serviceType, contract ?? string.Empty);
+            var pair = ValueTuple.Create(serviceType, contract ?? string.Empty);
 
             if (!_registry.TryGetValue(pair, out var list))
             {
@@ -139,7 +139,7 @@ namespace Splat
         /// <inheritdoc />
         public void UnregisterAll(Type serviceType, string contract = null)
         {
-            var pair = Tuple.Create(serviceType, contract ?? string.Empty);
+            var pair = ValueTuple.Create(serviceType, contract ?? string.Empty);
 
             _registry[pair] = new List<Func<object>>();
         }
@@ -147,7 +147,7 @@ namespace Splat
         /// <inheritdoc />
         public IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
         {
-            var pair = Tuple.Create(serviceType, contract ?? string.Empty);
+            var pair = ValueTuple.Create(serviceType, contract ?? string.Empty);
 
             if (!_callbackRegistry.ContainsKey(pair))
             {
