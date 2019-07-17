@@ -31,8 +31,8 @@ namespace Splat.DryIoc
         /// <inheritdoc />
         public virtual object GetService(Type serviceType, string contract = null) =>
             string.IsNullOrEmpty(contract)
-                ? _container.Resolve(serviceType, IfUnresolved.ReturnDefault)
-                : _container.Resolve(serviceType, contract, IfUnresolved.ReturnDefault);
+                ? _container.ResolveMany(serviceType).LastOrDefault()
+                : _container.ResolveMany(serviceType, serviceKey: contract).LastOrDefault();
 
         /// <inheritdoc />
         public virtual IEnumerable<object> GetServices(Type serviceType, string contract = null) =>
@@ -51,11 +51,11 @@ namespace Splat.DryIoc
         {
             if (string.IsNullOrEmpty(contract))
             {
-                _container.UseInstance(serviceType, factory(), IfAlreadyRegistered.Replace);
+                _container.UseInstance(serviceType, factory(), IfAlreadyRegistered.AppendNewImplementation);
             }
             else
             {
-                _container.UseInstance(serviceType, factory(), IfAlreadyRegistered.Replace, serviceKey: contract);
+                _container.UseInstance(serviceType, factory(), IfAlreadyRegistered.AppendNewImplementation, serviceKey: contract);
             }
         }
 

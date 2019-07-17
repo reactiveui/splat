@@ -183,8 +183,12 @@ namespace Splat.DryIoc.Tests
             var c = new Container();
             c.UseDryIocDependencyResolver();
             c.Register<ILogger, ConsoleLogger>(ifAlreadyRegistered: IfAlreadyRegistered.Replace);
-            var d = Splat.Locator.Current.GetService<ILogger>();
-            Assert.IsType<ConsoleLogger>(d);
+            Locator.CurrentMutable.RegisterConstant(
+                new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())),
+                typeof(ILogManager));
+
+            var d = Splat.Locator.Current.GetService<ILogManager>();
+            Assert.IsType<FuncLogManager>(d);
         }
 
         /// <summary>
@@ -197,10 +201,11 @@ namespace Splat.DryIoc.Tests
         public void DryIocDependencyResolver_PreInit_Should_ReturnRegisteredLogger()
         {
             var c = new Container();
-            c.Register<ILogger, ConsoleLogger>();
+            c.UseInstance(typeof(ILogManager), new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())));
             c.UseDryIocDependencyResolver();
-            var d = Splat.Locator.Current.GetService<ILogger>();
-            Assert.IsType<ConsoleLogger>(d);
+
+            var d = Splat.Locator.Current.GetService<ILogManager>();
+            Assert.IsType<FuncLogManager>(d);
         }
     }
 }
