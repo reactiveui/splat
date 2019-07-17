@@ -52,7 +52,8 @@ namespace Splat
         /// <inheritdoc />
         public bool HasRegistration(Type serviceType)
         {
-            return _registry.Any(x => x.Key.Item1 == serviceType);
+            var pair = Tuple.Create(serviceType, string.Empty);
+            return _registry.ContainsKey(pair);
         }
 
         /// <inheritdoc />
