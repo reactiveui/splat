@@ -133,5 +133,44 @@ namespace Splat.Autofac.Tests
 
             result.ShouldBeOfType<NotImplementedException>();
         }
+
+        /// <summary>
+        /// Check to ensure the correct logger is returned.
+        /// </summary>
+        /// <remarks>
+        /// Introduced for Splat #331.
+        /// </remarks>
+        [Fact]
+        public void AutofacDependencyResolver_Should_ReturnRegisteredLogger()
+        {
+            var container = new ContainerBuilder();
+            container.UseAutofacDependencyResolver();
+
+            Locator.CurrentMutable.RegisterConstant(
+                new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())),
+                typeof(ILogManager));
+
+            var d = Splat.Locator.Current.GetService<ILogManager>();
+            Assert.IsType<FuncLogManager>(d);
+        }
+
+        /// <summary>
+        /// Test that a pre-init logger isn't overriden.
+        /// </summary>
+        /// <remarks>
+        /// Introduced for Splat #331.
+        /// </remarks>
+        [Fact]
+        public void AutofacDependencyResolver_PreInit_Should_ReturnRegisteredLogger()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(_ => new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger()))).As(typeof(ILogManager))
+                .AsImplementedInterfaces();
+
+            builder.UseAutofacDependencyResolver();
+
+            var d = Splat.Locator.Current.GetService<ILogManager>();
+            Assert.IsType<FuncLogManager>(d);
+        }
     }
 }
