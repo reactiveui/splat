@@ -133,7 +133,13 @@ namespace Splat
                 return;
             }
 
-            list.RemoveAt(list.Count - 1);
+            var position = list.Count - 1;
+            if (position < 0)
+            {
+                return;
+            }
+
+            list.RemoveAt(position);
         }
 
         /// <inheritdoc />
