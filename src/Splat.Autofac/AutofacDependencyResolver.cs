@@ -20,7 +20,7 @@ namespace Splat.Autofac
     /// </summary>
     public class AutofacDependencyResolver : IDependencyResolver
     {
-        private readonly IComponentContext _componentContext;
+        private IComponentContext _componentContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacDependencyResolver" /> class.
@@ -105,6 +105,21 @@ namespace Splat.Autofac
         public virtual void UnregisterCurrent(Type serviceType, string contract = null)
         {
             throw new NotImplementedException();
+
+            /*
+            // TODO: Thread safety
+            var registrationCount = _componentContext.ComponentRegistry.Registrations.Count();
+            if (registrationCount < 1)
+            {
+                return;
+            }
+
+            // TODO: contract name
+            // TODO: only remove last matching registration
+            Func<IComponentRegistration, bool> predicate = x => x.Services.All(s => s.GetType() != serviceType);
+
+            RemoveAndRebuild(registrationCount, predicate);
+            */
         }
 
         /// <summary>
@@ -117,7 +132,21 @@ namespace Splat.Autofac
         /// <inheritdoc />
         public virtual void UnregisterAll(Type serviceType, string contract = null)
         {
-            throw new NotImplementedException();
+            // TODO: Thread safety
+            var registrationCount = _componentContext.ComponentRegistry.Registrations.Count();
+            if (registrationCount < 1)
+            {
+                return;
+            }
+
+            if (contract != null)
+            {
+                // you can't directly access the name key. shame.
+                RemoveAndRebuild(registrationCount, x => x.Services.All(s => s.GetType() != serviceType || !s.Description.StartsWith($"({contract})", StringComparison.Ordinal)));
+                return;
+            }
+
+            RemoveAndRebuild(registrationCount, x => x.Services.All(s => s.GetType() != serviceType));
         }
 
         /// <inheritdoc />
@@ -144,6 +173,31 @@ namespace Splat.Autofac
             {
                 _componentContext.ComponentRegistry?.Dispose();
             }
+        }
+
+        private void RemoveAndRebuild(
+            int registrationCount,
+            Func<IComponentRegistration, bool> predicate)
+        {
+            var survivingComponents = _componentContext.ComponentRegistry.Registrations.Where(predicate).ToArray();
+
+            if (survivingComponents.Length == registrationCount)
+            {
+                return;
+            }
+
+            var builder = new ContainerBuilder();
+            foreach (var c in survivingComponents)
+            {
+                builder.RegisterComponent(c);
+            }
+
+            foreach (var source in _componentContext.ComponentRegistry.Sources)
+            {
+                builder.RegisterSource(source);
+            }
+
+            _componentContext = builder.Build();
         }
     }
 }

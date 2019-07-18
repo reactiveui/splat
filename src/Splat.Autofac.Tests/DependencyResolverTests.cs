@@ -10,6 +10,7 @@ using System.Linq;
 using Autofac;
 using Shouldly;
 using Splat.Common.Test;
+using Splat.Tests.ServiceLocation;
 using Xunit;
 
 namespace Splat.Autofac.Tests
@@ -17,7 +18,7 @@ namespace Splat.Autofac.Tests
     /// <summary>
     /// Tests to show the <see cref="AutofacDependencyResolver"/> works correctly.
     /// </summary>
-    public class DependencyResolverTests
+    public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDependencyResolver>
     {
         /// <summary>
         /// Shoulds the resolve views.
@@ -171,6 +172,13 @@ namespace Splat.Autofac.Tests
 
             var d = Splat.Locator.Current.GetService<ILogManager>();
             Assert.IsType<FuncLogManager>(d);
+        }
+
+        /// <inheritdoc />
+        protected override AutofacDependencyResolver GetDependencyResolver()
+        {
+            var container = new ContainerBuilder();
+            return new AutofacDependencyResolver(container.Build());
         }
     }
 }
