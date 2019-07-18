@@ -685,7 +685,9 @@ namespace Splat
     public class ModernDependencyResolver : Splat.IDependencyResolver, Splat.IMutableDependencyResolver, Splat.IReadonlyDependencyResolver, System.IDisposable
     {
         public ModernDependencyResolver() { }
-        protected ModernDependencyResolver(System.Collections.Generic.Dictionary<System.ValueTuple<System.Type, string>, System.Collections.Generic.List<System.Func<object>>> registry) { }
+        protected ModernDependencyResolver([System.Runtime.CompilerServices.TupleElementNamesAttribute(new string[] {
+                "serviceType",
+                "contract"})] System.Collections.Generic.Dictionary<System.ValueTuple<System.Type, string>, System.Collections.Generic.List<System.Func<object>>> registry) { }
         public void Dispose() { }
         protected virtual void Dispose(bool isDisposing) { }
         public Splat.ModernDependencyResolver Duplicate() { }
