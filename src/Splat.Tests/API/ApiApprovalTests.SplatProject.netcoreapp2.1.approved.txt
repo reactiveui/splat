@@ -170,7 +170,6 @@ namespace Splat
     {
         public static T GetService<T>(this Splat.IReadonlyDependencyResolver resolver, string contract = null) { }
         public static System.Collections.Generic.IEnumerable<T> GetServices<T>(this Splat.IReadonlyDependencyResolver resolver, string contract = null) { }
-        public static void InitializeSplat(this Splat.IMutableDependencyResolver resolver) { }
         public static void Register<T>(this Splat.IMutableDependencyResolver resolver, System.Func<T> factory, string contract = null) { }
         public static void RegisterConstant(this Splat.IMutableDependencyResolver resolver, object value, System.Type serviceType, string contract = null) { }
         public static void RegisterConstant<T>(this Splat.IMutableDependencyResolver resolver, T value, string contract = null) { }
@@ -724,6 +723,10 @@ namespace Splat
         public static System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF> Divide(this System.Drawing.RectangleF value, float amount, Splat.RectEdge fromEdge) { }
         public static System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF> DivideWithPadding(this System.Drawing.RectangleF value, float sliceAmount, float padding, Splat.RectEdge fromEdge) { }
         public static System.Drawing.RectangleF InvertWithin(this System.Drawing.RectangleF value, System.Drawing.RectangleF containingRect) { }
+    }
+    public class static ServiceLocationInitialization
+    {
+        public static void InitializeSplat(this Splat.IMutableDependencyResolver resolver) { }
     }
     public class static SizeMathExtensions
     {
