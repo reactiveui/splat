@@ -15,7 +15,7 @@ namespace Splat
     {
         // TODO: This needs to be improved once we move the "Detect in Unit Test
         // Runner" code into Splat
-        private static IBitmapLoader _Current = AssemblyFinder.AttemptToLoadType<IBitmapLoader>("Splat.PlatformBitmapLoader");
+        private static IBitmapLoader _Current = Locator.Current.GetService<IBitmapLoader>();
 
         /// <summary>
         /// Gets or sets the current bitmap loader.

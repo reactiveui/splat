@@ -19,15 +19,13 @@ namespace Splat
     /// </summary>
     public class PlatformBitmapLoader : IBitmapLoader
     {
-        private static readonly Dictionary<string, int> _drawableList;
-        private static readonly IFullLogger _log;
+        private readonly Dictionary<string, int> _drawableList;
 
         /// <summary>
-        /// Initializes static members of the <see cref="PlatformBitmapLoader"/> class.
+        /// Initializes a new instance of the <see cref="PlatformBitmapLoader"/> class.
         /// </summary>
-        static PlatformBitmapLoader()
+        public PlatformBitmapLoader()
         {
-            _log = Locator.Current.GetService<ILogManager>().GetLogger(typeof(PlatformBitmapLoader));
             _drawableList = GetDrawableList();
         }
 
@@ -100,36 +98,53 @@ namespace Splat
             return Bitmap.CreateBitmap((int)width, (int)height, Bitmap.Config.Argb8888).FromNative();
         }
 
-        internal static Dictionary<string, int> GetDrawableList()
+        internal static Dictionary<string, int> GetDrawableList(IFullLogger log)
+        {
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+            return GetDrawableList(log, assemblies);
+        }
+
+        internal static Dictionary<string, int> GetDrawableList(
+            IFullLogger log,
+            Assembly[] assemblies)
         {
             // VS2019 onward
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(GetTypesFromAssembly)
+            var drawableTypes = assemblies
+                .SelectMany(a => GetTypesFromAssembly(a, log))
                 .Where(x => x.Name == "Resource" && x.GetNestedType("Drawable") != null)
                 .Select(x => x.GetNestedType("Drawable"))
                 .ToArray();
 
-            _log.Debug(() => "DrawableList. Got " + assemblies.Length + " assemblies.");
-            foreach (var assembly in assemblies)
+            if (log != null)
             {
-                _log.Debug(() => "DrawableList Assembly: " + assembly.Name);
+                log.Debug(() => "DrawableList. Got " + drawableTypes.Length + " types.");
+                foreach (var drawableType in drawableTypes)
+                {
+                    log.Debug(() => "DrawableList Type: " + drawableType.Name);
+                }
             }
 
-            var result = assemblies
+            var result = drawableTypes
                 .SelectMany(x => x.GetFields())
                 .Where(x => x.FieldType == typeof(int) && x.IsLiteral)
                 .ToDictionary(k => k.Name, v => (int)v.GetRawConstantValue());
 
-            _log.Debug(() => "DrawableList. Got " + result.Count + " items.");
-            foreach (var keyValuePair in result)
+            if (log != null)
             {
-                _log.Debug(() => "DrawableList Item: " + keyValuePair.Key);
+                log.Debug(() => "DrawableList. Got " + result.Count + " items.");
+                foreach (var keyValuePair in result)
+                {
+                    log.Debug(() => "DrawableList Item: " + keyValuePair.Key);
+                }
             }
 
             return result;
         }
 
-        internal static Type[] GetTypesFromAssembly(Assembly assembly)
+        internal static Type[] GetTypesFromAssembly(
+            Assembly assembly,
+            IFullLogger log)
         {
             try
             {
@@ -141,15 +156,27 @@ namespace Splat
                 // object for each type that was loaded and null for each type that could not
                 // be loaded, while the LoaderExceptions property contains an exception for
                 // each type that could not be loaded.
-                _log.Warn(e, "Exception while detecting drawing types.");
-
-                foreach (var loaderException in e.LoaderExceptions)
+                if (log != null)
                 {
-                    _log.Warn(loaderException, "Inner Exception for detecting drawing types.");
+                    log.Warn(e, "Exception while detecting drawing types.");
+
+                    foreach (var loaderException in e.LoaderExceptions)
+                    {
+                        log.Warn(loaderException, "Inner Exception for detecting drawing types.");
+                    }
                 }
 
-                return e.Types.Where(x => x != null).ToArray();
+                // null check here because mono doesn't appear to follow the MSDN documentation
+                // as of July 2019.
+                return e.Types != null
+                    ? e.Types.Where(x => x != null).ToArray()
+                    : Array.Empty<Type>();
             }
+        }
+
+        private Dictionary<string, int> GetDrawableList()
+        {
+            return GetDrawableList(Locator.Current.GetService<ILogManager>().GetLogger(typeof(PlatformBitmapLoader)));
         }
     }
 }
