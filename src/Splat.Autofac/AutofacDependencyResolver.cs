@@ -202,14 +202,30 @@ namespace Splat.Autofac
                 RemoveAndRebuild(
                     registrationCount,
                     registrations,
-                    x => x.Services.All(s => s.GetType() != serviceType || !HasMatchingContract(s, contract)));
+                    x => x.Services.All(s =>
+                    {
+                        if (!(s is TypedService typedService))
+                        {
+                            return false;
+                        }
+
+                        return typedService.ServiceType != serviceType || !HasMatchingContract(s, contract);
+                    }));
                 return;
             }
 
             RemoveAndRebuild(
                 registrationCount,
                 registrations,
-                x => x.Services.All(s => s.GetType() != serviceType));
+                x => x.Services.All(s =>
+                {
+                    if (!(s is TypedService typedService))
+                    {
+                        return false;
+                    }
+
+                    return typedService.ServiceType != serviceType;
+                }));
         }
 
         /// <inheritdoc />
@@ -245,7 +261,12 @@ namespace Splat.Autofac
         {
             foreach (var componentRegistrationService in componentRegistrationServices)
             {
-                if (componentRegistrationService.GetType() != serviceType)
+                if (!(componentRegistrationService is TypedService typedService))
+                {
+                    continue;
+                }
+
+                if (typedService.ServiceType != serviceType)
                 {
                     continue;
                 }
@@ -262,7 +283,7 @@ namespace Splat.Autofac
                     return true;
                 }
 
-                if (!HasMatchingContract(componentRegistrationService, contract))
+                if (!HasMatchingContract(typedService, contract))
                 {
                     continue;
                 }
