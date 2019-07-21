@@ -10,6 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac;
 using Autofac.Core;
+using Autofac.Core.Registration;
 
 #pragma warning disable CS0618 // Obsolete values.
 
@@ -104,22 +105,76 @@ namespace Splat.Autofac
         /// <inheritdoc />
         public virtual void UnregisterCurrent(Type serviceType, string contract = null)
         {
-            throw new NotImplementedException();
-
-            /*
             // TODO: Thread safety
-            var registrationCount = _componentContext.ComponentRegistry.Registrations.Count();
+            var registrations = _componentContext.ComponentRegistry.Registrations.ToList();
+            var registrationCount = registrations.Count;
             if (registrationCount < 1)
             {
                 return;
             }
 
-            // TODO: contract name
-            // TODO: only remove last matching registration
-            Func<IComponentRegistration, bool> predicate = x => x.Services.All(s => s.GetType() != serviceType);
+            var candidatesForRemoval = new List<IComponentRegistration>(registrationCount);
+            var registrationIndex = 0;
+            while (registrationIndex < registrationCount)
+            {
+                var componentRegistration = registrations[registrationIndex];
 
-            RemoveAndRebuild(registrationCount, predicate);
-            */
+                var isCandidateForRemoval = GetWhetherServiceIsCandidateForRemoval(
+                    componentRegistration.Services,
+                    serviceType,
+                    contract);
+                if (isCandidateForRemoval)
+                {
+                    registrations.RemoveAt(registrationIndex);
+                    candidatesForRemoval.Add(componentRegistration);
+                    registrationCount--;
+                }
+                else
+                {
+                    registrationIndex++;
+                }
+            }
+
+            if (candidatesForRemoval.Count == 0)
+            {
+                // nothing to remove
+                return;
+            }
+
+            if (candidatesForRemoval.Count > 1)
+            {
+                // need to re-add some registrations
+                var reAdd = candidatesForRemoval.Take(candidatesForRemoval.Count - 1);
+                registrations.AddRange(reAdd);
+
+                /*
+                // check for multi service registration
+                // in future might want to just remove a single service from a component
+                // rather than do the whole component.
+                var lastCandidate = candidatesForRemoval.Last();
+                var lastCandidateRegisteredServices = lastCandidate.Services.ToArray();
+                if (lastCandidateRegisteredServices.Length > 1)
+                {
+                    //
+                    // builder.RegisterType<CallLogger>()
+                    //    .AsSelf()
+                    //    .As<ILogger>()
+                    //    .As<ICallInterceptor>();
+                    var survivingServices = lastCandidateRegisteredServices.Where(s => s.GetType() != serviceType);
+                    var newRegistration = new ComponentRegistration(
+                        lastCandidate.Id,
+                        lastCandidate.Activator,
+                        lastCandidate.Lifetime,
+                        lastCandidate.Sharing,
+                        lastCandidate.Ownership,
+                        survivingServices,
+                        lastCandidate.Metadata);
+                    registrations.Add(newRegistration);
+                }
+                */
+            }
+
+            RemoveAndRebuild(registrations);
         }
 
         /// <summary>
@@ -133,20 +188,28 @@ namespace Splat.Autofac
         public virtual void UnregisterAll(Type serviceType, string contract = null)
         {
             // TODO: Thread safety
-            var registrationCount = _componentContext.ComponentRegistry.Registrations.Count();
+
+            // prevent multiple enumerations
+            var registrations = _componentContext.ComponentRegistry.Registrations.ToList();
+            var registrationCount = registrations.Count;
             if (registrationCount < 1)
             {
                 return;
             }
 
-            if (contract != null)
+            if (!string.IsNullOrEmpty(contract))
             {
-                // you can't directly access the name key. shame.
-                RemoveAndRebuild(registrationCount, x => x.Services.All(s => s.GetType() != serviceType || !s.Description.StartsWith($"({contract})", StringComparison.Ordinal)));
+                RemoveAndRebuild(
+                    registrationCount,
+                    registrations,
+                    x => x.Services.All(s => s.GetType() != serviceType || !HasMatchingContract(s, contract)));
                 return;
             }
 
-            RemoveAndRebuild(registrationCount, x => x.Services.All(s => s.GetType() != serviceType));
+            RemoveAndRebuild(
+                registrationCount,
+                registrations,
+                x => x.Services.All(s => s.GetType() != serviceType));
         }
 
         /// <inheritdoc />
@@ -175,17 +238,72 @@ namespace Splat.Autofac
             }
         }
 
+        private static bool GetWhetherServiceIsCandidateForRemoval(
+            IEnumerable<Service> componentRegistrationServices,
+            Type serviceType,
+            string contract)
+        {
+            foreach (var componentRegistrationService in componentRegistrationServices)
+            {
+                if (componentRegistrationService.GetType() != serviceType)
+                {
+                    continue;
+                }
+
+                // right type
+                if (string.IsNullOrEmpty(contract))
+                {
+                    if (!HasNoContract(componentRegistrationService))
+                    {
+                        continue;
+                    }
+
+                    // candidate for removal
+                    return true;
+                }
+
+                if (!HasMatchingContract(componentRegistrationService, contract))
+                {
+                    continue;
+                }
+
+                // candidate for removal
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool HasMatchingContract(Service service, string contract)
+        {
+            // you can't directly access the name key. shame.
+            return service.Description.StartsWith($"({contract})", StringComparison.Ordinal);
+        }
+
+        private static bool HasNoContract(Service service)
+        {
+            return !service.Description.StartsWith("(", StringComparison.Ordinal);
+        }
+
         private void RemoveAndRebuild(
             int registrationCount,
+            IList<IComponentRegistration> registrations,
             Func<IComponentRegistration, bool> predicate)
         {
-            var survivingComponents = _componentContext.ComponentRegistry.Registrations.Where(predicate).ToArray();
+            var survivingComponents = registrations.Where(predicate).ToArray();
 
             if (survivingComponents.Length == registrationCount)
             {
+                // not removing anything
+                // drop out
                 return;
             }
 
+            RemoveAndRebuild(survivingComponents);
+        }
+
+        private void RemoveAndRebuild(IEnumerable<IComponentRegistration> survivingComponents)
+        {
             var builder = new ContainerBuilder();
             foreach (var c in survivingComponents)
             {

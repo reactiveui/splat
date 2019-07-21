@@ -94,36 +94,6 @@ namespace Splat.Autofac.Tests
         /// Should throw an exception if service registration call back called.
         /// </summary>
         [Fact]
-        public void AutofacDependencyResolver_Should_Throw_If_UnregisterCurrent_Called()
-        {
-            var container = new ContainerBuilder();
-            container.UseAutofacDependencyResolver();
-
-            var result = Record.Exception(() =>
-                Locator.CurrentMutable.UnregisterCurrent(typeof(IScreen)));
-
-            result.ShouldBeOfType<NotImplementedException>();
-        }
-
-        /// <summary>
-        /// Should unregister all.
-        /// </summary>
-        [Fact]
-        public void AutofacDependencyResolver_Should_UnregisterAll_Called()
-        {
-            var container = new ContainerBuilder();
-            container.UseAutofacDependencyResolver();
-
-            var result = Record.Exception(() =>
-                Locator.CurrentMutable.UnregisterCurrent(typeof(IScreen)));
-
-            result.ShouldBeOfType<NotImplementedException>();
-        }
-
-        /// <summary>
-        /// Should throw an exception if service registration call back called.
-        /// </summary>
-        [Fact]
         public void AutofacDependencyResolver_Should_Throw_If_ServiceRegistionCallback_Called()
         {
             var container = new ContainerBuilder();
