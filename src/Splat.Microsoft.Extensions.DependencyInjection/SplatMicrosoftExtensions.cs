@@ -19,30 +19,15 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         /// Initializes an instance of <see cref="MicrosoftDependencyResolver"/> that overrides the default <see cref="Locator"/>.
         /// </summary>
         /// <param name="serviceCollection">The <see cref="IServiceCollection"/>.</param>
-        public static void UseMicrosoftDependencyResolver(this IServiceCollection serviceCollection)
-        {
-            var resolver = new MicrosoftDependencyResolver(serviceCollection);
-            Locator.SetLocator(resolver);
-            serviceCollection.AddSingleton(resolver);
-        }
+        public static void UseMicrosoftDependencyResolver(this IServiceCollection serviceCollection) =>
+            Locator.SetLocator(new MicrosoftDependencyResolver(serviceCollection));
 
         /// <summary>
         /// Initializes an instance of <see cref="MicrosoftDependencyResolver"/> that overrides the default <see cref="Locator"/>
         /// with a built <see cref="IServiceProvider"/>.
         /// </summary>
         /// <param name="serviceProvider">The <see cref="IServiceProvider"/>.</param>
-        public static void UseMicrosoftDependencyResolver(this IServiceProvider serviceProvider)
-        {
-            var resolver = serviceProvider.GetService<MicrosoftDependencyResolver>();
-            if (resolver != null)
-            {
-                resolver.UpdateServiceProvider(serviceProvider);
-            }
-            else
-            {
-                resolver = new MicrosoftDependencyResolver(serviceProvider);
-                Locator.SetLocator(resolver);
-            }
-        }
+        public static void UseMicrosoftDependencyResolver(this IServiceProvider serviceProvider) =>
+            Locator.SetLocator(new MicrosoftDependencyResolver(serviceProvider));
     }
 }

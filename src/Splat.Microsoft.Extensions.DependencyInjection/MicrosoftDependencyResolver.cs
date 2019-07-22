@@ -56,7 +56,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
             }
 
             var sp = GetServiceProvider(contract);
-            return sp.GetRequiredService(serviceType);
+            return sp.GetService(serviceType);
         }
 
         /// <inheritdoc />
@@ -191,6 +191,11 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
             }
 
             var dic = _serviceScopes.Value;
+
+            if (contract == null)
+            {
+                return _serviceProvider;
+            }
 
             if (!dic.TryGetValue(contract, out var scope) && createIfNotExists)
             {
