@@ -4,6 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,17 +12,16 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Splat.Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// Microsoft DI implementation for <see cref="IMutableDependencyResolver"/>.
+    /// Microsoft DI implementation for <see cref="IDependencyResolver"/>.
     /// </summary>
     /// <seealso cref="IDependencyResolver" />
-    /// <seealso cref="IMicrosoftDependencyResolver"/>
-    public class MicrosoftDependencyResolver : IMicrosoftDependencyResolver
+    public class MicrosoftDependencyResolver : IDependencyResolver
     {
-        private const string LockedExceptionMessage = "The provider has already been set.";
-
-        private readonly IServiceCollection _serviceCollection;
+        private const string ImmutableExceptionMessage = "This container has already been built and cannot be modified.";
+        private readonly Lazy<IDictionary<string, IServiceScope>> _serviceScopes = new Lazy<IDictionary<string, IServiceScope>>(() => new Dictionary<string, IServiceScope>());
+        private IServiceCollection _serviceCollection;
+        private bool _isImmutable;
         private IServiceProvider _serviceProvider;
-        private bool _locked;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MicrosoftDependencyResolver" /> class with an <see cref="IServiceCollection"/>.
@@ -39,78 +39,117 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         public MicrosoftDependencyResolver(IServiceProvider serviceProvider)
             : this()
         {
-            UpdateContainer(serviceProvider);
-        }
-
-        private IServiceProvider ServiceProvider
-        {
-            get
-            {
-                if (_serviceProvider == null)
-                {
-                    _serviceProvider = _serviceCollection.BuildServiceProvider();
-                }
-
-                return _serviceProvider;
-            }
-        }
-
-        /// <inheritdoc />
-        public virtual object GetService(Type serviceType, string contract = null) =>
-            ServiceProvider.GetRequiredService(serviceType);
-
-        /// <inheritdoc />
-        public virtual IEnumerable<object> GetServices(Type serviceType, string contract = null) =>
-          ServiceProvider.GetServices(serviceType);
-
-        /// <inheritdoc />
-        public virtual void Register(Func<object> factory, Type serviceType, string contract = null)
-        {
-            if (_locked)
-            {
-                throw new InvalidOperationException(LockedExceptionMessage);
-            }
-
-            _serviceCollection.AddSingleton(serviceType, (provider) => factory());
-        }
-
-        /// <inheritdoc />
-        public virtual void UnregisterCurrent(Type serviceType, string contract = null) =>
-            UnregisterAll(serviceType);
-
-        /// <inheritdoc />
-        public virtual void UnregisterAll(Type serviceType, string contract = null)
-        {
-            if (_locked)
-            {
-                throw new InvalidOperationException(LockedExceptionMessage);
-            }
-
-            var remove = _serviceCollection
-                .Where(sd => sd.ServiceType == serviceType)
-                .ToList();
-
-            foreach (var item in remove)
-            {
-                _serviceCollection.Remove(item);
-            }
-        }
-
-        /// <inheritdoc />
-        public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
-        public void UpdateContainer(IServiceProvider serviceProvider)
-        {
             if (serviceProvider == null)
             {
                 throw new ArgumentNullException(nameof(serviceProvider));
             }
 
             _serviceProvider = serviceProvider;
+        }
+
+        /// <inheritdoc />
+        public virtual object GetService(Type serviceType, string contract = null)
+        {
+            if (serviceType == null)
+            {
+                throw new ArgumentNullException(nameof(serviceType));
+            }
+
+            var sp = GetServiceProvider(contract);
+            return sp.GetRequiredService(serviceType);
+        }
+
+        /// <inheritdoc />
+        public virtual IEnumerable<object> GetServices(Type serviceType, string contract = null)
+        {
+            if (serviceType == null)
+            {
+                throw new ArgumentNullException(nameof(serviceType));
+            }
+
+            var sp = GetServiceProvider(contract);
+            return sp.GetServices(serviceType);
+        }
+
+        /// <inheritdoc />
+        public virtual void Register(Func<object> factory, Type serviceType, string contract = null)
+        {
+            if (_isImmutable)
+            {
+                throw new InvalidOperationException(ImmutableExceptionMessage);
+            }
+
+            if (serviceType == null)
+            {
+                throw new ArgumentNullException(nameof(serviceType));
+            }
+
+            if (contract != null)
+            {
+                _serviceCollection.AddScoped(serviceType, _ => factory());
+            }
+            else
+            {
+                _serviceCollection.AddTransient(serviceType);
+            }
+        }
+
+        /// <summary>
+        /// Unregisters the current item based on the specified type and contract.
+        /// </summary>
+        /// <param name="serviceType">The service type to unregister.</param>
+        /// <param name="contract">This parameter is ignored. Service will be removed from all contracts.</param>
+        public void UnregisterCurrent(Type serviceType, string contract = null)
+        {
+            if (_isImmutable)
+            {
+                throw new InvalidOperationException(ImmutableExceptionMessage);
+            }
+
+            if (serviceType == null)
+            {
+                throw new ArgumentNullException(nameof(serviceType));
+            }
+
+            var last = _serviceCollection.LastOrDefault(sd => sd.ServiceType == serviceType);
+            if (last != null)
+            {
+                _serviceCollection.Remove(last);
+            }
+        }
+
+        /// <summary>
+        /// Unregisters all the values associated with the specified type and contract.
+        /// </summary>
+        /// <param name="serviceType">The service type to unregister.</param>
+        /// <param name="contract">This parameter is ignored. Service will be removed from all contracts.</param>
+        public void UnregisterAll(Type serviceType, string contract = null)
+        {
+            if (_isImmutable)
+            {
+                throw new InvalidOperationException(ImmutableExceptionMessage);
+            }
+
+            if (serviceType == null)
+            {
+                throw new ArgumentNullException(nameof(serviceType));
+            }
+
+            var registrations = _serviceCollection
+                .Where(sd => sd.ServiceType == serviceType)
+                .ToList();
+
+            foreach (var sd in registrations)
+            {
+                _serviceCollection.Remove(sd);
+            }
+        }
+
+        /// <inheritdoc />
+        public IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
+        {
+            // this method is not used by RxUI
+            throw new NotImplementedException();
         }
 
         /// <inheritdoc />
@@ -121,11 +160,44 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
+        /// Sets the current <see cref="IServiceProvider"/> with a built one.
+        /// </summary>
+        /// <param name="serviceProvider">The built <see cref="IServiceProvider"/>.</param>
+        internal void UpdateServiceProvider(IServiceProvider serviceProvider)
+        {
+            if (serviceProvider == null)
+            {
+                throw new ArgumentNullException(nameof(serviceProvider));
+            }
+
+            _serviceProvider = serviceProvider;
+            _serviceCollection = null;
+            _isImmutable = true;
+        }
+
+        /// <summary>
         /// Disposes of the instance.
         /// </summary>
         /// <param name="disposing">Whether or not the instance is disposing.</param>
         protected virtual void Dispose(bool disposing)
         {
+        }
+
+        private IServiceProvider GetServiceProvider(string contract = null, bool createIfNotExists = false)
+        {
+            if (_serviceProvider == null)
+            {
+                _serviceProvider = _serviceCollection.BuildServiceProvider();
+            }
+
+            var dic = _serviceScopes.Value;
+
+            if (!dic.TryGetValue(contract, out var scope) && createIfNotExists)
+            {
+                dic[contract] = scope = _serviceProvider.CreateScope();
+            }
+
+            return scope?.ServiceProvider ?? _serviceProvider;
         }
     }
 }

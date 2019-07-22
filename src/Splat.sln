@@ -51,6 +51,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Android.Runner", "Spl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Microsoft.Extensions.DependencyInjection", "Splat.Microsoft.Extensions.DependencyInjection\Splat.Microsoft.Extensions.DependencyInjection.csproj", "{168CC48D-C28C-48BA-B6F1-234A0C16597E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Microsoft.Extensions.DependencyInjection.Tests", "Splat.Microsoft.Extensions.DependencyInjection.Tests\Splat.Microsoft.Extensions.DependencyInjection.Tests.csproj", "{85E5821D-CCC3-44DC-96A0-DFC02953943F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,6 +129,10 @@ Global
 		{168CC48D-C28C-48BA-B6F1-234A0C16597E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{168CC48D-C28C-48BA-B6F1-234A0C16597E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{168CC48D-C28C-48BA-B6F1-234A0C16597E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -149,6 +155,7 @@ Global
 		{4B86E6E5-40EA-44F1-BC72-0D6ECCCC8AE7} = {3F8EA9C2-D6D1-4B18-8670-DFC24B96972E}
 		{E7957867-EF5A-4765-A2CB-990A6ADFE6BB} = {3F8EA9C2-D6D1-4B18-8670-DFC24B96972E}
 		{168CC48D-C28C-48BA-B6F1-234A0C16597E} = {651320D6-1048-4F87-9D8E-75134FAFABDA}
+		{85E5821D-CCC3-44DC-96A0-DFC02953943F} = {3F8EA9C2-D6D1-4B18-8670-DFC24B96972E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E833ED14-B971-4E09-B27E-76E99BC0FC10}
