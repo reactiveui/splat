@@ -45,6 +45,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
             }
 
             _serviceProvider = serviceProvider;
+            _isImmutable = true;
         }
 
         /// <inheritdoc />
@@ -157,22 +158,6 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         {
             Dispose(true);
             GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Sets the current <see cref="IServiceProvider"/> with a built one.
-        /// </summary>
-        /// <param name="serviceProvider">The built <see cref="IServiceProvider"/>.</param>
-        internal void UpdateServiceProvider(IServiceProvider serviceProvider)
-        {
-            if (serviceProvider == null)
-            {
-                throw new ArgumentNullException(nameof(serviceProvider));
-            }
-
-            _serviceProvider = serviceProvider;
-            _serviceCollection = null;
-            _isImmutable = true;
         }
 
         /// <summary>
