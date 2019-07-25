@@ -5,13 +5,14 @@
 
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
+using Splat.ApplicationPerformanceMonitoring;
 
 namespace Splat
 {
     /// <summary>
     /// View Tracking integration for Application Insights.
     /// </summary>
-    public sealed class ApplicationInsightsViewTracking
+    public sealed class ApplicationInsightsViewTracking : IViewTracking
     {
         private readonly TelemetryClient _telemetryClient;
 

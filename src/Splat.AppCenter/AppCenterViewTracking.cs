@@ -6,13 +6,34 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Splat.ApplicationPerformanceMonitoring;
 
 namespace Splat
 {
     /// <summary>
     /// View Tracking integration for AppCenter.
     /// </summary>
-    public sealed class AppCenterViewTracking
+    public sealed class AppCenterViewTracking : IViewTracking
     {
+        /// <summary>
+        /// Track a view navigation using just a name.
+        /// </summary>
+        /// <param name="name">Name of the view.</param>
+        public void OnViewNavigation(string name)
+        {
+            var properties = GetProperties(name);
+
+            Microsoft.AppCenter.Analytics.Analytics.TrackEvent("PageView", properties);
+        }
+
+        private IDictionary<string, string> GetProperties(string name)
+        {
+            var properties = new Dictionary<string, string>
+            {
+                { "Name", name },
+            };
+
+            return properties;
+        }
     }
 }

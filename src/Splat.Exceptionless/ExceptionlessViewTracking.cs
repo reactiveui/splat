@@ -8,13 +8,14 @@ using System.Collections.Generic;
 using System.Text;
 using Exceptionless;
 using Exceptionless.Plugins;
+using Splat.ApplicationPerformanceMonitoring;
 
 namespace Splat
 {
     /// <summary>
     /// Exceptionless View Tracking integration.
     /// </summary>
-    public sealed class ExceptionlessViewTracking
+    public sealed class ExceptionlessViewTracking : IViewTracking
     {
         private readonly ExceptionlessClient _exceptionlessClient;
 
