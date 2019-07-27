@@ -12,18 +12,18 @@ namespace Splat
     /// <summary>
     /// Feature Usage Tracking Client for AppCenter.
     /// </summary>
-    public sealed class AppCenterFeatureUsageTracking : IFeatureUsageTrackingSession<Guid>
+    public sealed class AppCenterFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AppCenterFeatureUsageTracking"/> class.
+        /// Initializes a new instance of the <see cref="AppCenterFeatureUsageTrackingSession"/> class.
         /// </summary>
         /// <param name="featureName">The name of the feature.</param>
-        public AppCenterFeatureUsageTracking(string featureName)
+        public AppCenterFeatureUsageTrackingSession(string featureName)
             : this(featureName, Guid.Empty)
         {
         }
 
-        internal AppCenterFeatureUsageTracking(string featureName, Guid parentReference)
+        internal AppCenterFeatureUsageTrackingSession(string featureName, Guid parentReference)
         {
             FeatureName = featureName;
             FeatureReference = Guid.NewGuid();
@@ -50,7 +50,7 @@ namespace Splat
         /// <inheritdoc />
         public IFeatureUsageTrackingSession SubFeature(string description)
         {
-            return new AppCenterFeatureUsageTracking(FeatureName, FeatureReference);
+            return new AppCenterFeatureUsageTrackingSession(FeatureName, FeatureReference);
         }
 
         /// <inheritdoc />

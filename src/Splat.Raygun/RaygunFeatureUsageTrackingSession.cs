@@ -16,20 +16,20 @@ namespace Splat
     /// <summary>
     /// Feature Usage Tracking integration for Raygun.
     /// </summary>
-    public sealed class RaygunFeatureUsageTracking : IFeatureUsageTrackingSession<Guid>
+    public sealed class RaygunFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
     {
         private readonly RaygunClient _raygunClient;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RaygunFeatureUsageTracking"/> class.
+        /// Initializes a new instance of the <see cref="RaygunFeatureUsageTrackingSession"/> class.
         /// </summary>
         /// <param name="featureName">Name of the feature.</param>
-        public RaygunFeatureUsageTracking(string featureName)
+        public RaygunFeatureUsageTrackingSession(string featureName)
             : this(featureName, Guid.Empty)
         {
         }
 
-        internal RaygunFeatureUsageTracking(
+        internal RaygunFeatureUsageTrackingSession(
             string featureName,
             Guid parentReference)
         {
@@ -77,7 +77,7 @@ namespace Splat
         /// <inheritdoc />
         public IFeatureUsageTrackingSession SubFeature(string name)
         {
-            return new RaygunFeatureUsageTracking(
+            return new RaygunFeatureUsageTrackingSession(
                 name,
                 FeatureReference);
         }

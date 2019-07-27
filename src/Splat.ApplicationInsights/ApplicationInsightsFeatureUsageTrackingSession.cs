@@ -13,21 +13,26 @@ namespace Splat.ApplicationInsights
     /// <summary>
     /// Feature Usage Tracking Client for Application Insights.
     /// </summary>
-    public sealed class ApplicationInsightsFeatureUsageTracking : IFeatureUsageTrackingSession<Guid>
+    public sealed class ApplicationInsightsFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
     {
         private readonly TelemetryClient _telemetryClient;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ApplicationInsightsFeatureUsageTracking"/> class.
+        /// Initializes a new instance of the <see cref="ApplicationInsightsFeatureUsageTrackingSession"/> class.
         /// </summary>
         /// <param name="featureName">The name of the feature.</param>
         /// <param name="telemetryClient">The Application Insights telemetry client instance to use.</param>
-        public ApplicationInsightsFeatureUsageTracking(string featureName, TelemetryClient telemetryClient)
+        public ApplicationInsightsFeatureUsageTrackingSession(
+            string featureName,
+            TelemetryClient telemetryClient)
             : this(featureName, Guid.Empty, telemetryClient)
         {
         }
 
-        internal ApplicationInsightsFeatureUsageTracking(string featureName, Guid parentReference, TelemetryClient telemetryClient)
+        internal ApplicationInsightsFeatureUsageTrackingSession(
+            string featureName,
+            Guid parentReference,
+            TelemetryClient telemetryClient)
         {
             _telemetryClient = telemetryClient;
             FeatureName = featureName;
@@ -55,7 +60,10 @@ namespace Splat.ApplicationInsights
         /// <inheritdoc />
         public IFeatureUsageTrackingSession SubFeature(string description)
         {
-            return new ApplicationInsightsFeatureUsageTracking(description, ParentReference, _telemetryClient);
+            return new ApplicationInsightsFeatureUsageTrackingSession(
+                description,
+                ParentReference,
+                _telemetryClient);
         }
 
         /// <inheritdoc />
