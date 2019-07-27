@@ -170,5 +170,42 @@ namespace Splat.DryIoc.Tests
 
             result.ShouldBeOfType<NotImplementedException>();
         }
+
+        /// <summary>
+        /// Check to ensure the correct logger is returned.
+        /// </summary>
+        /// <remarks>
+        /// Introduced for Splat #331.
+        /// </remarks>
+        [Fact]
+        public void DryIocDependencyResolver_Should_ReturnRegisteredLogger()
+        {
+            var c = new Container();
+            c.UseDryIocDependencyResolver();
+            c.Register<ILogger, ConsoleLogger>(ifAlreadyRegistered: IfAlreadyRegistered.Replace);
+            Locator.CurrentMutable.RegisterConstant(
+                new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())),
+                typeof(ILogManager));
+
+            var d = Splat.Locator.Current.GetService<ILogManager>();
+            Assert.IsType<FuncLogManager>(d);
+        }
+
+        /// <summary>
+        /// Test that a pre-init logger isn't overriden.
+        /// </summary>
+        /// <remarks>
+        /// Introduced for Splat #331.
+        /// </remarks>
+        [Fact]
+        public void DryIocDependencyResolver_PreInit_Should_ReturnRegisteredLogger()
+        {
+            var c = new Container();
+            c.UseInstance(typeof(ILogManager), new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())));
+            c.UseDryIocDependencyResolver();
+
+            var d = Splat.Locator.Current.GetService<ILogManager>();
+            Assert.IsType<FuncLogManager>(d);
+        }
     }
 }

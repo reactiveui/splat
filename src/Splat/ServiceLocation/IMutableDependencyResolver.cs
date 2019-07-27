@@ -13,6 +13,13 @@ namespace Splat
     public interface IMutableDependencyResolver
     {
         /// <summary>
+        /// Check to see if a resolvers has a registration for a type.
+        /// </summary>
+        /// <param name="serviceType">The type to check for registration.</param>
+        /// <returns>Whether there is a registration for the type.</returns>
+        bool HasRegistration(Type serviceType);
+
+        /// <summary>
         /// Register a function with the resolver which will generate a object
         /// for the specified service type.
         /// Optionally a contract can be registered which will indicate

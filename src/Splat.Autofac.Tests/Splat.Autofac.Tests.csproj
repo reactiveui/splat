@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Splat.Autofac\Splat.Autofac.csproj" />
     <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />
+    <ProjectReference Include="..\Splat.Tests\Splat.Tests.csproj" />
   </ItemGroup>
   
   <ItemGroup>

@@ -156,21 +156,5 @@ namespace Splat
         {
             resolver.UnregisterAll(typeof(T), contract);
         }
-
-        /// <summary>
-        /// Registers all the default registrations that are needed by the Splat module.
-        /// </summary>
-        /// <param name="resolver">The resolver to register the needed service types against.</param>
-        public static void InitializeSplat(this IMutableDependencyResolver resolver)
-        {
-            resolver.Register(() => new DefaultLogManager(), typeof(ILogManager));
-            resolver.RegisterConstant(new DebugLogger(), typeof(ILogger));
-            resolver.RegisterConstant(new DefaultFeatureUsageTrackingManager(), typeof(IFeatureUsageTrackingManager));
-
-#if !NETSTANDARD
-            // not supported in netstandard2.0
-            resolver.RegisterLazySingleton(() => new PlatformBitmapLoader(), typeof(IBitmapLoader));
-#endif
-        }
     }
 }

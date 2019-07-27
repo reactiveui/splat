@@ -39,6 +39,12 @@ namespace Splat.Ninject
                 : _kernel.GetAll(serviceType, contract);
 
         /// <inheritdoc />
+        public bool HasRegistration(Type serviceType)
+        {
+            return _kernel.CanResolve(serviceType);
+        }
+
+        /// <inheritdoc />
         public virtual void Register(Func<object> factory, Type serviceType, string contract = null) =>
             _kernel.Bind(serviceType).ToMethod(_ => factory());
 
