@@ -18,10 +18,16 @@ namespace Splat
         {
             RegisterDefaultLogManager(resolver);
             RegisterLogger(resolver);
+			RegisterApplicationPerformanceMonitoring(resolver);
 #if !NETSTANDARD
             RegisterPlatformBitmapLoader(resolver);
 #endif
         }
+
+		private static void RegisterApplicationPerformanceMonitoring(IMutableDependencyResolver resolver)
+		{
+            resolver.RegisterConstant(new DefaultFeatureUsageTrackingManager(), typeof(IFeatureUsageTrackingManager));
+		}
 
         private static void RegisterDefaultLogManager(IMutableDependencyResolver resolver)
         {
@@ -37,7 +43,7 @@ namespace Splat
             {
                 resolver.RegisterConstant(new DebugLogger(), typeof(ILogger));
             }
-        }
+        }		
 
 #if !NETSTANDARD
         private static void RegisterPlatformBitmapLoader(IMutableDependencyResolver resolver)
