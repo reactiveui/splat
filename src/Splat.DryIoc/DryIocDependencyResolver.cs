@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DryIoc;
 
 namespace Splat.DryIoc
@@ -30,14 +31,20 @@ namespace Splat.DryIoc
         /// <inheritdoc />
         public virtual object GetService(Type serviceType, string contract = null) =>
             string.IsNullOrEmpty(contract)
-                ? _container.Resolve(serviceType, IfUnresolved.ReturnDefault)
-                : _container.Resolve(serviceType, contract, IfUnresolved.ReturnDefault);
+                ? _container.ResolveMany(serviceType).LastOrDefault()
+                : _container.ResolveMany(serviceType, serviceKey: contract).LastOrDefault();
 
         /// <inheritdoc />
         public virtual IEnumerable<object> GetServices(Type serviceType, string contract = null) =>
             string.IsNullOrEmpty(contract)
                 ? _container.ResolveMany(serviceType)
                 : _container.ResolveMany(serviceType, serviceKey: contract);
+
+        /// <inheritdoc />
+        public bool HasRegistration(Type serviceType)
+        {
+            return _container.GetServiceRegistrations().Any(x => x.ServiceType == serviceType);
+        }
 
         /// <inheritdoc />
         public virtual void Register(Func<object> factory, Type serviceType, string contract = null)

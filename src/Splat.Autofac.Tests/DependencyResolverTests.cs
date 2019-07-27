@@ -10,6 +10,7 @@ using System.Linq;
 using Autofac;
 using Shouldly;
 using Splat.Common.Test;
+using Splat.Tests.ServiceLocation;
 using Xunit;
 
 namespace Splat.Autofac.Tests
@@ -17,7 +18,7 @@ namespace Splat.Autofac.Tests
     /// <summary>
     /// Tests to show the <see cref="AutofacDependencyResolver"/> works correctly.
     /// </summary>
-    public class DependencyResolverTests
+    public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDependencyResolver>
     {
         /// <summary>
         /// Shoulds the resolve views.
@@ -93,36 +94,6 @@ namespace Splat.Autofac.Tests
         /// Should throw an exception if service registration call back called.
         /// </summary>
         [Fact]
-        public void AutofacDependencyResolver_Should_Throw_If_UnregisterCurrent_Called()
-        {
-            var container = new ContainerBuilder();
-            container.UseAutofacDependencyResolver();
-
-            var result = Record.Exception(() =>
-                Locator.CurrentMutable.UnregisterCurrent(typeof(IScreen)));
-
-            result.ShouldBeOfType<NotImplementedException>();
-        }
-
-        /// <summary>
-        /// Should unregister all.
-        /// </summary>
-        [Fact]
-        public void AutofacDependencyResolver_Should_UnregisterAll_Called()
-        {
-            var container = new ContainerBuilder();
-            container.UseAutofacDependencyResolver();
-
-            var result = Record.Exception(() =>
-                Locator.CurrentMutable.UnregisterCurrent(typeof(IScreen)));
-
-            result.ShouldBeOfType<NotImplementedException>();
-        }
-
-        /// <summary>
-        /// Should throw an exception if service registration call back called.
-        /// </summary>
-        [Fact]
         public void AutofacDependencyResolver_Should_Throw_If_ServiceRegistionCallback_Called()
         {
             var container = new ContainerBuilder();
@@ -132,6 +103,52 @@ namespace Splat.Autofac.Tests
                 Locator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
 
             result.ShouldBeOfType<NotImplementedException>();
+        }
+
+        /// <summary>
+        /// Check to ensure the correct logger is returned.
+        /// </summary>
+        /// <remarks>
+        /// Introduced for Splat #331.
+        /// </remarks>
+        [Fact]
+        public void AutofacDependencyResolver_Should_ReturnRegisteredLogger()
+        {
+            var container = new ContainerBuilder();
+            container.UseAutofacDependencyResolver();
+
+            Locator.CurrentMutable.RegisterConstant(
+                new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())),
+                typeof(ILogManager));
+
+            var d = Splat.Locator.Current.GetService<ILogManager>();
+            Assert.IsType<FuncLogManager>(d);
+        }
+
+        /// <summary>
+        /// Test that a pre-init logger isn't overriden.
+        /// </summary>
+        /// <remarks>
+        /// Introduced for Splat #331.
+        /// </remarks>
+        [Fact]
+        public void AutofacDependencyResolver_PreInit_Should_ReturnRegisteredLogger()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(_ => new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger()))).As(typeof(ILogManager))
+                .AsImplementedInterfaces();
+
+            builder.UseAutofacDependencyResolver();
+
+            var d = Splat.Locator.Current.GetService<ILogManager>();
+            Assert.IsType<FuncLogManager>(d);
+        }
+
+        /// <inheritdoc />
+        protected override AutofacDependencyResolver GetDependencyResolver()
+        {
+            var container = new ContainerBuilder();
+            return new AutofacDependencyResolver(container.Build());
         }
     }
 }
