@@ -25,7 +25,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
         [Fact]
         public void MicrosoftDependencyResolver_Should_Resolve_Views()
         {
-            var wrapper = new ServicesWrapper();
+            var wrapper = new ContainerWrapper();
             var services = wrapper.ServiceCollection;
             services.AddTransient<IViewFor<ViewModelOne>, ViewOne>();
             services.AddTransient<IViewFor<ViewModelTwo>, ViewTwo>();
@@ -47,7 +47,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
         [Fact]
         public void MicrosoftDependencyResolver_Should_Resolve_Named_View()
         {
-            var wrapper = new ServicesWrapper();
+            var wrapper = new ContainerWrapper();
             var services = wrapper.ServiceCollection;
             services.AddTransient<IViewFor<ViewModelTwo>, ViewTwo>();
 
@@ -65,7 +65,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
         [Fact]
         public void MicrosoftDependencyResolver_Should_Resolve_View_Models()
         {
-            var wrapper = new ServicesWrapper();
+            var wrapper = new ContainerWrapper();
             var services = wrapper.ServiceCollection;
             services.AddTransient<ViewModelOne>();
             services.AddTransient<ViewModelTwo>();
@@ -85,7 +85,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
         [Fact]
         public void MicrosoftDependencyResolver_Should_Resolve_Screen()
         {
-            var wrapper = new ServicesWrapper();
+            var wrapper = new ContainerWrapper();
             var services = wrapper.ServiceCollection;
             services.AddSingleton<IScreen>(new MockScreen());
 
@@ -103,7 +103,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
         [Fact]
         public void MicrosoftDependencyResolver_Should_UnregisterAll()
         {
-            var wrapper = new ServicesWrapper();
+            var wrapper = new ContainerWrapper();
             var services = wrapper.ServiceCollection;
 
             services.AddSingleton<IScreen>(new MockScreen());
@@ -123,7 +123,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
         [Fact]
         public void MicrosoftDependencyResolver_Should_Throw_If_ServiceRegistionCallback_Called()
         {
-            var wrapper = new ServicesWrapper();
+            var wrapper = new ContainerWrapper();
             wrapper.BuildAndUse();
 
             var result = Record.Exception(() =>
@@ -137,40 +137,13 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
         /// </summary>
         public void MicrosoftDependencyResolver_Should_Throw_If_Attempt_Registration_After_Build()
         {
-            var wrapper = new ServicesWrapper();
+            var wrapper = new ContainerWrapper();
 
             wrapper.BuildAndUse();
 
             var result = Record.Exception(() => Locator.CurrentMutable.Register(() => new ViewOne()));
 
             result.ShouldBeOfType<InvalidOperationException>();
-        }
-
-        private class ServicesWrapper
-        {
-            private IServiceProvider _serviceProvider;
-
-            public ServicesWrapper()
-            {
-                ServiceCollection.UseMicrosoftDependencyResolver();
-            }
-
-            public IServiceCollection ServiceCollection { get; } = new ServiceCollection();
-
-            public IServiceProvider ServiceProvider
-            {
-                get
-                {
-                    if (_serviceProvider == null)
-                    {
-                        _serviceProvider = ServiceCollection.BuildServiceProvider();
-                    }
-
-                    return _serviceProvider;
-                }
-            }
-
-            public void BuildAndUse() => ServiceProvider.UseMicrosoftDependencyResolver();
         }
     }
 }

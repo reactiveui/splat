@@ -78,18 +78,33 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         /// <inheritdoc />
         public virtual IEnumerable<object> GetServices(Type serviceType, string contract = null)
         {
-            if (serviceType == null)
+            var isNull = serviceType == null;
+            if (isNull)
             {
-                throw new ArgumentNullException(nameof(serviceType));
+                serviceType = typeof(NullServiceType);
             }
+
+            IEnumerable<object> services;
 
             if (string.IsNullOrWhiteSpace(contract))
             {
-                return ServiceProvider.GetServices(serviceType);
+                services = ServiceProvider.GetServices(serviceType);
+                if (isNull)
+                {
+                    services = services
+                        .Cast<NullServiceType>()
+                        .Select(nst => nst.Factory());
+                }
+            }
+            else
+            {
+                var dic = GetContractDictionary(serviceType, false);
+                services = dic?
+                    .GetFactories(contract)
+                    .Select(f => f());
             }
 
-            var dic = GetContractDictionary(serviceType, false);
-            return dic?.GetFactories(contract);
+            return services;
         }
 
         /// <inheritdoc />
@@ -100,17 +115,19 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                 throw new InvalidOperationException(ImmutableExceptionMessage);
             }
 
-            if (serviceType == null)
-            {
-                throw new ArgumentNullException(nameof(serviceType));
-            }
+            var isNull = serviceType == null;
 
-            // required so that it gets rebuilt if not injected externally.
-            _serviceProvider = null;
+            if (isNull)
+            {
+                serviceType = typeof(NullServiceType);
+            }
 
             if (string.IsNullOrWhiteSpace(contract))
             {
-                _serviceCollection.AddTransient(serviceType, _ => factory());
+                _serviceCollection.AddTransient(serviceType, _ =>
+                isNull
+                ? new NullServiceType(factory)
+                : factory());
             }
             else
             {
@@ -118,6 +135,9 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
 
                 dic.AddFactory(contract, factory);
             }
+
+            // required so that it gets rebuilt if not injected externally.
+            _serviceProvider = null;
         }
 
         /// <inheritdoc/>
@@ -130,28 +150,29 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
 
             if (serviceType == null)
             {
-                throw new ArgumentNullException(nameof(serviceType));
+                serviceType = typeof(NullServiceType);
             }
-
-            // required so that it gets rebuilt if not injected externally.
-            _serviceProvider = null;
 
             if (contract == null)
             {
                 var sd = _serviceCollection.LastOrDefault(s => s.ServiceType == serviceType);
                 _serviceCollection.Remove(sd);
-                return;
             }
-
-            var dic = GetContractDictionary(serviceType, false);
-            if (dic != null)
+            else
             {
-                dic.RemoveLastFactory(contract);
-                if (dic.Count == 0)
+                var dic = GetContractDictionary(serviceType, false);
+                if (dic != null)
                 {
-                    RemoveContractService(serviceType);
+                    dic.RemoveLastFactory(contract);
+                    if (dic.Count == 0)
+                    {
+                        RemoveContractService(serviceType);
+                    }
                 }
             }
+
+            // required so that it gets rebuilt if not injected externally.
+            _serviceProvider = null;
         }
 
         /// <summary>
@@ -170,11 +191,8 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
 
             if (serviceType == null)
             {
-                throw new ArgumentNullException(nameof(serviceType));
+                serviceType = typeof(NullServiceType);
             }
-
-            // required so that it gets rebuilt if not injected externally.
-            _serviceProvider = null;
 
             if (contract == null)
             {
@@ -187,12 +205,17 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                     _serviceCollection.Remove(sd);
                 }
             }
-
-            var dic = GetContractDictionary(serviceType, false);
-            if (dic != null && dic.TryRemove(contract, out var _) && dic.Count == 0)
+            else
             {
-                RemoveContractService(serviceType);
+                var dic = GetContractDictionary(serviceType, false);
+                if (dic != null && dic.TryRemove(contract, out var _) && dic.Count == 0)
+                {
+                    RemoveContractService(serviceType);
+                }
             }
+
+            // required so that it gets rebuilt if not injected externally.
+            _serviceProvider = null;
         }
 
         /// <inheritdoc />
@@ -205,6 +228,11 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         /// <inheritdoc/>
         public virtual bool HasRegistration(Type serviceType)
         {
+            if (serviceType == null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
             if (!_isImmutable)
             {
                 return _serviceCollection.Any(sd => sd.ServiceType == serviceType);
@@ -256,8 +284,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
             if (createIfNotExists && dic == null)
             {
                 dic = (ContractDictionary)Activator.CreateInstance(dicType);
-
-                _serviceCollection.AddSingleton(dic);
+                _serviceCollection.AddSingleton(dicType, dic);
             }
 
             return dic;
@@ -310,6 +337,16 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
 
         private class ContractDictionary<T> : ContractDictionary
         {
+        }
+
+        private class NullServiceType
+        {
+            public NullServiceType(Func<object> factory)
+            {
+                Factory = factory;
+            }
+
+            public Func<object> Factory { get; }
         }
     }
 }
