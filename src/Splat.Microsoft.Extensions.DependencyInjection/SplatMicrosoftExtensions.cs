@@ -7,7 +7,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 
-
 namespace Splat.Microsoft.Extensions.DependencyInjection
 {
     /// <summary>

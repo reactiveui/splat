@@ -5,9 +5,13 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Splat.Microsoft.Extensions.DependencyInjection
@@ -19,8 +23,9 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
     [SuppressMessage("Globalization", "CA1303", Justification = "Unnecessary warning")]
     public class MicrosoftDependencyResolver : IDependencyResolver
     {
+        private const string MutableExceptionMessage = "The container has not yet been built.";
         private const string ImmutableExceptionMessage = "This container has already been built and cannot be modified.";
-        private readonly IDictionary<string, IServiceScope> _serviceScopes = new Dictionary<string, IServiceScope>();
+        private static readonly Type _dictionaryType = typeof(ContractDictionary<>);
         private IServiceCollection _serviceCollection;
         private bool _isImmutable;
         private IServiceProvider _serviceProvider;
@@ -49,17 +54,26 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
             _isImmutable = true;
         }
 
-        /// <inheritdoc />
-        public virtual object GetService(Type serviceType, string contract = null)
+        /// <summary>
+        /// Gets the internal Microsoft conainer,
+        /// or build new if this instance was not initialized with one.
+        /// </summary>
+        protected virtual IServiceProvider ServiceProvider
         {
-            if (serviceType == null)
+            get
             {
-                throw new ArgumentNullException(nameof(serviceType));
-            }
+                if (_serviceProvider == null)
+                {
+                    _serviceProvider = _serviceCollection.BuildServiceProvider();
+                }
 
-            var sp = GetServiceProvider(contract);
-            return sp.GetRequiredService(serviceType);
+                return _serviceProvider;
+            }
         }
+
+        /// <inheritdoc />
+        public virtual object GetService(Type serviceType, string contract = null) =>
+            GetServices(serviceType, contract).LastOrDefault();
 
         /// <inheritdoc />
         public virtual IEnumerable<object> GetServices(Type serviceType, string contract = null)
@@ -69,8 +83,13 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(serviceType));
             }
 
-            var sp = GetServiceProvider(contract);
-            return sp.GetServices(serviceType);
+            if (string.IsNullOrWhiteSpace(contract))
+            {
+                return ServiceProvider.GetServices(serviceType);
+            }
+
+            var dic = GetContractDictionary(serviceType, false);
+            return dic?.GetFactories(contract);
         }
 
         /// <inheritdoc />
@@ -86,20 +105,53 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(serviceType));
             }
 
-            if (contract != null)
+            // required so that it gets rebuilt if not injected externally.
+            _serviceProvider = null;
+
+            if (string.IsNullOrWhiteSpace(contract))
             {
-                _serviceCollection.AddScoped(serviceType, _ => factory());
+                _serviceCollection.AddTransient(serviceType, _ => factory());
             }
             else
             {
-                _serviceCollection.AddTransient(serviceType, _ => factory());
+                var dic = GetContractDictionary(serviceType, true);
+
+                dic.AddFactory(contract, factory);
             }
         }
 
         /// <inheritdoc/>
-        public void UnregisterCurrent(Type serviceType, string contract = null)
+        public virtual void UnregisterCurrent(Type serviceType, string contract = null)
         {
-            throw new NotImplementedException();
+            if (_isImmutable)
+            {
+                throw new InvalidOperationException(ImmutableExceptionMessage);
+            }
+
+            if (serviceType == null)
+            {
+                throw new ArgumentNullException(nameof(serviceType));
+            }
+
+            // required so that it gets rebuilt if not injected externally.
+            _serviceProvider = null;
+
+            if (contract == null)
+            {
+                var sd = _serviceCollection.LastOrDefault(s => s.ServiceType == serviceType);
+                _serviceCollection.Remove(sd);
+                return;
+            }
+
+            var dic = GetContractDictionary(serviceType, false);
+            if (dic != null)
+            {
+                dic.RemoveLastFactory(contract);
+                if (dic.Count == 0)
+                {
+                    RemoveContractService(serviceType);
+                }
+            }
         }
 
         /// <summary>
@@ -109,27 +161,11 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="serviceType">The service type to unregister.</param>
         /// <param name="contract">This parameter is ignored. Service will be removed from all contracts.</param>
-        public void UnregisterAll(Type serviceType, string contract = null)
+        public virtual void UnregisterAll(Type serviceType, string contract = null)
         {
-            /*
             if (_isImmutable)
             {
-                // replaced so to provide a way to remove scopes
-                // ugly but best I could do
                 throw new InvalidOperationException(ImmutableExceptionMessage);
-            }
-            */
-
-            if (_isImmutable)
-            {
-                if (string.IsNullOrWhiteSpace(contract) || !_serviceScopes.TryGetValue(contract, out var scope))
-                {
-                    throw new ArgumentOutOfRangeException($"The contract {contract} was not instantiated.");
-                }
-
-                scope.Dispose();
-                _serviceScopes.Remove(contract);
-                return;
             }
 
             if (serviceType == null)
@@ -137,30 +173,37 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(serviceType));
             }
 
-            var registrations = _serviceCollection
-                .Where(sd => sd.ServiceType == serviceType)
-                .ToList();
+            // required so that it gets rebuilt if not injected externally.
+            _serviceProvider = null;
 
-            if (!registrations.Any())
+            if (contract == null)
             {
-                throw new ArgumentOutOfRangeException($"The type {serviceType} was not registered.");
+                var sds = _serviceCollection
+                    .Where(s => s.ServiceType == serviceType)
+                    .ToList();
+
+                foreach (var sd in sds)
+                {
+                    _serviceCollection.Remove(sd);
+                }
             }
 
-            foreach (var sd in registrations)
+            var dic = GetContractDictionary(serviceType, false);
+            if (dic != null && dic.TryRemove(contract, out var _) && dic.Count == 0)
             {
-                _serviceCollection.Remove(sd);
+                RemoveContractService(serviceType);
             }
         }
 
         /// <inheritdoc />
-        public IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
+        public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
         {
             // this method is not used by RxUI
             throw new NotImplementedException();
         }
 
         /// <inheritdoc/>
-        public bool HasRegistration(Type serviceType)
+        public virtual bool HasRegistration(Type serviceType)
         {
             if (!_isImmutable)
             {
@@ -186,24 +229,87 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         {
         }
 
-        private IServiceProvider GetServiceProvider(string contract = null)
+        private static Type GetDictionaryType(Type serviceType) => _dictionaryType.MakeGenericType(serviceType);
+
+        private void RemoveContractService(Type serviceType)
         {
-            if (_serviceProvider == null)
+            var dicType = GetDictionaryType(serviceType);
+            var sd = _serviceCollection.SingleOrDefault(s => s.ServiceType == serviceType);
+            _serviceCollection.Remove(sd);
+        }
+
+        private ContractDictionary GetContractDictionary(Type serviceType, bool createIfNotExists)
+        {
+            var dicType = GetDictionaryType(serviceType);
+
+            if (_isImmutable)
             {
-                _serviceProvider = _serviceCollection.BuildServiceProvider();
+                return (ContractDictionary)ServiceProvider.GetService(dicType);
             }
 
-            if (string.IsNullOrWhiteSpace(contract))
+            var dic = _serviceCollection
+                .Where(sd => sd.ServiceType == dicType)
+                .Select(sd => sd.ImplementationInstance)
+                .Cast<ContractDictionary>()
+                .SingleOrDefault();
+
+            if (createIfNotExists && dic == null)
             {
-                return _serviceProvider;
+                dic = (ContractDictionary)Activator.CreateInstance(dicType);
+
+                _serviceCollection.AddSingleton(dic);
             }
 
-            if (!_serviceScopes.TryGetValue(contract, out var scope))
+            return dic;
+        }
+
+        private class ContractDictionary : ConcurrentDictionary<string, IList<Func<object>>>
+        {
+            public Func<object> GetFactorý(string contract)
             {
-                _serviceScopes[contract] = scope = _serviceProvider.CreateScope();
+                return GetFactories(contract)
+                    .LastOrDefault();
             }
 
-            return scope.ServiceProvider;
+            public IEnumerable<Func<object>> GetFactories(string contract)
+            {
+                if (TryGetValue(contract, out var collection))
+                {
+                    return collection;
+                }
+
+                return Enumerable.Empty<Func<object>>();
+            }
+
+            public void AddFactory(string contract, Func<object> factory)
+            {
+                if (!TryGetValue(contract, out var collection))
+                {
+                    this[contract] = collection = new List<Func<object>>();
+                }
+
+                collection.Add(factory);
+            }
+
+            public void RemoveLastFactory(string contract)
+            {
+                if (TryGetValue(contract, out var collection))
+                {
+                    var lastIndex = collection.Count - 1;
+                    if (lastIndex > 0)
+                    {
+                        collection.RemoveAt(lastIndex);
+                        if (collection.Count == 0)
+                        {
+                            TryRemove(contract, out var _);
+                        }
+                    }
+                }
+            }
+        }
+
+        private class ContractDictionary<T> : ContractDictionary
+        {
         }
     }
 }

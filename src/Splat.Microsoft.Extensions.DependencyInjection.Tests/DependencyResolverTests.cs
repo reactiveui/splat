@@ -98,22 +98,6 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
         }
 
         /// <summary>
-        /// Should throw an exception if service registration call back called.
-        /// </summary>
-        [Fact]
-        public void MicrosoftDependencyResolver_Should_Throw_If_UnregisterCurrent_Called()
-        {
-            var wrapper = new ServicesWrapper();
-            var services = wrapper.ServiceCollection;
-            wrapper.BuildAndUse();
-
-            var result = Record.Exception(() =>
-                Locator.CurrentMutable.UnregisterCurrent(typeof(IScreen)));
-
-            result.ShouldBeOfType<NotImplementedException>();
-        }
-
-        /// <summary>
         /// Should unregister all.
         /// </summary>
         [Fact]
@@ -129,35 +113,8 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
 
             Locator.CurrentMutable.UnregisterAll(typeof(IScreen));
 
-            var result = Record.Exception(() => Locator.Current.GetService<IScreen>());
-
-            result.ShouldBeOfType<InvalidOperationException>();
-            result.Message.ShouldStartWith("No service for type ");
-        }
-
-        /// <summary>
-        /// Test that scopes can be registered and unregistered.
-        /// </summary>
-        [Fact]
-        public void MicrosoftDependencyResolver_Should_Enable_Scoped_Services()
-        {
-            var wrapper = new ServicesWrapper();
-            var services = wrapper.ServiceCollection;
-
-            services.AddScoped<ViewOne>();
-
-            wrapper.BuildAndUse();
-
-            var view1 = Locator.Current.GetService<ViewOne>("foo");
-            var view2 = Locator.Current.GetService<ViewOne>("foo");
-            var view3 = Locator.Current.GetService<ViewOne>("bar");
-
-            Assert.True(ReferenceEquals(view1, view2));
-            Assert.False(ReferenceEquals(view1, view3));
-
-            Locator.CurrentMutable.UnregisterAll(null, "foo");
-            view2 = Locator.Current.GetService<ViewOne>("foo");
-            Assert.False(ReferenceEquals(view1, view2));
+            var result = Locator.Current.GetService<IScreen>();
+            result.ShouldBeNull();
         }
 
         /// <summary>
