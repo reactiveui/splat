@@ -6,6 +6,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +16,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
     /// Microsoft DI implementation for <see cref="IDependencyResolver"/>.
     /// </summary>
     /// <seealso cref="IDependencyResolver" />
+    [SuppressMessage("Globalization", "CA1303", Justification = "Unnecessary warning")]
     public class MicrosoftDependencyResolver : IDependencyResolver
     {
         private const string ImmutableExceptionMessage = "This container has already been built and cannot be modified.";
@@ -152,6 +154,9 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
             // this method is not used by RxUI
             throw new NotImplementedException();
         }
+
+        /// <inheritdoc/>
+        public bool HasRegistration(Type serviceType) => _serviceCollection.Any(sd => sd.ServiceType == serviceType);
 
         /// <inheritdoc />
         public void Dispose()
