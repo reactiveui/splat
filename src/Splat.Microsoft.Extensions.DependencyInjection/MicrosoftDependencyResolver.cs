@@ -39,7 +39,6 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="serviceProvider">A ready to use service provider.</param>
         public MicrosoftDependencyResolver(IServiceProvider serviceProvider)
-            : this()
         {
             if (serviceProvider == null)
             {
@@ -59,7 +58,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
             }
 
             var sp = GetServiceProvider(contract);
-            return sp.GetService(serviceType);
+            return sp.GetRequiredService(serviceType);
         }
 
         /// <inheritdoc />
@@ -93,44 +92,46 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
             }
             else
             {
-                _serviceCollection.AddTransient(serviceType);
+                _serviceCollection.AddTransient(serviceType, _ => factory());
             }
         }
 
-        /// <summary>
-        /// Unregisters the current item based on the specified type and contract.
-        /// </summary>
-        /// <param name="serviceType">The service type to unregister.</param>
-        /// <param name="contract">This parameter is ignored. Service will be removed from all contracts.</param>
+        /// <inheritdoc/>
         public void UnregisterCurrent(Type serviceType, string contract = null)
         {
-            if (_isImmutable)
-            {
-                throw new InvalidOperationException(ImmutableExceptionMessage);
-            }
-
-            if (serviceType == null)
-            {
-                throw new ArgumentNullException(nameof(serviceType));
-            }
-
-            var last = _serviceCollection.LastOrDefault(sd => sd.ServiceType == serviceType);
-            if (last != null)
-            {
-                _serviceCollection.Remove(last);
-            }
+            throw new NotImplementedException();
         }
 
         /// <summary>
-        /// Unregisters all the values associated with the specified type and contract.
+        /// Unregisters all the values associated with the specified type and contract - or -
+        /// If the container has already been built, removes the specified contract (scope) entirely,
+        /// ignoring the <paramref name="serviceType"/> argument.
         /// </summary>
         /// <param name="serviceType">The service type to unregister.</param>
         /// <param name="contract">This parameter is ignored. Service will be removed from all contracts.</param>
         public void UnregisterAll(Type serviceType, string contract = null)
         {
+            /*
             if (_isImmutable)
             {
+                // replaced so to provide a way to remove scopes
+                // ugly but best I could do
                 throw new InvalidOperationException(ImmutableExceptionMessage);
+            }
+            */
+
+            if (_isImmutable)
+            {
+                var scopes = _serviceScopes.Value;
+
+                if (contract == null || !scopes.TryGetValue(contract, out var scope))
+                {
+                    throw new ArgumentOutOfRangeException($"The contract {contract} was not instantiated.");
+                }
+
+                scope.Dispose();
+                scopes.Remove(contract);
+                return;
             }
 
             if (serviceType == null)
@@ -141,6 +142,11 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
             var registrations = _serviceCollection
                 .Where(sd => sd.ServiceType == serviceType)
                 .ToList();
+
+            if (!registrations.Any())
+            {
+                throw new ArgumentOutOfRangeException($"The type {serviceType} was not registered.");
+            }
 
             foreach (var sd in registrations)
             {
@@ -156,7 +162,16 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         }
 
         /// <inheritdoc/>
-        public bool HasRegistration(Type serviceType) => _serviceCollection.Any(sd => sd.ServiceType == serviceType);
+        public bool HasRegistration(Type serviceType)
+        {
+            if (!_isImmutable)
+            {
+                return _serviceCollection.Any(sd => sd.ServiceType == serviceType);
+            }
+
+            var service = _serviceProvider.GetService(serviceType);
+            return service != null;
+        }
 
         /// <inheritdoc />
         public void Dispose()
@@ -173,7 +188,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         {
         }
 
-        private IServiceProvider GetServiceProvider(string contract = null, bool createIfNotExists = false)
+        private IServiceProvider GetServiceProvider(string contract = null)
         {
             if (_serviceProvider == null)
             {
@@ -187,12 +202,12 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                 return _serviceProvider;
             }
 
-            if (!dic.TryGetValue(contract, out var scope) && createIfNotExists)
+            if (!dic.TryGetValue(contract, out var scope))
             {
                 dic[contract] = scope = _serviceProvider.CreateScope();
             }
 
-            return scope?.ServiceProvider ?? _serviceProvider;
+            return scope.ServiceProvider;
         }
     }
 }
