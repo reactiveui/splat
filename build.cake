@@ -12,9 +12,9 @@ var packageWhitelist = new[]
     MakeAbsolute(File("./src/Splat.Microsoft.Extensions.DependencyInjection/Splat.Microsoft.Extensions.DependencyInjection.csproj")),
     MakeAbsolute(File("./src/Splat.Microsoft.Extensions.Logging/Splat.Microsoft.Extensions.Logging.csproj")),
     MakeAbsolute(File("./src/Splat.Ninject/Splat.Ninject.csproj")),
-    MakeAbsolute(File("./src/Splat.Ninject/Splat.Ninject.csproj")),
     MakeAbsolute(File("./src/Splat.NLog/Splat.NLog.csproj")),
     MakeAbsolute(File("./src/Splat.Serilog/Splat.Serilog.csproj")),
+    MakeAbsolute(File("./src/Splat.SimpleInjector/Splat.SimpleInjector.csproj")),
 };
 
 var packageTestWhitelist = new[]
