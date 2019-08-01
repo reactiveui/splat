@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Splat.Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// Extension methods for the DryIoc adapter.
+    /// Extension methods for <see cref="MicrosoftDependencyResolver"/>.
     /// </summary>
     [SuppressMessage("Reliability", "CA2000", Justification = "Intentional")]
     public static class SplatMicrosoftExtensions
