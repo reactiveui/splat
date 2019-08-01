@@ -181,7 +181,6 @@ namespace Splat
     {
         public static T GetService<T>(this Splat.IReadonlyDependencyResolver resolver, string contract = null) { }
         public static System.Collections.Generic.IEnumerable<T> GetServices<T>(this Splat.IReadonlyDependencyResolver resolver, string contract = null) { }
-        public static void InitializeSplat(this Splat.IMutableDependencyResolver resolver) { }
         public static void Register<T>(this Splat.IMutableDependencyResolver resolver, System.Func<T> factory, string contract = null) { }
         public static void RegisterConstant(this Splat.IMutableDependencyResolver resolver, object value, System.Type serviceType, string contract = null) { }
         public static void RegisterConstant<T>(this Splat.IMutableDependencyResolver resolver, T value, string contract = null) { }
@@ -217,6 +216,7 @@ namespace Splat
         protected virtual void Dispose(bool isDisposing) { }
         public object GetService(System.Type serviceType, string contract = null) { }
         public System.Collections.Generic.IEnumerable<object> GetServices(System.Type serviceType, string contract = null) { }
+        public bool HasRegistration(System.Type serviceType) { }
         public void Register(System.Func<object> factory, System.Type serviceType, string contract = null) { }
         public System.IDisposable ServiceRegistrationCallback(System.Type serviceType, string contract, System.Action<System.IDisposable> callback) { }
         public void UnregisterAll(System.Type serviceType, string contract = null) { }
@@ -440,6 +440,7 @@ namespace Splat
     }
     public interface IMutableDependencyResolver
     {
+        bool HasRegistration(System.Type serviceType);
         void Register(System.Func<object> factory, System.Type serviceType, string contract = null);
         System.IDisposable ServiceRegistrationCallback(System.Type serviceType, string contract, System.Action<System.IDisposable> callback);
         void UnregisterAll(System.Type serviceType, string contract = null);
@@ -683,12 +684,15 @@ namespace Splat
     public class ModernDependencyResolver : Splat.IDependencyResolver, Splat.IMutableDependencyResolver, Splat.IReadonlyDependencyResolver, System.IDisposable
     {
         public ModernDependencyResolver() { }
-        protected ModernDependencyResolver(System.Collections.Generic.Dictionary<System.Tuple<System.Type, string>, System.Collections.Generic.List<System.Func<object>>> registry) { }
+        protected ModernDependencyResolver([System.Runtime.CompilerServices.TupleElementNamesAttribute(new string[] {
+                "serviceType",
+                "contract"})] System.Collections.Generic.Dictionary<System.ValueTuple<System.Type, string>, System.Collections.Generic.List<System.Func<object>>> registry) { }
         public void Dispose() { }
         protected virtual void Dispose(bool isDisposing) { }
         public Splat.ModernDependencyResolver Duplicate() { }
         public object GetService(System.Type serviceType, string contract = null) { }
         public System.Collections.Generic.IEnumerable<object> GetServices(System.Type serviceType, string contract = null) { }
+        public bool HasRegistration(System.Type serviceType) { }
         public void Register(System.Func<object> factory, System.Type serviceType, string contract = null) { }
         public System.IDisposable ServiceRegistrationCallback(System.Type serviceType, string contract, System.Action<System.IDisposable> callback) { }
         public void UnregisterAll(System.Type serviceType, string contract = null) { }
@@ -755,6 +759,10 @@ namespace Splat
         public static System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF> Divide(this System.Drawing.RectangleF value, float amount, Splat.RectEdge fromEdge) { }
         public static System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF> DivideWithPadding(this System.Drawing.RectangleF value, float sliceAmount, float padding, Splat.RectEdge fromEdge) { }
         public static System.Drawing.RectangleF InvertWithin(this System.Drawing.RectangleF value, System.Drawing.RectangleF containingRect) { }
+    }
+    public class static ServiceLocationInitialization
+    {
+        public static void InitializeSplat(this Splat.IMutableDependencyResolver resolver) { }
     }
     public class static SizeExtensions
     {

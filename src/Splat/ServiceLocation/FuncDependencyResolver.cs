@@ -61,6 +61,12 @@ namespace Splat
         }
 
         /// <inheritdoc />
+        public bool HasRegistration(Type serviceType)
+        {
+            return _innerGetServices(serviceType, null) != null;
+        }
+
+        /// <inheritdoc />
         public void Register(Func<object> factory, Type serviceType, string contract = null)
         {
             if (_innerRegister == null)

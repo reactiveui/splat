@@ -9,12 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.9.2" />
+    <PackageReference Include="Autofac" Version="4.9.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Splat.Autofac\Splat.Autofac.csproj" />
     <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />
+    <ProjectReference Include="..\Splat.Tests\Splat.Tests.csproj" />
   </ItemGroup>
   
   <ItemGroup>
