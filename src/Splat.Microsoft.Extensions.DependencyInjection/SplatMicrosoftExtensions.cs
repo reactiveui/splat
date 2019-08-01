@@ -4,15 +4,16 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 
-#pragma warning disable CA2000 // Dispose objects before losing scope
 
 namespace Splat.Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
     /// Extension methods for the DryIoc adapter.
     /// </summary>
+    [SuppressMessage("Reliability", "CA2000", Justification = "Intentional")]
     public static class SplatMicrosoftExtensions
     {
         /// <summary>

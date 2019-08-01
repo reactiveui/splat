@@ -20,7 +20,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
     public class MicrosoftDependencyResolver : IDependencyResolver
     {
         private const string ImmutableExceptionMessage = "This container has already been built and cannot be modified.";
-        private readonly Lazy<IDictionary<string, IServiceScope>> _serviceScopes = new Lazy<IDictionary<string, IServiceScope>>(() => new Dictionary<string, IServiceScope>());
+        private readonly IDictionary<string, IServiceScope> _serviceScopes = new Dictionary<string, IServiceScope>();
         private IServiceCollection _serviceCollection;
         private bool _isImmutable;
         private IServiceProvider _serviceProvider;
@@ -122,15 +122,13 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
 
             if (_isImmutable)
             {
-                var scopes = _serviceScopes.Value;
-
-                if (contract == null || !scopes.TryGetValue(contract, out var scope))
+                if (string.IsNullOrWhiteSpace(contract) || !_serviceScopes.TryGetValue(contract, out var scope))
                 {
                     throw new ArgumentOutOfRangeException($"The contract {contract} was not instantiated.");
                 }
 
                 scope.Dispose();
-                scopes.Remove(contract);
+                _serviceScopes.Remove(contract);
                 return;
             }
 
@@ -195,16 +193,14 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                 _serviceProvider = _serviceCollection.BuildServiceProvider();
             }
 
-            var dic = _serviceScopes.Value;
-
-            if (contract == null)
+            if (string.IsNullOrWhiteSpace(contract))
             {
                 return _serviceProvider;
             }
 
-            if (!dic.TryGetValue(contract, out var scope))
+            if (!_serviceScopes.TryGetValue(contract, out var scope))
             {
-                dic[contract] = scope = _serviceProvider.CreateScope();
+                _serviceScopes[contract] = scope = _serviceProvider.CreateScope();
             }
 
             return scope.ServiceProvider;
