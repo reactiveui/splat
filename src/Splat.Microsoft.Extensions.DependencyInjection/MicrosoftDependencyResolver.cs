@@ -164,7 +164,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                 if (dic != null)
                 {
                     dic.RemoveLastFactory(contract);
-                    if (dic.Count == 0)
+                    if (dic.IsEmpty)
                     {
                         RemoveContractService(serviceType);
                     }
@@ -208,7 +208,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
             else
             {
                 var dic = GetContractDictionary(serviceType, false);
-                if (dic != null && dic.TryRemove(contract, out var _) && dic.Count == 0)
+                if (dic != null && dic.TryRemoveContract(contract) && dic.IsEmpty)
                 {
                     RemoveContractService(serviceType);
                 }
@@ -290,8 +290,15 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
             return dic;
         }
 
-        private class ContractDictionary : ConcurrentDictionary<string, IList<Func<object>>>
+        private class ContractDictionary
         {
+            private readonly ConcurrentDictionary<string, IList<Func<object>>> _dictionary = new ConcurrentDictionary<string, IList<Func<object>>>();
+
+            public bool IsEmpty => _dictionary.Count == 0;
+
+            public bool TryRemoveContract(string contract) =>
+                _dictionary.TryRemove(contract, out var _);
+
             public Func<object> GetFactorý(string contract)
             {
                 return GetFactories(contract)
@@ -300,7 +307,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
 
             public IEnumerable<Func<object>> GetFactories(string contract)
             {
-                if (TryGetValue(contract, out var collection))
+                if (_dictionary.TryGetValue(contract, out var collection))
                 {
                     return collection;
                 }
@@ -310,17 +317,13 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
 
             public void AddFactory(string contract, Func<object> factory)
             {
-                if (!TryGetValue(contract, out var collection))
-                {
-                    this[contract] = collection = new List<Func<object>>();
-                }
-
+                var collection = _dictionary.GetOrAdd(contract, _ => new List<Func<object>>());
                 collection.Add(factory);
             }
 
             public void RemoveLastFactory(string contract)
             {
-                if (TryGetValue(contract, out var collection))
+                if (_dictionary.TryGetValue(contract, out var collection))
                 {
                     var lastIndex = collection.Count - 1;
                     if (lastIndex > 0)
@@ -328,7 +331,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                         collection.RemoveAt(lastIndex);
                         if (collection.Count == 0)
                         {
-                            TryRemove(contract, out var _);
+                            _dictionary.TryRemove(contract, out var _);
                         }
                     }
                 }
