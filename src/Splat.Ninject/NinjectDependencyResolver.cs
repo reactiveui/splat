@@ -39,7 +39,7 @@ namespace Splat.Ninject
                 : _kernel.GetAll(serviceType, contract);
 
         /// <inheritdoc />
-        public bool HasRegistration(Type serviceType)
+        public bool HasRegistration(Type serviceType, string contract = null)
         {
             return _kernel.CanResolve(serviceType);
         }

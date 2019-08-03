@@ -72,11 +72,14 @@ namespace Splat.Autofac
         }
 
         /// <inheritdoc />
-        public bool HasRegistration(Type serviceType)
+        public bool HasRegistration(Type serviceType, string contract = null)
         {
             lock (_lockObject)
             {
-                return _componentContext.IsRegistered(serviceType);
+                return _componentContext.ComponentRegistry.Registrations.Any(x => GetWhetherServiceRegistrationMatchesSearch(
+                    x.Services,
+                    serviceType,
+                    contract));
             }
         }
 
@@ -133,7 +136,7 @@ namespace Splat.Autofac
                 {
                     var componentRegistration = registrations[registrationIndex];
 
-                    var isCandidateForRemoval = GetWhetherServiceIsCandidateForRemoval(
+                    var isCandidateForRemoval = GetWhetherServiceRegistrationMatchesSearch(
                         componentRegistration.Services,
                         serviceType,
                         contract);
@@ -273,7 +276,7 @@ namespace Splat.Autofac
             }
         }
 
-        private static bool GetWhetherServiceIsCandidateForRemoval(
+        private static bool GetWhetherServiceRegistrationMatchesSearch(
             IEnumerable<Service> componentRegistrationServices,
             Type serviceType,
             string contract)

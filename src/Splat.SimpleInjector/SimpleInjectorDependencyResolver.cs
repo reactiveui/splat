@@ -38,7 +38,7 @@ namespace Splat.SimpleInjector
             _container.GetAllInstances(serviceType);
 
         /// <inheritdoc />
-        public bool HasRegistration(Type serviceType)
+        public bool HasRegistration(Type serviceType, string contract = null)
         {
             return _container.GetCurrentRegistrations().Any(x => x.ServiceType == serviceType);
         }
