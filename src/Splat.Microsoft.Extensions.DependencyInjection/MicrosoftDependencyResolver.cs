@@ -305,12 +305,17 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
 
             public IEnumerable<Func<object>> GetFactories(string contract) =>
                 _dictionary.TryGetValue(contract, out var collection)
-                ? collection
+                ? collection ?? Enumerable.Empty<Func<object>>()
                 : Enumerable.Empty<Func<object>>();
 
             public void AddFactory(string contract, Func<object> factory) =>
                 _dictionary.AddOrUpdate(contract, _ => new List<Func<object>> { factory }, (_, list) =>
                 {
+                    if (list == null)
+                    {
+                        list = new List<Func<object>>();
+                    }
+
                     list.Add(factory);
                     return list;
                 });
