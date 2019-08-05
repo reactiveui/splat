@@ -66,7 +66,7 @@ namespace Splat.Tests.ServiceLocation
         /// Test to ensure Unregister doesn't cause an IndexOutOfRangeException.
         /// </summary>
         [Fact]
-        public void UnregisterAll_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
+        public virtual void UnregisterAll_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
         {
             var resolver = GetDependencyResolver();
             var type = typeof(ILogManager);
