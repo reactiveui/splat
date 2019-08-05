@@ -299,43 +299,36 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
             public bool TryRemoveContract(string contract) =>
                 _dictionary.TryRemove(contract, out var _);
 
-            public Func<object> GetFactorý(string contract)
-            {
-                return GetFactories(contract)
+            public Func<object> GetFactory(string contract) =>
+                GetFactories(contract)
                     .LastOrDefault();
-            }
 
-            public IEnumerable<Func<object>> GetFactories(string contract)
-            {
-                if (_dictionary.TryGetValue(contract, out var collection))
+            public IEnumerable<Func<object>> GetFactories(string contract) =>
+                _dictionary.TryGetValue(contract, out var collection)
+                ? collection
+                : Enumerable.Empty<Func<object>>();
+
+            public void AddFactory(string contract, Func<object> factory) =>
+                _dictionary.AddOrUpdate(contract, _ => new List<Func<object>> { factory }, (_, list) =>
                 {
-                    return collection;
-                }
+                    list.Add(factory);
+                    return list;
+                });
 
-                return Enumerable.Empty<Func<object>>();
-            }
+            public void RemoveLastFactory(string contract) =>
+                _dictionary.AddOrUpdate(contract, default(IList<Func<object>>), (_, list) =>
+                 {
+                     var lastIndex = list.Count - 1;
+                     if (lastIndex > 0)
+                     {
+                         list.RemoveAt(lastIndex);
+                     }
 
-            public void AddFactory(string contract, Func<object> factory)
-            {
-                var collection = _dictionary.GetOrAdd(contract, _ => new List<Func<object>>());
-                collection.Add(factory);
-            }
-
-            public void RemoveLastFactory(string contract)
-            {
-                if (_dictionary.TryGetValue(contract, out var collection))
-                {
-                    var lastIndex = collection.Count - 1;
-                    if (lastIndex > 0)
-                    {
-                        collection.RemoveAt(lastIndex);
-                        if (collection.Count == 0)
-                        {
-                            _dictionary.TryRemove(contract, out var _);
-                        }
-                    }
-                }
-            }
+                     // TODO if list empty remove contract entirely
+                     // need to find how to atomically update or remove
+                     // https://github.com/dotnet/corefx/issues/24246
+                     return list;
+                 });
         }
 
         private class ContractDictionary<T> : ContractDictionary
