@@ -355,8 +355,11 @@ src/ReactiveUI.Events*/Events_*.cs
 # macOS
 .DS_Store
 
-src/*.Tests/**/ApiApprovalTests*.received.txt
+# Jetbrains
 .idea/
+
+# API Approval
+src/*.Tests/API/*.received.txt
 
 # Fody Weavers (for tests)
 src/Tools/
