@@ -43,16 +43,8 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         /// Initializes a new instance of the <see cref="MicrosoftDependencyResolver" /> class with a configured service Provider.
         /// </summary>
         /// <param name="serviceProvider">A ready to use service provider.</param>
-        public MicrosoftDependencyResolver(IServiceProvider serviceProvider)
-        {
-            if (serviceProvider == null)
-            {
-                throw new ArgumentNullException(nameof(serviceProvider));
-            }
-
-            _serviceProvider = serviceProvider;
-            _isImmutable = true;
-        }
+        public MicrosoftDependencyResolver(IServiceProvider serviceProvider) =>
+            UpdateContainer(serviceProvider);
 
         /// <summary>
         /// Gets the internal Microsoft conainer,
@@ -69,6 +61,22 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
 
                 return _serviceProvider;
             }
+        }
+
+        /// <summary>
+        /// Updates this instance with a configured service Provider.
+        /// </summary>
+        /// <param name="serviceProvider">A ready to use service provider.</param>
+        public void UpdateContainer(IServiceProvider serviceProvider)
+        {
+            if (serviceProvider == null)
+            {
+                throw new ArgumentNullException(nameof(serviceProvider));
+            }
+
+            _serviceCollection = null;
+            _serviceProvider = serviceProvider;
+            _isImmutable = true;
         }
 
         /// <inheritdoc />
@@ -322,18 +330,18 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
 
             public void RemoveLastFactory(string contract) =>
                 _dictionary.AddOrUpdate(contract, default(IList<Func<object>>), (_, list) =>
-                 {
-                     var lastIndex = list.Count - 1;
-                     if (lastIndex > 0)
-                     {
-                         list.RemoveAt(lastIndex);
-                     }
+                {
+                    var lastIndex = list.Count - 1;
+                    if (lastIndex > 0)
+                    {
+                        list.RemoveAt(lastIndex);
+                    }
 
-                     // TODO if list empty remove contract entirely
-                     // need to find how to atomically update or remove
-                     // https://github.com/dotnet/corefx/issues/24246
-                     return list;
-                 });
+                    // TODO if list empty remove contract entirely
+                    // need to find how to atomically update or remove
+                    // https://github.com/dotnet/corefx/issues/24246
+                    return list;
+                });
         }
 
         private class ContractDictionary<T> : ContractDictionary
