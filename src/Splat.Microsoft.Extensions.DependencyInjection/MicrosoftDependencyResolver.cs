@@ -23,7 +23,6 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
     [SuppressMessage("Globalization", "CA1303", Justification = "Unnecessary warning")]
     public class MicrosoftDependencyResolver : IDependencyResolver
     {
-        private const string MutableExceptionMessage = "The container has not yet been built.";
         private const string ImmutableExceptionMessage = "This container has already been built and cannot be modified.";
         private static readonly Type _dictionaryType = typeof(ContractDictionary<>);
         private readonly object _syncLock = new object();
@@ -55,18 +54,15 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         {
             get
             {
-                if (_serviceProvider == null)
+                lock (_syncLock)
                 {
-                    lock (_syncLock)
+                    if (_serviceProvider == null)
                     {
-                        if (_serviceProvider == null)
-                        {
-                            _serviceProvider = _serviceCollection.BuildServiceProvider();
-                        }
+                        _serviceProvider = _serviceCollection.BuildServiceProvider();
                     }
-                }
 
-                return _serviceProvider;
+                    return _serviceProvider;
+                }
             }
         }
 
