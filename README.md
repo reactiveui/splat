@@ -130,7 +130,7 @@ Locator.CurrentMutable.RegisterLazySingleton(() => new LazyToaster(), typeof(ITo
 ### Dependency Resolver Packages
 For each of the provided dependency resolver adapters, there is a specific package that allows the service locator to be implemented by another ioc container.
 
-**Note:** When you are overriding Splat's default behavior, you have to be sure to [initialize ReactiveUI](https://reactiveui.net/docs/handbook/dependency-inversion/custom-dependency-inversion#set-the-locator.current-to-your-implementation) before your container finalizes.
+**Note:** When using ReactiveUI and overriding Splat's default behavior, you have to be sure to [initialize ReactiveUI](https://reactiveui.net/docs/handbook/dependency-inversion/custom-dependency-inversion#set-the-locator.current-to-your-implementation) before your container finalizes.
 
 Please note: If you are adjusting behaviours of Splat by working with your custom container directly. Please read the relevant projects documentation on
 REPLACING the registration. If the container supports appending\ multiple registrations you may get undesired behaviours, such as the wrong logger factory
