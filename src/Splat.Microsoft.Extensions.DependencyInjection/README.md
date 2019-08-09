@@ -1,10 +1,10 @@
 # Splat.Microsoft.Extensions.DependencyInjection
 
-## Using Autofac
+## Using Microsoft.Extensions.DependencyInjection
 
 `Splat.Microsoft.Extensions.DependencyInjection` is an adapter for `IMutableDependencyResolver`.
 It allows you to register your application dependencies in a MS DI `Container`.  You can then use the container as Splat's internal dependency resolver.
-You can also choose to have the conainer controlled externally, for example using a [Generic Host](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host?view=aspnetcore-2.2#configureappconfiguration).
+You can also choose to have the container controlled externally, for example using a [Generic Host](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host?view=aspnetcore-2.2#configureappconfiguration).
 
 ### Register the Container
 
@@ -88,14 +88,14 @@ First, call:
 
 ```cs
 IServiceCollection services = ...
-services.UseAMicrosoftDependencyResolver();
+services.UseMicrosoftDependencyResolver();
 ```
 
 then, if you wish to have the MS DI container controlled by an external service other than Splat, re-register it as above (using Generic Host), or as follows:
 
 ```cs
 IServiceProvider container = services.BuildServiceProvider();
-container.UseAMicrosoftDependencyResolver();
+container.UseMicrosoftDependencyResolver();
 ```
 
 ### Use the Locator
