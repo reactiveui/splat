@@ -26,8 +26,22 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         /// Initializes an instance of <see cref="MicrosoftDependencyResolver"/> that overrides the default <see cref="Locator"/>
         /// with a built <see cref="IServiceProvider"/>.
         /// </summary>
+        /// <remarks>
+        /// If there is already a <see cref="MicrosoftDependencyResolver"/> serving as the
+        /// <see cref="Locator.Current"/>, it'll instead update it to use the specified
+        /// <paramref name="serviceProvider"/>.
+        /// </remarks>
         /// <param name="serviceProvider">The <see cref="IServiceProvider"/>.</param>
-        public static void UseMicrosoftDependencyResolver(this IServiceProvider serviceProvider) =>
-            Locator.SetLocator(new MicrosoftDependencyResolver(serviceProvider));
+        public static void UseMicrosoftDependencyResolver(this IServiceProvider serviceProvider)
+        {
+            if (Locator.Current is MicrosoftDependencyResolver resolver)
+            {
+                resolver.UpdateContainer(serviceProvider);
+            }
+            else
+            {
+                Locator.SetLocator(new MicrosoftDependencyResolver(serviceProvider));
+            }
+        }
     }
 }
