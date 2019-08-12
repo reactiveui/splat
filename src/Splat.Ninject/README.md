@@ -2,7 +2,7 @@
 
 ## Using Ninject
 
-Splay.Ninject is an adapter for `IMutableDependencyResolver`.  It allows you to register your application dependencies in a Ninject `IKernel`.  You can then use the container as Splat's internal dependency resolver.
+Splat.Ninject is an adapter for `IMutableDependencyResolver`.  It allows you to register your application dependencies in a Ninject `IKernel`.  You can then use the container as Splat's internal dependency resolver.
 
 ### Register the Kernel
 
@@ -22,4 +22,4 @@ container.UseNinjectDependencyResolver();
 
 ### Use the Locator
 
-Now calls to `Locator.Current` will resolve to the underlying Ninject container.  In the case of ReactiveUI, platform registrations will now happen in the Ninject container.  So when the platform calls to resolve dependencies, the will resolve from the Ninject container.
+Now, when registering or resolving services using Locator.Current, or via ReactiveUI, they will be directed to the Ninject DI container.

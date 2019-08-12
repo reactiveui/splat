@@ -100,4 +100,4 @@ container.UseMicrosoftDependencyResolver();
 
 ### Use the Locator
 
-Now calls to `Locator.Current` will resolve to the underlying Microsoft DI container.  In the case of ReactiveUI, platform registrations will now happen in the MS DI container.  So when the platform calls to resolve dependencies, the will resolve from the MS DI container.
+Now, when registering or resolving services using Locator.Current, or via ReactiveUI, they will be directed to the Microsoft DI container.
