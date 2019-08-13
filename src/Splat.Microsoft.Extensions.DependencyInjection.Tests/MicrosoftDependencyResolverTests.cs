@@ -8,6 +8,7 @@ namespace Splat.Tests.ServiceLocation
 {
     /// <summary>
     /// Unit Tests for the Modern Dependency Resolver.
+    /// The tests from here should really be brought down to the base test and be tested in all DIs.
     /// </summary>
     public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTests<MicrosoftDependencyResolver>
     {
@@ -30,6 +31,18 @@ namespace Splat.Tests.ServiceLocation
 
             value = resolver.GetService(null, contract);
             Assert.Equal(bar, value);
+        }
+
+        /// <summary>
+        /// Ensures <see cref="IReadonlyDependencyResolver.GetServices(Type, string)"/> never returns null.
+        /// </summary>
+        [Fact]
+        public void GetServices_ShouldNeverReturnNull()
+        {
+            var resolver = GetDependencyResolver();
+
+            Assert.NotNull(resolver.GetServices<string>());
+            Assert.NotNull(resolver.GetServices<string>("Landscape"));
         }
 
         /// <inheritdoc />
