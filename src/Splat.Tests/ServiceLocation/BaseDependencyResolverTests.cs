@@ -95,7 +95,7 @@ namespace Splat.Tests.ServiceLocation
         /// Ensures <see cref="IReadonlyDependencyResolver.GetServices(Type, string)"/> never returns null.
         /// </summary>
         [Fact]
-        public void GetServices_ShouldNeverReturnNull()
+        public void GetServices_Should_Never_Return_Null()
         {
             var resolver = GetDependencyResolver();
 
