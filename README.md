@@ -257,7 +257,7 @@ First configure Serilog. For guidance see https://github.com/serilog/serilog/wik
 using Splat.Serilog;
 
 // Then in your service locator initialisation
-locator.CurrentMutable.UseSerilogWithWrappingFullLogger();
+Locator.CurrentMutable.UseSerilogFullLogger()
 ```
 
 Thanks to @joelweiss for first creating this logger.
