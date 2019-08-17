@@ -115,7 +115,8 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                 var dic = GetContractDictionary(serviceType, false);
                 services = dic?
                     .GetFactories(contract)
-                    .Select(f => f());
+                    .Select(f => f())
+                    ?? Enumerable.Empty<object>();
             }
 
             return services;

@@ -140,6 +140,7 @@ being used.
 |---------|-------|-------|
 | [Splat.Autofac][SplatAutofacNuGet] | [![SplatAutofacBadge]][SplatAutofacNuGet] | [Setup Autofac][SplatAutofacReadme]
 | [Splat.DryIoc][SplatDryIocNuGet] | [![SplatDryIocBadge]][SplatDryIocNuGet] | [Setup DryIoc][SplatDryIocReadme]
+| [Splat.Microsoft.Extensions.DependencyInjection][SplatMicrosoftNuGet] | [![SplatMicrosoftBadge]][SplatMicrosoftNuGet] | [Setup Microsoft DI][SplatMicrosoftReadme]
 | [Splat.Ninject][SplatNinjectNuGet] | [![SplatNinjectBadge]][SplatNinjectNuGet] | [Setup Ninject][SplatNinjectReadme]
 | [Splat.SimpleInjector][SplatSimpleInjectorNuGet] | [![SplatSimpleInjectorBadge]][SplatSimpleInjectorNuGet] | |
 
@@ -149,6 +150,9 @@ being used.
 [SplatDryIocNuGet]: https://www.nuget.org/packages/Splat.DryIoc/
 [SplatDryIocBadge]: https://img.shields.io/nuget/v/Splat.DryIoc.svg
 [SplatDryIocReadme]: ./src/Splat.DryIoc/README.md
+[SplatMicrosoftNuGet]: https://www.nuget.org/packages/Splat.Microsoft.Extensions.DependencyInjection/
+[SplatMicrosoftBadge]: https://img.shields.io/nuget/v/Splat.Microsoft.Extensions.DependencyInjection.svg
+[SplatMicrosoftReadme]: ./src/Splat.Microsoft.Extensions.DependencyInjection/README.md
 [SplatNinjectNuGet]: https://www.nuget.org/packages/Splat.Ninject/
 [SplatNinjectBadge]: https://img.shields.io/nuget/v/Splat.Ninject.svg
 [SplatNinjectReadme]: ./src/Splat.Ninject/README.md
@@ -253,7 +257,7 @@ First configure Serilog. For guidance see https://github.com/serilog/serilog/wik
 using Splat.Serilog;
 
 // Then in your service locator initialisation
-locator.CurrentMutable.UseSerilogWithWrappingFullLogger();
+Locator.CurrentMutable.UseSerilogFullLogger()
 ```
 
 Thanks to @joelweiss for first creating this logger.

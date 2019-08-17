@@ -13,6 +13,8 @@ namespace Splat.Tests.ServiceLocation
     {
         /// <summary>
         /// Test to ensure container allows registration with null service type.
+        /// Should really be brought down to the <see cref="BaseDependencyResolverTests{T}"/>,
+        /// it fails for some of the DIs.
         /// </summary>
         [Fact]
         public void Can_Register_And_Resolve_Null_Types()
