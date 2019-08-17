@@ -22,4 +22,4 @@ container.UseDryIocDependencyResolver();
 
 ### Use the Locator
 
-Now calls to `Locator.Current` will resolve to the underlying DryIoc container.  In the case of ReactiveUI, platform registrations will now happen in the DryIoc container.  So when the platform calls to resolve dependencies, the will resolve from the DryIoc container.
+Now, when registering or resolving services using Locator.Current, or via ReactiveUI, they will be directed to the DryIoc DI container.
