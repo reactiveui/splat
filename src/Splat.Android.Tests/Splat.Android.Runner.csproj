@@ -71,7 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms">
-      <Version>4.1.0.673156</Version>
+      <Version>4.2.0.709249</Version>
     </PackageReference>
     <PackageReference Include="xunit.runner.devices">
       <Version>2.5.25</Version>
