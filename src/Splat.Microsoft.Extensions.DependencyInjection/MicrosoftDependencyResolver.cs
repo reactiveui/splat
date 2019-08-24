@@ -250,7 +250,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         }
 
         /// <inheritdoc/>
-        public virtual bool HasRegistration(Type serviceType)
+        public virtual bool HasRegistration(Type serviceType, string contract = null)
         {
             if (serviceType == null)
             {
@@ -262,8 +262,14 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                 return _serviceCollection.Any(sd => sd.ServiceType == serviceType);
             }
 
-            var service = _serviceProvider.GetService(serviceType);
-            return service != null;
+            if (contract == null)
+            {
+                var service = _serviceProvider.GetService(serviceType);
+                return service != null;
+            }
+
+            var dic = GetContractDictionary(serviceType, false);
+            return dic?.IsEmpty == false;
         }
 
         /// <inheritdoc />
