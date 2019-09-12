@@ -50,10 +50,10 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public bool HasRegistration(Type serviceType)
+        public bool HasRegistration(Type serviceType, string contract = null)
         {
-            var pair = GetKey(serviceType);
-            return _registry.ContainsKey(pair);
+            var pair = GetKey(serviceType, contract);
+            return _registry.TryGetValue(pair, out var registrations) && registrations.Count > 0;
         }
 
         /// <inheritdoc />

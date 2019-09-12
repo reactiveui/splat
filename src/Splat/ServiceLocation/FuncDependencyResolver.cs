@@ -61,9 +61,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public bool HasRegistration(Type serviceType)
+        public bool HasRegistration(Type serviceType, string contract = null)
         {
-            return _innerGetServices(serviceType, null) != null;
+            return _innerGetServices(serviceType, contract) != null;
         }
 
         /// <inheritdoc />

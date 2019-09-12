@@ -72,11 +72,14 @@ namespace Splat.Autofac
         }
 
         /// <inheritdoc />
-        public bool HasRegistration(Type serviceType)
+        public bool HasRegistration(Type serviceType, string contract = null)
         {
             lock (_lockObject)
             {
-                return _componentContext.IsRegistered(serviceType);
+                return _componentContext.ComponentRegistry.Registrations.Any(x => GetWhetherServiceRegistrationMatchesSearch(
+                    x.Services,
+                    serviceType,
+                    contract));
             }
         }
 
@@ -133,7 +136,7 @@ namespace Splat.Autofac
                 {
                     var componentRegistration = registrations[registrationIndex];
 
-                    var isCandidateForRemoval = GetWhetherServiceIsCandidateForRemoval(
+                    var isCandidateForRemoval = GetWhetherServiceRegistrationMatchesSearch(
                         componentRegistration.Services,
                         serviceType,
                         contract);
@@ -273,19 +276,19 @@ namespace Splat.Autofac
             }
         }
 
-        private static bool GetWhetherServiceIsCandidateForRemoval(
+        private static bool GetWhetherServiceRegistrationMatchesSearch(
             IEnumerable<Service> componentRegistrationServices,
             Type serviceType,
             string contract)
         {
             foreach (var componentRegistrationService in componentRegistrationServices)
             {
-                if (!(componentRegistrationService is TypedService typedService))
+                if (!(componentRegistrationService is IServiceWithType keyedService))
                 {
                     continue;
                 }
 
-                if (typedService.ServiceType != serviceType)
+                if (keyedService.ServiceType != serviceType)
                 {
                     continue;
                 }
@@ -302,7 +305,7 @@ namespace Splat.Autofac
                     return true;
                 }
 
-                if (!HasMatchingContract(typedService, contract))
+                if (!HasMatchingContract(componentRegistrationService, contract))
                 {
                     continue;
                 }
@@ -316,13 +319,22 @@ namespace Splat.Autofac
 
         private static bool HasMatchingContract(Service service, string contract)
         {
-            // you can't directly access the name key. shame.
-            return service.Description.StartsWith($"({contract})", StringComparison.Ordinal);
+            if (!(service is KeyedService keyedService))
+            {
+                return false;
+            }
+
+            if (!(keyedService.ServiceKey is string stringServiceKey))
+            {
+                return false;
+            }
+
+            return stringServiceKey.Equals(contract, StringComparison.Ordinal);
         }
 
         private static bool HasNoContract(Service service)
         {
-            return !service.Description.StartsWith("(", StringComparison.Ordinal);
+            return !(service is KeyedService);
         }
 
         private void RemoveAndRebuild(
