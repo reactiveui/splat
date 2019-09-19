@@ -10,7 +10,7 @@ using Splat;
 namespace Splat
 {
     /// <summary>
-    /// https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.hosting.ihostbuilder?view=aspnetcore-2.2
+    /// https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.hosting.ihostbuilder?view=aspnetcore-2.2 .
     /// </summary>
     public interface IApplicationBuilder
     {
