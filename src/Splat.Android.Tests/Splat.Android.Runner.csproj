@@ -71,10 +71,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms">
-      <Version>4.2.0.778463</Version>
+      <Version>4.*</Version>
     </PackageReference>
     <PackageReference Include="xunit.runner.devices">
-      <Version>2.5.25</Version>
+      <Version>2.*</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

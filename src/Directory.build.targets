@@ -1,6 +1,7 @@
 <Project>
   <PropertyGroup>  
     <Product>$(AssemblyName) ($(TargetFramework))</Product>
+    <AndroidUseIntermediateDesignerFile>true</AndroidUseIntermediateDesignerFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(TargetFramework.StartsWith('net4'))">

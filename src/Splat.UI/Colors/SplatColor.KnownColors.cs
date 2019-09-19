@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// Copyright (c) 2019 .NET Foundation and Contributors. All rights reserved.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
 
 namespace Splat
 {
@@ -397,7 +396,7 @@ namespace Splat
         public static SplatColor LightYellow => KnownColors.FromKnownColor(KnownColor.LightYellow);
 
         /// <summary>
-        /// Gets a color which is lime
+        /// Gets a color which is lime.
         /// </summary>
         public static SplatColor Lime => KnownColors.FromKnownColor(KnownColor.Lime);
 
@@ -432,7 +431,7 @@ namespace Splat
         public static SplatColor MediumBlue => KnownColors.FromKnownColor(KnownColor.MediumBlue);
 
         /// <summary>
-        /// Gets a color which is medium orchird.
+        /// Gets a color which is medium orchid.
         /// </summary>
         public static SplatColor MediumOrchid => KnownColors.FromKnownColor(KnownColor.MediumOrchid);
 
@@ -537,7 +536,7 @@ namespace Splat
         public static SplatColor PaleGreen => KnownColors.FromKnownColor(KnownColor.PaleGreen);
 
         /// <summary>
-        /// Gets a color which is pale turqoise.
+        /// Gets a color which is pale turquoise.
         /// </summary>
         public static SplatColor PaleTurquoise => KnownColors.FromKnownColor(KnownColor.PaleTurquoise);
 
@@ -567,7 +566,7 @@ namespace Splat
         public static SplatColor Pink => KnownColors.FromKnownColor(KnownColor.Pink);
 
         /// <summary>
-        /// Gets a color which is plum
+        /// Gets a color which is plum.
         /// </summary>
         public static SplatColor Plum => KnownColors.FromKnownColor(KnownColor.Plum);
 
