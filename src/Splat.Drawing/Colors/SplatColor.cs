@@ -265,6 +265,7 @@ namespace Splat
         /// </summary>
         /// <param name="name">The name of the color to generate.</param>
         /// <returns>The generated SplatValue.</returns>
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Logs message but a non-failing operation.")]
         public static SplatColor FromName(string name)
         {
             try
@@ -272,10 +273,12 @@ namespace Splat
                 KnownColor kc = (KnownColor)Enum.Parse(typeof(KnownColor), name, true);
                 return FromKnownColor(kc);
             }
-            catch
+            catch (Exception ex)
             {
+                LogHost.Default.Debug(ex, "Unable to parse the known colour name.");
+
                 // This is what it returns!
-                SplatColor d = FromArgb(0, 0, 0, 0);
+                var d = FromArgb(0, 0, 0, 0);
                 d._name = name;
                 d._state |= (short)ColorType.Named;
                 return d;

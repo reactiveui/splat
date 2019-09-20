@@ -10,7 +10,7 @@ namespace Splat.Common.Test
     /// Represents a view bound to a view model.
     /// </summary>
     /// <typeparam name="T">The view model type.</typeparam>
-    /// <seealso cref="Splat.Common.Testing.IViewFor" />
+    /// <seealso cref="Splat.Common.Test.IViewFor" />
     public interface IViewFor<T> : IViewFor
     {
         /// <summary>
@@ -22,7 +22,7 @@ namespace Splat.Common.Test
     /// <summary>
     /// Represents a view bound to a view model.
     /// </summary>
-    /// <seealso cref="Splat.Common.Testing.IViewFor" />
+    /// <seealso cref="Splat.Common.Test.IViewFor" />
     public interface IViewFor
     {
         /// <summary>

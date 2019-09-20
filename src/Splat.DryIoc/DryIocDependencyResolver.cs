@@ -63,6 +63,11 @@ namespace Splat.DryIoc
         /// <inheritdoc />
         public virtual void Register(Func<object> factory, Type serviceType, string contract = null)
         {
+            if (factory is null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
             if (string.IsNullOrEmpty(contract))
             {
                 _container.UseInstance(serviceType, factory(), IfAlreadyRegistered.AppendNewImplementation);

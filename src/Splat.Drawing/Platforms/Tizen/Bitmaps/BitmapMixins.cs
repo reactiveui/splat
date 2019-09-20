@@ -29,6 +29,11 @@ namespace Splat
         /// <returns>A <see cref="BitmapFrame"/> bitmap.</returns>
         public static BitmapFrame ToNative(this IBitmap value)
         {
+            if (value is null)
+            {
+                throw new System.ArgumentNullException(nameof(value));
+            }
+
             return ((TizenBitmap)value).Inner;
         }
     }

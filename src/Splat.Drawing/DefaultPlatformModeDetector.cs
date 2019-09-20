@@ -21,6 +21,7 @@ namespace Splat
     /// </summary>
     public class DefaultPlatformModeDetector : IPlatformModeDetector
     {
+#if !NETFX_CORE
         private const string XamlDesignPropertiesType = "System.ComponentModel.DesignerProperties, System.Windows, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e";
         private const string XamlControlBorderType = "System.Windows.Controls.Border, System.Windows, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e";
         private const string XamlDesignPropertiesDesignModeMethodName = "GetIsInDesignMode";
@@ -31,6 +32,7 @@ namespace Splat
         private const string WinFormsDesignerPropertiesDesignModeMethod = "DesignModeEnabled";
 
         private static bool? _cachedInDesignModeResult;
+#endif
 
         /// <inheritdoc />
         public bool? InDesignMode()

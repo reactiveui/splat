@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Splat
@@ -12,9 +13,10 @@ namespace Splat
     /// <summary>
     /// Contains the default mode detector to detect if we are currently in a unit test.
     /// </summary>
-    public class DefaultModeDetector : IModeDetector
+    public class DefaultModeDetector : IModeDetector, IEnableLogger
     {
         /// <inheritdoc />
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Logged for user.")]
         public bool? InUnitTestRunner()
         {
             var testAssemblies = new[]
@@ -34,8 +36,9 @@ namespace Splat
             {
                 return SearchForAssembly(testAssemblies);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                this.Log().Debug(e, "Unable to find unit test runner value");
                 return null;
             }
         }

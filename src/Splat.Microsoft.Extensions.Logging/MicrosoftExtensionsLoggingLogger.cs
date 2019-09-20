@@ -62,6 +62,11 @@ namespace Splat.Microsoft.Extensions.Logging
         /// <inheritdoc />
         public void Write(string message, Type type, LogLevel logLevel)
         {
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
             using (_inner.BeginScope(type.ToString()))
             {
                 _inner.Log(MsLoggingHelpers.Splat2MsLogDictionary[logLevel], message);
@@ -71,6 +76,11 @@ namespace Splat.Microsoft.Extensions.Logging
         /// <inheritdoc />
         public void Write(Exception exception, string message, Type type, LogLevel logLevel)
         {
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
             using (_inner.BeginScope(type.ToString()))
             {
                 _inner.Log(MsLoggingHelpers.Splat2MsLogDictionary[logLevel], exception, message);

@@ -4,6 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -25,6 +26,8 @@ namespace Splat
     public class PlatformBitmapLoader : IBitmapLoader
     {
         /// <inheritdoc />
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Logs message but a non-failing operation.")]
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Dispose handled by user.")]
         public Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
             var data = NSData.FromStream(sourceStream);
@@ -45,6 +48,7 @@ namespace Splat
                 }
                 catch (Exception ex)
                 {
+                    LogHost.Default.Debug(ex, "Unable to parse the known colour name.");
                     tcs.TrySetException(ex);
                 }
             });
@@ -55,6 +59,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Logs message but a non-failing operation.")]
         public Task<IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
         {
             var tcs = new TaskCompletionSource<IBitmap>();
@@ -74,6 +79,7 @@ namespace Splat
                 }
                 catch (Exception ex)
                 {
+                    LogHost.Default.Debug(ex, "Unable to parse the known colour name.");
                     tcs.TrySetException(ex);
                 }
             });

@@ -37,6 +37,7 @@ namespace Splat
 
         /// <inheritdoc />
         [SuppressMessage("Globalization", "CA1307: Use IFormatProvider", Justification = "string.Replace does not have a IFormatProvider on all .NET platforms")]
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "WriteableBitmapImageBitMap will handle of disposing.")]
         public async Task Save(CompressedBitmapFormat format, float quality, Stream target)
         {
             string installedFolderImageSourceUri = _inner.UriSource.OriginalString.Replace("ms-appx:/", string.Empty);

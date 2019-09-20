@@ -1,4 +1,3 @@
-[assembly: System.Resources.NeutralResourcesLanguageAttribute("en-US")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleToAttribute("Splat.Tests")]
 [assembly: System.Runtime.Versioning.TargetFrameworkAttribute(".NETStandard,Version=v2.0", FrameworkDisplayName="")]
 namespace Splat
@@ -126,22 +125,6 @@ namespace Splat
         public void Write([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
         public void Write(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string messageFormat, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
     }
-    public class static BitmapLoader
-    {
-        public static Splat.IBitmapLoader Current { get; set; }
-    }
-    public class BitmapLoaderException : System.Exception
-    {
-        public BitmapLoaderException() { }
-        public BitmapLoaderException(string message) { }
-        public BitmapLoaderException(string message, System.Exception innerException) { }
-        protected BitmapLoaderException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
-    }
-    public enum CompressedBitmapFormat
-    {
-        Png = 0,
-        Jpeg = 1,
-    }
     public class ConsoleLogger : Splat.ILogger
     {
         public ConsoleLogger() { }
@@ -165,6 +148,11 @@ namespace Splat
     {
         public DefaultLogManager(Splat.IReadonlyDependencyResolver dependencyResolver = null) { }
         public Splat.IFullLogger GetLogger(System.Type type) { }
+    }
+    public class DefaultModeDetector : Splat.IEnableLogger, Splat.IModeDetector
+    {
+        public DefaultModeDetector() { }
+        public System.Nullable<bool> InUnitTestRunner() { }
     }
     public class static DependencyResolverMixins
     {
@@ -327,18 +315,6 @@ namespace Splat
         void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9);
         void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>([System.ComponentModel.LocalizableAttribute(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10);
     }
-    public interface IBitmap : System.IDisposable
-    {
-        float Height { get; }
-        float Width { get; }
-        System.Threading.Tasks.Task Save(Splat.CompressedBitmapFormat format, float quality, System.IO.Stream target);
-    }
-    public interface IBitmapLoader
-    {
-        Splat.IBitmap Create(float width, float height);
-        System.Threading.Tasks.Task<Splat.IBitmap> Load(System.IO.Stream sourceStream, System.Nullable<float> desiredWidth, System.Nullable<float> desiredHeight);
-        System.Threading.Tasks.Task<Splat.IBitmap> LoadFromResource(string source, System.Nullable<float> desiredWidth, System.Nullable<float> desiredHeight);
-    }
     public interface IDependencyResolver : Splat.IMutableDependencyResolver, Splat.IReadonlyDependencyResolver, System.IDisposable { }
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
     public interface IEnableLogger { }
@@ -424,7 +400,6 @@ namespace Splat
     }
     public interface IModeDetector
     {
-        System.Nullable<bool> InDesignMode();
         System.Nullable<bool> InUnitTestRunner();
     }
     public interface IMutableDependencyResolver
@@ -439,183 +414,6 @@ namespace Splat
     {
         object GetService(System.Type serviceType, string contract = null);
         System.Collections.Generic.IEnumerable<object> GetServices(System.Type serviceType, string contract = null);
-    }
-    public enum KnownColor
-    {
-        ActiveBorder = 1,
-        ActiveCaption = 2,
-        ActiveCaptionText = 3,
-        AppWorkspace = 4,
-        Control = 5,
-        ControlDark = 6,
-        ControlDarkDark = 7,
-        ControlLight = 8,
-        ControlLightLight = 9,
-        ControlText = 10,
-        Desktop = 11,
-        GrayText = 12,
-        Highlight = 13,
-        HighlightText = 14,
-        HotTrack = 15,
-        InactiveBorder = 16,
-        InactiveCaption = 17,
-        InactiveCaptionText = 18,
-        Info = 19,
-        InfoText = 20,
-        Menu = 21,
-        MenuText = 22,
-        ScrollBar = 23,
-        Window = 24,
-        WindowFrame = 25,
-        WindowText = 26,
-        Transparent = 27,
-        AliceBlue = 28,
-        AntiqueWhite = 29,
-        Aqua = 30,
-        Aquamarine = 31,
-        Azure = 32,
-        Beige = 33,
-        Bisque = 34,
-        Black = 35,
-        BlanchedAlmond = 36,
-        Blue = 37,
-        BlueViolet = 38,
-        Brown = 39,
-        BurlyWood = 40,
-        CadetBlue = 41,
-        Chartreuse = 42,
-        Chocolate = 43,
-        Coral = 44,
-        CornflowerBlue = 45,
-        Cornsilk = 46,
-        Crimson = 47,
-        Cyan = 48,
-        DarkBlue = 49,
-        DarkCyan = 50,
-        DarkGoldenrod = 51,
-        DarkGray = 52,
-        DarkGreen = 53,
-        DarkKhaki = 54,
-        DarkMagenta = 55,
-        DarkOliveGreen = 56,
-        DarkOrange = 57,
-        DarkOrchid = 58,
-        DarkRed = 59,
-        DarkSalmon = 60,
-        DarkSeaGreen = 61,
-        DarkSlateBlue = 62,
-        DarkSlateGray = 63,
-        DarkTurquoise = 64,
-        DarkViolet = 65,
-        DeepPink = 66,
-        DeepSkyBlue = 67,
-        DimGray = 68,
-        DodgerBlue = 69,
-        Firebrick = 70,
-        FloralWhite = 71,
-        ForestGreen = 72,
-        Fuchsia = 73,
-        Gainsboro = 74,
-        GhostWhite = 75,
-        Gold = 76,
-        Goldenrod = 77,
-        Gray = 78,
-        Green = 79,
-        GreenYellow = 80,
-        Honeydew = 81,
-        HotPink = 82,
-        IndianRed = 83,
-        Indigo = 84,
-        Ivory = 85,
-        Khaki = 86,
-        Lavender = 87,
-        LavenderBlush = 88,
-        LawnGreen = 89,
-        LemonChiffon = 90,
-        LightBlue = 91,
-        LightCoral = 92,
-        LightCyan = 93,
-        LightGoldenrodYellow = 94,
-        LightGray = 95,
-        LightGreen = 96,
-        LightPink = 97,
-        LightSalmon = 98,
-        LightSeaGreen = 99,
-        LightSkyBlue = 100,
-        LightSlateGray = 101,
-        LightSteelBlue = 102,
-        LightYellow = 103,
-        Lime = 104,
-        LimeGreen = 105,
-        Linen = 106,
-        Magenta = 107,
-        Maroon = 108,
-        MediumAquamarine = 109,
-        MediumBlue = 110,
-        MediumOrchid = 111,
-        MediumPurple = 112,
-        MediumSeaGreen = 113,
-        MediumSlateBlue = 114,
-        MediumSpringGreen = 115,
-        MediumTurquoise = 116,
-        MediumVioletRed = 117,
-        MidnightBlue = 118,
-        MintCream = 119,
-        MistyRose = 120,
-        Moccasin = 121,
-        NavajoWhite = 122,
-        Navy = 123,
-        OldLace = 124,
-        Olive = 125,
-        OliveDrab = 126,
-        Orange = 127,
-        OrangeRed = 128,
-        Orchid = 129,
-        PaleGoldenrod = 130,
-        PaleGreen = 131,
-        PaleTurquoise = 132,
-        PaleVioletRed = 133,
-        PapayaWhip = 134,
-        PeachPuff = 135,
-        Peru = 136,
-        Pink = 137,
-        Plum = 138,
-        PowderBlue = 139,
-        Purple = 140,
-        Red = 141,
-        RosyBrown = 142,
-        RoyalBlue = 143,
-        SaddleBrown = 144,
-        Salmon = 145,
-        SandyBrown = 146,
-        SeaGreen = 147,
-        SeaShell = 148,
-        Sienna = 149,
-        Silver = 150,
-        SkyBlue = 151,
-        SlateBlue = 152,
-        SlateGray = 153,
-        Snow = 154,
-        SpringGreen = 155,
-        SteelBlue = 156,
-        Tan = 157,
-        Teal = 158,
-        Thistle = 159,
-        Tomato = 160,
-        Turquoise = 161,
-        Violet = 162,
-        Wheat = 163,
-        White = 164,
-        WhiteSmoke = 165,
-        Yellow = 166,
-        YellowGreen = 167,
-        ButtonFace = 168,
-        ButtonHighlight = 169,
-        ButtonShadow = 170,
-        GradientActiveCaption = 171,
-        GradientInactiveCaption = 172,
-        MenuBar = 173,
-        MenuHighlight = 174,
     }
     public class static Locator
     {
@@ -666,7 +464,6 @@ namespace Splat
     }
     public class static ModeDetector
     {
-        public static bool InDesignMode() { }
         public static bool InUnitTestRunner() { }
         public static void OverrideModeDetector(Splat.IModeDetector modeDetector) { }
     }
@@ -732,37 +529,6 @@ namespace Splat
     {
         public static System.Drawing.SizeF ScaledBy(this System.Drawing.SizeF value, float factor) { }
         public static bool WithinEpsilonOf(this System.Drawing.SizeF value, System.Drawing.SizeF other, float epsilon) { }
-    }
-    [System.Runtime.Serialization.DataContractAttribute()]
-    public struct SplatColor : System.IEquatable<Splat.SplatColor>
-    {
-        public byte A { get; }
-        public byte B { get; }
-        public static Splat.SplatColor Empty { get; }
-        public byte G { get; }
-        public bool IsEmpty { get; }
-        public bool IsKnownColor { get; }
-        public bool IsNamedColor { get; }
-        public bool IsSystemColor { get; }
-        public string Name { get; }
-        public byte R { get; }
-        public override bool Equals(object obj) { }
-        public bool Equals(Splat.SplatColor other) { }
-        public static Splat.SplatColor FromArgb(int red, int green, int blue) { }
-        public static Splat.SplatColor FromArgb(int alpha, int red, int green, int blue) { }
-        public static Splat.SplatColor FromArgb(int alpha, Splat.SplatColor baseColor) { }
-        public static Splat.SplatColor FromArgb(int argb) { }
-        public static Splat.SplatColor FromKnownColor(Splat.KnownColor color) { }
-        public static Splat.SplatColor FromName(string name) { }
-        public float GetBrightness() { }
-        public override int GetHashCode() { }
-        public float GetHue() { }
-        public float GetSaturation() { }
-        public int ToArgb() { }
-        public Splat.KnownColor ToKnownColor() { }
-        public override string ToString() { }
-        public static bool ==(Splat.SplatColor left, Splat.SplatColor right) { }
-        public static bool !=(Splat.SplatColor left, Splat.SplatColor right) { }
     }
     public class static TargetFrameworkExtensions
     {

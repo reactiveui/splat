@@ -11,6 +11,7 @@ namespace Splat
 {
     internal static class DispatcherMixin
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Passed to completion source")]
         public static async Task<T> RunTaskAsync<T>(this CoreDispatcher dispatcher, Func<Task<T>> func, CoreDispatcherPriority priority = CoreDispatcherPriority.Normal)
         {
             var taskCompletionSource = new TaskCompletionSource<T>();

@@ -2,14 +2,13 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;MonoAndroid90;netcoreapp2.2</TargetFrameworks>
-    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net472</TargetFrameworks>
-    <NoWarn>$(NoWarn);1591;CA1707;SA1633</NoWarn>
+    <NoWarn>$(NoWarn);1591;CA1707;SA1633;CA2000</NoWarn>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" $(TargetFramework.StartsWith('netcoreapp3')) and '$(OS)' == 'Windows_NT' ">
-    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);netcoreapp3.0</TargetFrameworks>
-    <UseWPF>true</UseWPF>
-    <UseWindowsForms>true</UseWindowsForms>
+  <PropertyGroup Condition="'$(OS)' == 'Windows_NT' ">
+    <TargetFrameworks>$(TargetFrameworks);net472;netcoreapp3.0</TargetFrameworks>
+    <UseWPF Condition="$(TargetFramework.StartsWith('netcoreapp3'))">true</UseWPF>
+    <UseWindowsForms Condition="$(TargetFramework.StartsWith('netcoreapp3'))">true</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>

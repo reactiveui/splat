@@ -39,6 +39,11 @@ namespace Splat
         /// <returns>A <see cref="System.Drawing.Rectangle"/> of the value.</returns>
         public static System.Drawing.Rectangle FromNative(this Rect value)
         {
+            if (value is null)
+            {
+                throw new System.ArgumentNullException(nameof(value));
+            }
+
             return new System.Drawing.Rectangle(value.Left, value.Top, value.Width(), value.Height());
         }
 
@@ -49,6 +54,11 @@ namespace Splat
         /// <returns>A <see cref="System.Drawing.RectangleF"/> of the value.</returns>
         public static System.Drawing.RectangleF FromNative(this RectF value)
         {
+            if (value is null)
+            {
+                throw new System.ArgumentNullException(nameof(value));
+            }
+
             return new System.Drawing.RectangleF(value.Left, value.Top, value.Width(), value.Height());
         }
     }

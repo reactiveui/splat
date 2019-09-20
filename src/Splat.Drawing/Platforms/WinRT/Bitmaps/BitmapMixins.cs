@@ -39,6 +39,11 @@ namespace Splat
         /// <returns>A <see cref="BitmapSource"/> bitmap.</returns>
         public static BitmapSource ToNative(this IBitmap value)
         {
+            if (value is null)
+            {
+                throw new System.ArgumentNullException(nameof(value));
+            }
+
             var wbib = value as WriteableBitmapImageBitmap;
             if (wbib != null)
             {

@@ -4,13 +4,10 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Splat.Common.Test;
 using Xunit;
-using Microsoft.Extensions.DependencyInjection;
-using Splat.Microsoft.Extensions.DependencyInjection;
 
 namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
 {
@@ -135,6 +132,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
         /// <summary>
         /// Should throw an exception if trying to register services when the container is registered as immutable.
         /// </summary>
+        [Fact]
         public void MicrosoftDependencyResolver_Should_Throw_If_Attempt_Registration_After_Build()
         {
             var wrapper = new ContainerWrapper();

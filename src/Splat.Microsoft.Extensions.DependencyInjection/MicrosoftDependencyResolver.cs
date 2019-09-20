@@ -259,7 +259,19 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
 
             if (!_isImmutable)
             {
-                return _serviceCollection.Any(sd => sd.ServiceType == serviceType);
+                if (string.IsNullOrWhiteSpace(contract))
+                {
+                    return _serviceCollection.Any(sd => sd.ServiceType == serviceType);
+                }
+
+                var dictionary = (ContractDictionary)_serviceCollection.FirstOrDefault(sd => sd.ServiceType == GetDictionaryType(serviceType))?.ImplementationInstance;
+
+                if (dictionary == null)
+                {
+                    return false;
+                }
+
+                return dictionary.GetFactories(contract).Select(f => f()).Any();
             }
 
             if (contract == null)
@@ -374,6 +386,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                 });
         }
 
+        [SuppressMessage("Design", "CA1812: Unused class.", Justification = "Used in reflection.")]
         private class ContractDictionary<T> : ContractDictionary
         {
         }

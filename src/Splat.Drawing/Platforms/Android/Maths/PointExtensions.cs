@@ -39,6 +39,11 @@ namespace Splat
         /// <returns>A <see cref="System.Drawing.Point"/> of the value.</returns>
         public static System.Drawing.Point FromNative(this Point value)
         {
+            if (value is null)
+            {
+                throw new System.ArgumentNullException(nameof(value));
+            }
+
             return new System.Drawing.Point(value.X, value.Y);
         }
 
@@ -49,6 +54,11 @@ namespace Splat
         /// <returns>A <see cref="System.Drawing.PointF"/> of the value.</returns>
         public static System.Drawing.PointF FromNative(this PointF value)
         {
+            if (value is null)
+            {
+                throw new System.ArgumentNullException(nameof(value));
+            }
+
             return new System.Drawing.PointF(value.X, value.Y);
         }
     }

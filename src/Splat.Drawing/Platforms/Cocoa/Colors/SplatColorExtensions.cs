@@ -36,6 +36,11 @@ namespace Splat
         /// <returns>The <see cref="SplatColor"/> generated.</returns>
         public static SplatColor FromNative(this UIColor value)
         {
+            if (value is null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
             value.GetRGBA(out var r, out var g, out var b, out var a);
             return SplatColor.FromArgb((int)(a * 255.0f), (int)(r * 255.0f), (int)(g * 255.0f), (int)(b * 255.0f));
         }
@@ -57,6 +62,11 @@ namespace Splat
         /// <returns>The <see cref="SplatColor"/> generated.</returns>
         public static SplatColor FromNative(this NSColor value)
         {
+            if (value is null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
             value.GetRgba(out var r, out var g, out var b, out var a);
             return SplatColor.FromArgb((int)(a * 255.0f), (int)(r * 255.0f), (int)(g * 255.0f), (int)(b * 255.0f));
         }

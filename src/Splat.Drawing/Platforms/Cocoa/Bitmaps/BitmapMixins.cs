@@ -23,6 +23,11 @@ namespace Splat
         /// <returns>A <see cref="UIImage"/> bitmap.</returns>
         public static UIImage ToNative(this IBitmap value)
         {
+            if (value is null)
+            {
+                throw new System.ArgumentNullException(nameof(value));
+            }
+
             return ((CocoaBitmap)value).Inner;
         }
 
@@ -34,6 +39,11 @@ namespace Splat
         /// <returns>A <see cref="IBitmap"/> bitmap.</returns>
         public static IBitmap FromNative(this UIImage value, bool copy = false)
         {
+            if (value is null)
+            {
+                throw new System.ArgumentNullException(nameof(value));
+            }
+
             if (copy)
             {
                 return new CocoaBitmap((UIImage)value.Copy());

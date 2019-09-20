@@ -21,6 +21,11 @@ namespace Splat
         /// <returns>A <see cref="Drawable"/> bitmap.</returns>
         public static Drawable ToNative(this IBitmap value)
         {
+            if (value is null)
+            {
+                throw new System.ArgumentNullException(nameof(value));
+            }
+
             var androidBitmap = value as AndroidBitmap;
             if (androidBitmap != null)
             {
@@ -38,6 +43,11 @@ namespace Splat
         /// <returns>A <see cref="IBitmap"/> bitmap.</returns>
         public static IBitmap FromNative(this Bitmap value, bool copy = false)
         {
+            if (value is null)
+            {
+                throw new System.ArgumentNullException(nameof(value));
+            }
+
             if (copy)
             {
                 return new AndroidBitmap(value.Copy(value.GetConfig(), true));

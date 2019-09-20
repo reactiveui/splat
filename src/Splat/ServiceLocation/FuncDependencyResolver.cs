@@ -67,6 +67,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "disp is Disposed in callback.")]
         public void Register(Func<object> factory, Type serviceType, string contract = null)
         {
             if (_innerRegister == null)

@@ -61,33 +61,40 @@ namespace Splat
         public Task Save(CompressedBitmapFormat format, float quality, Stream target)
         {
             ImageEncoder encoder = null;
-            int qualityPercent = (int)(100 * quality);
-            switch (format)
+            try
             {
-                case CompressedBitmapFormat.Jpeg:
-                    encoder = new JpegEncoder();
-                    ((JpegEncoder)encoder).Quality = qualityPercent;
-                    break;
-                case CompressedBitmapFormat.Png:
-                    encoder = new PngEncoder();
-                    if (qualityPercent == 100)
-                    {
-                        ((PngEncoder)encoder).Compression = PngCompression.None;
-                    }
-                    else if (qualityPercent < 10)
-                    {
-                        ((PngEncoder)encoder).Compression = PngCompression.Level1;
-                    }
-                    else
-                    {
-                        ((PngEncoder)encoder).Compression = (PngCompression)(qualityPercent / 10);
-                    }
+                int qualityPercent = (int)(100 * quality);
+                switch (format)
+                {
+                    case CompressedBitmapFormat.Jpeg:
+                        encoder = new JpegEncoder();
+                        ((JpegEncoder)encoder).Quality = qualityPercent;
+                        break;
+                    case CompressedBitmapFormat.Png:
+                        encoder = new PngEncoder();
+                        if (qualityPercent == 100)
+                        {
+                            ((PngEncoder)encoder).Compression = PngCompression.None;
+                        }
+                        else if (qualityPercent < 10)
+                        {
+                            ((PngEncoder)encoder).Compression = PngCompression.Level1;
+                        }
+                        else
+                        {
+                            ((PngEncoder)encoder).Compression = (PngCompression)(qualityPercent / 10);
+                        }
 
-                    break;
+                        break;
+                }
+
+                encoder.SetResolution(new Tizen.Multimedia.Size((int)Width, (int)Height));
+                return encoder.EncodeAsync(Inner.Buffer, target);
             }
-
-            encoder.SetResolution(new Tizen.Multimedia.Size((int)Width, (int)Height));
-            return encoder.EncodeAsync(Inner.Buffer, target);
+            finally
+            {
+                encoder?.Dispose();
+            }
         }
 
         /// <inheritdoc />

@@ -30,8 +30,14 @@ namespace Splat
         }
 
         /// <inheritdoc />
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Disposed by bitmap.")]
         public async Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
+            if (sourceStream is null)
+            {
+                throw new ArgumentNullException(nameof(sourceStream));
+            }
+
             sourceStream.Position = 0;
             Bitmap bitmap = null;
 
@@ -93,6 +99,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Handled by user.")]
         public IBitmap Create(float width, float height)
         {
             return Bitmap.CreateBitmap((int)width, (int)height, Bitmap.Config.Argb8888).FromNative();

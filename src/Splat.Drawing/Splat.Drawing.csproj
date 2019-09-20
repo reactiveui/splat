@@ -1,4 +1,4 @@
-<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
     <TargetFrameworks>MonoAndroid90;Xamarin.iOS10;Xamarin.Mac20;Xamarin.TVOS10;Xamarin.WatchOS10;tizen40;netcoreapp3.0;netstandard2.0</TargetFrameworks>
@@ -8,6 +8,7 @@
     <Description>A library to make things cross-platform that should be</Description>
     <PackageId>Splat.Drawing</PackageId>
     <NoWarn>$(NoWarn);1591</NoWarn>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(TargetFramework.StartsWith('netcoreapp3')) and '$(OS)' == 'Windows_NT' ">
@@ -86,6 +87,7 @@
     <Compile Include="Platforms\Cocoa\**\*.cs" />
 
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="netstandard" />
   </ItemGroup>
 
   <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
