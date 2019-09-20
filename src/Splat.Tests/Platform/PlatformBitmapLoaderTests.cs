@@ -12,7 +12,7 @@ namespace Splat.Tests.Platform
     /// </summary>
     public sealed class PlatformBitmapLoaderTests
     {
-#if !NETSTANDARD
+#if !NETSTANDARD && !NETCOREAPP2
         /// <summary>
         /// Check to ensure an instance is returned.
         /// </summary>

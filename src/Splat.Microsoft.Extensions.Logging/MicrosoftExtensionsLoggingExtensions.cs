@@ -51,6 +51,11 @@ namespace Splat.Microsoft.Extensions.Logging
         /// <returns>The logging builder.</returns>
         public static ILoggingBuilder AddSplat(this ILoggingBuilder builder)
         {
+            if (builder is null)
+            {
+                throw new System.ArgumentNullException(nameof(builder));
+            }
+
             builder.Services.AddSingleton<ILoggerProvider, MicrosoftExtensionsLogProvider>();
 
             return builder;
@@ -61,8 +66,14 @@ namespace Splat.Microsoft.Extensions.Logging
         /// </summary>
         /// <param name="loggerFactory">Our logger provider.</param>
         /// <returns>The factory.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Dispose handled by locator.")]
         public static ILoggerFactory AddSplat(this ILoggerFactory loggerFactory)
         {
+            if (loggerFactory is null)
+            {
+                throw new System.ArgumentNullException(nameof(loggerFactory));
+            }
+
             loggerFactory.AddProvider(new MicrosoftExtensionsLogProvider());
             return loggerFactory;
         }

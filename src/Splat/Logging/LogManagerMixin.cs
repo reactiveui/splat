@@ -18,6 +18,11 @@ namespace Splat
         /// <returns>A logger for the specified type.</returns>
         public static IFullLogger GetLogger<T>(this ILogManager logManager)
         {
+            if (logManager is null)
+            {
+                throw new System.ArgumentNullException(nameof(logManager));
+            }
+
             return logManager.GetLogger(typeof(T));
         }
     }
