@@ -15,6 +15,7 @@ var packageWhitelist = new[]
     MakeAbsolute(File("./src/Splat.NLog/Splat.NLog.csproj")),
     MakeAbsolute(File("./src/Splat.Serilog/Splat.Serilog.csproj")),
     MakeAbsolute(File("./src/Splat.SimpleInjector/Splat.SimpleInjector.csproj")),
+    MakeAbsolute(File("./src/Splat.Drawing/Splat.Drawing.csproj")),
 };
 
 var packageTestWhitelist = new[]
