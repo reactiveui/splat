@@ -273,6 +273,14 @@ Android.Graphics.Color bgColor = ViewModel.BackgroundColor.ToNative();
 ```
 ### Cross-platform Image Loading
 
+You can register with the Splat locators.
+
+```cs
+Locator.CurrentMutable.RegisterPlatformBitmapLoader();
+```
+
+You can then load your images in a cross platform way:
+
 ```cs
 //
 // Load an Image
