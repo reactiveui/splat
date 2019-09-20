@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>  
     <Product>$(AssemblyName) ($(TargetFramework))</Product>
-    <AndroidUseIntermediateDesignerFile>true</AndroidUseIntermediateDesignerFile>
+    <AndroidUseIntermediateDesignerFile>false</AndroidUseIntermediateDesignerFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(TargetFramework.StartsWith('netcoreapp'))">
