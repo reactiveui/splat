@@ -26,6 +26,16 @@ namespace Splat
         private static IPlatformModeDetector Current { get; set; }
 
         /// <summary>
+        /// Overrides the mode detector with one of your own provided ones.
+        /// </summary>
+        /// <param name="modeDetector">The mode detector to use.</param>
+        public static void OverrideModeDetector(IPlatformModeDetector modeDetector)
+        {
+            Current = modeDetector;
+            cachedInDesignModeResult = null;
+        }
+
+        /// <summary>
         /// Gets a value indicating whether we are currently running from within a GUI design editor.
         /// </summary>
         /// <returns>If we are currently running from design mode.</returns>
