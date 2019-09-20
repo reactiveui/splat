@@ -238,6 +238,7 @@ namespace Splat
     public class static PlatformModeDetector
     {
         public static bool InDesignMode() { }
+        public static void OverrideModeDetector(Splat.IPlatformModeDetector modeDetector) { }
     }
     public class static PointExtensions
     {
