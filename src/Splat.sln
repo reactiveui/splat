@@ -53,7 +53,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Microsoft.Extensions.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Microsoft.Extensions.DependencyInjection.Tests", "Splat.Microsoft.Extensions.DependencyInjection.Tests\Splat.Microsoft.Extensions.DependencyInjection.Tests.csproj", "{85E5821D-CCC3-44DC-96A0-DFC02953943F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.UI", "Splat.UI\Splat.UI.csproj", "{694D2813-14FF-456A-B1E7-C5BB82AEE400}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Drawing", "Splat.Drawing\Splat.Drawing.csproj", "{694D2813-14FF-456A-B1E7-C5BB82AEE400}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -17,11 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Splat.Drawing\Splat.Drawing.csproj" />
     <ProjectReference Include="..\Splat.Log4Net\Splat.Log4Net.csproj" />
     <ProjectReference Include="..\Splat.Microsoft.Extensions.Logging\Splat.Microsoft.Extensions.Logging.csproj" />
     <ProjectReference Include="..\Splat.NLog\Splat.NLog.csproj" />
     <ProjectReference Include="..\Splat.Serilog\Splat.Serilog.csproj" />
-    <ProjectReference Include="..\Splat.UI\Splat.UI.csproj" />
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>
 
