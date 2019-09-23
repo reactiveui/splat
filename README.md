@@ -50,44 +50,11 @@ Splat currently supports:
 * Xamarin (Android, iOS and Mac)
 * .NET Standard 1.0 and 2.0
 
-## Cross-platform Image Loading
+## Detecting whether you're in a unit test runner
 
 ```cs
-//
-// Load an Image
-// This code even works in a Portable Library
-//
-
-var wc = new WebClient();
-byte[] imageBytes = await wc.DownloadDataTaskAsync("http://octodex.github.com/images/Professortocat_v2.png");
-
-// IBitmap is a type that provides basic image information such as dimensions
-IBitmap profileImage = await BitmapLoader.Current.Load(imageBytes, null /* Use original width */, null /* Use original height */);
-```
-
-Then later, in your View:
-
-```cs
-// ToNative always converts an IBitmap into the type that the platform
-// uses, such as UIBitmap on iOS or BitmapSource in WPF
-ImageView.Source = ViewModel.ProfileImage.ToNative();
-```
-
-Images can also be loaded from a Resource. On Android, this can either be a
-Resource ID casted to a string, or the name of the resource *as* as string
-(optionally including the extension).
-
-```cs
-var profileImage = await BitmapLoader.Current.LoadFromResource("DefaultAvatar.png", null, null);
-```
-
-Bitmaps can also be created and saved - actually *drawing* on the image is
-beyond the scope of this library, you should do this in your view-specific
-code.
-
-```cs
-var blankImage = BitmapLoader.Current.Create(512.0f, 512.0f);
-await blankImage.Save(CompressedBitmapFormat.Png, 0.0, File.Open("ItsBlank.png"));
+// If true, we are running unit tests
+ModeDetector.InUnitTestRunner();  
 ```
 
 ## Service Location
@@ -262,7 +229,17 @@ Locator.CurrentMutable.UseSerilogFullLogger()
 
 Thanks to @joelweiss for first creating this logger.
 
-## Using Cross-Platform Colors and Geometry
+## Cross platform drawing
+
+| Target | Package | NuGet |
+|---------|-------|------|
+| Splat.Drawing | [Splat.Drawing][SplatDrawingNuGet] | [![SplatDrawingBadge]][SplatDrawingNuGet] |
+
+[SplatDrawingNuGet]: https://www.nuget.org/packages/Splat.Drawing/
+[SplatDrawingBadge]: https://img.shields.io/nuget/v/Splat.Drawing.svg
+
+### Using Cross-Platform Colors and Geometry
+
 
 ```cs
 // This System.Drawing class works, even on WinRT or WP8 where it's not supposed to exist
@@ -294,15 +271,57 @@ UIColor bgColor = ViewModel.BackgroundColor.ToNative();
 // From an Android project
 Android.Graphics.Color bgColor = ViewModel.BackgroundColor.ToNative();
 ```
+### Cross-platform Image Loading
 
-## Detecting whether you're in a unit test runner
+You can register with the Splat locators.
 
 ```cs
-// If true, we are running unit tests
-ModeDetector.InUnitTestRunner();  
+Locator.CurrentMutable.RegisterPlatformBitmapLoader();
+```
+
+You can then load your images in a cross platform way:
+
+```cs
+//
+// Load an Image
+// This code even works in a Portable Library
+//
+
+var wc = new WebClient();
+byte[] imageBytes = await wc.DownloadDataTaskAsync("http://octodex.github.com/images/Professortocat_v2.png");
+
+// IBitmap is a type that provides basic image information such as dimensions
+IBitmap profileImage = await BitmapLoader.Current.Load(imageBytes, null /* Use original width */, null /* Use original height */);
+```
+
+Then later, in your View:
+
+```cs
+// ToNative always converts an IBitmap into the type that the platform
+// uses, such as UIBitmap on iOS or BitmapSource in WPF
+ImageView.Source = ViewModel.ProfileImage.ToNative();
+```
+
+Images can also be loaded from a Resource. On Android, this can either be a
+Resource ID casted to a string, or the name of the resource *as* as string
+(optionally including the extension).
+
+```cs
+var profileImage = await BitmapLoader.Current.LoadFromResource("DefaultAvatar.png", null, null);
+```
+
+Bitmaps can also be created and saved - actually *drawing* on the image is
+beyond the scope of this library, you should do this in your view-specific
+code.
+
+```cs
+var blankImage = BitmapLoader.Current.Create(512.0f, 512.0f);
+await blankImage.Save(CompressedBitmapFormat.Png, 0.0, File.Open("ItsBlank.png"));
+```
+### Detecting if you're in design mode
 
 // If true, we are running inside Blend, so don't do anything
-ModeDetector.InDesignMode();
+PlatformModeDetector.InDesignMode();
 ```
 
 ## Contribute

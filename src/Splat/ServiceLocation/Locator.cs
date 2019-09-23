@@ -66,6 +66,11 @@ namespace Splat
         /// ignore this.</returns>
         public static IDisposable RegisterResolverCallbackChanged(Action callback)
         {
+            if (callback is null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
             return InternalLocator.RegisterResolverCallbackChanged(callback);
         }
 

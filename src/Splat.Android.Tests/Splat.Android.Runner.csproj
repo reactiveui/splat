@@ -16,7 +16,7 @@
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
-    <TargetFrameworkVersion>v8.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v9.0</TargetFrameworkVersion>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <CopyNuGetImplementations>true</CopyNuGetImplementations>
     <NoStdLib>false</NoStdLib>
@@ -71,13 +71,17 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms">
-      <Version>4.2.0.778463</Version>
+      <Version>4.*</Version>
     </PackageReference>
     <PackageReference Include="xunit.runner.devices">
-      <Version>2.5.25</Version>
+      <Version>2.*</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Splat.Drawing\Splat.Drawing.csproj">
+      <Project>{694d2813-14ff-456a-b1e7-c5bb82aee400}</Project>
+      <Name>Splat.Drawing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Splat.Tests\Splat.Tests.csproj">
       <Project>{6cad2584-aa69-4a36-8ad4-a90d040003ca}</Project>
       <Name>Splat.Tests</Name>

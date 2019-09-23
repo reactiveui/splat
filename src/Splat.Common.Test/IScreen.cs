@@ -8,6 +8,7 @@ namespace Splat.Common.Test
     /// <summary>
     /// Represents a screen.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Avoid empty interfaces", Justification = "For mocks only.")]
     public interface IScreen
     {
     }

@@ -203,6 +203,7 @@ namespace Splat
         /// Flag to indicate whether Exceptions during the resource Release call should not fail on the first item.
         /// But should try all items then throw an aggregate exception.
         /// </param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Exception passed to exceptions list.")]
         public void InvalidateAll(bool aggregateReleaseExceptions = false)
         {
             Dictionary<TParam, (LinkedListNode<TParam> param, TVal value)> oldCacheToClear = null;

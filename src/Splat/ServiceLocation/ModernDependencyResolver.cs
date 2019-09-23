@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Splat
@@ -57,6 +58,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
+        [SuppressMessage("Design", "CA2000: Dispose object", Justification = "Disposed in callback.")]
         public void Register(Func<object> factory, Type serviceType, string contract = null)
         {
             var pair = GetKey(serviceType, contract);

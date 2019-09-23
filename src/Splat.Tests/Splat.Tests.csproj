@@ -1,22 +1,22 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netcoreapp3.0;MonoAndroid81</TargetFrameworks>
-    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net472</TargetFrameworks>
-    <NoWarn>$(NoWarn);1591;CA1707;SA1633</NoWarn>
+    <TargetFrameworks>netstandard2.0;netcoreapp2.2</TargetFrameworks>
+    <NoWarn>$(NoWarn);1591;CA1707;SA1633;CA2000</NoWarn>
   </PropertyGroup>
 
-  <Target Name="_RemoveNonExistingResgenFile" BeforeTargets="CoreCompile" Condition="'$(_SdkSetAndroidResgenFile)' == 'true' And '$(AndroidResgenFile)' != '' And !Exists('$(AndroidResgenFile)')">
-    <ItemGroup>
-      <Compile Remove="$(AndroidResgenFile)"/>
-    </ItemGroup>
-  </Target>
+  <PropertyGroup Condition="'$(OS)' == 'Windows_NT' ">
+    <TargetFrameworks>$(TargetFrameworks);net472;netcoreapp3.0</TargetFrameworks>
+    <UseWPF Condition="$(TargetFramework.StartsWith('netcoreapp3'))">true</UseWPF>
+    <UseWindowsForms Condition="$(TargetFramework.StartsWith('netcoreapp3'))">true</UseWindowsForms>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Serilog.Exceptions" Version="5.3.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Splat.Drawing\Splat.Drawing.csproj" />
     <ProjectReference Include="..\Splat.Log4Net\Splat.Log4Net.csproj" />
     <ProjectReference Include="..\Splat.Microsoft.Extensions.Logging\Splat.Microsoft.Extensions.Logging.csproj" />
     <ProjectReference Include="..\Splat.NLog\Splat.NLog.csproj" />
