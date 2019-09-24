@@ -4,10 +4,8 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using ReactiveUI;
-using Splat;
 
-namespace Splat
+namespace Splat.Host
 {
     /// <summary>
     /// https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.hosting.ihostbuilder?view=aspnetcore-2.2 .
@@ -38,7 +36,7 @@ namespace Splat
         /// </summary>
         /// <param name="containerRegistry">The container registry.</param>
         /// <returns>The application builder.</returns>
-        IApplicationBuilder ConfigureContainer(IMutableDependencyResolver containerRegistry); // TODO: make this container agnostic?
+        IApplicationBuilder ConfigureContainer(IDependencyResolver containerRegistry); // TODO: make this container agnostic?
 
         /// <summary>
         /// Configures the services.

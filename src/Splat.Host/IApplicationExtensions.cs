@@ -7,7 +7,7 @@ using System;
 using System.Reactive;
 using System.Reactive.Linq;
 
-namespace Splat
+namespace Splat.Host
 {
     /// <summary>
     /// Extension methods to interact with the <see cref="IApplication"/>.

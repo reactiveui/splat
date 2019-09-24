@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Splat;
-
-namespace ReactiveUI.HostBuilder.Splat.Host
+﻿namespace Splat.Host
 {
     /// <summary>
     /// Provides convenience methods for <see cref="IApplicationHost"/> and <see cref="IApplicationHostBuilder"/>.

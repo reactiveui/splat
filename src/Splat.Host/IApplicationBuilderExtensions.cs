@@ -4,22 +4,31 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Text;
-using ReactiveUI;
-using Splat;
 
-namespace Splat
+namespace Splat.Host
 {
     public static class IApplicationBuilderExtensions
     {
+        /// <summary>
+        /// Adds a logger to the application.
+        /// </summary>
+        /// <param name="hostBuilder"></param>
+        /// <param name="fullLogger"></param>
+        /// <returns></returns>
         public static IApplicationBuilder WithLogging(this IApplicationBuilder hostBuilder, IFullLogger fullLogger)
         {
             return hostBuilder;
         }
 
+        /// <summary>
+        /// Sets the dependency resolver.
+        /// </summary>
+        /// <param name="hostBuilder">The application builder.</param>
+        /// <param name="dependencyResolver">The dependency resolver.</param>
+        /// <returns>The builder.</returns>
         public static IApplicationBuilder WithDependencyResolver(this IApplicationBuilder hostBuilder, IDependencyResolver dependencyResolver)
         {
-            hostBuilder.SetDependencyRegistrar(dependencyResolver);
+            Locator.SetLocator(dependencyResolver);
             return hostBuilder;
         }
 

@@ -5,7 +5,7 @@
 
 using System.Collections.Generic;
 
-namespace Splat
+namespace Splat.Host
 {
     public interface IConfigurationBuilder
     {
