@@ -5,6 +5,9 @@
 
 namespace Splat.Host
 {
+    /// <summary>
+    /// The configuration.
+    /// </summary>
     public interface IConfiguration
     {
     }

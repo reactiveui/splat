@@ -5,8 +5,10 @@
 
 namespace Splat.Host
 {
+    /// <summary>
+    /// Configuration source.
+    /// </summary>
     public interface IConfigurationSource
     {
-
     }
 }

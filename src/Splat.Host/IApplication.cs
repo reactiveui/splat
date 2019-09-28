@@ -14,6 +14,11 @@ namespace Splat.Host
     public interface IApplication
     {
         /// <summary>
+        /// Gets the fully composed locator.
+        /// </summary>
+        IDependencyResolver Locator { get; }
+
+        /// <summary>
         /// Starts this instance.
         /// </summary>
         /// <returns>An observable sequence notifying completion.</returns>

@@ -7,16 +7,20 @@ using System;
 
 namespace Splat.Host
 {
+    /// <summary>
+    /// Extension methods for the <see cref="IApplicationBuilder"/>.
+    /// </summary>
     public static class IApplicationBuilderExtensions
     {
         /// <summary>
-        /// Adds a logger to the application.
+        /// Withes the logging.
         /// </summary>
-        /// <param name="hostBuilder"></param>
-        /// <param name="fullLogger"></param>
-        /// <returns></returns>
+        /// <param name="hostBuilder">The host builder.</param>
+        /// <param name="fullLogger">The full logger.</param>
+        /// <returns>The builder.</returns
         public static IApplicationBuilder WithLogging(this IApplicationBuilder hostBuilder, IFullLogger fullLogger)
         {
+            Locator.CurrentMutable.Register<IFullLogger>(() => fullLogger);
             return hostBuilder;
         }
 
@@ -30,20 +34,6 @@ namespace Splat.Host
         {
             Locator.SetLocator(dependencyResolver);
             return hostBuilder;
-        }
-
-        /// <summary>
-        /// Registers the platform.
-        /// </summary>
-        /// <param name="builder">The builder.</param>
-        /// <param name="platformOperations">The platform operations.</param>
-        /// <returns>The application builder.</returns>
-        public static IApplicationBuilder RegisterPlatform(
-            this IApplicationBuilder builder,
-            Func<IPlatformOperations> platformOperations)
-        {
-            builder.DependencyRegistrar.RegisterConstant(platformOperations, typeof(IPlatformOperations));
-            return builder;
         }
     }
 }

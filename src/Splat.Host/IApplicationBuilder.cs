@@ -4,6 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 
 namespace Splat.Host
 {
@@ -13,16 +14,18 @@ namespace Splat.Host
     public interface IApplicationBuilder
     {
         /// <summary>
-        /// Gets the dependency registrar.
+        /// Gets a central location for sharing state between components during the host building process.
         /// </summary>
-        /// <value>The dependency registrar.</value>
-        IDependencyResolver DependencyRegistrar { get; }
+        IDictionary<object, object> Properties { get; }
 
         /// <summary>
-        /// Builds this instance.
+        /// Set up the configuration for the builder itself. This will be used to initialize the <see cref="IHostEnvironment"/>
+        /// for use later in the build process. This can be called multiple times and the results will be additive.
         /// </summary>
-        /// <returns>The application instance.</returns>
-        IApplication Build();
+        /// <param name="configureDelegate">The delegate for configuring the <see cref="IConfigurationBuilder"/> that will be used
+        /// to construct the <see cref="IConfiguration"/> for the host.</param>
+        /// <returns>The same instance of the <see cref="IHostBuilder"/> for chaining.</returns>
+        IApplicationBuilder ConfigureHostConfiguration(Action<IConfigurationBuilder> configureDelegate);
 
         /// <summary>
         /// Configures the application configuration.
@@ -44,5 +47,11 @@ namespace Splat.Host
         /// <param name="serviceCollection">The service collection.</param>
         /// <returns>The application builder.</returns>
         IApplicationBuilder ConfigureServices(Action<IDependencyResolver> serviceCollection);
+
+        /// <summary>
+        /// Builds this instance.
+        /// </summary>
+        /// <returns>The application instance.</returns>
+        IApplication Build();
     }
 }
