@@ -19,6 +19,7 @@ namespace Splat.DryIoc
         /// Initializes an instance of <see cref="DryIocDependencyResolver"/> that overrides the default <see cref="Locator"/>.
         /// </summary>
         /// <param name="container">The container.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Dispose handled by locator.")]
         public static void UseDryIocDependencyResolver(this IContainer container) =>
             Locator.SetLocator(new DryIocDependencyResolver(container));
     }

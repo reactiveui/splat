@@ -16,6 +16,7 @@ namespace Splat.SimpleInjector
         /// Initializes an instance of <see cref="SimpleInjectorDependencyResolver"/> that overrides the default <see cref="Locator"/>.
         /// </summary>
         /// <param name="container">Simple Injector container.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Dispose handled by locator.")]
         public static void UseSimpleInjectorDependencyResolver(this Container container) =>
             Locator.SetLocator(new SimpleInjectorDependencyResolver(container));
     }

@@ -5,11 +5,11 @@
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net472</TargetFrameworks>
 
     <IsPackable>false</IsPackable>
-    <NoWarn>$(NoWarn);1591;CA1707;SA1633</NoWarn>
+    <NoWarn>$(NoWarn);1591;CA1707;SA1633;CA2000</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.9.3" />
+    <PackageReference Include="Autofac" Version="4.9.4" />
   </ItemGroup>
 
   <ItemGroup>

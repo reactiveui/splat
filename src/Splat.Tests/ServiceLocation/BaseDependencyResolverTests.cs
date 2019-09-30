@@ -104,6 +104,39 @@ namespace Splat.Tests.ServiceLocation
         }
 
         /// <summary>
+        /// Tests for ensuring hasregistration behaves when using contracts.
+        /// </summary>
+        [Fact]
+        public void HasRegistration()
+        {
+            var type = typeof(string);
+            const string contractOne = "ContractOne";
+            const string contractTwo = "ContractTwo";
+            var resolver = GetDependencyResolver();
+
+            Assert.False(resolver.HasRegistration(type));
+            Assert.False(resolver.HasRegistration(type, contractOne));
+            Assert.False(resolver.HasRegistration(type, contractTwo));
+
+            resolver.Register(() => "unnamed", type);
+            Assert.True(resolver.HasRegistration(type));
+            Assert.False(resolver.HasRegistration(type, contractOne));
+            Assert.False(resolver.HasRegistration(type, contractTwo));
+            resolver.UnregisterAll(type);
+
+            resolver.Register(() => contractOne, type, contractOne);
+            Assert.False(resolver.HasRegistration(type));
+            Assert.True(resolver.HasRegistration(type, contractOne));
+            Assert.False(resolver.HasRegistration(type, contractTwo));
+            resolver.UnregisterAll(type, contractOne);
+
+            resolver.Register(() => contractTwo, type, contractTwo);
+            Assert.False(resolver.HasRegistration(type));
+            Assert.False(resolver.HasRegistration(type, contractOne));
+            Assert.True(resolver.HasRegistration(type, contractTwo));
+        }
+
+        /// <summary>
         /// Gets an instance of a dependency resolver to test.
         /// </summary>
         /// <returns>Dependency Resolver.</returns>

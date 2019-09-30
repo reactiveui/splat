@@ -1,0 +1,443 @@
+[assembly: System.Resources.NeutralResourcesLanguageAttribute("en-US")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleToAttribute("Splat.Tests")]
+[assembly: System.Runtime.Versioning.TargetFrameworkAttribute(".NETCoreApp,Version=v3.0", FrameworkDisplayName="")]
+namespace Splat
+{
+    public class static BitmapLoader
+    {
+        public static Splat.IBitmapLoader Current { get; set; }
+    }
+    public class BitmapLoaderException : System.Exception
+    {
+        public BitmapLoaderException() { }
+        public BitmapLoaderException(string message) { }
+        public BitmapLoaderException(string message, System.Exception innerException) { }
+        protected BitmapLoaderException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
+    }
+    public class static BitmapMixins
+    {
+        public static Splat.IBitmap FromNative(this System.Windows.Media.Imaging.BitmapSource value) { }
+        public static System.Windows.Media.Imaging.BitmapSource ToNative(this Splat.IBitmap value) { }
+    }
+    public class static ColorExtensions
+    {
+        public static System.Drawing.Color FromNative(this System.Windows.Media.Color value) { }
+        public static System.Windows.Media.Color ToNative(this System.Drawing.Color value) { }
+        public static System.Windows.Media.SolidColorBrush ToNativeBrush(this System.Drawing.Color value) { }
+    }
+    public enum CompressedBitmapFormat
+    {
+        Png = 0,
+        Jpeg = 1,
+    }
+    public class DefaultPlatformModeDetector : Splat.IPlatformModeDetector
+    {
+        public DefaultPlatformModeDetector() { }
+        public System.Nullable<bool> InDesignMode() { }
+    }
+    public interface IBitmap : System.IDisposable
+    {
+        float Height { get; }
+        float Width { get; }
+        System.Threading.Tasks.Task Save(Splat.CompressedBitmapFormat format, float quality, System.IO.Stream target);
+    }
+    public interface IBitmapLoader
+    {
+        Splat.IBitmap Create(float width, float height);
+        System.Threading.Tasks.Task<Splat.IBitmap> Load(System.IO.Stream sourceStream, System.Nullable<float> desiredWidth, System.Nullable<float> desiredHeight);
+        System.Threading.Tasks.Task<Splat.IBitmap> LoadFromResource(string source, System.Nullable<float> desiredWidth, System.Nullable<float> desiredHeight);
+    }
+    public interface IPlatformModeDetector
+    {
+        System.Nullable<bool> InDesignMode();
+    }
+    public enum KnownColor
+    {
+        ActiveBorder = 1,
+        ActiveCaption = 2,
+        ActiveCaptionText = 3,
+        AppWorkspace = 4,
+        Control = 5,
+        ControlDark = 6,
+        ControlDarkDark = 7,
+        ControlLight = 8,
+        ControlLightLight = 9,
+        ControlText = 10,
+        Desktop = 11,
+        GrayText = 12,
+        Highlight = 13,
+        HighlightText = 14,
+        HotTrack = 15,
+        InactiveBorder = 16,
+        InactiveCaption = 17,
+        InactiveCaptionText = 18,
+        Info = 19,
+        InfoText = 20,
+        Menu = 21,
+        MenuText = 22,
+        ScrollBar = 23,
+        Window = 24,
+        WindowFrame = 25,
+        WindowText = 26,
+        Transparent = 27,
+        AliceBlue = 28,
+        AntiqueWhite = 29,
+        Aqua = 30,
+        Aquamarine = 31,
+        Azure = 32,
+        Beige = 33,
+        Bisque = 34,
+        Black = 35,
+        BlanchedAlmond = 36,
+        Blue = 37,
+        BlueViolet = 38,
+        Brown = 39,
+        BurlyWood = 40,
+        CadetBlue = 41,
+        Chartreuse = 42,
+        Chocolate = 43,
+        Coral = 44,
+        CornflowerBlue = 45,
+        Cornsilk = 46,
+        Crimson = 47,
+        Cyan = 48,
+        DarkBlue = 49,
+        DarkCyan = 50,
+        DarkGoldenrod = 51,
+        DarkGray = 52,
+        DarkGreen = 53,
+        DarkKhaki = 54,
+        DarkMagenta = 55,
+        DarkOliveGreen = 56,
+        DarkOrange = 57,
+        DarkOrchid = 58,
+        DarkRed = 59,
+        DarkSalmon = 60,
+        DarkSeaGreen = 61,
+        DarkSlateBlue = 62,
+        DarkSlateGray = 63,
+        DarkTurquoise = 64,
+        DarkViolet = 65,
+        DeepPink = 66,
+        DeepSkyBlue = 67,
+        DimGray = 68,
+        DodgerBlue = 69,
+        Firebrick = 70,
+        FloralWhite = 71,
+        ForestGreen = 72,
+        Fuchsia = 73,
+        Gainsboro = 74,
+        GhostWhite = 75,
+        Gold = 76,
+        Goldenrod = 77,
+        Gray = 78,
+        Green = 79,
+        GreenYellow = 80,
+        Honeydew = 81,
+        HotPink = 82,
+        IndianRed = 83,
+        Indigo = 84,
+        Ivory = 85,
+        Khaki = 86,
+        Lavender = 87,
+        LavenderBlush = 88,
+        LawnGreen = 89,
+        LemonChiffon = 90,
+        LightBlue = 91,
+        LightCoral = 92,
+        LightCyan = 93,
+        LightGoldenrodYellow = 94,
+        LightGray = 95,
+        LightGreen = 96,
+        LightPink = 97,
+        LightSalmon = 98,
+        LightSeaGreen = 99,
+        LightSkyBlue = 100,
+        LightSlateGray = 101,
+        LightSteelBlue = 102,
+        LightYellow = 103,
+        Lime = 104,
+        LimeGreen = 105,
+        Linen = 106,
+        Magenta = 107,
+        Maroon = 108,
+        MediumAquamarine = 109,
+        MediumBlue = 110,
+        MediumOrchid = 111,
+        MediumPurple = 112,
+        MediumSeaGreen = 113,
+        MediumSlateBlue = 114,
+        MediumSpringGreen = 115,
+        MediumTurquoise = 116,
+        MediumVioletRed = 117,
+        MidnightBlue = 118,
+        MintCream = 119,
+        MistyRose = 120,
+        Moccasin = 121,
+        NavajoWhite = 122,
+        Navy = 123,
+        OldLace = 124,
+        Olive = 125,
+        OliveDrab = 126,
+        Orange = 127,
+        OrangeRed = 128,
+        Orchid = 129,
+        PaleGoldenrod = 130,
+        PaleGreen = 131,
+        PaleTurquoise = 132,
+        PaleVioletRed = 133,
+        PapayaWhip = 134,
+        PeachPuff = 135,
+        Peru = 136,
+        Pink = 137,
+        Plum = 138,
+        PowderBlue = 139,
+        Purple = 140,
+        Red = 141,
+        RosyBrown = 142,
+        RoyalBlue = 143,
+        SaddleBrown = 144,
+        Salmon = 145,
+        SandyBrown = 146,
+        SeaGreen = 147,
+        SeaShell = 148,
+        Sienna = 149,
+        Silver = 150,
+        SkyBlue = 151,
+        SlateBlue = 152,
+        SlateGray = 153,
+        Snow = 154,
+        SpringGreen = 155,
+        SteelBlue = 156,
+        Tan = 157,
+        Teal = 158,
+        Thistle = 159,
+        Tomato = 160,
+        Turquoise = 161,
+        Violet = 162,
+        Wheat = 163,
+        White = 164,
+        WhiteSmoke = 165,
+        Yellow = 166,
+        YellowGreen = 167,
+        ButtonFace = 168,
+        ButtonHighlight = 169,
+        ButtonShadow = 170,
+        GradientActiveCaption = 171,
+        GradientInactiveCaption = 172,
+        MenuBar = 173,
+        MenuHighlight = 174,
+    }
+    public class PlatformBitmapLoader : Splat.IBitmapLoader
+    {
+        public PlatformBitmapLoader() { }
+        public Splat.IBitmap Create(float width, float height) { }
+        public System.Threading.Tasks.Task<Splat.IBitmap> Load(System.IO.Stream sourceStream, System.Nullable<float> desiredWidth, System.Nullable<float> desiredHeight) { }
+        public System.Threading.Tasks.Task<Splat.IBitmap> LoadFromResource(string resource, System.Nullable<float> desiredWidth, System.Nullable<float> desiredHeight) { }
+    }
+    public class static PlatformModeDetector
+    {
+        public static bool InDesignMode() { }
+        public static void OverrideModeDetector(Splat.IPlatformModeDetector modeDetector) { }
+    }
+    public class static PointExtensions
+    {
+        public static System.Drawing.PointF FromNative(this System.Windows.Point value) { }
+        public static System.Windows.Point ToNative(this System.Drawing.Point value) { }
+        public static System.Windows.Point ToNative(this System.Drawing.PointF value) { }
+    }
+    public class static RectExtensions
+    {
+        public static System.Drawing.RectangleF FromNative(this System.Windows.Rect value) { }
+        public static System.Windows.Rect ToNative(this System.Drawing.Rectangle value) { }
+        public static System.Windows.Rect ToNative(this System.Drawing.RectangleF value) { }
+    }
+    public class static ServiceLocationDrawingInitialization
+    {
+        public static void RegisterPlatformBitmapLoader(this Splat.IMutableDependencyResolver resolver) { }
+    }
+    public class static SizeExtensions
+    {
+        public static System.Drawing.SizeF FromNative(this System.Windows.Size value) { }
+        public static System.Windows.Size ToNative(this System.Drawing.Size value) { }
+        public static System.Windows.Size ToNative(this System.Drawing.SizeF value) { }
+    }
+    [System.Runtime.Serialization.DataContractAttribute()]
+    public struct SplatColor : System.IEquatable<Splat.SplatColor>
+    {
+        public byte A { get; }
+        public static Splat.SplatColor AliceBlue { get; }
+        public static Splat.SplatColor AntiqueWhite { get; }
+        public static Splat.SplatColor Aqua { get; }
+        public static Splat.SplatColor Aquamarine { get; }
+        public static Splat.SplatColor Azure { get; }
+        public byte B { get; }
+        public static Splat.SplatColor Beige { get; }
+        public static Splat.SplatColor Bisque { get; }
+        public static Splat.SplatColor Black { get; }
+        public static Splat.SplatColor BlanchedAlmond { get; }
+        public static Splat.SplatColor Blue { get; }
+        public static Splat.SplatColor BlueViolet { get; }
+        public static Splat.SplatColor Brown { get; }
+        public static Splat.SplatColor BurlyWood { get; }
+        public static Splat.SplatColor CadetBlue { get; }
+        public static Splat.SplatColor Chartreuse { get; }
+        public static Splat.SplatColor Chocolate { get; }
+        public static Splat.SplatColor Coral { get; }
+        public static Splat.SplatColor CornflowerBlue { get; }
+        public static Splat.SplatColor Cornsilk { get; }
+        public static Splat.SplatColor Crimson { get; }
+        public static Splat.SplatColor Cyan { get; }
+        public static Splat.SplatColor DarkBlue { get; }
+        public static Splat.SplatColor DarkCyan { get; }
+        public static Splat.SplatColor DarkGoldenrod { get; }
+        public static Splat.SplatColor DarkGray { get; }
+        public static Splat.SplatColor DarkGreen { get; }
+        public static Splat.SplatColor DarkKhaki { get; }
+        public static Splat.SplatColor DarkMagenta { get; }
+        public static Splat.SplatColor DarkOliveGreen { get; }
+        public static Splat.SplatColor DarkOrange { get; }
+        public static Splat.SplatColor DarkOrchid { get; }
+        public static Splat.SplatColor DarkRed { get; }
+        public static Splat.SplatColor DarkSalmon { get; }
+        public static Splat.SplatColor DarkSeaGreen { get; }
+        public static Splat.SplatColor DarkSlateBlue { get; }
+        public static Splat.SplatColor DarkSlateGray { get; }
+        public static Splat.SplatColor DarkTurquoise { get; }
+        public static Splat.SplatColor DarkViolet { get; }
+        public static Splat.SplatColor DeepPink { get; }
+        public static Splat.SplatColor DeepSkyBlue { get; }
+        public static Splat.SplatColor DimGray { get; }
+        public static Splat.SplatColor DodgerBlue { get; }
+        public static Splat.SplatColor Empty { get; }
+        public static Splat.SplatColor Firebrick { get; }
+        public static Splat.SplatColor FloralWhite { get; }
+        public static Splat.SplatColor ForestGreen { get; }
+        public static Splat.SplatColor Fuchsia { get; }
+        public byte G { get; }
+        public static Splat.SplatColor Gainsboro { get; }
+        public static Splat.SplatColor GhostWhite { get; }
+        public static Splat.SplatColor Gold { get; }
+        public static Splat.SplatColor Goldenrod { get; }
+        public static Splat.SplatColor Gray { get; }
+        public static Splat.SplatColor Green { get; }
+        public static Splat.SplatColor GreenYellow { get; }
+        public static Splat.SplatColor Honeydew { get; }
+        public static Splat.SplatColor HotPink { get; }
+        public static Splat.SplatColor IndianRed { get; }
+        public static Splat.SplatColor Indigo { get; }
+        public bool IsEmpty { get; }
+        public bool IsKnownColor { get; }
+        public bool IsNamedColor { get; }
+        public bool IsSystemColor { get; }
+        public static Splat.SplatColor Ivory { get; }
+        public static Splat.SplatColor Khaki { get; }
+        public static Splat.SplatColor Lavender { get; }
+        public static Splat.SplatColor LavenderBlush { get; }
+        public static Splat.SplatColor LawnGreen { get; }
+        public static Splat.SplatColor LemonChiffon { get; }
+        public static Splat.SplatColor LightBlue { get; }
+        public static Splat.SplatColor LightCoral { get; }
+        public static Splat.SplatColor LightCyan { get; }
+        public static Splat.SplatColor LightGoldenrodYellow { get; }
+        public static Splat.SplatColor LightGray { get; }
+        public static Splat.SplatColor LightGreen { get; }
+        public static Splat.SplatColor LightPink { get; }
+        public static Splat.SplatColor LightSalmon { get; }
+        public static Splat.SplatColor LightSeaGreen { get; }
+        public static Splat.SplatColor LightSkyBlue { get; }
+        public static Splat.SplatColor LightSlateGray { get; }
+        public static Splat.SplatColor LightSteelBlue { get; }
+        public static Splat.SplatColor LightYellow { get; }
+        public static Splat.SplatColor Lime { get; }
+        public static Splat.SplatColor LimeGreen { get; }
+        public static Splat.SplatColor Linen { get; }
+        public static Splat.SplatColor Magenta { get; }
+        public static Splat.SplatColor Maroon { get; }
+        public static Splat.SplatColor MediumAquamarine { get; }
+        public static Splat.SplatColor MediumBlue { get; }
+        public static Splat.SplatColor MediumOrchid { get; }
+        public static Splat.SplatColor MediumPurple { get; }
+        public static Splat.SplatColor MediumSeaGreen { get; }
+        public static Splat.SplatColor MediumSlateBlue { get; }
+        public static Splat.SplatColor MediumSpringGreen { get; }
+        public static Splat.SplatColor MediumTurquoise { get; }
+        public static Splat.SplatColor MediumVioletRed { get; }
+        public static Splat.SplatColor MidnightBlue { get; }
+        public static Splat.SplatColor MintCream { get; }
+        public static Splat.SplatColor MistyRose { get; }
+        public static Splat.SplatColor Moccasin { get; }
+        public string Name { get; }
+        public static Splat.SplatColor NavajoWhite { get; }
+        public static Splat.SplatColor Navy { get; }
+        public static Splat.SplatColor OldLace { get; }
+        public static Splat.SplatColor Olive { get; }
+        public static Splat.SplatColor OliveDrab { get; }
+        public static Splat.SplatColor Orange { get; }
+        public static Splat.SplatColor OrangeRed { get; }
+        public static Splat.SplatColor Orchid { get; }
+        public static Splat.SplatColor PaleGoldenrod { get; }
+        public static Splat.SplatColor PaleGreen { get; }
+        public static Splat.SplatColor PaleTurquoise { get; }
+        public static Splat.SplatColor PaleVioletRed { get; }
+        public static Splat.SplatColor PapayaWhip { get; }
+        public static Splat.SplatColor PeachPuff { get; }
+        public static Splat.SplatColor Peru { get; }
+        public static Splat.SplatColor Pink { get; }
+        public static Splat.SplatColor Plum { get; }
+        public static Splat.SplatColor PowderBlue { get; }
+        public static Splat.SplatColor Purple { get; }
+        public byte R { get; }
+        public static Splat.SplatColor Red { get; }
+        public static Splat.SplatColor RosyBrown { get; }
+        public static Splat.SplatColor RoyalBlue { get; }
+        public static Splat.SplatColor SaddleBrown { get; }
+        public static Splat.SplatColor Salmon { get; }
+        public static Splat.SplatColor SandyBrown { get; }
+        public static Splat.SplatColor SeaGreen { get; }
+        public static Splat.SplatColor SeaShell { get; }
+        public static Splat.SplatColor Sienna { get; }
+        public static Splat.SplatColor Silver { get; }
+        public static Splat.SplatColor SkyBlue { get; }
+        public static Splat.SplatColor SlateBlue { get; }
+        public static Splat.SplatColor SlateGray { get; }
+        public static Splat.SplatColor Snow { get; }
+        public static Splat.SplatColor SpringGreen { get; }
+        public static Splat.SplatColor SteelBlue { get; }
+        public static Splat.SplatColor Tan { get; }
+        public static Splat.SplatColor Teal { get; }
+        public static Splat.SplatColor Thistle { get; }
+        public static Splat.SplatColor Tomato { get; }
+        public static Splat.SplatColor Transparent { get; }
+        public static Splat.SplatColor Turquoise { get; }
+        public static Splat.SplatColor Violet { get; }
+        public static Splat.SplatColor Wheat { get; }
+        public static Splat.SplatColor White { get; }
+        public static Splat.SplatColor WhiteSmoke { get; }
+        public static Splat.SplatColor Yellow { get; }
+        public static Splat.SplatColor YellowGreen { get; }
+        public override bool Equals(object obj) { }
+        public bool Equals(Splat.SplatColor other) { }
+        public static Splat.SplatColor FromArgb(int red, int green, int blue) { }
+        public static Splat.SplatColor FromArgb(int alpha, int red, int green, int blue) { }
+        public static Splat.SplatColor FromArgb(int alpha, Splat.SplatColor baseColor) { }
+        public static Splat.SplatColor FromArgb(int argb) { }
+        public static Splat.SplatColor FromKnownColor(Splat.KnownColor color) { }
+        public static Splat.SplatColor FromName(string name) { }
+        public float GetBrightness() { }
+        public override int GetHashCode() { }
+        public float GetHue() { }
+        public float GetSaturation() { }
+        public int ToArgb() { }
+        public Splat.KnownColor ToKnownColor() { }
+        public override string ToString() { }
+        public static bool ==(Splat.SplatColor left, Splat.SplatColor right) { }
+        public static bool !=(Splat.SplatColor left, Splat.SplatColor right) { }
+    }
+    public class static SplatColorExtensions
+    {
+        public static Splat.SplatColor FromNative(this System.Windows.Media.Color value) { }
+        public static System.Windows.Media.Color ToNative(this Splat.SplatColor value) { }
+        public static System.Windows.Media.SolidColorBrush ToNativeBrush(this Splat.SplatColor value) { }
+    }
+}

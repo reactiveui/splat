@@ -51,7 +51,7 @@ namespace Splat
                 return;
             }
 
-            System.Diagnostics.Debug.WriteLine(message, type.Name);
+            System.Diagnostics.Debug.WriteLine(message, type?.Name);
         }
 
         /// <inheritdoc />
@@ -62,7 +62,7 @@ namespace Splat
                 return;
             }
 
-            System.Diagnostics.Debug.WriteLine($"{message} - {exception}", type.Name);
+            System.Diagnostics.Debug.WriteLine($"{message} - {exception}", type?.Name);
         }
     }
 }

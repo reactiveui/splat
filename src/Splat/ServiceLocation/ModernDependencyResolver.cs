@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Splat
@@ -50,13 +51,14 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public bool HasRegistration(Type serviceType)
+        public bool HasRegistration(Type serviceType, string contract = null)
         {
-            var pair = GetKey(serviceType);
-            return _registry.ContainsKey(pair);
+            var pair = GetKey(serviceType, contract);
+            return _registry.TryGetValue(pair, out var registrations) && registrations.Count > 0;
         }
 
         /// <inheritdoc />
+        [SuppressMessage("Design", "CA2000: Dispose object", Justification = "Disposed in callback.")]
         public void Register(Func<object> factory, Type serviceType, string contract = null)
         {
             var pair = GetKey(serviceType, contract);

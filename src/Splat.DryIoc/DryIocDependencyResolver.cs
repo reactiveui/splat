@@ -41,14 +41,33 @@ namespace Splat.DryIoc
                 : _container.ResolveMany(serviceType, serviceKey: contract);
 
         /// <inheritdoc />
-        public bool HasRegistration(Type serviceType)
+        public bool HasRegistration(Type serviceType, string contract = null)
         {
-            return _container.GetServiceRegistrations().Any(x => x.ServiceType == serviceType);
+            return _container.GetServiceRegistrations().Any(x =>
+            {
+                if (x.ServiceType != serviceType)
+                {
+                    return false;
+                }
+
+                if (contract == null)
+                {
+                    return x.OptionalServiceKey == null;
+                }
+
+                return x.OptionalServiceKey is string serviceKeyAsString
+                       && contract.Equals(serviceKeyAsString, StringComparison.Ordinal);
+            });
         }
 
         /// <inheritdoc />
         public virtual void Register(Func<object> factory, Type serviceType, string contract = null)
         {
+            if (factory is null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
             if (string.IsNullOrEmpty(contract))
             {
                 _container.UseInstance(serviceType, factory(), IfAlreadyRegistered.AppendNewImplementation);

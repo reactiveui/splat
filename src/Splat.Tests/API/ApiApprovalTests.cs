@@ -34,6 +34,15 @@ namespace Splat.Tests
             CheckApproval(typeof(AssemblyFinder).Assembly);
         }
 
+        /// <summary>
+        /// Tests to make sure the splat project is approved.
+        /// </summary>
+        [Fact]
+        public void SplatUIProject()
+        {
+            CheckApproval(typeof(IPlatformModeDetector).Assembly);
+        }
+
         private static void CheckApproval(Assembly assembly, [CallerMemberName]string memberName = null, [CallerFilePath]string filePath = null)
         {
             var targetFrameworkName = Assembly.GetExecutingAssembly().GetTargetFrameworkName();

@@ -18,12 +18,14 @@ namespace Splat
         /// <param name="resolver">The resolver to register the needed service types against.</param>
         public static void InitializeSplat(this IMutableDependencyResolver resolver)
         {
+            if (resolver is null)
+            {
+                throw new System.ArgumentNullException(nameof(resolver));
+            }
+
             RegisterDefaultLogManager(resolver);
             RegisterLogger(resolver);
             RegisterApplicationPerformanceMonitoring(resolver);
-#if !NETSTANDARD
-            RegisterPlatformBitmapLoader(resolver);
-#endif
         }
 
         private static void RegisterApplicationPerformanceMonitoring(IMutableDependencyResolver resolver)
@@ -49,16 +51,5 @@ namespace Splat
                 resolver.RegisterConstant(new DebugLogger(), typeof(ILogger));
             }
         }
-
-#if !NETSTANDARD
-        private static void RegisterPlatformBitmapLoader(IMutableDependencyResolver resolver)
-        {
-            // not supported in netstandard2.0
-            if (!resolver.HasRegistration(typeof(IBitmapLoader)))
-            {
-                resolver.RegisterLazySingleton(() => new PlatformBitmapLoader(), typeof(IBitmapLoader));
-            }
-        }
-#endif
     }
 }

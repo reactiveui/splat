@@ -250,7 +250,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         }
 
         /// <inheritdoc/>
-        public virtual bool HasRegistration(Type serviceType)
+        public virtual bool HasRegistration(Type serviceType, string contract = null)
         {
             if (serviceType == null)
             {
@@ -259,11 +259,29 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
 
             if (!_isImmutable)
             {
-                return _serviceCollection.Any(sd => sd.ServiceType == serviceType);
+                if (string.IsNullOrWhiteSpace(contract))
+                {
+                    return _serviceCollection.Any(sd => sd.ServiceType == serviceType);
+                }
+
+                var dictionary = (ContractDictionary)_serviceCollection.FirstOrDefault(sd => sd.ServiceType == GetDictionaryType(serviceType))?.ImplementationInstance;
+
+                if (dictionary == null)
+                {
+                    return false;
+                }
+
+                return dictionary.GetFactories(contract).Select(f => f()).Any();
             }
 
-            var service = _serviceProvider.GetService(serviceType);
-            return service != null;
+            if (contract == null)
+            {
+                var service = _serviceProvider.GetService(serviceType);
+                return service != null;
+            }
+
+            var dic = GetContractDictionary(serviceType, false);
+            return dic?.IsEmpty == false;
         }
 
         /// <inheritdoc />
@@ -368,6 +386,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                 });
         }
 
+        [SuppressMessage("Design", "CA1812: Unused class.", Justification = "Used in reflection.")]
         private class ContractDictionary<T> : ContractDictionary
         {
         }
