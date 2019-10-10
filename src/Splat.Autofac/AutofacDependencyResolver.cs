@@ -38,16 +38,7 @@ namespace Splat.Autofac
         {
             lock (_lockObject)
             {
-                try
-                {
-                    return string.IsNullOrEmpty(contract)
-                        ? _componentContext.Resolve(serviceType)
-                        : _componentContext.ResolveNamed(contract, serviceType);
-                }
-                catch (DependencyResolutionException)
-                {
-                    return null;
-                }
+                return Resolve(serviceType, contract);
             }
         }
 
@@ -59,9 +50,7 @@ namespace Splat.Autofac
                 try
                 {
                     var enumerableType = typeof(IEnumerable<>).MakeGenericType(serviceType);
-                    object instance = string.IsNullOrEmpty(contract)
-                        ? _componentContext.Resolve(enumerableType)
-                        : _componentContext.ResolveNamed(contract, enumerableType);
+                    var instance = Resolve(enumerableType, contract);
                     return ((IEnumerable)instance).Cast<object>();
                 }
                 catch (DependencyResolutionException)
@@ -335,6 +324,22 @@ namespace Splat.Autofac
         private static bool HasNoContract(Service service)
         {
             return !(service is KeyedService);
+        }
+
+        private object Resolve(Type serviceType, string contract)
+        {
+            object serviceInstance;
+
+            if (string.IsNullOrEmpty(contract))
+            {
+                _componentContext.TryResolve(serviceType, out serviceInstance);
+            }
+            else
+            {
+                _componentContext.TryResolveNamed(contract, serviceType, out serviceInstance);
+            }
+
+            return serviceInstance;
         }
 
         private void RemoveAndRebuild(
