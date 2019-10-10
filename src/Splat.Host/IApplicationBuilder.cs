@@ -24,8 +24,8 @@ namespace Splat.Host
         /// </summary>
         /// <param name="configureDelegate">The delegate for configuring the <see cref="IConfigurationBuilder"/> that will be used
         /// to construct the <see cref="IConfiguration"/> for the host.</param>
-        /// <returns>The same instance of the <see cref="IHostBuilder"/> for chaining.</returns>
-        IApplicationBuilder ConfigureHostConfiguration(Action<IConfigurationBuilder> configureDelegate);
+        /// <returns>The same instance of the <see cref="IApplicationClientBuilder"/> for chaining.</returns>
+        IApplicationBuilder ConfigureClientConfiguration(Action<IConfigurationBuilder> configureDelegate);
 
         /// <summary>
         /// Configures the application configuration.

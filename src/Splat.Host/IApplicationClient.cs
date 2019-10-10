@@ -11,7 +11,7 @@ namespace Splat.Host
     /// <summary>
     /// https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.hosting.ihost?view=aspnetcore-2.2 .
     /// </summary>
-    public interface IApplicationHost
+    public interface IApplicationClient
     {
         /// <summary>
         /// Gets the fully composed locator.

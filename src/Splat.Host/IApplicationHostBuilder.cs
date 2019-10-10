@@ -8,20 +8,28 @@ namespace Splat.Host
     /// <summary>
     /// Application host builder.
     /// </summary>
-    public interface IApplicationHostBuilder
+    public interface IApplicationClientBuilder
     {
         /// <summary>
         /// Builds this instance.
         /// </summary>
         /// <returns>An app host.</returns>
-        IApplicationHost Build();
+        IApplicationClient Build();
 
         /// <summary>
         /// Uses the startup class to initialize the host.
         /// </summary>
         /// <typeparam name="T">The startup type.</typeparam>
         /// <returns>An application host builder.</returns>
-        IApplicationHostBuilder UseStartup<T>()
+        IApplicationClientBuilder UseStartup<T>()
             where T : IStartup;
+    }
+
+    // TODO: Add an initialize extension to each platform for default init.
+    public static class ApplicationClientBuilderExtensions
+    {
+        public static void InitializeWPF(this IApplicationBuilder applicationBuilder)
+        {
+        }
     }
 }
