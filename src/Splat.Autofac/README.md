@@ -2,7 +2,7 @@
 
 ## Using Autofac
 
-Splay.Autofac is an adapter for `IMutableDependencyResolver`.  It allows you to register your application dependencies in a Autofac `Container`.  You can then use the container as Splat's internal dependency resolver.
+Splat.Autofac is an adapter for `IMutableDependencyResolver`.  It allows you to register your application dependencies in a Autofac `Container`.  You can then use the container as Splat's internal dependency resolver.
 
 ### Register the Container
 
