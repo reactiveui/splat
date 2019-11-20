@@ -49,11 +49,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Common.Test", "Splat.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Android.Runner", "Splat.Android.Tests\Splat.Android.Runner.csproj", "{E7957867-EF5A-4765-A2CB-990A6ADFE6BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Microsoft.Extensions.DependencyInjection", "Splat.Microsoft.Extensions.DependencyInjection\Splat.Microsoft.Extensions.DependencyInjection.csproj", "{168CC48D-C28C-48BA-B6F1-234A0C16597E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Microsoft.Extensions.DependencyInjection", "Splat.Microsoft.Extensions.DependencyInjection\Splat.Microsoft.Extensions.DependencyInjection.csproj", "{168CC48D-C28C-48BA-B6F1-234A0C16597E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Microsoft.Extensions.DependencyInjection.Tests", "Splat.Microsoft.Extensions.DependencyInjection.Tests\Splat.Microsoft.Extensions.DependencyInjection.Tests.csproj", "{85E5821D-CCC3-44DC-96A0-DFC02953943F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Microsoft.Extensions.DependencyInjection.Tests", "Splat.Microsoft.Extensions.DependencyInjection.Tests\Splat.Microsoft.Extensions.DependencyInjection.Tests.csproj", "{85E5821D-CCC3-44DC-96A0-DFC02953943F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Drawing", "Splat.Drawing\Splat.Drawing.csproj", "{694D2813-14FF-456A-B1E7-C5BB82AEE400}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Drawing", "Splat.Drawing\Splat.Drawing.csproj", "{694D2813-14FF-456A-B1E7-C5BB82AEE400}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Prism", "Splat.Prism\Splat.Prism.csproj", "{1D1FE7E6-10FF-4A7F-90D6-6E3696EC7D0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Prism.Forms", "Splat.Prism.Forms\Splat.Prism.Forms.csproj", "{39195824-8E56-4240-A5A0-7FA4E12099D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Prism.Tests", "Splat.Prism.Tests\Splat.Prism.Tests.csproj", "{905A96B2-03C9-4D08-8E8B-E5B0F7F9F33A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -139,6 +145,18 @@ Global
 		{694D2813-14FF-456A-B1E7-C5BB82AEE400}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{694D2813-14FF-456A-B1E7-C5BB82AEE400}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{694D2813-14FF-456A-B1E7-C5BB82AEE400}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D1FE7E6-10FF-4A7F-90D6-6E3696EC7D0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D1FE7E6-10FF-4A7F-90D6-6E3696EC7D0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D1FE7E6-10FF-4A7F-90D6-6E3696EC7D0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D1FE7E6-10FF-4A7F-90D6-6E3696EC7D0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39195824-8E56-4240-A5A0-7FA4E12099D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39195824-8E56-4240-A5A0-7FA4E12099D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39195824-8E56-4240-A5A0-7FA4E12099D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39195824-8E56-4240-A5A0-7FA4E12099D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{905A96B2-03C9-4D08-8E8B-E5B0F7F9F33A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{905A96B2-03C9-4D08-8E8B-E5B0F7F9F33A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{905A96B2-03C9-4D08-8E8B-E5B0F7F9F33A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{905A96B2-03C9-4D08-8E8B-E5B0F7F9F33A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -163,6 +181,9 @@ Global
 		{168CC48D-C28C-48BA-B6F1-234A0C16597E} = {651320D6-1048-4F87-9D8E-75134FAFABDA}
 		{85E5821D-CCC3-44DC-96A0-DFC02953943F} = {3F8EA9C2-D6D1-4B18-8670-DFC24B96972E}
 		{694D2813-14FF-456A-B1E7-C5BB82AEE400} = {651320D6-1048-4F87-9D8E-75134FAFABDA}
+		{1D1FE7E6-10FF-4A7F-90D6-6E3696EC7D0D} = {651320D6-1048-4F87-9D8E-75134FAFABDA}
+		{39195824-8E56-4240-A5A0-7FA4E12099D4} = {651320D6-1048-4F87-9D8E-75134FAFABDA}
+		{905A96B2-03C9-4D08-8E8B-E5B0F7F9F33A} = {3F8EA9C2-D6D1-4B18-8670-DFC24B96972E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E833ED14-B971-4E09-B27E-76E99BC0FC10}

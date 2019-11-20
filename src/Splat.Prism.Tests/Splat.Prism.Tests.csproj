@@ -2,13 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <NoWarn>$(NoWarn);1591;CA1707;SA1633;CA2000</NoWarn>
-    <IsPackable>false</IsPackable>
+    <NoWarn>$(NoWarn);CA1707;CS1574</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />
-    <ProjectReference Include="..\Splat.Ninject\Splat.Ninject.csproj" />
+    <ProjectReference Include="..\Splat.Prism\Splat.Prism.csproj" />
   </ItemGroup>
 
 </Project>

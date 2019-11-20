@@ -420,6 +420,7 @@ namespace Splat
         public static Splat.IReadonlyDependencyResolver Current { get; }
         public static Splat.IMutableDependencyResolver CurrentMutable { get; }
         public static bool AreResolverCallbackChangedNotificationsEnabled() { }
+        public static Splat.IDependencyResolver GetLocator() { }
         public static System.IDisposable RegisterResolverCallbackChanged(System.Action callback) { }
         public static void SetLocator(Splat.IDependencyResolver dependencyResolver) { }
         public static System.IDisposable SuppressResolverCallbackChangedNotifications() { }
