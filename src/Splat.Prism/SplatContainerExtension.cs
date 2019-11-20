@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Prism.Ioc;
 
 namespace Splat.Prism
@@ -15,12 +16,15 @@ namespace Splat.Prism
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Match Prism naming scheme.")]
     public class SplatContainerExtension : IContainerExtension<IDependencyResolver>, IDependencyResolver
     {
+        private Action _disposeAction;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SplatContainerExtension"/> class.
         /// </summary>
         public SplatContainerExtension()
         {
             Locator.SetLocator(Instance);
+            _disposeAction = () => Locator.SetLocator(new ModernDependencyResolver());
         }
 
         /// <summary>
@@ -28,27 +32,32 @@ namespace Splat.Prism
         /// </summary>
         public IDependencyResolver Instance { get; } = new ModernDependencyResolver();
 
+        /// <inheritdoc/>
         public void Dispose()
         {
-            throw new NotImplementedException();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <inheritdoc/>
         public void FinalizeExtension()
         {
-            Locator.SetLocator(new ModernDependencyResolver());
+            Dispose();
         }
 
+        /// <inheritdoc/>
         public object GetService(Type serviceType, string contract = null)
         {
             return Instance.GetService(serviceType, contract);
         }
 
+        /// <inheritdoc/>
         public IEnumerable<object> GetServices(Type serviceType, string contract = null)
         {
             return Instance.GetServices(serviceType, contract);
         }
 
+        /// <inheritdoc/>
         public bool HasRegistration(Type serviceType, string contract = null)
         {
             return Instance.HasRegistration(serviceType, contract);
@@ -80,6 +89,7 @@ namespace Splat.Prism
             return this;
         }
 
+        /// <inheritdoc/>
         public void Register(Func<object> factory, Type serviceType, string contract = null)
         {
             Instance.Register(factory, serviceType, contract);
@@ -137,19 +147,34 @@ namespace Splat.Prism
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc/>
         public IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
         {
             return Instance.ServiceRegistrationCallback(serviceType, contract, callback);
         }
 
+        /// <inheritdoc/>
         public void UnregisterAll(Type serviceType, string contract = null)
         {
             Instance.UnregisterAll(serviceType, contract);
         }
 
+        /// <inheritdoc/>
         public void UnregisterCurrent(Type serviceType, string contract = null)
         {
             Instance.UnregisterCurrent(serviceType, contract);
+        }
+
+        /// <summary>
+        /// Disposes data associated with the extension.
+        /// </summary>
+        /// <param name="isDisposing">If we are getting called by the Dispose() method rather than a finalizer.</param>
+        protected virtual void Dispose(bool isDisposing)
+        {
+            if (isDisposing)
+            {
+                Interlocked.Exchange(ref _disposeAction, null)?.Invoke();
+            }
         }
     }
 }
