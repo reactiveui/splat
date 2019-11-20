@@ -4,7 +4,9 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Prism.Ioc;
 
@@ -14,8 +16,9 @@ namespace Splat.Prism
     /// A container for the Prism application.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Match Prism naming scheme.")]
-    public class SplatContainerExtension : IContainerExtension<IDependencyResolver>, IDependencyResolver
+    public class SplatContainerExtension : IContainerExtension<IDependencyResolver>, IDisposable
     {
+        private readonly ConcurrentDictionary<(Type type, string contract), Type> _types = new ConcurrentDictionary<(Type type, string contract), Type>();
         private Action _disposeAction;
 
         /// <summary>
@@ -46,24 +49,6 @@ namespace Splat.Prism
         }
 
         /// <inheritdoc/>
-        public object GetService(Type serviceType, string contract = null)
-        {
-            return Instance.GetService(serviceType, contract);
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<object> GetServices(Type serviceType, string contract = null)
-        {
-            return Instance.GetServices(serviceType, contract);
-        }
-
-        /// <inheritdoc/>
-        public bool HasRegistration(Type serviceType, string contract = null)
-        {
-            return Instance.HasRegistration(serviceType, contract);
-        }
-
-        /// <inheritdoc/>
         public bool IsRegistered(Type type)
         {
             return Instance.HasRegistration(type);
@@ -78,21 +63,46 @@ namespace Splat.Prism
         /// <inheritdoc/>
         public IContainerRegistry Register(Type from, Type to)
         {
+            _types[(from, null)] = to;
             Instance.Register(() => Activator.CreateInstance(to), from);
+            return this;
+        }
+
+        /// <summary>
+        /// Registers an object with the default registration func.
+        /// </summary>
+        /// <param name="from">The type to transform from.</param>
+        /// <param name="to">The type to transform to.</param>
+        /// <param name="defaultCreationFunc">A creation func for generating the type.</param>
+        /// <returns>The container registry for builder operations.</returns>
+        public IContainerRegistry Register(Type from, Type to, Func<object> defaultCreationFunc)
+        {
+            _types[(from, null)] = to;
+            Instance.Register(() => defaultCreationFunc, from);
             return this;
         }
 
         /// <inheritdoc/>
         public IContainerRegistry Register(Type from, Type to, string name)
         {
+            _types[(from, name)] = to;
             Instance.Register(() => Activator.CreateInstance(to), from, name);
             return this;
         }
 
-        /// <inheritdoc/>
-        public void Register(Func<object> factory, Type serviceType, string contract = null)
+        /// <summary>
+        /// Registers an object with the default registration func.
+        /// </summary>
+        /// <param name="from">The type to transform from.</param>
+        /// <param name="to">The type to transform to.</param>
+        /// <param name="name">The contract name.</param>
+        /// <param name="defaultCreationFunc">A creation func for generating the type.</param>
+        /// <returns>The container registry for builder operations.</returns>
+        public IContainerRegistry Register(Type from, Type to, string name, Func<object> defaultCreationFunc)
         {
-            Instance.Register(factory, serviceType, contract);
+            _types[(from, name)] = to;
+            Instance.Register(() => defaultCreationFunc, from);
+            return this;
         }
 
         /// <inheritdoc/>
@@ -112,13 +122,44 @@ namespace Splat.Prism
         /// <inheritdoc/>
         public IContainerRegistry RegisterSingleton(Type from, Type to)
         {
+            _types[(from, null)] = to;
             Instance.RegisterLazySingleton(() => Activator.CreateInstance(to), from);
+            return this;
+        }
+
+        /// <summary>
+        /// Registers an object with the default registration func.
+        /// </summary>
+        /// <param name="from">The type to transform from.</param>
+        /// <param name="to">The type to transform to.</param>
+        /// <param name="defaultCreationFunc">A creation func for generating the type.</param>
+        /// <returns>The container registry for builder operations.</returns>
+        public IContainerRegistry RegisterSingleton(Type from, Type to, Func<object> defaultCreationFunc)
+        {
+            _types[(from, null)] = to;
+            Instance.RegisterLazySingleton(() => defaultCreationFunc, from);
+            return this;
+        }
+
+        /// <summary>
+        /// Registers an object with the default registration func.
+        /// </summary>
+        /// <param name="from">The type to transform from.</param>
+        /// <param name="to">The type to transform to.</param>
+        /// <param name="name">The contract name.</param>
+        /// <param name="defaultCreationFunc">A creation func for generating the type.</param>
+        /// <returns>The container registry for builder operations.</returns>
+        public IContainerRegistry RegisterSingleton(Type from, Type to, string name, Func<object> defaultCreationFunc)
+        {
+            _types[(from, name)] = to;
+            Instance.RegisterLazySingleton(() => defaultCreationFunc, from);
             return this;
         }
 
         /// <inheritdoc/>
         public IContainerRegistry RegisterSingleton(Type from, Type to, string name)
         {
+            _types[(from, null)] = to;
             Instance.RegisterLazySingleton(() => Activator.CreateInstance(to), from, name);
             return this;
         }
@@ -132,7 +173,12 @@ namespace Splat.Prism
         /// <inheritdoc/>
         public object Resolve(Type type, params (Type Type, object Instance)[] parameters)
         {
-            throw new NotImplementedException();
+            if (!_types.TryGetValue((type, null), out var resolvedType))
+            {
+                return Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance));
+            }
+
+            return null;
         }
 
         /// <inheritdoc/>
@@ -144,25 +190,12 @@ namespace Splat.Prism
         /// <inheritdoc/>
         public object Resolve(Type type, string name, params (Type Type, object Instance)[] parameters)
         {
-            throw new NotImplementedException();
-        }
+            if (!_types.TryGetValue((type, name), out var resolvedType))
+            {
+                return Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance));
+            }
 
-        /// <inheritdoc/>
-        public IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
-        {
-            return Instance.ServiceRegistrationCallback(serviceType, contract, callback);
-        }
-
-        /// <inheritdoc/>
-        public void UnregisterAll(Type serviceType, string contract = null)
-        {
-            Instance.UnregisterAll(serviceType, contract);
-        }
-
-        /// <inheritdoc/>
-        public void UnregisterCurrent(Type serviceType, string contract = null)
-        {
-            Instance.UnregisterCurrent(serviceType, contract);
+            return null;
         }
 
         /// <summary>
@@ -174,6 +207,7 @@ namespace Splat.Prism
             if (isDisposing)
             {
                 Interlocked.Exchange(ref _disposeAction, null)?.Invoke();
+                _types.Clear();
             }
         }
     }
