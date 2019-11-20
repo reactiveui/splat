@@ -4,6 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using Prism.Ioc;
 
 namespace Splat.Prism
@@ -12,7 +13,7 @@ namespace Splat.Prism
     /// A container for the Prism application.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Match Prism naming scheme.")]
-    public class SplatContainerExtension : IContainerExtension<IDependencyResolver>
+    public class SplatContainerExtension : IContainerExtension<IDependencyResolver>, IDependencyResolver
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SplatContainerExtension"/> class.
@@ -27,10 +28,30 @@ namespace Splat.Prism
         /// </summary>
         public IDependencyResolver Instance { get; } = new ModernDependencyResolver();
 
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <inheritdoc/>
         public void FinalizeExtension()
         {
             Locator.SetLocator(new ModernDependencyResolver());
+        }
+
+        public object GetService(Type serviceType, string contract = null)
+        {
+            return Instance.GetService(serviceType, contract);
+        }
+
+        public IEnumerable<object> GetServices(Type serviceType, string contract = null)
+        {
+            return Instance.GetServices(serviceType, contract);
+        }
+
+        public bool HasRegistration(Type serviceType, string contract = null)
+        {
+            return Instance.HasRegistration(serviceType, contract);
         }
 
         /// <inheritdoc/>
@@ -57,6 +78,11 @@ namespace Splat.Prism
         {
             Instance.Register(() => Activator.CreateInstance(to), from, name);
             return this;
+        }
+
+        public void Register(Func<object> factory, Type serviceType, string contract = null)
+        {
+            Instance.Register(factory, serviceType, contract);
         }
 
         /// <inheritdoc/>
@@ -109,6 +135,21 @@ namespace Splat.Prism
         public object Resolve(Type type, string name, params (Type Type, object Instance)[] parameters)
         {
             throw new NotImplementedException();
+        }
+
+        public IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
+        {
+            return Instance.ServiceRegistrationCallback(serviceType, contract, callback);
+        }
+
+        public void UnregisterAll(Type serviceType, string contract = null)
+        {
+            Instance.UnregisterAll(serviceType, contract);
+        }
+
+        public void UnregisterCurrent(Type serviceType, string contract = null)
+        {
+            Instance.UnregisterCurrent(serviceType, contract);
         }
     }
 }
