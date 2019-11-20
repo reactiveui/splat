@@ -78,7 +78,7 @@ namespace Splat.Prism
         public IContainerRegistry Register(Type from, Type to, Func<object> defaultCreationFunc)
         {
             _types[(from, null)] = to;
-            Instance.Register(() => defaultCreationFunc, from);
+            Instance.Register(() => defaultCreationFunc(), from);
             return this;
         }
 
@@ -101,7 +101,7 @@ namespace Splat.Prism
         public IContainerRegistry Register(Type from, Type to, string name, Func<object> defaultCreationFunc)
         {
             _types[(from, name)] = to;
-            Instance.Register(() => defaultCreationFunc, from);
+            Instance.Register(() => defaultCreationFunc(), from);
             return this;
         }
 
@@ -137,7 +137,7 @@ namespace Splat.Prism
         public IContainerRegistry RegisterSingleton(Type from, Type to, Func<object> defaultCreationFunc)
         {
             _types[(from, null)] = to;
-            Instance.RegisterLazySingleton(() => defaultCreationFunc, from);
+            Instance.RegisterLazySingleton(() => defaultCreationFunc(), from);
             return this;
         }
 
@@ -152,7 +152,7 @@ namespace Splat.Prism
         public IContainerRegistry RegisterSingleton(Type from, Type to, string name, Func<object> defaultCreationFunc)
         {
             _types[(from, name)] = to;
-            Instance.RegisterLazySingleton(() => defaultCreationFunc, from);
+            Instance.RegisterLazySingleton(() => defaultCreationFunc(), from);
             return this;
         }
 
