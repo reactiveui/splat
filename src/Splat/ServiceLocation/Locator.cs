@@ -4,8 +4,6 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using System.Threading;
 
 namespace Splat
 {
@@ -36,8 +34,6 @@ namespace Splat
         /// </summary>
         public static IMutableDependencyResolver CurrentMutable => InternalLocator.CurrentMutable;
 
-        internal static IDependencyResolver Internal => InternalLocator.Internal;
-
         /// <summary>
         /// Gets or sets the current locator instance.
         /// Used mostly for testing purposes.
@@ -51,6 +47,16 @@ namespace Splat
         public static void SetLocator(IDependencyResolver dependencyResolver)
         {
             InternalLocator.SetLocator(dependencyResolver);
+        }
+
+        /// <summary>
+        /// Gets the full locator.
+        /// Note you should use <see cref="Current"/> or <see cref="CurrentMutable"/> in most situations.
+        /// </summary>
+        /// <returns>The locator.</returns>
+        public static IDependencyResolver GetLocator()
+        {
+            return InternalLocator.Internal;
         }
 
         /// <summary>

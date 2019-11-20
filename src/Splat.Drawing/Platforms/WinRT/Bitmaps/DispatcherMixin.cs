@@ -26,7 +26,7 @@ namespace Splat
                     taskCompletionSource.SetException(ex);
                 }
             });
-            return await taskCompletionSource.Task;
+            return await taskCompletionSource.Task.ConfigureAwait(false);
         }
 
         // There is no TaskCompletionSource<void> so we use a bool that we throw away.

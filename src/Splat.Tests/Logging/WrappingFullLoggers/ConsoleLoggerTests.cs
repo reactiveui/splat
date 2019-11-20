@@ -20,7 +20,7 @@ namespace Splat.Tests.Logging
     public class ConsoleLoggerTests : FullLoggerTestBase
     {
         /// <inheritdoc/>
-        protected override (IFullLogger, IMockLogTarget) GetLogger(LogLevel minimumLogLevel)
+        protected override (IFullLogger logger, IMockLogTarget mockTarget) GetLogger(LogLevel minimumLogLevel)
         {
             var outputWriter = new ConsoleWriter();
             Console.SetOut(outputWriter);

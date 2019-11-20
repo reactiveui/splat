@@ -106,11 +106,11 @@ namespace Splat
             var pair = GetKey(serviceType, contract);
             if (!_registry.ContainsKey(pair))
             {
-                return default(object);
+                return default;
             }
 
-            var ret = _registry[pair].Last();
-            return ret();
+            var ret = _registry[pair].LastOrDefault();
+            return ret == null ? null : ret();
         }
 
         /// <inheritdoc />
@@ -213,7 +213,7 @@ namespace Splat
             _isDisposed = true;
         }
 
-        private static (Type, string) GetKey(
+        private static (Type type, string contract) GetKey(
             Type serviceType,
             string contract = null) =>
             (serviceType, contract ?? string.Empty);

@@ -146,9 +146,9 @@ namespace Splat.Tests
 
             Locator.RegisterResolverCallbackChanged(notificationAction);
 
-            using (Locator.Internal.WithResolver(false))
+            using (Locator.GetLocator().WithResolver(false))
             {
-                using (Locator.Internal.WithResolver(false))
+                using (Locator.GetLocator().WithResolver(false))
                 {
                 }
             }
