@@ -101,7 +101,7 @@ namespace Splat.Prism
         public IContainerRegistry Register(Type from, Type to, string name, Func<object> defaultCreationFunc)
         {
             _types[(from, name)] = to;
-            Instance.Register(() => defaultCreationFunc(), from);
+            Instance.Register(() => defaultCreationFunc(), from, name);
             return this;
         }
 
@@ -173,7 +173,7 @@ namespace Splat.Prism
         /// <inheritdoc/>
         public object Resolve(Type type, params (Type Type, object Instance)[] parameters)
         {
-            if (!_types.TryGetValue((type, null), out var resolvedType))
+            if (_types.TryGetValue((type, null), out var resolvedType))
             {
                 return Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance));
             }
