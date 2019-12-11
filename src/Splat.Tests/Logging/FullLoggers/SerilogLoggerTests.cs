@@ -108,13 +108,13 @@ namespace Splat.Tests.Logging
         }
 
         /// <inheritdoc/>
-        protected override (IFullLogger, IMockLogTarget) GetLogger(LogLevel minimumLogLevel)
+        protected override (IFullLogger logger, IMockLogTarget mockTarget) GetLogger(LogLevel minimumLogLevel)
         {
             var (log, messages) = CreateSerilogger(minimumLogLevel);
             return (new SerilogFullLogger(log), messages);
         }
 
-        private static (Logger, IMockLogTarget) CreateSerilogger(LogLevel minimumLogLevel)
+        private static (Logger logger, IMockLogTarget mockTarget) CreateSerilogger(LogLevel minimumLogLevel)
         {
             var messages = new LogTarget();
 

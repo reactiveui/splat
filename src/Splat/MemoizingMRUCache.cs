@@ -162,7 +162,7 @@ namespace Splat
                 }
                 else
                 {
-                    result = default(TVal);
+                    result = default;
                 }
 
                 return ret;
