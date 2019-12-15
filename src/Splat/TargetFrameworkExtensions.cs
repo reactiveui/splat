@@ -29,6 +29,8 @@ namespace Splat
         {
             switch (frameworkName)
             {
+                case ".NETCoreApp,Version=v3.1":
+                    return "netcoreapp3.1";
                 case ".NETCoreApp,Version=v3.0":
                     return "netcoreapp3.0";
                 case ".NETCoreApp,Version=v2.2":
@@ -42,6 +44,8 @@ namespace Splat
                 case ".NETCoreApp,Version=v1.0":
                     return "netcoreapp1.0";
 
+                case ".NETStandard,Version=v2.1":
+                    return "netstandard2.1";
                 case ".NETStandard,Version=v2.0":
                     return "netstandard2.0";
                 case ".NETStandard,Version=v1.6":
@@ -59,6 +63,8 @@ namespace Splat
                 case ".NETStandard,Version=v1.0":
                     return "netstandard1.0";
 
+                case ".NETFramework,Version=v4.8":
+                    return "net48";
                 case ".NETFramework,Version=v4.7.2":
                     return "net472";
                 case ".NETFramework,Version=v4.7.1":
