@@ -1,8 +1,8 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFrameworks>MonoAndroid90;Xamarin.iOS10;Xamarin.Mac20;Xamarin.TVOS10;Xamarin.WatchOS10;tizen40;netcoreapp3.0;netstandard2.0</TargetFrameworks>
-    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net461;uap10.0.16299</TargetFrameworks>
+    <TargetFrameworks>MonoAndroid90;Xamarin.iOS10;Xamarin.Mac20;Xamarin.TVOS10;Xamarin.WatchOS10;tizen40;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net461;uap10.0.16299;netcoreapp3.0</TargetFrameworks>
     <RootNamespace>Splat</RootNamespace>
     <Authors>.NET Foundation and Contributors</Authors>
     <Description>A library to make things cross-platform that should be</Description>
@@ -31,6 +31,10 @@
     <Compile Include="Platforms\ReflectionStubs.cs" />
   </ItemGroup>
 
+  <ItemGroup Condition=" !$(TargetFramework.StartsWith('netstandard')) ">
+    <Compile Include="Platforms\ServiceLocationDrawingInitialization.cs" />
+  </ItemGroup>
+  
   <ItemGroup Condition=" $(TargetFramework.StartsWith('net4')) ">
     <Compile Include="Platforms\net4\**\*.cs" />
 
