@@ -9,6 +9,8 @@ using System.Text;
 using Prism;
 using Prism.Ioc;
 
+[assembly: Xamarin.Forms.XmlnsDefinition("http://prismlibrary.com", "Prism.DryIoc")]
+
 namespace Splat.Prism.Forms
 {
     /// <summary>
