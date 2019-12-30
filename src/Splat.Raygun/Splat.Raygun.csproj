@@ -10,11 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'NET461'">
-    <PackageReference Include="Mindscape.Raygun4Net" Version="5.7.0" />
+    <PackageReference Include="Mindscape.Raygun4Net" Version="5.10.1" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="Mindscape.Raygun4Net.NetCore" Version="6.0.1" />
+    <PackageReference Include="Mindscape.Raygun4Net.NetCore" Version="6.2.0" />
   </ItemGroup>
 
   <ItemGroup>
