@@ -16,6 +16,8 @@ var packageWhitelist = new[]
     MakeAbsolute(File("./src/Splat.Serilog/Splat.Serilog.csproj")),
     MakeAbsolute(File("./src/Splat.SimpleInjector/Splat.SimpleInjector.csproj")),
     MakeAbsolute(File("./src/Splat.Drawing/Splat.Drawing.csproj")),
+    MakeAbsolute(File("./src/Splat.Prism/Splat.Prism.csproj")),
+    MakeAbsolute(File("./src/Splat.Prism.Forms/Splat.Prism.Forms.csproj")),
 };
 
 var packageTestWhitelist = new[]
@@ -26,6 +28,7 @@ var packageTestWhitelist = new[]
     MakeAbsolute(File("./src/Splat.Microsoft.Extensions.DependencyInjection.Tests/Splat.Microsoft.Extensions.DependencyInjection.Tests.csproj")),
     MakeAbsolute(File("./src/Splat.Ninject.Tests/Splat.Ninject.Tests.csproj")),
     MakeAbsolute(File("./src/Splat.SimpleInjector.Tests/Splat.SimpleInjector.Tests.csproj")),
+    MakeAbsolute(File("./src/Splat.Prism.Tests/Splat.Prism.Tests.csproj")),
 };
 
 BuildParameters.SetParameters(context: Context, 

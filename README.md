@@ -288,10 +288,10 @@ You can then load your images in a cross platform way:
 //
 
 var wc = new WebClient();
-byte[] imageBytes = await wc.DownloadDataTaskAsync("http://octodex.github.com/images/Professortocat_v2.png");
+Stream imageStream = wc.OpenRead("http://octodex.github.com/images/Professortocat_v2.png");
 
 // IBitmap is a type that provides basic image information such as dimensions
-IBitmap profileImage = await BitmapLoader.Current.Load(imageBytes, null /* Use original width */, null /* Use original height */);
+IBitmap profileImage = await BitmapLoader.Current.Load(imageStream, null /* Use original width */, null /* Use original height */);
 ```
 
 Then later, in your View:

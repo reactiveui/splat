@@ -438,6 +438,6 @@ namespace Splat.Tests.Logging
         /// </summary>
         /// <param name="minimumLogLevel">The minimum log level.</param>
         /// <returns>The logger.</returns>
-        protected abstract (T, IMockLogTarget) GetLogger(LogLevel minimumLogLevel);
+        protected abstract (T logger, IMockLogTarget mockTarget) GetLogger(LogLevel minimumLogLevel);
     }
 }

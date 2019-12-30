@@ -87,7 +87,7 @@ namespace Splat
 
             var notificationDisposable = suppressResolverCallback ? Locator.SuppressResolverCallbackChangedNotifications() : new ActionDisposable(() => { });
 
-            var origResolver = Locator.Internal;
+            var origResolver = Locator.GetLocator();
             Locator.SetLocator(resolver);
 
             return new CompositeDisposable(new ActionDisposable(() => Locator.SetLocator(origResolver)), notificationDisposable);

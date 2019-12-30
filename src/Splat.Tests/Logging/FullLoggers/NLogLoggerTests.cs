@@ -36,7 +36,7 @@ namespace Splat.Tests.Logging
             };
 
         /// <inheritdoc/>
-        protected override (IFullLogger, IMockLogTarget) GetLogger(LogLevel minimumLogLevel)
+        protected override (IFullLogger logger, IMockLogTarget mockTarget) GetLogger(LogLevel minimumLogLevel)
         {
             var configuration = new LoggingConfiguration();
 
