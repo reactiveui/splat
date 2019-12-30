@@ -12,10 +12,24 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring
     /// </summary>
     public static class ApplicationInsightsFeatureUsageTrackingSessionTests
     {
-        /// <summary>
-        /// Unit Tests for the constructor.
-        /// </summary>
+        /// <inheritdoc />
         public sealed class ConstructorTests : BaseFeatureUsageTrackingTests.BaseConstructorTests<ApplicationInsightsFeatureUsageTrackingSession>
+        {
+            /// <inheritdoc/>
+            protected override ApplicationInsightsFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
+            {
+                var telemetryConfiguration = new TelemetryConfiguration
+                {
+                    DisableTelemetry = true
+                };
+                var telemetryClient = new TelemetryClient(telemetryConfiguration);
+
+                return new ApplicationInsightsFeatureUsageTrackingSession(featureName, telemetryClient);
+            }
+        }
+
+        /// <inheritdoc />
+        public sealed class SubFeatureMethodTests : BaseFeatureUsageTrackingTests.BaseSubFeatureMethodTests<ApplicationInsightsFeatureUsageTrackingSession>
         {
             /// <inheritdoc/>
             protected override ApplicationInsightsFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)

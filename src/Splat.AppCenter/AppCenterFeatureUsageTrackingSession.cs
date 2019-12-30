@@ -50,7 +50,7 @@ namespace Splat
         /// <inheritdoc />
         public IFeatureUsageTrackingSession SubFeature(string description)
         {
-            return new AppCenterFeatureUsageTrackingSession(FeatureName, FeatureReference);
+            return new AppCenterFeatureUsageTrackingSession(description, FeatureReference);
         }
 
         /// <inheritdoc />

@@ -62,7 +62,7 @@ namespace Splat.ApplicationInsights
         {
             return new ApplicationInsightsFeatureUsageTrackingSession(
                 description,
-                ParentReference,
+                FeatureReference,
                 _telemetryClient);
         }
 

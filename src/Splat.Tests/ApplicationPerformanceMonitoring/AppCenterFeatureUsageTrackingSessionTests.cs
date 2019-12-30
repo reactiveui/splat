@@ -10,10 +10,18 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring
     /// </summary>
     public static class AppCenterFeatureUsageTrackingSessionTests
     {
-        /// <summary>
-        /// Unit Tests for the constructor.
-        /// </summary>
+        /// <inheritdoc />
         public sealed class ConstructorTests : BaseFeatureUsageTrackingTests.BaseConstructorTests<AppCenterFeatureUsageTrackingSession>
+        {
+            /// <inheritdoc/>
+            protected override AppCenterFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
+            {
+                return new AppCenterFeatureUsageTrackingSession(featureName);
+            }
+        }
+
+        /// <inheritdoc />
+        public sealed class SubFeatureMethodTests : BaseFeatureUsageTrackingTests.BaseSubFeatureMethodTests<AppCenterFeatureUsageTrackingSession>
         {
             /// <inheritdoc/>
             protected override AppCenterFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)

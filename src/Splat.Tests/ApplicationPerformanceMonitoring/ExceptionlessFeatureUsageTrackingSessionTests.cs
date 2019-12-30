@@ -9,10 +9,18 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring
     /// </summary>
     public static class ExceptionlessFeatureUsageTrackingSessionTests
     {
-        /// <summary>
-        /// Unit Tests for the constructor.
-        /// </summary>
+        /// <inheritdoc />>
         public sealed class ConstructorTests : BaseFeatureUsageTrackingTests.BaseConstructorTests<ExceptionlessFeatureUsageTrackingSession>
+        {
+            /// <inheritdoc/>
+            protected override ExceptionlessFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
+            {
+                return new ExceptionlessFeatureUsageTrackingSession(featureName);
+            }
+        }
+
+        /// <inheritdoc />>
+        public sealed class SubFeatureMethodTests : BaseFeatureUsageTrackingTests.BaseSubFeatureMethodTests<ExceptionlessFeatureUsageTrackingSession>
         {
             /// <inheritdoc/>
             protected override ExceptionlessFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)

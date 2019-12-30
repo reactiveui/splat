@@ -10,27 +10,40 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring
     /// </summary>
     public static class RaygunFeatureUsageTrackingSessionTests
     {
-        /// <summary>
-        /// Unit Tests for the constructor.
-        /// </summary>
+        private static RaygunFeatureUsageTrackingSession GetRaygunFeatureUsageTrackingSession(string featureName)
+        {
+            var apiKey = string.Empty;
+            var raygunSettings = new RaygunSettings
+            {
+                ApiKey = apiKey
+            };
+
+#if NETSTANDARD2_0
+            var raygunClient = new RaygunClient(raygunSettings);
+#else
+            var raygunClient = new RaygunClient(apiKey);
+#endif
+
+            return new RaygunFeatureUsageTrackingSession(featureName, raygunClient, raygunSettings);
+        }
+
+        /// <inheritdoc />>
         public sealed class ConstructorTests : BaseFeatureUsageTrackingTests.BaseConstructorTests<RaygunFeatureUsageTrackingSession>
         {
             /// <inheritdoc/>
             protected override RaygunFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
             {
-                var apiKey = string.Empty;
-                var raygunSettings = new RaygunSettings
-                {
-                    ApiKey = apiKey
-                };
+                return GetRaygunFeatureUsageTrackingSession(featureName);
+            }
+        }
 
-#if NETSTANDARD2_0
-                var raygunClient = new RaygunClient(raygunSettings);
-#else
-                var raygunClient = new RaygunClient(apiKey);
-#endif
-
-                return new RaygunFeatureUsageTrackingSession(featureName, raygunClient, raygunSettings);
+        /// <inheritdoc />>
+        public sealed class SubFeatureMethodTests : BaseFeatureUsageTrackingTests.BaseSubFeatureMethodTests<RaygunFeatureUsageTrackingSession>
+        {
+            /// <inheritdoc/>
+            protected override RaygunFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
+            {
+                return GetRaygunFeatureUsageTrackingSession(featureName);
             }
         }
     }
