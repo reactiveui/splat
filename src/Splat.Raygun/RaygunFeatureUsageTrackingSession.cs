@@ -19,24 +19,39 @@ namespace Splat
     public sealed class RaygunFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
     {
         private readonly RaygunClient _raygunClient;
+        private readonly RaygunSettings _raygunSettings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RaygunFeatureUsageTrackingSession"/> class.
         /// </summary>
         /// <param name="featureName">Name of the feature.</param>
-        public RaygunFeatureUsageTrackingSession(string featureName)
-            : this(featureName, Guid.Empty)
+        /// <param name="raygunClient">Raygun client instance.</param>
+        /// <param name="raygunSettings">Raygun settings instance.</param>
+        public RaygunFeatureUsageTrackingSession(
+            string featureName,
+            RaygunClient raygunClient,
+            RaygunSettings raygunSettings)
+            : this(
+                featureName,
+                Guid.Empty,
+                raygunClient,
+                raygunSettings)
         {
         }
 
         internal RaygunFeatureUsageTrackingSession(
             string featureName,
-            Guid parentReference)
+            Guid parentReference,
+            RaygunClient raygunClient,
+            RaygunSettings raygunSettings)
         {
             if (string.IsNullOrWhiteSpace(featureName))
             {
                 throw new ArgumentNullException(nameof(featureName));
             }
+
+            _raygunClient = raygunClient;
+            _raygunSettings = raygunSettings;
 
             ParentReference = parentReference;
             FeatureName = featureName;
@@ -52,8 +67,6 @@ namespace Splat
             // keep an eye on
             // https://raygun.com/forums/thread/92182
 #if NETSTANDARD2_0
-            // TODO: check about settings in netstandard version
-            var raygunSettings = new RaygunSettings();
             var messageBuilder = RaygunMessageBuilder.New(raygunSettings)
 #else
             var messageBuilder = RaygunMessageBuilder.New
@@ -79,7 +92,9 @@ namespace Splat
         {
             return new RaygunFeatureUsageTrackingSession(
                 name,
-                FeatureReference);
+                FeatureReference,
+                _raygunClient,
+                _raygunSettings);
         }
 
         /// <inheritdoc />

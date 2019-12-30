@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Mindscape.Raygun4Net;
 
 namespace Splat.Tests.ApplicationPerformanceMonitoring
 {
@@ -17,7 +18,19 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring
             /// <inheritdoc/>
             protected override RaygunFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
             {
-                return new RaygunFeatureUsageTrackingSession(featureName);
+                var apiKey = string.Empty;
+                var raygunSettings = new RaygunSettings
+                {
+                    ApiKey = apiKey
+                };
+
+#if NETSTANDARD2_0
+                var raygunClient = new RaygunClient(raygunSettings);
+#else
+                var raygunClient = new RaygunClient(apiKey);
+#endif
+
+                return new RaygunFeatureUsageTrackingSession(featureName, raygunClient, raygunSettings);
             }
         }
     }
