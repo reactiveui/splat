@@ -10,12 +10,22 @@ Application Performance Monitoring is split into the follow sections
 
 The table below shows the support across various APM packages
 
-| Product | Error Reporting | Feature Usage Tracking | View Tracking |
+| Product | Maturity Level | Error Reporting | Feature Usage Tracking | View Tracking |
 -------------
-| Application Insights | TODO | Native | Native |
-| Exceptionless | TODO | Native | By Convention |
-| New Relic | TODO | TODO | TODO
-| Raygun | TODO | By Convention | By Convention |
+| Appcenter| Alpha | TODO | Native | Native |
+| Application Insights | Alpha | TODO | Native | Native |
+| Exceptionless | Alpha | TODO | Native | By Convention |
+| New Relic | Not Started | TODO | TODO | TODO
+| Raygun | Prototype | TODO | By Convention | By Convention |
+
+## Goals of the Splat APM feature
+
+* To sit on top of existing APM libaries using native features where possible, or by using a common convention that gives parity in behaviour.
+** Where there is a convention behaviour it will be detailed under the relevant frameworks documentation.
+* To define basic behaviours that are dropped into consuming libraries, for example with ReactiveUI
+** Commands
+** ViewModels
+** Views
 
 ## Getting started with APM with Splat
 
@@ -33,18 +43,50 @@ TODO
 
 TODO
 
+## Configuring Appcenter
+
+First configure Appcenter. For guidance see TODO
+
+```cs
+using Splat.AppCenter;
+
+// then in your service locator initialisation
+Locator.CurrentMutable.UseAppcenterApm();
+```
+
 ## Configuring Application Insights
 
-TODO
+First configure Application Insights. For guidance see TODO
+
+```cs
+using Splat.ApplicationInsights;
+
+// then in your service locator initialisation
+Locator.CurrentMutable.UseApplicationInsightsApm();
+```
 
 ## Configuring Exceptionless
 
-TODO
+First configure Exceptionless. For guidance see TODO
+
+```cs
+using Splat.Exceptionless;
+
+// then in your service locator initialisation
+Locator.CurrentMutable.UseExceptionlessApm();
+```
 
 ## Configuring New Relic
 
-TODO
+New Relic support isn't currently available.
 
 ## Configuring Raygun
 
-TODO
+First configure Raygun. For guidance see TODO
+
+```cs
+using Splat.Raygun;
+
+// then in your service locator initialisation
+Locator.CurrentMutable.UseRaygunApm();
+```
