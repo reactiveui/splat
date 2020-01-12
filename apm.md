@@ -90,3 +90,10 @@ using Splat.Raygun;
 // then in your service locator initialisation
 Locator.CurrentMutable.UseRaygunApm();
 ```
+
+# Testing and developing the APM functionality
+
+The unit tests for this functionality do not generate activity to the relevant platform.
+The integration tests DO SEND TEST DATA to the relevant platforms, so they need to have
+the user-secrets configured. There is a script in the \scripts\inttestusersecrets.cmd
+that shows how to set the relevant secrets up.
