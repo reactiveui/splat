@@ -1,7 +1,3 @@
-## Splat
-
-![](http://f.cl.ly/items/1307401C3x2g3F2p2Z36/Logo.png)
-
 [![NuGet Stats](https://img.shields.io/nuget/v/splat.svg)](https://www.nuget.org/packages/splat) [![Build Status](https://dev.azure.com/dotnet/ReactiveUI/_apis/build/status/Splat-CI)](https://dev.azure.com/dotnet/ReactiveUI/_build/latest?definitionId=48) [![Code Coverage](https://codecov.io/gh/reactiveui/splat/branch/master/graph/badge.svg)](https://codecov.io/gh/reactiveui/splat)
 <br>
 <a href="https://www.nuget.org/packages/splat">
@@ -16,6 +12,10 @@
 <a href="https://reactiveui.net/slack">
         <img src="https://img.shields.io/badge/chat-slack-blue.svg">
 </a>
+
+<img src="https://github.com/reactiveui/styleguide/blob/master/logo_splat/logo.png?raw=true" width="200" />
+
+# Splat
 
 Certain types of things are basically impossible to do in cross-platform
 mobile code today, yet there's no reason why. Writing a ViewModel that handles
@@ -320,6 +320,7 @@ await blankImage.Save(CompressedBitmapFormat.Png, 0.0, File.Open("ItsBlank.png")
 ```
 ### Detecting if you're in design mode
 
+```cs
 // If true, we are running inside Blend, so don't do anything
 PlatformModeDetector.InDesignMode();
 ```
