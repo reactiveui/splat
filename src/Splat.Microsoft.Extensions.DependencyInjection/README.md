@@ -74,13 +74,19 @@ sealed partial class App // : Application
   void ConfigureServices(IServiceCollection services)
   {
     /* register your personal services here, for example */
-    services.AddSingleton<MainViewModel>();
-    services.AddTransient<MainPage, IViewFor<MainViewModel>>();
-    services.AddTransient<SecondaryPage, IViewFor<SecondaryViewModel>>();    
+    services.AddSingleton<MainViewModel>(); //Implements IScreen
+    services.AddSingleton<IScreen, MainViewModel>();
+    services.AddSingleton<IViewFor<MainViewModel>, MainPage>();
+    
+    //alternatively search assembly for `IRoutedViewFor` implementations
+    //see https://reactiveui.net/docs/handbook/routing to learn more about routing in RxUI
+    services.AddTransient<IViewFor<SecondaryViewModel>, SecondaryPage>();    
     services.AddTransient<SecondaryViewModel>();
   }
 }  
 ```
+
+Note: the code below uses the [`Microsoft.Extensions.Hosting`](https://www.nuget.org/packages/Microsoft.Extensions.Hosting) and [`Microsoft.Extensions.Logging`](https://www.nuget.org/packages/Microsoft.Extensions.Logging) packages.
 
 ### Register the Adapter to Splat
 
