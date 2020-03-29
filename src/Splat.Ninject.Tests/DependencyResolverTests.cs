@@ -42,6 +42,34 @@ namespace Splat.Ninject.Tests
         /// Should resolve views.
         /// </summary>
         [Fact]
+        public void NinjectDependencyResolver_Should_Return_Null()
+        {
+            var container = new StandardKernel();
+            container.UseNinjectDependencyResolver();
+
+            var viewOne = Locator.Current.GetService(typeof(IViewFor<ViewModelOne>));
+
+            viewOne.ShouldBeNull();
+        }
+
+        /// <summary>
+        /// Should resolve views.
+        /// </summary>
+        [Fact]
+        public void NinjectDependencyResolver_GetServices_Should_Return_Empty_Collection()
+        {
+            var container = new StandardKernel();
+            container.UseNinjectDependencyResolver();
+
+            var viewOne = Locator.Current.GetServices(typeof(IViewFor<ViewModelOne>));
+
+            viewOne.ShouldBeEmpty();
+        }
+
+        /// <summary>
+        /// Should resolve views.
+        /// </summary>
+        [Fact]
         public void NinjectDependencyResolver_Should_Resolve_Named_View()
         {
             var container = new StandardKernel();
@@ -120,10 +148,8 @@ namespace Splat.Ninject.Tests
 
             Locator.CurrentMutable.UnregisterAll(typeof(IScreen));
 
-            var result = Record.Exception(() => Locator.Current.GetService<IScreen>());
-
-            result.ShouldBeOfType<ActivationException>();
-            result.Message.ShouldStartWith("Error activating IScreen");
+            var result = Locator.Current.GetService<IScreen>();
+            result.ShouldBeNull();
         }
 
         /// <summary>
