@@ -36,11 +36,11 @@
   </PropertyGroup>
   
   <ItemGroup Condition="$(IsTestProject)">
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="Xunit.StaFact" Version="0.3.18" />
     <PackageReference Include="Shouldly" Version="4.0.0-beta0002" />
-    <PackageReference Include="Microsoft.Reactive.Testing" Version="4.3.1" />
+    <PackageReference Include="Microsoft.Reactive.Testing" Version="4.3.2" />
     <PackageReference Include="PublicApiGenerator" Version="9.3.0" />
   </ItemGroup>
 
@@ -62,12 +62,12 @@
   </ItemGroup>
    
   <ItemGroup>	
-    <PackageReference Include="Nerdbank.GitVersioning" Version="3.0.28" PrivateAssets="all" />	
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.0.50" PrivateAssets="all" />	
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.113" PrivateAssets="all" />
-    <PackageReference Include="Roslynator.Analyzers" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Roslynator.Analyzers" Version="2.3.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
