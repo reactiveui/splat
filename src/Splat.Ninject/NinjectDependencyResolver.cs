@@ -29,8 +29,8 @@ namespace Splat.Ninject
         /// <inheritdoc />
         public virtual object GetService(Type serviceType, string contract = null) =>
             string.IsNullOrEmpty(contract)
-                ? _kernel.Get(serviceType)
-                : _kernel.Get(serviceType, contract);
+                ? _kernel.TryGet(serviceType)
+                : _kernel.TryGet(serviceType, contract);
 
         /// <inheritdoc />
         public virtual IEnumerable<object> GetServices(Type serviceType, string contract = null) =>

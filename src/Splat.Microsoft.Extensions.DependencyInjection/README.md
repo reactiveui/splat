@@ -73,9 +73,13 @@ sealed partial class App // : Application
 
   void ConfigureServices(IServiceCollection services)
   {
-    /* register your personal services here, for example */
+    // register your personal services here, for example
     services.AddSingleton<MainViewModel>(); //Implements IScreen
-    services.AddSingleton<IScreen, MainViewModel>();
+	
+    // this passes IScreen resolution through to the previous viewmodel registration.
+	// this is to prevent multiple instances by mistake.
+    services.AddSingleton<IScreen, MainViewModel>(x => x.GetRequiredService<MainViewModel>());
+	
     services.AddSingleton<IViewFor<MainViewModel>, MainPage>();
     
     //alternatively search assembly for `IRoutedViewFor` implementations
