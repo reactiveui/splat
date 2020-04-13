@@ -618,3 +618,50 @@ namespace Splat
         public void Write(System.Exception exception, [System.ComponentModel.LocalizableAttribute(false)] string message, [System.ComponentModel.LocalizableAttribute(false)] System.Type type, Splat.LogLevel logLevel) { }
     }
 }
+namespace Splat.ApplicationPerformanceMonitoring
+{
+    public sealed class DefaultFeatureUsageTrackingManager : Splat.ApplicationPerformanceMonitoring.FuncFeatureUsageTrackingManager
+    {
+        public DefaultFeatureUsageTrackingManager() { }
+    }
+    public sealed class DefaultFeatureUsageTrackingSession : Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession, Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession<System.Guid>, Splat.IEnableLogger, System.IDisposable
+    {
+        public DefaultFeatureUsageTrackingSession(string featureName) { }
+        public string FeatureName { get; }
+        public System.Guid FeatureReference { get; }
+        public System.Guid ParentReference { get; }
+        public void Dispose() { }
+        public void OnException(System.Exception exception) { }
+        public Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession SubFeature(string description) { }
+    }
+    public class static EnableFeatureUsageTrackingExtensions
+    {
+        public static Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession FeatureUsageTrackingSession(this Splat.ApplicationPerformanceMonitoring.IEnableFeatureUsageTracking instance, string featureName) { }
+    }
+    public class FuncFeatureUsageTrackingManager : Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingManager
+    {
+        public FuncFeatureUsageTrackingManager(System.Func<string, Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession> featureUsageTrackingSessionFunc) { }
+        public Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName) { }
+    }
+    [System.Runtime.InteropServices.ComVisibleAttribute(false)]
+    public interface IEnableFeatureUsageTracking { }
+    public interface IFeatureUsageTrackingManager
+    {
+        Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName);
+    }
+    public interface IFeatureUsageTrackingSession : System.IDisposable
+    {
+        string FeatureName { get; }
+        void OnException(System.Exception exception);
+        Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession SubFeature(string description);
+    }
+    public interface IFeatureUsageTrackingSession<out TReferenceType> : Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession, System.IDisposable
+    {
+        TReferenceType FeatureReference { get; }
+        TReferenceType ParentReference { get; }
+    }
+    public interface IViewTracking
+    {
+        void OnViewNavigation(string name);
+    }
+}
