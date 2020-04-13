@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Linq;
 using Exceptionless;
 
 namespace Splat.Exceptionless
@@ -23,7 +24,7 @@ namespace Splat.Exceptionless
             new KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>(LogLevel.Info, global::Exceptionless.Logging.LogLevel.Info),
             new KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>(LogLevel.Warn, global::Exceptionless.Logging.LogLevel.Warn),
             new KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>(LogLevel.Error, global::Exceptionless.Logging.LogLevel.Error),
-            new KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>(LogLevel.Fatal, global::Exceptionless.Logging.LogLevel.Error)
+            new KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>(LogLevel.Fatal, global::Exceptionless.Logging.LogLevel.Fatal)
         };
 
         private static readonly ImmutableDictionary<LogLevel, global::Exceptionless.Logging.LogLevel> _mappingsDictionary = _mappings.ToImmutableDictionary();
@@ -43,6 +44,12 @@ namespace Splat.Exceptionless
             _sourceType = sourceType.FullName;
             _exceptionlessClient = exceptionlessClient ?? throw new ArgumentNullException(nameof(exceptionlessClient));
             _exceptionlessClient.Configuration.Changed += OnInnerLoggerReconfigured;
+
+            if (_exceptionlessClient.Configuration.Settings.TryGetValue("@@log:*", out var logLevel))
+            {
+                var l = global::Exceptionless.Logging.LogLevel.FromString(logLevel);
+                Level = _mappingsDictionary.First(x => x.Value == l).Key;
+            }
         }
 
         /// <inheritdoc />
@@ -78,7 +85,7 @@ namespace Splat.Exceptionless
                 return;
             }
 
-            CreateLog($"{type.Name}: {message}", _mappingsDictionary[logLevel]);
+            CreateLog(type.FullName, message, _mappingsDictionary[logLevel]);
         }
 
         /// <inheritdoc />
@@ -89,30 +96,35 @@ namespace Splat.Exceptionless
                 return;
             }
 
-            CreateLog(exception, $"{type.Name}: {message}", _mappingsDictionary[logLevel]);
+            CreateLog(exception, type.FullName, message, _mappingsDictionary[logLevel]);
         }
 
         private void CreateLog(string message, global::Exceptionless.Logging.LogLevel level)
         {
-            _exceptionlessClient.SubmitLog(_sourceType, message, level);
+            CreateLog(_sourceType, message, level);
+        }
+
+        private void CreateLog(string type, string message, global::Exceptionless.Logging.LogLevel level)
+        {
+            _exceptionlessClient.SubmitLog(type, message, level);
+            _exceptionlessClient.ProcessQueue();
         }
 
         private void CreateLog(Exception exception, string message, global::Exceptionless.Logging.LogLevel level)
         {
-            var reference = Guid.NewGuid();
+            CreateLog(exception, _sourceType, message, level);
+        }
 
-            // exception is the parent
-            var eventBuilder = ExceptionlessClient.Default.CreateException(exception);
-            eventBuilder.SetReferenceId(reference.ToString());
-            eventBuilder.Submit();
-
-            // log event is the child
-            var logger = ExceptionlessClient.Default.CreateLog(
-                _sourceType,
+        private void CreateLog(Exception exception, string type, string message, global::Exceptionless.Logging.LogLevel level)
+        {
+            _exceptionlessClient.CreateLog(
+                type,
                 message,
-                level);
-            logger.SetEventReference("ReferenceId", reference.ToString());
-            logger.Submit();
+                level)
+                .SetException(exception)
+                .Submit();
+
+            _exceptionlessClient.ProcessQueue();
         }
 
         /// <summary>
