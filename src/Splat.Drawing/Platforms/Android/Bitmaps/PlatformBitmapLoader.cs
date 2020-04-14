@@ -17,7 +17,7 @@ namespace Splat
     /// <summary>
     /// A android based platform bitmap loader which will load our bitmaps for us.
     /// </summary>
-    public class PlatformBitmapLoader : IBitmapLoader
+    public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
     {
         private readonly Dictionary<string, int> _drawableList;
 
@@ -36,6 +36,17 @@ namespace Splat
             if (sourceStream is null)
             {
                 throw new ArgumentNullException(nameof(sourceStream));
+            }
+
+            // this is a rough check to do with the termination check for #479
+            if (sourceStream.Length < 2)
+            {
+                throw new ArgumentException("The source stream is not a valid image file.", nameof(sourceStream));
+            }
+
+            if (!HasCorrectStreamEnd(sourceStream))
+            {
+                AttemptStreamByteCorrection(sourceStream);
             }
 
             sourceStream.Position = 0;
@@ -178,6 +189,36 @@ namespace Splat
                 return e.Types != null
                     ? e.Types.Where(x => x != null).ToArray()
                     : Array.Empty<Type>();
+            }
+        }
+
+        /// <summary>
+        /// Checks to make sure the last 2 bytes are as expected.
+        /// issue #479 xamarin android can throw an objectdisposedexception on stream
+        /// suggestion is it relates to https://forums.xamarin.com/discussion/16500/bitmap-decode-byte-array-skia-decoder-returns-false
+        /// and truncated jpeg\png files.
+        /// </summary>
+        /// <param name="sourceStream">Input image source stream.</param>
+        /// <returns>Whether the termination is correct.</returns>
+        private static bool HasCorrectStreamEnd(Stream sourceStream)
+        {
+            // 0-based and go back 2.
+            sourceStream.Position = sourceStream.Length - 3;
+            return sourceStream.ReadByte() == 0xFF
+                   && sourceStream.ReadByte() == 0xD9;
+        }
+
+        private void AttemptStreamByteCorrection(Stream sourceStream)
+        {
+            if (sourceStream.CanWrite)
+            {
+                this.Log().Warn("Stream missing terminating bytes but is read only.");
+            }
+            else
+            {
+                this.Log().Warn("Carrying out source stream byte correction.");
+                sourceStream.Position = sourceStream.Length;
+                sourceStream.Write(new byte[] { 0xFF, 0xD9 });
             }
         }
 
