@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using Xunit;
 
-#if !NETSTANDARD && !NETCOREAPP2
+#if !NETSTANDARD2_0
 namespace Splat.Tests
 {
     /// <summary>
@@ -70,23 +70,35 @@ namespace Splat.Tests
 
         private static Stream GetBitmapStream()
         {
-            var cwd = Directory.GetCurrentDirectory();
+#if ANDROID
+            return Android.App.Application.Context.Assets.Open("splatlogo.bmp");
+#else
+            var cwd = Path.GetDirectoryName(typeof(BitmapLoaderTests).Assembly.Location);
             var path = Path.Combine(cwd, "splat-logo.bmp");
             return GetStream(path);
+#endif
         }
 
         private static Stream GetJpegStream()
         {
-            var cwd = Directory.GetCurrentDirectory();
+#if ANDROID
+            return Android.App.Application.Context.Assets.Open("splatlogo.jpg");
+#else
+            var cwd = Path.GetDirectoryName(typeof(BitmapLoaderTests).Assembly.Location);
             var path = Path.Combine(cwd, "splat-logo.jpg");
             return GetStream(path);
+#endif
         }
 
         private static Stream GetPngStream()
         {
-            var cwd = Directory.GetCurrentDirectory();
+#if ANDROID
+            return Android.App.Application.Context.Assets.Open("splatlogo.png");
+#else
+            var cwd = Path.GetDirectoryName(typeof(BitmapLoaderTests).Assembly.Location);
             var path = Path.Combine(cwd, "splat-logo.png");
             return GetStream(path);
+#endif
         }
 
         private static Stream GetStream(string path)
