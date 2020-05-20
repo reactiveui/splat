@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DryIoc.Dll" Version="4.1.4" />
+    <PackageReference Include="DryIoc.Dll" Version="4.2.0" />
   </ItemGroup>
 
   <ItemGroup>
