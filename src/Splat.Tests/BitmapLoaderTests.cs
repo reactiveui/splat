@@ -70,40 +70,28 @@ namespace Splat.Tests
 
         private static Stream GetBitmapStream()
         {
-#if ANDROID
-            return Android.App.Application.Context.Assets.Open("splatlogo.bmp");
-#else
-            var cwd = Path.GetDirectoryName(typeof(BitmapLoaderTests).Assembly.Location);
-            var path = Path.Combine(cwd, "splat-logo.bmp");
-            return GetStream(path);
-#endif
+            return GetStream("splatlogo.bmp");
         }
 
         private static Stream GetJpegStream()
         {
-#if ANDROID
-            return Android.App.Application.Context.Assets.Open("splatlogo.jpg");
-#else
-            var cwd = Path.GetDirectoryName(typeof(BitmapLoaderTests).Assembly.Location);
-            var path = Path.Combine(cwd, "splat-logo.jpg");
-            return GetStream(path);
-#endif
+            return GetStream("splatlogo.jpg");
         }
 
         private static Stream GetPngStream()
         {
-#if ANDROID
-            return Android.App.Application.Context.Assets.Open("splatlogo.png");
-#else
-            var cwd = Path.GetDirectoryName(typeof(BitmapLoaderTests).Assembly.Location);
-            var path = Path.Combine(cwd, "splat-logo.png");
-            return GetStream(path);
-#endif
+            return GetStream("splatlogo.png");
         }
 
-        private static Stream GetStream(string path)
+        private static Stream GetStream(string imageName)
         {
+#if ANDROID
+            return Android.App.Application.Context.Assets.Open(imageName);
+#else
+            var cwd = Path.GetDirectoryName(typeof(BitmapLoaderTests).Assembly.Location);
+            var path = Path.Combine(cwd, imageName);
             return File.OpenRead(path);
+#endif
         }
     }
 }

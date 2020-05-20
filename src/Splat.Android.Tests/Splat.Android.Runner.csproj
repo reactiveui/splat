@@ -96,18 +96,18 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\splatlogo.bmp">
+    <AndroidAsset Include="..\Splat.Tests\splatlogo.bmp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AndroidAsset>
-    <AndroidAsset Include="Assets\splatlogo.jpg">
+    <AndroidAsset Include="..\Splat.Tests\splatlogo.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AndroidAsset>
-    <AndroidAsset Include="Assets\splatlogo.png">
+    <AndroidAsset Include="..\Splat.Tests\splatlogo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AndroidAsset>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

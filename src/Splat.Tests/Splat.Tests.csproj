@@ -25,13 +25,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="splat-logo.bmp">
+    <None Update="splatlogo.bmp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="splat-logo.jpg">
+    <None Update="splatlogo.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="splat-logo.png">
+    <None Update="splatlogo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="xunit.runner.json">
