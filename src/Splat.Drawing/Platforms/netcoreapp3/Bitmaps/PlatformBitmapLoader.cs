@@ -71,7 +71,14 @@ namespace Splat
         /// <inheritdoc />
         public IBitmap Create(float width, float height)
         {
-            return new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height, 96, 96, PixelFormats.Default, null));
+            /*
+             * Taken from MSDN:
+             *
+             * The preferred values for pixelFormat are Bgr32 and Pbgra32.
+             * These formats are natively supported and do not require a format conversion.
+             * Other pixelFormat values require a format conversion for each frame update, which reduces performance.
+             */
+            return new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height, 96, 96, PixelFormats.Rgb24, null));
         }
 
         private static void WithInit(BitmapImage source, Action<BitmapImage> block)
