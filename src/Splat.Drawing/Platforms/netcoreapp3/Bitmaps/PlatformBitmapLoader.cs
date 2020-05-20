@@ -78,7 +78,7 @@ namespace Splat
              * These formats are natively supported and do not require a format conversion.
              * Other pixelFormat values require a format conversion for each frame update, which reduces performance.
              */
-            return new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height, 96, 96, PixelFormats.Rgb24, null));
+            return new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height, 96, 96, PixelFormats.Pbgra32, null));
         }
 
         private static void WithInit(BitmapImage source, Action<BitmapImage> block)
