@@ -16,10 +16,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Splat.AppCenter\Splat.AppCenter.csproj" />
+    <ProjectReference Include="..\Splat.ApplicationInsights\Splat.ApplicationInsights.csproj" />
+    <ProjectReference Include="..\Splat.Exceptionless\Splat.Exceptionless.csproj" />
     <ProjectReference Include="..\Splat.Drawing\Splat.Drawing.csproj" />
     <ProjectReference Include="..\Splat.Log4Net\Splat.Log4Net.csproj" />
     <ProjectReference Include="..\Splat.Microsoft.Extensions.Logging\Splat.Microsoft.Extensions.Logging.csproj" />
     <ProjectReference Include="..\Splat.NLog\Splat.NLog.csproj" />
+    <ProjectReference Include="..\Splat.Raygun\Splat.Raygun.csproj" />
     <ProjectReference Include="..\Splat.Serilog\Splat.Serilog.csproj" />
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>

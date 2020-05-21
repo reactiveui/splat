@@ -21,7 +21,7 @@
     <DefineConstants>$(DefineConstants);NETFX_CORE;XAML;WINDOWS_UWP</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="$(TargetFramework.StartsWith('Xamarin.iOS'))">
-    <DefineConstants>$(DefineConstants);MONO;UIKIT;COCOA</DefineConstants>
+    <DefineConstants>$(DefineConstants);MONO;UIKIT;COCOA;IOS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="$(TargetFramework.StartsWith('Xamarin.Mac'))">
     <DefineConstants>$(DefineConstants);MONO;COCOA</DefineConstants>

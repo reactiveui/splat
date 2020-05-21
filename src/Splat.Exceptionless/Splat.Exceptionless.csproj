@@ -1,0 +1,19 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <AssemblyName>Splat.Exceptionless</AssemblyName>
+    <RootNamespace>Splat</RootNamespace>
+    <Authors>.NET Foundation and Contributors</Authors>
+    <Description>Exceptionless integrations for Splat</Description>
+    <PackageId>Splat.Exceptionless</PackageId>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Exceptionless" Version="4.3.2027" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Splat\Splat.csproj" />
+  </ItemGroup>
+
+</Project>
