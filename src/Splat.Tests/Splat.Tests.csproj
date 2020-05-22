@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' == 'Windows_NT' ">
-    <TargetFrameworks>$(TargetFrameworks);net472;netcoreapp3.0</TargetFrameworks>
+    <TargetFrameworks>$(TargetFrameworks);net472;netcoreapp3.0;uap10.0.16299</TargetFrameworks>
     <UseWPF Condition="$(TargetFramework.StartsWith('netcoreapp3'))">true</UseWPF>
     <UseWindowsForms Condition="$(TargetFramework.StartsWith('netcoreapp3'))">true</UseWindowsForms>
   </PropertyGroup>
@@ -15,10 +15,13 @@
     <PackageReference Include="Serilog.Exceptions" Version="5.4.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Splat.AppCenter\Splat.AppCenter.csproj" />
+  <ItemGroup Condition="$(TargetFramework) != 'uap10.0.16299'">
     <ProjectReference Include="..\Splat.ApplicationInsights\Splat.ApplicationInsights.csproj" />
     <ProjectReference Include="..\Splat.Exceptionless\Splat.Exceptionless.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Splat.AppCenter\Splat.AppCenter.csproj" />
     <ProjectReference Include="..\Splat.Drawing\Splat.Drawing.csproj" />
     <ProjectReference Include="..\Splat.Log4Net\Splat.Log4Net.csproj" />
     <ProjectReference Include="..\Splat.Microsoft.Extensions.Logging\Splat.Microsoft.Extensions.Logging.csproj" />
