@@ -59,7 +59,8 @@ namespace Splat.Tests
                 approvedPublicApi = File.ReadAllText(approvedFileName);
             }
 
-            var receivedPublicApi = Filter(ApiGenerator.GeneratePublicApi(assembly));
+            var generatorOptions = new ApiGeneratorOptions { WhitelistedNamespacePrefixes = new[] { "Splat" } };
+            var receivedPublicApi = Filter(ApiGenerator.GeneratePublicApi(assembly, generatorOptions));
 
             if (!string.Equals(receivedPublicApi, approvedPublicApi, StringComparison.InvariantCulture))
             {
@@ -89,7 +90,7 @@ namespace Splat.Tests
                     string output = process.StandardOutput.ReadToEnd();
                     process.WaitForExit();
 
-                    throw new Exception("Invalid API configuration: " + Environment.NewLine + output);
+                    throw new Exception($"Invalid API configuration ({receivedFileName}): " + Environment.NewLine + output);
                 }
             }
 
