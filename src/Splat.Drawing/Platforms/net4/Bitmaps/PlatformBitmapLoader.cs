@@ -71,7 +71,7 @@ namespace Splat
         /// <inheritdoc />
         public IBitmap Create(float width, float height)
         {
-            return new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height, 96, 96, PixelFormats.Default, null));
+            return new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height, 96, 96, PixelFormats.Pbgra32, null));
         }
 
         private static void WithInit(BitmapImage source, Action<BitmapImage> block)
