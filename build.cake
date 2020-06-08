@@ -6,8 +6,11 @@ Environment.SetVariableNames();
 var packageWhitelist = new[] 
 { 
     MakeAbsolute(File("./src/Splat/Splat.csproj")),
+    MakeAbsolute(File("./src/Splat.AppCenter/Splat.AppCenter.csproj")),
+    MakeAbsolute(File("./src/Splat.ApplicationInsights/Splat.ApplicationInsights.csproj")),
     MakeAbsolute(File("./src/Splat.Autofac/Splat.Autofac.csproj")),
     MakeAbsolute(File("./src/Splat.DryIoc/Splat.DryIoc.csproj")),
+    MakeAbsolute(File("./src/Splat.ExceptionLess/Splat.Exceptionless.csproj")),
     MakeAbsolute(File("./src/Splat.Log4Net/Splat.Log4Net.csproj")),
     MakeAbsolute(File("./src/Splat.Microsoft.Extensions.DependencyInjection/Splat.Microsoft.Extensions.DependencyInjection.csproj")),
     MakeAbsolute(File("./src/Splat.Microsoft.Extensions.Logging/Splat.Microsoft.Extensions.Logging.csproj")),
@@ -18,6 +21,7 @@ var packageWhitelist = new[]
     MakeAbsolute(File("./src/Splat.Drawing/Splat.Drawing.csproj")),
     MakeAbsolute(File("./src/Splat.Prism/Splat.Prism.csproj")),
     MakeAbsolute(File("./src/Splat.Prism.Forms/Splat.Prism.Forms.csproj")),
+    MakeAbsolute(File("./src/Splat.Raygun/Splat.Raygun.csproj")),
 };
 
 var packageTestWhitelist = new[]

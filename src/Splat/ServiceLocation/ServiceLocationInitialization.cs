@@ -3,6 +3,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using Splat.ApplicationPerformanceMonitoring;
+
 namespace Splat
 {
     /// <summary>
@@ -23,6 +25,15 @@ namespace Splat
 
             RegisterDefaultLogManager(resolver);
             RegisterLogger(resolver);
+            RegisterApplicationPerformanceMonitoring(resolver);
+        }
+
+        private static void RegisterApplicationPerformanceMonitoring(IMutableDependencyResolver resolver)
+        {
+            if (!resolver.HasRegistration(typeof(IFeatureUsageTrackingManager)))
+            {
+                resolver.RegisterConstant(new DefaultFeatureUsageTrackingManager(), typeof(IFeatureUsageTrackingManager));
+            }
         }
 
         private static void RegisterDefaultLogManager(IMutableDependencyResolver resolver)

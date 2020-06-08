@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <AssemblyName>Splat.Raygun</AssemblyName>
+    <RootNamespace>Splat</RootNamespace>
+    <Authors>.NET Foundation and Contributors</Authors>
+    <Description>Raygun integrations for Splat</Description>
+    <PackageId>Splat.Raygun</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'NET461'">
+    <PackageReference Include="Mindscape.Raygun4Net" Version="5.10.2" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="Mindscape.Raygun4Net.NetCore" Version="6.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Splat\Splat.csproj" />
+  </ItemGroup>
+
+</Project>
