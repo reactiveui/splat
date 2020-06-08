@@ -59,7 +59,8 @@ namespace Splat.Tests
                 approvedPublicApi = File.ReadAllText(approvedFileName);
             }
 
-            var receivedPublicApi = Filter(ApiGenerator.GeneratePublicApi(assembly));
+            var generatorOptions = new ApiGeneratorOptions { WhitelistedNamespacePrefixes = new[] { "Splat" } };
+            var receivedPublicApi = Filter(ApiGenerator.GeneratePublicApi(assembly, generatorOptions));
 
             if (!string.Equals(receivedPublicApi, approvedPublicApi, StringComparison.InvariantCulture))
             {
