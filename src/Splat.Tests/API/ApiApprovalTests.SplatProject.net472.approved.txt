@@ -634,7 +634,7 @@ namespace Splat.ApplicationPerformanceMonitoring
         public void OnException(System.Exception exception) { }
         public Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession SubFeature(string description) { }
     }
-    public class static EnableFeatureUsageTrackingExtensions
+    public static class EnableFeatureUsageTrackingExtensions
     {
         public static Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession FeatureUsageTrackingSession(this Splat.ApplicationPerformanceMonitoring.IEnableFeatureUsageTracking instance, string featureName) { }
     }
@@ -643,7 +643,7 @@ namespace Splat.ApplicationPerformanceMonitoring
         public FuncFeatureUsageTrackingManager(System.Func<string, Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession> featureUsageTrackingSessionFunc) { }
         public Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName) { }
     }
-    [System.Runtime.InteropServices.ComVisibleAttribute(false)]
+    [System.Runtime.InteropServices.ComVisible(false)]
     public interface IEnableFeatureUsageTracking { }
     public interface IFeatureUsageTrackingManager
     {
