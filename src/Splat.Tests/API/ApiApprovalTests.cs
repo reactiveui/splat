@@ -90,7 +90,7 @@ namespace Splat.Tests
                     string output = process.StandardOutput.ReadToEnd();
                     process.WaitForExit();
 
-                    throw new Exception("Invalid API configuration: " + Environment.NewLine + output);
+                    throw new Exception($"Invalid API configuration ({receivedFileName}): " + Environment.NewLine + output);
                 }
             }
 
