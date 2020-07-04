@@ -8,7 +8,7 @@ using SimpleInjector;
 namespace Splat.SimpleInjector
 {
     /// <summary>
-    /// Extension methods for the Autofac adapter.
+    /// Extension methods for the SimpleInjector adapter.
     /// </summary>
     public static class SplatSimpleInjectorExtensions
     {
