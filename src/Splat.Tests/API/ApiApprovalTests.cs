@@ -109,6 +109,7 @@ namespace Splat.Tests
                     !l.StartsWith("[assembly: AssemblyVersion(", StringComparison.InvariantCulture) &&
                     !l.StartsWith("[assembly: AssemblyFileVersion(", StringComparison.InvariantCulture) &&
                     !l.StartsWith("[assembly: AssemblyInformationalVersion(", StringComparison.InvariantCulture) &&
+                    !l.StartsWith("[assembly: System.Reflection.AssemblyMetadata(", StringComparison.InvariantCulture) &&
                     !string.IsNullOrWhiteSpace(l)));
         }
     }
