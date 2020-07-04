@@ -1,12 +1,14 @@
+[assembly: System.Reflection.AssemblyMetadata("RepositoryUrl", "https://github.com/reactiveui/splat")]
 [assembly: System.Resources.NeutralResourcesLanguage("en-US")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Tests")]
-[assembly: System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v3.0", FrameworkDisplayName="")]
+[assembly: System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v3.1", FrameworkDisplayName="")]
 namespace Splat
 {
     public static class BitmapLoader
     {
         public static Splat.IBitmapLoader Current { get; set; }
     }
+    [System.Serializable]
     public class BitmapLoaderException : System.Exception
     {
         public BitmapLoaderException() { }
@@ -425,14 +427,14 @@ namespace Splat
         public int ToArgb() { }
         public Splat.KnownColor ToKnownColor() { }
         public override string ToString() { }
-        public static bool !=(Splat.SplatColor left, Splat.SplatColor right) { }
-        public static bool ==(Splat.SplatColor left, Splat.SplatColor right) { }
         public static Splat.SplatColor FromArgb(int argb) { }
         public static Splat.SplatColor FromArgb(int alpha, Splat.SplatColor baseColor) { }
         public static Splat.SplatColor FromArgb(int red, int green, int blue) { }
         public static Splat.SplatColor FromArgb(int alpha, int red, int green, int blue) { }
         public static Splat.SplatColor FromKnownColor(Splat.KnownColor color) { }
         public static Splat.SplatColor FromName(string name) { }
+        public static bool operator !=(Splat.SplatColor left, Splat.SplatColor right) { }
+        public static bool operator ==(Splat.SplatColor left, Splat.SplatColor right) { }
     }
     public static class SplatColorExtensions
     {
