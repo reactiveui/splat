@@ -1,4 +1,3 @@
-[assembly: System.Reflection.AssemblyMetadata("RepositoryUrl", "https://github.com/reactiveui/splat")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Tests")]
 [assembly: System.Runtime.Versioning.TargetFramework(".NETStandard,Version=v2.0", FrameworkDisplayName="")]
 namespace Splat
