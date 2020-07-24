@@ -372,7 +372,73 @@ TODO
 
 #### Feature Usage Tracking
 
-TODO
+The most basic ability for feature usage tracking is to implement the Splat.ApplicationPerformanceMonitoring.IEnableFeatureUsageTracking interface. This has the same behaviour as the logging interface and allows Splat to inject whichever
+APM platform is registered with the ServiceLocator at initialization.
+
+```cs
+        /// <summary>
+        /// Dummy object for testing IEnableFeatureUsageTracking.
+        /// </summary>
+        public sealed class TestObjectThatSupportsFeatureUsageTracking : IEnableFeatureUsageTracking
+        {
+			public async Task SomeFeatureIWantToTrack()
+			{
+                using (var trackingSession = this.FeatureUsageTrackingSession("featureName"))
+                {
+					try
+					{
+						// do some work here.
+					}
+					catch (Exception exception)
+					{
+						trackingSession.OnException(exception);
+					}
+                }
+			}
+        }
+```
+
+Splat also has the notion of subfeatures, some APM platforms support this natively, others have been done by convention, which will be explained in the relevant library.
+Splat itself does not dictate when these should be used. It's up to you. You may have a primary feature (such as a search view) and then track buttons, etc. on that view
+as subfeatures.
+
+```cs
+        /// <summary>
+        /// Dummy object for testing IEnableFeatureUsageTracking.
+        /// </summary>
+        public sealed class TestObjectThatSupportsFeatureUsageTracking : IEnableFeatureUsageTracking
+        {
+			public async Task SomeFeatureIWantToTrack()
+			{
+                using (var mainFeature = this.FeatureUsageTrackingSession("featureName"))
+                {
+					try
+					{
+						await DoSubFeature(mainFeature).ConfigureAwait(false);
+					}
+					catch (Exception exception)
+					{
+						mainFeature.OnException(exception);
+					}
+                }
+			}
+
+			public async Task SomeFeatureIWantToTrack(IFeatureUsageTrackingSession parentFeature)
+			{
+                using (var subFeature = parent.SubFeature("subFeatureName"))
+                {
+					try
+					{
+						// do some work here.
+					}
+					catch (Exception exception)
+					{
+						subFeature.OnException(exception);
+					}
+                }
+			}
+        }
+```
 
 #### View Tracking
 
