@@ -425,7 +425,7 @@ as subfeatures.
 
 			public async Task SomeFeatureIWantToTrack(IFeatureUsageTrackingSession parentFeature)
 			{
-                using (var subFeature = parent.SubFeature("subFeatureName"))
+                using (var subFeature = parentFeature.SubFeature("subFeatureName"))
                 {
 					try
 					{
