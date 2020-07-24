@@ -335,14 +335,14 @@ Application Performance Monitoring is split into the follow sections
 
 The table below shows the support across various APM packages
 
-| Product | Maturity Level | Error Reporting | Feature Usage Tracking | View Tracking |
--------------
-| Appcenter | Alpha | TODO | Native | Native |
-| Application Insights | Alpha | TODO | Native | Native |
-| Exceptionless | Alpha | TODO | Native | By Convention |
-| New Relic | Not Started | TODO | TODO | TODO
-| OpenTrace | Not Started | TODO | TODO | TODO
-| Raygun | Prototype | TODO | By Convention | By Convention |
+| Product | Package | NuGet | Maturity Level | Error Reporting | Feature Usage Tracking | View Tracking |
+|----|----|----|----|----|----|----|
+| Appcenter | [Splat.AppCenter][SplatAppcenterNuGet] | [![SplatAppcenterBadge]][SplatAppcenterNuGet] | Alpha | TODO | Native | Native |
+| Application Insights | [Splat.ApplicationInsights][SplatApplicationInsightsNuGet] | [![SplatApplicationInsightsBadge]][SplatApplicationInsightsNuGet] | Alpha | TODO | Native | Native |
+| Exceptionless | Alpha | [Splat.Exceptionless][SplatExceptionlessNuGet] | [![SplatExceptionlessBadge]][SplatExceptionlessNuGet] | TODO | Native | By Convention |
+| New Relic | Not Started | N\A | N\A | TODO | TODO | TODO
+| OpenTrace | Not Started | N\A | N\A | TODO | TODO | TODO
+| Raygun | Prototype | [Splat.Raygun][SplatRaygunNuGet] | [![SplatRaygunBadge]][SplatRaygunNuGet] | TODO | By Convention | By Convention |
 
 [SplatAppcenterNuGet]: https://www.nuget.org/packages/Splat.Appcenter/
 [SplatAppcenterBadge]: https://img.shields.io/nuget/v/Splat.Appcenter.svg
@@ -352,7 +352,6 @@ The table below shows the support across various APM packages
 [SplatExceptionlessBadge]: https://img.shields.io/nuget/v/Splat.Exceptionless.svg
 [SplatRaygunNuGet]: https://www.nuget.org/packages/Splat.Raygun/
 [SplatRaygunBadge]: https://img.shields.io/nuget/v/Splat.Raygun.svg
-
 
 #### Goals of the Splat APM feature
 
