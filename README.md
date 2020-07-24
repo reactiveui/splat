@@ -339,10 +339,10 @@ The table below shows the support across various APM packages
 |----|----|----|----|----|----|----|
 | Appcenter | [Splat.AppCenter][SplatAppcenterNuGet] | [![SplatAppcenterBadge]][SplatAppcenterNuGet] | Alpha | TODO | Native | Native |
 | Application Insights | [Splat.ApplicationInsights][SplatApplicationInsightsNuGet] | [![SplatApplicationInsightsBadge]][SplatApplicationInsightsNuGet] | Alpha | TODO | Native | Native |
-| Exceptionless | Alpha | [Splat.Exceptionless][SplatExceptionlessNuGet] | [![SplatExceptionlessBadge]][SplatExceptionlessNuGet] | TODO | Native | By Convention |
-| New Relic | Not Started | N\A | N\A | TODO | TODO | TODO
-| OpenTrace | Not Started | N\A | N\A | TODO | TODO | TODO
-| Raygun | Prototype | [Splat.Raygun][SplatRaygunNuGet] | [![SplatRaygunBadge]][SplatRaygunNuGet] | TODO | By Convention | By Convention |
+| Exceptionless | [Splat.Exceptionless][SplatExceptionlessNuGet] | [![SplatExceptionlessBadge]][SplatExceptionlessNuGet] | Alpha | TODO | Native | By Convention |
+| New Relic | N\A | N\A | Not Started | TODO | TODO | TODO
+| OpenTrace | N\A | N\A | Not Started |TODO | TODO | TODO
+| Raygun | [Splat.Raygun][SplatRaygunNuGet] | [![SplatRaygunBadge]][SplatRaygunNuGet] | Prototype | TODO | By Convention | By Convention |
 
 [SplatAppcenterNuGet]: https://www.nuget.org/packages/Splat.Appcenter/
 [SplatAppcenterBadge]: https://img.shields.io/nuget/v/Splat.Appcenter.svg
