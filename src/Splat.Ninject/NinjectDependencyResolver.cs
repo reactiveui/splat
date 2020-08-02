@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Ninject;
+using Ninject.Planning.Bindings;
 
 namespace Splat.Ninject
 {
@@ -81,6 +82,13 @@ namespace Splat.Ninject
         /// <inheritdoc />
         public virtual void UnregisterCurrent(Type serviceType, string contract = null)
         {
+            var isNull = serviceType == null;
+
+            if (isNull)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
             var bindings = _kernel.GetBindings(serviceType).ToArray();
 
             if (bindings?.Length < 1)
@@ -99,7 +107,34 @@ namespace Splat.Ninject
         }
 
         /// <inheritdoc />
-        public virtual void UnregisterAll(Type serviceType, string contract = null) => _kernel.Unbind(serviceType);
+        public virtual void UnregisterAll(Type serviceType, string contract = null)
+        {
+            var isNull = serviceType == null;
+
+            if (isNull)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
+            var bindings = _kernel.GetBindings(serviceType).ToArray();
+
+            if (bindings?.Length < 1)
+            {
+                return;
+            }
+
+            var matchingBinding = bindings.Where(x => IsCorrectMetadata(x.BindingConfiguration.Metadata, contract)).ToArray();
+
+            if (matchingBinding.Length < 1)
+            {
+                return;
+            }
+
+            foreach (IBinding binding in matchingBinding)
+            {
+                _kernel.RemoveBinding(binding);
+            }
+        }
 
         /// <inheritdoc />
         public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
