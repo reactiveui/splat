@@ -29,13 +29,29 @@ namespace Splat.Ninject
 
         /// <inheritdoc />
         public virtual object GetService(Type serviceType, string contract = null) =>
-            _kernel.GetAll(serviceType, contract)?.LastOrDefault();
+            GetServices(serviceType, contract)?.LastOrDefault();
 
         /// <inheritdoc />
-        public virtual IEnumerable<object> GetServices(Type serviceType, string contract = null) =>
-            string.IsNullOrEmpty(contract)
-                ? _kernel.GetAll(serviceType)
-                : _kernel.GetAll(serviceType, contract);
+        public virtual IEnumerable<object> GetServices(Type serviceType, string contract = null)
+        {
+            var isNull = serviceType == null;
+            if (isNull)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
+            IEnumerable<object> services;
+            if (isNull)
+            {
+                return _kernel.GetAll(
+                    typeof(NullServiceType),
+                    contract);
+            }
+
+            return _kernel.GetAll(
+                serviceType,
+                contract);
+        }
 
         /// <inheritdoc />
         public bool HasRegistration(Type serviceType, string contract = null)
@@ -46,6 +62,13 @@ namespace Splat.Ninject
         /// <inheritdoc />
         public virtual void Register(Func<object> factory, Type serviceType, string contract = null)
         {
+            var isNull = serviceType == null;
+
+            if (isNull)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
             if (string.IsNullOrWhiteSpace(contract))
             {
                 _kernel.Bind(serviceType).ToMethod(_ => factory());
@@ -108,6 +131,16 @@ namespace Splat.Ninject
         {
             return (metadata?.Name == null && string.IsNullOrWhiteSpace(contract))
                    || (metadata?.Name != null && metadata.Name.Equals(contract, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private class NullServiceType
+        {
+            public NullServiceType(Func<object> factory)
+            {
+                Factory = factory;
+            }
+
+            public Func<object> Factory { get; }
         }
     }
 }
