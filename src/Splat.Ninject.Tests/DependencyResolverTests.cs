@@ -9,6 +9,7 @@ using System.Linq;
 using Ninject;
 using Shouldly;
 using Splat.Common.Test;
+using Splat.Tests.ServiceLocation;
 using Xunit;
 
 namespace Splat.Ninject.Tests

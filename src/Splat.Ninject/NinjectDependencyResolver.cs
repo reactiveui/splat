@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Ninject;
 
 namespace Splat.Ninject
@@ -29,8 +30,8 @@ namespace Splat.Ninject
         /// <inheritdoc />
         public virtual object GetService(Type serviceType, string contract = null) =>
             string.IsNullOrEmpty(contract)
-                ? _kernel.TryGet(serviceType)
-                : _kernel.TryGet(serviceType, contract);
+                ? _kernel.GetAll(serviceType)?.LastOrDefault()
+                : _kernel.GetAll(serviceType, contract)?.LastOrDefault();
 
         /// <inheritdoc />
         public virtual IEnumerable<object> GetServices(Type serviceType, string contract = null) =>
@@ -41,12 +42,21 @@ namespace Splat.Ninject
         /// <inheritdoc />
         public bool HasRegistration(Type serviceType, string contract = null)
         {
-            return _kernel.CanResolve(serviceType);
+            return _kernel.CanResolve(serviceType, metadata => (metadata?.Name == null && string.IsNullOrWhiteSpace(contract))
+                                                               || (metadata?.Name != null && metadata.Name.Equals(contract, StringComparison.OrdinalIgnoreCase)));
         }
 
         /// <inheritdoc />
-        public virtual void Register(Func<object> factory, Type serviceType, string contract = null) =>
-            _kernel.Bind(serviceType).ToMethod(_ => factory());
+        public virtual void Register(Func<object> factory, Type serviceType, string contract = null)
+        {
+            if (string.IsNullOrWhiteSpace(contract))
+            {
+                _kernel.Bind(serviceType).ToMethod(_ => factory());
+                return;
+            }
+
+            _kernel.Bind(serviceType).ToMethod(_ => factory()).Named(contract);
+        }
 
         /// <inheritdoc />
         public virtual void UnregisterCurrent(Type serviceType, string contract = null)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Splat.NLog;
 using Xunit;
 
 namespace Splat.Tests.ServiceLocation
@@ -134,6 +135,23 @@ namespace Splat.Tests.ServiceLocation
             Assert.False(resolver.HasRegistration(type));
             Assert.False(resolver.HasRegistration(type, contractOne));
             Assert.True(resolver.HasRegistration(type, contractTwo));
+        }
+
+        /// <summary>
+        /// Tests to ensure NLog registers correctly with different service locators.
+        /// Based on issue reported in #553.
+        /// </summary>
+        [Fact]
+        public void ILogManager_Resolvable()
+        {
+            var resolver = GetDependencyResolver();
+
+            // Setup NLog for Logging (doesn't matter if I actually configure NLog or not)
+            resolver.UseNLogWithWrappingFullLogger();
+
+            // Get the ILogManager instance (this should succeed, but fails in current code)
+            ILogManager lm = Locator.Current.GetService<ILogManager>();
+            Assert.NotNull(lm);
         }
 
         /// <summary>
