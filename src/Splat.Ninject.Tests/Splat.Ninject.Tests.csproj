@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\Splat.Tests\ServiceLocation\BaseDependencyResolverTests.cs" Link="BaseDependencyResolverTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Splat.NLog\Splat.NLog.csproj" />
     <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />
     <ProjectReference Include="..\Splat.Ninject\Splat.Ninject.csproj" />
   </ItemGroup>
