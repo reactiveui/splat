@@ -29,9 +29,7 @@ namespace Splat.Ninject
 
         /// <inheritdoc />
         public virtual object GetService(Type serviceType, string contract = null) =>
-            string.IsNullOrEmpty(contract)
-                ? _kernel.GetAll(serviceType)?.LastOrDefault()
-                : _kernel.GetAll(serviceType, contract)?.LastOrDefault();
+            _kernel.GetAll(serviceType, contract)?.LastOrDefault();
 
         /// <inheritdoc />
         public virtual IEnumerable<object> GetServices(Type serviceType, string contract = null) =>
@@ -42,8 +40,7 @@ namespace Splat.Ninject
         /// <inheritdoc />
         public bool HasRegistration(Type serviceType, string contract = null)
         {
-            return _kernel.CanResolve(serviceType, metadata => (metadata?.Name == null && string.IsNullOrWhiteSpace(contract))
-                                                               || (metadata?.Name != null && metadata.Name.Equals(contract, StringComparison.OrdinalIgnoreCase)));
+            return _kernel.CanResolve(serviceType, metadata => IsCorrectMetadata(metadata, contract));
         }
 
         /// <inheritdoc />
@@ -61,7 +58,21 @@ namespace Splat.Ninject
         /// <inheritdoc />
         public virtual void UnregisterCurrent(Type serviceType, string contract = null)
         {
-            throw new NotImplementedException();
+            var bindings = _kernel.GetBindings(serviceType).ToArray();
+
+            if (bindings?.Length < 1)
+            {
+                return;
+            }
+
+            var matchingBinding = bindings.LastOrDefault(x => IsCorrectMetadata(x.BindingConfiguration.Metadata, contract));
+
+            if (matchingBinding == null)
+            {
+                return;
+            }
+
+            _kernel.RemoveBinding(matchingBinding);
         }
 
         /// <inheritdoc />
@@ -91,6 +102,12 @@ namespace Splat.Ninject
                 _kernel?.Dispose();
                 _kernel = null;
             }
+        }
+
+        private static bool IsCorrectMetadata(global::Ninject.Planning.Bindings.IBindingMetadata metadata, string contract)
+        {
+            return (metadata?.Name == null && string.IsNullOrWhiteSpace(contract))
+                   || (metadata?.Name != null && metadata.Name.Equals(contract, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
