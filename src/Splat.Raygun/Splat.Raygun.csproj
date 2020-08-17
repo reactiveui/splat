@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'NET461'">
-    <PackageReference Include="Mindscape.Raygun4Net" Version="5.10.2" />
+    <PackageReference Include="Mindscape.Raygun4Net" Version="5.11.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
