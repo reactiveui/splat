@@ -411,5 +411,14 @@ namespace Splat.Logging
         /// <param name="argument3">The third argument for formatting purposes.</param>
         /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
         void Fatal<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [CallerMemberName]string callerMemberName = null);
+
+        /// <summary>
+        /// Writes a message to the target.
+        /// </summary>
+        /// <param name="exception">The exception that occurred.</param>
+        /// <param name="message">The message to write.</param>
+        /// <param name="logLevel">The severity level of the log message.</param>
+        /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
+        void Write(Exception exception, string message, LogLevel logLevel, string callerMemberName = null);
     }
 }

@@ -349,6 +349,12 @@ namespace Splat.Logging
                 argument3);
         }
 
+        /// <inheritdoc/>
+        public void Write(Exception exception, string message, LogLevel logLevel, string callerMemberName = null)
+        {
+            _fullLogger.Write(exception, GetSuffixedCallerData(message, callerMemberName), logLevel);
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static string GetSuffixedCallerData(string message, string callerMemberName)
         {
