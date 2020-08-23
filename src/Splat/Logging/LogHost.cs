@@ -5,7 +5,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Splat.Logging;
 
 namespace Splat
 {

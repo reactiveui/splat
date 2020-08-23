@@ -7,13 +7,18 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Splat.Logging
+namespace Splat
 {
     /// <summary>
     /// Represents the logging interface for the Static Default Logger.
     /// </summary>
     public interface IStaticFullLogger
     {
+        /// <summary>
+        /// Gets the level at which the target will emit messages.
+        /// </summary>
+        LogLevel Level { get; }
+
         /// <summary>
         /// Emits a debug log message.
         /// This will emit the public contents of the object provided to the log.
@@ -415,10 +420,37 @@ namespace Splat.Logging
         /// <summary>
         /// Writes a message to the target.
         /// </summary>
-        /// <param name="exception">The exception that occurred.</param>
         /// <param name="message">The message to write.</param>
         /// <param name="logLevel">The severity level of the log message.</param>
         /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-        void Write(Exception exception, string message, LogLevel logLevel, string callerMemberName = null);
+        void Write([Localizable(false)] string message, LogLevel logLevel, [CallerMemberName]string callerMemberName = null);
+
+        /// <summary>
+        /// Writes a message to the target.
+        /// </summary>
+        /// <param name="exception">The exception that occured.</param>
+        /// <param name="message">The message to write.</param>
+        /// <param name="logLevel">The severity level of the log message.</param>
+        /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
+        void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel, [CallerMemberName]string callerMemberName = null);
+
+        /// <summary>
+        /// Writes a messge to the target.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="type">The type.</param>
+        /// <param name="logLevel">The log level.</param>
+        /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
+        void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel, [CallerMemberName]string callerMemberName = null);
+
+        /// <summary>
+        /// Writes a messge to the target.
+        /// </summary>
+        /// <param name="exception">The exception that occured.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="type">The type.</param>
+        /// <param name="logLevel">The log level.</param>
+        /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
+        void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel, [CallerMemberName]string callerMemberName = null);
     }
 }

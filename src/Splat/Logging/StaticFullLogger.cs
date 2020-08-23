@@ -4,9 +4,10 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Splat.Logging
+namespace Splat
 {
     /// <summary>
     /// A full logger which used by the default static logger to allow capture of .NET framework caller data. Wraps a <see cref="IFullLogger"/>.
@@ -23,6 +24,9 @@ namespace Splat.Logging
         {
             _fullLogger = fullLogger ?? throw new ArgumentNullException(nameof(fullLogger));
         }
+
+        /// <inheritdoc/>
+        public LogLevel Level => _fullLogger.Level;
 
         /// <inheritdoc/>
         public void Debug<T>(T value, string callerMemberName = null)
@@ -350,9 +354,27 @@ namespace Splat.Logging
         }
 
         /// <inheritdoc/>
+        public void Write(string message, LogLevel logLevel, string callerMemberName = null)
+        {
+            _fullLogger.Write(GetSuffixedCallerData(message, callerMemberName), logLevel);
+        }
+
+        /// <inheritdoc/>
         public void Write(Exception exception, string message, LogLevel logLevel, string callerMemberName = null)
         {
             _fullLogger.Write(exception, GetSuffixedCallerData(message, callerMemberName), logLevel);
+        }
+
+        /// <inheritdoc/>
+        public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel, [CallerMemberName] string callerMemberName = null)
+        {
+            _fullLogger.Write(GetSuffixedCallerData(message, callerMemberName), type, logLevel);
+        }
+
+        /// <inheritdoc/>
+        public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel, [CallerMemberName]string callerMemberName = null)
+        {
+            _fullLogger.Write(exception, GetSuffixedCallerData(message, callerMemberName), type, logLevel);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
