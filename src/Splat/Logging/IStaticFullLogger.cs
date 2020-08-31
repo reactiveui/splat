@@ -29,16 +29,6 @@ namespace Splat
         void Debug<T>(T value, [CallerMemberName]string callerMemberName = null);
 
         /// <summary>
-        /// Emits a debug log message.
-        /// This will emit the public contents of the object provided to the log.
-        /// </summary>
-        /// <typeparam name="T">The type of object used as the message.</typeparam>
-        /// <param name="formatProvider">The format provider to use.</param>
-        /// <param name="value">The value to emit.</param>
-        /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-        void Debug<T>(IFormatProvider formatProvider, T value, [CallerMemberName]string callerMemberName = null);
-
-        /// <summary>
         /// Emits a debug log message with an exception.
         /// </summary>
         /// <param name="exception">The exception.</param>
@@ -105,16 +95,6 @@ namespace Splat
         /// <param name="value">The log to emit.</param>
         /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
         void Info<T>(T value, [CallerMemberName]string callerMemberName = null);
-
-        /// <summary>
-        /// Emits a info log message.
-        /// This will emit the public contents of the object provided to the log.
-        /// </summary>
-        /// <typeparam name="T">The type of object used as the message.</typeparam>
-        /// <param name="formatProvider">The format provider to use.</param>
-        /// <param name="value">The value to emit.</param>
-        /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-        void Info<T>(IFormatProvider formatProvider, T value, [CallerMemberName]string callerMemberName = null);
 
         /// <summary>
         /// Emits a info log message with exception.
@@ -187,16 +167,6 @@ namespace Splat
         void Warn<T>(T value, [CallerMemberName]string callerMemberName = null);
 
         /// <summary>
-        /// Emits a warning log message.
-        /// This will emit the public contents of the object provided to the log.
-        /// </summary>
-        /// <typeparam name="T">The type of object used as the message.</typeparam>
-        /// <param name="formatProvider">The format provider to use.</param>
-        /// <param name="value">The value to emit.</param>
-        /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-        void Warn<T>(IFormatProvider formatProvider, T value, [CallerMemberName]string callerMemberName = null);
-
-        /// <summary>
         /// Emits a warning log message with exception.
         /// This will emit details about a exception.
         /// This type of logging is not able to be localized.
@@ -267,16 +237,6 @@ namespace Splat
         void Error<T>(T value, [CallerMemberName]string callerMemberName = null);
 
         /// <summary>
-        /// Emits a error log message.
-        /// This will emit the public contents of the object provided to the log.
-        /// </summary>
-        /// <typeparam name="T">The type of object used as the message.</typeparam>
-        /// <param name="formatProvider">The format provider to use.</param>
-        /// <param name="value">The value to emit.</param>
-        /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-        void Error<T>(IFormatProvider formatProvider, T value, [CallerMemberName]string callerMemberName = null);
-
-        /// <summary>
         /// Emits a error log message with exception.
         /// This will emit details about a exception.
         /// This type of logging is not able to be localized.
@@ -345,16 +305,6 @@ namespace Splat
         /// <param name="value">The log to emit.</param>
         /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
         void Fatal<T>(T value, [CallerMemberName]string callerMemberName = null);
-
-        /// <summary>
-        /// Emits a fatal log message.
-        /// This will emit the public contents of the object provided to the log.
-        /// </summary>
-        /// <typeparam name="T">The type of object used as the message.</typeparam>
-        /// <param name="formatProvider">The format provider to use.</param>
-        /// <param name="value">The value to emit.</param>
-        /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-        void Fatal<T>(IFormatProvider formatProvider, T value, [CallerMemberName]string callerMemberName = null);
 
         /// <summary>
         /// Emits a fatal log message with exception.

@@ -37,15 +37,6 @@ namespace Splat
         }
 
         /// <inheritdoc/>
-        public void Debug<T>(IFormatProvider formatProvider, T value, string callerMemberName = null)
-        {
-            _fullLogger.Debug(
-                formatProvider,
-                callerMemberName,
-                value);
-        }
-
-        /// <inheritdoc/>
         public void Debug(Exception exception, string message, string callerMemberName = null)
         {
             _fullLogger.Debug(exception, GetSuffixedCallerData(message, callerMemberName));
@@ -97,15 +88,6 @@ namespace Splat
         public void Info<T>(T value, string callerMemberName = null)
         {
             _fullLogger.Info<T>(
-                callerMemberName,
-                value);
-        }
-
-        /// <inheritdoc/>
-        public void Info<T>(IFormatProvider formatProvider, T value, string callerMemberName = null)
-        {
-            _fullLogger.Info(
-                formatProvider,
                 callerMemberName,
                 value);
         }
@@ -167,15 +149,6 @@ namespace Splat
         }
 
         /// <inheritdoc/>
-        public void Warn<T>(IFormatProvider formatProvider, T value, string callerMemberName = null)
-        {
-            _fullLogger.Warn(
-                formatProvider,
-                callerMemberName,
-                value);
-        }
-
-        /// <inheritdoc/>
         public void Warn(Exception exception, string message, string callerMemberName = null)
         {
             _fullLogger.Warn(exception, GetSuffixedCallerData(message, callerMemberName));
@@ -232,15 +205,6 @@ namespace Splat
         }
 
         /// <inheritdoc/>
-        public void Error<T>(IFormatProvider formatProvider, T value, string callerMemberName = null)
-        {
-            _fullLogger.Error(
-                formatProvider,
-                callerMemberName,
-                value);
-        }
-
-        /// <inheritdoc/>
         public void Error(Exception exception, string message, string callerMemberName = null)
         {
             _fullLogger.Error(exception, GetSuffixedCallerData(message, callerMemberName));
@@ -292,15 +256,6 @@ namespace Splat
         public void Fatal<T>(T value, string callerMemberName = null)
         {
             _fullLogger.Fatal<T>(
-                callerMemberName,
-                value);
-        }
-
-        /// <inheritdoc/>
-        public void Fatal<T>(IFormatProvider formatProvider, T value, string callerMemberName = null)
-        {
-            _fullLogger.Fatal(
-                formatProvider,
                 callerMemberName,
                 value);
         }
