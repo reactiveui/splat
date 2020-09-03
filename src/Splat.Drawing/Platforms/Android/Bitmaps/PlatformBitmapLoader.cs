@@ -210,7 +210,7 @@ namespace Splat
 
         private void AttemptStreamByteCorrection(Stream sourceStream)
         {
-            if (sourceStream.CanWrite)
+            if (!sourceStream.CanWrite)
             {
                 this.Log().Warn("Stream missing terminating bytes but is read only.");
             }
