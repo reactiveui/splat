@@ -99,7 +99,7 @@ namespace Splat.Autofac.Tests
         /// Should throw an exception if service registration call back called.
         /// </summary>
         [Fact]
-        public void AutofacDependencyResolver_Should_Throw_If_ServiceRegistionCallback_Called()
+        public void AutofacDependencyResolver_Should_Throw_If_ServiceRegistrationCallback_Called()
         {
             var containerBuilder = new ContainerBuilder();
 

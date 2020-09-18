@@ -34,6 +34,12 @@ namespace Splat.Autofac
 #pragma warning restore CA2213 // Disposable fields should be disposed
 
         /// <summary>
+        ///     Set to true, when SetLifetimeScope has been called.
+        ///     Prevents mutating the ContainerBuilder or setting the lifetime again.
+        /// </summary>
+        private bool _lifetimeScopeSet;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="AutofacDependencyResolver" /> class.
         /// </summary>
         /// <param name="containerBuilder">Autofac container builder.</param>
@@ -61,12 +67,21 @@ namespace Splat.Autofac
         /// <param name="lifetimeScope">Lifetime scope, which will be used to resolve ReactiveUI services.</param>
         public void SetLifetimeScope(ILifetimeScope lifetimeScope)
         {
-            _lifetimeScope = lifetimeScope;
+            lock (_lockObject)
+            {
+                if (_lifetimeScopeSet)
+                {
+                    throw new Exception("Lifetime scope of the Autofac resolver has already been set");
+                }
 
-            // We dispose on the internal container, since it and its many child lifetime scopes are not needed anymore.
-            _internalContainer.Dispose();
-            _internalContainer = null;
-            _internalLifetimeScope = null;
+                _lifetimeScopeSet = true;
+                _lifetimeScope = lifetimeScope;
+
+                // We dispose on the internal container, since it and its many child lifetime scopes are not needed anymore.
+                _internalContainer.Dispose();
+                _internalContainer = null;
+                _internalLifetimeScope = null;
+            }
         }
 
         /// <inheritdoc />
@@ -118,6 +133,11 @@ namespace Splat.Autofac
         {
             lock (_lockObject)
             {
+                if (_lifetimeScopeSet)
+                {
+                    throw new Exception("Container has already been built and the lifetime scope set, so it is not possible to modify it anymore.");
+                }
+
                 // We register every ReactiveUI service twice.
                 // First to the application-wide container, which we are still building.
                 // Second to child lifetimes in a temporary container, that is used only to satisfy ReactiveUI dependencies.
