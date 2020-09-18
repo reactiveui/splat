@@ -124,11 +124,12 @@ namespace Splat.Autofac.Tests
             var containerBuilder = new ContainerBuilder();
 
             var autofacResolver = containerBuilder.UseAutofacDependencyResolver();
-            autofacResolver.SetLifetimeScope(containerBuilder.Build());
 
             Locator.CurrentMutable.RegisterConstant(
                 new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())),
                 typeof(ILogManager));
+
+            autofacResolver.SetLifetimeScope(containerBuilder.Build());
 
             var logManager = Locator.Current.GetService<ILogManager>();
             Assert.IsType<FuncLogManager>(logManager);
@@ -144,24 +145,65 @@ namespace Splat.Autofac.Tests
         public void AutofacDependencyResolver_PreInit_Should_ReturnRegisteredLogger()
         {
             var containerBuilder = new ContainerBuilder();
+
+            var autofacResolver = containerBuilder.UseAutofacDependencyResolver();
+
             containerBuilder.Register(_ => new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger()))).As(typeof(ILogManager))
                 .AsImplementedInterfaces();
 
-            var autofacResolver = containerBuilder.UseAutofacDependencyResolver();
             autofacResolver.SetLifetimeScope(containerBuilder.Build());
 
             var logManager = Locator.Current.GetService<ILogManager>();
             Assert.IsType<FuncLogManager>(logManager);
         }
 
+        /// <summary>
+        ///     Because <see href="https://autofaccn.readthedocs.io/en/latest/best-practices/#consider-a-container-as-immutable">Autofac 5+ containers are immutable</see>,
+        ///     UnregisterAll method is not available anymore.
+        /// </summary>
+        [Fact]
+        public override void UnregisterAll_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
+        {
+        }
+
+        /// <summary>
+        ///     <inheritdoc cref="AutofacDependencyResolver.UnregisterAll"/>
+        ///     <inheritdoc cref="BaseDependencyResolverTests{T}.HasRegistration"/>
+        /// </summary>
+        [Fact]
+        public override void HasRegistration()
+        {
+            var type = typeof(string);
+            const string contractOne = "ContractOne";
+            const string contractTwo = "ContractTwo";
+            var resolver = GetDependencyResolver();
+
+            Assert.False(resolver.HasRegistration(type));
+            Assert.False(resolver.HasRegistration(type, contractOne));
+            Assert.False(resolver.HasRegistration(type, contractTwo));
+
+            resolver.Register(() => "unnamed", type);
+            Assert.True(resolver.HasRegistration(type));
+            Assert.False(resolver.HasRegistration(type, contractOne));
+            Assert.False(resolver.HasRegistration(type, contractTwo));
+
+            resolver.Register(() => contractOne, type, contractOne);
+            Assert.True(resolver.HasRegistration(type));
+            Assert.True(resolver.HasRegistration(type, contractOne));
+            Assert.False(resolver.HasRegistration(type, contractTwo));
+
+            resolver.Register(() => contractTwo, type, contractTwo);
+            Assert.True(resolver.HasRegistration(type));
+            Assert.True(resolver.HasRegistration(type, contractOne));
+            Assert.True(resolver.HasRegistration(type, contractTwo));
+        }
+
         /// <inheritdoc />
         protected override AutofacDependencyResolver GetDependencyResolver()
         {
             var containerBuilder = new ContainerBuilder();
-            var autofacResolver = containerBuilder.UseAutofacDependencyResolver();
-            autofacResolver.SetLifetimeScope(containerBuilder.Build());
 
-            return autofacResolver;
+            return containerBuilder.UseAutofacDependencyResolver();
         }
     }
 }

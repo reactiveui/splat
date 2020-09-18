@@ -108,7 +108,7 @@ namespace Splat.Tests.ServiceLocation
         /// Tests for ensuring hasregistration behaves when using contracts.
         /// </summary>
         [Fact]
-        public void HasRegistration()
+        public virtual void HasRegistration()
         {
             var type = typeof(string);
             const string contractOne = "ContractOne";
