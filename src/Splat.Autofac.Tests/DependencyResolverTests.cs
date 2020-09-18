@@ -158,11 +158,42 @@ namespace Splat.Autofac.Tests
         }
 
         /// <summary>
-        ///     Because <see href="https://autofaccn.readthedocs.io/en/latest/best-practices/#consider-a-container-as-immutable">Autofac 5+ containers are immutable</see>,
-        ///     UnregisterAll method is not available anymore.
+        ///     <inheritdoc cref="AutofacDependencyResolver.UnregisterCurrent"/>
+        /// </summary>
+        [Fact]
+        public override void UnregisterCurrent_Doesnt_Throw_When_List_Empty()
+        {
+        }
+
+        /// <summary>
+        ///     <inheritdoc cref="AutofacDependencyResolver.UnregisterCurrent"/>
+        /// </summary>
+        [Fact]
+        public override void UnregisterCurrent_Remove_Last()
+        {
+        }
+
+        /// <summary>
+        ///     <inheritdoc cref="AutofacDependencyResolver.UnregisterCurrent"/>
+        /// </summary>
+        [Fact]
+        public override void UnregisterCurrentByName_Doesnt_Throw_When_List_Empty()
+        {
+        }
+
+        /// <summary>
+        ///     <inheritdoc cref="AutofacDependencyResolver.UnregisterAll"/>
         /// </summary>
         [Fact]
         public override void UnregisterAll_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
+        {
+        }
+
+        /// <summary>
+        ///     <inheritdoc cref="AutofacDependencyResolver.UnregisterAll"/>
+        /// </summary>
+        [Fact]
+        public override void UnregisterAllByContract_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
         {
         }
 
