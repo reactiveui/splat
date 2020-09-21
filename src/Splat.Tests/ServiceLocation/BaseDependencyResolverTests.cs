@@ -17,7 +17,7 @@ namespace Splat.Tests.ServiceLocation
         /// Test to ensure Unregister doesn't cause an IndexOutOfRangeException.
         /// </summary>
         [Fact]
-        public void UnregisterCurrent_Doesnt_Throw_When_List_Empty()
+        public virtual void UnregisterCurrent_Doesnt_Throw_When_List_Empty()
         {
             var resolver = GetDependencyResolver();
             var type = typeof(ILogManager);
@@ -31,7 +31,7 @@ namespace Splat.Tests.ServiceLocation
         /// Test to ensure UnregisterCurrent removes last entry.
         /// </summary>
         [Fact]
-        public void UnregisterCurrent_Remove_Last()
+        public virtual void UnregisterCurrent_Remove_Last()
         {
             var resolver = GetDependencyResolver();
             var type = typeof(ILogManager);
@@ -52,7 +52,7 @@ namespace Splat.Tests.ServiceLocation
         /// Test to ensure Unregister doesn't cause an IndexOutOfRangeException.
         /// </summary>
         [Fact]
-        public void UnregisterCurrentByName_Doesnt_Throw_When_List_Empty()
+        public virtual void UnregisterCurrentByName_Doesnt_Throw_When_List_Empty()
         {
             var resolver = GetDependencyResolver();
             var type = typeof(ILogManager);
@@ -81,7 +81,7 @@ namespace Splat.Tests.ServiceLocation
         /// Test to ensure Unregister doesn't cause an IndexOutOfRangeException.
         /// </summary>
         [Fact]
-        public void UnregisterAllByContract_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
+        public virtual void UnregisterAllByContract_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
         {
             var resolver = GetDependencyResolver();
             var type = typeof(ILogManager);
@@ -108,7 +108,7 @@ namespace Splat.Tests.ServiceLocation
         /// Tests for ensuring hasregistration behaves when using contracts.
         /// </summary>
         [Fact]
-        public void HasRegistration()
+        public virtual void HasRegistration()
         {
             var type = typeof(string);
             const string contractOne = "ContractOne";
