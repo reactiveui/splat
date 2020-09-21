@@ -7,11 +7,11 @@ Splat.Autofac is an adapter for `IMutableDependencyResolver`.  It allows you to 
 ### Register the Container
 
 ```cs
-var containerBuilder = new ContainerBuilder();
-containerBuilder.RegisterType<MainPage>().As<IViewFor<MainViewModel>>();
-containerBuilder.RegisterType<SecondaryPage>().As<IViewFor<SecondaryViewModel>>();
-containerBuilder.RegisterType<MainViewModel>().AsSelf();
-containerBuilder.RegisterType<SecondaryViewModel>().AsSelf();
+var builder = new ContainerBuilder();
+builder.RegisterType<MainPage>().As<IViewFor<MainViewModel>>();
+builder.RegisterType<SecondaryPage>().As<IViewFor<SecondaryViewModel>>();
+builder.RegisterType<MainViewModel>().AsSelf();
+builder.RegisterType<SecondaryViewModel>().AsSelf();
 // etc.
 ```
 
@@ -19,13 +19,17 @@ containerBuilder.RegisterType<SecondaryViewModel>().AsSelf();
 
 ```cs
 // Creates and sets the Autofac resolver as the Locator
-var autofacResolver = containerBuilder.UseAutofacDependencyResolver();
+var autofacResolver = builder.UseAutofacDependencyResolver();
 
 // Register the resolver in Autofac so it can be later resolved
-containerBuilder.RegisterInstance(autofacResolver);
+builder.RegisterInstance(autofacResolver);
 
 // Initialize ReactiveUI components
 autofacResolver.InitializeReactiveUI();
+
+// If you need to override any service (such as the ViewLocator), register it after InitializeReactiveUI
+// https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations
+// builder.RegisterType<MyCustomViewLocator>().As<IViewLocator>().SingleInstance();
 ```
 
 ### Set Autofac Locator's lifetime after the ContainerBuilder has been built
@@ -34,6 +38,8 @@ autofacResolver.InitializeReactiveUI();
 var autofacResolver = container.Resolve<AutofacDependencyResolver>();
 
 // Set a lifetime scope (either the root or any of the child ones) to Autofac resolver
+// This is needed, because the previous steps did not Update the ContainerBuilder since they became immutable in Autofac 5+
+// https://github.com/autofac/Autofac/issues/811
 autofacResolver.SetLifetimeScope(container);`
 ```
 

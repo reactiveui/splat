@@ -23,12 +23,12 @@ namespace Splat.Autofac.Tests
         [Fact]
         public void AutofacDependencyResolver_Should_Resolve_Views()
         {
-            var containerBuilder = new ContainerBuilder();
-            containerBuilder.RegisterType<ViewOne>().As<IViewFor<ViewModelOne>>();
-            containerBuilder.RegisterType<ViewTwo>().As<IViewFor<ViewModelTwo>>();
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ViewOne>().As<IViewFor<ViewModelOne>>();
+            builder.RegisterType<ViewTwo>().As<IViewFor<ViewModelTwo>>();
 
-            var autofacResolver = containerBuilder.UseAutofacDependencyResolver();
-            autofacResolver.SetLifetimeScope(containerBuilder.Build());
+            var autofacResolver = builder.UseAutofacDependencyResolver();
+            autofacResolver.SetLifetimeScope(builder.Build());
 
             var viewOne = Locator.Current.GetService(typeof(IViewFor<ViewModelOne>));
             var viewTwo = Locator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
@@ -45,11 +45,11 @@ namespace Splat.Autofac.Tests
         [Fact]
         public void AutofacDependencyResolver_Should_Resolve_Named_View()
         {
-            var containerBuilder = new ContainerBuilder();
-            containerBuilder.RegisterType<ViewTwo>().Named<IViewFor<ViewModelTwo>>("Other");
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ViewTwo>().Named<IViewFor<ViewModelTwo>>("Other");
 
-            var autofacResolver = containerBuilder.UseAutofacDependencyResolver();
-            autofacResolver.SetLifetimeScope(containerBuilder.Build());
+            var autofacResolver = builder.UseAutofacDependencyResolver();
+            autofacResolver.SetLifetimeScope(builder.Build());
 
             var viewTwo = Locator.Current.GetService(typeof(IViewFor<ViewModelTwo>), "Other");
 
@@ -63,12 +63,12 @@ namespace Splat.Autofac.Tests
         [Fact]
         public void AutofacDependencyResolver_Should_Resolve_View_Models()
         {
-            var containerBuilder = new ContainerBuilder();
-            containerBuilder.RegisterType<ViewModelOne>().AsSelf();
-            containerBuilder.RegisterType<ViewModelTwo>().AsSelf();
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ViewModelOne>().AsSelf();
+            builder.RegisterType<ViewModelTwo>().AsSelf();
 
-            var autofacResolver = containerBuilder.UseAutofacDependencyResolver();
-            autofacResolver.SetLifetimeScope(containerBuilder.Build());
+            var autofacResolver = builder.UseAutofacDependencyResolver();
+            autofacResolver.SetLifetimeScope(builder.Build());
 
             var vmOne = Locator.Current.GetService<ViewModelOne>();
             var vmTwo = Locator.Current.GetService<ViewModelTwo>();
@@ -83,11 +83,11 @@ namespace Splat.Autofac.Tests
         [Fact]
         public void AutofacDependencyResolver_Should_Resolve_Screen()
         {
-            var containerBuilder = new ContainerBuilder();
-            containerBuilder.RegisterType<MockScreen>().As<IScreen>().SingleInstance();
+            var builder = new ContainerBuilder();
+            builder.RegisterType<MockScreen>().As<IScreen>().SingleInstance();
 
-            var autofacResolver = containerBuilder.UseAutofacDependencyResolver();
-            autofacResolver.SetLifetimeScope(containerBuilder.Build());
+            var autofacResolver = builder.UseAutofacDependencyResolver();
+            autofacResolver.SetLifetimeScope(builder.Build());
 
             var screen = Locator.Current.GetService<IScreen>();
 
@@ -101,10 +101,10 @@ namespace Splat.Autofac.Tests
         [Fact]
         public void AutofacDependencyResolver_Should_Throw_If_ServiceRegistrationCallback_Called()
         {
-            var containerBuilder = new ContainerBuilder();
+            var builder = new ContainerBuilder();
 
-            var autofacResolver = containerBuilder.UseAutofacDependencyResolver();
-            autofacResolver.SetLifetimeScope(containerBuilder.Build());
+            var autofacResolver = builder.UseAutofacDependencyResolver();
+            autofacResolver.SetLifetimeScope(builder.Build());
 
             var result = Record.Exception(() =>
                 Locator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
@@ -121,15 +121,15 @@ namespace Splat.Autofac.Tests
         [Fact]
         public void AutofacDependencyResolver_Should_ReturnRegisteredLogger()
         {
-            var containerBuilder = new ContainerBuilder();
+            var builder = new ContainerBuilder();
 
-            var autofacResolver = containerBuilder.UseAutofacDependencyResolver();
+            var autofacResolver = builder.UseAutofacDependencyResolver();
 
             Locator.CurrentMutable.RegisterConstant(
                 new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())),
                 typeof(ILogManager));
 
-            autofacResolver.SetLifetimeScope(containerBuilder.Build());
+            autofacResolver.SetLifetimeScope(builder.Build());
 
             var logManager = Locator.Current.GetService<ILogManager>();
             Assert.IsType<FuncLogManager>(logManager);
@@ -144,14 +144,14 @@ namespace Splat.Autofac.Tests
         [Fact]
         public void AutofacDependencyResolver_PreInit_Should_ReturnRegisteredLogger()
         {
-            var containerBuilder = new ContainerBuilder();
+            var builder = new ContainerBuilder();
 
-            var autofacResolver = containerBuilder.UseAutofacDependencyResolver();
+            var autofacResolver = builder.UseAutofacDependencyResolver();
 
-            containerBuilder.Register(_ => new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger()))).As(typeof(ILogManager))
+            builder.Register(_ => new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger()))).As(typeof(ILogManager))
                 .AsImplementedInterfaces();
 
-            autofacResolver.SetLifetimeScope(containerBuilder.Build());
+            autofacResolver.SetLifetimeScope(builder.Build());
 
             var logManager = Locator.Current.GetService<ILogManager>();
             Assert.IsType<FuncLogManager>(logManager);
@@ -232,9 +232,9 @@ namespace Splat.Autofac.Tests
         /// <inheritdoc />
         protected override AutofacDependencyResolver GetDependencyResolver()
         {
-            var containerBuilder = new ContainerBuilder();
+            var builder = new ContainerBuilder();
 
-            return containerBuilder.UseAutofacDependencyResolver();
+            return builder.UseAutofacDependencyResolver();
         }
     }
 }

@@ -42,10 +42,10 @@ namespace Splat.Autofac
         /// <summary>
         /// Initializes a new instance of the <see cref="AutofacDependencyResolver" /> class.
         /// </summary>
-        /// <param name="containerBuilder">Autofac container builder.</param>
-        public AutofacDependencyResolver(ContainerBuilder containerBuilder)
+        /// <param name="builder">Autofac container builder.</param>
+        public AutofacDependencyResolver(ContainerBuilder builder)
         {
-            _builder = containerBuilder;
+            _builder = builder;
 
             _internalContainer = new ContainerBuilder().Build();
             _internalLifetimeScope = _internalContainer.BeginLifetimeScope();
@@ -167,26 +167,32 @@ namespace Splat.Autofac
         /// <summary>
         ///     Because <see href="https://autofaccn.readthedocs.io/en/latest/best-practices/#consider-a-container-as-immutable">Autofac 5+ containers are immutable</see>,
         ///     UnregisterCurrent method is not available anymore.
+        ///     Instead, simply <see href="https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations">register your service after InitializeReactiveUI</see> to override it.
         /// </summary>
         /// <param name="serviceType">The service type to unregister.</param>
         /// <param name="contract">The optional contract value, which will only remove the value associated with the contract.</param>
         /// <exception cref="System.NotImplementedException">This is not implemented by default.</exception>
         /// <inheritdoc />
-        [Obsolete("Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore.")]
+        [Obsolete("Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore. " +
+                  "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.")]
         public virtual void UnregisterCurrent(Type serviceType, string contract = null) =>
-            throw new NotImplementedException("Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore.");
+            throw new NotImplementedException("Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore. " +
+                                              "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.");
 
         /// <summary>
         ///     Because <see href="https://autofaccn.readthedocs.io/en/latest/best-practices/#consider-a-container-as-immutable">Autofac 5+ containers are immutable</see>,
         ///     UnregisterAll method is not available anymore.
+        ///     Instead, simply <see href="https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations">register your service after InitializeReactiveUI</see> to override it.
         /// </summary>
         /// <param name="serviceType">The service type to unregister.</param>
         /// <param name="contract">The optional contract value, which will only remove the value associated with the contract.</param>
         /// <exception cref="System.NotImplementedException">This is not implemented by default.</exception>
         /// <inheritdoc />
-        [Obsolete("Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore.")]
+        [Obsolete("Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore. " +
+                  "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.")]
         public virtual void UnregisterAll(Type serviceType, string contract = null) =>
-            throw new NotImplementedException("Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore.");
+            throw new NotImplementedException("Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore. " +
+                                              "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.");
 
         /// <inheritdoc />
         public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback) =>

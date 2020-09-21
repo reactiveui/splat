@@ -16,12 +16,12 @@ namespace Splat.Autofac
         /// <summary>
         /// Initializes an instance of <see cref="AutofacDependencyResolver"/> that overrides the default <see cref="Locator"/>.
         /// </summary>
-        /// <param name="containerBuilder">Autofac container builder.</param>
+        /// <param name="builder">Autofac container builder.</param>
         /// <returns>The Autofac dependency resolver.</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Dispose handled by locator.")]
-        public static AutofacDependencyResolver UseAutofacDependencyResolver(this ContainerBuilder containerBuilder)
+        public static AutofacDependencyResolver UseAutofacDependencyResolver(this ContainerBuilder builder)
         {
-            var autofacResolver = new AutofacDependencyResolver(containerBuilder);
+            var autofacResolver = new AutofacDependencyResolver(builder);
             Locator.SetLocator(autofacResolver);
             return autofacResolver;
         }
