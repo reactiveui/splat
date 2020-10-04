@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Graphics;
@@ -129,32 +130,42 @@ namespace Splat
         {
             // VS2019 onward
             var drawableTypes = assemblies
+                .AsParallel()
                 .SelectMany(a => GetTypesFromAssembly(a, log))
-                .Where(x => x.Name == "Resource" && x.GetNestedType("Drawable") != null)
+                .Where(x => x.Name.Equals("Resource", StringComparison.Ordinal) && x.GetNestedType("Drawable") != null)
                 .Select(x => x.GetNestedType("Drawable"))
                 .ToArray();
 
-            if (log != null)
+            if (log?.IsDebugEnabled == true)
             {
-                log.Debug(() => "DrawableList. Got " + drawableTypes.Length + " types.");
+                var output = new StringBuilder();
+                output.Append("DrawableList. Got ").Append(drawableTypes.Length).AppendLine(" types.");
+
                 foreach (var drawableType in drawableTypes)
                 {
-                    log.Debug(() => "DrawableList Type: " + drawableType.Name);
+                    output.Append("DrawableList Type: ").AppendLine(drawableType.Name);
                 }
+
+                log.Debug(output.ToString());
             }
 
             var result = drawableTypes
+                .AsParallel()
                 .SelectMany(x => x.GetFields())
                 .Where(x => x.FieldType == typeof(int) && x.IsLiteral)
                 .ToDictionary(k => k.Name, v => (int)v.GetRawConstantValue());
 
-            if (log != null)
+            if (log?.IsDebugEnabled == true)
             {
-                log.Debug(() => "DrawableList. Got " + result.Count + " items.");
+                var output = new StringBuilder();
+                output.Append("DrawableList. Got ").Append(result.Count).AppendLine(" items.");
+
                 foreach (var keyValuePair in result)
                 {
-                    log.Debug(() => "DrawableList Item: " + keyValuePair.Key);
+                    output.Append("DrawableList Item: ").AppendLine(keyValuePair.Key);
                 }
+
+                log.Debug(output.ToString());
             }
 
             return result;
@@ -210,7 +221,7 @@ namespace Splat
 
         private void AttemptStreamByteCorrection(Stream sourceStream)
         {
-            if (sourceStream.CanWrite)
+            if (!sourceStream.CanWrite)
             {
                 this.Log().Warn("Stream missing terminating bytes but is read only.");
             }

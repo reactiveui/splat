@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Splat.NLog;
 using Xunit;
 
 namespace Splat.Tests.ServiceLocation
@@ -16,7 +17,7 @@ namespace Splat.Tests.ServiceLocation
         /// Test to ensure Unregister doesn't cause an IndexOutOfRangeException.
         /// </summary>
         [Fact]
-        public void UnregisterCurrent_Doesnt_Throw_When_List_Empty()
+        public virtual void UnregisterCurrent_Doesnt_Throw_When_List_Empty()
         {
             var resolver = GetDependencyResolver();
             var type = typeof(ILogManager);
@@ -30,7 +31,7 @@ namespace Splat.Tests.ServiceLocation
         /// Test to ensure UnregisterCurrent removes last entry.
         /// </summary>
         [Fact]
-        public void UnregisterCurrent_Remove_Last()
+        public virtual void UnregisterCurrent_Remove_Last()
         {
             var resolver = GetDependencyResolver();
             var type = typeof(ILogManager);
@@ -51,7 +52,7 @@ namespace Splat.Tests.ServiceLocation
         /// Test to ensure Unregister doesn't cause an IndexOutOfRangeException.
         /// </summary>
         [Fact]
-        public void UnregisterCurrentByName_Doesnt_Throw_When_List_Empty()
+        public virtual void UnregisterCurrentByName_Doesnt_Throw_When_List_Empty()
         {
             var resolver = GetDependencyResolver();
             var type = typeof(ILogManager);
@@ -80,7 +81,7 @@ namespace Splat.Tests.ServiceLocation
         /// Test to ensure Unregister doesn't cause an IndexOutOfRangeException.
         /// </summary>
         [Fact]
-        public void UnregisterAllByContract_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
+        public virtual void UnregisterAllByContract_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
         {
             var resolver = GetDependencyResolver();
             var type = typeof(ILogManager);
@@ -107,7 +108,7 @@ namespace Splat.Tests.ServiceLocation
         /// Tests for ensuring hasregistration behaves when using contracts.
         /// </summary>
         [Fact]
-        public void HasRegistration()
+        public virtual void HasRegistration()
         {
             var type = typeof(string);
             const string contractOne = "ContractOne";
@@ -134,6 +135,23 @@ namespace Splat.Tests.ServiceLocation
             Assert.False(resolver.HasRegistration(type));
             Assert.False(resolver.HasRegistration(type, contractOne));
             Assert.True(resolver.HasRegistration(type, contractTwo));
+        }
+
+        /// <summary>
+        /// Tests to ensure NLog registers correctly with different service locators.
+        /// Based on issue reported in #553.
+        /// </summary>
+        [Fact]
+        public void ILogManager_Resolvable()
+        {
+            var resolver = GetDependencyResolver();
+
+            // Setup NLog for Logging (doesn't matter if I actually configure NLog or not)
+            resolver.UseNLogWithWrappingFullLogger();
+
+            // Get the ILogManager instance (this should succeed, but fails in current code)
+            ILogManager lm = Locator.Current.GetService<ILogManager>();
+            Assert.NotNull(lm);
         }
 
         /// <summary>

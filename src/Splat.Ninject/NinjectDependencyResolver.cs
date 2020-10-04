@@ -5,7 +5,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Ninject;
+using Ninject.Planning.Bindings;
 
 namespace Splat.Ninject
 {
@@ -28,34 +30,111 @@ namespace Splat.Ninject
 
         /// <inheritdoc />
         public virtual object GetService(Type serviceType, string contract = null) =>
-            string.IsNullOrEmpty(contract)
-                ? _kernel.TryGet(serviceType)
-                : _kernel.TryGet(serviceType, contract);
+            GetServices(serviceType, contract)?.LastOrDefault();
 
         /// <inheritdoc />
-        public virtual IEnumerable<object> GetServices(Type serviceType, string contract = null) =>
-            string.IsNullOrEmpty(contract)
-                ? _kernel.GetAll(serviceType)
-                : _kernel.GetAll(serviceType, contract);
+        public virtual IEnumerable<object> GetServices(Type serviceType, string contract = null)
+        {
+            var isNull = serviceType == null;
+            if (isNull)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
+            IEnumerable<object> services;
+            if (isNull)
+            {
+                return _kernel.GetAll(
+                    typeof(NullServiceType),
+                    contract);
+            }
+
+            return _kernel.GetAll(
+                serviceType,
+                contract);
+        }
 
         /// <inheritdoc />
         public bool HasRegistration(Type serviceType, string contract = null)
         {
-            return _kernel.CanResolve(serviceType);
+            return _kernel.CanResolve(serviceType, metadata => IsCorrectMetadata(metadata, contract));
         }
 
         /// <inheritdoc />
-        public virtual void Register(Func<object> factory, Type serviceType, string contract = null) =>
-            _kernel.Bind(serviceType).ToMethod(_ => factory());
+        public virtual void Register(Func<object> factory, Type serviceType, string contract = null)
+        {
+            var isNull = serviceType == null;
+
+            if (isNull)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
+            if (string.IsNullOrWhiteSpace(contract))
+            {
+                _kernel.Bind(serviceType).ToMethod(_ => factory());
+                return;
+            }
+
+            _kernel.Bind(serviceType).ToMethod(_ => factory()).Named(contract);
+        }
 
         /// <inheritdoc />
         public virtual void UnregisterCurrent(Type serviceType, string contract = null)
         {
-            throw new NotImplementedException();
+            var isNull = serviceType == null;
+
+            if (isNull)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
+            var bindings = _kernel.GetBindings(serviceType).ToArray();
+
+            if (bindings?.Length < 1)
+            {
+                return;
+            }
+
+            var matchingBinding = bindings.LastOrDefault(x => IsCorrectMetadata(x.BindingConfiguration.Metadata, contract));
+
+            if (matchingBinding == null)
+            {
+                return;
+            }
+
+            _kernel.RemoveBinding(matchingBinding);
         }
 
         /// <inheritdoc />
-        public virtual void UnregisterAll(Type serviceType, string contract = null) => _kernel.Unbind(serviceType);
+        public virtual void UnregisterAll(Type serviceType, string contract = null)
+        {
+            var isNull = serviceType == null;
+
+            if (isNull)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
+            var bindings = _kernel.GetBindings(serviceType).ToArray();
+
+            if (bindings?.Length < 1)
+            {
+                return;
+            }
+
+            var matchingBinding = bindings.Where(x => IsCorrectMetadata(x.BindingConfiguration.Metadata, contract)).ToArray();
+
+            if (matchingBinding.Length < 1)
+            {
+                return;
+            }
+
+            foreach (IBinding binding in matchingBinding)
+            {
+                _kernel.RemoveBinding(binding);
+            }
+        }
 
         /// <inheritdoc />
         public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
@@ -81,6 +160,22 @@ namespace Splat.Ninject
                 _kernel?.Dispose();
                 _kernel = null;
             }
+        }
+
+        private static bool IsCorrectMetadata(global::Ninject.Planning.Bindings.IBindingMetadata metadata, string contract)
+        {
+            return (metadata?.Name == null && string.IsNullOrWhiteSpace(contract))
+                   || (metadata?.Name != null && metadata.Name.Equals(contract, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private class NullServiceType
+        {
+            public NullServiceType(Func<object> factory)
+            {
+                Factory = factory;
+            }
+
+            public Func<object> Factory { get; }
         }
     }
 }

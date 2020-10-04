@@ -18,7 +18,7 @@ namespace Splat
         /// Gets or sets the exception message format.
         /// First parameter will be the message, second will be the exception.
         /// </summary>
-        public string ExceptionMessageFormat { get; set; } = "{0] - {1}";
+        public string ExceptionMessageFormat { get; set; } = "{0} - {1}";
 
         /// <inheritdoc />
         public LogLevel Level { get; set; }

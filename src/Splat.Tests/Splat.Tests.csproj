@@ -1,12 +1,12 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFrameworks>MonoAndroid90;netstandard2.0;netcoreapp3.0</TargetFrameworks>
+    <TargetFrameworks>MonoAndroid90;netstandard2.0;netcoreapp3.1</TargetFrameworks>
     <NoWarn>$(NoWarn);1591;CA1707;SA1633;CA2000</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' == 'Windows_NT' ">
-    <TargetFrameworks>$(TargetFrameworks);net472;netcoreapp3.0;uap10.0.16299</TargetFrameworks>
+    <TargetFrameworks>$(TargetFrameworks);net472;netcoreapp3.1;uap10.0.16299</TargetFrameworks>
     <UseWPF Condition="$(TargetFramework.StartsWith('netcoreapp3'))">true</UseWPF>
     <UseWindowsForms Condition="$(TargetFramework.StartsWith('netcoreapp3'))">true</UseWindowsForms>
   </PropertyGroup>
