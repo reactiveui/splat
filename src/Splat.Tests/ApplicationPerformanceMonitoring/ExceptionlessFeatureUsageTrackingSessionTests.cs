@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !WINDOWS_UWP && !ANDROID
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -30,3 +31,5 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring
         }
     }
 }
+
+#endif

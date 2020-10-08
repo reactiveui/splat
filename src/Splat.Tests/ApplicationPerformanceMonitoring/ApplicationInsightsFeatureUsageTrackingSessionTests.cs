@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if !WINDOWS_UWP
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.ApplicationInsights;
@@ -45,3 +47,5 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring
         }
     }
 }
+
+#endif

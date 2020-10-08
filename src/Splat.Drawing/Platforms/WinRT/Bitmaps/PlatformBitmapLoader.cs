@@ -77,7 +77,12 @@ namespace Splat
         /// <inheritdoc />
         public IBitmap Create(float width, float height)
         {
-            return new WriteableBitmapImageBitmap(new WriteableBitmap((int)width, (int)height));
+            var disp = GetDispatcher().RunTaskAsync(async () =>
+            {
+                return await Task.FromResult(new WriteableBitmapImageBitmap(new WriteableBitmap((int)width, (int)height))).ConfigureAwait(false);
+            });
+
+            return disp.GetAwaiter().GetResult();
         }
 
         private static CoreDispatcher GetDispatcher()
