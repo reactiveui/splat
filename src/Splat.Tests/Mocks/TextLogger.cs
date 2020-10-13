@@ -18,13 +18,6 @@ namespace Splat.Tests.Mocks
         private readonly List<Type> _types = new List<Type>();
         private readonly List<(LogLevel, string)> _logs = new List<(LogLevel, string)>();
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TextLogger"/> class.
-        /// </summary>
-        public TextLogger()
-        {
-        }
-
         /// <inheritdoc />
         public ICollection<(LogLevel logLevel, string message)> Logs => _logs;
 
