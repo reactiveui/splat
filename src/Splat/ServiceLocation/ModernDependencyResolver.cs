@@ -155,6 +155,16 @@ namespace Splat
         /// <inheritdoc />
         public IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
         {
+            if (serviceType is null)
+            {
+                throw new ArgumentNullException(nameof(serviceType));
+            }
+
+            if (callback is null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
             var pair = GetKey(serviceType, contract);
 
             if (!_callbackRegistry.ContainsKey(pair))

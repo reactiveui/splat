@@ -219,6 +219,11 @@ namespace Splat
                    && sourceStream.ReadByte() == 0xD9;
         }
 
+        private static Dictionary<string, int> GetDrawableList()
+        {
+            return GetDrawableList(Locator.Current.GetService<ILogManager>().GetLogger(typeof(PlatformBitmapLoader)));
+        }
+
         private void AttemptStreamByteCorrection(Stream sourceStream)
         {
             if (!sourceStream.CanWrite)
@@ -231,11 +236,6 @@ namespace Splat
                 sourceStream.Position = sourceStream.Length;
                 sourceStream.Write(new byte[] { 0xFF, 0xD9 });
             }
-        }
-
-        private Dictionary<string, int> GetDrawableList()
-        {
-            return GetDrawableList(Locator.Current.GetService<ILogManager>().GetLogger(typeof(PlatformBitmapLoader)));
         }
     }
 }

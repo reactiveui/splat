@@ -51,7 +51,12 @@ namespace Splat.Tests.Logging.WrappingFullLoggers
             return (new WrappingFullLogger(inner), logTarget);
         }
 
-        private void PluginAction(EventPluginContext obj, InMemoryExceptionlessLogTarget logTarget)
+        private static LogLevel GetSplatLogLevel(global::Exceptionless.Logging.LogLevel logLevel)
+        {
+            return _exceptionless2Splat[logLevel];
+        }
+
+        private static void PluginAction(EventPluginContext obj, InMemoryExceptionlessLogTarget logTarget)
         {
             obj.Cancel = true;
             if (!obj.Event.Type.Equals(Event.KnownTypes.Log, StringComparison.Ordinal))
@@ -69,11 +74,6 @@ namespace Splat.Tests.Logging.WrappingFullLoggers
             var exceptionMessageSuffix = exception != null ? $" {exception}" : string.Empty;
             (LogLevel logLevel, string message) tuple = (splatLogLevel, $"{obj.Event.Message}{exceptionMessageSuffix}");
             logTarget.Logs.Add(tuple);
-        }
-
-        private LogLevel GetSplatLogLevel(global::Exceptionless.Logging.LogLevel logLevel)
-        {
-            return _exceptionless2Splat[logLevel];
         }
 
         private class InMemoryExceptionlessLogTarget : IMockLogTarget

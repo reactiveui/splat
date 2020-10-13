@@ -150,10 +150,10 @@
       <Version>6.2.9</Version>
     </PackageReference>
     <PackageReference Include="MSTest.TestAdapter">
-      <Version>2.0.0</Version>
+      <Version>2.1.2</Version>
     </PackageReference>
     <PackageReference Include="MSTest.TestFramework">
-      <Version>2.0.0</Version>
+      <Version>2.1.2</Version>
     </PackageReference>
     <PackageReference Include="xunit.runner.devices">
       <Version>2.5.25</Version>
@@ -179,4 +179,6 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <!-- Allow building from command line MSBuild workaround. -->
+  <Target Name="Pack" />
 </Project>

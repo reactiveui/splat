@@ -344,7 +344,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         {
             private readonly ConcurrentDictionary<string, IList<Func<object>>> _dictionary = new ConcurrentDictionary<string, IList<Func<object>>>();
 
-            public bool IsEmpty => _dictionary.Count == 0;
+            public bool IsEmpty => _dictionary.IsEmpty;
 
             public bool TryRemoveContract(string contract) =>
                 _dictionary.TryRemove(contract, out var _);

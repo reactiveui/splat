@@ -204,6 +204,7 @@ namespace Splat.Autofac.Tests
         [Fact]
         public override void HasRegistration()
         {
+#pragma warning disable CS0618 // Type or member is obsolete
             var type = typeof(string);
             const string contractOne = "ContractOne";
             const string contractTwo = "ContractTwo";
@@ -227,6 +228,7 @@ namespace Splat.Autofac.Tests
             Assert.True(resolver.HasRegistration(type));
             Assert.True(resolver.HasRegistration(type, contractOne));
             Assert.True(resolver.HasRegistration(type, contractTwo));
+#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         /// <inheritdoc />

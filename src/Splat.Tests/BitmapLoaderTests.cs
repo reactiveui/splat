@@ -13,9 +13,9 @@ namespace Splat.Tests
     public sealed class BitmapLoaderTests
     {
         /// <summary>
-        /// Test data for the Load Suceeds Unit Test.
+        /// Gets the test data for the Load Suceeds Unit Test.
         /// </summary>
-        public static TheoryData<Func<Stream>> LoadSucceedsTestData = new TheoryData<Func<Stream>>
+        public static TheoryData<Func<Stream>> LoadSucceedsTestData { get; } = new TheoryData<Func<Stream>>
         {
             GetPngStream,
             GetJpegStream,
@@ -55,6 +55,11 @@ namespace Splat.Tests
         [MemberData(nameof(LoadSucceedsTestData))]
         public void Load_Succeeds(Func<Stream> getStream)
         {
+            if (getStream is null)
+            {
+                throw new ArgumentNullException(nameof(getStream));
+            }
+
             var instance = new Splat.PlatformBitmapLoader();
 
             using (var sourceStream = getStream())

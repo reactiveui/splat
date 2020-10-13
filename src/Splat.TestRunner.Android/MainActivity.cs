@@ -4,18 +4,14 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Reflection;
+
 using Android.App;
-using Android.Content;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
 
-using Xunit.Sdk;
 using Xunit.Runners.UI;
+using Xunit.Sdk;
 
-namespace Splat.Android.Tests
+namespace Splat.TestRunner.Android
 {
     /// <summary>
     /// Unit Test Runner Activity.
@@ -30,9 +26,8 @@ namespace Splat.Android.Tests
         protected override void OnCreate(Bundle bundle)
         {
             Locator.CurrentMutable.RegisterPlatformBitmapLoader();
-            AddExecutionAssembly(typeof(ExtensibilityPointFactory).Assembly);
-
             AddTestAssembly(typeof(Splat.Tests.LocatorTests).Assembly);
+            AddExecutionAssembly(typeof(ExtensibilityPointFactory).Assembly);
 
             // you cannot add more assemblies once calling base
             base.OnCreate(bundle);

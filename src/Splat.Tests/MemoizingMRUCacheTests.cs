@@ -218,7 +218,7 @@ namespace Splat.Tests
             Assert.NotNull(results);
         }
 
-        private MemoizingMRUCache<string, DummyObjectClass1> GetTestInstance()
+        private static MemoizingMRUCache<string, DummyObjectClass1> GetTestInstance()
         {
             return new MemoizingMRUCache<string, DummyObjectClass1>(
                 (param, o) => new DummyObjectClass1(),
