@@ -39,13 +39,13 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="Xunit.StaFact" Version="1.0.37" />
-    <PackageReference Include="Shouldly" Version="4.0.0-beta0003" />
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.Reactive.Testing" Version="4.4.1" />
     <PackageReference Include="PublicApiGenerator" Version="10.2.0" />
     <PackageReference Include="DiffEngine" Version="6.1.1" />
   </ItemGroup>
 
-  <ItemGroup Condition="$(IsTestProject) and !$(TargetFramework.StartsWith('netstandard'))">
+  <ItemGroup Condition="$(IsTestProject) and !$(TargetFramework.StartsWith('netstandard')) and !$(TargetFramework.StartsWith('MonoAndroid')) and !$(TargetFramework.StartsWith('uap'))">
     <PackageReference Include="xunit.runner.console" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
   </ItemGroup>

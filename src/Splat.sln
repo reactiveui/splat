@@ -47,7 +47,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Ninject.Tests", "Spla
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Common.Test", "Splat.Common.Test\Splat.Common.Test.csproj", "{4B86E6E5-40EA-44F1-BC72-0D6ECCCC8AE7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Android.Runner", "Splat.TestRunner.Android\Splat.Android.Runner.csproj", "{E7957867-EF5A-4765-A2CB-990A6ADFE6BB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.TestRunner.Android", "Splat.TestRunner.Android\Splat.TestRunner.Android.csproj", "{E7957867-EF5A-4765-A2CB-990A6ADFE6BB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.ApplicationInsights", "Splat.ApplicationInsights\Splat.ApplicationInsights.csproj", "{2ED64333-8B11-461E-A009-FFFBFE4BD0D9}"
 EndProject

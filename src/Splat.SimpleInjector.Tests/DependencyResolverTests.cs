@@ -3,10 +3,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using Shouldly;
+using FluentAssertions;
+
 using SimpleInjector;
+
 using Splat.Common.Test;
 using Splat.SimpleInjector;
+
 using Xunit;
 
 namespace Splat.Simplnjector
@@ -28,8 +31,8 @@ namespace Splat.Simplnjector
 
             var viewModel = Locator.Current.GetService(typeof(ViewModelOne));
 
-            viewModel.ShouldNotBeNull();
-            viewModel.ShouldBeOfType<ViewModelOne>();
+            viewModel.Should().NotBeNull();
+            viewModel.Should().BeOfType<ViewModelOne>();
         }
 
         /// <summary>
@@ -44,8 +47,8 @@ namespace Splat.Simplnjector
 
             var view = Locator.Current.GetService(typeof(IViewFor<ViewModelOne>));
 
-            view.ShouldNotBeNull();
-            view.ShouldBeOfType<ViewOne>();
+            view.Should().NotBeNull();
+            view.Should().BeOfType<ViewOne>();
         }
 
         /// <summary>
@@ -60,8 +63,8 @@ namespace Splat.Simplnjector
 
             var screen = Locator.Current.GetService(typeof(IScreen));
 
-            screen.ShouldNotBeNull();
-            screen.ShouldBeOfType<MockScreen>();
+            screen.Should().NotBeNull();
+            screen.Should().BeOfType<MockScreen>();
         }
     }
 }

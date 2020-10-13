@@ -4,7 +4,9 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using Shouldly;
+
+using FluentAssertions;
+
 using Splat.Tests.Mocks;
 using Xunit;
 
@@ -185,13 +187,13 @@ namespace Splat.Tests
             {
                 var items = currentMutable.GetServices<IDummyInterface>(testContract);
 
-                items.ShouldBe(new IDummyInterface[] { dummy1, dummy2, dummy3 });
+                items.Should().BeEquivalentTo(new IDummyInterface[] { dummy1, dummy2, dummy3 });
 
                 currentMutable.UnregisterAll<IDummyInterface>(testContract);
 
                 items = currentMutable.GetServices<IDummyInterface>(testContract);
 
-                items.ShouldBeEmpty();
+                items.Should().BeEmpty();
             }
         }
 
@@ -206,13 +208,13 @@ namespace Splat.Tests
 
             var items = currentMutable.GetServices<IDummyInterface>();
 
-            items.ShouldBeEmpty();
+            items.Should().BeEmpty();
 
             currentMutable.UnregisterAll<IDummyInterface>();
 
             items = currentMutable.GetServices<IDummyInterface>();
 
-            items.ShouldBeEmpty();
+            items.Should().BeEmpty();
         }
 
         /// <summary>
@@ -241,13 +243,13 @@ namespace Splat.Tests
             {
                 var items = currentMutable.GetServices<IDummyInterface>(testContract);
 
-                items.ShouldBe(new IDummyInterface[] { dummy1, dummy2, dummy3 });
+                items.Should().BeEquivalentTo(new IDummyInterface[] { dummy1, dummy2, dummy3 });
 
                 currentMutable.UnregisterCurrent<IDummyInterface>(testContract);
 
                 items = currentMutable.GetServices<IDummyInterface>(testContract);
 
-                items.ShouldBe(new IDummyInterface[] { dummy1, dummy2 });
+                items.Should().BeEquivalentTo(new IDummyInterface[] { dummy1, dummy2 });
             }
         }
 
@@ -261,13 +263,13 @@ namespace Splat.Tests
             var currentMutable = new ModernDependencyResolver();
             var items = currentMutable.GetServices<IDummyInterface>();
 
-            items.ShouldBeEmpty();
+            items.Should().BeEmpty();
 
             currentMutable.UnregisterCurrent<IDummyInterface>();
 
             items = currentMutable.GetServices<IDummyInterface>();
 
-            items.ShouldBeEmpty();
+            items.Should().BeEmpty();
         }
 
         /// <summary>
@@ -291,15 +293,15 @@ namespace Splat.Tests
                 });
 
             currentMutable.UnregisterAll<IDummyInterface>();
-            type.ShouldBe(typeof(IDummyInterface));
-            contract.ShouldBeNull();
-            unregisterAllCalled.ShouldBeTrue();
+            type.Should().Be(typeof(IDummyInterface));
+            contract.Should().BeNull();
+            unregisterAllCalled.Should().BeTrue();
 
             unregisterAllCalled = false;
             currentMutable.UnregisterAll<IEnableLogger>("test");
-            type.ShouldBe(typeof(IEnableLogger));
-            contract.ShouldBe("test");
-            unregisterAllCalled.ShouldBeTrue();
+            type.Should().Be(typeof(IEnableLogger));
+            contract.Should().Be("test");
+            unregisterAllCalled.Should().BeTrue();
         }
 
         /// <summary>
@@ -323,15 +325,15 @@ namespace Splat.Tests
                 });
 
             currentMutable.UnregisterCurrent<IDummyInterface>();
-            type.ShouldBe(typeof(IDummyInterface));
-            contract.ShouldBeNull();
-            unregisterAllCalled.ShouldBeTrue();
+            type.Should().Be(typeof(IDummyInterface));
+            contract.Should().BeNull();
+            unregisterAllCalled.Should().BeTrue();
 
             unregisterAllCalled = false;
             currentMutable.UnregisterCurrent<IEnableLogger>("test");
-            type.ShouldBe(typeof(IEnableLogger));
-            contract.ShouldBe("test");
-            unregisterAllCalled.ShouldBeTrue();
+            type.Should().Be(typeof(IEnableLogger));
+            contract.Should().Be("test");
+            unregisterAllCalled.Should().BeTrue();
         }
     }
 }

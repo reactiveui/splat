@@ -4,9 +4,13 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+
+using FluentAssertions;
+
 using Microsoft.Extensions.DependencyInjection;
-using Shouldly;
+
 using Splat.Common.Test;
+
 using Xunit;
 
 namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
@@ -32,10 +36,10 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
             var viewOne = Locator.Current.GetService(typeof(IViewFor<ViewModelOne>));
             var viewTwo = Locator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
-            viewOne.ShouldNotBeNull();
-            viewOne.ShouldBeOfType<ViewOne>();
-            viewTwo.ShouldNotBeNull();
-            viewTwo.ShouldBeOfType<ViewTwo>();
+            viewOne.Should().NotBeNull();
+            viewOne.Should().BeOfType<ViewOne>();
+            viewTwo.Should().NotBeNull();
+            viewTwo.Should().BeOfType<ViewTwo>();
         }
 
         /// <summary>
@@ -52,8 +56,8 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
 
             var viewTwo = Locator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
-            viewTwo.ShouldNotBeNull();
-            viewTwo.ShouldBeOfType<ViewTwo>();
+            viewTwo.Should().NotBeNull();
+            viewTwo.Should().BeOfType<ViewTwo>();
         }
 
         /// <summary>
@@ -72,8 +76,8 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
             var vmOne = Locator.Current.GetService<ViewModelOne>();
             var vmTwo = Locator.Current.GetService<ViewModelTwo>();
 
-            vmOne.ShouldNotBeNull();
-            vmTwo.ShouldNotBeNull();
+            vmOne.Should().NotBeNull();
+            vmTwo.Should().NotBeNull();
         }
 
         /// <summary>
@@ -90,8 +94,8 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
 
             var screen = Locator.Current.GetService<IScreen>();
 
-            screen.ShouldNotBeNull();
-            screen.ShouldBeOfType<MockScreen>();
+            screen.Should().NotBeNull();
+            screen.Should().BeOfType<MockScreen>();
         }
 
         /// <summary>
@@ -106,12 +110,12 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
             services.AddSingleton<IScreen>(new MockScreen());
 
             Locator.CurrentMutable.HasRegistration(typeof(IScreen))
-                .ShouldBeTrue();
+                .Should().BeTrue();
 
             Locator.CurrentMutable.UnregisterAll(typeof(IScreen));
 
             var result = Locator.Current.GetService<IScreen>();
-            result.ShouldBeNull();
+            result.Should().BeNull();
         }
 
         /// <summary>
@@ -126,7 +130,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
             var result = Record.Exception(() =>
                 Locator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
 
-            result.ShouldBeOfType<NotImplementedException>();
+            result.Should().BeOfType<NotImplementedException>();
         }
 
         /// <summary>
@@ -141,7 +145,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
 
             var result = Record.Exception(() => Locator.CurrentMutable.Register(() => new ViewOne()));
 
-            result.ShouldBeOfType<InvalidOperationException>();
+            result.Should().BeOfType<InvalidOperationException>();
         }
     }
 }

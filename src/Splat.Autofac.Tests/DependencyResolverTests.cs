@@ -5,7 +5,9 @@
 
 using System;
 using Autofac;
-using Shouldly;
+
+using FluentAssertions;
+
 using Splat.Common.Test;
 using Splat.Tests.ServiceLocation;
 using Xunit;
@@ -33,10 +35,10 @@ namespace Splat.Autofac.Tests
             var viewOne = Locator.Current.GetService(typeof(IViewFor<ViewModelOne>));
             var viewTwo = Locator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
-            viewOne.ShouldNotBeNull();
-            viewOne.ShouldBeOfType<ViewOne>();
-            viewTwo.ShouldNotBeNull();
-            viewTwo.ShouldBeOfType<ViewTwo>();
+            viewOne.Should().NotBeNull();
+            viewOne.Should().BeOfType<ViewOne>();
+            viewTwo.Should().NotBeNull();
+            viewTwo.Should().BeOfType<ViewTwo>();
         }
 
         /// <summary>
@@ -53,8 +55,8 @@ namespace Splat.Autofac.Tests
 
             var viewTwo = Locator.Current.GetService(typeof(IViewFor<ViewModelTwo>), "Other");
 
-            viewTwo.ShouldNotBeNull();
-            viewTwo.ShouldBeOfType<ViewTwo>();
+            viewTwo.Should().NotBeNull();
+            viewTwo.Should().BeOfType<ViewTwo>();
         }
 
         /// <summary>
@@ -73,8 +75,8 @@ namespace Splat.Autofac.Tests
             var vmOne = Locator.Current.GetService<ViewModelOne>();
             var vmTwo = Locator.Current.GetService<ViewModelTwo>();
 
-            vmOne.ShouldNotBeNull();
-            vmTwo.ShouldNotBeNull();
+            vmOne.Should().NotBeNull();
+            vmTwo.Should().NotBeNull();
         }
 
         /// <summary>
@@ -91,8 +93,8 @@ namespace Splat.Autofac.Tests
 
             var screen = Locator.Current.GetService<IScreen>();
 
-            screen.ShouldNotBeNull();
-            screen.ShouldBeOfType<MockScreen>();
+            screen.Should().NotBeNull();
+            screen.Should().BeOfType<MockScreen>();
         }
 
         /// <summary>
@@ -109,7 +111,7 @@ namespace Splat.Autofac.Tests
             var result = Record.Exception(() =>
                 Locator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
 
-            result.ShouldBeOfType<NotImplementedException>();
+            result.Should().BeOfType<NotImplementedException>();
         }
 
         /// <summary>
