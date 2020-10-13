@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using Xunit;
 
@@ -98,9 +99,8 @@ namespace Splat.Tests
 #if ANDROID
             return Android.App.Application.Context.Assets.Open(imageName);
 #else
-            var cwd = Path.GetDirectoryName(typeof(BitmapLoaderTests).Assembly.Location);
-            var path = Path.Combine(cwd, imageName);
-            return File.OpenRead(path);
+            var assembly = Assembly.GetExecutingAssembly();
+            return assembly.GetManifestResourceStream(imageName);
 #endif
         }
     }

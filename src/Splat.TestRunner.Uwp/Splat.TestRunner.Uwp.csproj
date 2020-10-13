@@ -133,7 +133,10 @@
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Splat.Tests\**\*.cs" LinkBase="..\Splat.Tests" Exclude="**\*AssemblyInfo.cs;**/obj/**/*" />
+    <Compile Include="..\Splat.Tests\**\*.cs" LinkBase="..\Splat.Tests" Exclude="**\Log4NetLoggerTests.cs;**\*AssemblyInfo.cs;**/obj/**/*" />
+    <EmbeddedResource Include="..\Splat.Tests\*.jpg" />
+    <EmbeddedResource Include="..\Splat.Tests\*.png" />
+    <EmbeddedResource Include="..\Splat.Tests\*.bmp" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
