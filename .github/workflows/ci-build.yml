@@ -31,7 +31,17 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '12.x'
-        
+
+    - name: Install NuGet
+      uses: nuget/setup-nuget@v1
+      with:
+        nuget-api-key: ${{ secrets.NuGetAPIKey }}
+        nuget-version: '5.x'
+
+    - name: NuGet restore
+      run: nuget restore
+      working-directory: src
+
     - name: NBGV
       id: nbgv
       uses: dotnet/nbgv@master
@@ -42,7 +52,7 @@ jobs:
       uses: microsoft/setup-msbuild@v1
 
     - name: Build
-      run: msbuild /t:restore,build,pack /maxcpucount /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=${{ env.configuration }}
+      run: msbuild /t:build,pack /maxcpucount /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=${{ env.configuration }}
       working-directory: src
 
     - name: Install Report Generator
