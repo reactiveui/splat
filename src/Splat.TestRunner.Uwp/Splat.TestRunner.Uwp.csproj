@@ -19,6 +19,7 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
     <NoWarn>$(NoWarn);1591;CA1707;SA1633;CA2000;CA1034;2008</NoWarn>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>

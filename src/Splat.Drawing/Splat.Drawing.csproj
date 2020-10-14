@@ -8,7 +8,7 @@
     <Description>A library to make things cross-platform that should be</Description>
     <PackageId>Splat.Drawing</PackageId>
     <NoWarn>$(NoWarn);1591</NoWarn>
-    <LangVersion>preview</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(TargetFramework.StartsWith('netcoreapp3')) and '$(OS)' == 'Windows_NT' ">

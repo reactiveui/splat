@@ -4,6 +4,7 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net472</TargetFrameworks>
     <NoWarn>$(NoWarn);CA2000</NoWarn>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
 </Project>

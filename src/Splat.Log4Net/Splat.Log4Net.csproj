@@ -7,6 +7,7 @@
     <Authors>.NET Foundation and Contributors</Authors>
     <Description>Log4Net integrations for Splat</Description>
     <PackageId>Splat.Log4Net</PackageId>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

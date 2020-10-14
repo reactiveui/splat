@@ -8,6 +8,7 @@
     <Description>A library to make things cross-platform that should be</Description>
     <PackageId>Splat</PackageId>
     <NoWarn>$(NoWarn);1591</NoWarn>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup Condition=" $(TargetFramework.StartsWith('net4')) ">
