@@ -62,7 +62,7 @@ jobs:
     - name: Upload Code Coverage
       run: |
         npm install -g codecov
-        codecov -f coverage.cobertura.xml
+        codecov
       working-directory: artifacts/coverage
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
