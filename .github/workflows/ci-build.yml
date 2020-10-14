@@ -56,7 +56,7 @@ jobs:
       working-directory: src
 
     - name: Run Unit Tests
-      run: dotnet test --no-build /p:CollectCoverage=true /p:CoverletOutputFormat="cobertura%2cjson" /p:MergeWith="../../artifacts/coverage/coverage.json" /p:CoverletOutput="../../artifacts/coverage/" /p:Include="[${{env.productNamespacePrefix}}*]*" /p:Exclude="[${{env.productNamespacePrefix}}*Tests.*]*" /m:1
+      run: dotnet test --no-build /p:CollectCoverage=true /p:CoverletOutputFormat="opencover%2cjson" /p:MergeWith="../../artifacts/coverage/coverage.json" /p:CoverletOutput="../../artifacts/coverage/" /p:Include="[${{env.productNamespacePrefix}}*]*" /p:Exclude="[${{env.productNamespacePrefix}}*Tests.*]*" /m:1
       working-directory: src
 
     - name: Remove Temporary Code Coverage Files
