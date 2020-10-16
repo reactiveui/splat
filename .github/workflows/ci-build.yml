@@ -32,14 +32,8 @@ jobs:
       with:
         node-version: '12.x'
 
-    - name: Install NuGet
-      uses: nuget/setup-nuget@v1
-      with:
-        nuget-api-key: ${{ secrets.NuGetAPIKey }}
-        nuget-version: '5.x'
-
     - name: NuGet restore
-      run: nuget restore
+      run: dotnet restore
       working-directory: src
 
     - name: NBGV
@@ -55,14 +49,16 @@ jobs:
       run: msbuild /t:build,pack /maxcpucount /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=${{ env.configuration }}
       working-directory: src
 
-    - name: Run Unit Tests
-      run: dotnet test --no-build /p:CollectCoverage=true /p:CoverletOutputFormat="opencover%2cjson" /p:MergeWith="../../artifacts/coverage/coverage.json" /p:CoverletOutput="../../artifacts/coverage/" /p:Include="[${{env.productNamespacePrefix}}*]*" /p:Exclude="[${{env.productNamespacePrefix}}*Tests.*]*" /m:1
-      working-directory: src
-
-    - name: Remove Temporary Code Coverage Files
-      shell: bash
-      run: rm *.json
-      working-directory: artifacts/coverage
+    - name: Run Unit Tests and Generate Coverage
+      uses: glennawatson/coverlet-msbuild@v1
+      with:
+        project-files: '**/*Tests*.csproj'
+        no-build: true
+        exclude-filter: '[${{env.productNamespacePrefix}}*Tests.*]*'
+        include-filter: '[${{env.productNamespacePrefix}}*]*'
+        output-format: opencover
+        merge-with: '../../artifacts/coverage/coverage.json'
+        output: '../../artifacts/coverage/'
 
     - name: Upload Code Coverage
       run: |
