@@ -42,7 +42,7 @@
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.Reactive.Testing" Version="4.4.1" />
     <PackageReference Include="PublicApiGenerator" Version="10.2.0" />
-    <PackageReference Include="DiffEngine" Version="6.1.1" />
+    <PackageReference Include="DiffEngine" Version="6.1.4" />
   </ItemGroup>
 
   <ItemGroup Condition="$(IsTestProject)">
