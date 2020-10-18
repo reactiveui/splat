@@ -64,7 +64,7 @@ jobs:
     - name: Install Report Generator
       run: dotnet tool install --global dotnet-reportgenerator-globaltool
 
-    - name: Combine reports
+    - name: Combine Reports
       shell: bash
       run: 'reportgenerator -reports:artifacts/coverage/*.xml -targetdir:artifacts/finalcoverage  -reporttypes:Cobertura'
 
