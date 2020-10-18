@@ -61,11 +61,17 @@ jobs:
         output: '../../artifacts/coverage/'
         configuration: ${{ env.configuration }}
 
+    - name: Combine Coverage Reports
+      shell: bash
+      run: |
+        dotnet tool install --global dotnet-reportgenerator-globaltool
+        reportgenerator -reports:artifacts/coverage/*.xml -targetdir:artifacts/finalcoverage  -reporttypes:Cobertura
+
     - name: Upload Code Coverage
       run: |
         npm install -g codecov
         codecov
-      working-directory: artifacts/coverage
+      working-directory: artifacts/finalcoverage
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
