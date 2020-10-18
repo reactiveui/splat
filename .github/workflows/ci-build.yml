@@ -61,12 +61,11 @@ jobs:
         output: '../../artifacts/coverage/'
         configuration: ${{ env.configuration }}
 
-    - name: Install Report Generator
-      run: dotnet tool install --global dotnet-reportgenerator-globaltool
-
     - name: Combine Reports
       shell: bash
-      run: 'reportgenerator -reports:artifacts/coverage/*.xml -targetdir:artifacts/finalcoverage  -reporttypes:Cobertura'
+      run: |
+        dotnet tool install --global dotnet-reportgenerator-globaltool
+        reportgenerator -reports:artifacts/coverage/*.xml -targetdir:artifacts/finalcoverage  -reporttypes:Cobertura
 
     - name: Upload Code Coverage
       run: |
