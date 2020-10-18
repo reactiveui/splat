@@ -61,7 +61,7 @@ jobs:
         output: '../../artifacts/coverage/'
         configuration: ${{ env.configuration }}
 
-    - name: Combine Reports
+    - name: Combine Coverage Reports
       shell: bash
       run: |
         dotnet tool install --global dotnet-reportgenerator-globaltool
