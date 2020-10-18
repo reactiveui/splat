@@ -7,16 +7,12 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' == 'Windows_NT' ">
-    <TargetFrameworks>$(TargetFrameworks);net472</TargetFrameworks>
     <UseWPF Condition="$(TargetFramework.StartsWith('netcoreapp3'))">true</UseWPF>
     <UseWindowsForms Condition="$(TargetFramework.StartsWith('netcoreapp3'))">true</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Serilog.Exceptions" Version="5.6.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition="$(TargetFramework) != 'uap10.0.16299'">
   </ItemGroup>
 
   <ItemGroup>
