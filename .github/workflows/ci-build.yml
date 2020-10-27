@@ -52,6 +52,7 @@ jobs:
         exclude-filter: '[${{env.productNamespacePrefix}}.*.Tests.*]*'
         include-filter: '[${{env.productNamespacePrefix}}*]*'
         output-format: cobertura
+        merge-with: '../../artifacts/coverage.json'
         output: '../../artifacts/'
         configuration: ${{ env.configuration }}
 
