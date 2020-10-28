@@ -530,7 +530,7 @@ namespace Splat.Tests.Logging
         public void WarnExceptionFourArgumentsMethod_Should_Write_Message()
         {
             var (logger, target) = GetLogger(LogLevel.Debug);
-            logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
+            logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
             Assert.Equal("1, 2, 3, 4 System.Exception: Exception of type 'System.Exception' was thrown.", target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim());
         }
 
@@ -541,7 +541,7 @@ namespace Splat.Tests.Logging
         public void WarnExceptionFourArgumentsMethod_Should_Not_Write_If_Higher_Level()
         {
             var (logger, target) = GetLogger(LogLevel.Fatal);
-            logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
+            logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
             Assert.Empty(target.Logs);
         }
 
@@ -574,7 +574,7 @@ namespace Splat.Tests.Logging
         public void WarnExceptionSixArgumentsMethod_Should_Write_Message()
         {
             var (logger, target) = GetLogger(LogLevel.Debug);
-            logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
+            logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
             Assert.Equal("1, 2, 3, 4, 5, 6 System.Exception: Exception of type 'System.Exception' was thrown.", target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim());
         }
 
@@ -585,7 +585,7 @@ namespace Splat.Tests.Logging
         public void WarnExceptionSixArgumentsMethod_Should_Not_Write_If_Higher_Level()
         {
             var (logger, target) = GetLogger(LogLevel.Fatal);
-            logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
+            logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
             Assert.Empty(target.Logs);
         }
 

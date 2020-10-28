@@ -6,10 +6,11 @@
     <Authors>.NET Foundation and Contributors</Authors>
     <Description>Exceptionless integrations for Splat</Description>
     <PackageId>Splat.Exceptionless</PackageId>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Exceptionless" Version="4.4.1" />
-    <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
+    <PackageReference Include="Exceptionless" Version="4.5.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.7.1" />
   </ItemGroup>
 
   <ItemGroup>

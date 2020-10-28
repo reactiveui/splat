@@ -26,14 +26,12 @@ namespace Splat
             Microsoft.AppCenter.Analytics.Analytics.TrackEvent("PageView", properties);
         }
 
-        private IDictionary<string, string> GetProperties(string name)
+        private static IDictionary<string, string> GetProperties(string name)
         {
-            var properties = new Dictionary<string, string>
+            return new Dictionary<string, string>
             {
                 { "Name", name },
             };
-
-            return properties;
         }
     }
 }

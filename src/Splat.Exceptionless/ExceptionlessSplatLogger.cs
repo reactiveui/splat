@@ -41,6 +41,11 @@ namespace Splat.Exceptionless
             Type sourceType,
             ExceptionlessClient exceptionlessClient)
         {
+            if (sourceType is null)
+            {
+                throw new ArgumentNullException(nameof(sourceType));
+            }
+
             _sourceType = sourceType.FullName;
             _exceptionlessClient = exceptionlessClient ?? throw new ArgumentNullException(nameof(exceptionlessClient));
             _exceptionlessClient.Configuration.Changed += OnInnerLoggerReconfigured;
@@ -80,6 +85,11 @@ namespace Splat.Exceptionless
         /// <inheritdoc />
         public void Write(string message, Type type, LogLevel logLevel)
         {
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
             if ((int)logLevel < (int)Level)
             {
                 return;
@@ -91,6 +101,11 @@ namespace Splat.Exceptionless
         /// <inheritdoc />
         public void Write(Exception exception, string message, Type type, LogLevel logLevel)
         {
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
             if ((int)logLevel < (int)Level)
             {
                 return;

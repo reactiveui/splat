@@ -7,10 +7,11 @@
     <Authors>.NET Foundation and Contributors</Authors>
     <Description>Log4Net integrations for Splat</Description>
     <PackageId>Splat.Log4Net</PackageId>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="log4net" Version="2.0.11" />
+    <PackageReference Include="log4net" Version="2.0.12" />
     
     <!-- Override old versions provided in the .NET Standard 1.3 package -->
     <PackageReference Include="System.AppContext" Version="4.3.0" />

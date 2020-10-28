@@ -7,7 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DryIoc;
-using Shouldly;
+
+using FluentAssertions;
+
 using Splat.Common.Test;
 using Xunit;
 
@@ -32,10 +34,10 @@ namespace Splat.DryIoc.Tests
             var viewOne = Locator.Current.GetService(typeof(IViewFor<ViewModelOne>));
             var viewTwo = Locator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
-            viewOne.ShouldNotBeNull();
-            viewOne.ShouldBeOfType<ViewOne>();
-            viewTwo.ShouldNotBeNull();
-            viewTwo.ShouldBeOfType<ViewTwo>();
+            viewOne.Should().NotBeNull();
+            viewOne.Should().BeOfType<ViewOne>();
+            viewTwo.Should().NotBeNull();
+            viewTwo.Should().BeOfType<ViewTwo>();
         }
 
         /// <summary>
@@ -50,8 +52,8 @@ namespace Splat.DryIoc.Tests
 
             var viewTwo = Locator.Current.GetService(typeof(IViewFor<ViewModelTwo>), "Other");
 
-            viewTwo.ShouldNotBeNull();
-            viewTwo.ShouldBeOfType<ViewTwo>();
+            viewTwo.Should().NotBeNull();
+            viewTwo.Should().BeOfType<ViewTwo>();
         }
 
         /// <summary>
@@ -68,8 +70,8 @@ namespace Splat.DryIoc.Tests
             var vmOne = Locator.Current.GetService<ViewModelOne>();
             var vmTwo = Locator.Current.GetService<ViewModelTwo>();
 
-            vmOne.ShouldNotBeNull();
-            vmTwo.ShouldNotBeNull();
+            vmOne.Should().NotBeNull();
+            vmTwo.Should().NotBeNull();
         }
 
         /// <summary>
@@ -84,8 +86,8 @@ namespace Splat.DryIoc.Tests
 
             var screen = Locator.Current.GetService<IScreen>();
 
-            screen.ShouldNotBeNull();
-            screen.ShouldBeOfType<MockScreen>();
+            screen.Should().NotBeNull();
+            screen.Should().BeOfType<MockScreen>();
         }
 
         /// <summary>
@@ -98,11 +100,11 @@ namespace Splat.DryIoc.Tests
             builder.Register<IScreen, MockScreen>(Reuse.Singleton);
             builder.UseDryIocDependencyResolver();
 
-            Locator.Current.GetService<IScreen>().ShouldNotBeNull();
+            Locator.Current.GetService<IScreen>().Should().NotBeNull();
 
             Locator.CurrentMutable.UnregisterCurrent(typeof(IScreen));
 
-            Locator.Current.GetService<IScreen>().ShouldBeNull();
+            Locator.Current.GetService<IScreen>().Should().BeNull();
         }
 
         /// <summary>
@@ -115,11 +117,11 @@ namespace Splat.DryIoc.Tests
             builder.Register<IScreen, MockScreen>(Reuse.Singleton, serviceKey: nameof(MockScreen));
             builder.UseDryIocDependencyResolver();
 
-            Locator.Current.GetService<IScreen>(nameof(MockScreen)).ShouldNotBeNull();
+            Locator.Current.GetService<IScreen>(nameof(MockScreen)).Should().NotBeNull();
 
             Locator.CurrentMutable.UnregisterCurrent(typeof(IScreen), nameof(MockScreen));
 
-            Locator.Current.GetService<IScreen>(nameof(MockScreen)).ShouldBeNull();
+            Locator.Current.GetService<IScreen>(nameof(MockScreen)).Should().BeNull();
         }
 
         /// <summary>
@@ -132,11 +134,11 @@ namespace Splat.DryIoc.Tests
             builder.Register<IScreen, MockScreen>(Reuse.Singleton);
             builder.UseDryIocDependencyResolver();
 
-            Locator.Current.GetService<IScreen>().ShouldNotBeNull();
+            Locator.Current.GetService<IScreen>().Should().NotBeNull();
 
             Locator.CurrentMutable.UnregisterAll(typeof(IScreen));
 
-            Locator.Current.GetService<IScreen>().ShouldBeNull();
+            Locator.Current.GetService<IScreen>().Should().BeNull();
         }
 
         /// <summary>
@@ -149,11 +151,11 @@ namespace Splat.DryIoc.Tests
             builder.Register<IScreen, MockScreen>(Reuse.Singleton, serviceKey: nameof(MockScreen));
             builder.UseDryIocDependencyResolver();
 
-            Locator.Current.GetService<IScreen>(nameof(MockScreen)).ShouldNotBeNull();
+            Locator.Current.GetService<IScreen>(nameof(MockScreen)).Should().NotBeNull();
 
             Locator.CurrentMutable.UnregisterAll(typeof(IScreen), nameof(MockScreen));
 
-            Locator.Current.GetService<IScreen>(nameof(MockScreen)).ShouldBeNull();
+            Locator.Current.GetService<IScreen>(nameof(MockScreen)).Should().BeNull();
         }
 
         /// <summary>
@@ -168,7 +170,7 @@ namespace Splat.DryIoc.Tests
             var result = Record.Exception(() =>
                 Locator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
 
-            result.ShouldBeOfType<NotImplementedException>();
+            result.Should().BeOfType<NotImplementedException>();
         }
 
         /// <summary>

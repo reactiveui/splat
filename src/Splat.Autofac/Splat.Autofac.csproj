@@ -4,10 +4,11 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net461;uap10.0.16299</TargetFrameworks>
     <Description>Autofac adapter for Splat</Description>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="5.*" />
+    <PackageReference Include="Autofac" Version="6.*" />
   </ItemGroup>
 
   <ItemGroup>

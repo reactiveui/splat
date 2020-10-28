@@ -1,4 +1,11 @@
-﻿using System;
+﻿// Copyright (c) 2019 .NET Foundation and Contributors. All rights reserved.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+#if !WINDOWS_UWP && !ANDROID
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -49,7 +56,12 @@ namespace Splat.Tests.Logging.WrappingFullLoggers
             return (new WrappingFullLogger(inner), logTarget);
         }
 
-        private void PluginAction(EventPluginContext obj, InMemoryExceptionlessLogTarget logTarget)
+        private static LogLevel GetSplatLogLevel(global::Exceptionless.Logging.LogLevel logLevel)
+        {
+            return _exceptionless2Splat[logLevel];
+        }
+
+        private static void PluginAction(EventPluginContext obj, InMemoryExceptionlessLogTarget logTarget)
         {
             obj.Cancel = true;
             if (!obj.Event.Type.Equals(Event.KnownTypes.Log, StringComparison.Ordinal))
@@ -69,11 +81,6 @@ namespace Splat.Tests.Logging.WrappingFullLoggers
             logTarget.Logs.Add(tuple);
         }
 
-        private LogLevel GetSplatLogLevel(global::Exceptionless.Logging.LogLevel logLevel)
-        {
-            return _exceptionless2Splat[logLevel];
-        }
-
         private class InMemoryExceptionlessLogTarget : IMockLogTarget
         {
             public InMemoryExceptionlessLogTarget()
@@ -85,3 +92,5 @@ namespace Splat.Tests.Logging.WrappingFullLoggers
         }
     }
 }
+
+#endif

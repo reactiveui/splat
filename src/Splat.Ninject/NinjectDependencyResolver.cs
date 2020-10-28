@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Ninject;
 using Ninject.Planning.Bindings;
@@ -41,7 +42,6 @@ namespace Splat.Ninject
                 serviceType = typeof(NullServiceType);
             }
 
-            IEnumerable<object> services;
             if (isNull)
             {
                 return _kernel.GetAll(
@@ -168,6 +168,7 @@ namespace Splat.Ninject
                    || (metadata?.Name != null && metadata.Name.Equals(contract, StringComparison.OrdinalIgnoreCase));
         }
 
+        [SuppressMessage("Design", "CA1812: Uninitialized class.", Justification = "Used in reflection.")]
         private class NullServiceType
         {
             public NullServiceType(Func<object> factory)

@@ -1,0 +1,5 @@
+<resources>
+    <string name="Hello">Hello World, Click Me!</string>
+    <string name="ApplicationName">Splat.Android.Tests</string>
+    <string name="action_settings">Settings</string>
+</resources>    

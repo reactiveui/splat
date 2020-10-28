@@ -8,10 +8,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
 using log4net;
 using log4net.Core;
 using log4net.Layout;
 using log4net.Repository.Hierarchy;
+
 using Splat.Log4Net;
 using Splat.Tests.Mocks;
 
@@ -43,7 +45,7 @@ namespace Splat.Tests.Logging
         /// <inheritdoc/>
         protected override (IFullLogger logger, IMockLogTarget mockTarget) GetLogger(LogLevel minimumLogLevel)
         {
-            var logger = LogManager.GetLogger(typeof(Log4NetLoggerTests));
+            var logger = LogManager.GetLogger(Guid.NewGuid().ToString());
 
             var hierarchyLogger = (log4net.Repository.Hierarchy.Logger)logger.Logger;
             hierarchyLogger.Level = _splat2log4net[minimumLogLevel];
@@ -90,17 +92,24 @@ namespace Splat.Tests.Logging
 
             public global::log4net.Appender.MemoryAppender MemoryTarget { get; }
 
-            public ICollection<(LogLevel logLevel, string message)> Logs => MemoryTarget.GetEvents().Select(x =>
+            public ICollection<(LogLevel logLevel, string message)> Logs
             {
-                var currentLevel = _log4Net2Splat[x.Level];
-
-                if (x.ExceptionObject != null)
+                get
                 {
-                    return (currentLevel, $"{x.MessageObject} {x.ExceptionObject}");
-                }
+                    MemoryTarget.Flush(0);
+                    return MemoryTarget.GetEvents().Select(x =>
+                    {
+                        var currentLevel = _log4Net2Splat[x.Level];
 
-                return (currentLevel, x.MessageObject.ToString());
-            }).ToList();
+                        if (x.ExceptionObject != null)
+                        {
+                            return (currentLevel, $"{x.MessageObject} {x.ExceptionObject}");
+                        }
+
+                        return (currentLevel, x.MessageObject.ToString());
+                    }).ToList();
+                }
+            }
         }
     }
 }

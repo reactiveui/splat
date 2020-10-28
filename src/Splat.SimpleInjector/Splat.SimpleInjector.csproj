@@ -4,10 +4,11 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net461;uap10.0.16299</TargetFrameworks>
     <Description>SimpleInjector adapter for Splat</Description>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SimpleInjector" Version="5.0.3" />
+    <PackageReference Include="SimpleInjector" Version="5.1.0" />
   </ItemGroup>
 
   <ItemGroup>

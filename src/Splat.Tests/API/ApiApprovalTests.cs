@@ -3,16 +3,17 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+#if !WINDOWS_UWP && !ANDROID
+
 using System;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using DiffEngine;
 using PublicApiGenerator;
-using Shouldly;
 using Xunit;
 
 namespace Splat.Tests
@@ -65,33 +66,7 @@ namespace Splat.Tests
             if (!string.Equals(receivedPublicApi, approvedPublicApi, StringComparison.InvariantCulture))
             {
                 File.WriteAllText(receivedFileName, receivedPublicApi);
-                try
-                {
-                    ShouldlyConfiguration.DiffTools.GetDiffTool().Open(receivedFileName, approvedFileName, true);
-                }
-                catch (ShouldAssertException)
-                {
-                    var process = new Process
-                    {
-                      StartInfo = new ProcessStartInfo
-                      {
-                          Arguments = $"\"{approvedFileName}\" \"{receivedFileName}\"",
-                          UseShellExecute = false,
-                          RedirectStandardOutput = true,
-                          CreateNoWindow = true
-                      }
-                    };
-#if NET_461
-                    process.StartInfo.FileName = "FC";
-#else
-                    process.StartInfo.FileName = "diff";
-#endif
-                    process.Start();
-                    string output = process.StandardOutput.ReadToEnd();
-                    process.WaitForExit();
-
-                    throw new Exception($"Invalid API configuration ({receivedFileName}): " + Environment.NewLine + output);
-                }
+                DiffRunner.Launch(receivedFileName, approvedFileName);
             }
 
             Assert.Equal(approvedPublicApi, receivedPublicApi);
@@ -114,3 +89,5 @@ namespace Splat.Tests
         }
     }
 }
+
+#endif

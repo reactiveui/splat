@@ -1,6 +1,12 @@
-﻿using System;
+﻿// Copyright (c) 2019 .NET Foundation and Contributors. All rights reserved.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using Xunit;
 
@@ -13,9 +19,9 @@ namespace Splat.Tests
     public sealed class BitmapLoaderTests
     {
         /// <summary>
-        /// Test data for the Load Suceeds Unit Test.
+        /// Gets the test data for the Load Suceeds Unit Test.
         /// </summary>
-        public static TheoryData<Func<Stream>> LoadSucceedsTestData = new TheoryData<Func<Stream>>
+        public static TheoryData<Func<Stream>> LoadSucceedsTestData { get; } = new TheoryData<Func<Stream>>
         {
             GetPngStream,
             GetJpegStream,
@@ -55,6 +61,11 @@ namespace Splat.Tests
         [MemberData(nameof(LoadSucceedsTestData))]
         public void Load_Succeeds(Func<Stream> getStream)
         {
+            if (getStream is null)
+            {
+                throw new ArgumentNullException(nameof(getStream));
+            }
+
             var instance = new Splat.PlatformBitmapLoader();
 
             using (var sourceStream = getStream())
@@ -88,9 +99,8 @@ namespace Splat.Tests
 #if ANDROID
             return Android.App.Application.Context.Assets.Open(imageName);
 #else
-            var cwd = Path.GetDirectoryName(typeof(BitmapLoaderTests).Assembly.Location);
-            var path = Path.Combine(cwd, imageName);
-            return File.OpenRead(path);
+            var assembly = Assembly.GetExecutingAssembly();
+            return assembly.GetManifestResourceStream(imageName);
 #endif
         }
     }
