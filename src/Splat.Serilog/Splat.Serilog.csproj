@@ -11,7 +11,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Serilog" Version="2.10.0" />
-    <PackageReference Include="System.Collections.Immutable" Version="1.7.1" />
+    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Splat\Splat.csproj" />
