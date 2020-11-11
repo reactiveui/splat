@@ -1,4 +1,4 @@
-[![NuGet Stats](https://img.shields.io/nuget/v/splat.svg)](https://www.nuget.org/packages/splat) ![Build](https://github.com/reactiveui/splat/workflows/Build/badge.svg) [![Code Coverage](https://codecov.io/gh/reactiveui/splat/branch/master/graph/badge.svg)](https://codecov.io/gh/reactiveui/splat)
+[![NuGet Stats](https://img.shields.io/nuget/v/splat.svg)](https://www.nuget.org/packages/splat) ![Build](https://github.com/reactiveui/splat/workflows/Build/badge.svg) [![Code Coverage](https://codecov.io/gh/reactiveui/splat/branch/main/graph/badge.svg)](https://codecov.io/gh/reactiveui/splat)
 <br>
 <a href="https://www.nuget.org/packages/splat">
         <img src="https://img.shields.io/nuget/dt/splat.svg">
