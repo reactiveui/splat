@@ -27,6 +27,11 @@ jobs:
       with:
         dotnet-version: 3.1.x
 
+    - name: Install .NET 5
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.x
+
     - name: NBGV
       id: nbgv
       uses: dotnet/nbgv@master
@@ -41,7 +46,7 @@ jobs:
       uses: microsoft/setup-msbuild@v1
 
     - name: Build
-      run: msbuild /t:build,pack /maxcpucount /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=${{ env.configuration }}
+      run: msbuild /t:build,pack /nowarn:MSB4011 /maxcpucount /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=${{ env.configuration }}
       working-directory: src
 
     - name: Run Unit Tests and Generate Coverage
@@ -52,7 +57,6 @@ jobs:
         exclude-filter: '[${{env.productNamespacePrefix}}.*.Tests.*]*'
         include-filter: '[${{env.productNamespacePrefix}}*]*'
         output-format: cobertura
-        merge-with: '../../artifacts/coverage.json'
         output: '../../artifacts/'
         configuration: ${{ env.configuration }}
 

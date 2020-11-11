@@ -3,8 +3,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-#if !WINDOWS_UWP && !ANDROID
-
 using System.Diagnostics.CodeAnalysis;
 using Xunit;
 
@@ -20,11 +18,9 @@ namespace Splat.Tests
         /// Tests to make sure the splat project is approved.
         /// </summary>
         [Fact]
-        public void SplatProject()
+        public void SplatUIProject()
         {
-            typeof(AssemblyFinder).Assembly.CheckApproval();
+            typeof(IPlatformModeDetector).Assembly.CheckApproval();
         }
     }
 }
-
-#endif
