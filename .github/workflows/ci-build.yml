@@ -47,7 +47,7 @@ jobs:
       working-directory: src
       
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: glennawatson/setup-msbuild@v1.0.3
 
     - name: Build
       run: msbuild /t:build,pack /nowarn:MSB4011 /maxcpucount /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=${{ env.configuration }}
