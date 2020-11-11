@@ -48,6 +48,8 @@ jobs:
       
     - name: Add MSBuild to PATH
       uses: glennawatson/setup-msbuild@v1.0.3
+      with:
+        prerelease: true
 
     - name: Build
       run: msbuild /t:build,pack /nowarn:MSB4011 /maxcpucount /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=${{ env.configuration }}
