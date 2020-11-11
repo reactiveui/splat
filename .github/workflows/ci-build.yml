@@ -34,7 +34,7 @@ jobs:
 
     - name: Update VS2019
       shell: powershell
-      run: Start-Process -Wait -FilePath  "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe" -ArgumentList "update --passive --norestart --installpath ""C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise"""
+      run: Start-Process -Wait -FilePath -PassThru  "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe" -ArgumentList "update --passive --norestart --installpath ""C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise"""
 
     - name: NBGV
       id: nbgv
