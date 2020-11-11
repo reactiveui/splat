@@ -32,6 +32,10 @@ jobs:
       with:
         dotnet-version: 5.0.x
 
+    - name: Update VS2019
+      shell: powershell
+      run: Start-Process -Wait -FilePath  "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe" -ArgumentList "update --passive --norestart --installpath ""C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise"""
+
     - name: NBGV
       id: nbgv
       uses: dotnet/nbgv@master
@@ -43,7 +47,7 @@ jobs:
       working-directory: src
       
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1
+      uses: microsoft/setup-msbuild@v1.0.2
 
     - name: Build
       run: msbuild /t:build,pack /nowarn:MSB4011 /maxcpucount /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=${{ env.configuration }}
