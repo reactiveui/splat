@@ -35,7 +35,8 @@ namespace Splat
                     }
 
                     return new WrappingFullLogger(new WrappingPrefixLogger(ret, type));
-                }, 64);
+                },
+                64);
         }
 
         /// <inheritdoc />

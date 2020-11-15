@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net5.0;netcoreapp3.1</TargetFrameworks>
     <NoWarn>$(NoWarn);CA1707;CS1574</NoWarn>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
