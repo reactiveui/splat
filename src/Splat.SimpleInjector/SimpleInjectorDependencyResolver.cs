@@ -22,20 +22,42 @@ namespace Splat.SimpleInjector
         /// Initializes a new instance of the <see cref="SimpleInjectorDependencyResolver"/> class.
         /// </summary>
         /// <param name="container">The container.</param>
-        public SimpleInjectorDependencyResolver(Container container)
+        /// <param name="initializer">The initializer.</param>
+        public SimpleInjectorDependencyResolver(Container container, SimpleInjectorInitializer initializer)
         {
-            _container = container;
+            _container = container ?? throw new ArgumentNullException(nameof(container));
+            _ = initializer ?? throw new ArgumentNullException(nameof(initializer));
+
+            RegisterFactories(initializer);
         }
 
         /// <inheritdoc />
         public object GetService(Type serviceType, string contract = null)
         {
-            return _container.GetInstance(serviceType);
+            try
+            {
+                IEnumerable<object> registers = _container.GetAllInstances(serviceType);
+                return registers.LastOrDefault();
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         /// <inheritdoc />
-        public IEnumerable<object> GetServices(Type serviceType, string contract = null) =>
-            _container.GetAllInstances(serviceType);
+        public IEnumerable<object> GetServices(Type serviceType, string contract = null)
+        {
+            try
+            {
+                IEnumerable<object> registers = _container.GetAllInstances(serviceType);
+                return registers;
+            }
+            catch
+            {
+                return Enumerable.Empty<object>();
+            }
+        }
 
         /// <inheritdoc />
         public bool HasRegistration(Type serviceType, string contract = null)
@@ -44,8 +66,11 @@ namespace Splat.SimpleInjector
         }
 
         /// <inheritdoc />
-        public void Register(Func<object> factory, Type serviceType, string contract = null) =>
-            _container.Register(serviceType, factory);
+        public void Register(Func<object> factory, Type serviceType, string contract = null)
+        {
+            // The function does nothing because there should be no registration called on this object.
+            // Anyway, Locator.SetLocator performs some unnecessary registrations.
+        }
 
         /// <inheritdoc />
         public void UnregisterCurrent(Type serviceType, string contract = null)
@@ -82,6 +107,17 @@ namespace Splat.SimpleInjector
             {
                 _container?.Dispose();
                 _container = null;
+            }
+        }
+
+        private void RegisterFactories(SimpleInjectorInitializer initializer)
+        {
+            foreach (KeyValuePair<Type, List<Func<object>>> typeFactories in initializer.RegisteredFactories)
+            {
+                _container.Collection.Register(
+                    typeFactories.Key,
+                    typeFactories.Value.Select(n =>
+                        new TransientSimpleInjectorRegistration(_container, typeFactories.Key, n)));
             }
         }
     }
