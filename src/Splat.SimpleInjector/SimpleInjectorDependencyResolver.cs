@@ -36,6 +36,12 @@ namespace Splat.SimpleInjector
         {
             try
             {
+                InstanceProducer? registration = _container.GetRegistration(serviceType);
+                if (registration != null)
+                {
+                    return registration.GetInstance();
+                }
+
                 IEnumerable<object> registers = _container.GetAllInstances(serviceType);
                 return registers.LastOrDefault();
             }
@@ -50,11 +56,16 @@ namespace Splat.SimpleInjector
         {
             try
             {
-                IEnumerable<object> registers = _container.GetAllInstances(serviceType);
-                return registers;
+                return _container.GetAllInstances(serviceType);
             }
             catch
             {
+                InstanceProducer? registration = _container.GetRegistration(serviceType);
+                if (registration != null)
+                {
+                    return new object[] { registration.GetInstance() };
+                }
+
                 return Enumerable.Empty<object>();
             }
         }
