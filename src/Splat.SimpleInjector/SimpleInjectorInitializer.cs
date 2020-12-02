@@ -17,6 +17,8 @@ namespace Splat.SimpleInjector
     public class SimpleInjectorInitializer : IDependencyResolver
 #pragma warning restore CA1063 // Implement IDisposable Correctly
     {
+        private readonly object _lockObject = new object();
+
         /// <summary>
         /// Gets dictionary of registered factories.
         /// </summary>
@@ -26,33 +28,45 @@ namespace Splat.SimpleInjector
         /// <inheritdoc />
         public object GetService(Type serviceType, string contract = null)
         {
-            Func<object> fact = RegisteredFactories[serviceType].LastOrDefault();
-            return fact?.Invoke();
+            lock (_lockObject)
+            {
+                Func<object> fact = RegisteredFactories[serviceType].LastOrDefault();
+                return fact?.Invoke();
+            }
         }
 
         /// <inheritdoc/>
         public IEnumerable<object> GetServices(Type serviceType, string contract = null)
         {
-            return RegisteredFactories[serviceType]
-                .Select(n => n());
+            lock (_lockObject)
+            {
+                return RegisteredFactories[serviceType]
+                    .Select(n => n());
+            }
         }
 
         /// <inheritdoc />
         public bool HasRegistration(Type serviceType, string contract = null)
         {
-            return RegisteredFactories.TryGetValue(serviceType, out List<Func<object>> values)
-                   && values.Any();
+            lock (_lockObject)
+            {
+                return RegisteredFactories.TryGetValue(serviceType, out List<Func<object>> values)
+                       && values.Any();
+            }
         }
 
         /// <inheritdoc />
         public void Register(Func<object> factory, Type serviceType, string contract = null)
         {
-            if (!RegisteredFactories.ContainsKey(serviceType))
+            lock (_lockObject)
             {
-                RegisteredFactories.Add(serviceType, new List<Func<object>>());
-            }
+                if (!RegisteredFactories.ContainsKey(serviceType))
+                {
+                    RegisteredFactories.Add(serviceType, new List<Func<object>>());
+                }
 
-            RegisteredFactories[serviceType].Add(factory);
+                RegisteredFactories[serviceType].Add(factory);
+            }
         }
 
         /// <inheritdoc />
@@ -64,9 +78,12 @@ namespace Splat.SimpleInjector
         /// <inheritdoc />
         public void UnregisterAll(Type serviceType, string contract = null)
         {
-            if (RegisteredFactories.ContainsKey(serviceType))
+            lock (_lockObject)
             {
-                RegisteredFactories.Remove(serviceType);
+                if (RegisteredFactories.ContainsKey(serviceType))
+                {
+                    RegisteredFactories.Remove(serviceType);
+                }
             }
         }
 
