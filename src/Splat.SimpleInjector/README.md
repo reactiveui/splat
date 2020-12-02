@@ -29,7 +29,14 @@ container.UseSimpleInjectorDependencyResolver(initializer);
 container.Register<Example>();
 container.Register<Example2>();
 
-// Optional overriding default implementations
+// SimpleInjector by default only allows a single registration of a service.
+// Splat would typically allow multiple registrations and by default return the
+// last registration.
+// If you set AllowOverridingRegistrations on SimpleInjector it REPLACES the last
+// registration so BE AWARE.
+// For more details see: https://simpleinjector.readthedocs.io/en/latest/howto.html#override-existing-registrations
+// We may produce a workaround in Splat in future, but for now keep the limitation
+// in mind.
 container.Options.AllowOverridingRegistrations = true;
 container.Register<IViewLocator, MyCustomViewLocator>();
 
