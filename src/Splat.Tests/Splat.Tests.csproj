@@ -1,25 +1,19 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net5.0;netcoreapp3.1</TargetFrameworks>
     <NoWarn>$(NoWarn);1591;CA1707;SA1633;CA2000;CA1034</NoWarn>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(OS)' == 'Windows_NT' ">
-    <UseWPF Condition="$(TargetFramework.StartsWith('netcoreapp3'))">true</UseWPF>
-    <UseWindowsForms Condition="$(TargetFramework.StartsWith('netcoreapp3'))">true</UseWindowsForms>
-  </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Serilog.Exceptions" Version="5.6.0" />
+    <PackageReference Include="Serilog.Exceptions" Version="5.7.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Splat.ApplicationInsights\Splat.ApplicationInsights.csproj" />
     <ProjectReference Include="..\Splat.Exceptionless\Splat.Exceptionless.csproj" />
     <ProjectReference Include="..\Splat.AppCenter\Splat.AppCenter.csproj" />
-    <ProjectReference Include="..\Splat.Drawing\Splat.Drawing.csproj" />
     <ProjectReference Include="..\Splat.Log4Net\Splat.Log4Net.csproj" />
     <ProjectReference Include="..\Splat.Microsoft.Extensions.Logging\Splat.Microsoft.Extensions.Logging.csproj" />
     <ProjectReference Include="..\Splat.NLog\Splat.NLog.csproj" />

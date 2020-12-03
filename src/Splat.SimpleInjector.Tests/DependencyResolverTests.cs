@@ -27,7 +27,7 @@ namespace Splat.Simplnjector
         {
             var container = new Container();
             container.Register<ViewModelOne>();
-            container.UseSimpleInjectorDependencyResolver();
+            container.UseSimpleInjectorDependencyResolver(new SimpleInjectorInitializer());
 
             var viewModel = Locator.Current.GetService(typeof(ViewModelOne));
 
@@ -43,7 +43,7 @@ namespace Splat.Simplnjector
         {
             var container = new Container();
             container.Register<IViewFor<ViewModelOne>, ViewOne>();
-            container.UseSimpleInjectorDependencyResolver();
+            container.UseSimpleInjectorDependencyResolver(new SimpleInjectorInitializer());
 
             var view = Locator.Current.GetService(typeof(IViewFor<ViewModelOne>));
 
@@ -59,12 +59,56 @@ namespace Splat.Simplnjector
         {
             var container = new Container();
             container.RegisterSingleton<IScreen, MockScreen>();
-            container.UseSimpleInjectorDependencyResolver();
+            container.UseSimpleInjectorDependencyResolver(new SimpleInjectorInitializer());
 
             var screen = Locator.Current.GetService(typeof(IScreen));
 
             screen.Should().NotBeNull();
             screen.Should().BeOfType<MockScreen>();
+        }
+
+        /// <summary>
+        /// Should not throw during initialization of ReactiveUI.
+        /// </summary>
+        [Fact]
+        public void SimpleInjectorDependencyResolver_Splat_Initialization_ShouldNotThrow()
+        {
+            Container container = new Container();
+            SimpleInjectorInitializer initializer = new SimpleInjectorInitializer();
+
+            Locator.SetLocator(initializer);
+            Locator.CurrentMutable.InitializeSplat();
+            container.UseSimpleInjectorDependencyResolver(initializer);
+        }
+
+        /// <summary>
+        /// Should resolve dependency registered during Splat initialization.
+        /// </summary>
+        [Fact]
+        public void SimpleInjectorDependencyResolver_ShouldResolveSplatRegisteredDependency()
+        {
+            Container container = new Container();
+            SimpleInjectorInitializer initializer = new SimpleInjectorInitializer();
+
+            Locator.SetLocator(initializer);
+            Locator.CurrentMutable.InitializeSplat();
+            container.UseSimpleInjectorDependencyResolver(initializer);
+
+            ILogger dependency = Locator.Current.GetService(typeof(ILogger)) as ILogger;
+            Assert.NotNull(dependency);
+        }
+
+        /// <summary>
+        /// Should resolve dependency registered during Splat initialization.
+        /// </summary>
+        [Fact]
+        public void SimpleInjectorDependencyResolver_CollectionShouldNeverReturnNull()
+        {
+            var container = new Container();
+            container.UseSimpleInjectorDependencyResolver(new SimpleInjectorInitializer());
+
+            var views = Locator.Current.GetServices(typeof(ViewOne));
+            Assert.NotNull(views);
         }
     }
 }

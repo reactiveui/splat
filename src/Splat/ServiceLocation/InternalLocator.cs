@@ -16,6 +16,7 @@ namespace Splat
         private volatile int _resolverChangedNotificationSuspendCount;
         private IDependencyResolver _dependencyResolver;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Global lifetime.")]
         internal InternalLocator()
         {
             _dependencyResolver = new ModernDependencyResolver();

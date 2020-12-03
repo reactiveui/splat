@@ -1,13 +1,14 @@
-<Project Sdk="MSBuild.Sdk.Extras">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net461</TargetFrameworks>
     <NoWarn>$(NoWarn);CA1801</NoWarn>
     <Description>DryIoc adapter for Splat</Description>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DryIoc.Dll" Version="4.5.0" />
+    <PackageReference Include="DryIoc.Dll" Version="4.5.1" />
   </ItemGroup>
 
   <ItemGroup>
