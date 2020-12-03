@@ -58,7 +58,7 @@ jobs:
       with:
         project-files: '**/*Tests*.csproj'
         no-build: true
-        exclude-filter: '[${{env.productNamespacePrefix}}.*.Tests.*]*'
+        exclude-filter: '[${{env.productNamespacePrefix}}.*.Tests.*]*,[${{env.productNamespacePrefix}}.Tests]*,[${{env.productNamespacePrefix}}.TestRunner.*]*'
         include-filter: '[${{env.productNamespacePrefix}}*]*'
         output-format: cobertura
         output: '../../artifacts/'
