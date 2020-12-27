@@ -15,6 +15,148 @@ namespace Splat.Tests.Logging
     {
         private const string Message = "Message";
 
+        private static char[] NewLine => Environment.NewLine.ToCharArray();
+
+        /// <summary>
+        /// Test to make sure the generic type parameter is passed to the logger.
+        /// </summary>
+        [Fact]
+        public void Debug_With_Generic_Type_Should_Write_Message_And_Type()
+        {
+            var textLogger = new TextLogger { Level = LogLevel.Debug };
+            var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
+
+            logger.Debug<DummyObjectClass1>("This is a test.");
+
+            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+        }
+
+        /// <summary>
+        /// Test to make sure the generic type parameter is passed to the logger.
+        /// </summary>
+        [Fact]
+        public void Debug_With_Generic_Type_Should_Write_Message_And_Type_Provided()
+        {
+            var textLogger = new TextLogger { Level = LogLevel.Debug };
+            var logger = GetLogger(textLogger);
+
+            logger.Debug<DummyObjectClass2>("This is a test.");
+
+            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+        }
+
+        /// <summary>
+        /// Test to make sure the generic type parameter is passed to the logger.
+        /// </summary>
+        [Fact]
+        public void Info_With_Generic_Type_Should_Write_Message_And_Type()
+        {
+            var textLogger = new TextLogger { Level = LogLevel.Debug };
+            var logger = GetLogger(textLogger);
+
+            logger.Info<DummyObjectClass1>("This is a test.");
+
+            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+        }
+
+        /// <summary>
+        /// Test to make sure the generic type parameter is passed to the logger.
+        /// </summary>
+        [Fact]
+        public void Info_With_Generic_Type_Should_Write_Message_And_Type_Provided()
+        {
+            var textLogger = new TextLogger { Level = LogLevel.Debug };
+            var logger = GetLogger(textLogger);
+
+            logger.Info<DummyObjectClass2>("This is a test.");
+
+            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+        }
+
+        /// <summary>
+        /// Test to make sure the generic type parameter is passed to the logger.
+        /// </summary>
+        [Fact]
+        public void Warn_With_Generic_Type_Should_Write_Message_And_Type()
+        {
+            var textLogger = new TextLogger { Level = LogLevel.Debug };
+            var logger = GetLogger(textLogger);
+
+            logger.Warn<DummyObjectClass1>("This is a test.");
+
+            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+        }
+
+        /// <summary>
+        /// Test to make sure the generic type parameter is passed to the logger.
+        /// </summary>
+        [Fact]
+        public void Warn_With_Generic_Type_Should_Write_Message_And_Type_Provided()
+        {
+            var textLogger = new TextLogger();
+            var logger = GetLogger(textLogger);
+
+            logger.Warn<DummyObjectClass2>("This is a test.");
+
+            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+        }
+
+        /// <summary>
+        /// Test to make sure the generic type parameter is passed to the logger.
+        /// </summary>
+        [Fact]
+        public void Error_With_Generic_Type_Should_Write_Message_And_Type()
+        {
+            var textLogger = new TextLogger();
+            var logger = GetLogger(textLogger);
+
+            logger.Error<DummyObjectClass1>("This is a test.");
+
+            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+        }
+
+        /// <summary>
+        /// Test to make sure the generic type parameter is passed to the logger.
+        /// </summary>
+        [Fact]
+        public void Error_With_Generic_Type_Should_Write_Message_And_Type_Provided()
+        {
+            var textLogger = new TextLogger();
+            var logger = GetLogger(textLogger);
+
+            logger.Error<DummyObjectClass2>("This is a test.");
+
+            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+        }
+
+        /// <summary>
+        /// Test to make sure the generic type parameter is passed to the logger.
+        /// </summary>
+        [Fact]
+        public void Fatal_With_Generic_Type_Should_Write_Message_And_Type()
+        {
+            var textLogger = new TextLogger();
+            var logger = GetLogger(textLogger);
+
+            logger.Fatal<DummyObjectClass1>("This is a test.");
+
+            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+        }
+
+        /// <summary>
+        /// Test to make sure the generic type parameter is passed to the logger.
+        /// </summary>
+        [Fact]
+        public void Fatal_With_Generic_Type_Should_Write_Message_And_Type_Provided()
+        {
+            var textLogger = new TextLogger();
+            var logger = GetLogger(textLogger);
+
+            logger.Fatal<DummyObjectClass2>("This is a test.");
+
+            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+        }
+
         /// <summary>
         /// Test to ensure debug writes.
         /// </summary>
@@ -105,6 +247,61 @@ namespace Splat.Tests.Logging
             Test_Write_Message(logger => logger.Fatal(CultureInfo.InvariantCulture, "{0}", "Message"));
         }
 
+        /// <summary>
+        /// Test to make sure the message writes.
+        /// </summary>
+        [Fact]
+        public void Logger_Level_Debug_Should_Be_correct()
+        {
+            var logger = GetLogger(LogLevel.Debug);
+
+            Assert.Equal(LogLevel.Debug, logger.Level);
+        }
+
+        /// <summary>
+        /// Test to make sure the message writes.
+        /// </summary>
+        [Fact]
+        public void Logger_Level_Info_Should_Be_correct()
+        {
+            var logger = GetLogger(LogLevel.Info);
+
+            Assert.Equal(LogLevel.Info, logger.Level);
+        }
+
+        /// <summary>
+        /// Test to make sure the message writes.
+        /// </summary>
+        [Fact]
+        public void Logger_Level_Warn_Should_Be_correct()
+        {
+            var logger = GetLogger(LogLevel.Warn);
+
+            Assert.Equal(LogLevel.Warn, logger.Level);
+        }
+
+        /// <summary>
+        /// Test to make sure the message writes.
+        /// </summary>
+        [Fact]
+        public void Logger_Level_Error_Should_Be_correct()
+        {
+            var logger = GetLogger(LogLevel.Error);
+
+            Assert.Equal(LogLevel.Error, logger.Level);
+        }
+
+        /// <summary>
+        /// Test to make sure the message writes.
+        /// </summary>
+        [Fact]
+        public void Logger_Level_Fatal_Should_Be_correct()
+        {
+            var logger = GetLogger(LogLevel.Fatal);
+
+            Assert.Equal(LogLevel.Fatal, logger.Level);
+        }
+
         private static void Test_Write_Message(Action<StaticFullLogger> testMethodFunc)
         {
             var textLogger = new TextLogger();
@@ -118,5 +315,14 @@ namespace Splat.Tests.Logging
         }
 
         private static StaticFullLogger GetLogger(TextLogger textLogger) => new StaticFullLogger(new WrappingFullLogger(textLogger));
+
+        private static StaticFullLogger GetLogger(LogLevel logLevel)
+        {
+            var textLogger = new TextLogger();
+            textLogger.Level = logLevel;
+
+            var wrappingFullLogger = new WrappingFullLogger(textLogger);
+            return new StaticFullLogger(wrappingFullLogger);
+        }
     }
 }
