@@ -425,7 +425,6 @@ namespace Splat
         void Debug(System.Exception exception, [System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Debug<T>([System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Debug<T>(T value, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
-        void Debug<T>(System.IFormatProvider formatProvider, T value, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Debug<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument argument, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Debug<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Debug<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
@@ -433,7 +432,6 @@ namespace Splat
         void Error(System.Exception exception, [System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Error<T>([System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Error<T>(T value, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
-        void Error<T>(System.IFormatProvider formatProvider, T value, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Error<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument argument, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Error<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Error<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
@@ -441,7 +439,6 @@ namespace Splat
         void Fatal(System.Exception exception, [System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Fatal<T>([System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Fatal<T>(T value, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
-        void Fatal<T>(System.IFormatProvider formatProvider, T value, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Fatal<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument argument, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Fatal<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Fatal<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
@@ -449,7 +446,6 @@ namespace Splat
         void Info(System.Exception exception, [System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Info<T>([System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Info<T>(T value, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
-        void Info<T>(System.IFormatProvider formatProvider, T value, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Info<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument argument, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Info<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Info<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
@@ -457,7 +453,6 @@ namespace Splat
         void Warn(System.Exception exception, [System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Warn<T>([System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Warn<T>(T value, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
-        void Warn<T>(System.IFormatProvider formatProvider, T value, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Warn<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument argument, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Warn<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Warn<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
@@ -591,7 +586,6 @@ namespace Splat
         public void Debug(System.Exception exception, string message, string callerMemberName = null) { }
         public void Debug<T>(string message, string callerMemberName = null) { }
         public void Debug<T>(T value, string callerMemberName = null) { }
-        public void Debug<T>(System.IFormatProvider formatProvider, T value, string callerMemberName = null) { }
         public void Debug<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument, string callerMemberName = null) { }
         public void Debug<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, string callerMemberName = null) { }
         public void Debug<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, string callerMemberName = null) { }
@@ -599,7 +593,6 @@ namespace Splat
         public void Error(System.Exception exception, string message, string callerMemberName = null) { }
         public void Error<T>(string message, string callerMemberName = null) { }
         public void Error<T>(T value, string callerMemberName = null) { }
-        public void Error<T>(System.IFormatProvider formatProvider, T value, string callerMemberName = null) { }
         public void Error<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument, string callerMemberName = null) { }
         public void Error<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, string callerMemberName = null) { }
         public void Error<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, string callerMemberName = null) { }
@@ -607,7 +600,6 @@ namespace Splat
         public void Fatal(System.Exception exception, string message, string callerMemberName = null) { }
         public void Fatal<T>(string message, string callerMemberName = null) { }
         public void Fatal<T>(T value, string callerMemberName = null) { }
-        public void Fatal<T>(System.IFormatProvider formatProvider, T value, string callerMemberName = null) { }
         public void Fatal<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument, string callerMemberName = null) { }
         public void Fatal<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, string callerMemberName = null) { }
         public void Fatal<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, string callerMemberName = null) { }
@@ -615,7 +607,6 @@ namespace Splat
         public void Info(System.Exception exception, string message, string callerMemberName = null) { }
         public void Info<T>(string message, string callerMemberName = null) { }
         public void Info<T>(T value, string callerMemberName = null) { }
-        public void Info<T>(System.IFormatProvider formatProvider, T value, string callerMemberName = null) { }
         public void Info<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument, string callerMemberName = null) { }
         public void Info<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, string callerMemberName = null) { }
         public void Info<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, string callerMemberName = null) { }
@@ -623,7 +614,6 @@ namespace Splat
         public void Warn(System.Exception exception, string message, string callerMemberName = null) { }
         public void Warn<T>(string message, string callerMemberName = null) { }
         public void Warn<T>(T value, string callerMemberName = null) { }
-        public void Warn<T>(System.IFormatProvider formatProvider, T value, string callerMemberName = null) { }
         public void Warn<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument, string callerMemberName = null) { }
         public void Warn<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, string callerMemberName = null) { }
         public void Warn<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, string callerMemberName = null) { }
