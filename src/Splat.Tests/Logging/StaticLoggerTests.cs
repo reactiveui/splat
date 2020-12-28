@@ -42,7 +42,7 @@ namespace Splat.Tests.Logging
 
             logger.Debug<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+            Assert.Equal($"This is a test. ({nameof(Debug_With_Generic_Type_Should_Write_Message_And_Type_Provided)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Splat.Tests.Logging
 
             logger.Info<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+            Assert.Equal($"This is a test. ({nameof(Info_With_Generic_Type_Should_Write_Message_And_Type)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace Splat.Tests.Logging
 
             logger.Info<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+            Assert.Equal($"This is a test. ({nameof(Info_With_Generic_Type_Should_Write_Message_And_Type_Provided)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace Splat.Tests.Logging
 
             logger.Warn<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+            Assert.Equal($"This is a test. ({nameof(Warn_With_Generic_Type_Should_Write_Message_And_Type)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace Splat.Tests.Logging
 
             logger.Warn<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+            Assert.Equal($"This is a test. ({nameof(Warn_With_Generic_Type_Should_Write_Message_And_Type_Provided)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace Splat.Tests.Logging
 
             logger.Error<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+            Assert.Equal($"This is a test. ({nameof(Error_With_Generic_Type_Should_Write_Message_And_Type)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace Splat.Tests.Logging
 
             logger.Error<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+            Assert.Equal($"This is a test. ({nameof(Error_With_Generic_Type_Should_Write_Message_And_Type_Provided)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace Splat.Tests.Logging
 
             logger.Fatal<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+            Assert.Equal($"This is a test. ({nameof(Fatal_With_Generic_Type_Should_Write_Message_And_Type)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace Splat.Tests.Logging
 
             logger.Fatal<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+            Assert.Equal($"This is a test. ({nameof(Fatal_With_Generic_Type_Should_Write_Message_And_Type_Provided)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
         }
 
         /// <summary>
@@ -311,7 +311,12 @@ namespace Splat.Tests.Logging
             testMethodFunc(staticLogger);
             Assert.Equal(1, textLogger.Logs.Count);
             var line = textLogger.Logs.First();
-            Assert.True(line.message.Contains("()"));
+
+            var startOfCallerMemberSuffix = line.message.IndexOf("(", StringComparison.Ordinal);
+            Assert.True(startOfCallerMemberSuffix > 0);
+
+            var endOfCallerMemberSuffix = line.message.IndexOf(")", startOfCallerMemberSuffix, StringComparison.Ordinal);
+            Assert.True(endOfCallerMemberSuffix > startOfCallerMemberSuffix + 1);
         }
 
         private static StaticFullLogger GetLogger(TextLogger textLogger) => new StaticFullLogger(new WrappingFullLogger(textLogger));
