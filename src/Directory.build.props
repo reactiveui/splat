@@ -42,7 +42,7 @@
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.Reactive.Testing" Version="5.0.0" />
     <PackageReference Include="PublicApiGenerator" Version="10.2.0" />
-    <PackageReference Include="DiffEngine" Version="6.4.9" />
+    <PackageReference Include="DiffEngine" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup Condition="$(IsTestProject)">
@@ -70,7 +70,7 @@
   <ItemGroup>
     <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.261" PrivateAssets="all" />
     <PackageReference Include="Roslynator.Analyzers" Version="3.0.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.1" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3" PrivateAssets="all" />
   </ItemGroup>
   <!-- Net Analyzers config taken from : https://docs.microsoft.com/en-gb/visualstudio/code-quality/migrate-from-fxcop-analyzers-to-net-analyzers?view=vs-2019 -->
   <PropertyGroup>
