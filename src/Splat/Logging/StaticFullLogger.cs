@@ -29,14 +29,6 @@ namespace Splat
         public LogLevel Level => _fullLogger.Level;
 
         /// <inheritdoc/>
-        public void Debug<T>(T value, [CallerMemberName]string callerMemberName = null)
-        {
-            _fullLogger.Debug<T>(
-                callerMemberName,
-                value);
-        }
-
-        /// <inheritdoc/>
         public void Debug(Exception exception, string message, [CallerMemberName]string callerMemberName = null)
         {
             _fullLogger.Debug(exception, GetSuffixedCallerData(message, callerMemberName));
@@ -82,14 +74,6 @@ namespace Splat
                 argument1,
                 argument2,
                 argument3);
-        }
-
-        /// <inheritdoc/>
-        public void Info<T>(T value, [CallerMemberName]string callerMemberName = null)
-        {
-            _fullLogger.Info<T>(
-                callerMemberName,
-                value);
         }
 
         /// <inheritdoc/>
@@ -141,14 +125,6 @@ namespace Splat
         }
 
         /// <inheritdoc/>
-        public void Warn<T>(T value, [CallerMemberName]string callerMemberName = null)
-        {
-            _fullLogger.Warn<T>(
-                callerMemberName,
-                value);
-        }
-
-        /// <inheritdoc/>
         public void Warn(Exception exception, string message, [CallerMemberName]string callerMemberName = null)
         {
             _fullLogger.Warn(exception, GetSuffixedCallerData(message, callerMemberName));
@@ -197,14 +173,6 @@ namespace Splat
         }
 
         /// <inheritdoc/>
-        public void Error<T>(T value, [CallerMemberName]string callerMemberName = null)
-        {
-            _fullLogger.Error<T>(
-                callerMemberName,
-                value);
-        }
-
-        /// <inheritdoc/>
         public void Error(Exception exception, string message, [CallerMemberName]string callerMemberName = null)
         {
             _fullLogger.Error(exception, GetSuffixedCallerData(message, callerMemberName));
@@ -250,14 +218,6 @@ namespace Splat
                 argument1,
                 argument2,
                 argument3);
-        }
-
-        /// <inheritdoc/>
-        public void Fatal<T>(T value, [CallerMemberName]string callerMemberName = null)
-        {
-            _fullLogger.Fatal<T>(
-                callerMemberName,
-                value);
         }
 
         /// <inheritdoc/>

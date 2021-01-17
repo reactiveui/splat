@@ -18,316 +18,316 @@ namespace Splat.Tests.Logging
         private static char[] NewLine => Environment.NewLine.ToCharArray();
 
         /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
+        /// Unit tests focusing on the debug logging in the static logger.
         /// </summary>
-        [Fact]
-        public void Debug_With_Generic_Type_Should_Write_Message_And_Type()
+        public class DebugStaticLoggerTests : BaseStaticLoggerTests
         {
-            var textLogger = new TextLogger { Level = LogLevel.Debug };
-            var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
+            /// <inheritdoc/>
+            protected override LogLevel GetLogLevel()
+            {
+                return LogLevel.Debug;
+            }
 
-            logger.Debug<DummyObjectClass1>("This is a test.");
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, string> GetMethodWithGenericTypeShouldWriteMessageAndType<T>()
+            {
+                return (logger, message) => logger.Debug<T>(message);
+            }
 
-            Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, string> GetMethodToWriteMessage()
+            {
+                return (logger, s) => logger.Debug(s);
+            }
+
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, CultureInfo, string, string> GetMethodToWriteMessageWithInvariantCulture()
+            {
+                return (logger, formatProvider, message, arg1) => logger.Debug(formatProvider, message, arg1);
+            }
+
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, Exception, string> GetMethodToWriteExceptionAndMessage()
+            {
+                return (logger, exception, message) => logger.Debug(exception, message);
+            }
         }
 
         /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
+        /// Unit tests focusing on the info logging in the static logger.
         /// </summary>
-        [Fact]
-        public void Debug_With_Generic_Type_Should_Write_Message_And_Type_Provided()
+        public class InfoStaticLoggerTests : BaseStaticLoggerTests
         {
-            var textLogger = new TextLogger { Level = LogLevel.Debug };
-            var logger = GetLogger(textLogger);
+            /// <inheritdoc/>
+            protected override LogLevel GetLogLevel()
+            {
+                return LogLevel.Info;
+            }
 
-            logger.Debug<DummyObjectClass2>("This is a test.");
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, string> GetMethodWithGenericTypeShouldWriteMessageAndType<T>()
+            {
+                return (logger, message) => logger.Info<T>(message);
+            }
 
-            Assert.Equal($"This is a test. ({nameof(Debug_With_Generic_Type_Should_Write_Message_And_Type_Provided)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, string> GetMethodToWriteMessage()
+            {
+                return (logger, s) => logger.Info(s);
+            }
+
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, CultureInfo, string, string> GetMethodToWriteMessageWithInvariantCulture()
+            {
+                return (logger, formatProvider, message, arg1) => logger.Info(formatProvider, message, arg1);
+            }
+
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, Exception, string> GetMethodToWriteExceptionAndMessage()
+            {
+                return (logger, exception, message) => logger.Info(exception, message);
+            }
         }
 
         /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
+        /// Unit tests focusing on the warning logging in the static logger.
         /// </summary>
-        [Fact]
-        public void Info_With_Generic_Type_Should_Write_Message_And_Type()
+        public class WarningStaticLoggerTests : BaseStaticLoggerTests
         {
-            var textLogger = new TextLogger { Level = LogLevel.Debug };
-            var logger = GetLogger(textLogger);
+            /// <inheritdoc/>
+            protected override LogLevel GetLogLevel()
+            {
+                return LogLevel.Warn;
+            }
 
-            logger.Info<DummyObjectClass1>("This is a test.");
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, string> GetMethodWithGenericTypeShouldWriteMessageAndType<T>()
+            {
+                return (logger, message) => logger.Warn<T>(message);
+            }
 
-            Assert.Equal($"This is a test. ({nameof(Info_With_Generic_Type_Should_Write_Message_And_Type)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, string> GetMethodToWriteMessage()
+            {
+                return (logger, s) => logger.Warn(s);
+            }
+
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, CultureInfo, string, string> GetMethodToWriteMessageWithInvariantCulture()
+            {
+                return (logger, formatProvider, message, arg1) => logger.Warn(formatProvider, message, arg1);
+            }
+
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, Exception, string> GetMethodToWriteExceptionAndMessage()
+            {
+                return (logger, exception, message) => logger.Warn(exception, message);
+            }
         }
 
         /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
+        /// Unit tests focusing on the error logging in the static logger.
         /// </summary>
-        [Fact]
-        public void Info_With_Generic_Type_Should_Write_Message_And_Type_Provided()
+        public class ErrorStaticLoggerTests : BaseStaticLoggerTests
         {
-            var textLogger = new TextLogger { Level = LogLevel.Debug };
-            var logger = GetLogger(textLogger);
+            /// <inheritdoc/>
+            protected override LogLevel GetLogLevel()
+            {
+                return LogLevel.Error;
+            }
 
-            logger.Info<DummyObjectClass2>("This is a test.");
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, string> GetMethodWithGenericTypeShouldWriteMessageAndType<T>()
+            {
+                return (logger, message) => logger.Error<T>(message);
+            }
 
-            Assert.Equal($"This is a test. ({nameof(Info_With_Generic_Type_Should_Write_Message_And_Type_Provided)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, string> GetMethodToWriteMessage()
+            {
+                return (logger, s) => logger.Error(s);
+            }
+
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, CultureInfo, string, string> GetMethodToWriteMessageWithInvariantCulture()
+            {
+                return (logger, formatProvider, message, arg1) => logger.Error(formatProvider, message, arg1);
+            }
+
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, Exception, string> GetMethodToWriteExceptionAndMessage()
+            {
+                return (logger, exception, message) => logger.Error(exception, message);
+            }
         }
 
         /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
+        /// Unit tests focusing on the fatal logging in the static logger.
         /// </summary>
-        [Fact]
-        public void Warn_With_Generic_Type_Should_Write_Message_And_Type()
+        public class FatalStaticLoggerTests : BaseStaticLoggerTests
         {
-            var textLogger = new TextLogger { Level = LogLevel.Debug };
-            var logger = GetLogger(textLogger);
+            /// <inheritdoc/>
+            protected override LogLevel GetLogLevel()
+            {
+                return LogLevel.Fatal;
+            }
 
-            logger.Warn<DummyObjectClass1>("This is a test.");
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, string> GetMethodWithGenericTypeShouldWriteMessageAndType<T>()
+            {
+                return (logger, message) => logger.Fatal<T>(message);
+            }
 
-            Assert.Equal($"This is a test. ({nameof(Warn_With_Generic_Type_Should_Write_Message_And_Type)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, string> GetMethodToWriteMessage()
+            {
+                return (logger, s) => logger.Fatal(s);
+            }
+
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, CultureInfo, string, string> GetMethodToWriteMessageWithInvariantCulture()
+            {
+                return (logger, formatProvider, message, arg1) => logger.Fatal(formatProvider, message, arg1);
+            }
+
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, Exception, string> GetMethodToWriteExceptionAndMessage()
+            {
+                return (logger, exception, message) => logger.Fatal(exception, message);
+            }
         }
 
         /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
+        /// Base tests for the static logger.
         /// </summary>
-        [Fact]
-        public void Warn_With_Generic_Type_Should_Write_Message_And_Type_Provided()
+        public abstract class BaseStaticLoggerTests
         {
-            var textLogger = new TextLogger();
-            var logger = GetLogger(textLogger);
+            /// <summary>
+            /// Test to make sure the generic type parameter is passed to the logger.
+            /// </summary>
+            [Fact]
+            public void Method_With_Generic_Type_Should_Write_Message_And_Type()
+            {
+                var textLogger = new TextLogger { Level = GetLogLevel() };
+                var logger = GetLogger(textLogger);
 
-            logger.Warn<DummyObjectClass2>("This is a test.");
+                GetMethodWithGenericTypeShouldWriteMessageAndType<DummyObjectClass1>()(logger, "This is a test.");
 
-            Assert.Equal($"This is a test. ({nameof(Warn_With_Generic_Type_Should_Write_Message_And_Type_Provided)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
-        }
+                Assert.Equal($"This is a test. ({nameof(GetMethodWithGenericTypeShouldWriteMessageAndType)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+            }
 
-        /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
-        /// </summary>
-        [Fact]
-        public void Error_With_Generic_Type_Should_Write_Message_And_Type()
-        {
-            var textLogger = new TextLogger();
-            var logger = GetLogger(textLogger);
+            /// <summary>
+            /// Test to make sure the generic type parameter is passed to the logger.
+            /// </summary>
+            [Fact]
+            public void Method_With_Generic_Type_Should_Write_Message_And_Type_Provided()
+            {
+                var textLogger = new TextLogger { Level = GetLogLevel() };
+                var logger = GetLogger(textLogger);
 
-            logger.Error<DummyObjectClass1>("This is a test.");
+                GetMethodWithGenericTypeShouldWriteMessageAndType<DummyObjectClass2>()(logger, "This is a test.");
 
-            Assert.Equal($"This is a test. ({nameof(Error_With_Generic_Type_Should_Write_Message_And_Type)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
-        }
+                Assert.Equal($"This is a test. ({nameof(GetMethodWithGenericTypeShouldWriteMessageAndType)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+            }
 
-        /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
-        /// </summary>
-        [Fact]
-        public void Error_With_Generic_Type_Should_Write_Message_And_Type_Provided()
-        {
-            var textLogger = new TextLogger();
-            var logger = GetLogger(textLogger);
+            /// <summary>
+            /// Test to ensure debug writes.
+            /// </summary>
+            [Fact]
+            public void Method_Writes_Message()
+            {
+                Test_Write_Message(logger => GetMethodToWriteMessage()(logger, "Message"));
+            }
 
-            logger.Error<DummyObjectClass2>("This is a test.");
+            /// <summary>
+            /// Test to ensure fatal writes.
+            /// </summary>
+            [Fact]
+            public void Method_Writes_Message_InvariantCulture()
+            {
+                Test_Write_Message(logger => GetMethodToWriteMessageWithInvariantCulture()(logger, CultureInfo.InvariantCulture, "{0}", "Message"));
+            }
 
-            Assert.Equal($"This is a test. ({nameof(Error_With_Generic_Type_Should_Write_Message_And_Type_Provided)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
-        }
+            /// <summary>
+            /// Test to ensure debug writes.
+            /// </summary>
+            [Fact]
+            public void Method_Writes_Exception_And_Message()
+            {
+                var staticLogger = GetLogger(GetLogLevel());
+                GetMethodToWriteExceptionAndMessage()(staticLogger, new ArgumentException("TEST"), "Message");
+            }
 
-        /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
-        /// </summary>
-        [Fact]
-        public void Fatal_With_Generic_Type_Should_Write_Message_And_Type()
-        {
-            var textLogger = new TextLogger();
-            var logger = GetLogger(textLogger);
+            /// <summary>
+            /// Test to make sure the message writes.
+            /// </summary>
+            [Fact]
+            public void Logger_Level_AtBoundary_Should_Be_correct()
+            {
+                var level = GetLogLevel();
+                var logger = GetLogger(level);
 
-            logger.Fatal<DummyObjectClass1>("This is a test.");
+                Assert.Equal(level, logger.Level);
+            }
 
-            Assert.Equal($"This is a test. ({nameof(Fatal_With_Generic_Type_Should_Write_Message_And_Type)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
-        }
+            /// <summary>
+            /// Gets the logger action for Write with a generic type.
+            /// </summary>
+            /// <typeparam name="T">The generic type to log.</typeparam>
+            /// <returns>Action to call.</returns>
+            protected abstract Action<StaticFullLogger, string> GetMethodWithGenericTypeShouldWriteMessageAndType<T>();
 
-        /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
-        /// </summary>
-        [Fact]
-        public void Fatal_With_Generic_Type_Should_Write_Message_And_Type_Provided()
-        {
-            var textLogger = new TextLogger();
-            var logger = GetLogger(textLogger);
+            /// <summary>
+            /// Gets the logger action for Writing a string message.
+            /// </summary>
+            /// <returns>Action to call.</returns>
+            protected abstract Action<StaticFullLogger, string> GetMethodToWriteMessage();
 
-            logger.Fatal<DummyObjectClass2>("This is a test.");
+            /// <summary>
+            /// Gets the logger action for Writing a string message.
+            /// </summary>
+            /// <returns>Action to call.</returns>
+            protected abstract Action<StaticFullLogger, CultureInfo, string, string> GetMethodToWriteMessageWithInvariantCulture();
 
-            Assert.Equal($"This is a test. ({nameof(Fatal_With_Generic_Type_Should_Write_Message_And_Type_Provided)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
-        }
+            /// <summary>
+            /// Gets the logger action for Writing an exception and string message.
+            /// </summary>
+            /// <returns>Action to call.</returns>
+            protected abstract Action<StaticFullLogger, Exception, string> GetMethodToWriteExceptionAndMessage();
 
-        /// <summary>
-        /// Test to ensure debug writes.
-        /// </summary>
-        [Fact]
-        public void Debug_Writes_Message()
-        {
-            Test_Write_Message(logger => logger.Debug(Message));
-        }
+            /// <summary>
+            /// Gets the log level boundary for the test.
+            /// </summary>
+            /// <returns>Log Level.</returns>
+            protected abstract Splat.LogLevel GetLogLevel();
 
-        /// <summary>
-        /// Test to ensure fatal writes.
-        /// </summary>
-        [Fact]
-        public void Debug_Writes_Message_InvariantCulture()
-        {
-            Test_Write_Message(logger => logger.Debug(CultureInfo.InvariantCulture, "{0}", "Message"));
-        }
+            private static StaticFullLogger GetLogger(TextLogger textLogger) => new StaticFullLogger(new WrappingFullLogger(textLogger));
 
-        /// <summary>
-        /// Test to ensure info writes.
-        /// </summary>
-        [Fact]
-        public void Info_Writes_Message()
-        {
-            Test_Write_Message(logger => logger.Info(Message));
-        }
+            private static StaticFullLogger GetLogger(LogLevel logLevel)
+            {
+                var textLogger = new TextLogger();
+                textLogger.Level = logLevel;
 
-        /// <summary>
-        /// Test to ensure fatal writes.
-        /// </summary>
-        [Fact]
-        public void Info_Writes_Message_InvariantCulture()
-        {
-            Test_Write_Message(logger => logger.Info(CultureInfo.InvariantCulture, "{0}", "Message"));
-        }
+                var wrappingFullLogger = new WrappingFullLogger(textLogger);
+                return new StaticFullLogger(wrappingFullLogger);
+            }
 
-        /// <summary>
-        /// Test to ensure warn writes.
-        /// </summary>
-        [Fact]
-        public void Warn_Writes_Message()
-        {
-            Test_Write_Message(logger => logger.Warn(Message));
-        }
+            private static void Test_Write_Message(Action<StaticFullLogger> testMethodFunc)
+            {
+                var textLogger = new TextLogger();
+                Assert.Equal(0, textLogger.Logs.Count);
+                var staticLogger = GetLogger(textLogger);
 
-        /// <summary>
-        /// Test to ensure fatal writes.
-        /// </summary>
-        [Fact]
-        public void Warn_Writes_Message_InvariantCulture()
-        {
-            Test_Write_Message(logger => logger.Warn(CultureInfo.InvariantCulture, "{0}", "Message"));
-        }
+                testMethodFunc(staticLogger);
+                Assert.Equal(1, textLogger.Logs.Count);
+                var line = textLogger.Logs.First();
 
-        /// <summary>
-        /// Test to ensure error writes.
-        /// </summary>
-        [Fact]
-        public void Error_Writes_Message()
-        {
-            Test_Write_Message(logger => logger.Error(Message));
-        }
+                var startOfCallerMemberSuffix = line.message.IndexOf("(", StringComparison.Ordinal);
+                Assert.True(startOfCallerMemberSuffix > 0);
 
-        /// <summary>
-        /// Test to ensure fatal writes.
-        /// </summary>
-        [Fact]
-        public void Error_Writes_Message_InvariantCulture()
-        {
-            Test_Write_Message(logger => logger.Error(CultureInfo.InvariantCulture, "{0}", "Message"));
-        }
-
-        /// <summary>
-        /// Test to ensure fatal writes.
-        /// </summary>
-        [Fact]
-        public void Fatal_Writes_Message()
-        {
-            Test_Write_Message(logger => logger.Fatal(Message));
-        }
-
-        /// <summary>
-        /// Test to ensure fatal writes.
-        /// </summary>
-        [Fact]
-        public void Fatal_Writes_Message_InvariantCulture()
-        {
-            Test_Write_Message(logger => logger.Fatal(CultureInfo.InvariantCulture, "{0}", "Message"));
-        }
-
-        /// <summary>
-        /// Test to make sure the message writes.
-        /// </summary>
-        [Fact]
-        public void Logger_Level_Debug_Should_Be_correct()
-        {
-            var logger = GetLogger(LogLevel.Debug);
-
-            Assert.Equal(LogLevel.Debug, logger.Level);
-        }
-
-        /// <summary>
-        /// Test to make sure the message writes.
-        /// </summary>
-        [Fact]
-        public void Logger_Level_Info_Should_Be_correct()
-        {
-            var logger = GetLogger(LogLevel.Info);
-
-            Assert.Equal(LogLevel.Info, logger.Level);
-        }
-
-        /// <summary>
-        /// Test to make sure the message writes.
-        /// </summary>
-        [Fact]
-        public void Logger_Level_Warn_Should_Be_correct()
-        {
-            var logger = GetLogger(LogLevel.Warn);
-
-            Assert.Equal(LogLevel.Warn, logger.Level);
-        }
-
-        /// <summary>
-        /// Test to make sure the message writes.
-        /// </summary>
-        [Fact]
-        public void Logger_Level_Error_Should_Be_correct()
-        {
-            var logger = GetLogger(LogLevel.Error);
-
-            Assert.Equal(LogLevel.Error, logger.Level);
-        }
-
-        /// <summary>
-        /// Test to make sure the message writes.
-        /// </summary>
-        [Fact]
-        public void Logger_Level_Fatal_Should_Be_correct()
-        {
-            var logger = GetLogger(LogLevel.Fatal);
-
-            Assert.Equal(LogLevel.Fatal, logger.Level);
-        }
-
-        private static void Test_Write_Message(Action<StaticFullLogger> testMethodFunc)
-        {
-            var textLogger = new TextLogger();
-            Assert.Equal(0, textLogger.Logs.Count);
-            var staticLogger = GetLogger(textLogger);
-
-            testMethodFunc(staticLogger);
-            Assert.Equal(1, textLogger.Logs.Count);
-            var line = textLogger.Logs.First();
-
-            var startOfCallerMemberSuffix = line.message.IndexOf("(", StringComparison.Ordinal);
-            Assert.True(startOfCallerMemberSuffix > 0);
-
-            var endOfCallerMemberSuffix = line.message.IndexOf(")", startOfCallerMemberSuffix, StringComparison.Ordinal);
-            Assert.True(endOfCallerMemberSuffix > startOfCallerMemberSuffix + 1);
-        }
-
-        private static StaticFullLogger GetLogger(TextLogger textLogger) => new StaticFullLogger(new WrappingFullLogger(textLogger));
-
-        private static StaticFullLogger GetLogger(LogLevel logLevel)
-        {
-            var textLogger = new TextLogger();
-            textLogger.Level = logLevel;
-
-            var wrappingFullLogger = new WrappingFullLogger(textLogger);
-            return new StaticFullLogger(wrappingFullLogger);
+                var endOfCallerMemberSuffix = line.message.IndexOf(")", startOfCallerMemberSuffix, StringComparison.Ordinal);
+                Assert.True(endOfCallerMemberSuffix > startOfCallerMemberSuffix + 1);
+            }
         }
     }
 }
