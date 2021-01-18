@@ -31,5 +31,30 @@ namespace Splat.ApplicationPerformanceMonitoring
 
             return featureUsageTrackingSession.GetFeatureUsageTrackingSession(featureName);
         }
+
+        /// <summary>
+        /// Helper for wrapping an action with a Feature Usage Tracking Sessions.
+        /// </summary>
+        /// <param name="instance">instance of class that uses IEnableFeatureUsageTracking.</param>
+        /// <param name="featureName">Name of the feature.</param>
+        /// <param name="action">Action to carry out.</param>
+        public static void WithFeatureUsageTrackingSession(
+            this IEnableFeatureUsageTracking instance,
+            string featureName,
+            Action<IFeatureUsageTrackingSession> action)
+        {
+            using (var session = instance.FeatureUsageTrackingSession(featureName))
+            {
+                try
+                {
+                    action(session);
+                }
+                catch (Exception exception)
+                {
+                    session.OnException(exception);
+                    throw;
+                }
+            }
+        }
     }
 }
