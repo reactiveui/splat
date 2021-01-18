@@ -33,7 +33,7 @@ namespace Splat.ApplicationPerformanceMonitoring
         }
 
         /// <summary>
-        /// Helper for wrapping an action with a Feature Usage Tracking Sessions.
+        /// Helper for wrapping an action with a Feature Usage Tracking Session.
         /// </summary>
         /// <param name="instance">instance of class that uses IEnableFeatureUsageTracking.</param>
         /// <param name="featureName">Name of the feature.</param>
@@ -44,6 +44,31 @@ namespace Splat.ApplicationPerformanceMonitoring
             Action<IFeatureUsageTrackingSession> action)
         {
             using (var session = instance.FeatureUsageTrackingSession(featureName))
+            {
+                try
+                {
+                    action(session);
+                }
+                catch (Exception exception)
+                {
+                    session.OnException(exception);
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Helper for wrapping an action with a SubFeature Usage Tracking Session.
+        /// </summary>
+        /// <param name="instance">instance of class that uses IEnableFeatureUsageTracking.</param>
+        /// <param name="featureName">Name of the feature.</param>
+        /// <param name="action">Action to carry out.</param>
+        public static void WithSubFeatureUsageTrackingSession(
+            this IFeatureUsageTrackingSession instance,
+            string featureName,
+            Action<IFeatureUsageTrackingSession> action)
+        {
+            using (var session = instance.SubFeature(featureName))
             {
                 try
                 {
