@@ -424,35 +424,30 @@ namespace Splat
         void Debug([System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Debug(System.Exception exception, [System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Debug<T>([System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
-        void Debug<T>(T value, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Debug<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument argument, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Debug<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Debug<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Error([System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Error(System.Exception exception, [System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Error<T>([System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
-        void Error<T>(T value, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Error<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument argument, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Error<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Error<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Fatal([System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Fatal(System.Exception exception, [System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Fatal<T>([System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
-        void Fatal<T>(T value, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Fatal<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument argument, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Fatal<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Fatal<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Info([System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Info(System.Exception exception, [System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Info<T>([System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
-        void Info<T>(T value, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Info<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument argument, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Info<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Info<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Warn([System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Warn(System.Exception exception, [System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Warn<T>([System.ComponentModel.Localizable(false)] string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
-        void Warn<T>(T value, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Warn<TArgument>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument argument, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Warn<TArgument1, TArgument2>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
         void Warn<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, [System.ComponentModel.Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null);
@@ -585,35 +580,30 @@ namespace Splat
         public void Debug(string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Debug(System.Exception exception, string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Debug<T>(string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
-        public void Debug<T>(T value, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Debug<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Debug<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Debug<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Error(string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Error(System.Exception exception, string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Error<T>(string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
-        public void Error<T>(T value, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Error<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Error<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Error<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Fatal(string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Fatal(System.Exception exception, string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Fatal<T>(string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
-        public void Fatal<T>(T value, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Fatal<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Fatal<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Fatal<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Info(string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Info(System.Exception exception, string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Info<T>(string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
-        public void Info<T>(T value, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Info<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Info<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Info<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Warn(string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Warn(System.Exception exception, string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Warn<T>(string message, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
-        public void Warn<T>(T value, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Warn<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Warn<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
         public void Warn<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [System.Runtime.CompilerServices.CallerMemberName] string callerMemberName = null) { }
@@ -728,6 +718,8 @@ namespace Splat.ApplicationPerformanceMonitoring
     public static class EnableFeatureUsageTrackingExtensions
     {
         public static Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession FeatureUsageTrackingSession(this Splat.ApplicationPerformanceMonitoring.IEnableFeatureUsageTracking instance, string featureName) { }
+        public static void WithFeatureUsageTrackingSession(this Splat.ApplicationPerformanceMonitoring.IEnableFeatureUsageTracking instance, string featureName, System.Action<Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession> action) { }
+        public static void WithSubFeatureUsageTrackingSession(this Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession instance, string featureName, System.Action<Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession> action) { }
     }
     public class FuncFeatureUsageTrackingManager : Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingManager
     {

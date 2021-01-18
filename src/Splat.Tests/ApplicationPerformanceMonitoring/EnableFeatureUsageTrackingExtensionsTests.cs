@@ -100,5 +100,49 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring
                 }
             }
         }
+
+        /// <summary>
+        /// Unit tests for the WithFeatureUsageTrackingSession Method.
+        /// </summary>
+        public sealed class WithFeatureUsageTrackingSessionMethod
+        {
+            /// <summary>
+            /// Test to ensure a default feature usage tracking session is set up.
+            /// </summary>
+            [Fact]
+            public void HandlesAction()
+            {
+                var instance = new TestObjectThatSupportsFeatureUsageTracking();
+                var handled = false;
+
+                instance.WithFeatureUsageTrackingSession(
+                    "FeatureName",
+                    _ => handled = true);
+
+                Assert.True(handled);
+            }
+        }
+
+        /// <summary>
+        /// Unit tests for the WithSubFeatureUsageTrackingSession Method.
+        /// </summary>
+        public sealed class WithSubFeatureUsageTrackingSessionMethod
+        {
+            /// <summary>
+            /// Test to ensure a default feature usage tracking session is set up.
+            /// </summary>
+            [Fact]
+            public void HandlesAction()
+            {
+                var instance = new TestObjectThatSupportsFeatureUsageTracking();
+                var handled = false;
+
+                instance.WithFeatureUsageTrackingSession(
+                    "FeatureName",
+                    session => session.WithSubFeatureUsageTrackingSession("SubFeature", _ => handled = true));
+
+                Assert.True(handled);
+            }
+        }
     }
 }
