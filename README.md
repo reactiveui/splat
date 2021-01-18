@@ -109,7 +109,7 @@ being used.
 | [Splat.DryIoc][SplatDryIocNuGet] | [![SplatDryIocBadge]][SplatDryIocNuGet] | [Setup DryIoc][SplatDryIocReadme]
 | [Splat.Microsoft.Extensions.DependencyInjection][SplatMicrosoftNuGet] | [![SplatMicrosoftBadge]][SplatMicrosoftNuGet] | [Setup Microsoft DI][SplatMicrosoftReadme]
 | [Splat.Ninject][SplatNinjectNuGet] | [![SplatNinjectBadge]][SplatNinjectNuGet] | [Setup Ninject][SplatNinjectReadme]
-| [Splat.SimpleInjector][SplatSimpleInjectorNuGet] | [![SplatSimpleInjectorBadge]][SplatSimpleInjectorNuGet] | |
+| [Splat.SimpleInjector][SplatSimpleInjectorNuGet] | [![SplatSimpleInjectorBadge]][SplatSimpleInjectorNuGet] | [Setup Simple Injector][SplatSimpleInjectorReadme] |
 
 [SplatAutofacNuGet]: https://www.nuget.org/packages/Splat.Autofac/
 [SplatAutofacBadge]: https://img.shields.io/nuget/v/Splat.Autofac.svg
@@ -125,6 +125,7 @@ being used.
 [SplatNinjectReadme]: ./src/Splat.Ninject/README.md
 [SplatSimpleInjectorNuGet]: https://www.nuget.org/packages/Splat.SimpleInjector/
 [SplatSimpleInjectorBadge]: https://img.shields.io/nuget/v/Splat.SimpleInjector.svg
+[SplatSimpleInjectorReadme]: ./src/Splat.SimpleInjector/README.md
 
 ## Logging
 
