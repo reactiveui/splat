@@ -51,6 +51,18 @@ namespace Splat.Tests.Logging
             {
                 return (logger, exception, message) => logger.Debug(exception, message);
             }
+
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, CultureInfo, string, string, int> GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs()
+            {
+                return (logger, formatProvider, message, arg1, arg2) => logger.Debug(formatProvider, message, arg1, arg2);
+            }
+
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, CultureInfo, string, string, int, float> GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs()
+            {
+                return (logger, formatProvider, message, arg1, arg2, arg3) => logger.Debug(formatProvider, message, arg1, arg2, arg3);
+            }
         }
 
         /// <summary>
@@ -86,6 +98,18 @@ namespace Splat.Tests.Logging
             protected override Action<StaticFullLogger, Exception, string> GetMethodToWriteExceptionAndMessage()
             {
                 return (logger, exception, message) => logger.Info(exception, message);
+            }
+
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, CultureInfo, string, string, int> GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs()
+            {
+                return (logger, formatProvider, message, arg1, arg2) => logger.Info(formatProvider, message, arg1, arg2);
+            }
+
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, CultureInfo, string, string, int, float> GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs()
+            {
+                return (logger, formatProvider, message, arg1, arg2, arg3) => logger.Info(formatProvider, message, arg1, arg2, arg3);
             }
         }
 
@@ -123,6 +147,18 @@ namespace Splat.Tests.Logging
             {
                 return (logger, exception, message) => logger.Warn(exception, message);
             }
+
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, CultureInfo, string, string, int> GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs()
+            {
+                return (logger, formatProvider, message, arg1, arg2) => logger.Warn(formatProvider, message, arg1, arg2);
+            }
+
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, CultureInfo, string, string, int, float> GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs()
+            {
+                return (logger, formatProvider, message, arg1, arg2, arg3) => logger.Warn(formatProvider, message, arg1, arg2, arg3);
+            }
         }
 
         /// <summary>
@@ -159,6 +195,18 @@ namespace Splat.Tests.Logging
             {
                 return (logger, exception, message) => logger.Error(exception, message);
             }
+
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, CultureInfo, string, string, int> GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs()
+            {
+                return (logger, formatProvider, message, arg1, arg2) => logger.Error(formatProvider, message, arg1, arg2);
+            }
+
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, CultureInfo, string, string, int, float> GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs()
+            {
+                return (logger, formatProvider, message, arg1, arg2, arg3) => logger.Error(formatProvider, message, arg1, arg2, arg3);
+            }
         }
 
         /// <summary>
@@ -194,6 +242,18 @@ namespace Splat.Tests.Logging
             protected override Action<StaticFullLogger, Exception, string> GetMethodToWriteExceptionAndMessage()
             {
                 return (logger, exception, message) => logger.Fatal(exception, message);
+            }
+
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, CultureInfo, string, string, int> GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs()
+            {
+                return (logger, formatProvider, message, arg1, arg2) => logger.Fatal(formatProvider, message, arg1, arg2);
+            }
+
+            /// <inheritdoc/>
+            protected override Action<StaticFullLogger, CultureInfo, string, string, int, float> GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs()
+            {
+                return (logger, formatProvider, message, arg1, arg2, arg3) => logger.Fatal(formatProvider, message, arg1, arg2, arg3);
             }
         }
 
@@ -240,12 +300,30 @@ namespace Splat.Tests.Logging
             }
 
             /// <summary>
-            /// Test to ensure fatal writes.
+            /// Test to ensure invariant culture formatted string writes.
             /// </summary>
             [Fact]
             public void Method_Writes_Message_InvariantCulture()
             {
                 Test_Write_Message(logger => GetMethodToWriteMessageWithInvariantCulture()(logger, CultureInfo.InvariantCulture, "{0}", "Message"));
+            }
+
+            /// <summary>
+            /// Test to ensure invariant culture formatted string writes.
+            /// </summary>
+            [Fact]
+            public void Method_Writes_Message_InvariantCulture_With_Generic_Two_Args()
+            {
+                Test_Write_Message(logger => GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs()(logger, CultureInfo.InvariantCulture, "{0}", "Message", 1));
+            }
+
+            /// <summary>
+            /// Test to ensure invariant culture formatted string writes.
+            /// </summary>
+            [Fact]
+            public void Method_Writes_Message_InvariantCulture_With_Generic_Three_Args()
+            {
+                Test_Write_Message(logger => GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs()(logger, CultureInfo.InvariantCulture, "{0}", "Message", 1, 2.3f));
             }
 
             /// <summary>
@@ -288,6 +366,18 @@ namespace Splat.Tests.Logging
             /// </summary>
             /// <returns>Action to call.</returns>
             protected abstract Action<StaticFullLogger, CultureInfo, string, string> GetMethodToWriteMessageWithInvariantCulture();
+
+            /// <summary>
+            /// Gets the logger action for Writing a string message.
+            /// </summary>
+            /// <returns>Action to call.</returns>
+            protected abstract Action<StaticFullLogger, CultureInfo, string, string, int> GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs();
+
+            /// <summary>
+            /// Gets the logger action for Writing a string message.
+            /// </summary>
+            /// <returns>Action to call.</returns>
+            protected abstract Action<StaticFullLogger, CultureInfo, string, string, int, float> GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs();
 
             /// <summary>
             /// Gets the logger action for Writing an exception and string message.
