@@ -337,6 +337,48 @@ namespace Splat.Tests.Logging
             }
 
             /// <summary>
+            /// Test to ensure writes method works.
+            /// </summary>
+            [Fact]
+            public void Direct_Write_At_Level_Message()
+            {
+                var staticLogger = GetLogger(GetLogLevel());
+                staticLogger.Write("Message", GetLogLevel());
+            }
+
+            /// <summary>
+            /// Test to ensure writes method works.
+            /// </summary>
+            [Fact]
+            public void Direct_Write_At_Level_Message_And_Type()
+            {
+                var staticLogger = GetLogger(GetLogLevel());
+                staticLogger.Write("Message", typeof(DummyObjectClass1), GetLogLevel());
+            }
+
+            /// <summary>
+            /// Test to ensure writes method works.
+            /// </summary>
+            [Fact]
+            public void Direct_Write_At_Level_Message_And_Exception()
+            {
+                var staticLogger = GetLogger(GetLogLevel());
+                var exception = new InvalidOperationException("bleh");
+                staticLogger.Write(exception, "Message", GetLogLevel());
+            }
+
+            /// <summary>
+            /// Test to ensure writes method works.
+            /// </summary>
+            [Fact]
+            public void Direct_Write_At_Level_Message_Exception_And_Type()
+            {
+                var staticLogger = GetLogger(GetLogLevel());
+                var exception = new InvalidOperationException("bleh");
+                staticLogger.Write(exception, "Message", typeof(DummyObjectClass1), GetLogLevel());
+            }
+
+            /// <summary>
             /// Test to make sure the message writes.
             /// </summary>
             [Fact]
