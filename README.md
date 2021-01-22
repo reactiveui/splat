@@ -144,7 +144,10 @@ this.Log().ErrorException("Tried to do a thing and failed", exception);
 ```
 
 For static methods, `LogHost.Default` can be used as the object to write a log
-entry for. 
+entry for. The Static logger uses a different interface from the main logger to allow capture of additional
+caller context as it doesn't have the details of the class instance etc. when compared to the normal logger.
+To get the benefit of these you don't need to do much as they are optional parameters at the end of the methods
+that are utilised by the compiler\framework. Currently we only capture [CallerMemberName](https://docs.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.callermembernameattribute).
 
 ### Available logging adapters
 

@@ -17,17 +17,27 @@ namespace Splat
         /// Gets the default <see cref="IFullLogger"/> registered within the <see cref="Locator"/>.
         /// </summary>
         [SuppressMessage("Design", "CA1065: Do not raise exceptions in properties", Justification = "Very rare scenario")]
-        public static IFullLogger Default
+        public static IStaticFullLogger Default
         {
             get
             {
+                /*
+                 * DV - this will need an extension of the dependency resolver.
+                 * RegisterLazy(Func<IReadOnlyDependencyResolver, object> factory);
+                 * which will allow a lazy instance of the static logger.
+                 *
+                 * return Locator.Current.GetService<IStaticFullLogger>();
+                 */
+
                 var factory = Locator.Current.GetService<ILogManager>();
                 if (factory == null)
                 {
                     throw new LoggingException("ILogManager is null. This should never happen, your dependency resolver is broken");
                 }
 
-                return factory.GetLogger(typeof(LogHost));
+                var fullLogger = factory.GetLogger(typeof(LogHost));
+
+                return new StaticFullLogger(fullLogger);
             }
         }
 
