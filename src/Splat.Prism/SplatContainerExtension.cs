@@ -36,6 +36,17 @@ namespace Splat.Prism
         public IDependencyResolver Instance { get; } = new ModernDependencyResolver();
 
         /// <inheritdoc/>
+#pragma warning disable CA1065 // Do not raise exceptions in unexpected locations
+        public IScopedProvider CurrentScope => throw new NotImplementedException();
+#pragma warning restore CA1065 // Do not raise exceptions in unexpected locations
+
+        /// <inheritdoc/>
+        public IScopedProvider CreateScope()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
         public void Dispose()
         {
             Dispose(true);
@@ -48,6 +59,12 @@ namespace Splat.Prism
         }
 
         /// <inheritdoc/>
+        public IContainerRegistry RegisterScoped(Type type, Func<IContainerProvider, object> factoryMethod)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
         public bool IsRegistered(Type type)
         {
             return Instance.HasRegistration(type);
@@ -57,6 +74,12 @@ namespace Splat.Prism
         public bool IsRegistered(Type type, string name)
         {
             return Instance.HasRegistration(type, name);
+        }
+
+        /// <inheritdoc/>
+        public IContainerRegistry RegisterManySingleton(Type type, params Type[] serviceTypes)
+        {
+            throw new NotImplementedException();
         }
 
         /// <inheritdoc/>
@@ -87,6 +110,43 @@ namespace Splat.Prism
             _types[(from, name)] = to;
             Instance.Register(() => Activator.CreateInstance(to), from, name);
             return this;
+        }
+
+        /// <inheritdoc/>
+        public IContainerRegistry Register(Type type, Func<object> factoryMethod)
+        {
+            Instance.Register(factoryMethod, type);
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IContainerRegistry Register(Type type, Func<IContainerProvider, object> factoryMethod)
+        {
+            Instance.Register(() => factoryMethod(this), type);
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IContainerRegistry RegisterMany(Type type, params Type[] serviceTypes)
+        {
+            foreach (Type serviceType in serviceTypes)
+            {
+                Instance.Register(() => Activator.CreateInstance(type), serviceType);
+            }
+
+            return this;
+        }
+
+        /// <inheritdoc/>
+        public IContainerRegistry RegisterScoped(Type @from, Type to)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        public IContainerRegistry RegisterScoped(Type type, Func<object> factoryMethod)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -161,6 +221,18 @@ namespace Splat.Prism
             _types[(from, null)] = to;
             Instance.RegisterLazySingleton(() => Activator.CreateInstance(to), from, name);
             return this;
+        }
+
+        /// <inheritdoc/>
+        public IContainerRegistry RegisterSingleton(Type type, Func<object> factoryMethod)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        public IContainerRegistry RegisterSingleton(Type type, Func<IContainerProvider, object> factoryMethod)
+        {
+            throw new NotImplementedException();
         }
 
         /// <inheritdoc/>
