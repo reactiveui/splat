@@ -43,7 +43,7 @@ namespace Splat.Prism
         /// <inheritdoc/>
         public IScopedProvider CreateScope()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         /// <inheritdoc/>
@@ -61,7 +61,7 @@ namespace Splat.Prism
         /// <inheritdoc/>
         public IContainerRegistry RegisterScoped(Type type, Func<IContainerProvider, object> factoryMethod)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         /// <inheritdoc/>
@@ -79,7 +79,7 @@ namespace Splat.Prism
         /// <inheritdoc/>
         public IContainerRegistry RegisterManySingleton(Type type, params Type[] serviceTypes)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         /// <inheritdoc/>
@@ -140,13 +140,13 @@ namespace Splat.Prism
         /// <inheritdoc/>
         public IContainerRegistry RegisterScoped(Type @from, Type to)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         /// <inheritdoc/>
         public IContainerRegistry RegisterScoped(Type type, Func<object> factoryMethod)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -226,13 +226,13 @@ namespace Splat.Prism
         /// <inheritdoc/>
         public IContainerRegistry RegisterSingleton(Type type, Func<object> factoryMethod)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         /// <inheritdoc/>
         public IContainerRegistry RegisterSingleton(Type type, Func<IContainerProvider, object> factoryMethod)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         /// <inheritdoc/>

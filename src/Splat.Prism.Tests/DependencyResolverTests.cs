@@ -25,7 +25,7 @@ namespace Splat.Prism.Tests
         public void CreateScope_Throws_NotImplementedException()
         {
             using var container = new SplatContainerExtension();
-            Assert.Throws<NotImplementedException>(() => container.CreateScope());
+            Assert.Throws<NotSupportedException>(() => container.CreateScope());
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Splat.Prism.Tests
         public void RegisterScoped_Throws_NotImplementedException()
         {
             using var container = new SplatContainerExtension();
-            Assert.Throws<NotImplementedException>(() => container.RegisterScoped(
+            Assert.Throws<NotSupportedException>(() => container.RegisterScoped(
                 typeof(IViewFor<ViewModelOne>),
                 () => new ViewOne()));
         }
@@ -47,7 +47,7 @@ namespace Splat.Prism.Tests
         public void RegisterManySingleton_Throws_NotImplementedException()
         {
             using var container = new SplatContainerExtension();
-            Assert.Throws<NotImplementedException>(() => container.RegisterManySingleton(
+            Assert.Throws<NotSupportedException>(() => container.RegisterManySingleton(
                 typeof(IViewFor<ViewModelOne>),
                 typeof(ViewOne)));
         }
