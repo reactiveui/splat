@@ -19,6 +19,108 @@ namespace Splat.Prism.Tests
     public class DependencyResolverTests
     {
         /// <summary>
+        /// Tracks CreateScope not being implemented in case it's changed in future.
+        /// </summary>
+        [Fact]
+        public void CreateScope_Throws_NotImplementedException()
+        {
+            using var container = new SplatContainerExtension();
+            Assert.Throws<NotSupportedException>(() => container.CreateScope());
+        }
+
+        /// <summary>
+        /// Tracks RegisterScoped not being implemented in case it's changed in future.
+        /// </summary>
+        [Fact]
+        public void RegisterScoped_Throws_NotImplementedException()
+        {
+            using var container = new SplatContainerExtension();
+            Assert.Throws<NotSupportedException>(() => container.RegisterScoped(
+                typeof(IViewFor<ViewModelOne>),
+                () => new ViewOne()));
+        }
+
+        /// <summary>
+        /// Tracks RegisterManySingleton not being implemented in case it's changed in future.
+        /// </summary>
+        [Fact]
+        public void RegisterManySingleton_Throws_NotImplementedException()
+        {
+            using var container = new SplatContainerExtension();
+            Assert.Throws<NotSupportedException>(() => container.RegisterManySingleton(
+                typeof(IViewFor<ViewModelOne>),
+                typeof(ViewOne)));
+        }
+
+        /// <summary>
+        /// Test to ensure register many succeeds.
+        /// </summary>
+        [Fact]
+        public void RegisterMany_Succeeds()
+        {
+            using var container = new SplatContainerExtension();
+            container.RegisterMany(
+                typeof(IViewFor<ViewModelOne>),
+                typeof(ViewOne));
+        }
+
+        /// <summary>
+        /// Test to ensure a simple resolve succeeds.
+        /// </summary>
+        [Fact]
+        public void Resolve_Succeeds()
+        {
+            using var container = new SplatContainerExtension();
+            container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne));
+
+            var instance = container.Resolve(typeof(IViewFor<ViewModelOne>));
+
+            Assert.NotNull(instance);
+        }
+
+        /// <summary>
+        /// Test to ensure a resolve with name succeeds.
+        /// </summary>
+        [Fact]
+        public void Resolve_With_Name_Succeeds()
+        {
+            using var container = new SplatContainerExtension();
+            container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne), "name");
+
+            var instance = container.Resolve(typeof(IViewFor<ViewModelOne>), "name");
+
+            Assert.NotNull(instance);
+        }
+
+        /// <summary>
+        /// Test to ensure a simple is registered check succeeds.
+        /// </summary>
+        [Fact]
+        public void IsRegistered_Returns_True()
+        {
+            using var container = new SplatContainerExtension();
+            container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne));
+
+            var instance = container.IsRegistered(typeof(IViewFor<ViewModelOne>));
+
+            Assert.True(instance);
+        }
+
+        /// <summary>
+        /// Test to ensure a simple is registered check succeeds.
+        /// </summary>
+        [Fact]
+        public void IsRegistered_With_Name_Returns_True()
+        {
+            using var container = new SplatContainerExtension();
+            container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne), "name");
+
+            var instance = container.IsRegistered(typeof(IViewFor<ViewModelOne>), "name");
+
+            Assert.True(instance);
+        }
+
+        /// <summary>
         /// Should resolve the views.
         /// </summary>
         [Fact]
