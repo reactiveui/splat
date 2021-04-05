@@ -8,6 +8,7 @@ namespace Splat
     /// <summary>
     /// Represents the minimum log level a <see cref="ILogger"/> will start emitting from.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1008:Enums should have zero value", Justification = "Deliberate none zero value.")]
     public enum LogLevel
     {
         /// <summary>

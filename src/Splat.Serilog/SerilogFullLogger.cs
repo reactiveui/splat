@@ -112,9 +112,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Debug<TArgument>([Localizable(false)] string message, TArgument argument)
+        public void Debug<TArgument>([Localizable(false)] string message, TArgument args)
         {
-            _logger.Debug(message, argument);
+            _logger.Debug(message, args);
         }
 
         /// <inheritdoc />
@@ -124,9 +124,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Debug<TArgument1, TArgument2>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2)
+        public void Debug<TArgument1, TArgument2>([Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2)
         {
-            _logger.Debug(message, argument1, argument2);
+            _logger.Debug(messageFormat, argument1, argument2);
         }
 
         /// <inheritdoc />
@@ -136,9 +136,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Debug<TArgument1, TArgument2, TArgument3>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
+        public void Debug<TArgument1, TArgument2, TArgument3>([Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
         {
-            _logger.Debug(message, argument1, argument2, argument3);
+            _logger.Debug(messageFormat, argument1, argument2, argument3);
         }
 
         /// <inheritdoc />
@@ -250,9 +250,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Error<TArgument>([Localizable(false)] string message, TArgument argument)
+        public void Error<TArgument>([Localizable(false)] string message, TArgument args)
         {
-            _logger.Error(message, argument);
+            _logger.Error(message, args);
         }
 
         /// <inheritdoc />
@@ -262,9 +262,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Error<TArgument1, TArgument2>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2)
+        public void Error<TArgument1, TArgument2>([Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2)
         {
-            _logger.Error(message, argument1, argument2);
+            _logger.Error(messageFormat, argument1, argument2);
         }
 
         /// <inheritdoc />
@@ -274,9 +274,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Error<TArgument1, TArgument2, TArgument3>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
+        public void Error<TArgument1, TArgument2, TArgument3>([Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
         {
-            _logger.Error(message, argument1, argument2, argument3);
+            _logger.Error(messageFormat, argument1, argument2, argument3);
         }
 
         /// <inheritdoc />
@@ -382,9 +382,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Fatal<TArgument>([Localizable(false)] string message, TArgument argument)
+        public void Fatal<TArgument>([Localizable(false)] string message, TArgument args)
         {
-            _logger.Fatal(message, argument);
+            _logger.Fatal(message, args);
         }
 
         /// <inheritdoc />
@@ -394,9 +394,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Fatal<TArgument1, TArgument2>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2)
+        public void Fatal<TArgument1, TArgument2>([Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2)
         {
-            _logger.Fatal(message, argument1, argument2);
+            _logger.Fatal(messageFormat, argument1, argument2);
         }
 
         /// <inheritdoc />
@@ -406,9 +406,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Fatal<TArgument1, TArgument2, TArgument3>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
+        public void Fatal<TArgument1, TArgument2, TArgument3>([Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
         {
-            _logger.Fatal(message, argument1, argument2, argument3);
+            _logger.Fatal(messageFormat, argument1, argument2, argument3);
         }
 
         /// <inheritdoc />
@@ -514,9 +514,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Info<TArgument>([Localizable(false)] string message, TArgument argument)
+        public void Info<TArgument>([Localizable(false)] string message, TArgument args)
         {
-            _logger.Information(message, argument);
+            _logger.Information(message, args);
         }
 
         /// <inheritdoc />
@@ -526,9 +526,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Info<TArgument1, TArgument2>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2)
+        public void Info<TArgument1, TArgument2>([Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2)
         {
-            _logger.Information(message, argument1, argument2);
+            _logger.Information(messageFormat, argument1, argument2);
         }
 
         /// <inheritdoc />
@@ -538,9 +538,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Info<TArgument1, TArgument2, TArgument3>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
+        public void Info<TArgument1, TArgument2, TArgument3>([Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
         {
-            _logger.Information(message, argument1, argument2, argument3);
+            _logger.Information(messageFormat, argument1, argument2, argument3);
         }
 
         /// <inheritdoc />
@@ -646,9 +646,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Warn<TArgument>([Localizable(false)] string message, TArgument argument)
+        public void Warn<TArgument>([Localizable(false)] string message, TArgument args)
         {
-            _logger.Warning(message, argument);
+            _logger.Warning(message, args);
         }
 
         /// <inheritdoc />
@@ -658,9 +658,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Warn<TArgument1, TArgument2>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2)
+        public void Warn<TArgument1, TArgument2>([Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2)
         {
-            _logger.Warning(message, argument1, argument2);
+            _logger.Warning(messageFormat, argument1, argument2);
         }
 
         /// <inheritdoc />
@@ -670,9 +670,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Warn<TArgument1, TArgument2, TArgument3>([Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
+        public void Warn<TArgument1, TArgument2, TArgument3>([Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
         {
-            _logger.Warning(message, argument1, argument2, argument3);
+            _logger.Warning(messageFormat, argument1, argument2, argument3);
         }
 
         /// <inheritdoc />

@@ -13,8 +13,6 @@ namespace Splat.Tests.Logging
     [ExcludeFromCodeCoverage]
     public sealed class StaticLoggerTests
     {
-        private const string Message = "Message";
-
         private static char[] NewLine => Environment.NewLine.ToCharArray();
 
         /// <summary>

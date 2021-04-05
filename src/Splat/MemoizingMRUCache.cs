@@ -203,7 +203,6 @@ namespace Splat
         /// Flag to indicate whether Exceptions during the resource Release call should not fail on the first item.
         /// But should try all items then throw an aggregate exception.
         /// </param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Exception passed to exceptions list.")]
         public void InvalidateAll(bool aggregateReleaseExceptions = false)
         {
             Dictionary<TParam, (LinkedListNode<TParam> param, TVal value)> oldCacheToClear = null;
@@ -223,11 +222,8 @@ namespace Splat
 
                 // by moving to a temp variable
                 // can free up the lock quicker for other calls to MRU
-                if (_releaseFunction != null)
-                {
-                    // no point doing it, if nothing to release
-                    oldCacheToClear = _cacheEntries;
-                }
+                // no point doing it, if nothing to release
+                oldCacheToClear = _cacheEntries;
 
                 _cacheMRUList = new LinkedList<TParam>();
                 _cacheEntries = new Dictionary<TParam, (LinkedListNode<TParam> param, TVal value)>(_comparer);

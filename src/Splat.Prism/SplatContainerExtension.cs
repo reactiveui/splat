@@ -129,6 +129,11 @@ namespace Splat.Prism
         /// <inheritdoc/>
         public IContainerRegistry RegisterMany(Type type, params Type[] serviceTypes)
         {
+            if (serviceTypes is null)
+            {
+                return this;
+            }
+
             foreach (Type serviceType in serviceTypes)
             {
                 Instance.Register(() => Activator.CreateInstance(type), serviceType);

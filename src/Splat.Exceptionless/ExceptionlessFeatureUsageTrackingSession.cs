@@ -58,10 +58,10 @@ namespace Splat
         public string FeatureName { get; }
 
         /// <inheritdoc />
-        public IFeatureUsageTrackingSession SubFeature(string name)
+        public IFeatureUsageTrackingSession SubFeature(string description)
         {
             return new ExceptionlessFeatureUsageTrackingSession(
-                name,
+                description,
                 FeatureReference);
         }
 

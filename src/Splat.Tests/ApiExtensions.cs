@@ -53,7 +53,7 @@ namespace Splat.Tests
             var generatorOptions = new ApiGeneratorOptions { WhitelistedNamespacePrefixes = new[] { "Splat" } };
             var receivedPublicApi = Filter(ApiGenerator.GeneratePublicApi(assembly, generatorOptions));
 
-            if (!string.Equals(receivedPublicApi, approvedPublicApi, StringComparison.InvariantCulture))
+            if (!string.Equals(receivedPublicApi, approvedPublicApi, StringComparison.Ordinal))
             {
                 File.WriteAllText(receivedFileName, receivedPublicApi);
                 DiffRunner.Launch(receivedFileName, approvedFileName);

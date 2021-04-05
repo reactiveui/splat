@@ -44,7 +44,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public Task<IBitmap> LoadFromResource(string resource, float? desiredWidth, float? desiredHeight)
+        public Task<IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
         {
             return Task.Run(() =>
             {
@@ -61,7 +61,7 @@ namespace Splat
                         x.DecodePixelHeight = (int)desiredHeight;
                     }
 
-                    x.UriSource = new Uri(resource, UriKind.RelativeOrAbsolute);
+                    x.UriSource = new Uri(source, UriKind.RelativeOrAbsolute);
                 });
 
                 return (IBitmap)new BitmapSourceBitmap(ret);

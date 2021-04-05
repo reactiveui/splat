@@ -94,15 +94,15 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc/>
-        public void Debug<TArgument>(string message, TArgument argument)
+        public void Debug<TArgument>(string message, TArgument args)
         {
-            _inner.Debug(CultureInfo.InvariantCulture, message, argument);
+            _inner.Debug(CultureInfo.InvariantCulture, message, args);
         }
 
         /// <inheritdoc/>
-        public void Debug<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
+        public void Debug<TArgument1, TArgument2>(string messageFormat, TArgument1 argument1, TArgument2 argument2)
         {
-            _inner.Debug(CultureInfo.InvariantCulture, message, argument1, argument2);
+            _inner.Debug(CultureInfo.InvariantCulture, messageFormat, argument1, argument2);
         }
 
         /// <inheritdoc/>
@@ -154,15 +154,15 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc/>
-        public void Info<TArgument>(string message, TArgument argument)
+        public void Info<TArgument>(string message, TArgument args)
         {
-            _inner.Info(CultureInfo.InvariantCulture, message, argument);
+            _inner.Info(CultureInfo.InvariantCulture, message, args);
         }
 
         /// <inheritdoc/>
-        public void Info<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
+        public void Info<TArgument1, TArgument2>(string messageFormat, TArgument1 argument1, TArgument2 argument2)
         {
-            _inner.Info(CultureInfo.InvariantCulture, message, argument1, argument2);
+            _inner.Info(CultureInfo.InvariantCulture, messageFormat, argument1, argument2);
         }
 
         /// <inheritdoc/>
@@ -214,15 +214,15 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc/>
-        public void Warn<TArgument>(string message, TArgument argument)
+        public void Warn<TArgument>(string message, TArgument args)
         {
-            _inner.Warn(CultureInfo.InvariantCulture, message, argument);
+            _inner.Warn(CultureInfo.InvariantCulture, message, args);
         }
 
         /// <inheritdoc/>
-        public void Warn<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
+        public void Warn<TArgument1, TArgument2>(string messageFormat, TArgument1 argument1, TArgument2 argument2)
         {
-            _inner.Warn(CultureInfo.InvariantCulture, message, argument1, argument2);
+            _inner.Warn(CultureInfo.InvariantCulture, messageFormat, argument1, argument2);
         }
 
         /// <inheritdoc/>
@@ -274,15 +274,15 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc/>
-        public void Error<TArgument>(string message, TArgument argument)
+        public void Error<TArgument>(string message, TArgument args)
         {
-            _inner.Error(CultureInfo.InvariantCulture, message, argument);
+            _inner.Error(CultureInfo.InvariantCulture, message, args);
         }
 
         /// <inheritdoc/>
-        public void Error<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
+        public void Error<TArgument1, TArgument2>(string messageFormat, TArgument1 argument1, TArgument2 argument2)
         {
-            _inner.Error(CultureInfo.InvariantCulture, message, argument1, argument2);
+            _inner.Error(CultureInfo.InvariantCulture, messageFormat, argument1, argument2);
         }
 
         /// <inheritdoc/>
@@ -334,15 +334,15 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc/>
-        public void Fatal<TArgument>(string message, TArgument argument)
+        public void Fatal<TArgument>(string message, TArgument args)
         {
-            _inner.Fatal(CultureInfo.InvariantCulture, message, argument);
+            _inner.Fatal(CultureInfo.InvariantCulture, message, args);
         }
 
         /// <inheritdoc/>
-        public void Fatal<TArgument1, TArgument2>(string message, TArgument1 argument1, TArgument2 argument2)
+        public void Fatal<TArgument1, TArgument2>(string messageFormat, TArgument1 argument1, TArgument2 argument2)
         {
-            _inner.Fatal(CultureInfo.InvariantCulture, message, argument1, argument2);
+            _inner.Fatal(CultureInfo.InvariantCulture, messageFormat, argument1, argument2);
         }
 
         /// <inheritdoc/>

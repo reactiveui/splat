@@ -53,7 +53,7 @@ namespace Splat
             var factory = Locator.Current.GetService<ILogManager>();
             if (factory == null)
             {
-                throw new Exception("ILogManager is null. This should never happen, your dependency resolver is broken");
+                throw new InvalidOperationException("ILogManager is null. This should never happen, your dependency resolver is broken");
             }
 
             return factory.GetLogger<T>();

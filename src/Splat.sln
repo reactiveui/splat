@@ -7,8 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat", "Splat\Splat.csproj
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C7B370F1-BEF3-4AB7-BA08-CC5D83E74598}"
 	ProjectSection(SolutionItems) = preProject
-		analyzers.ruleset = analyzers.ruleset
-		ApiGeneratorGlobalSuppressions.cs = ApiGeneratorGlobalSuppressions.cs
+		..\.editorconfig = ..\.editorconfig
 		Directory.build.props = Directory.build.props
 		Directory.build.targets = Directory.build.targets
 		global.json = global.json
@@ -67,7 +66,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Prism.Forms", "Splat.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Prism.Tests", "Splat.Prism.Tests\Splat.Prism.Tests.csproj", "{905A96B2-03C9-4D08-8E8B-E5B0F7F9F33A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Drawing.Tests", "Splat.Drawing.Tests\Splat.Drawing.Tests.csproj", "{7E350DE5-B8C4-4EF1-9211-7B35643B1971}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Drawing.Tests", "Splat.Drawing.Tests\Splat.Drawing.Tests.csproj", "{7E350DE5-B8C4-4EF1-9211-7B35643B1971}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
