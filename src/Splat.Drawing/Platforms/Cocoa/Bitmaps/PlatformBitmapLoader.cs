@@ -41,7 +41,7 @@ namespace Splat
                     var bitmap = UIImage.LoadFromData(data);
                     if (bitmap == null)
                     {
-                        throw new Exception("Failed to load image");
+                        throw new InvalidOperationException("Failed to load image");
                     }
 
                     tcs.TrySetResult(new CocoaBitmap(bitmap));
@@ -72,7 +72,7 @@ namespace Splat
                     var bitmap = UIImage.FromBundle(source);
                     if (bitmap == null)
                     {
-                        throw new Exception("Failed to load image from resource: " + source);
+                        throw new InvalidOperationException("Failed to load image from resource: " + source);
                     }
 
                     tcs.TrySetResult(new CocoaBitmap(bitmap));
@@ -91,7 +91,7 @@ namespace Splat
                     var bitmap = UIImage.ImageNamed(source);
                     if (bitmap == null)
                     {
-                        throw new Exception("Failed to load image from resource: " + source);
+                        throw new InvalidOperationException("Failed to load image from resource: " + source);
                     }
 
                     tcs.TrySetResult(new CocoaBitmap(bitmap));

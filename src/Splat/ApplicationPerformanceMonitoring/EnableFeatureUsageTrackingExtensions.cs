@@ -26,7 +26,7 @@ namespace Splat.ApplicationPerformanceMonitoring
             var featureUsageTrackingSession = Locator.Current.GetService<IFeatureUsageTrackingManager>();
             if (featureUsageTrackingSession == null)
             {
-                throw new Exception("Feature Usage Tracking Manager is null. This should never happen, your dependency resolver is broken");
+                throw new InvalidOperationException("Feature Usage Tracking Manager is null. This should never happen, your dependency resolver is broken");
             }
 
             return featureUsageTrackingSession.GetFeatureUsageTrackingSession(featureName);
@@ -43,6 +43,11 @@ namespace Splat.ApplicationPerformanceMonitoring
             string featureName,
             Action<IFeatureUsageTrackingSession> action)
         {
+            if (action is null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
             using (var session = instance.FeatureUsageTrackingSession(featureName))
             {
                 try
@@ -68,6 +73,16 @@ namespace Splat.ApplicationPerformanceMonitoring
             string featureName,
             Action<IFeatureUsageTrackingSession> action)
         {
+            if (instance is null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
+
+            if (action is null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
             using (var session = instance.SubFeature(featureName))
             {
                 try

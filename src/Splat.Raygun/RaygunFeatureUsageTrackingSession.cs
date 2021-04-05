@@ -88,10 +88,10 @@ namespace Splat
         public string FeatureName { get; }
 
         /// <inheritdoc />
-        public IFeatureUsageTrackingSession SubFeature(string name)
+        public IFeatureUsageTrackingSession SubFeature(string description)
         {
             return new RaygunFeatureUsageTrackingSession(
-                name,
+                description,
                 FeatureReference,
                 _raygunClient,
                 _raygunSettings);

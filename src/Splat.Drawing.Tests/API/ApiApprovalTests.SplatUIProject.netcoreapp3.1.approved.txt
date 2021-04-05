@@ -237,7 +237,7 @@ namespace Splat
         public PlatformBitmapLoader() { }
         public Splat.IBitmap Create(float width, float height) { }
         public System.Threading.Tasks.Task<Splat.IBitmap> Load(System.IO.Stream sourceStream, float? desiredWidth, float? desiredHeight) { }
-        public System.Threading.Tasks.Task<Splat.IBitmap> LoadFromResource(string resource, float? desiredWidth, float? desiredHeight) { }
+        public System.Threading.Tasks.Task<Splat.IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight) { }
     }
     public static class PlatformModeDetector
     {

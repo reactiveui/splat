@@ -323,7 +323,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
             {
                 lock (_syncLock)
                 {
-                    if (createIfNotExists && dic == null)
+                    if (createIfNotExists)
                     {
                         dic = (ContractDictionary)Activator.CreateInstance(dicType);
                         _serviceCollection.AddSingleton(dicType, dic);

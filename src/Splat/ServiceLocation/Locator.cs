@@ -54,6 +54,7 @@ namespace Splat
         /// Note you should use <see cref="Current"/> or <see cref="CurrentMutable"/> in most situations.
         /// </summary>
         /// <returns>The locator.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1024:Use properties where appropriate", Justification = "Can be a expensive operation.")]
         public static IDependencyResolver GetLocator()
         {
             return InternalLocator.Internal;

@@ -123,10 +123,10 @@ namespace Splat
         public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
         public virtual void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>([System.ComponentModel.Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
         public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
-        public void Write([System.ComponentModel.Localizable(false)] string messageFormat, Splat.LogLevel logLevel) { }
-        public void Write(System.Exception exception, [System.ComponentModel.Localizable(false)] string messageFormat, Splat.LogLevel logLevel) { }
-        public void Write([System.ComponentModel.Localizable(false)] string messageFormat, [System.ComponentModel.Localizable(false)] System.Type type, Splat.LogLevel logLevel) { }
-        public void Write(System.Exception exception, [System.ComponentModel.Localizable(false)] string messageFormat, [System.ComponentModel.Localizable(false)] System.Type type, Splat.LogLevel logLevel) { }
+        public void Write([System.ComponentModel.Localizable(false)] string message, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, [System.ComponentModel.Localizable(false)] string message, Splat.LogLevel logLevel) { }
+        public void Write([System.ComponentModel.Localizable(false)] string message, [System.ComponentModel.Localizable(false)] System.Type type, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, [System.ComponentModel.Localizable(false)] string message, [System.ComponentModel.Localizable(false)] System.Type type, Splat.LogLevel logLevel) { }
     }
     public class ConsoleLogger : Splat.ILogger
     {

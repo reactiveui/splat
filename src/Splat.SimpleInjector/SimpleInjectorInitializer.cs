@@ -26,17 +26,17 @@ namespace Splat.SimpleInjector
             = new Dictionary<Type, List<Func<object>>>();
 
         /// <inheritdoc />
-        public object GetService(Type serviceType, string contract = null)
+        public object? GetService(Type serviceType, string? contract = null)
         {
             lock (_lockObject)
             {
-                Func<object> fact = RegisteredFactories[serviceType].LastOrDefault();
+                Func<object>? fact = RegisteredFactories[serviceType].LastOrDefault();
                 return fact?.Invoke();
             }
         }
 
         /// <inheritdoc/>
-        public IEnumerable<object> GetServices(Type serviceType, string contract = null)
+        public IEnumerable<object> GetServices(Type serviceType, string? contract = null)
         {
             lock (_lockObject)
             {
@@ -46,17 +46,17 @@ namespace Splat.SimpleInjector
         }
 
         /// <inheritdoc />
-        public bool HasRegistration(Type serviceType, string contract = null)
+        public bool HasRegistration(Type serviceType, string? contract = null)
         {
             lock (_lockObject)
             {
-                return RegisteredFactories.TryGetValue(serviceType, out List<Func<object>> values)
-                       && values.Any();
+                return RegisteredFactories.TryGetValue(serviceType, out var values)
+                       && values.Count > 0;
             }
         }
 
         /// <inheritdoc />
-        public void Register(Func<object> factory, Type serviceType, string contract = null)
+        public void Register(Func<object> factory, Type serviceType, string? contract = null)
         {
             lock (_lockObject)
             {
@@ -70,13 +70,13 @@ namespace Splat.SimpleInjector
         }
 
         /// <inheritdoc />
-        public void UnregisterCurrent(Type serviceType, string contract = null)
+        public void UnregisterCurrent(Type serviceType, string? contract = null)
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc />
-        public void UnregisterAll(Type serviceType, string contract = null)
+        public void UnregisterAll(Type serviceType, string? contract = null)
         {
             lock (_lockObject)
             {
@@ -97,6 +97,16 @@ namespace Splat.SimpleInjector
 #pragma warning disable CA1063 // Implement IDisposable Correctly
         public void Dispose()
 #pragma warning restore CA1063 // Implement IDisposable Correctly
+        {
+            GC.SuppressFinalize(this);
+            Dispose(true);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="isDisposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool isDisposing)
         {
         }
     }
