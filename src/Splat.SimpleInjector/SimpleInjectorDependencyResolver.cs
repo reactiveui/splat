@@ -32,7 +32,7 @@ namespace Splat.SimpleInjector
         }
 
         /// <inheritdoc />
-        public object GetService(Type serviceType, string contract = null)
+        public object? GetService(Type serviceType, string? contract = null)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace Splat.SimpleInjector
         }
 
         /// <inheritdoc />
-        public IEnumerable<object> GetServices(Type serviceType, string contract = null)
+        public IEnumerable<object> GetServices(Type serviceType, string? contract = null)
         {
             try
             {
@@ -71,26 +71,26 @@ namespace Splat.SimpleInjector
         }
 
         /// <inheritdoc />
-        public bool HasRegistration(Type serviceType, string contract = null)
+        public bool HasRegistration(Type serviceType, string? contract = null)
         {
             return _container.GetCurrentRegistrations().Any(x => x.ServiceType == serviceType);
         }
 
         /// <inheritdoc />
-        public void Register(Func<object> factory, Type serviceType, string contract = null)
+        public void Register(Func<object> factory, Type serviceType, string? contract = null)
         {
             // The function does nothing because there should be no registration called on this object.
             // Anyway, Locator.SetLocator performs some unnecessary registrations.
         }
 
         /// <inheritdoc />
-        public void UnregisterCurrent(Type serviceType, string contract = null)
+        public void UnregisterCurrent(Type serviceType, string? contract = null)
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc />
-        public void UnregisterAll(Type serviceType, string contract = null)
+        public void UnregisterAll(Type serviceType, string? contract = null)
         {
             throw new NotImplementedException();
         }
@@ -116,8 +116,7 @@ namespace Splat.SimpleInjector
         {
             if (disposing)
             {
-                _container?.Dispose();
-                _container = null;
+                _container.Dispose();
             }
         }
 

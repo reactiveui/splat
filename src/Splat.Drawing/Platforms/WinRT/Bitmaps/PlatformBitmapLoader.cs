@@ -62,11 +62,11 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public Task<IBitmap> LoadFromResource(string resource, float? desiredWidth, float? desiredHeight)
+        public Task<IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
         {
             return GetDispatcher().RunTaskAsync(async () =>
             {
-                var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(resource));
+                var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(source));
                 using (var stream = await file.OpenAsync(FileAccessMode.Read))
                 {
                     return await Load(stream.AsStreamForRead(), desiredWidth, desiredHeight).ConfigureAwait(false);

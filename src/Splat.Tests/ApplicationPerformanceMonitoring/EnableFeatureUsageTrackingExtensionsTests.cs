@@ -14,6 +14,7 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring
     /// <summary>
     /// Unit Tests for the IEnableFeatureUsageTracking Extensions.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2201:Do not raise reserved exception types", Justification = "Deliberate Usage")]
     public static class EnableFeatureUsageTrackingExtensionsTests
     {
         /// <summary>

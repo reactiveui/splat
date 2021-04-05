@@ -71,7 +71,7 @@ namespace Splat.Autofac
             {
                 if (_lifetimeScopeSet)
                 {
-                    throw new Exception("Lifetime scope of the Autofac resolver has already been set");
+                    throw new InvalidOperationException("Lifetime scope of the Autofac resolver has already been set");
                 }
 
                 _lifetimeScopeSet = true;
@@ -135,7 +135,7 @@ namespace Splat.Autofac
             {
                 if (_lifetimeScopeSet)
                 {
-                    throw new Exception("Container has already been built and the lifetime scope set, so it is not possible to modify it anymore.");
+                    throw new InvalidOperationException("Container has already been built and the lifetime scope set, so it is not possible to modify it anymore.");
                 }
 
                 // We register every ReactiveUI service twice.

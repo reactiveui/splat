@@ -22,7 +22,7 @@ namespace Splat.Prism.Forms
         /// Initializes a new instance of the <see cref="PrismApplication"/> class.
         /// </summary>
         /// <param name="initializer">An initializer for initializing the platform.</param>
-        public PrismApplication(IPlatformInitializer initializer = null)
+        protected PrismApplication(IPlatformInitializer initializer = null)
             : base(initializer)
         {
         }

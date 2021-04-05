@@ -4,7 +4,8 @@
     <TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net461</TargetFrameworks>
     <Description>SimpleInjector adapter for Splat</Description>
-	<LangVersion>latest</LangVersion>
+	  <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
