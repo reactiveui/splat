@@ -26,20 +26,25 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public float Width => Inner.PixelWidth;
+        public float Width => Inner?.PixelWidth ?? 0;
 
         /// <inheritdoc />
-        public float Height => Inner.PixelHeight;
+        public float Height => Inner?.PixelHeight ?? 0;
 
         /// <summary>
         /// Gets the platform <see cref="WriteableBitmap"/>.
         /// </summary>
-        public WriteableBitmap Inner { get; private set; }
+        public WriteableBitmap? Inner { get; private set; }
 
         /// <inheritdoc />
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0008:Use explicit type", Justification = "Local variable will be disposed.")]
         public async Task Save(CompressedBitmapFormat format, float quality, Stream target)
         {
+            if (Inner is null)
+            {
+                return;
+            }
+
             // NB: Due to WinRT's brain-dead design, we're copying this image
             // like three times. Let Dreams Soar.
             using var rwTarget = new InMemoryRandomAccessStream();

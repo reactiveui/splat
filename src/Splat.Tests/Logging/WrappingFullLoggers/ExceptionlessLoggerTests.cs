@@ -22,7 +22,7 @@ namespace Splat.Tests.Logging.WrappingFullLoggers
     /// </summary>
     public class ExceptionlessLoggerTests : FullLoggerTestBase
     {
-        private static readonly Dictionary<global::Exceptionless.Logging.LogLevel, LogLevel> _exceptionless2Splat = new Dictionary<global::Exceptionless.Logging.LogLevel, LogLevel>
+        private static readonly Dictionary<global::Exceptionless.Logging.LogLevel, LogLevel> _exceptionless2Splat = new()
         {
             { global::Exceptionless.Logging.LogLevel.Debug, LogLevel.Debug },
             { global::Exceptionless.Logging.LogLevel.Info,  LogLevel.Info },
@@ -31,7 +31,7 @@ namespace Splat.Tests.Logging.WrappingFullLoggers
             { global::Exceptionless.Logging.LogLevel.Fatal, LogLevel.Fatal },
         };
 
-        private static readonly Dictionary<LogLevel, global::Exceptionless.Logging.LogLevel> _splat2Exceptionless = new Dictionary<LogLevel, global::Exceptionless.Logging.LogLevel>
+        private static readonly Dictionary<LogLevel, global::Exceptionless.Logging.LogLevel> _splat2Exceptionless = new()
         {
             { LogLevel.Debug,  global::Exceptionless.Logging.LogLevel.Debug },
             { LogLevel.Info,   global::Exceptionless.Logging.LogLevel.Info },
@@ -76,7 +76,7 @@ namespace Splat.Tests.Logging.WrappingFullLoggers
             var splatLogLevel = GetSplatLogLevel(logLevel);
             var exception = obj.ContextData.HasException() ? obj.ContextData.GetException() : null;
 
-            var exceptionMessageSuffix = exception != null ? $" {exception}" : string.Empty;
+            var exceptionMessageSuffix = exception is not null ? $" {exception}" : string.Empty;
             (LogLevel logLevel, string message) tuple = (splatLogLevel, $"{obj.Event.Message}{exceptionMessageSuffix}");
             logTarget.Logs.Add(tuple);
         }

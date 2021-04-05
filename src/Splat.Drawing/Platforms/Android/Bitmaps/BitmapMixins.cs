@@ -3,6 +3,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
+
 using Android.App;
 using Android.Graphics;
 using Android.Graphics.Drawables;
@@ -26,10 +28,9 @@ namespace Splat
                 throw new System.ArgumentNullException(nameof(value));
             }
 
-            var androidBitmap = value as AndroidBitmap;
-            if (androidBitmap != null)
+            if (value is AndroidBitmap androidBitmap)
             {
-                return new BitmapDrawable(Application.Context.Resources, ((AndroidBitmap)value).Inner);
+                return new BitmapDrawable(Application.Context.Resources, androidBitmap.Inner);
             }
 
             return ((DrawableBitmap)value).Inner;
@@ -50,7 +51,8 @@ namespace Splat
 
             if (copy)
             {
-                return new AndroidBitmap(value.Copy(value.GetConfig(), true));
+                var copiedBitmap = value.Copy(value.GetConfig(), true) ?? throw new InvalidOperationException("The bitmap does not have a valid reference.");
+                return new AndroidBitmap(copiedBitmap);
             }
 
             return new AndroidBitmap(value);

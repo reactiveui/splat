@@ -17,11 +17,11 @@ namespace Splat
     /// </summary>
     public class FuncDependencyResolver : IDependencyResolver
     {
-        private readonly Func<Type, string, IEnumerable<object>> _innerGetServices;
-        private readonly Action<Func<object>, Type, string> _innerRegister;
-        private readonly Action<Type, string> _unregisterCurrent;
-        private readonly Action<Type, string> _unregisterAll;
-        private readonly Dictionary<Tuple<Type, string>, List<Action<IDisposable>>> _callbackRegistry = new Dictionary<Tuple<Type, string>, List<Action<IDisposable>>>();
+        private readonly Func<Type, string?, IEnumerable<object>> _innerGetServices;
+        private readonly Action<Func<object>, Type, string?>? _innerRegister;
+        private readonly Action<Type, string?>? _unregisterCurrent;
+        private readonly Action<Type, string?>? _unregisterAll;
+        private readonly Dictionary<(Type type, string callback), List<Action<IDisposable>>> _callbackRegistry = new();
 
         private IDisposable _inner;
         private bool _isDisposed;
@@ -35,11 +35,11 @@ namespace Splat
         /// <param name="unregisterAll">A func which will unregister all the registered elements for a service type and contract.</param>
         /// <param name="toDispose">A optional disposable which is called when this resolver is disposed.</param>
         public FuncDependencyResolver(
-            Func<Type, string, IEnumerable<object>> getAllServices,
-            Action<Func<object>, Type, string> register = null,
-            Action<Type, string> unregisterCurrent = null,
-            Action<Type, string> unregisterAll = null,
-            IDisposable toDispose = null)
+            Func<Type, string?, IEnumerable<object>> getAllServices,
+            Action<Func<object>, Type, string?>? register = null,
+            Action<Type, string?>? unregisterCurrent = null,
+            Action<Type, string?>? unregisterAll = null,
+            IDisposable? toDispose = null)
         {
             _innerGetServices = getAllServices;
             _innerRegister = register;
@@ -49,39 +49,38 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public object GetService(Type serviceType, string contract = null)
+        public object? GetService(Type serviceType, string? contract = null)
         {
             return (GetServices(serviceType, contract) ?? Enumerable.Empty<object>()).LastOrDefault();
         }
 
         /// <inheritdoc />
-        public IEnumerable<object> GetServices(Type serviceType, string contract = null)
+        public IEnumerable<object> GetServices(Type serviceType, string? contract = null)
         {
             return _innerGetServices(serviceType, contract);
         }
 
         /// <inheritdoc />
-        public bool HasRegistration(Type serviceType, string contract = null)
+        public bool HasRegistration(Type serviceType, string? contract = null)
         {
-            return _innerGetServices(serviceType, contract) != null;
+            return _innerGetServices(serviceType, contract) is not null;
         }
 
         /// <inheritdoc />
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "disp is Disposed in callback.")]
-        public void Register(Func<object> factory, Type serviceType, string contract = null)
+        public void Register(Func<object> factory, Type serviceType, string? contract = null)
         {
-            if (_innerRegister == null)
+            if (_innerRegister is null)
             {
                 throw new NotImplementedException();
             }
 
             _innerRegister(factory, serviceType, contract);
 
-            var pair = Tuple.Create(serviceType, contract ?? string.Empty);
+            var pair = (serviceType, contract ?? string.Empty);
 
             if (_callbackRegistry.ContainsKey(pair))
             {
-                List<Action<IDisposable>> toRemove = null;
+                List<Action<IDisposable>>? toRemove = null;
 
                 foreach (var callback in _callbackRegistry[pair])
                 {
@@ -91,7 +90,7 @@ namespace Splat
 
                     if (disp.IsDisposed)
                     {
-                        if (toRemove == null)
+                        if (toRemove is null)
                         {
                             toRemove = new List<Action<IDisposable>>();
                         }
@@ -100,7 +99,7 @@ namespace Splat
                     }
                 }
 
-                if (toRemove != null)
+                if (toRemove is not null)
                 {
                     foreach (var c in toRemove)
                     {
@@ -111,9 +110,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void UnregisterCurrent(Type serviceType, string contract = null)
+        public void UnregisterCurrent(Type serviceType, string? contract = null)
         {
-            if (_unregisterCurrent == null)
+            if (_unregisterCurrent is null)
             {
                 throw new NotImplementedException();
             }
@@ -122,9 +121,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void UnregisterAll(Type serviceType, string contract = null)
+        public void UnregisterAll(Type serviceType, string? contract = null)
         {
-            if (_unregisterAll == null)
+            if (_unregisterAll is null)
             {
                 throw new NotImplementedException();
             }
@@ -133,9 +132,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
+        public IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback)
         {
-            var pair = Tuple.Create(serviceType, contract ?? string.Empty);
+            var pair = (serviceType, contract ?? string.Empty);
 
             if (!_callbackRegistry.ContainsKey(pair))
             {

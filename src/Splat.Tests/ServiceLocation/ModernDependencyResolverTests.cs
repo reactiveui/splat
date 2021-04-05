@@ -16,6 +16,6 @@ namespace Splat.Tests.ServiceLocation
     public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<ModernDependencyResolver>
     {
         /// <inheritdoc />
-        protected override ModernDependencyResolver GetDependencyResolver() => new ModernDependencyResolver();
+        protected override ModernDependencyResolver GetDependencyResolver() => new();
     }
 }

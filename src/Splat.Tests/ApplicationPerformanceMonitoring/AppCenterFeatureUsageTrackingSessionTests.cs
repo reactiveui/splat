@@ -21,7 +21,7 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring
             /// <inheritdoc/>
             protected override AppCenterFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
             {
-                return new AppCenterFeatureUsageTrackingSession(featureName);
+                return new(featureName);
             }
         }
 
@@ -31,7 +31,7 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring
             /// <inheritdoc/>
             protected override AppCenterFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
             {
-                return new AppCenterFeatureUsageTrackingSession(featureName);
+                return new(featureName);
             }
         }
     }

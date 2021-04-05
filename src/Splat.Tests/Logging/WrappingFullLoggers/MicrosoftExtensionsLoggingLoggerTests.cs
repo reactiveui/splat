@@ -16,7 +16,7 @@ namespace Splat.Tests.Logging
     /// </summary>
     public class MicrosoftExtensionsLoggingLoggerTests : FullLoggerTestBase
     {
-        private static readonly Dictionary<LogLevel, global::Microsoft.Extensions.Logging.LogLevel> _splat2MSLog = new Dictionary<LogLevel, global::Microsoft.Extensions.Logging.LogLevel>
+        private static readonly Dictionary<LogLevel, global::Microsoft.Extensions.Logging.LogLevel> _splat2MSLog = new()
         {
             { LogLevel.Debug, global::Microsoft.Extensions.Logging.LogLevel.Debug },
             { LogLevel.Info, global::Microsoft.Extensions.Logging.LogLevel.Information },
@@ -25,7 +25,7 @@ namespace Splat.Tests.Logging
             { LogLevel.Fatal, global::Microsoft.Extensions.Logging.LogLevel.Critical }
         };
 
-        private static readonly Dictionary<global::Microsoft.Extensions.Logging.LogLevel, LogLevel> _MSLog2Splat = new Dictionary<global::Microsoft.Extensions.Logging.LogLevel, LogLevel>
+        private static readonly Dictionary<global::Microsoft.Extensions.Logging.LogLevel, LogLevel> _MSLog2Splat = new()
         {
             { global::Microsoft.Extensions.Logging.LogLevel.Debug,  LogLevel.Debug },
             { global::Microsoft.Extensions.Logging.LogLevel.Information,  LogLevel.Info },
@@ -47,7 +47,7 @@ namespace Splat.Tests.Logging
         /// </summary>
         private sealed class MockActualMicrosoftExtensionsLoggingLogger : global::Microsoft.Extensions.Logging.ILogger, IMockLogTarget
         {
-            private readonly List<(LogLevel, string)> _logs = new List<(LogLevel, string)>();
+            private readonly List<(LogLevel, string)> _logs = new();
             private readonly global::Microsoft.Extensions.Logging.LogLevel _logLevel;
 
             public MockActualMicrosoftExtensionsLoggingLogger(global::Microsoft.Extensions.Logging.LogLevel logLevel)

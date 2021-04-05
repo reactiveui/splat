@@ -19,7 +19,7 @@ namespace Splat
         /// <returns>A native android color.</returns>
         public static Color ToNative(this System.Drawing.Color other)
         {
-            return new Color(other.R, other.G, other.B, other.A);
+            return new(other.R, other.G, other.B, other.A);
         }
 
         /// <summary>

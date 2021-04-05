@@ -21,7 +21,7 @@ namespace Splat
     public class PlatformBitmapLoader : IBitmapLoader
     {
         /// <inheritdoc />
-        public Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
+        public Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
             return GetDispatcher().RunTaskAsync(async () =>
             {
@@ -55,14 +55,14 @@ namespace Splat
                     {
                         bmpStream.Seek(0, SeekOrigin.Begin);
                         bmpStream.Write(pixels, 0, (int)bmpStream.Length);
-                        return (IBitmap)new WriteableBitmapImageBitmap(bmp);
+                        return (IBitmap?)new WriteableBitmapImageBitmap(bmp);
                     }
                 }
             });
         }
 
         /// <inheritdoc />
-        public Task<IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
+        public Task<IBitmap?> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
         {
             return GetDispatcher().RunTaskAsync(async () =>
             {
@@ -89,7 +89,7 @@ namespace Splat
         {
             CoreWindow currentThreadWindow = CoreWindow.GetForCurrentThread();
 
-            return currentThreadWindow == null ? CoreApplication.MainView.CoreWindow.Dispatcher : currentThreadWindow.Dispatcher;
+            return currentThreadWindow is null ? CoreApplication.MainView.CoreWindow.Dispatcher : currentThreadWindow.Dispatcher;
         }
     }
 }

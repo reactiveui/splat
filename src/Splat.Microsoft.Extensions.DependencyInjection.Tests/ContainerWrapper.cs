@@ -20,7 +20,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
         {
             get
             {
-                if (_serviceProvider == null)
+                if (_serviceProvider is null)
                 {
                     _serviceProvider = ServiceCollection.BuildServiceProvider();
                 }

@@ -29,7 +29,7 @@ namespace Splat.Tests.Logging
         /// <summary>
         /// Gets a list of mappings of Serilog levels and equivalent Splat log levels.
         /// </summary>
-        private static readonly Dictionary<LogLevel, LogEventLevel> _mappingsToSerilog = new Dictionary<LogLevel, LogEventLevel>()
+        private static readonly Dictionary<LogLevel, LogEventLevel> _mappingsToSerilog = new()
             {
                 { LogLevel.Debug, LogEventLevel.Debug },
                 { LogLevel.Info, LogEventLevel.Information },
@@ -41,7 +41,7 @@ namespace Splat.Tests.Logging
         /// <summary>
         /// Gets a list of mappings of Serilog levels and equivalent Splat log levels.
         /// </summary>
-        private static readonly Dictionary<LogEventLevel, LogLevel> _mappingsToSplat = new Dictionary<LogEventLevel, LogLevel>()
+        private static readonly Dictionary<LogEventLevel, LogLevel> _mappingsToSplat = new()
             {
                 { LogEventLevel.Debug, LogLevel.Debug },
                 { LogEventLevel.Information, LogLevel.Info },
@@ -132,8 +132,8 @@ namespace Splat.Tests.Logging
 
         private class LogTarget : ILogEventSink, IMockLogTarget
         {
-            private static readonly MessageTemplateTextFormatter _formatter = new MessageTemplateTextFormatter("{Message} {Exception}", CultureInfo.InvariantCulture);
-            private readonly List<(LogLevel logLevel, string message)> _logs = new List<(LogLevel logLevel, string message)>();
+            private static readonly MessageTemplateTextFormatter _formatter = new("{Message} {Exception}", CultureInfo.InvariantCulture);
+            private readonly List<(LogLevel logLevel, string message)> _logs = new();
 
             public ICollection<(LogLevel logLevel, string message)> Logs => _logs;
 

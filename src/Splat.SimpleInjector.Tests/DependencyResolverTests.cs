@@ -73,8 +73,8 @@ namespace Splat.Simplnjector
         [Fact]
         public void SimpleInjectorDependencyResolver_Splat_Initialization_ShouldNotThrow()
         {
-            Container container = new Container();
-            SimpleInjectorInitializer initializer = new SimpleInjectorInitializer();
+            Container container = new();
+            SimpleInjectorInitializer initializer = new();
 
             Locator.SetLocator(initializer);
             Locator.CurrentMutable.InitializeSplat();
@@ -87,8 +87,8 @@ namespace Splat.Simplnjector
         [Fact]
         public void SimpleInjectorDependencyResolver_ShouldResolveSplatRegisteredDependency()
         {
-            Container container = new Container();
-            SimpleInjectorInitializer initializer = new SimpleInjectorInitializer();
+            Container container = new();
+            SimpleInjectorInitializer initializer = new();
 
             Locator.SetLocator(initializer);
             Locator.CurrentMutable.InitializeSplat();

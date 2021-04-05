@@ -19,9 +19,8 @@ namespace Splat
         // The number of items is not known upfront
         private const int DefaultCapacity = 16;
 
-        private readonly object _gate = new object();
         private bool _disposed;
-        private List<IDisposable> _disposables;
+        private List<IDisposable>? _disposables;
         private int _count;
 
         /// <summary>
@@ -55,12 +54,13 @@ namespace Splat
         /// <exception cref="ArgumentException">Any of the disposables in the <paramref name="disposables"/> collection is <c>null</c>.</exception>
         public CompositeDisposable(params IDisposable[] disposables)
         {
-            if (disposables == null)
+            if (disposables is null)
             {
                 throw new ArgumentNullException(nameof(disposables));
             }
 
-            Init(disposables, disposables.Length);
+            _disposables = new List<IDisposable>(disposables.Length);
+            Init(disposables);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace Splat
         /// <exception cref="ArgumentException">Any of the disposables in the <paramref name="disposables"/> collection is <c>null</c>.</exception>
         public CompositeDisposable(IEnumerable<IDisposable> disposables)
         {
-            if (disposables == null)
+            if (disposables is null)
             {
                 throw new ArgumentNullException(nameof(disposables));
             }
@@ -80,12 +80,15 @@ namespace Splat
             // and use it as a capacity hint for the copy.
             if (disposables is ICollection<IDisposable> c)
             {
-                Init(disposables, c.Count);
+                _disposables = new List<IDisposable>(c.Count);
+                Init(disposables);
             }
             else
             {
+                _disposables = new List<IDisposable>(DefaultCapacity);
+
                 // Unknown sized disposables, use the default capacity hint
-                Init(disposables, DefaultCapacity);
+                Init(disposables);
             }
         }
 
@@ -94,54 +97,47 @@ namespace Splat
         /// </summary>
         public void Dispose()
         {
-            var currentDisposables = default(List<IDisposable>);
-            lock (_gate)
+            if (_disposed)
             {
-                if (!_disposed)
+                return;
+            }
+
+            var disposables = Interlocked.Exchange(ref _disposables, null);
+
+            if (disposables is not null)
+            {
+                foreach (var disposed in disposables)
                 {
-                    currentDisposables = _disposables;
-
-                    // nulling out the reference is faster no risk to
-                    // future Add/Remove because _disposed will be true
-                    // and thus _disposables won't be touched again.
-                    _disposables = null;
-
-                    Volatile.Write(ref _count, 0);
-                    Volatile.Write(ref _disposed, true);
+                    disposed.Dispose();
                 }
             }
 
-            if (currentDisposables != null)
-            {
-                foreach (var d in currentDisposables)
-                {
-                    d?.Dispose();
-                }
-            }
+            Volatile.Write(ref _count, 0);
+            Volatile.Write(ref _disposed, true);
         }
 
         /// <summary>
         /// Initialize the inner disposable list and count fields.
         /// </summary>
         /// <param name="disposables">The enumerable sequence of disposables.</param>
-        /// <param name="capacityHint">The number of items expected from <paramref name="disposables"/>.</param>
-        private void Init(IEnumerable<IDisposable> disposables, int capacityHint)
+        private void Init(IEnumerable<IDisposable> disposables)
         {
-            var list = new List<IDisposable>(capacityHint);
+            if (_disposables is null)
+            {
+                return;
+            }
 
             // do the copy and null-check in one step to avoid a
             // second loop for just checking for null items
             foreach (var d in disposables)
             {
-                if (d == null)
+                if (d is null)
                 {
                     throw new ArgumentException("disposables for some reason are null", nameof(disposables));
                 }
 
-                list.Add(d);
+                _disposables.Add(d);
             }
-
-            _disposables = list;
 
             // _count can be read by other threads and thus should be properly visible
             // also releases the _disposables contents so it becomes thread-safe

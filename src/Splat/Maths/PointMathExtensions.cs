@@ -59,7 +59,7 @@ namespace Splat
         /// <returns>The scaled point.</returns>
         public static PointF ScaledBy(this PointF value, float factor)
         {
-            return new PointF(value.X * factor, value.Y * factor);
+            return new(value.X * factor, value.Y * factor);
         }
 
         /// <summary>

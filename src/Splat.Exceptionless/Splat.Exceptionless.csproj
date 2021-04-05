@@ -8,6 +8,7 @@
     <Description>Exceptionless integrations for Splat</Description>
     <PackageId>Splat.Exceptionless</PackageId>
     <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Exceptionless" Version="4.6.2" />

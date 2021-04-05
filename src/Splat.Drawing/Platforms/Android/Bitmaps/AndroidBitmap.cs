@@ -3,6 +3,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace Splat
     /// </summary>
     internal sealed class AndroidBitmap : IBitmap
     {
-        private Bitmap _inner;
+        private Bitmap? _inner;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AndroidBitmap"/> class.
@@ -27,19 +28,24 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public float Width => _inner.Width;
+        public float Width => _inner?.Width ?? 0;
 
         /// <inheritdoc />
-        public float Height => _inner.Height;
+        public float Height => _inner?.Height ?? 0;
 
         /// <summary>
         /// Gets the internal bitmap we are wrapping.
         /// </summary>
-        internal Bitmap Inner => _inner;
+        internal Bitmap Inner => _inner ?? throw new InvalidOperationException("Attempt to access a disposed Bitmap");
 
         /// <inheritdoc />
         public Task Save(CompressedBitmapFormat format, float quality, Stream target)
         {
+            if (_inner is null)
+            {
+                return Task.CompletedTask;
+            }
+
             var fmt = format == CompressedBitmapFormat.Jpeg ? Bitmap.CompressFormat.Jpeg : Bitmap.CompressFormat.Png;
             return Task.Run(() => _inner.Compress(fmt, (int)(quality * 100), target));
         }
@@ -47,11 +53,7 @@ namespace Splat
         /// <inheritdoc />
         public void Dispose()
         {
-            var disp = Interlocked.Exchange(ref _inner, null);
-            if (disp != null)
-            {
-                disp.Dispose();
-            }
+            Interlocked.Exchange(ref _inner, null)?.Dispose();
         }
     }
 }

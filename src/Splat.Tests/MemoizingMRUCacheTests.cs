@@ -140,11 +140,11 @@ namespace Splat.Tests
                 return result;
             }).ToList();
 
-            var first = results.First(x => x != null);
+            var first = results.First(x => x is not null);
 
             foreach (var dummyObjectClass1 in results)
             {
-                if (dummyObjectClass1 != null)
+                if (dummyObjectClass1 is not null)
                 {
                     Assert.Same(first, dummyObjectClass1);
                 }
@@ -225,7 +225,7 @@ namespace Splat.Tests
 
         private static MemoizingMRUCache<string, DummyObjectClass1> GetTestInstance()
         {
-            return new MemoizingMRUCache<string, DummyObjectClass1>(
+            return new(
                 (param, o) => new DummyObjectClass1(),
                 256);
         }

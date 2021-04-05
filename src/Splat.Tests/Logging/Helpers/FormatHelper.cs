@@ -21,6 +21,6 @@ namespace Splat.Tests.Logging
         /// <summary>
         /// Gets an exception for testing.
         /// </summary>
-        internal static Exception Exception => new Exception();
+        internal static Exception Exception => new();
     }
 }

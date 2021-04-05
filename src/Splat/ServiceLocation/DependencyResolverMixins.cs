@@ -24,14 +24,14 @@ namespace Splat
         /// <param name="resolver">The resolver we are getting the service from.</param>
         /// <param name="contract">A optional value which will retrieve only a object registered with the same contract.</param>
         /// <returns>The requested object, if found; <c>null</c> otherwise.</returns>
-        public static T GetService<T>(this IReadonlyDependencyResolver resolver, string contract = null)
+        public static T? GetService<T>(this IReadonlyDependencyResolver resolver, string? contract = null)
         {
             if (resolver is null)
             {
                 throw new ArgumentNullException(nameof(resolver));
             }
 
-            return (T)resolver.GetService(typeof(T), contract);
+            return (T?)resolver.GetService(typeof(T), contract);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Splat
         /// <param name="contract">A optional value which will retrieve only a object registered with the same contract.</param>
         /// <returns>A sequence of instances of the requested <typeparamref name="T"/>. The sequence
         /// should be empty (not <c>null</c>) if no objects of the given type are available.</returns>
-        public static IEnumerable<T> GetServices<T>(this IReadonlyDependencyResolver resolver, string contract = null)
+        public static IEnumerable<T> GetServices<T>(this IReadonlyDependencyResolver resolver, string? contract = null)
         {
             if (resolver is null)
             {
@@ -77,7 +77,6 @@ namespace Splat
         /// <param name="resolver">The test resolver to use.</param>
         /// <param name="suppressResolverCallback">If we should suppress the resolver callback notify.</param>
         /// <returns>A disposable which will reset the resolver back to the original.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "CompositeDisposable disposes ActionDisposable.")]
         public static IDisposable WithResolver(this IDependencyResolver resolver, bool suppressResolverCallback = true)
         {
             if (resolver is null)
@@ -85,7 +84,7 @@ namespace Splat
                 throw new ArgumentNullException(nameof(resolver));
             }
 
-            var notificationDisposable = suppressResolverCallback ? Locator.SuppressResolverCallbackChangedNotifications() : new ActionDisposable(() => { });
+            var notificationDisposable = suppressResolverCallback ? Locator.SuppressResolverCallbackChangedNotifications() : ActionDisposable.Empty;
 
             var origResolver = Locator.GetLocator();
             Locator.SetLocator(resolver);
@@ -94,17 +93,23 @@ namespace Splat
         }
 
         /// <summary>
-        /// Registers a factory for the the given <typeparamref name="T"/>.
+        /// Registers a factory for the given <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The service type to register for.</typeparam>
         /// <param name="resolver">The resolver to register the service type with.</param>
         /// <param name="factory">A factory method for generating a object of the specified type.</param>
         /// <param name="contract">A optional contract value which will indicates to only generate the value if this contract is specified.</param>
-        public static void Register<T>(this IMutableDependencyResolver resolver, Func<T> factory, string contract = null)
+        public static void Register<T>(this IMutableDependencyResolver resolver, Func<T> factory, string? contract = null)
+            where T : notnull
         {
             if (resolver is null)
             {
                 throw new ArgumentNullException(nameof(resolver));
+            }
+
+            if (factory is null)
+            {
+                throw new ArgumentNullException(nameof(factory));
             }
 
             resolver.Register(() => factory(), typeof(T), contract);
@@ -117,7 +122,7 @@ namespace Splat
         /// <param name="value">The specified instance to always return.</param>
         /// <param name="serviceType">The type of service to register.</param>
         /// <param name="contract">A optional contract value which will indicates to only return the value if this contract is specified.</param>
-        public static void RegisterConstant(this IMutableDependencyResolver resolver, object value, Type serviceType, string contract = null)
+        public static void RegisterConstant(this IMutableDependencyResolver resolver, object value, Type serviceType, string? contract = null)
         {
             if (resolver is null)
             {
@@ -134,8 +139,14 @@ namespace Splat
         /// <param name="resolver">The resolver to register the service type with.</param>
         /// <param name="value">The specified instance to always return.</param>
         /// <param name="contract">A optional contract value which will indicates to only return the value if this contract is specified.</param>
-        public static void RegisterConstant<T>(this IMutableDependencyResolver resolver, T value, string contract = null)
+        public static void RegisterConstant<T>(this IMutableDependencyResolver resolver, T value, string? contract = null)
+            where T : notnull
         {
+            if (resolver is null)
+            {
+                throw new ArgumentNullException(nameof(resolver));
+            }
+
             RegisterConstant(resolver, value, typeof(T), contract);
         }
 
@@ -147,7 +158,7 @@ namespace Splat
         /// <param name="valueFactory">A factory method for generating a object of the specified type.</param>
         /// <param name="serviceType">The type of service to register.</param>
         /// <param name="contract">A optional contract value which will indicates to only return the value if this contract is specified.</param>
-        public static void RegisterLazySingleton(this IMutableDependencyResolver resolver, Func<object> valueFactory, Type serviceType, string contract = null)
+        public static void RegisterLazySingleton(this IMutableDependencyResolver resolver, Func<object> valueFactory, Type serviceType, string? contract = null)
         {
             if (resolver is null)
             {
@@ -166,7 +177,8 @@ namespace Splat
         /// <param name="resolver">The resolver to register the service type with.</param>
         /// <param name="valueFactory">A factory method for generating a object of the specified type.</param>
         /// <param name="contract">A optional contract value which will indicates to only return the value if this contract is specified.</param>
-        public static void RegisterLazySingleton<T>(this IMutableDependencyResolver resolver, Func<T> valueFactory, string contract = null)
+        public static void RegisterLazySingleton<T>(this IMutableDependencyResolver resolver, Func<T> valueFactory, string? contract = null)
+            where T : notnull
         {
             RegisterLazySingleton(resolver, () => valueFactory(), typeof(T), contract);
         }
@@ -177,7 +189,7 @@ namespace Splat
         /// <typeparam name="T">The type of item to unregister.</typeparam>
         /// <param name="resolver">The resolver to unregister the service with.</param>
         /// <param name="contract">A optional contract which indicates to only removed the item registered with this contract.</param>
-        public static void UnregisterCurrent<T>(this IMutableDependencyResolver resolver, string contract = null)
+        public static void UnregisterCurrent<T>(this IMutableDependencyResolver resolver, string? contract = null)
         {
             if (resolver is null)
             {
@@ -193,7 +205,7 @@ namespace Splat
         /// <typeparam name="T">The type of items to unregister.</typeparam>
         /// <param name="resolver">The resolver to unregister the services with.</param>
         /// <param name="contract">A optional contract which indicates to only removed those items registered with this contract.</param>
-        public static void UnregisterAll<T>(this IMutableDependencyResolver resolver, string contract = null)
+        public static void UnregisterAll<T>(this IMutableDependencyResolver resolver, string? contract = null)
         {
             if (resolver is null)
             {

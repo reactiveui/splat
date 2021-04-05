@@ -21,7 +21,7 @@ namespace Splat.Tests
         /// <summary>
         /// Gets the test data for the Load Suceeds Unit Test.
         /// </summary>
-        public static TheoryData<Func<Stream>> LoadSucceedsTestData { get; } = new TheoryData<Func<Stream>>
+        public static TheoryData<Func<Stream>> LoadSucceedsTestData { get; } = new()
         {
             GetPngStream,
             GetJpegStream,

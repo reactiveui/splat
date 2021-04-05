@@ -10,7 +10,7 @@ namespace Splat
     /// </summary>
     public static class PlatformModeDetector
     {
-        private static bool? cachedInDesignModeResult;
+        private static bool? _cachedInDesignModeResult;
 
         /// <summary>
         /// Initializes static members of the <see cref="PlatformModeDetector"/> class.
@@ -32,7 +32,7 @@ namespace Splat
         public static void OverrideModeDetector(IPlatformModeDetector modeDetector)
         {
             Current = modeDetector;
-            cachedInDesignModeResult = null;
+            _cachedInDesignModeResult = null;
         }
 
         /// <summary>
@@ -41,21 +41,21 @@ namespace Splat
         /// <returns>If we are currently running from design mode.</returns>
         public static bool InDesignMode()
         {
-            if (cachedInDesignModeResult.HasValue)
+            if (_cachedInDesignModeResult.HasValue)
             {
-                return cachedInDesignModeResult.Value;
+                return _cachedInDesignModeResult.Value;
             }
 
-            if (Current != null)
+            if (Current is not null)
             {
-                cachedInDesignModeResult = Current.InDesignMode();
-                if (cachedInDesignModeResult.HasValue)
+                _cachedInDesignModeResult = Current.InDesignMode();
+                if (_cachedInDesignModeResult.HasValue)
                 {
-                    return cachedInDesignModeResult.Value;
+                    return _cachedInDesignModeResult.Value;
                 }
             }
 
-            return cachedInDesignModeResult.GetValueOrDefault();
+            return _cachedInDesignModeResult.GetValueOrDefault();
         }
     }
 }

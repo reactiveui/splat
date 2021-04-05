@@ -39,7 +39,7 @@ namespace Splat
         /// <returns>A <see cref="System.Drawing.RectangleF"/> of the value.</returns>
         public static System.Drawing.RectangleF FromNative(this Rect value)
         {
-            return new System.Drawing.RectangleF((float)value.X, (float)value.Y, (float)value.Width, (float)value.Height);
+            return new((float)value.X, (float)value.Y, (float)value.Width, (float)value.Height);
         }
     }
 }

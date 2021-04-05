@@ -19,11 +19,11 @@ namespace Splat.NLog
     {
         private static readonly KeyValuePair<LogLevel, global::NLog.LogLevel>[] _mappings =
         {
-            new KeyValuePair<LogLevel, global::NLog.LogLevel>(LogLevel.Debug, global::NLog.LogLevel.Debug),
-            new KeyValuePair<LogLevel, global::NLog.LogLevel>(LogLevel.Info, global::NLog.LogLevel.Info),
-            new KeyValuePair<LogLevel, global::NLog.LogLevel>(LogLevel.Warn, global::NLog.LogLevel.Warn),
-            new KeyValuePair<LogLevel, global::NLog.LogLevel>(LogLevel.Error, global::NLog.LogLevel.Error),
-            new KeyValuePair<LogLevel, global::NLog.LogLevel>(LogLevel.Fatal, global::NLog.LogLevel.Fatal)
+            new(LogLevel.Debug, global::NLog.LogLevel.Debug),
+            new(LogLevel.Info, global::NLog.LogLevel.Info),
+            new(LogLevel.Warn, global::NLog.LogLevel.Warn),
+            new(LogLevel.Error, global::NLog.LogLevel.Error),
+            new(LogLevel.Fatal, global::NLog.LogLevel.Fatal)
         };
 
         private static readonly ImmutableDictionary<LogLevel, global::NLog.LogLevel> _mappingsDictionary = _mappings.ToImmutableDictionary();
@@ -406,13 +406,13 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc/>
-        public void DebugException(string message, Exception exception)
+        public void DebugException(string? message, Exception exception)
         {
             _inner.Debug(exception, message);
         }
 
         /// <inheritdoc/>
-        public void Debug(Exception exception, string message)
+        public void Debug(Exception exception, string? message)
         {
             _inner.Debug(exception, message);
         }
@@ -424,13 +424,13 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc/>
-        public void Debug(string message)
+        public void Debug(string? message)
         {
             _inner.Debug(message);
         }
 
         /// <inheritdoc/>
-        public void Debug<T>(string message)
+        public void Debug<T>(string? message)
         {
             LogResolver.Resolve(typeof(T)).Debug(message);
         }
@@ -478,13 +478,13 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc/>
-        public void InfoException(string message, Exception exception)
+        public void InfoException(string? message, Exception exception)
         {
             _inner.Info(exception, message);
         }
 
         /// <inheritdoc/>
-        public void Info(Exception exception, string message)
+        public void Info(Exception exception, string? message)
         {
             _inner.Info(exception, message);
         }
@@ -496,13 +496,13 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc/>
-        public void Info(string message)
+        public void Info(string? message)
         {
             _inner.Info(message);
         }
 
         /// <inheritdoc/>
-        public void Info<T>(string message)
+        public void Info<T>(string? message)
         {
             LogResolver.Resolve(typeof(T)).Info(message);
         }
@@ -550,13 +550,13 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc/>
-        public void WarnException(string message, Exception exception)
+        public void WarnException(string? message, Exception exception)
         {
             _inner.Warn(exception, message);
         }
 
         /// <inheritdoc/>
-        public void Warn(Exception exception, string message)
+        public void Warn(Exception exception, string? message)
         {
             _inner.Warn(exception, message);
         }
@@ -568,13 +568,13 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc/>
-        public void Warn(string message)
+        public void Warn(string? message)
         {
             _inner.Warn(message);
         }
 
         /// <inheritdoc/>
-        public void Warn<T>(string message)
+        public void Warn<T>(string? message)
         {
             LogResolver.Resolve(typeof(T)).Warn(message);
         }
@@ -622,13 +622,13 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc/>
-        public void ErrorException(string message, Exception exception)
+        public void ErrorException(string? message, Exception exception)
         {
             _inner.Error(exception, message);
         }
 
         /// <inheritdoc/>
-        public void Error(Exception exception, string message)
+        public void Error(Exception exception, string? message)
         {
             _inner.Error(exception, message);
         }
@@ -640,13 +640,13 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc/>
-        public void Error(string message)
+        public void Error(string? message)
         {
             _inner.Error(message);
         }
 
         /// <inheritdoc/>
-        public void Error<T>(string message)
+        public void Error<T>(string? message)
         {
             LogResolver.Resolve(typeof(T)).Error(message);
         }
@@ -694,13 +694,13 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc/>
-        public void FatalException(string message, Exception exception)
+        public void FatalException(string? message, Exception exception)
         {
             _inner.Fatal(exception, message);
         }
 
         /// <inheritdoc/>
-        public void Fatal(Exception exception, string message)
+        public void Fatal(Exception exception, string? message)
         {
             _inner.Fatal(exception, message);
         }
@@ -712,13 +712,13 @@ namespace Splat.NLog
         }
 
         /// <inheritdoc/>
-        public void Fatal(string message)
+        public void Fatal(string? message)
         {
             _inner.Fatal(message);
         }
 
         /// <inheritdoc/>
-        public void Fatal<T>(string message)
+        public void Fatal<T>(string? message)
         {
             LogResolver.Resolve(typeof(T)).Fatal(message);
         }
@@ -1053,7 +1053,7 @@ namespace Splat.NLog
             _inner.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10);
         }
 
-        private void OnInnerLoggerReconfigured(object sender, EventArgs e)
+        private void OnInnerLoggerReconfigured(object? sender, EventArgs e)
         {
             SetLogLevel();
         }

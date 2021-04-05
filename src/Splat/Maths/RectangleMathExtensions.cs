@@ -20,7 +20,7 @@ namespace Splat
         /// <returns>The point of the center of the rectangle.</returns>
         public static PointF Center(this RectangleF value)
         {
-            return new PointF(value.X + (value.Width / 2.0f), value.Y + (value.Height / 2.0f));
+            return new(value.X + (value.Width / 2.0f), value.Y + (value.Height / 2.0f));
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace Splat
         /// <returns>The inverted rentangle.</returns>
         public static RectangleF InvertWithin(this RectangleF value, RectangleF containingRect)
         {
-            return new RectangleF(value.X, containingRect.Height - value.Bottom, value.Width, value.Height);
+            return new(value.X, containingRect.Height - value.Bottom, value.Width, value.Height);
         }
 
         /// <summary>

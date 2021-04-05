@@ -16,7 +16,6 @@ namespace Splat
     public class DefaultModeDetector : IModeDetector, IEnableLogger
     {
         /// <inheritdoc />
-        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Logged for user.")]
         public bool? InUnitTestRunner()
         {
             var testAssemblies = new[]
@@ -46,7 +45,9 @@ namespace Splat
         private static bool SearchForAssembly(IEnumerable<string> assemblyList)
         {
             return AppDomain.CurrentDomain.GetAssemblies()
-                .Select(x => x.FullName.ToUpperInvariant())
+                .Select(x => x.FullName?.ToUpperInvariant())
+                .Where(x => x is not null)
+                .Select(x => x!)
                 .Any(x => assemblyList.Any(name => x.IndexOf(name, StringComparison.InvariantCultureIgnoreCase) != -1));
         }
     }

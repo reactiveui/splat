@@ -16,7 +16,6 @@ namespace Splat.Ninject
         /// Initializes an instance of <see cref="NinjectDependencyResolver"/> that overrides the default <see cref="Locator"/>.
         /// </summary>
         /// <param name="kernel">The kernel.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Dispose handled by locator.")]
         public static void UseNinjectDependencyResolver(this IKernel kernel) =>
             Locator.SetLocator(new NinjectDependencyResolver(kernel));
     }

@@ -26,7 +26,7 @@ namespace Splat
         /// <returns>The <see cref="UIColor"/> generated value.</returns>
         public static UIColor ToNative(this SplatColor value)
         {
-            return new UIColor(value.R / 255.0f, value.G / 255.0f, value.B / 255.0f, value.A / 255.0f);
+            return new(value.R / 255.0f, value.G / 255.0f, value.B / 255.0f, value.A / 255.0f);
         }
 
         /// <summary>

@@ -14,7 +14,6 @@ namespace Splat.Tests.Logging
     /// Tests that check the functionality of the <see cref="AllocationFreeLoggerBase"/> class.
     /// </summary>
     /// <typeparam name="T">The type of logger to test.</typeparam>
-    [SuppressMessage("Naming", "CA1034: Do not nest type", Justification = "Deliberate usage")]
     public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLoggerTestBase<T>
         where T : IAllocationFreeLogger
     {

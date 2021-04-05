@@ -13,17 +13,15 @@ namespace Splat.SimpleInjector
     /// <summary>
     /// sad.
     /// </summary>
-#pragma warning disable CA1063 // Implement IDisposable Correctly
     public class SimpleInjectorInitializer : IDependencyResolver
-#pragma warning restore CA1063 // Implement IDisposable Correctly
     {
-        private readonly object _lockObject = new object();
+        private readonly object _lockObject = new();
 
         /// <summary>
         /// Gets dictionary of registered factories.
         /// </summary>
         public Dictionary<Type, List<Func<object>>> RegisteredFactories { get; }
-            = new Dictionary<Type, List<Func<object>>>();
+            = new();
 
         /// <inheritdoc />
         public object? GetService(Type serviceType, string? contract = null)
@@ -88,7 +86,7 @@ namespace Splat.SimpleInjector
         }
 
         /// <inheritdoc />
-        public IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
+        public IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback)
         {
             throw new NotImplementedException();
         }

@@ -16,10 +16,11 @@ namespace Splat.Prism
     /// A container for the Prism application.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Match Prism naming scheme.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Analyzers", "CA1065: Don't throw exceptions from properties", Justification = "Deliberate usage")]
     public class SplatContainerExtension : IContainerExtension<IDependencyResolver>, IDisposable
     {
-        private readonly ConcurrentDictionary<(Type type, string contract), Type> _types = new ConcurrentDictionary<(Type type, string contract), Type>();
-        private Action _disposeAction;
+        private readonly ConcurrentDictionary<(Type type, string? contract), Type> _types = new();
+        private Action? _disposeAction;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SplatContainerExtension"/> class.
@@ -36,9 +37,7 @@ namespace Splat.Prism
         public IDependencyResolver Instance { get; } = new ModernDependencyResolver();
 
         /// <inheritdoc/>
-#pragma warning disable CA1065 // Do not raise exceptions in unexpected locations
         public IScopedProvider CurrentScope => throw new NotImplementedException();
-#pragma warning restore CA1065 // Do not raise exceptions in unexpected locations
 
         /// <inheritdoc/>
         public IScopedProvider CreateScope()
@@ -86,7 +85,7 @@ namespace Splat.Prism
         public IContainerRegistry Register(Type from, Type to)
         {
             _types[(from, null)] = to;
-            Instance.Register(() => Activator.CreateInstance(to), from);
+            Instance.Register(() => Activator.CreateInstance(to) ?? throw new InvalidOperationException("Could not create type"), from);
             return this;
         }
 
@@ -108,7 +107,7 @@ namespace Splat.Prism
         public IContainerRegistry Register(Type from, Type to, string name)
         {
             _types[(from, name)] = to;
-            Instance.Register(() => Activator.CreateInstance(to), from, name);
+            Instance.Register(() => Activator.CreateInstance(to) ?? throw new InvalidOperationException("Could not create type"), from, name);
             return this;
         }
 
@@ -136,7 +135,7 @@ namespace Splat.Prism
 
             foreach (Type serviceType in serviceTypes)
             {
-                Instance.Register(() => Activator.CreateInstance(type), serviceType);
+                Instance.Register(() => Activator.CreateInstance(type) ?? throw new InvalidOperationException("Could not create type"), serviceType);
             }
 
             return this;
@@ -187,7 +186,7 @@ namespace Splat.Prism
         public IContainerRegistry RegisterSingleton(Type from, Type to)
         {
             _types[(from, null)] = to;
-            Instance.RegisterLazySingleton(() => Activator.CreateInstance(to), from);
+            Instance.RegisterLazySingleton(() => Activator.CreateInstance(to) ?? throw new InvalidOperationException("Could not create type"), from);
             return this;
         }
 
@@ -224,7 +223,7 @@ namespace Splat.Prism
         public IContainerRegistry RegisterSingleton(Type from, Type to, string name)
         {
             _types[(from, null)] = to;
-            Instance.RegisterLazySingleton(() => Activator.CreateInstance(to), from, name);
+            Instance.RegisterLazySingleton(() => Activator.CreateInstance(to) ?? throw new InvalidOperationException("Could not create type"), from, name);
             return this;
         }
 
@@ -241,33 +240,38 @@ namespace Splat.Prism
         }
 
         /// <inheritdoc/>
-        public object Resolve(Type type)
+        public object? Resolve(Type type)
         {
             return Instance.GetService(type);
         }
 
         /// <inheritdoc/>
-        public object Resolve(Type type, params (Type Type, object Instance)[] parameters)
+        public object? Resolve(Type type, params (Type Type, object Instance)[] parameters)
         {
             if (_types.TryGetValue((type, null), out var resolvedType))
             {
-                return Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance));
+                return Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance)) ?? throw new InvalidOperationException("Could not create type");
             }
 
             return null;
         }
 
         /// <inheritdoc/>
-        public object Resolve(Type type, string name)
+        public object? Resolve(Type type, string name)
         {
             return Instance.GetService(type, name);
         }
 
         /// <inheritdoc/>
-        public object Resolve(Type type, string name, params (Type Type, object Instance)[] parameters)
+        public object? Resolve(Type type, string name, params (Type Type, object Instance)[] parameters)
         {
             if (!_types.TryGetValue((type, name), out var resolvedType))
             {
+                if (resolvedType is null)
+                {
+                    return null;
+                }
+
                 return Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance));
             }
 

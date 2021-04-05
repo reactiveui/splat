@@ -14,11 +14,11 @@ namespace Splat.Microsoft.Extensions.Logging
     {
         public static KeyValuePair<LogLevel, global::Microsoft.Extensions.Logging.LogLevel>[] Mappings { get; } =
         {
-            new KeyValuePair<LogLevel, global::Microsoft.Extensions.Logging.LogLevel>(LogLevel.Debug, global::Microsoft.Extensions.Logging.LogLevel.Debug),
-            new KeyValuePair<LogLevel, global::Microsoft.Extensions.Logging.LogLevel>(LogLevel.Info, global::Microsoft.Extensions.Logging.LogLevel.Information),
-            new KeyValuePair<LogLevel, global::Microsoft.Extensions.Logging.LogLevel>(LogLevel.Warn, global::Microsoft.Extensions.Logging.LogLevel.Warning),
-            new KeyValuePair<LogLevel, global::Microsoft.Extensions.Logging.LogLevel>(LogLevel.Error, global::Microsoft.Extensions.Logging.LogLevel.Error),
-            new KeyValuePair<LogLevel, global::Microsoft.Extensions.Logging.LogLevel>(LogLevel.Fatal, global::Microsoft.Extensions.Logging.LogLevel.Critical)
+            new(LogLevel.Debug, global::Microsoft.Extensions.Logging.LogLevel.Debug),
+            new(LogLevel.Info, global::Microsoft.Extensions.Logging.LogLevel.Information),
+            new(LogLevel.Warn, global::Microsoft.Extensions.Logging.LogLevel.Warning),
+            new(LogLevel.Error, global::Microsoft.Extensions.Logging.LogLevel.Error),
+            new(LogLevel.Fatal, global::Microsoft.Extensions.Logging.LogLevel.Critical)
         };
 
         public static ImmutableDictionary<LogLevel, global::Microsoft.Extensions.Logging.LogLevel> Splat2MsLogDictionary { get; } = Mappings.ToImmutableDictionary();

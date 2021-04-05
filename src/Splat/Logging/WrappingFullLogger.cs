@@ -26,22 +26,20 @@ namespace Splat
         public WrappingFullLogger(ILogger inner)
             : base(inner)
         {
-            _inner = inner;
+            _inner = inner ?? throw new ArgumentNullException(nameof(inner));
 
-            _stringFormat = typeof(string).GetMethod("Format", new[] { typeof(IFormatProvider), typeof(string), typeof(object[]) });
-            Contract.Requires(inner != null);
-            Contract.Requires(_stringFormat != null);
+            _stringFormat = typeof(string).GetMethod("Format", new[] { typeof(IFormatProvider), typeof(string), typeof(object[]) }) ?? throw new InvalidOperationException("Cannot find the Format method which is required.");
         }
 
         /// <inheritdoc />
         public void Debug<T>(T value)
         {
-            if (value == null)
+            if (value is null)
             {
                 return;
             }
 
-            _inner.Write(value.ToString(), LogLevel.Debug);
+            _inner.Write(value.ToString() ?? "(null)", LogLevel.Debug);
         }
 
         /// <inheritdoc />
@@ -51,13 +49,13 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void DebugException(string message, Exception exception)
+        public void DebugException(string? message, Exception exception)
         {
             _inner.Write(exception, $"{message}: {exception}", LogLevel.Debug);
         }
 
         /// <inheritdoc />
-        public void Debug(Exception exception, string message)
+        public void Debug(Exception exception, string? message)
         {
             _inner.Write(exception, $"{message}", LogLevel.Debug);
         }
@@ -71,15 +69,15 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Debug(string message)
+        public void Debug(string? message)
         {
-            _inner.Write(message, LogLevel.Debug);
+            _inner.Write(message ?? "(null)", LogLevel.Debug);
         }
 
         /// <inheritdoc />
-        public void Debug<T>(string message)
+        public void Debug<T>(string? message)
         {
-            _inner.Write(message, typeof(T), LogLevel.Debug);
+            _inner.Write(message ?? "(null)", typeof(T), LogLevel.Debug);
         }
 
         /// <inheritdoc />
@@ -117,12 +115,12 @@ namespace Splat
         /// <inheritdoc />
         public void Info<T>(T value)
         {
-            if (value == null)
+            if (value is null)
             {
                 return;
             }
 
-            _inner.Write(value.ToString(), LogLevel.Info);
+            _inner.Write(value.ToString() ?? "(null)", LogLevel.Info);
         }
 
         /// <inheritdoc />
@@ -132,13 +130,13 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void InfoException(string message, Exception exception)
+        public void InfoException(string? message, Exception exception)
         {
             _inner.Write(exception, $"{message}: {exception}", LogLevel.Info);
         }
 
         /// <inheritdoc />
-        public void Info(Exception exception, string message)
+        public void Info(Exception exception, string? message)
         {
             _inner.Write(exception, $"{message}", LogLevel.Info);
         }
@@ -151,15 +149,15 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Info(string message)
+        public void Info(string? message)
         {
-            _inner.Write(message, LogLevel.Info);
+            _inner.Write(message ?? "(null)", LogLevel.Info);
         }
 
         /// <inheritdoc />
-        public void Info<T>(string message)
+        public void Info<T>(string? message)
         {
-            _inner.Write(message, typeof(T), LogLevel.Info);
+            _inner.Write(message ?? "(null)", typeof(T), LogLevel.Info);
         }
 
         /// <inheritdoc />
@@ -197,12 +195,12 @@ namespace Splat
         /// <inheritdoc />
         public void Warn<T>(T value)
         {
-            if (value == null)
+            if (value is null)
             {
                 return;
             }
 
-            _inner.Write(value.ToString(), LogLevel.Warn);
+            _inner.Write(value.ToString() ?? "(null)", LogLevel.Warn);
         }
 
         /// <inheritdoc />
@@ -212,13 +210,13 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void WarnException(string message, Exception exception)
+        public void WarnException(string? message, Exception exception)
         {
             _inner.Write(exception, $"{message}: {exception}", LogLevel.Warn);
         }
 
         /// <inheritdoc />
-        public void Warn(Exception exception, string message)
+        public void Warn(Exception exception, string? message)
         {
             _inner.Write(exception, $"{message}", LogLevel.Warn);
         }
@@ -231,15 +229,15 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Warn(string message)
+        public void Warn(string? message)
         {
-            _inner.Write(message, LogLevel.Warn);
+            _inner.Write(message ?? "(null)", LogLevel.Warn);
         }
 
         /// <inheritdoc />
-        public void Warn<T>(string message)
+        public void Warn<T>(string? message)
         {
-            _inner.Write(message, typeof(T), LogLevel.Warn);
+            _inner.Write(message ?? "(null)", typeof(T), LogLevel.Warn);
         }
 
         /// <inheritdoc />
@@ -277,12 +275,12 @@ namespace Splat
         /// <inheritdoc />
         public void Error<T>(T value)
         {
-            if (value == null)
+            if (value is null)
             {
                 return;
             }
 
-            _inner.Write(value.ToString(), LogLevel.Error);
+            _inner.Write(value.ToString() ?? "(null)", LogLevel.Error);
         }
 
         /// <inheritdoc />
@@ -292,13 +290,13 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void ErrorException(string message, Exception exception)
+        public void ErrorException(string? message, Exception exception)
         {
             _inner.Write(exception, $"{message}: {exception}", LogLevel.Error);
         }
 
         /// <inheritdoc />
-        public void Error(Exception exception, string message)
+        public void Error(Exception exception, string? message)
         {
             _inner.Write(exception, $"{message}", LogLevel.Error);
         }
@@ -311,15 +309,15 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Error(string message)
+        public void Error(string? message)
         {
-            _inner.Write(message, LogLevel.Error);
+            _inner.Write(message ?? "(null)", LogLevel.Error);
         }
 
         /// <inheritdoc />
-        public void Error<T>(string message)
+        public void Error<T>(string? message)
         {
-            _inner.Write(message, typeof(T), LogLevel.Error);
+            _inner.Write(message ?? "(null)", typeof(T), LogLevel.Error);
         }
 
         /// <inheritdoc />
@@ -357,12 +355,12 @@ namespace Splat
         /// <inheritdoc />
         public void Fatal<T>(T value)
         {
-            if (value == null)
+            if (value is null)
             {
                 return;
             }
 
-            _inner.Write(value.ToString(), LogLevel.Fatal);
+            _inner.Write(value.ToString() ?? "(null)", LogLevel.Fatal);
         }
 
         /// <inheritdoc />
@@ -372,13 +370,13 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void FatalException(string message, Exception exception)
+        public void FatalException(string? message, Exception exception)
         {
             _inner.Write(exception, $"{message}: {exception}", LogLevel.Fatal);
         }
 
         /// <inheritdoc />
-        public void Fatal(Exception exception, string message)
+        public void Fatal(Exception exception, string? message)
         {
             _inner.Write(exception, $"{message}", LogLevel.Fatal);
         }
@@ -391,15 +389,15 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Fatal(string message)
+        public void Fatal(string? message)
         {
-            _inner.Write(message, LogLevel.Fatal);
+            _inner.Write(message ?? "(null)", LogLevel.Fatal);
         }
 
         /// <inheritdoc />
-        public void Fatal<T>(string message)
+        public void Fatal<T>(string? message)
         {
-            _inner.Write(message, typeof(T), LogLevel.Fatal);
+            _inner.Write(message ?? "(null)", typeof(T), LogLevel.Fatal);
         }
 
         /// <inheritdoc />
@@ -436,11 +434,11 @@ namespace Splat
 
         private string InvokeStringFormat(IFormatProvider formatProvider, string message, object[] args)
         {
-            var sfArgs = new object[3];
+            var sfArgs = new object?[3];
             sfArgs[0] = formatProvider;
             sfArgs[1] = message;
             sfArgs[2] = args;
-            return (string)_stringFormat.Invoke(null, sfArgs);
+            return (string?)_stringFormat.Invoke(null, sfArgs) ?? "(null)";
         }
     }
 }

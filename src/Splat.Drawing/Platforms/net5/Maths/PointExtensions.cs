@@ -39,7 +39,7 @@ namespace Splat
         /// <returns>A <see cref="System.Drawing.PointF"/> of the value.</returns>
         public static System.Drawing.PointF FromNative(this Point value)
         {
-            return new System.Drawing.PointF((float)value.X, (float)value.Y);
+            return new((float)value.X, (float)value.Y);
         }
     }
 }

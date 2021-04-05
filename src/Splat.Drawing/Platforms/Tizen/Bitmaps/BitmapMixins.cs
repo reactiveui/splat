@@ -3,6 +3,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
+
 using Tizen.Multimedia.Util;
 
 namespace Splat
@@ -34,7 +36,7 @@ namespace Splat
                 throw new System.ArgumentNullException(nameof(value));
             }
 
-            return ((TizenBitmap)value).Inner;
+            return ((TizenBitmap)value).Inner ?? throw new InvalidOperationException("Bitmap has been disposed");
         }
     }
 }

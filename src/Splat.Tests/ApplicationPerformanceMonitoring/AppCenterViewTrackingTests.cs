@@ -20,7 +20,7 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring
             /// <inheritdoc/>
             protected override AppCenterViewTracking GetViewTracking()
             {
-                return new AppCenterViewTracking();
+                return new();
             }
         }
     }

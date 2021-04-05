@@ -3,6 +3,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,7 +25,7 @@ namespace Splat
     /// </summary>
     internal sealed class CocoaBitmap : IBitmap
     {
-        private UIImage _inner;
+        private UIImage? _inner;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CocoaBitmap"/> class.
@@ -36,19 +37,24 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public float Width => (float)_inner.Size.Width;
+        public float Width => (float)(_inner?.Size.Width ?? 0);
 
         /// <inheritdoc />
-        public float Height => (float)_inner.Size.Height;
+        public float Height => (float)(_inner?.Size.Height ?? 0);
 
         /// <summary>
         /// Gets the native image.
         /// </summary>
-        internal UIImage Inner => _inner;
+        internal UIImage Inner => _inner ?? throw new InvalidOperationException("Inner bitmap is no longer valid");
 
         /// <inheritdoc />
         public Task Save(CompressedBitmapFormat format, float quality, Stream target)
         {
+            if (_inner is null)
+            {
+                return Task.CompletedTask;
+            }
+
             return Task.Run(() =>
             {
 #if UIKIT
@@ -78,7 +84,7 @@ namespace Splat
         public void Dispose()
         {
             var disp = Interlocked.Exchange(ref _inner, null);
-            if (disp != null)
+            if (disp is not null)
             {
                 disp.Dispose();
             }

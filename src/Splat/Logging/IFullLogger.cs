@@ -41,15 +41,15 @@ namespace Splat
         /// </summary>
         /// <param name="message">A message to emit.</param>
         /// <param name="exception">The exception which to emit in the log.</param>
-        [Obsolete("Use void Debug(Exception exception, [Localizable(false)] string message)")]
-        void DebugException([Localizable(false)] string message, Exception exception);
+        [Obsolete("Use void Debug(Exception exception, [Localizable(false)] string? message)")]
+        void DebugException([Localizable(false)] string? message, Exception exception);
 
         /// <summary>
         /// Emits a debug log message with an exception.
         /// </summary>
         /// <param name="exception">The exception.</param>
         /// <param name="message">The message.</param>
-        void Debug(Exception exception, [Localizable(false)] string message);
+        void Debug(Exception exception, [Localizable(false)] string? message);
 
         /// <summary>
         /// Emits a message using formatting to the debug log.
@@ -63,14 +63,14 @@ namespace Splat
         /// Emits a message to the debug log.
         /// </summary>
         /// <param name="message">A non-localizable message to send to the log.</param>
-        void Debug([Localizable(false)] string message);
+        void Debug([Localizable(false)] string? message);
 
         /// <summary>
         /// Emits a message to the debug log.
         /// </summary>
         /// <typeparam name="T">The calling type.</typeparam>
         /// <param name="message">A non-localizable message to send to the log.</param>
-        void Debug<T>([Localizable(false)] string message);
+        void Debug<T>([Localizable(false)] string? message);
 
         /// <summary>
         /// Emits a message using formatting to the debug log.
@@ -144,8 +144,8 @@ namespace Splat
         /// </summary>
         /// <param name="message">A message to emit.</param>
         /// <param name="exception">The exception which to emit in the log.</param>
-        [Obsolete("Use void Info(Exception exception, [Localizable(false)] string message)")]
-        void InfoException([Localizable(false)] string message, Exception exception);
+        [Obsolete("Use void Info(Exception exception, [Localizable(false)] string? message)")]
+        void InfoException([Localizable(false)] string? message, Exception exception);
 
         /// <summary>
         /// Emits a info log message with exception.
@@ -154,7 +154,7 @@ namespace Splat
         /// </summary>
         /// <param name="exception">The exception which to emit in the log.</param>
         /// <param name="message">A message to emit.</param>
-        void Info(Exception exception, [Localizable(false)] string message);
+        void Info(Exception exception, [Localizable(false)] string? message);
 
         /// <summary>
         /// Emits a message using formatting to the info log.
@@ -168,14 +168,14 @@ namespace Splat
         /// Emits a message to the info log.
         /// </summary>
         /// <param name="message">A non-localizable message to send to the log.</param>
-        void Info([Localizable(false)] string message);
+        void Info([Localizable(false)] string? message);
 
         /// <summary>
         /// Emits a message to the info log.
         /// </summary>
         /// <typeparam name="T">The calling type.</typeparam>
         /// <param name="message">A non-localizable message to send to the log.</param>
-        void Info<T>([Localizable(false)] string message);
+        void Info<T>([Localizable(false)] string? message);
 
         /// <summary>
         /// Emits a message using formatting to the info log.
@@ -249,8 +249,8 @@ namespace Splat
         /// </summary>
         /// <param name="message">A message to emit.</param>
         /// <param name="exception">The exception which to emit in the log.</param>
-        [Obsolete("Use void Warn(Exception exception, [Localizable(false)] string message)")]
-        void WarnException([Localizable(false)] string message, Exception exception);
+        [Obsolete("Use void Warn(Exception exception, [Localizable(false)] string? message)")]
+        void WarnException([Localizable(false)] string? message, Exception exception);
 
         /// <summary>
         /// Emits a warning log message with exception.
@@ -259,7 +259,7 @@ namespace Splat
         /// </summary>
         /// <param name="exception">The exception which to emit in the log.</param>
         /// <param name="message">A message to emit.</param>
-        void Warn(Exception exception, [Localizable(false)] string message);
+        void Warn(Exception exception, [Localizable(false)] string? message);
 
         /// <summary>
         /// Emits a message using formatting to the warning log.
@@ -273,14 +273,14 @@ namespace Splat
         /// Emits a message to the warning log.
         /// </summary>
         /// <param name="message">A non-localizable message to send to the log.</param>
-        void Warn([Localizable(false)] string message);
+        void Warn([Localizable(false)] string? message);
 
         /// <summary>
         /// Emits a message to the warning log.
         /// </summary>
         /// <typeparam name="T">The calling type.</typeparam>
         /// <param name="message">A non-localizable message to send to the log.</param>
-        void Warn<T>([Localizable(false)] string message);
+        void Warn<T>([Localizable(false)] string? message);
 
         /// <summary>
         /// Emits a message using formatting to the warning log.
@@ -354,8 +354,8 @@ namespace Splat
         /// </summary>
         /// <param name="message">A message to emit.</param>
         /// <param name="exception">The exception which to emit in the log.</param>
-        [Obsolete("Use void Error(Exception exception, [Localizable(false)] string message)")]
-        void ErrorException([Localizable(false)] string message, Exception exception);
+        [Obsolete("Use void Error(Exception exception, [Localizable(false)] string? message)")]
+        void ErrorException([Localizable(false)] string? message, Exception exception);
 
         /// <summary>
         /// Emits a error log message with exception.
@@ -364,7 +364,7 @@ namespace Splat
         /// </summary>
         /// <param name="exception">The exception which to emit in the log.</param>
         /// <param name="message">A message to emit.</param>
-        void Error(Exception exception, [Localizable(false)] string message);
+        void Error(Exception exception, [Localizable(false)] string? message);
 
         /// <summary>
         /// Emits a message using formatting to the error log.
@@ -378,14 +378,14 @@ namespace Splat
         /// Emits a message to the error log.
         /// </summary>
         /// <param name="message">A non-localizable message to send to the log.</param>
-        void Error([Localizable(false)] string message);
+        void Error([Localizable(false)] string? message);
 
         /// <summary>
         /// Emits a message to the error log.
         /// </summary>
         /// <typeparam name="T">The calling type.</typeparam>
         /// <param name="message">A non-localizable message to send to the log.</param>
-        void Error<T>([Localizable(false)] string message);
+        void Error<T>([Localizable(false)] string? message);
 
         /// <summary>
         /// Emits a message using formatting to the error log.
@@ -459,8 +459,8 @@ namespace Splat
         /// </summary>
         /// <param name="message">A message to emit.</param>
         /// <param name="exception">The exception which to emit in the log.</param>
-        [Obsolete("Use void Fatal(Exception exception, [Localizable(false)] string message)")]
-        void FatalException([Localizable(false)] string message, Exception exception);
+        [Obsolete("Use void Fatal(Exception exception, [Localizable(false)] string? message)")]
+        void FatalException([Localizable(false)] string? message, Exception exception);
 
         /// <summary>
         /// Emits a fatal log message with exception.
@@ -469,7 +469,7 @@ namespace Splat
         /// </summary>
         /// <param name="exception">The exception which to emit in the log.</param>
         /// <param name="message">A message to emit.</param>
-        void Fatal(Exception exception, [Localizable(false)] string message);
+        void Fatal(Exception exception, [Localizable(false)] string? message);
 
         /// <summary>
         /// Emits a message using formatting to the fatal log.
@@ -483,14 +483,14 @@ namespace Splat
         /// Emits a message to the fatal log.
         /// </summary>
         /// <param name="message">A non-localizable message to send to the log.</param>
-        void Fatal([Localizable(false)] string message);
+        void Fatal([Localizable(false)] string? message);
 
         /// <summary>
         /// Emits a message to the fatal log.
         /// </summary>
         /// <typeparam name="T">The calling type.</typeparam>
         /// <param name="message">A non-localizable message to send to the log.</param>
-        void Fatal<T>([Localizable(false)] string message);
+        void Fatal<T>([Localizable(false)] string? message);
 
         /// <summary>
         /// Emits a message using formatting to the fatal log.

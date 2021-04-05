@@ -17,20 +17,20 @@ namespace Splat
     public class PlatformBitmapLoader : IBitmapLoader
     {
         /// <inheritdoc />
-        public Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
+        public Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
-            return Task.Run(() =>
+            return Task.Run<IBitmap?>(() =>
             {
                 var ret = new BitmapImage();
 
                 WithInit(ret, source =>
                 {
-                    if (desiredWidth != null)
+                    if (desiredWidth is not null)
                     {
                         source.DecodePixelWidth = (int)desiredWidth;
                     }
 
-                    if (desiredHeight != null)
+                    if (desiredHeight is not null)
                     {
                         source.DecodePixelHeight = (int)desiredHeight;
                     }
@@ -39,24 +39,24 @@ namespace Splat
                     source.CacheOption = BitmapCacheOption.OnLoad;
                 });
 
-                return (IBitmap)new BitmapSourceBitmap(ret);
+                return new BitmapSourceBitmap(ret);
             });
         }
 
         /// <inheritdoc />
-        public Task<IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
+        public Task<IBitmap?> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
         {
-            return Task.Run(() =>
+            return Task.Run<IBitmap?>(() =>
             {
                 var ret = new BitmapImage();
                 WithInit(ret, x =>
                 {
-                    if (desiredWidth != null)
+                    if (desiredWidth is not null)
                     {
                         x.DecodePixelWidth = (int)desiredWidth;
                     }
 
-                    if (desiredHeight != null)
+                    if (desiredHeight is not null)
                     {
                         x.DecodePixelHeight = (int)desiredHeight;
                     }
@@ -64,7 +64,7 @@ namespace Splat
                     x.UriSource = new Uri(source, UriKind.RelativeOrAbsolute);
                 });
 
-                return (IBitmap)new BitmapSourceBitmap(ret);
+                return new BitmapSourceBitmap(ret);
             });
         }
 

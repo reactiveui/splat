@@ -20,21 +20,20 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
     /// Microsoft DI implementation for <see cref="IDependencyResolver"/>.
     /// </summary>
     /// <seealso cref="IDependencyResolver" />
-    [SuppressMessage("Globalization", "CA1303", Justification = "Unnecessary warning")]
     public class MicrosoftDependencyResolver : IDependencyResolver
     {
         private const string ImmutableExceptionMessage = "This container has already been built and cannot be modified.";
         private static readonly Type _dictionaryType = typeof(ContractDictionary<>);
-        private readonly object _syncLock = new object();
-        private IServiceCollection _serviceCollection;
+        private readonly object _syncLock = new();
+        private IServiceCollection? _serviceCollection;
         private bool _isImmutable;
-        private IServiceProvider _serviceProvider;
+        private IServiceProvider? _serviceProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MicrosoftDependencyResolver" /> class with an <see cref="IServiceCollection"/>.
         /// </summary>
         /// <param name="services">An instance of <see cref="IServiceCollection"/>.</param>
-        public MicrosoftDependencyResolver(IServiceCollection services = null)
+        public MicrosoftDependencyResolver(IServiceCollection? services = null)
         {
             _serviceCollection = services ?? new ServiceCollection();
         }
@@ -56,7 +55,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
             {
                 lock (_syncLock)
                 {
-                    if (_serviceProvider == null)
+                    if (_serviceProvider is null)
                     {
                         _serviceProvider = _serviceCollection.BuildServiceProvider();
                     }
@@ -72,7 +71,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         /// <param name="serviceProvider">A ready to use service provider.</param>
         public void UpdateContainer(IServiceProvider serviceProvider)
         {
-            if (serviceProvider == null)
+            if (serviceProvider is null)
             {
                 throw new ArgumentNullException(nameof(serviceProvider));
             }
@@ -86,23 +85,23 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         }
 
         /// <inheritdoc />
-        public virtual object GetService(Type serviceType, string contract = null) =>
+        public virtual object? GetService(Type serviceType, string? contract = null) =>
             GetServices(serviceType, contract).LastOrDefault();
 
         /// <inheritdoc />
-        public virtual IEnumerable<object> GetServices(Type serviceType, string contract = null)
+        public virtual IEnumerable<object> GetServices(Type serviceType, string? contract = null)
         {
-            var isNull = serviceType == null;
-            if (isNull)
+            var isNull = serviceType is null;
+            if (serviceType is null)
             {
                 serviceType = typeof(NullServiceType);
             }
 
             IEnumerable<object> services;
 
-            if (string.IsNullOrWhiteSpace(contract))
+            if (contract is null || string.IsNullOrWhiteSpace(contract))
             {
-                services = ServiceProvider.GetServices(serviceType);
+                services = ServiceProvider.GetServices(serviceType).Where(x => x is not null).Select(x => x!);
                 if (isNull)
                 {
                     services = services
@@ -123,25 +122,25 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         }
 
         /// <inheritdoc />
-        public virtual void Register(Func<object> factory, Type serviceType, string contract = null)
+        public virtual void Register(Func<object> factory, Type serviceType, string? contract = null)
         {
             if (_isImmutable)
             {
                 throw new InvalidOperationException(ImmutableExceptionMessage);
             }
 
-            var isNull = serviceType == null;
+            var isNull = serviceType is null;
 
-            if (isNull)
+            if (serviceType is null)
             {
                 serviceType = typeof(NullServiceType);
             }
 
             lock (_syncLock)
             {
-                if (string.IsNullOrWhiteSpace(contract))
+                if (contract is null || string.IsNullOrWhiteSpace(contract))
                 {
-                    _serviceCollection.AddTransient(serviceType, _ =>
+                    _serviceCollection?.AddTransient(serviceType, _ =>
                     isNull
                     ? new NullServiceType(factory)
                     : factory());
@@ -150,7 +149,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                 {
                     var dic = GetContractDictionary(serviceType, true);
 
-                    dic.AddFactory(contract, factory);
+                    dic?.AddFactory(contract, factory);
                 }
 
                 // required so that it gets rebuilt if not injected externally.
@@ -159,29 +158,32 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         }
 
         /// <inheritdoc/>
-        public virtual void UnregisterCurrent(Type serviceType, string contract = null)
+        public virtual void UnregisterCurrent(Type serviceType, string? contract = null)
         {
             if (_isImmutable)
             {
                 throw new InvalidOperationException(ImmutableExceptionMessage);
             }
 
-            if (serviceType == null)
+            if (serviceType is null)
             {
                 serviceType = typeof(NullServiceType);
             }
 
             lock (_syncLock)
             {
-                if (contract == null)
+                if (contract is null || string.IsNullOrWhiteSpace(contract))
                 {
-                    var sd = _serviceCollection.LastOrDefault(s => s.ServiceType == serviceType);
-                    _serviceCollection.Remove(sd);
+                    var sd = _serviceCollection?.LastOrDefault(s => s.ServiceType == serviceType);
+                    if (sd is not null)
+                    {
+                        _serviceCollection?.Remove(sd);
+                    }
                 }
                 else
                 {
                     var dic = GetContractDictionary(serviceType, false);
-                    if (dic != null)
+                    if (dic is not null)
                     {
                         dic.RemoveLastFactory(contract);
                         if (dic.IsEmpty)
@@ -203,21 +205,21 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="serviceType">The service type to unregister.</param>
         /// <param name="contract">This parameter is ignored. Service will be removed from all contracts.</param>
-        public virtual void UnregisterAll(Type serviceType, string contract = null)
+        public virtual void UnregisterAll(Type serviceType, string? contract = null)
         {
             if (_isImmutable)
             {
                 throw new InvalidOperationException(ImmutableExceptionMessage);
             }
 
-            if (serviceType == null)
+            if (serviceType is null)
             {
                 serviceType = typeof(NullServiceType);
             }
 
             lock (_syncLock)
             {
-                if (contract == null)
+                if (contract is null && _serviceCollection is not null)
                 {
                     var sds = _serviceCollection
                         .Where(s => s.ServiceType == serviceType)
@@ -228,10 +230,14 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                         _serviceCollection.Remove(sd);
                     }
                 }
+                else if (contract is null)
+                {
+                    throw new ArgumentException("There must be a valid contract if there is no service collection.", nameof(contract));
+                }
                 else
                 {
                     var dic = GetContractDictionary(serviceType, false);
-                    if (dic != null && dic.TryRemoveContract(contract) && dic.IsEmpty)
+                    if (dic is not null && dic.TryRemoveContract(contract) && dic.IsEmpty)
                     {
                         RemoveContractService(serviceType);
                     }
@@ -243,30 +249,30 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         }
 
         /// <inheritdoc />
-        public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
+        public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback)
         {
             // this method is not used by RxUI
             throw new NotImplementedException();
         }
 
         /// <inheritdoc/>
-        public virtual bool HasRegistration(Type serviceType, string contract = null)
+        public virtual bool HasRegistration(Type serviceType, string? contract = null)
         {
-            if (serviceType == null)
+            if (serviceType is null)
             {
                 serviceType = typeof(NullServiceType);
             }
 
             if (!_isImmutable)
             {
-                if (string.IsNullOrWhiteSpace(contract))
+                if (contract is null || string.IsNullOrWhiteSpace(contract))
                 {
-                    return _serviceCollection.Any(sd => sd.ServiceType == serviceType);
+                    return _serviceCollection?.Any(sd => sd.ServiceType == serviceType) == true;
                 }
 
-                var dictionary = (ContractDictionary)_serviceCollection.FirstOrDefault(sd => sd.ServiceType == GetDictionaryType(serviceType))?.ImplementationInstance;
+                var dictionary = (ContractDictionary?)_serviceCollection?.FirstOrDefault(sd => sd.ServiceType == GetDictionaryType(serviceType))?.ImplementationInstance;
 
-                if (dictionary == null)
+                if (dictionary is null)
                 {
                     return false;
                 }
@@ -274,10 +280,10 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                 return dictionary.GetFactories(contract).Select(f => f()).Any();
             }
 
-            if (contract == null)
+            if (contract is null)
             {
-                var service = _serviceProvider.GetService(serviceType);
-                return service != null;
+                var service = _serviceProvider?.GetService(serviceType);
+                return service is not null;
             }
 
             var dic = GetContractDictionary(serviceType, false);
@@ -304,36 +310,44 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         private void RemoveContractService(Type serviceType)
         {
             var dicType = GetDictionaryType(serviceType);
-            var sd = _serviceCollection.SingleOrDefault(s => s.ServiceType == serviceType);
-            _serviceCollection.Remove(sd);
+            var sd = _serviceCollection?.SingleOrDefault(s => s.ServiceType == serviceType);
+
+            if (sd is not null)
+            {
+                _serviceCollection?.Remove(sd);
+            }
         }
 
         [SuppressMessage("Naming Rules", "SA1300", Justification = "Intentional")]
-        private ContractDictionary GetContractDictionary(Type serviceType, bool createIfNotExists)
+        private ContractDictionary? GetContractDictionary(Type serviceType, bool createIfNotExists)
         {
             var dicType = GetDictionaryType(serviceType);
 
             if (_isImmutable)
             {
-                return (ContractDictionary)ServiceProvider.GetService(dicType);
+                return (ContractDictionary?)ServiceProvider.GetService(dicType);
             }
 
             var dic = getDictionary();
-            if (createIfNotExists && dic == null)
+            if (createIfNotExists && dic is null)
             {
                 lock (_syncLock)
                 {
                     if (createIfNotExists)
                     {
-                        dic = (ContractDictionary)Activator.CreateInstance(dicType);
-                        _serviceCollection.AddSingleton(dicType, dic);
+                        dic = (ContractDictionary?)Activator.CreateInstance(dicType);
+
+                        if (dic is not null)
+                        {
+                            _serviceCollection?.AddSingleton(dicType, dic);
+                        }
                     }
                 }
             }
 
             return dic;
 
-            ContractDictionary getDictionary() => _serviceCollection
+            ContractDictionary? getDictionary() => _serviceCollection?
                     .Where(sd => sd.ServiceType == dicType)
                     .Select(sd => sd.ImplementationInstance)
                     .Cast<ContractDictionary>()
@@ -342,14 +356,14 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
 
         private class ContractDictionary
         {
-            private readonly ConcurrentDictionary<string, IList<Func<object>>> _dictionary = new ConcurrentDictionary<string, IList<Func<object>>>();
+            private readonly ConcurrentDictionary<string, List<Func<object>>> _dictionary = new();
 
             public bool IsEmpty => _dictionary.IsEmpty;
 
             public bool TryRemoveContract(string contract) =>
                 _dictionary.TryRemove(contract, out var _);
 
-            public Func<object> GetFactory(string contract) =>
+            public Func<object>? GetFactory(string contract) =>
                 GetFactories(contract)
                     .LastOrDefault();
 
@@ -361,7 +375,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
             public void AddFactory(string contract, Func<object> factory) =>
                 _dictionary.AddOrUpdate(contract, _ => new List<Func<object>> { factory }, (_, list) =>
                 {
-                    if (list == null)
+                    if (list is null)
                     {
                         list = new List<Func<object>>();
                     }
@@ -371,7 +385,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                 });
 
             public void RemoveLastFactory(string contract) =>
-                _dictionary.AddOrUpdate(contract, default(IList<Func<object>>), (_, list) =>
+                _dictionary.AddOrUpdate(contract, new List<Func<object>>(), (_, list) =>
                 {
                     var lastIndex = list.Count - 1;
                     if (lastIndex > 0)

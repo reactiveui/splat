@@ -24,7 +24,7 @@ namespace Splat.ApplicationPerformanceMonitoring
             string featureName)
         {
             var featureUsageTrackingSession = Locator.Current.GetService<IFeatureUsageTrackingManager>();
-            if (featureUsageTrackingSession == null)
+            if (featureUsageTrackingSession is null)
             {
                 throw new InvalidOperationException("Feature Usage Tracking Manager is null. This should never happen, your dependency resolver is broken");
             }

@@ -19,7 +19,7 @@ namespace Splat
         /// <returns>A <see cref="Size"/> of the value.</returns>
         public static Size ToNative(this System.Drawing.Size value)
         {
-            return new Size(value.Width, value.Height);
+            return new(value.Width, value.Height);
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace Splat
         /// <returns>A <see cref="Size"/> of the value.</returns>
         public static Size ToNative(this System.Drawing.SizeF value)
         {
-            return new Size(value.Width, value.Height);
+            return new(value.Width, value.Height);
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Splat
         /// <returns>A <see cref="System.Drawing.SizeF"/> of the value.</returns>
         public static System.Drawing.SizeF FromNative(this Size value)
         {
-            return new System.Drawing.SizeF((float)value.Width, (float)value.Height);
+            return new((float)value.Width, (float)value.Height);
         }
     }
 }

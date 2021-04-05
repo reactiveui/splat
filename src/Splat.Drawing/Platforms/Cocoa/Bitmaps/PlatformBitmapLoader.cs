@@ -26,20 +26,18 @@ namespace Splat
     public class PlatformBitmapLoader : IBitmapLoader
     {
         /// <inheritdoc />
-        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Logs message but a non-failing operation.")]
-        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Dispose handled by user.")]
-        public Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
+        public Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
             var data = NSData.FromStream(sourceStream);
 
-            var tcs = new TaskCompletionSource<IBitmap>();
+            var tcs = new TaskCompletionSource<IBitmap?>();
 #if UIKIT
             NSRunLoop.InvokeInBackground(() =>
             {
                 try
                 {
                     var bitmap = UIImage.LoadFromData(data);
-                    if (bitmap == null)
+                    if (bitmap is null)
                     {
                         throw new InvalidOperationException("Failed to load image");
                     }
@@ -59,10 +57,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Logs message but a non-failing operation.")]
-        public Task<IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
+        public Task<IBitmap?> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
         {
-            var tcs = new TaskCompletionSource<IBitmap>();
+            var tcs = new TaskCompletionSource<IBitmap?>();
 
 #if UIKIT
             NSRunLoop.InvokeInBackground(() =>
@@ -70,7 +67,7 @@ namespace Splat
                 try
                 {
                     var bitmap = UIImage.FromBundle(source);
-                    if (bitmap == null)
+                    if (bitmap is null)
                     {
                         throw new InvalidOperationException("Failed to load image from resource: " + source);
                     }
@@ -89,7 +86,7 @@ namespace Splat
                 try
                 {
                     var bitmap = UIImage.ImageNamed(source);
-                    if (bitmap == null)
+                    if (bitmap is null)
                     {
                         throw new InvalidOperationException("Failed to load image from resource: " + source);
                     }

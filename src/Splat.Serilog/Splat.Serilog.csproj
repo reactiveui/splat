@@ -8,6 +8,7 @@
     <Description>Serilog integrations for Splat</Description>
     <PackageId>Splat.Serilog</PackageId>
     <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Serilog" Version="2.10.0" />

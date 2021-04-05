@@ -21,7 +21,7 @@ namespace Splat
         /// <param name="desiredWidth">The desired width of the image.</param>
         /// <param name="desiredHeight">The desired height of the image.</param>
         /// <returns>A future result representing the loaded image.</returns>
-        Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight);
+        Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight);
 
         /// <summary>
         /// Loads from the application's resources (i.e. from bundle on Cocoa,
@@ -31,7 +31,7 @@ namespace Splat
         /// <param name="desiredWidth">Desired width.</param>
         /// <param name="desiredHeight">Desired height.</param>
         /// <returns>A future result representing the loaded image.</returns>
-        Task<IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight);
+        Task<IBitmap?> LoadFromResource(string source, float? desiredWidth, float? desiredHeight);
 
         /// <summary>
         /// Creates an empty bitmap of the specified dimensions.
@@ -39,6 +39,6 @@ namespace Splat
         /// <param name="width">The width of the canvas.</param>
         /// <param name="height">The height of the canvas.</param>
         /// <returns>A new image. Use ToNative() to convert this to a native bitmap.</returns>
-        IBitmap Create(float width, float height);
+        IBitmap? Create(float width, float height);
     }
 }

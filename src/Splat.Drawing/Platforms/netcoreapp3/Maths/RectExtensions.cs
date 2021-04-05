@@ -19,7 +19,7 @@ namespace Splat
         /// <returns>A <see cref="Rect"/> of the value.</returns>
         public static Rect ToNative(this System.Drawing.Rectangle value)
         {
-            return new Rect(value.X, value.Y, value.Width, value.Height);
+            return new(value.X, value.Y, value.Width, value.Height);
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace Splat
         /// <returns>A <see cref="Rect"/> of the value.</returns>
         public static Rect ToNative(this System.Drawing.RectangleF value)
         {
-            return new Rect(value.X, value.Y, value.Width, value.Height);
+            return new(value.X, value.Y, value.Width, value.Height);
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Splat
         /// <returns>A <see cref="System.Drawing.RectangleF"/> of the value.</returns>
         public static System.Drawing.RectangleF FromNative(this Rect value)
         {
-            return new System.Drawing.RectangleF((float)value.X, (float)value.Y, (float)value.Width, (float)value.Height);
+            return new((float)value.X, (float)value.Y, (float)value.Width, (float)value.Height);
         }
     }
 }

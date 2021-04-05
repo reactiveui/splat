@@ -431,7 +431,7 @@ namespace Splat.Tests.Logging
             /// <returns>Log Level.</returns>
             protected abstract Splat.LogLevel GetLogLevel();
 
-            private static StaticFullLogger GetLogger(TextLogger textLogger) => new StaticFullLogger(new WrappingFullLogger(textLogger));
+            private static StaticFullLogger GetLogger(TextLogger textLogger) => new(new WrappingFullLogger(textLogger));
 
             private static StaticFullLogger GetLogger(LogLevel logLevel)
             {

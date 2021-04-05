@@ -13,7 +13,7 @@ namespace Splat
 {
     internal sealed class DrawableBitmap : IBitmap
     {
-        private Drawable _inner;
+        private Drawable? _inner;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DrawableBitmap"/> class.
@@ -33,7 +33,7 @@ namespace Splat
         /// <summary>
         /// Gets the internal Drawable we are wrapping.
         /// </summary>
-        internal Drawable Inner => _inner;
+        internal Drawable Inner => _inner ?? throw new InvalidOperationException("Attempting to retrieve a disposed bitmap");
 
         public Task Save(CompressedBitmapFormat format, float quality, Stream target)
         {
@@ -43,7 +43,7 @@ namespace Splat
         public void Dispose()
         {
             var disp = Interlocked.Exchange(ref _inner, null);
-            if (disp != null)
+            if (disp is not null)
             {
                 disp.Dispose();
             }

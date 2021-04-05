@@ -47,9 +47,9 @@ namespace Splat
     }
     public interface IBitmapLoader
     {
-        Splat.IBitmap Create(float width, float height);
-        System.Threading.Tasks.Task<Splat.IBitmap> Load(System.IO.Stream sourceStream, float? desiredWidth, float? desiredHeight);
-        System.Threading.Tasks.Task<Splat.IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight);
+        Splat.IBitmap? Create(float width, float height);
+        System.Threading.Tasks.Task<Splat.IBitmap?> Load(System.IO.Stream sourceStream, float? desiredWidth, float? desiredHeight);
+        System.Threading.Tasks.Task<Splat.IBitmap?> LoadFromResource(string source, float? desiredWidth, float? desiredHeight);
     }
     public interface IPlatformModeDetector
     {
@@ -236,8 +236,8 @@ namespace Splat
     {
         public PlatformBitmapLoader() { }
         public Splat.IBitmap Create(float width, float height) { }
-        public System.Threading.Tasks.Task<Splat.IBitmap> Load(System.IO.Stream sourceStream, float? desiredWidth, float? desiredHeight) { }
-        public System.Threading.Tasks.Task<Splat.IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight) { }
+        public System.Threading.Tasks.Task<Splat.IBitmap?> Load(System.IO.Stream sourceStream, float? desiredWidth, float? desiredHeight) { }
+        public System.Threading.Tasks.Task<Splat.IBitmap?> LoadFromResource(string source, float? desiredWidth, float? desiredHeight) { }
     }
     public static class PlatformModeDetector
     {
@@ -421,7 +421,7 @@ namespace Splat
         public static Splat.SplatColor Yellow { get; }
         public static Splat.SplatColor YellowGreen { get; }
         public bool Equals(Splat.SplatColor other) { }
-        public override bool Equals(object obj) { }
+        public override bool Equals(object? obj) { }
         public float GetBrightness() { }
         public override int GetHashCode() { }
         public float GetHue() { }

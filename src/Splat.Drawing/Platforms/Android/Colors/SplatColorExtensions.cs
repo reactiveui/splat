@@ -19,7 +19,7 @@ namespace Splat
         /// <returns>The <see cref="Color"/> generated.</returns>
         public static Color ToNative(this SplatColor value)
         {
-            return new Color(value.R, value.G, value.B, value.A);
+            return new(value.R, value.G, value.B, value.A);
         }
 
         /// <summary>

@@ -30,13 +30,13 @@ namespace Splat.Ninject
         }
 
         /// <inheritdoc />
-        public virtual object GetService(Type serviceType, string contract = null) =>
+        public virtual object? GetService(Type serviceType, string? contract = null) =>
             GetServices(serviceType, contract)?.LastOrDefault();
 
         /// <inheritdoc />
-        public virtual IEnumerable<object> GetServices(Type serviceType, string contract = null)
+        public virtual IEnumerable<object> GetServices(Type serviceType, string? contract = null)
         {
-            var isNull = serviceType == null;
+            var isNull = serviceType is null;
             if (isNull)
             {
                 serviceType = typeof(NullServiceType);
@@ -55,15 +55,15 @@ namespace Splat.Ninject
         }
 
         /// <inheritdoc />
-        public bool HasRegistration(Type serviceType, string contract = null)
+        public bool HasRegistration(Type serviceType, string? contract = null)
         {
             return _kernel.CanResolve(serviceType, metadata => IsCorrectMetadata(metadata, contract));
         }
 
         /// <inheritdoc />
-        public virtual void Register(Func<object> factory, Type serviceType, string contract = null)
+        public virtual void Register(Func<object> factory, Type serviceType, string? contract = null)
         {
-            var isNull = serviceType == null;
+            var isNull = serviceType is null;
 
             if (isNull)
             {
@@ -80,9 +80,9 @@ namespace Splat.Ninject
         }
 
         /// <inheritdoc />
-        public virtual void UnregisterCurrent(Type serviceType, string contract = null)
+        public virtual void UnregisterCurrent(Type serviceType, string? contract = null)
         {
-            var isNull = serviceType == null;
+            var isNull = serviceType is null;
 
             if (isNull)
             {
@@ -91,14 +91,14 @@ namespace Splat.Ninject
 
             var bindings = _kernel.GetBindings(serviceType).ToArray();
 
-            if (bindings?.Length < 1)
+            if (bindings is null || bindings.Length < 1)
             {
                 return;
             }
 
             var matchingBinding = bindings.LastOrDefault(x => IsCorrectMetadata(x.BindingConfiguration.Metadata, contract));
 
-            if (matchingBinding == null)
+            if (matchingBinding is null)
             {
                 return;
             }
@@ -107,9 +107,9 @@ namespace Splat.Ninject
         }
 
         /// <inheritdoc />
-        public virtual void UnregisterAll(Type serviceType, string contract = null)
+        public virtual void UnregisterAll(Type serviceType, string? contract = null)
         {
-            var isNull = serviceType == null;
+            var isNull = serviceType is null;
 
             if (isNull)
             {
@@ -118,7 +118,7 @@ namespace Splat.Ninject
 
             var bindings = _kernel.GetBindings(serviceType).ToArray();
 
-            if (bindings?.Length < 1)
+            if (bindings is null || bindings.Length < 1)
             {
                 return;
             }
@@ -137,7 +137,7 @@ namespace Splat.Ninject
         }
 
         /// <inheritdoc />
-        public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
+        public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback)
         {
             throw new NotImplementedException();
         }
@@ -158,14 +158,13 @@ namespace Splat.Ninject
             if (disposing)
             {
                 _kernel?.Dispose();
-                _kernel = null;
             }
         }
 
-        private static bool IsCorrectMetadata(global::Ninject.Planning.Bindings.IBindingMetadata metadata, string contract)
+        private static bool IsCorrectMetadata(global::Ninject.Planning.Bindings.IBindingMetadata metadata, string? contract)
         {
-            return (metadata?.Name == null && string.IsNullOrWhiteSpace(contract))
-                   || (metadata?.Name != null && metadata.Name.Equals(contract, StringComparison.OrdinalIgnoreCase));
+            return (metadata?.Name is null && string.IsNullOrWhiteSpace(contract))
+                   || (metadata?.Name is not null && metadata.Name.Equals(contract, StringComparison.OrdinalIgnoreCase));
         }
 
         [SuppressMessage("Design", "CA1812: Uninitialized class.", Justification = "Used in reflection.")]

@@ -47,37 +47,37 @@ namespace Splat
 
             // Check Silverlight / WP8 Design Mode
             var type = Type.GetType(XamlDesignPropertiesType, false);
-            if (type != null)
+            if (type is not null)
             {
                 var mInfo = type.GetMethod(XamlDesignPropertiesDesignModeMethodName);
                 var dependencyObject = Type.GetType(XamlControlBorderType, false);
 
-                if (dependencyObject != null)
+                if (mInfo is not null && dependencyObject is not null)
                 {
-                    _cachedInDesignModeResult = (bool)mInfo.Invoke(null, new object[] { Activator.CreateInstance(dependencyObject) });
+                    _cachedInDesignModeResult = (bool)(mInfo.Invoke(null, new[] { Activator.CreateInstance(dependencyObject) }) ?? false);
                 }
             }
-            else if ((type = Type.GetType(WpfDesignerPropertiesType, false)) != null)
+            else if ((type = Type.GetType(WpfDesignerPropertiesType, false)) is not null)
             {
                 // loaded the assembly, could be .net
                 var mInfo = type.GetMethod(WpfDesignerPropertiesDesignModeMethod);
                 var dependencyObject = Type.GetType(WpfDependencyPropertyType, false);
-                if (dependencyObject != null)
+                if (mInfo is not null && dependencyObject is not null)
                 {
-                    _cachedInDesignModeResult = (bool)mInfo.Invoke(null, new object[] { Activator.CreateInstance(dependencyObject) });
+                    _cachedInDesignModeResult = (bool)(mInfo.Invoke(null, new[] { Activator.CreateInstance(dependencyObject) }) ?? false);
                 }
             }
-            else if ((type = Type.GetType(WinFormsDesignerPropertiesType, false)) != null)
+            else if ((type = Type.GetType(WinFormsDesignerPropertiesType, false)) is not null)
             {
                 // check WinRT next
-                _cachedInDesignModeResult = (bool)type.GetProperty(WinFormsDesignerPropertiesDesignModeMethod).GetMethod.Invoke(null, null);
+                _cachedInDesignModeResult = (bool)(type.GetProperty(WinFormsDesignerPropertiesDesignModeMethod)?.GetMethod?.Invoke(null, null) ?? false);
             }
             else
             {
                 var designEnvironments = new[] { "BLEND.EXE", "XDESPROC.EXE" };
 
                 var entry = Assembly.GetEntryAssembly();
-                if (entry != null)
+                if (entry is not null)
                 {
                     var exeName = new FileInfo(entry.Location).Name;
 

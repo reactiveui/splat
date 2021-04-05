@@ -3,6 +3,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
+
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace Splat
@@ -44,13 +46,17 @@ namespace Splat
                 throw new System.ArgumentNullException(nameof(value));
             }
 
-            var wbib = value as WriteableBitmapImageBitmap;
-            if (wbib != null)
+            if (value is WriteableBitmapImageBitmap wbib)
             {
-                return wbib.Inner;
+                return wbib.Inner ?? throw new InvalidOperationException("The bitmap has been disposed");
             }
 
-            return ((BitmapImageBitmap)value).Inner;
+            if (value is BitmapImageBitmap bitmapImage)
+            {
+                return bitmapImage.Inner ?? throw new InvalidOperationException("The bitmap has been disposed");
+            }
+
+            throw new InvalidOperationException("The bitmap type is unsupported");
         }
     }
 }

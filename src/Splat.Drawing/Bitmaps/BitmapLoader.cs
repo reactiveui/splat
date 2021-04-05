@@ -3,6 +3,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Splat
@@ -15,7 +16,7 @@ namespace Splat
     {
         // TODO: This needs to be improved once we move the "Detect in Unit Test
         // Runner" code into Splat
-        private static IBitmapLoader _Current = Locator.Current.GetService<IBitmapLoader>();
+        private static IBitmapLoader? _current = Locator.Current.GetService<IBitmapLoader>();
 
         /// <summary>
         /// Gets or sets the current bitmap loader.
@@ -26,15 +27,15 @@ namespace Splat
         {
             get
             {
-                var ret = _Current;
-                if (ret == null)
+                var ret = _current;
+                if (ret is null)
                 {
                     throw new BitmapLoaderException("Could not find a default bitmap loader. This should never happen, your dependency resolver is broken");
                 }
 
                 return ret;
             }
-            set => _Current = value;
+            set => _current = value;
         }
     }
 }

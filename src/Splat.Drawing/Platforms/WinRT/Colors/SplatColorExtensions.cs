@@ -30,7 +30,7 @@ namespace Splat.Platforms.WinRT.Colors
         /// <returns>The <see cref="SolidColorBrush"/> generated.</returns>
         public static SolidColorBrush ToNativeBrush(this SplatColor value)
         {
-            return new SolidColorBrush(value.ToNative());
+            return new(value.ToNative());
         }
 
         /// <summary>
