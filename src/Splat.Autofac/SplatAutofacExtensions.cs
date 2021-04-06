@@ -18,7 +18,6 @@ namespace Splat.Autofac
         /// </summary>
         /// <param name="builder">Autofac container builder.</param>
         /// <returns>The Autofac dependency resolver.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Dispose handled by locator.")]
         public static AutofacDependencyResolver UseAutofacDependencyResolver(this ContainerBuilder builder)
         {
             var autofacResolver = new AutofacDependencyResolver(builder);

@@ -12,7 +12,6 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
     /// <summary>
     /// Extension methods for <see cref="MicrosoftDependencyResolver"/>.
     /// </summary>
-    [SuppressMessage("Reliability", "CA2000", Justification = "Intentional")]
     public static class SplatMicrosoftExtensions
     {
         /// <summary>

@@ -46,7 +46,7 @@ namespace Splat
                 return _cachedInUnitTestRunnerResult.Value;
             }
 
-            if (Current != null)
+            if (Current is not null)
             {
                 _cachedInUnitTestRunnerResult = Current.InUnitTestRunner();
                 if (_cachedInUnitTestRunnerResult.HasValue)

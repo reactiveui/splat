@@ -46,7 +46,7 @@ namespace Splat.Exceptionless
                 throw new ArgumentNullException(nameof(sourceType));
             }
 
-            _sourceType = sourceType.FullName;
+            _sourceType = sourceType.FullName ?? throw new ArgumentException("Cannot find the source type name", nameof(sourceType));
             _exceptionlessClient = exceptionlessClient ?? throw new ArgumentNullException(nameof(exceptionlessClient));
             _exceptionlessClient.Configuration.Changed += OnInnerLoggerReconfigured;
 
@@ -95,7 +95,7 @@ namespace Splat.Exceptionless
                 return;
             }
 
-            CreateLog(type.FullName, message, _mappingsDictionary[logLevel]);
+            CreateLog(type.FullName ?? "(unknown)", message, _mappingsDictionary[logLevel]);
         }
 
         /// <inheritdoc />
@@ -111,7 +111,7 @@ namespace Splat.Exceptionless
                 return;
             }
 
-            CreateLog(exception, type.FullName, message, _mappingsDictionary[logLevel]);
+            CreateLog(exception, type.FullName ?? "(unknown)", message, _mappingsDictionary[logLevel]);
         }
 
         private void CreateLog(string message, global::Exceptionless.Logging.LogLevel level)
@@ -179,7 +179,7 @@ namespace Splat.Exceptionless
             Level = LogLevel.Fatal;
         }
 
-        private void OnInnerLoggerReconfigured(object sender, EventArgs e)
+        private void OnInnerLoggerReconfigured(object? sender, EventArgs e)
         {
             SetLogLevel();
         }

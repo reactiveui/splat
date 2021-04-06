@@ -5,6 +5,7 @@
     <NoWarn>$(NoWarn);CA1801</NoWarn>
     <Description>DryIoc adapter for Splat</Description>
     <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

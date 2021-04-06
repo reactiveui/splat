@@ -23,25 +23,25 @@ namespace Splat.DryIoc
         /// Initializes a new instance of the <see cref="DryIocDependencyResolver" /> class.
         /// </summary>
         /// <param name="container">The container.</param>
-        public DryIocDependencyResolver(IContainer container = null)
+        public DryIocDependencyResolver(IContainer? container = null)
         {
             _container = container ?? new Container();
         }
 
         /// <inheritdoc />
-        public virtual object GetService(Type serviceType, string contract = null) =>
+        public virtual object? GetService(Type serviceType, string? contract = null) =>
             string.IsNullOrEmpty(contract)
                 ? _container.ResolveMany(serviceType).LastOrDefault()
                 : _container.ResolveMany(serviceType, serviceKey: contract).LastOrDefault();
 
         /// <inheritdoc />
-        public virtual IEnumerable<object> GetServices(Type serviceType, string contract = null) =>
+        public virtual IEnumerable<object> GetServices(Type serviceType, string? contract = null) =>
             string.IsNullOrEmpty(contract)
                 ? _container.ResolveMany(serviceType)
                 : _container.ResolveMany(serviceType, serviceKey: contract);
 
         /// <inheritdoc />
-        public bool HasRegistration(Type serviceType, string contract = null)
+        public bool HasRegistration(Type serviceType, string? contract = null)
         {
             return _container.GetServiceRegistrations().Any(x =>
             {
@@ -50,9 +50,9 @@ namespace Splat.DryIoc
                     return false;
                 }
 
-                if (contract == null)
+                if (contract is null)
                 {
-                    return x.OptionalServiceKey == null;
+                    return x.OptionalServiceKey is null;
                 }
 
                 return x.OptionalServiceKey is string serviceKeyAsString
@@ -61,7 +61,7 @@ namespace Splat.DryIoc
         }
 
         /// <inheritdoc />
-        public virtual void Register(Func<object> factory, Type serviceType, string contract = null)
+        public virtual void Register(Func<object> factory, Type serviceType, string? contract = null)
         {
             if (factory is null)
             {
@@ -79,7 +79,7 @@ namespace Splat.DryIoc
         }
 
         /// <inheritdoc />
-        public virtual void UnregisterCurrent(Type serviceType, string contract = null)
+        public virtual void UnregisterCurrent(Type serviceType, string? contract = null)
         {
             if (string.IsNullOrEmpty(contract))
             {
@@ -92,7 +92,7 @@ namespace Splat.DryIoc
         }
 
         /// <inheritdoc />
-        public virtual void UnregisterAll(Type serviceType, string contract = null)
+        public virtual void UnregisterAll(Type serviceType, string? contract = null)
         {
             if (string.IsNullOrEmpty(contract))
             {
@@ -105,7 +105,7 @@ namespace Splat.DryIoc
         }
 
         /// <inheritdoc />
-        public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
+        public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback)
         {
             throw new NotImplementedException();
         }
@@ -126,7 +126,6 @@ namespace Splat.DryIoc
             if (disposing)
             {
                 _container?.Dispose();
-                _container = null;
             }
         }
     }

@@ -15,8 +15,8 @@ namespace Splat.Tests.Mocks
     /// <seealso cref="Splat.ILogger" />
     public class TextLogger : ILogger, IMockLogTarget
     {
-        private readonly List<Type> _types = new List<Type>();
-        private readonly List<(LogLevel, string)> _logs = new List<(LogLevel, string)>();
+        private readonly List<Type> _types = new();
+        private readonly List<(LogLevel, string)> _logs = new();
 
         /// <inheritdoc />
         public ICollection<(LogLevel logLevel, string message)> Logs => _logs;

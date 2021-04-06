@@ -9,6 +9,7 @@
     <PackageId>Splat.Drawing</PackageId>
     <NoWarn>$(NoWarn);1591</NoWarn>
     <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition=" ($(TargetFramework.StartsWith('netcoreapp3')) or $(TargetFramework.StartsWith('net5'))) and '$(OS)' == 'Windows_NT' ">

@@ -3,6 +3,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -24,19 +25,24 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public float Width => (float)Inner.Width;
+        public float Width => (float)(Inner?.Width ?? 0);
 
         /// <inheritdoc />
-        public float Height => (float)Inner.Height;
+        public float Height => (float)(Inner?.Height ?? 0);
 
         /// <summary>
         /// Gets the platform <see cref="BitmapSource"/>.
         /// </summary>
-        public BitmapSource Inner { get; private set; }
+        public BitmapSource? Inner { get; private set; }
 
         /// <inheritdoc />
         public Task Save(CompressedBitmapFormat format, float quality, Stream target)
         {
+            if (target is null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
             return Task.Run(() =>
             {
                 var encoder = format == CompressedBitmapFormat.Jpeg ?

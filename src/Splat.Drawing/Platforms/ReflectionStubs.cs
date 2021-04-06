@@ -12,11 +12,11 @@ namespace Splat
 {
     internal static class ReflectionStubs
     {
-        public static FieldInfo GetField(this Type value, string name, BindingFlags flags = default(BindingFlags))
+        public static FieldInfo? GetField(this Type value, string name, BindingFlags flags = default)
         {
             var ti = value.GetTypeInfo();
             var ret = ti.GetDeclaredField(name);
-            if (ret != null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType == null)
+            if (ret is not null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType is null)
             {
                 return ret;
             }
@@ -24,11 +24,11 @@ namespace Splat
             return ti.BaseType.GetField(name, flags);
         }
 
-        public static MethodInfo GetMethod(this Type value, string name, BindingFlags flags = default(BindingFlags))
+        public static MethodInfo? GetMethod(this Type value, string name, BindingFlags flags = default)
         {
             var ti = value.GetTypeInfo();
             var ret = ti.GetDeclaredMethod(name);
-            if (ret != null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType == null)
+            if (ret is not null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType is null)
             {
                 return ret;
             }
@@ -36,11 +36,11 @@ namespace Splat
             return ti.BaseType.GetMethod(name, flags);
         }
 
-        public static PropertyInfo GetProperty(this Type value, string name, BindingFlags flags = default(BindingFlags))
+        public static PropertyInfo? GetProperty(this Type value, string name, BindingFlags flags = default)
         {
             var ti = value.GetTypeInfo();
             var ret = ti.GetDeclaredProperty(name);
-            if (ret != null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType == null)
+            if (ret is not null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType is null)
             {
                 return ret;
             }
@@ -48,11 +48,11 @@ namespace Splat
             return ti.BaseType.GetProperty(name, flags);
         }
 
-        public static EventInfo GetEvent(this Type value, string name, BindingFlags flags = default(BindingFlags))
+        public static EventInfo? GetEvent(this Type value, string name, BindingFlags flags = default)
         {
             var ti = value.GetTypeInfo();
             var ret = ti.GetDeclaredEvent(name);
-            if (ret != null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType == null)
+            if (ret is not null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType is null)
             {
                 return ret;
             }
@@ -70,13 +70,13 @@ namespace Splat
             return value.GetTypeInfo().DeclaredFields;
         }
 
-        public static MethodInfo GetMethod(this Type value, string methodName, Type[] paramTypes, BindingFlags flags = default(BindingFlags))
+        public static MethodInfo? GetMethod(this Type value, string methodName, Type[] paramTypes, BindingFlags flags = default)
         {
             var ti = value.GetTypeInfo();
             var ret = ti.GetDeclaredMethods(methodName)
                 .FirstOrDefault(x => paramTypes.Zip(x.GetParameters().Select(y => y.ParameterType), (l, r) => l == r).All(y => y));
 
-            if (ret != null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType == null)
+            if (ret is not null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType is null)
             {
                 return ret;
             }

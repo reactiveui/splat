@@ -8,6 +8,7 @@
     <Description>Visual Studio AppCenter integrations for Splat</Description>
     <PackageId>Splat.AppCenter</PackageId>
     <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

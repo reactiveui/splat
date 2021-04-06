@@ -66,7 +66,6 @@ namespace Splat.Microsoft.Extensions.Logging
         /// </summary>
         /// <param name="loggerFactory">Our logger provider.</param>
         /// <returns>The factory.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Dispose handled by locator.")]
         public static ILoggerFactory AddSplat(this ILoggerFactory loggerFactory)
         {
             if (loggerFactory is null)

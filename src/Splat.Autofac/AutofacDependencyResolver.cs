@@ -10,8 +10,6 @@ using System.Linq;
 using Autofac;
 using Autofac.Core;
 
-#pragma warning disable CS0618 // Obsolete values.
-
 namespace Splat.Autofac
 {
     /// <summary>
@@ -19,7 +17,7 @@ namespace Splat.Autofac
     /// </summary>
     public class AutofacDependencyResolver : IDependencyResolver
     {
-        private readonly object _lockObject = new object();
+        private readonly object _lockObject = new();
         private readonly ContainerBuilder _builder;
 
         /// <summary>
@@ -28,7 +26,7 @@ namespace Splat.Autofac
         /// </summary>
         private IContainer _internalContainer;
 
-        private ILifetimeScope _lifetimeScope;
+        private ILifetimeScope? _lifetimeScope;
 #pragma warning disable CA2213 // _internalLifetimeScope will be disposed, because it is a child of _internalContainer
         private ILifetimeScope _internalLifetimeScope;
 #pragma warning restore CA2213 // Disposable fields should be disposed
@@ -52,7 +50,7 @@ namespace Splat.Autofac
         }
 
         /// <inheritdoc />
-        public virtual object GetService(Type serviceType, string contract = null)
+        public virtual object? GetService(Type serviceType, string? contract = null)
         {
             lock (_lockObject)
             {
@@ -79,13 +77,13 @@ namespace Splat.Autofac
 
                 // We dispose on the internal container, since it and its many child lifetime scopes are not needed anymore.
                 _internalContainer.Dispose();
-                _internalContainer = null;
-                _internalLifetimeScope = null;
+                _internalContainer = new ContainerBuilder().Build();
+                _internalLifetimeScope = _internalContainer.BeginLifetimeScope();
             }
         }
 
         /// <inheritdoc />
-        public virtual IEnumerable<object> GetServices(Type serviceType, string contract = null)
+        public virtual IEnumerable<object> GetServices(Type serviceType, string? contract = null)
         {
             lock (_lockObject)
             {
@@ -93,23 +91,29 @@ namespace Splat.Autofac
                 {
                     var enumerableType = typeof(IEnumerable<>).MakeGenericType(serviceType);
                     var instance = Resolve(enumerableType, contract);
+
+                    if (instance is null)
+                    {
+                        return Array.Empty<object>();
+                    }
+
                     return ((IEnumerable)instance).Cast<object>();
                 }
                 catch (DependencyResolutionException)
                 {
-                    return null;
+                    return Array.Empty<object>();
                 }
             }
         }
 
         /// <inheritdoc />
-        public bool HasRegistration(Type serviceType, string contract = null)
+        public bool HasRegistration(Type serviceType, string? contract = null)
         {
             lock (_lockObject)
             {
                 var lifeTimeScope = _lifetimeScope ?? _internalLifetimeScope;
 
-                return string.IsNullOrEmpty(contract) ?
+                return contract is null || string.IsNullOrWhiteSpace(contract) ?
                     lifeTimeScope.IsRegistered(serviceType) :
                     lifeTimeScope.IsRegisteredWithName(contract, serviceType);
             }
@@ -129,7 +133,7 @@ namespace Splat.Autofac
         /// <param name="serviceType">The type which is used for the registration.</param>
         /// <param name="contract">A optional contract value which will indicates to only generate the value if this contract is specified.</param>
         [Obsolete("Because Autofac 5+ containers are immutable, this method should not be used by the end-user.")]
-        public virtual void Register(Func<object> factory, Type serviceType, string contract = null)
+        public virtual void Register(Func<object> factory, Type serviceType, string? contract = null)
         {
             lock (_lockObject)
             {
@@ -141,7 +145,7 @@ namespace Splat.Autofac
                 // We register every ReactiveUI service twice.
                 // First to the application-wide container, which we are still building.
                 // Second to child lifetimes in a temporary container, that is used only to satisfy ReactiveUI dependencies.
-                if (string.IsNullOrEmpty(contract))
+                if (contract is null || string.IsNullOrWhiteSpace(contract))
                 {
                     _builder.Register(_ => factory())
                         .As(serviceType)
@@ -175,7 +179,7 @@ namespace Splat.Autofac
         /// <inheritdoc />
         [Obsolete("Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore. " +
                   "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.")]
-        public virtual void UnregisterCurrent(Type serviceType, string contract = null) =>
+        public virtual void UnregisterCurrent(Type serviceType, string? contract = null) =>
             throw new NotImplementedException("Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore. " +
                                               "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.");
 
@@ -190,12 +194,12 @@ namespace Splat.Autofac
         /// <inheritdoc />
         [Obsolete("Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore. " +
                   "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.")]
-        public virtual void UnregisterAll(Type serviceType, string contract = null) =>
+        public virtual void UnregisterAll(Type serviceType, string? contract = null) =>
             throw new NotImplementedException("Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore. " +
                                               "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.");
 
         /// <inheritdoc />
-        public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback) =>
+        public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) =>
             throw new NotImplementedException();
 
         /// <inheritdoc />
@@ -215,19 +219,19 @@ namespace Splat.Autofac
             {
                 if (disposing)
                 {
-                    _lifetimeScope.ComponentRegistry.Dispose();
+                    _lifetimeScope?.ComponentRegistry.Dispose();
                     _internalContainer?.Dispose();
                 }
             }
         }
 
-        private object Resolve(Type serviceType, string contract)
+        private object? Resolve(Type serviceType, string? contract)
         {
-            object serviceInstance;
+            object? serviceInstance;
 
             var lifeTimeScope = _lifetimeScope ?? _internalLifetimeScope;
 
-            if (string.IsNullOrEmpty(contract))
+            if (contract is null || string.IsNullOrWhiteSpace(contract))
             {
                 lifeTimeScope.TryResolve(serviceType, out serviceInstance);
             }

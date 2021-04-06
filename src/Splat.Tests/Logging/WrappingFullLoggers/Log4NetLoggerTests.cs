@@ -24,7 +24,7 @@ namespace Splat.Tests.Logging
     /// </summary>
     public class Log4NetLoggerTests : FullLoggerTestBase
     {
-        private static readonly Dictionary<Level, LogLevel> _log4Net2Splat = new Dictionary<Level, LogLevel>
+        private static readonly Dictionary<Level, LogLevel> _log4Net2Splat = new()
         {
             { Level.Debug, LogLevel.Debug },
             { Level.Info,  LogLevel.Info },
@@ -33,7 +33,7 @@ namespace Splat.Tests.Logging
             { Level.Fatal, LogLevel.Fatal },
         };
 
-        private static readonly Dictionary<LogLevel, Level> _splat2log4net = new Dictionary<LogLevel, Level>
+        private static readonly Dictionary<LogLevel, Level> _splat2log4net = new()
         {
             { LogLevel.Debug,  Level.Debug },
             { LogLevel.Info,   Level.Info },
@@ -57,7 +57,7 @@ namespace Splat.Tests.Logging
         {
             Hierarchy hierarchy = (Hierarchy)LogManager.GetRepository(GetType().Assembly);
 
-            PatternLayout patternLayout = new PatternLayout
+            PatternLayout patternLayout = new()
             {
                 ConversionPattern = "%m %exception"
             };
@@ -101,7 +101,7 @@ namespace Splat.Tests.Logging
                     {
                         var currentLevel = _log4Net2Splat[x.Level];
 
-                        if (x.ExceptionObject != null)
+                        if (x.ExceptionObject is not null)
                         {
                             return (currentLevel, $"{x.MessageObject} {x.ExceptionObject}");
                         }

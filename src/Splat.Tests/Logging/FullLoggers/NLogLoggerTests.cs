@@ -17,23 +17,23 @@ namespace Splat.Tests.Logging
     /// </summary>
     public class NLogLoggerTests : FullLoggerTestBase
     {
-        private static readonly Dictionary<global::NLog.LogLevel, LogLevel> _NLog2Splat = new Dictionary<global::NLog.LogLevel, LogLevel>
-            {
+        private static readonly Dictionary<global::NLog.LogLevel, LogLevel> _NLog2Splat = new()
+        {
                 { global::NLog.LogLevel.Debug, LogLevel.Debug },
                 { global::NLog.LogLevel.Error, LogLevel.Error },
                 { global::NLog.LogLevel.Warn, LogLevel.Warn },
                 { global::NLog.LogLevel.Fatal, LogLevel.Fatal },
                 { global::NLog.LogLevel.Info, LogLevel.Info },
-            };
+        };
 
-        private static readonly Dictionary<LogLevel, global::NLog.LogLevel> _splat2NLog = new Dictionary<LogLevel, global::NLog.LogLevel>
-            {
+        private static readonly Dictionary<LogLevel, global::NLog.LogLevel> _splat2NLog = new()
+        {
                 { LogLevel.Debug, global::NLog.LogLevel.Debug },
                 { LogLevel.Error, global::NLog.LogLevel.Error },
                 { LogLevel.Warn, global::NLog.LogLevel.Warn },
                 { LogLevel.Fatal, global::NLog.LogLevel.Fatal },
                 { LogLevel.Info, global::NLog.LogLevel.Info },
-            };
+        };
 
         /// <inheritdoc/>
         protected override (IFullLogger logger, IMockLogTarget mockTarget) GetLogger(LogLevel minimumLogLevel)
@@ -56,7 +56,7 @@ namespace Splat.Tests.Logging
 
         private class MemoryTargetWrapper : TargetWithLayout, IMockLogTarget
         {
-            private readonly List<(LogLevel, string)> _logs = new List<(LogLevel, string)>();
+            private readonly List<(LogLevel, string)> _logs = new();
 
             public MemoryTargetWrapper()
             {

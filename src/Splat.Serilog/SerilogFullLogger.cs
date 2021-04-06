@@ -66,7 +66,7 @@ namespace Splat
         /// <inheritdoc />
         public void Debug<T>(T value)
         {
-            _logger.Debug(value.ToString());
+            _logger.Debug(value?.ToString());
         }
 
         /// <inheritdoc />
@@ -82,13 +82,13 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Debug([Localizable(false)] string message)
+        public void Debug([Localizable(false)] string? message)
         {
            _logger.Debug(message);
         }
 
         /// <inheritdoc />
-        public void Debug<T>([Localizable(false)] string message)
+        public void Debug<T>([Localizable(false)] string? message)
         {
             _logger.ForContext<T>().Debug(message);
         }
@@ -184,13 +184,13 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void DebugException([Localizable(false)] string message, Exception exception)
+        public void DebugException([Localizable(false)] string? message, Exception exception)
         {
             _logger.Debug(exception, message);
         }
 
         /// <inheritdoc />
-        public void Debug(Exception exception, [Localizable(false)] string message)
+        public void Debug(Exception exception, [Localizable(false)] string? message)
         {
             _logger.Debug(exception, message);
         }
@@ -198,7 +198,7 @@ namespace Splat
         /// <inheritdoc />
         public void Error<T>(T value)
         {
-            _logger.Error(value.ToString());
+            _logger.Error(value?.ToString());
         }
 
         /// <inheritdoc />
@@ -208,7 +208,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Error(Exception exception, string message)
+        public void Error(Exception exception, string? message)
         {
             _logger.Error(exception, message);
         }
@@ -220,13 +220,13 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Error([Localizable(false)] string message)
+        public void Error([Localizable(false)] string? message)
         {
            _logger.Error(message);
         }
 
         /// <inheritdoc />
-        public void Error<T>([Localizable(false)] string message)
+        public void Error<T>([Localizable(false)] string? message)
         {
             _logger.ForContext<T>().Error(message);
         }
@@ -322,7 +322,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void ErrorException([Localizable(false)] string message, Exception exception)
+        public void ErrorException([Localizable(false)] string? message, Exception exception)
         {
             _logger.Error(exception, message);
         }
@@ -330,7 +330,7 @@ namespace Splat
         /// <inheritdoc />
         public void Fatal<T>(T value)
         {
-            _logger.Fatal(value.ToString());
+            _logger.Fatal(value?.ToString());
         }
 
         /// <inheritdoc />
@@ -340,7 +340,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Fatal(Exception exception, string message)
+        public void Fatal(Exception exception, string? message)
         {
             _logger.Fatal(exception, message);
         }
@@ -352,13 +352,13 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Fatal([Localizable(false)] string message)
+        public void Fatal([Localizable(false)] string? message)
         {
            _logger.Fatal(message);
         }
 
         /// <inheritdoc />
-        public void Fatal<T>([Localizable(false)] string message)
+        public void Fatal<T>([Localizable(false)] string? message)
         {
             _logger.ForContext<T>().Fatal(message);
         }
@@ -454,7 +454,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void FatalException([Localizable(false)] string message, Exception exception)
+        public void FatalException([Localizable(false)] string? message, Exception exception)
         {
             _logger.Fatal(exception, message);
         }
@@ -462,7 +462,7 @@ namespace Splat
         /// <inheritdoc />
         public void Info<T>(T value)
         {
-            _logger.Information(value.ToString());
+            _logger.Information(value?.ToString());
         }
 
         /// <inheritdoc />
@@ -472,7 +472,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Info(Exception exception, string message)
+        public void Info(Exception exception, string? message)
         {
             _logger.Information(exception, message);
         }
@@ -484,13 +484,13 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Info([Localizable(false)] string message)
+        public void Info([Localizable(false)] string? message)
         {
            _logger.Information(message);
         }
 
         /// <inheritdoc />
-        public void Info<T>([Localizable(false)] string message)
+        public void Info<T>([Localizable(false)] string? message)
         {
             _logger.ForContext<T>().Information(message);
         }
@@ -586,7 +586,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void InfoException([Localizable(false)] string message, Exception exception)
+        public void InfoException([Localizable(false)] string? message, Exception exception)
         {
             _logger.Information(exception, message);
         }
@@ -594,7 +594,7 @@ namespace Splat
         /// <inheritdoc />
         public void Warn<T>(T value)
         {
-            _logger.Warning(value.ToString());
+            _logger.Warning(value?.ToString());
         }
 
         /// <inheritdoc />
@@ -604,7 +604,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Warn(Exception exception, string message)
+        public void Warn(Exception exception, string? message)
         {
             _logger.Warning(exception, message);
         }
@@ -616,13 +616,13 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Warn([Localizable(false)] string message)
+        public void Warn([Localizable(false)] string? message)
         {
            _logger.Warning(message);
         }
 
         /// <inheritdoc />
-        public void Warn<T>([Localizable(false)] string message)
+        public void Warn<T>([Localizable(false)] string? message)
         {
             _logger.ForContext<T>().Warning(message);
         }
@@ -718,7 +718,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void WarnException([Localizable(false)] string message, Exception exception)
+        public void WarnException([Localizable(false)] string? message, Exception exception)
         {
             _logger.Warning(exception, message);
         }

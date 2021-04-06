@@ -18,86 +18,51 @@ namespace Splat
         /// </summary>
         /// <param name="assembly">The assembly to get the target framework for.</param>
         /// <returns>The target framework or null if not known.</returns>
-        public static string GetTargetFrameworkName(this Assembly assembly)
+        public static string? GetTargetFrameworkName(this Assembly assembly)
         {
             var targetFrameworkAttribute = assembly.GetCustomAttribute<TargetFrameworkAttribute>();
 
-            return GetTargetFrameworkName(targetFrameworkAttribute.FrameworkName);
+            return GetTargetFrameworkName(targetFrameworkAttribute?.FrameworkName);
         }
 
-        internal static string GetTargetFrameworkName(string frameworkName)
+        internal static string? GetTargetFrameworkName(string? frameworkName)
         {
-            switch (frameworkName)
+            return frameworkName switch
             {
-                case ".NETCoreApp,Version=v5.0":
-                    return "net5.0";
-                case ".NETCoreApp,Version=v3.1":
-                    return "netcoreapp3.1";
-                case ".NETCoreApp,Version=v3.0":
-                    return "netcoreapp3.0";
-                case ".NETCoreApp,Version=v2.2":
-                    return "netcoreapp2.2";
-                case ".NETCoreApp,Version=v2.1":
-                    return "netcoreapp2.1";
-                case ".NETCoreApp,Version=v2.0":
-                    return "netcoreapp2.0";
-                case ".NETCoreApp,Version=v1.1":
-                    return "netcoreapp1.1";
-                case ".NETCoreApp,Version=v1.0":
-                    return "netcoreapp1.0";
-
-                case ".NETStandard,Version=v2.1":
-                    return "netstandard2.1";
-                case ".NETStandard,Version=v2.0":
-                    return "netstandard2.0";
-                case ".NETStandard,Version=v1.6":
-                    return "netstandard1.6";
-                case ".NETStandard,Version=v1.5":
-                    return "netstandard1.5";
-                case ".NETStandard,Version=v1.4":
-                    return "netstandard1.4";
-                case ".NETStandard,Version=v1.3":
-                    return "netstandard1.3";
-                case ".NETStandard,Version=v1.2":
-                    return "netstandard1.2";
-                case ".NETStandard,Version=v1.1":
-                    return "netstandard1.1";
-                case ".NETStandard,Version=v1.0":
-                    return "netstandard1.0";
-
-                case ".NETFramework,Version=v4.8":
-                    return "net48";
-                case ".NETFramework,Version=v4.7.2":
-                    return "net472";
-                case ".NETFramework,Version=v4.7.1":
-                    return "net471";
-                case ".NETFramework,Version=v4.7":
-                    return "net47";
-                case ".NETFramework,Version=v4.6.2":
-                    return "net462";
-                case ".NETFramework,Version=v4.6.1":
-                    return "net461";
-                case ".NETFramework,Version=v4.6":
-                    return "net46";
-                case ".NETFramework,Version=v4.5.2":
-                    return "net452";
-                case ".NETFramework,Version=v4.5.1":
-                    return "net451";
-                case ".NETFramework,Version=v4.5":
-                    return "net45";
-                case ".NETFramework,Version=v4.0.3":
-                    return "net403";
-                case ".NETFramework,Version=v4.0":
-                    return "net40";
-                case ".NETFramework,Version=v3.5":
-                    return "net35";
-                case ".NETFramework,Version=v2.0":
-                    return "net20";
-                case ".NETFramework,Version=v1.1":
-                    return "net11";
-            }
-
-            return null;
+                ".NETCoreApp,Version=v5.0" => "net5.0",
+                ".NETCoreApp,Version=v3.1" => "netcoreapp3.1",
+                ".NETCoreApp,Version=v3.0" => "netcoreapp3.0",
+                ".NETCoreApp,Version=v2.2" => "netcoreapp2.2",
+                ".NETCoreApp,Version=v2.1" => "netcoreapp2.1",
+                ".NETCoreApp,Version=v2.0" => "netcoreapp2.0",
+                ".NETCoreApp,Version=v1.1" => "netcoreapp1.1",
+                ".NETCoreApp,Version=v1.0" => "netcoreapp1.0",
+                ".NETStandard,Version=v2.1" => "netstandard2.1",
+                ".NETStandard,Version=v2.0" => "netstandard2.0",
+                ".NETStandard,Version=v1.6" => "netstandard1.6",
+                ".NETStandard,Version=v1.5" => "netstandard1.5",
+                ".NETStandard,Version=v1.4" => "netstandard1.4",
+                ".NETStandard,Version=v1.3" => "netstandard1.3",
+                ".NETStandard,Version=v1.2" => "netstandard1.2",
+                ".NETStandard,Version=v1.1" => "netstandard1.1",
+                ".NETStandard,Version=v1.0" => "netstandard1.0",
+                ".NETFramework,Version=v4.8" => "net48",
+                ".NETFramework,Version=v4.7.2" => "net472",
+                ".NETFramework,Version=v4.7.1" => "net471",
+                ".NETFramework,Version=v4.7" => "net47",
+                ".NETFramework,Version=v4.6.2" => "net462",
+                ".NETFramework,Version=v4.6.1" => "net461",
+                ".NETFramework,Version=v4.6" => "net46",
+                ".NETFramework,Version=v4.5.2" => "net452",
+                ".NETFramework,Version=v4.5.1" => "net451",
+                ".NETFramework,Version=v4.5" => "net45",
+                ".NETFramework,Version=v4.0.3" => "net403",
+                ".NETFramework,Version=v4.0" => "net40",
+                ".NETFramework,Version=v3.5" => "net35",
+                ".NETFramework,Version=v2.0" => "net20",
+                ".NETFramework,Version=v1.1" => "net11",
+                _ => null,
+            };
         }
     }
 }

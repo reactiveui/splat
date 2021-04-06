@@ -21,7 +21,7 @@ namespace Splat
         /// Initializes a new instance of the <see cref="DefaultLogManager"/> class.
         /// </summary>
         /// <param name="dependencyResolver">A dependency resolver for testing purposes, will use the default Locator if null.</param>
-        public DefaultLogManager(IReadonlyDependencyResolver dependencyResolver = null)
+        public DefaultLogManager(IReadonlyDependencyResolver? dependencyResolver = null)
         {
             dependencyResolver = dependencyResolver ?? Locator.Current;
 
@@ -29,7 +29,7 @@ namespace Splat
                 (type, _) =>
                 {
                     var ret = dependencyResolver.GetService<ILogger>();
-                    if (ret == null)
+                    if (ret is null)
                     {
                         throw new LoggingException("Couldn't find an ILogger. This should never happen, your dependency resolver is probably broken.");
                     }

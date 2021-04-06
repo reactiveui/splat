@@ -20,11 +20,11 @@ namespace Splat
         /// </summary>
         public static KeyValuePair<LogLevel, LogEventLevel>[] Mappings { get; } =
         {
-            new KeyValuePair<LogLevel, LogEventLevel>(LogLevel.Debug, LogEventLevel.Debug),
-            new KeyValuePair<LogLevel, LogEventLevel>(LogLevel.Info, LogEventLevel.Information),
-            new KeyValuePair<LogLevel, LogEventLevel>(LogLevel.Warn, LogEventLevel.Warning),
-            new KeyValuePair<LogLevel, LogEventLevel>(LogLevel.Error, LogEventLevel.Error),
-            new KeyValuePair<LogLevel, LogEventLevel>(LogLevel.Fatal, LogEventLevel.Fatal)
+            new(LogLevel.Debug, LogEventLevel.Debug),
+            new(LogLevel.Info, LogEventLevel.Information),
+            new(LogLevel.Warn, LogEventLevel.Warning),
+            new(LogLevel.Error, LogEventLevel.Error),
+            new(LogLevel.Fatal, LogEventLevel.Fatal)
         };
 
         /// <summary>

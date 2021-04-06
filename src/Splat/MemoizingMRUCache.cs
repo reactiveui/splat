@@ -24,10 +24,11 @@ namespace Splat
     /// <typeparam name="TVal">The type of the value returned by the calculation
     /// function.</typeparam>
     public sealed class MemoizingMRUCache<TParam, TVal>
+        where TParam : notnull
     {
-        private readonly object _lockObject = new object();
-        private readonly Func<TParam, object, TVal> _calculationFunction;
-        private readonly Action<TVal> _releaseFunction;
+        private readonly object _lockObject = new();
+        private readonly Func<TParam, object?, TVal> _calculationFunction;
+        private readonly Action<TVal>? _releaseFunction;
         private readonly int _maxCacheSize;
 
         private readonly IEqualityComparer<TParam> _comparer;
@@ -43,7 +44,7 @@ namespace Splat
         /// user-defined.</param>
         /// <param name="maxSize">The size of the cache to maintain, after which old
         /// items will start to be thrown out.</param>
-        public MemoizingMRUCache(Func<TParam, object, TVal> calculationFunc, int maxSize)
+        public MemoizingMRUCache(Func<TParam, object?, TVal> calculationFunc, int maxSize)
             : this(calculationFunc, maxSize, null, EqualityComparer<TParam>.Default)
         {
         }
@@ -59,7 +60,7 @@ namespace Splat
         /// <param name="onRelease">A function to call when a result gets
         /// evicted from the cache (i.e. because Invalidate was called or the
         /// cache is full).</param>
-        public MemoizingMRUCache(Func<TParam, object, TVal> calculationFunc, int maxSize, Action<TVal> onRelease)
+        public MemoizingMRUCache(Func<TParam, object?, TVal> calculationFunc, int maxSize, Action<TVal> onRelease)
             : this(calculationFunc, maxSize, onRelease, EqualityComparer<TParam>.Default)
         {
         }
@@ -73,7 +74,7 @@ namespace Splat
         /// <param name="maxSize">The size of the cache to maintain, after which old
         /// items will start to be thrown out.</param>
         /// <param name="paramComparer">A comparer for the parameter.</param>
-        public MemoizingMRUCache(Func<TParam, object, TVal> calculationFunc, int maxSize, IEqualityComparer<TParam> paramComparer)
+        public MemoizingMRUCache(Func<TParam, object?, TVal> calculationFunc, int maxSize, IEqualityComparer<TParam> paramComparer)
             : this(calculationFunc, maxSize, null, paramComparer)
         {
         }
@@ -90,16 +91,19 @@ namespace Splat
         /// evicted from the cache (i.e. because Invalidate was called or the
         /// cache is full).</param>
         /// <param name="paramComparer">A comparer for the parameter.</param>
-        public MemoizingMRUCache(Func<TParam, object, TVal> calculationFunc, int maxSize, Action<TVal> onRelease, IEqualityComparer<TParam> paramComparer)
+        public MemoizingMRUCache(Func<TParam, object?, TVal> calculationFunc, int maxSize, Action<TVal>? onRelease, IEqualityComparer<TParam> paramComparer)
         {
-            Contract.Requires(calculationFunc != null);
-            Contract.Requires(maxSize > 0);
+            if (maxSize <= 0)
+            {
+                throw new ArgumentException("Max size must be larger than 0.", nameof(maxSize));
+            }
 
-            _calculationFunction = calculationFunc;
+            _calculationFunction = calculationFunc ?? throw new ArgumentNullException(nameof(calculationFunc));
             _releaseFunction = onRelease;
             _maxCacheSize = maxSize;
             _comparer = paramComparer ?? EqualityComparer<TParam>.Default;
-            InvalidateAll();
+            _cacheMRUList = new LinkedList<TParam>();
+            _cacheEntries = new Dictionary<TParam, (LinkedListNode<TParam> param, TVal value)>();
         }
 
         /// <summary>
@@ -107,10 +111,7 @@ namespace Splat
         /// </summary>
         /// <param name="key">The value to pass to the calculation function.</param>
         /// <returns>The value that we have got.</returns>
-        public TVal Get(TParam key)
-        {
-            return Get(key, null);
-        }
+        public TVal Get(TParam key) => Get(key, null);
 
         /// <summary>
         /// Evaluates the function provided, returning the cached value if possible.
@@ -118,9 +119,12 @@ namespace Splat
         /// <param name="key">The value to pass to the calculation function.</param>
         /// <param name="context">An additional optional user-specific parameter.</param>
         /// <returns>The value that we have got.</returns>
-        public TVal Get(TParam key, object context = null)
+        public TVal Get(TParam key, object? context = null)
         {
-            Contract.Requires(key != null);
+            if (key is null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
 
             lock (_lockObject)
             {
@@ -148,9 +152,12 @@ namespace Splat
         /// <param name="key">The input value of the key to use.</param>
         /// <param name="result">The result if available, otherwise it will be the default value.</param>
         /// <returns>If we were able to retrieve the value or not.</returns>
-        public bool TryGet(TParam key, out TVal result)
+        public bool TryGet(TParam key, out TVal? result)
         {
-            Contract.Requires(key != null);
+            if (key is null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
 
             lock (_lockObject)
             {
@@ -176,7 +183,10 @@ namespace Splat
         /// <param name="key">The key to invalidate the value for.</param>
         public void Invalidate(TParam key)
         {
-            Contract.Requires(key != null);
+            if (key is null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
 
             lock (_lockObject)
             {
@@ -205,10 +215,10 @@ namespace Splat
         /// </param>
         public void InvalidateAll(bool aggregateReleaseExceptions = false)
         {
-            Dictionary<TParam, (LinkedListNode<TParam> param, TVal value)> oldCacheToClear = null;
+            Dictionary<TParam, (LinkedListNode<TParam> param, TVal value)>? oldCacheToClear = null;
             lock (_lockObject)
             {
-                if (_releaseFunction == null || _cacheEntries == null)
+                if (_releaseFunction is null || _cacheEntries is null)
                 {
                     _cacheMRUList = new LinkedList<TParam>();
                     _cacheEntries = new Dictionary<TParam, (LinkedListNode<TParam> param, TVal value)>(_comparer);
@@ -229,7 +239,7 @@ namespace Splat
                 _cacheEntries = new Dictionary<TParam, (LinkedListNode<TParam> param, TVal value)>(_comparer);
             }
 
-            if (oldCacheToClear == null)
+            if (oldCacheToClear is null)
             {
                 return;
             }
@@ -282,8 +292,13 @@ namespace Splat
         {
             while (_cacheMRUList.Count > _maxCacheSize)
             {
-                var to_remove = _cacheMRUList.Last.Value;
-                _releaseFunction?.Invoke(_cacheEntries[to_remove].value);
+                if (_cacheMRUList.Last is null)
+                {
+                    continue;
+                }
+
+                var toRemove = _cacheMRUList.Last.Value;
+                _releaseFunction?.Invoke(_cacheEntries[toRemove].value);
 
                 _cacheEntries.Remove(_cacheMRUList.Last.Value);
                 _cacheMRUList.RemoveLast();

@@ -3,6 +3,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using System.Windows.Media.Imaging;
 
 namespace Splat
@@ -34,7 +35,7 @@ namespace Splat
                 throw new System.ArgumentNullException(nameof(value));
             }
 
-            return ((BitmapSourceBitmap)value).Inner;
+            return ((BitmapSourceBitmap)value).Inner ?? throw new InvalidOperationException("The bitmap is not longer valid");
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Splat.NLog
     internal static class LogResolver
     {
         private const int MaxCacheSize = 16;
-        private static readonly MemoizingMRUCache<Type, global::NLog.ILogger> _loggerCache = new MemoizingMRUCache<Type, global::NLog.ILogger>(
+        private static readonly MemoizingMRUCache<Type, global::NLog.ILogger> _loggerCache = new(
             (type, _) => global::NLog.LogManager.GetLogger(type.ToString()),
             MaxCacheSize);
 

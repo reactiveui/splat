@@ -9,6 +9,7 @@
     <Description>Raygun integrations for Splat</Description>
     <PackageId>Splat.Raygun</PackageId>
     <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <Choose>

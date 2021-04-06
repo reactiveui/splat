@@ -20,7 +20,7 @@ namespace Splat
             new JpegDecoder(),
             new PngDecoder(),
             new BmpDecoder(),
-            new GifDecoder()
+            new GifDecoder(),
         };
 
         /// <summary>
@@ -47,20 +47,25 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public float Width => Inner.Size.Width;
+        public float Width => Inner?.Size.Width ?? 0;
 
         /// <inheritdoc />
-        public float Height => Inner.Size.Height;
+        public float Height => Inner?.Size.Height ?? 0;
 
         /// <summary>
         /// Gets the native bitmap.
         /// </summary>
-        internal BitmapFrame Inner { get; private set; }
+        internal BitmapFrame? Inner { get; private set; }
 
         /// <inheritdoc />
         public Task Save(CompressedBitmapFormat format, float quality, Stream target)
         {
-            ImageEncoder encoder = null;
+            if (Inner is null)
+            {
+                return Task.CompletedTask;
+            }
+
+            ImageEncoder? encoder = null;
             try
             {
                 int qualityPercent = (int)(100 * quality);
@@ -88,6 +93,11 @@ namespace Splat
                         break;
                 }
 
+                if (encoder is null)
+                {
+                    return Task.CompletedTask;
+                }
+
                 encoder.SetResolution(new Tizen.Multimedia.Size((int)Width, (int)Height));
                 return encoder.EncodeAsync(Inner.Buffer, target);
             }
@@ -103,9 +113,9 @@ namespace Splat
             Inner = null;
         }
 
-        private static BitmapFrame GetBitmapFrame(byte[] imageBuffer)
+        private static BitmapFrame? GetBitmapFrame(byte[] imageBuffer)
         {
-            BitmapFrame result = null;
+            BitmapFrame? result = null;
 
             foreach (var decoder in _decoderList)
             {

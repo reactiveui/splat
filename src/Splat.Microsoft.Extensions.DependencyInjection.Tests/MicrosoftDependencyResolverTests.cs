@@ -35,6 +35,6 @@ namespace Splat.Tests.ServiceLocation
         }
 
         /// <inheritdoc />
-        protected override MicrosoftDependencyResolver GetDependencyResolver() => new MicrosoftDependencyResolver();
+        protected override MicrosoftDependencyResolver GetDependencyResolver() => new();
     }
 }

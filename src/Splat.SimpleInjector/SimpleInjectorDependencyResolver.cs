@@ -37,7 +37,7 @@ namespace Splat.SimpleInjector
             try
             {
                 InstanceProducer? registration = _container.GetRegistration(serviceType);
-                if (registration != null)
+                if (registration is not null)
                 {
                     return registration.GetInstance();
                 }
@@ -61,9 +61,9 @@ namespace Splat.SimpleInjector
             catch
             {
                 InstanceProducer? registration = _container.GetRegistration(serviceType);
-                if (registration != null)
+                if (registration is not null)
                 {
-                    return new object[] { registration.GetInstance() };
+                    return new[] { registration.GetInstance() };
                 }
 
                 return Enumerable.Empty<object>();
@@ -96,7 +96,7 @@ namespace Splat.SimpleInjector
         }
 
         /// <inheritdoc />
-        public IDisposable ServiceRegistrationCallback(Type serviceType, string contract, Action<IDisposable> callback)
+        public IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback)
         {
             throw new NotImplementedException();
         }

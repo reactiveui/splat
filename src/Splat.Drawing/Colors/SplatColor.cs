@@ -51,7 +51,6 @@ namespace Splat
         /// <summary>
         /// Gets a full empty which is fully transparent.
         /// </summary>
-        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1129: Do not use default empty constructor", Justification = "Deliberate, Empty member for users to use")]
         public static SplatColor Empty { get; }
 
         /// <summary>
@@ -93,7 +92,7 @@ namespace Splat
           return String.Format ("{0:x}", ToArgb ());
 #else
                 // name is required for serialization under 1.x, but not under 2.0
-                if (_name == null)
+                if (_name is null)
                 {
                     // Can happen with stuff deserialized from MS
                     if (IsNamedColor)
@@ -265,7 +264,6 @@ namespace Splat
         /// </summary>
         /// <param name="name">The name of the color to generate.</param>
         /// <returns>The generated SplatValue.</returns>
-        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Logs message but a non-failing operation.")]
         public static SplatColor FromName(string name)
         {
             try
@@ -383,7 +381,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (!(obj is SplatColor))
             {
@@ -496,7 +494,7 @@ namespace Splat
 
         private static ArgumentException CreateColorArgumentException(int value, string color)
         {
-            return new ArgumentException($"'{value}' is not a valid value for '{color}'. '{color}' should be greater or equal to 0 and less than or equal to 255.");
+            return new($"'{value}' is not a valid value for '{color}'. '{color}' should be greater or equal to 0 and less than or equal to 255.");
         }
 
         private static void CheckARGBValues(int alpha, int red, int green, int blue)

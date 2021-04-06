@@ -45,7 +45,7 @@ namespace Splat.Microsoft.Extensions.Logging
                     return;
                 }
 
-                if (formatter == null)
+                if (formatter is null)
                 {
                     throw new ArgumentNullException(nameof(formatter));
                 }
@@ -64,7 +64,7 @@ namespace Splat.Microsoft.Extensions.Logging
             }
 
             /// <inheritdoc />
-            public IDisposable BeginScope<TState>(TState state)
+            public IDisposable? BeginScope<TState>(TState state)
             {
                 return null;
             }

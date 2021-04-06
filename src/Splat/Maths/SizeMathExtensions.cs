@@ -35,7 +35,7 @@ namespace Splat
         /// <returns>The scaled size.</returns>
         public static SizeF ScaledBy(this SizeF value, float factor)
         {
-            return new SizeF(value.Width * factor, value.Height * factor);
+            return new(value.Width * factor, value.Height * factor);
         }
     }
 }

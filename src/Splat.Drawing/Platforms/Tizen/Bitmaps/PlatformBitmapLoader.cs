@@ -32,23 +32,15 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public Task<IBitmap> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
+        public Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
         {
-            return Task.Run(() =>
-            {
-                var ret = new TizenBitmap(((MemoryStream)sourceStream).ToArray());
-                return (IBitmap)ret;
-            });
+            return Task.Run<IBitmap?>(() => new TizenBitmap(((MemoryStream)sourceStream).ToArray()));
         }
 
         /// <inheritdoc />
-        public Task<IBitmap> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
+        public Task<IBitmap?> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
         {
-            return Task.Run(() =>
-            {
-                var ret = new TizenBitmap(source);
-                return (IBitmap)ret;
-            });
+            return Task.Run<IBitmap?>(() => new TizenBitmap(source));
         }
     }
 }

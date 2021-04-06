@@ -29,7 +29,7 @@ namespace Splat.Tests.Logging
 
         private class ConsoleWriter : TextWriter, IMockLogTarget
         {
-            private readonly List<(LogLevel logLevel, string message)> _logs = new List<(LogLevel logLevel, string message)>();
+            private readonly List<(LogLevel logLevel, string message)> _logs = new();
 
             public override Encoding Encoding => Encoding.UTF8;
 

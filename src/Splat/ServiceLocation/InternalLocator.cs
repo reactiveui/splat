@@ -12,18 +12,17 @@ namespace Splat
     internal class InternalLocator : IDisposable
     {
         // this has been done to have a default single instance. but allow isolation in unit tests.B
-        private readonly List<Action> _resolverChanged = new List<Action>();
+        private readonly List<Action> _resolverChanged = new();
         private volatile int _resolverChangedNotificationSuspendCount;
         private IDependencyResolver _dependencyResolver;
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Global lifetime.")]
         internal InternalLocator()
         {
             _dependencyResolver = new ModernDependencyResolver();
 
             RegisterResolverCallbackChanged(() =>
             {
-                if (CurrentMutable == null)
+                if (CurrentMutable is null)
                 {
                     return;
                 }

@@ -19,7 +19,7 @@ namespace Splat
         /// <returns>A <see cref="Point"/> of the value.</returns>
         public static Point ToNative(this System.Drawing.Point value)
         {
-            return new Point(value.X, value.Y);
+            return new(value.X, value.Y);
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace Splat
         /// <returns>A <see cref="PointF"/> of the value.</returns>
         public static PointF ToNative(this System.Drawing.PointF value)
         {
-            return new PointF(value.X, value.Y);
+            return new(value.X, value.Y);
         }
 
         /// <summary>

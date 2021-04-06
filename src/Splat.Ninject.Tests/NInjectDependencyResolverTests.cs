@@ -36,6 +36,6 @@ namespace Splat.Ninject.Tests
         }
 
         /// <inheritdoc />
-        protected override NinjectDependencyResolver GetDependencyResolver() => new NinjectDependencyResolver(new StandardKernel());
+        protected override NinjectDependencyResolver GetDependencyResolver() => new(new StandardKernel());
     }
 }
