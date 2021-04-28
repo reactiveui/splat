@@ -1,0 +1,21 @@
+version: 2
+updates:
+- package-ecosystem: nuget
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "00:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: Microsoft.AppCenter.Analytics
+    versions:
+    - 4.2.0
+  - dependency-name: Prism.Forms
+    versions:
+    - 8.0.0.1909
+  - dependency-name: Prism.Core
+    versions:
+    - 8.0.0.1909
+  - dependency-name: DiffEngine
+    versions:
+    - 6.5.6
