@@ -85,8 +85,8 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         }
 
         /// <inheritdoc />
-        public virtual object? GetService(Type serviceType, string? contract = null) =>
-            GetServices(serviceType, contract).LastOrDefault();
+        public virtual object GetService(Type serviceType, string? contract = null) =>
+            GetServices(serviceType, contract).LastOrDefault()!;
 
         /// <inheritdoc />
         public virtual IEnumerable<object> GetServices(Type serviceType, string? contract = null)
@@ -106,7 +106,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                 {
                     services = services
                         .Cast<NullServiceType>()
-                        .Select(nst => nst.Factory());
+                        .Select(nst => nst.Factory()!);
                 }
             }
             else
@@ -122,7 +122,10 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         }
 
         /// <inheritdoc />
+#pragma warning disable CS8614 // Nullability of reference types in type of parameter doesn't match implicitly implemented member.
+
         public virtual void Register(Func<object> factory, Type serviceType, string? contract = null)
+#pragma warning restore CS8614 // Nullability of reference types in type of parameter doesn't match implicitly implemented member.
         {
             if (_isImmutable)
             {
@@ -143,7 +146,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                     _serviceCollection?.AddTransient(serviceType, _ =>
                     isNull
                     ? new NullServiceType(factory)
-                    : factory());
+                    : factory()!);
                 }
                 else
                 {

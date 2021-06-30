@@ -18,7 +18,7 @@ namespace Splat
     public class FuncDependencyResolver : IDependencyResolver
     {
         private readonly Func<Type, string?, IEnumerable<object>> _innerGetServices;
-        private readonly Action<Func<object>, Type, string?>? _innerRegister;
+        private readonly Action<Func<object?>, Type, string?>? _innerRegister;
         private readonly Action<Type, string?>? _unregisterCurrent;
         private readonly Action<Type, string?>? _unregisterAll;
         private readonly Dictionary<(Type type, string callback), List<Action<IDisposable>>> _callbackRegistry = new();
@@ -36,7 +36,7 @@ namespace Splat
         /// <param name="toDispose">A optional disposable which is called when this resolver is disposed.</param>
         public FuncDependencyResolver(
             Func<Type, string?, IEnumerable<object>> getAllServices,
-            Action<Func<object>, Type, string?>? register = null,
+            Action<Func<object?>, Type, string?>? register = null,
             Action<Type, string?>? unregisterCurrent = null,
             Action<Type, string?>? unregisterAll = null,
             IDisposable? toDispose = null)
@@ -49,9 +49,9 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public object? GetService(Type serviceType, string? contract = null)
+        public object GetService(Type serviceType, string? contract = null)
         {
-            return (GetServices(serviceType, contract) ?? Enumerable.Empty<object>()).LastOrDefault();
+            return (GetServices(serviceType, contract) ?? Enumerable.Empty<object>()).LastOrDefault()!;
         }
 
         /// <inheritdoc />
@@ -67,7 +67,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Register(Func<object> factory, Type serviceType, string? contract = null)
+        public void Register(Func<object?> factory, Type serviceType, string? contract = null)
         {
             if (_innerRegister is null)
             {

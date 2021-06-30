@@ -24,14 +24,14 @@ namespace Splat
         /// <param name="resolver">The resolver we are getting the service from.</param>
         /// <param name="contract">A optional value which will retrieve only a object registered with the same contract.</param>
         /// <returns>The requested object, if found; <c>null</c> otherwise.</returns>
-        public static T? GetService<T>(this IReadonlyDependencyResolver resolver, string? contract = null)
+        public static T GetService<T>(this IReadonlyDependencyResolver resolver, string? contract = null)
         {
             if (resolver is null)
             {
                 throw new ArgumentNullException(nameof(resolver));
             }
 
-            return (T?)resolver.GetService(typeof(T), contract);
+            return (T)resolver.GetService(typeof(T), contract);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace Splat
         /// <param name="resolver">The resolver to register the service type with.</param>
         /// <param name="factory">A factory method for generating a object of the specified type.</param>
         /// <param name="contract">A optional contract value which will indicates to only generate the value if this contract is specified.</param>
-        public static void Register<T>(this IMutableDependencyResolver resolver, Func<T> factory, string? contract = null)
+        public static void Register<T>(this IMutableDependencyResolver resolver, Func<T?> factory, string? contract = null)
             where T : notnull
         {
             if (resolver is null)
@@ -122,7 +122,7 @@ namespace Splat
         /// <param name="value">The specified instance to always return.</param>
         /// <param name="serviceType">The type of service to register.</param>
         /// <param name="contract">A optional contract value which will indicates to only return the value if this contract is specified.</param>
-        public static void RegisterConstant(this IMutableDependencyResolver resolver, object value, Type serviceType, string? contract = null)
+        public static void RegisterConstant(this IMutableDependencyResolver resolver, object? value, Type serviceType, string? contract = null)
         {
             if (resolver is null)
             {
@@ -158,14 +158,14 @@ namespace Splat
         /// <param name="valueFactory">A factory method for generating a object of the specified type.</param>
         /// <param name="serviceType">The type of service to register.</param>
         /// <param name="contract">A optional contract value which will indicates to only return the value if this contract is specified.</param>
-        public static void RegisterLazySingleton(this IMutableDependencyResolver resolver, Func<object> valueFactory, Type serviceType, string? contract = null)
+        public static void RegisterLazySingleton(this IMutableDependencyResolver resolver, Func<object?> valueFactory, Type serviceType, string? contract = null)
         {
             if (resolver is null)
             {
                 throw new ArgumentNullException(nameof(resolver));
             }
 
-            var val = new Lazy<object>(valueFactory, LazyThreadSafetyMode.ExecutionAndPublication);
+            var val = new Lazy<object?>(valueFactory, LazyThreadSafetyMode.ExecutionAndPublication);
             resolver.Register(() => val.Value, serviceType, contract);
         }
 
@@ -177,7 +177,7 @@ namespace Splat
         /// <param name="resolver">The resolver to register the service type with.</param>
         /// <param name="valueFactory">A factory method for generating a object of the specified type.</param>
         /// <param name="contract">A optional contract value which will indicates to only return the value if this contract is specified.</param>
-        public static void RegisterLazySingleton<T>(this IMutableDependencyResolver resolver, Func<T> valueFactory, string? contract = null)
+        public static void RegisterLazySingleton<T>(this IMutableDependencyResolver resolver, Func<T?> valueFactory, string? contract = null)
             where T : notnull
         {
             RegisterLazySingleton(resolver, () => valueFactory(), typeof(T), contract);

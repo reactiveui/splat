@@ -32,7 +32,7 @@ namespace Splat.SimpleInjector
         }
 
         /// <inheritdoc />
-        public object? GetService(Type serviceType, string? contract = null)
+        public object GetService(Type serviceType, string? contract = null)
         {
             try
             {
@@ -43,11 +43,11 @@ namespace Splat.SimpleInjector
                 }
 
                 IEnumerable<object> registers = _container.GetAllInstances(serviceType);
-                return registers.LastOrDefault();
+                return registers.LastOrDefault()!;
             }
             catch
             {
-                return null;
+                return null!;
             }
         }
 
@@ -77,7 +77,7 @@ namespace Splat.SimpleInjector
         }
 
         /// <inheritdoc />
-        public void Register(Func<object> factory, Type serviceType, string? contract = null)
+        public void Register(Func<object?> factory, Type serviceType, string? contract = null)
         {
             // The function does nothing because there should be no registration called on this object.
             // Anyway, Locator.SetLocator performs some unnecessary registrations.
@@ -122,7 +122,7 @@ namespace Splat.SimpleInjector
 
         private void RegisterFactories(SimpleInjectorInitializer initializer)
         {
-            foreach (KeyValuePair<Type, List<Func<object>>> typeFactories in initializer.RegisteredFactories)
+            foreach (KeyValuePair<Type, List<Func<object?>>> typeFactories in initializer.RegisteredFactories)
             {
                 _container.Collection.Register(
                     typeFactories.Key,

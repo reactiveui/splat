@@ -24,7 +24,7 @@ namespace Splat
     /// </summary>
     public class ModernDependencyResolver : IDependencyResolver
     {
-        private Dictionary<(Type serviceType, string contract), List<Func<object>>>? _registry;
+        private Dictionary<(Type serviceType, string contract), List<Func<object?>>>? _registry;
         private Dictionary<(Type serviceType, string contract), List<Action<IDisposable>>> _callbackRegistry;
 
         private bool _isDisposed;
@@ -41,11 +41,11 @@ namespace Splat
         /// Initializes a new instance of the <see cref="ModernDependencyResolver"/> class.
         /// </summary>
         /// <param name="registry">A registry of services.</param>
-        protected ModernDependencyResolver(Dictionary<(Type serviceType, string contract), List<Func<object>>>? registry)
+        protected ModernDependencyResolver(Dictionary<(Type serviceType, string contract), List<Func<object?>>>? registry)
         {
             _registry = registry is not null ?
                 registry.ToDictionary(k => k.Key, v => v.Value.ToList()) :
-                new Dictionary<(Type serviceType, string contract), List<Func<object>>>();
+                new Dictionary<(Type serviceType, string contract), List<Func<object?>>>();
 
             _callbackRegistry = new Dictionary<(Type serviceType, string contract), List<Action<IDisposable>>>();
         }
@@ -63,7 +63,7 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Register(Func<object> factory, Type serviceType, string? contract = null)
+        public void Register(Func<object?> factory, Type serviceType, string? contract = null)
         {
             var pair = GetKey(serviceType, contract);
 
@@ -74,7 +74,7 @@ namespace Splat
 
             if (!_registry.ContainsKey(pair))
             {
-                _registry[pair] = new List<Func<object>>();
+                _registry[pair] = new List<Func<object?>>();
             }
 
             _registry[pair].Add(factory);
@@ -111,21 +111,21 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public object? GetService(Type serviceType, string? contract = null)
+        public object GetService(Type serviceType, string? contract = null)
         {
             if (_registry is null)
             {
-                return default;
+                return null!;
             }
 
             var pair = GetKey(serviceType, contract);
             if (!_registry.ContainsKey(pair))
             {
-                return default;
+                return null!;
             }
 
             var ret = _registry[pair].LastOrDefault();
-            return ret is null ? null : ret();
+            return (ret is null ? null : ret())!;
         }
 
         /// <inheritdoc />
@@ -142,7 +142,7 @@ namespace Splat
                 return Enumerable.Empty<object>();
             }
 
-            return _registry[pair].Select(x => x()).ToList();
+            return _registry[pair].Select(x => x()!).ToList();
         }
 
         /// <inheritdoc />
@@ -179,7 +179,7 @@ namespace Splat
 
             var pair = GetKey(serviceType, contract);
 
-            _registry[pair] = new List<Func<object>>();
+            _registry[pair] = new List<Func<object?>>();
         }
 
         /// <inheritdoc />

@@ -240,42 +240,42 @@ namespace Splat.Prism
         }
 
         /// <inheritdoc/>
-        public object? Resolve(Type type)
+        public object Resolve(Type type)
         {
             return Instance.GetService(type);
         }
 
         /// <inheritdoc/>
-        public object? Resolve(Type type, params (Type Type, object Instance)[] parameters)
+        public object Resolve(Type type, params (Type Type, object Instance)[] parameters)
         {
             if (_types.TryGetValue((type, null), out var resolvedType))
             {
                 return Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance)) ?? throw new InvalidOperationException("Could not create type");
             }
 
-            return null;
+            return null!;
         }
 
         /// <inheritdoc/>
-        public object? Resolve(Type type, string name)
+        public object Resolve(Type type, string name)
         {
             return Instance.GetService(type, name);
         }
 
         /// <inheritdoc/>
-        public object? Resolve(Type type, string name, params (Type Type, object Instance)[] parameters)
+        public object Resolve(Type type, string name, params (Type Type, object Instance)[] parameters)
         {
             if (!_types.TryGetValue((type, name), out var resolvedType))
             {
                 if (resolvedType is null)
                 {
-                    return null;
+                    return null!;
                 }
 
-                return Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance));
+                return Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance))!;
             }
 
-            return null;
+            return null!;
         }
 
         /// <summary>

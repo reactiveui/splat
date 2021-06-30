@@ -94,7 +94,7 @@ namespace Splat.Simplnjector
             Locator.CurrentMutable.InitializeSplat();
             container.UseSimpleInjectorDependencyResolver(initializer);
 
-            ILogger dependency = Locator.Current.GetService(typeof(ILogger)) as ILogger;
+            var dependency = Locator.Current.GetService(typeof(ILogger)) as ILogger;
             Assert.NotNull(dependency);
         }
 
