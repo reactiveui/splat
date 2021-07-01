@@ -11,21 +11,23 @@ using System.Linq;
 namespace Splat
 {
     /// <summary>
+    /// <para>
     /// This class is a dependency resolver written for modern C# 5.0 times.
     /// It implements all registrations via a Factory method. With the power
     /// of Closures, you can actually implement most lifetime styles (i.e.
     /// construct per call, lazy construct, singleton) using this.
-    ///
+    /// </para>
+    /// <para>
     /// Unless you have a very compelling reason not to, this is the only class
     /// you need in order to do dependency resolution, don't bother with using
     /// a full IoC container.
-    ///
-    /// This container is not thread safe.
+    /// </para>
+    /// <para>This container is not thread safe.</para>
     /// </summary>
     public class ModernDependencyResolver : IDependencyResolver
     {
+        private readonly Dictionary<(Type serviceType, string contract), List<Action<IDisposable>>> _callbackRegistry;
         private Dictionary<(Type serviceType, string contract), List<Func<object?>>>? _registry;
-        private Dictionary<(Type serviceType, string contract), List<Action<IDisposable>>> _callbackRegistry;
 
         private bool _isDisposed;
 
@@ -91,12 +93,7 @@ namespace Splat
 
                     if (disp.IsDisposed)
                     {
-                        if (toRemove is null)
-                        {
-                            toRemove = new List<Action<IDisposable>>();
-                        }
-
-                        toRemove.Add(callback);
+                        (toRemove ??= new List<Action<IDisposable>>()).Add(callback);
                     }
                 }
 
@@ -125,7 +122,7 @@ namespace Splat
             }
 
             var ret = _registry[pair].LastOrDefault();
-            return (ret is null ? null : ret())!;
+            return (ret != null ? ret() : null)!;
         }
 
         /// <inheritdoc />
@@ -142,7 +139,7 @@ namespace Splat
                 return Enumerable.Empty<object>();
             }
 
-            return _registry[pair].Select(x => x()!).ToList();
+            return _registry[pair].ConvertAll(x => x()!);
         }
 
         /// <inheritdoc />

@@ -36,6 +36,21 @@ namespace Splat.Simplnjector
         }
 
         /// <summary>
+        /// Simples the injector dependency resolver should resolve a view model.
+        /// </summary>
+        [Fact]
+        public void SimpleInjectorDependencyResolver_Should_Resolve_View_Model_Directly()
+        {
+            var container = new SimpleInjectorInitializer();
+            container.Register(() => new ViewModelOne());
+
+            var viewModel = container.GetService<ViewModelOne>();
+
+            viewModel.Should().NotBeNull();
+            viewModel.Should().BeOfType<ViewModelOne>();
+        }
+
+        /// <summary>
         /// Simples the injector dependency resolver should resolve a view.
         /// </summary>
         [Fact]

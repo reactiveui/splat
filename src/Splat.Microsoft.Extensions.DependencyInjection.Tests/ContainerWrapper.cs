@@ -19,18 +19,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
 
         public IServiceCollection ServiceCollection { get; } = new ServiceCollection();
 
-        public IServiceProvider ServiceProvider
-        {
-            get
-            {
-                if (_serviceProvider is null)
-                {
-                    _serviceProvider = ServiceCollection.BuildServiceProvider();
-                }
-
-                return _serviceProvider;
-            }
-        }
+        public IServiceProvider ServiceProvider => _serviceProvider ??= ServiceCollection.BuildServiceProvider();
 
         public void BuildAndUse() => ServiceProvider.UseMicrosoftDependencyResolver();
     }

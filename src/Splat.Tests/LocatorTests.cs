@@ -50,6 +50,20 @@ namespace Splat.Tests
         }
 
         /// <summary>
+        /// Tests that if we use a contract it returns null entries for that type.
+        /// </summary>
+        [Fact]
+        public void InitializeSplat_ContractRegistrationsExtensionMethodsNullNoRegistration()
+        {
+            var testLocator = new InternalLocator();
+            var logManager = testLocator.Current.GetService<ILogManager>("test");
+            var logger = testLocator.Current.GetService<ILogger>("test");
+
+            Assert.Null(logManager);
+            Assert.Null(logger);
+        }
+
+        /// <summary>
         /// Tests using the extension methods that the retrieving of the default InitializeSplat() still work.
         /// </summary>
         [Fact]
@@ -195,6 +209,64 @@ namespace Splat.Tests
 
                 items.Should().BeEmpty();
             }
+        }
+
+        /// <summary>
+        /// Nullables the type.
+        /// </summary>
+        [Fact]
+        public void RegisterAndResolveANullableTypeWithValue()
+        {
+            Locator.CurrentMutable.Register<DummyObjectClass1?>(() => new());
+            var doc = Locator.Current.GetService<DummyObjectClass1?>();
+            doc.Should().BeOfType<DummyObjectClass1>();
+        }
+
+        /// <summary>
+        /// Nullables the type.
+        /// </summary>
+        [Fact]
+        public void RegisterAndResolveANullableTypeWithNull()
+        {
+            Locator.CurrentMutable.Register<DummyObjectClass1?>(() => null);
+            var doc = Locator.Current.GetService<DummyObjectClass1?>();
+            doc.Should().BeNull();
+        }
+
+        /// <summary>
+        /// Nullables the type.
+        /// </summary>
+        [Fact]
+        public void RegisterAndResolveANullableTypeWithValueLocatorDisposed()
+        {
+            var currentMutable = new ModernDependencyResolver();
+            currentMutable.Register<DummyObjectClass1?>(() => new());
+            currentMutable.Dispose();
+            var doc = currentMutable.GetService<DummyObjectClass1?>();
+            doc.Should().BeNull();
+        }
+
+        /// <summary>
+        /// Nullables the type.
+        /// </summary>
+        [Fact]
+        public void RegisterAndResolveANullableTypeWithDefault()
+        {
+            Locator.CurrentMutable.Register<DummyObjectClass1?>(() => default);
+            var doc = Locator.Current.GetService<DummyObjectClass1?>();
+            doc.Should().BeNull();
+        }
+
+        /// <summary>
+        /// Nullables the type.
+        /// </summary>
+        [Fact]
+        public void RegisterAndResolveANullableTypeWithNulledInstance()
+        {
+            DummyObjectClass1? dummy = null;
+            Locator.CurrentMutable.Register<DummyObjectClass1?>(() => dummy);
+            var doc = Locator.Current.GetService<DummyObjectClass1?>();
+            doc.Should().BeNull();
         }
 
         /// <summary>

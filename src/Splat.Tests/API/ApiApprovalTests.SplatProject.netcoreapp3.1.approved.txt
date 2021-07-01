@@ -161,14 +161,11 @@ namespace Splat
     {
         public static T GetService<T>(this Splat.IReadonlyDependencyResolver resolver, string? contract = null) { }
         public static System.Collections.Generic.IEnumerable<T> GetServices<T>(this Splat.IReadonlyDependencyResolver resolver, string? contract = null) { }
-        public static void Register<T>(this Splat.IMutableDependencyResolver resolver, System.Func<T?> factory, string? contract = null)
-            where T :  notnull { }
+        public static void Register<T>(this Splat.IMutableDependencyResolver resolver, System.Func<T?> factory, string? contract = null) { }
         public static void RegisterConstant(this Splat.IMutableDependencyResolver resolver, object? value, System.Type serviceType, string? contract = null) { }
-        public static void RegisterConstant<T>(this Splat.IMutableDependencyResolver resolver, T value, string? contract = null)
-            where T :  notnull { }
+        public static void RegisterConstant<T>(this Splat.IMutableDependencyResolver resolver, T? value, string? contract = null) { }
         public static void RegisterLazySingleton(this Splat.IMutableDependencyResolver resolver, System.Func<object?> valueFactory, System.Type serviceType, string? contract = null) { }
-        public static void RegisterLazySingleton<T>(this Splat.IMutableDependencyResolver resolver, System.Func<T?> valueFactory, string? contract = null)
-            where T :  notnull { }
+        public static void RegisterLazySingleton<T>(this Splat.IMutableDependencyResolver resolver, System.Func<T?> valueFactory, string? contract = null) { }
         public static System.IDisposable ServiceRegistrationCallback(this Splat.IMutableDependencyResolver resolver, System.Type serviceType, System.Action<System.IDisposable> callback) { }
         public static void UnregisterAll<T>(this Splat.IMutableDependencyResolver resolver, string? contract = null) { }
         public static void UnregisterCurrent<T>(this Splat.IMutableDependencyResolver resolver, string? contract = null) { }

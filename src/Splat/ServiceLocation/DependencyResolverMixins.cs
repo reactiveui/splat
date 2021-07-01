@@ -100,7 +100,6 @@ namespace Splat
         /// <param name="factory">A factory method for generating a object of the specified type.</param>
         /// <param name="contract">A optional contract value which will indicates to only generate the value if this contract is specified.</param>
         public static void Register<T>(this IMutableDependencyResolver resolver, Func<T?> factory, string? contract = null)
-            where T : notnull
         {
             if (resolver is null)
             {
@@ -139,8 +138,7 @@ namespace Splat
         /// <param name="resolver">The resolver to register the service type with.</param>
         /// <param name="value">The specified instance to always return.</param>
         /// <param name="contract">A optional contract value which will indicates to only return the value if this contract is specified.</param>
-        public static void RegisterConstant<T>(this IMutableDependencyResolver resolver, T value, string? contract = null)
-            where T : notnull
+        public static void RegisterConstant<T>(this IMutableDependencyResolver resolver, T? value, string? contract = null)
         {
             if (resolver is null)
             {
@@ -178,7 +176,6 @@ namespace Splat
         /// <param name="valueFactory">A factory method for generating a object of the specified type.</param>
         /// <param name="contract">A optional contract value which will indicates to only return the value if this contract is specified.</param>
         public static void RegisterLazySingleton<T>(this IMutableDependencyResolver resolver, Func<T?> valueFactory, string? contract = null)
-            where T : notnull
         {
             RegisterLazySingleton(resolver, () => valueFactory(), typeof(T), contract);
         }

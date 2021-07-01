@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\Splat.NLog\LogResolver.cs" Link="LogResolver.cs" />
     <Compile Include="..\Splat.Tests\ServiceLocation\BaseDependencyResolverTests.cs" Link="BaseDependencyResolverTests.cs" />
   </ItemGroup>
 
