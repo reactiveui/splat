@@ -32,7 +32,7 @@ namespace Splat.SimpleInjector
         }
 
         /// <inheritdoc />
-        public object GetService(Type serviceType, string? contract = null)
+        public object? GetService(Type serviceType, string? contract = null)
         {
             try
             {
@@ -47,12 +47,12 @@ namespace Splat.SimpleInjector
             }
             catch
             {
-                return null!;
+                return default;
             }
         }
 
         /// <inheritdoc />
-        public IEnumerable<object> GetServices(Type serviceType, string? contract = null)
+        public IEnumerable<object?> GetServices(Type serviceType, string? contract = null)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace Splat.SimpleInjector
                     return new[] { registration.GetInstance() };
                 }
 
-                return Enumerable.Empty<object>();
+                return Enumerable.Empty<object?>();
             }
         }
 

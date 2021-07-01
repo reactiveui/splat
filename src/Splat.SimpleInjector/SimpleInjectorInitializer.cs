@@ -24,7 +24,7 @@ namespace Splat.SimpleInjector
             = new();
 
         /// <inheritdoc />
-        public object GetService(Type serviceType, string? contract = null)
+        public object? GetService(Type serviceType, string? contract = null)
         {
             lock (_lockObject)
             {
@@ -34,7 +34,7 @@ namespace Splat.SimpleInjector
         }
 
         /// <inheritdoc/>
-        public IEnumerable<object> GetServices(Type serviceType, string? contract = null)
+        public IEnumerable<object?> GetServices(Type serviceType, string? contract = null)
         {
             lock (_lockObject)
             {

@@ -15,7 +15,6 @@ namespace Splat.Prism
     /// <summary>
     /// A container for the Prism application.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Match Prism naming scheme.")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Analyzers", "CA1065: Don't throw exceptions from properties", Justification = "Deliberate usage")]
     public class SplatContainerExtension : IContainerExtension<IDependencyResolver>, IDisposable
     {
@@ -240,42 +239,42 @@ namespace Splat.Prism
         }
 
         /// <inheritdoc/>
-        public object Resolve(Type type)
+        public object? Resolve(Type type)
         {
             return Instance.GetService(type);
         }
 
         /// <inheritdoc/>
-        public object Resolve(Type type, params (Type Type, object Instance)[] parameters)
+        public object? Resolve(Type type, params (Type Type, object Instance)[] parameters)
         {
             if (_types.TryGetValue((type, null), out var resolvedType))
             {
                 return Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance)) ?? throw new InvalidOperationException("Could not create type");
             }
 
-            return null!;
+            return default;
         }
 
         /// <inheritdoc/>
-        public object Resolve(Type type, string name)
+        public object? Resolve(Type type, string name)
         {
             return Instance.GetService(type, name);
         }
 
         /// <inheritdoc/>
-        public object Resolve(Type type, string name, params (Type Type, object Instance)[] parameters)
+        public object? Resolve(Type type, string name, params (Type Type, object Instance)[] parameters)
         {
             if (!_types.TryGetValue((type, name), out var resolvedType))
             {
                 if (resolvedType is null)
                 {
-                    return null!;
+                    return default;
                 }
 
                 return Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance))!;
             }
 
-            return null!;
+            return default;
         }
 
         /// <summary>

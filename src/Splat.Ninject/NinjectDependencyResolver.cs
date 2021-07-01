@@ -30,11 +30,11 @@ namespace Splat.Ninject
         }
 
         /// <inheritdoc />
-        public virtual object GetService(Type serviceType, string? contract = null) =>
+        public virtual object? GetService(Type serviceType, string? contract = null) =>
             GetServices(serviceType, contract).LastOrDefault()!;
 
         /// <inheritdoc />
-        public virtual IEnumerable<object> GetServices(Type serviceType, string? contract = null)
+        public virtual IEnumerable<object?> GetServices(Type serviceType, string? contract = null)
         {
             var isNull = serviceType is null;
             if (isNull)

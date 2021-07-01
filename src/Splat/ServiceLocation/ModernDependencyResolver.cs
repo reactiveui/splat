@@ -26,8 +26,8 @@ namespace Splat
     /// </summary>
     public class ModernDependencyResolver : IDependencyResolver
     {
-        private readonly Dictionary<(Type serviceType, string contract), List<Action<IDisposable>>> _callbackRegistry;
-        private Dictionary<(Type serviceType, string contract), List<Func<object?>>>? _registry;
+        private readonly Dictionary<(Type serviceType, string? contract), List<Action<IDisposable>>> _callbackRegistry;
+        private Dictionary<(Type serviceType, string? contract), List<Func<object?>>>? _registry;
 
         private bool _isDisposed;
 
@@ -43,13 +43,13 @@ namespace Splat
         /// Initializes a new instance of the <see cref="ModernDependencyResolver"/> class.
         /// </summary>
         /// <param name="registry">A registry of services.</param>
-        protected ModernDependencyResolver(Dictionary<(Type serviceType, string contract), List<Func<object?>>>? registry)
+        protected ModernDependencyResolver(Dictionary<(Type serviceType, string? contract), List<Func<object?>>>? registry)
         {
             _registry = registry is not null ?
                 registry.ToDictionary(k => k.Key, v => v.Value.ToList()) :
-                new Dictionary<(Type serviceType, string contract), List<Func<object?>>>();
+                new Dictionary<(Type serviceType, string? contract), List<Func<object?>>>();
 
-            _callbackRegistry = new Dictionary<(Type serviceType, string contract), List<Action<IDisposable>>>();
+            _callbackRegistry = new Dictionary<(Type serviceType, string? contract), List<Action<IDisposable>>>();
         }
 
         /// <inheritdoc />
@@ -108,38 +108,38 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public object GetService(Type serviceType, string? contract = null)
+        public object? GetService(Type serviceType, string? contract = null)
         {
             if (_registry is null)
             {
-                return null!;
+                return default;
             }
 
             var pair = GetKey(serviceType, contract);
             if (!_registry.ContainsKey(pair))
             {
-                return null!;
+                return default;
             }
 
             var ret = _registry[pair].LastOrDefault();
-            return (ret != null ? ret() : null)!;
+            return ret is null ? default : ret();
         }
 
         /// <inheritdoc />
-        public IEnumerable<object> GetServices(Type serviceType, string? contract = null)
+        public IEnumerable<object?> GetServices(Type serviceType, string? contract = null)
         {
             if (_registry is null)
             {
-                return Enumerable.Empty<object>();
+                return Enumerable.Empty<object?>();
             }
 
             var pair = GetKey(serviceType, contract);
             if (!_registry.ContainsKey(pair))
             {
-                return Enumerable.Empty<object>();
+                return Enumerable.Empty<object?>();
             }
 
-            return _registry[pair].ConvertAll(x => x()!);
+            return _registry[pair].ConvertAll(x => x());
         }
 
         /// <inheritdoc />

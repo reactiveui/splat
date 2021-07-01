@@ -50,7 +50,7 @@ namespace Splat.Autofac
         }
 
         /// <inheritdoc />
-        public virtual object GetService(Type serviceType, string? contract = null)
+        public virtual object? GetService(Type serviceType, string? contract = null)
         {
             lock (_lockObject)
             {
@@ -83,7 +83,7 @@ namespace Splat.Autofac
         }
 
         /// <inheritdoc />
-        public virtual IEnumerable<object> GetServices(Type serviceType, string? contract = null)
+        public virtual IEnumerable<object?> GetServices(Type serviceType, string? contract = null)
         {
             lock (_lockObject)
             {
@@ -94,14 +94,14 @@ namespace Splat.Autofac
 
                     if (instance is null)
                     {
-                        return Array.Empty<object>();
+                        return Array.Empty<object?>();
                     }
 
-                    return ((IEnumerable)instance).Cast<object>();
+                    return ((IEnumerable)instance).Cast<object?>();
                 }
                 catch (DependencyResolutionException)
                 {
-                    return Array.Empty<object>();
+                    return Array.Empty<object?>();
                 }
             }
         }

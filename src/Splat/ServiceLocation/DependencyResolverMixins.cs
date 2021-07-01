@@ -24,14 +24,14 @@ namespace Splat
         /// <param name="resolver">The resolver we are getting the service from.</param>
         /// <param name="contract">A optional value which will retrieve only a object registered with the same contract.</param>
         /// <returns>The requested object, if found; <c>null</c> otherwise.</returns>
-        public static T GetService<T>(this IReadonlyDependencyResolver resolver, string? contract = null)
+        public static T? GetService<T>(this IReadonlyDependencyResolver resolver, string? contract = null)
         {
             if (resolver is null)
             {
                 throw new ArgumentNullException(nameof(resolver));
             }
 
-            return (T)resolver.GetService(typeof(T), contract);
+            return (T?)resolver.GetService(typeof(T), contract);
         }
 
         /// <summary>
@@ -43,14 +43,14 @@ namespace Splat
         /// <param name="contract">A optional value which will retrieve only a object registered with the same contract.</param>
         /// <returns>A sequence of instances of the requested <typeparamref name="T"/>. The sequence
         /// should be empty (not <c>null</c>) if no objects of the given type are available.</returns>
-        public static IEnumerable<T> GetServices<T>(this IReadonlyDependencyResolver resolver, string? contract = null)
+        public static IEnumerable<T?> GetServices<T>(this IReadonlyDependencyResolver resolver, string? contract = null)
         {
             if (resolver is null)
             {
                 throw new ArgumentNullException(nameof(resolver));
             }
 
-            return resolver.GetServices(typeof(T), contract).Cast<T>();
+            return resolver.GetServices(typeof(T), contract).Cast<T?>();
         }
 
         /// <summary>

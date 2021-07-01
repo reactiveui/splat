@@ -17,7 +17,7 @@ namespace Splat
     /// </summary>
     public class FuncDependencyResolver : IDependencyResolver
     {
-        private readonly Func<Type, string?, IEnumerable<object>> _innerGetServices;
+        private readonly Func<Type, string?, IEnumerable<object?>> _innerGetServices;
         private readonly Action<Func<object?>, Type, string?>? _innerRegister;
         private readonly Action<Type, string?>? _unregisterCurrent;
         private readonly Action<Type, string?>? _unregisterAll;
@@ -35,7 +35,7 @@ namespace Splat
         /// <param name="unregisterAll">A func which will unregister all the registered elements for a service type and contract.</param>
         /// <param name="toDispose">A optional disposable which is called when this resolver is disposed.</param>
         public FuncDependencyResolver(
-            Func<Type, string?, IEnumerable<object>> getAllServices,
+            Func<Type, string?, IEnumerable<object?>> getAllServices,
             Action<Func<object?>, Type, string?>? register = null,
             Action<Type, string?>? unregisterCurrent = null,
             Action<Type, string?>? unregisterAll = null,
@@ -49,13 +49,13 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public object GetService(Type serviceType, string? contract = null)
+        public object? GetService(Type serviceType, string? contract = null)
         {
-            return (GetServices(serviceType, contract) ?? Enumerable.Empty<object>()).LastOrDefault()!;
+            return (GetServices(serviceType, contract) ?? Enumerable.Empty<object?>()).LastOrDefault()!;
         }
 
         /// <inheritdoc />
-        public IEnumerable<object> GetServices(Type serviceType, string? contract = null)
+        public IEnumerable<object?> GetServices(Type serviceType, string? contract = null)
         {
             return _innerGetServices(serviceType, contract);
         }
@@ -90,12 +90,7 @@ namespace Splat
 
                     if (disp.IsDisposed)
                     {
-                        if (toRemove is null)
-                        {
-                            toRemove = new List<Action<IDisposable>>();
-                        }
-
-                        toRemove.Add(callback);
+                        (toRemove ??= new List<Action<IDisposable>>()).Add(callback);
                     }
                 }
 
