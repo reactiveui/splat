@@ -83,7 +83,7 @@ namespace Splat.Autofac
         }
 
         /// <inheritdoc />
-        public virtual IEnumerable<object?> GetServices(Type serviceType, string? contract = null)
+        public virtual IEnumerable<object> GetServices(Type serviceType, string? contract = null)
         {
             lock (_lockObject)
             {
@@ -92,17 +92,17 @@ namespace Splat.Autofac
                     var enumerableType = typeof(IEnumerable<>).MakeGenericType(serviceType);
                     var instance = Resolve(enumerableType, contract);
 
-                    if (instance is null)
+                    if (instance is not null)
                     {
-                        return Array.Empty<object?>();
+                        return new object[] { instance };
                     }
-
-                    return ((IEnumerable)instance).Cast<object?>();
                 }
                 catch (DependencyResolutionException)
                 {
-                    return Array.Empty<object?>();
+                    // no op
                 }
+
+                return Array.Empty<object>();
             }
         }
 
@@ -225,7 +225,7 @@ namespace Splat.Autofac
             }
         }
 
-        private object Resolve(Type serviceType, string? contract)
+        private object? Resolve(Type serviceType, string? contract)
         {
             object serviceInstance;
 
