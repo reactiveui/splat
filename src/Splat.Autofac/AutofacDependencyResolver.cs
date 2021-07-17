@@ -107,7 +107,7 @@ namespace Splat.Autofac
                     // no op
                 }
 
-                return Array.Empty<object>();
+                return Enumerable.Empty<object>();
             }
         }
 
