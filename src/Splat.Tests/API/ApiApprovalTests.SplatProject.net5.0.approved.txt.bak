@@ -2,7 +2,7 @@
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.TestRunner.Android")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.TestRunner.Uwp")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Tests")]
-[assembly: System.Runtime.Versioning.TargetFramework(".NETStandard,Version=v2.0", FrameworkDisplayName="")]
+[assembly: System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v5.0", FrameworkDisplayName="")]
 namespace Splat
 {
     public class ActionLogger : Splat.ILogger
@@ -521,7 +521,7 @@ namespace Splat
         protected virtual void Dispose(bool isDisposing) { }
         public Splat.ModernDependencyResolver Duplicate() { }
         public object? GetService(System.Type serviceType, string? contract = null) { }
-        public System.Collections.Generic.IEnumerable<object> GetServices(System.Type? serviceType, string? contract = null) { }
+        public System.Collections.Generic.IEnumerable<object?> GetServices(System.Type? serviceType, string? contract = null) { }
         public bool HasRegistration(System.Type serviceType, string? contract = null) { }
         public void Register(System.Func<object?> factory, System.Type serviceType, string? contract = null) { }
         public System.IDisposable ServiceRegistrationCallback(System.Type serviceType, string? contract, System.Action<System.IDisposable> callback) { }

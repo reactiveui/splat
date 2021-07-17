@@ -89,7 +89,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
             GetServices(serviceType, contract).LastOrDefault()!;
 
         /// <inheritdoc />
-        public virtual IEnumerable<object?> GetServices(Type serviceType, string? contract = null)
+        public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
         {
             var isNull = serviceType is null;
             if (serviceType is null)
@@ -97,11 +97,15 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                 serviceType = typeof(NullServiceType);
             }
 
-            IEnumerable<object?> services;
+            IEnumerable<object> services;
 
             if (contract is null || string.IsNullOrWhiteSpace(contract))
             {
-                services = ServiceProvider.GetServices(serviceType);
+                // this is to deal with CS8613 that GetServices returns IEnumerable<object?>?
+                services = ServiceProvider.GetServices(serviceType)
+                    .Where(a => a is not null)
+                    .Select(a => a!);
+
                 if (isNull)
                 {
                     services = services
@@ -115,7 +119,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                 services = dic?
                     .GetFactories(contract)
                     .Select(f => f())
-                    ?? Enumerable.Empty<object?>();
+                    ?? Enumerable.Empty<object>();
             }
 
             return services;
@@ -124,7 +128,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         /// <inheritdoc />
 #pragma warning disable CS8614 // Nullability of reference types in type of parameter doesn't match implicitly implemented member.
 
-        public virtual void Register(Func<object> factory, Type serviceType, string? contract = null)
+        public virtual void Register(Func<object> factory, Type? serviceType, string? contract = null)
 #pragma warning restore CS8614 // Nullability of reference types in type of parameter doesn't match implicitly implemented member.
         {
             if (_isImmutable)

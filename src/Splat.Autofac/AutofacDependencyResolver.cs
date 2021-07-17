@@ -83,8 +83,13 @@ namespace Splat.Autofac
         }
 
         /// <inheritdoc />
-        public virtual IEnumerable<object> GetServices(Type serviceType, string? contract = null)
+        public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
         {
+            if (serviceType is null)
+            {
+                throw new ArgumentNullException(nameof(serviceType));
+            }
+
             lock (_lockObject)
             {
                 try

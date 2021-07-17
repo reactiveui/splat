@@ -416,7 +416,7 @@ namespace Splat
     public interface IReadonlyDependencyResolver
     {
         object? GetService(System.Type serviceType, string? contract = null);
-        System.Collections.Generic.IEnumerable<object> GetServices(System.Type? serviceType, string? contract = null);
+        System.Collections.Generic.IEnumerable<object> GetServices(System.Type serviceType, string? contract = null);
     }
     public interface IStaticFullLogger
     {
