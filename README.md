@@ -3,12 +3,6 @@
 <a href="https://www.nuget.org/packages/splat">
         <img src="https://img.shields.io/nuget/dt/splat.svg">
 </a>
-<a href="#backers">
-        <img src="https://opencollective.com/reactiveui/backers/badge.svg">
-</a>
-<a href="#sponsors">
-        <img src="https://opencollective.com/reactiveui/sponsors/badge.svg">
-</a>
 <a href="https://reactiveui.net/slack">
         <img src="https://img.shields.io/badge/chat-slack-blue.svg">
 </a>
@@ -93,6 +87,9 @@ Locator.CurrentMutable.RegisterConstant(new ExtraGoodToaster(), typeof(IToaster)
 // Register a singleton which won't get created until the first user accesses it
 Locator.CurrentMutable.RegisterLazySingleton(() => new LazyToaster(), typeof(IToaster));
 ```
+
+### Dependency Injection Source Generator
+There is a source generator that will inject constructor and properties. See [here](https://github.com/reactivemarbles/Splat.DI.SourceGenerator) for instructions.
 
 ### Dependency Resolver Packages
 For each of the provided dependency resolver adapters, there is a specific package that allows the service locator to be implemented by another ioc container.
