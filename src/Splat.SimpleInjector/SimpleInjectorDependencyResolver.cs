@@ -52,8 +52,13 @@ namespace Splat.SimpleInjector
         }
 
         /// <inheritdoc />
-        public IEnumerable<object?> GetServices(Type serviceType, string? contract = null)
+        public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
         {
+            if (serviceType is null)
+            {
+                throw new ArgumentNullException(nameof(serviceType));
+            }
+
             try
             {
                 return _container.GetAllInstances(serviceType);
@@ -66,7 +71,7 @@ namespace Splat.SimpleInjector
                     return new[] { registration.GetInstance() };
                 }
 
-                return Enumerable.Empty<object?>();
+                return Enumerable.Empty<object>();
             }
         }
 

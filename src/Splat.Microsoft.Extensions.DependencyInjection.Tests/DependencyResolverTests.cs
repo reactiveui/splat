@@ -165,9 +165,12 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests
             wrapper.BuildAndUse();
 
             // Get the ILogManager instance.
-            ILogManager lm = Locator.Current.GetService<ILogManager>();
+            ILogManager? lm = Locator.Current.GetService<ILogManager>();
+            Assert.NotNull(lm);
 
+#pragma warning disable CS8604 // Possible null reference argument.
             var mgr = lm.GetLogger<NLogLogger>();
+#pragma warning restore CS8604 // Possible null reference argument.
             Assert.NotNull(mgr);
         }
     }

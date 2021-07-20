@@ -34,10 +34,10 @@ namespace Splat.Ninject
             GetServices(serviceType, contract).LastOrDefault()!;
 
         /// <inheritdoc />
-        public virtual IEnumerable<object?> GetServices(Type serviceType, string? contract = null)
+        public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
         {
             var isNull = serviceType is null;
-            if (isNull)
+            if (serviceType is null)
             {
                 serviceType = typeof(NullServiceType);
             }
@@ -61,7 +61,7 @@ namespace Splat.Ninject
         }
 
         /// <inheritdoc />
-        public virtual void Register(Func<object?> factory, Type serviceType, string? contract = null)
+        public virtual void Register(Func<object?> factory, Type? serviceType, string? contract = null)
         {
             var isNull = serviceType is null;
 
@@ -80,7 +80,7 @@ namespace Splat.Ninject
         }
 
         /// <inheritdoc />
-        public virtual void UnregisterCurrent(Type serviceType, string? contract = null)
+        public virtual void UnregisterCurrent(Type? serviceType, string? contract = null)
         {
             var isNull = serviceType is null;
 
@@ -107,7 +107,7 @@ namespace Splat.Ninject
         }
 
         /// <inheritdoc />
-        public virtual void UnregisterAll(Type serviceType, string? contract = null)
+        public virtual void UnregisterAll(Type? serviceType, string? contract = null)
         {
             var isNull = serviceType is null;
 

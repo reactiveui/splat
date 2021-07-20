@@ -161,9 +161,12 @@ namespace Splat.Tests.ServiceLocation
 
                 // Get the ILogManager instance
                 var lm = Locator.Current.GetService<ILogManager>();
+                Assert.NotNull(lm);
 
                 // now suceeds for AutoFac, Ninject and Splat
+#pragma warning disable CS8604 // Possible null reference argument.
                 var mgr = lm.GetLogger<NLogLogger>();
+#pragma warning restore CS8604 // Possible null reference argument.
                 Assert.NotNull(mgr);
             }
         }

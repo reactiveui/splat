@@ -126,20 +126,25 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public IEnumerable<object?> GetServices(Type serviceType, string? contract = null)
+        public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
         {
+            if (serviceType == null)
+            {
+                throw new ArgumentNullException(nameof(serviceType));
+            }
+
             if (_registry is null)
             {
-                return Enumerable.Empty<object?>();
+                return Enumerable.Empty<object>();
             }
 
             var pair = GetKey(serviceType, contract);
             if (!_registry.ContainsKey(pair))
             {
-                return Enumerable.Empty<object?>();
+                return Enumerable.Empty<object>();
             }
 
-            return _registry[pair].ConvertAll(x => x());
+            return _registry[pair].ConvertAll(x => x()!);
         }
 
         /// <inheritdoc />

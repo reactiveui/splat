@@ -34,8 +34,13 @@ namespace Splat.SimpleInjector
         }
 
         /// <inheritdoc/>
-        public IEnumerable<object?> GetServices(Type serviceType, string? contract = null)
+        public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
         {
+            if (serviceType is null)
+            {
+                throw new ArgumentNullException(nameof(serviceType));
+            }
+
             lock (_lockObject)
             {
                 return RegisteredFactories[serviceType]
