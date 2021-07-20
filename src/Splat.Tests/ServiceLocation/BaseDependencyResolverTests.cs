@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Splat.Common.Test;
 using Splat.NLog;
 using Xunit;
 
@@ -175,9 +176,39 @@ namespace Splat.Tests.ServiceLocation
             Assert.Throws<ArgumentNullException>(() => resolver1.Register<ILogManager>(() => new DefaultLogManager()));
             Assert.Throws<ArgumentNullException>(() => resolver1.RegisterConstant<ILogManager>(new DefaultLogManager()));
             Assert.Throws<ArgumentNullException>(() => resolver1.RegisterLazySingleton(() => new DefaultLogManager(), typeof(ILogManager)));
+            Assert.Throws<ArgumentNullException>(() => resolver1.RegisterLazySingletonAnd(() => new DefaultLogManager(), typeof(ILogManager)));
             Assert.Throws<ArgumentNullException>(() => resolver1.RegisterLazySingleton(() => new DefaultLogManager()));
+            Assert.Throws<ArgumentNullException>(() => resolver1.RegisterLazySingletonAnd<ViewModelOne>("eight"));
+            Assert.Throws<ArgumentNullException>(() => resolver1.RegisterLazySingletonAnd<DefaultLogManager>(() => new DefaultLogManager(), "seven"));
             Assert.Throws<ArgumentNullException>(() => resolver1.UnregisterCurrent<ILogManager>());
             Assert.Throws<ArgumentNullException>(() => resolver1.UnregisterAll<ILogManager>());
+            Assert.Throws<ArgumentNullException>(() => resolver1.RegisterAnd<ViewModelOne>());
+            Assert.Throws<ArgumentNullException>(() => resolver1.RegisterAnd(() => new DefaultLogManager()));
+            Assert.Throws<ArgumentNullException>(() => resolver1.RegisterAnd<IViewModelOne>(() => new ViewModelOne()));
+            Assert.Throws<ArgumentNullException>(() => resolver1.Register<IViewModelOne, ViewModelOne>());
+            Assert.Throws<ArgumentNullException>(() => resolver1.RegisterConstantAnd(new ViewModelOne()));
+            Assert.Throws<ArgumentNullException>(() => resolver1.RegisterConstantAnd(new ViewModelOne(), typeof(ViewModelOne)));
+            Assert.Throws<ArgumentNullException>(() => resolver1.RegisterConstantAnd<ViewModelOne>());
+        }
+
+        /// <summary>
+        /// Registers the and tests.
+        /// </summary>
+        [Fact]
+        public void RegisterAndTests()
+        {
+            var resolver = GetDependencyResolver();
+            Assert.Throws<ArgumentNullException>(() => resolver.RegisterAnd<IViewModelOne>(null));
+            resolver.RegisterAnd<ViewModelOne>("one")
+                    .RegisterAnd<IViewModelOne, ViewModelOne>("two")
+                    .RegisterAnd(() => new DefaultLogManager(), "three")
+                    .RegisterAnd<IViewModelOne>(() => new ViewModelOne(), "four")
+                    .RegisterConstantAnd<ViewModelOne>("five")
+                    .RegisterConstantAnd(new ViewModelOne(), typeof(ViewModelOne), "six")
+                    .RegisterLazySingletonAnd(() => new DefaultLogManager(), typeof(ILogManager), "seven")
+                    .RegisterLazySingletonAnd<ViewModelOne>("eight")
+                    .RegisterLazySingletonAnd<DefaultLogManager>(() => new DefaultLogManager(), "seven")
+                    .Register<IViewModelOne, ViewModelOne>();
         }
 
         /// <summary>
