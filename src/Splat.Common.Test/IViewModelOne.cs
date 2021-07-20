@@ -6,15 +6,9 @@
 namespace Splat.Common.Test
 {
     /// <summary>
-    /// View Model One.
+    /// Interface for ViewModelOne.
     /// </summary>
-    public class ViewModelOne : IViewModelOne
+    public interface IViewModelOne
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ViewModelOne"/> class.
-        /// </summary>
-        public ViewModelOne()
-        {
-        }
     }
 }

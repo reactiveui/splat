@@ -133,13 +133,13 @@ namespace Splat
         {
             if (_registry is null)
             {
-                return Enumerable.Empty<object>();
+                return Array.Empty<object>();
             }
 
             var pair = GetKey(serviceType, contract);
             if (!_registry.ContainsKey(pair))
             {
-                return Enumerable.Empty<object>();
+                return Array.Empty<object>();
             }
 
             return _registry[pair].Select(x => x()).ToList();

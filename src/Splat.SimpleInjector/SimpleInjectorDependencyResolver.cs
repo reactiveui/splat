@@ -66,7 +66,7 @@ namespace Splat.SimpleInjector
                     return new[] { registration.GetInstance() };
                 }
 
-                return Enumerable.Empty<object>();
+                return Array.Empty<object>();
             }
         }
 
