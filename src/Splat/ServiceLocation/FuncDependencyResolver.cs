@@ -51,7 +51,7 @@ namespace Splat
         /// <inheritdoc />
         public object? GetService(Type serviceType, string? contract = null)
         {
-            return GetServices(serviceType, contract)?.LastOrDefault();
+            return (GetServices(serviceType, contract) ?? Array.Empty<object>()).LastOrDefault();
         }
 
         /// <inheritdoc />

@@ -119,7 +119,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                 services = dic?
                     .GetFactories(contract)
                     .Select(f => f())
-                    ?? Enumerable.Empty<object>();
+                    ?? Array.Empty<object>();
             }
 
             return services;
@@ -377,7 +377,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
             public IEnumerable<Func<object>> GetFactories(string contract) =>
                 _dictionary.TryGetValue(contract, out var collection)
                 ? collection ?? Enumerable.Empty<Func<object>>()
-                : Enumerable.Empty<Func<object>>();
+                : Array.Empty<Func<object>>();
 
             public void AddFactory(string contract, Func<object> factory) =>
                 _dictionary.AddOrUpdate(contract, _ => new List<Func<object>> { factory }, (_, list) =>
