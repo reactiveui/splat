@@ -20,6 +20,30 @@ namespace Splat.Autofac.Tests
     public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDependencyResolver>
     {
         /// <summary>
+        /// Shoulds the resolve nulls.
+        /// </summary>
+        [Fact]
+        public void Can_Register_And_Resolve_Null_Types()
+        {
+            var builder = new ContainerBuilder();
+            var autofacResolver = builder.UseAutofacDependencyResolver();
+
+            var foo = 5;
+            Locator.CurrentMutable.Register(() => foo, null);
+
+            var bar = 4;
+            var contract = "foo";
+            Locator.CurrentMutable.Register(() => bar, null, contract);
+            autofacResolver.SetLifetimeScope(builder.Build());
+
+            var value = Locator.Current.GetService(null);
+            Assert.Equal(foo, value);
+
+            value = Locator.Current.GetService(null, contract);
+            Assert.Equal(bar, value);
+        }
+
+        /// <summary>
         /// Shoulds the resolve views.
         /// </summary>
         [Fact]

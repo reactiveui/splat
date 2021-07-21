@@ -32,8 +32,13 @@ namespace Splat.SimpleInjector
         }
 
         /// <inheritdoc />
-        public object? GetService(Type serviceType, string? contract = null)
+        public object? GetService(Type? serviceType, string? contract = null)
         {
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
             try
             {
                 InstanceProducer? registration = _container.GetRegistration(serviceType);
@@ -56,7 +61,7 @@ namespace Splat.SimpleInjector
         {
             if (serviceType is null)
             {
-                throw new ArgumentNullException(nameof(serviceType));
+                serviceType = typeof(NullServiceType);
             }
 
             try
@@ -76,26 +81,31 @@ namespace Splat.SimpleInjector
         }
 
         /// <inheritdoc />
-        public bool HasRegistration(Type serviceType, string? contract = null)
+        public bool HasRegistration(Type? serviceType, string? contract = null)
         {
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
             return _container.GetCurrentRegistrations().Any(x => x.ServiceType == serviceType);
         }
 
         /// <inheritdoc />
-        public void Register(Func<object?> factory, Type serviceType, string? contract = null)
+        public void Register(Func<object?> factory, Type? serviceType, string? contract = null)
         {
             // The function does nothing because there should be no registration called on this object.
             // Anyway, Locator.SetLocator performs some unnecessary registrations.
         }
 
         /// <inheritdoc />
-        public void UnregisterCurrent(Type serviceType, string? contract = null)
+        public void UnregisterCurrent(Type? serviceType, string? contract = null)
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc />
-        public void UnregisterAll(Type serviceType, string? contract = null)
+        public void UnregisterAll(Type? serviceType, string? contract = null)
         {
             throw new NotImplementedException();
         }

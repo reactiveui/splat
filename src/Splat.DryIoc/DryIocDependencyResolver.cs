@@ -29,20 +29,41 @@ namespace Splat.DryIoc
         }
 
         /// <inheritdoc />
-        public virtual object? GetService(Type serviceType, string? contract = null) =>
-            string.IsNullOrEmpty(contract)
-                ? _container.ResolveMany(serviceType).LastOrDefault()
-                : _container.ResolveMany(serviceType, serviceKey: contract).LastOrDefault();
-
-        /// <inheritdoc />
-        public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract = null) =>
-            string.IsNullOrEmpty(contract)
-                ? _container.ResolveMany(serviceType)
-                : _container.ResolveMany(serviceType, serviceKey: contract);
-
-        /// <inheritdoc />
-        public bool HasRegistration(Type serviceType, string? contract = null)
+        public virtual object? GetService(Type? serviceType, string? contract = null)
         {
+            var isNull = serviceType is null;
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
+            return string.IsNullOrEmpty(contract)
+                ? _container.ResolveMany(serviceType).Select(x => isNull ? ((NullServiceType)x).Factory()! : x).LastOrDefault()
+                : _container.ResolveMany(serviceType, serviceKey: contract).Select(x => isNull ? ((NullServiceType)x).Factory()! : x).LastOrDefault();
+        }
+
+        /// <inheritdoc />
+        public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
+        {
+            var isNull = serviceType is null;
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
+            return string.IsNullOrEmpty(contract)
+                ? _container.ResolveMany(serviceType).Select(x => isNull ? ((NullServiceType)x).Factory()! : x)
+                : _container.ResolveMany(serviceType, serviceKey: contract).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
+        }
+
+        /// <inheritdoc />
+        public bool HasRegistration(Type? serviceType, string? contract = null)
+        {
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
             return _container.GetServiceRegistrations().Any(x =>
             {
                 if (x.ServiceType != serviceType)
@@ -61,26 +82,44 @@ namespace Splat.DryIoc
         }
 
         /// <inheritdoc />
-        public virtual void Register(Func<object?> factory, Type serviceType, string? contract = null)
+        public virtual void Register(Func<object?> factory, Type? serviceType, string? contract = null)
         {
             if (factory is null)
             {
                 throw new ArgumentNullException(nameof(factory));
             }
 
+            var isNull = serviceType is null;
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
             if (string.IsNullOrEmpty(contract))
             {
-                _container.UseInstance(serviceType, factory(), IfAlreadyRegistered.AppendNewImplementation);
+                _container.UseInstance(
+                    serviceType,
+                    isNull ? new NullServiceType(factory) : factory(),
+                    IfAlreadyRegistered.AppendNewImplementation);
             }
             else
             {
-                _container.UseInstance(serviceType, factory(), IfAlreadyRegistered.AppendNewImplementation, serviceKey: contract);
+                _container.UseInstance(
+                    serviceType,
+                    isNull ? new NullServiceType(factory) : factory(),
+                    IfAlreadyRegistered.AppendNewImplementation,
+                    serviceKey: contract);
             }
         }
 
         /// <inheritdoc />
-        public virtual void UnregisterCurrent(Type serviceType, string? contract = null)
+        public virtual void UnregisterCurrent(Type? serviceType, string? contract = null)
         {
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
             if (string.IsNullOrEmpty(contract))
             {
                 _container.Unregister(serviceType);
@@ -92,8 +131,13 @@ namespace Splat.DryIoc
         }
 
         /// <inheritdoc />
-        public virtual void UnregisterAll(Type serviceType, string? contract = null)
+        public virtual void UnregisterAll(Type? serviceType, string? contract = null)
         {
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
             if (string.IsNullOrEmpty(contract))
             {
                 _container.Unregister(serviceType);

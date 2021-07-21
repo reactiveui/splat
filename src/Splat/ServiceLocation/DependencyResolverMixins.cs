@@ -43,14 +43,14 @@ namespace Splat
         /// <param name="contract">A optional value which will retrieve only a object registered with the same contract.</param>
         /// <returns>A sequence of instances of the requested <typeparamref name="T"/>. The sequence
         /// should be empty (not <c>null</c>) if no objects of the given type are available.</returns>
-        public static IEnumerable<T?> GetServices<T>(this IReadonlyDependencyResolver resolver, string? contract = null)
+        public static IEnumerable<T> GetServices<T>(this IReadonlyDependencyResolver resolver, string? contract = null)
         {
             if (resolver is null)
             {
                 throw new ArgumentNullException(nameof(resolver));
             }
 
-            return resolver.GetServices(typeof(T), contract).Cast<T?>();
+            return resolver.GetServices(typeof(T), contract).Cast<T>();
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace Splat
         /// <param name="value">The specified instance to always return.</param>
         /// <param name="serviceType">The type of service to register.</param>
         /// <param name="contract">A optional contract value which will indicates to only return the value if this contract is specified.</param>
-        public static void RegisterConstant(this IMutableDependencyResolver resolver, object? value, Type serviceType, string? contract = null)
+        public static void RegisterConstant(this IMutableDependencyResolver resolver, object? value, Type? serviceType, string? contract = null)
         {
             if (resolver is null)
             {
@@ -174,7 +174,7 @@ namespace Splat
         /// <param name="valueFactory">A factory method for generating a object of the specified type.</param>
         /// <param name="serviceType">The type of service to register.</param>
         /// <param name="contract">A optional contract value which will indicates to only return the value if this contract is specified.</param>
-        public static void RegisterLazySingleton(this IMutableDependencyResolver resolver, Func<object?> valueFactory, Type serviceType, string? contract = null)
+        public static void RegisterLazySingleton(this IMutableDependencyResolver resolver, Func<object?> valueFactory, Type? serviceType, string? contract = null)
         {
             if (resolver is null)
             {

@@ -18,6 +18,28 @@ namespace Splat.Tests
     public class LocatorTests
     {
         /// <summary>
+        /// Shoulds the resolve nulls.
+        /// </summary>
+        [Fact]
+        public void Can_Register_And_Resolve_Null_Types()
+        {
+            var container = new InternalLocator();
+
+            var foo = 5;
+            container.CurrentMutable.Register(() => foo, null!);
+
+            var bar = 4;
+            var contract = "foo";
+            container.CurrentMutable.Register(() => bar, null!, contract);
+
+            var value = container.Current.GetService(null!);
+            Assert.Equal(foo, value);
+
+            value = container.Current.GetService(null!, contract);
+            Assert.Equal(bar, value);
+        }
+
+        /// <summary>
         /// Tests if the registrations are not empty on no external registrations.
         /// </summary>
         [Fact]

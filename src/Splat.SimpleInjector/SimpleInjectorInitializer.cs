@@ -24,8 +24,13 @@ namespace Splat.SimpleInjector
             = new();
 
         /// <inheritdoc />
-        public object? GetService(Type serviceType, string? contract = null)
+        public object? GetService(Type? serviceType, string? contract = null)
         {
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
             lock (_lockObject)
             {
                 Func<object?>? fact = RegisteredFactories[serviceType].LastOrDefault();
@@ -38,7 +43,7 @@ namespace Splat.SimpleInjector
         {
             if (serviceType is null)
             {
-                throw new ArgumentNullException(nameof(serviceType));
+                serviceType = typeof(NullServiceType);
             }
 
             lock (_lockObject)
@@ -49,8 +54,13 @@ namespace Splat.SimpleInjector
         }
 
         /// <inheritdoc />
-        public bool HasRegistration(Type serviceType, string? contract = null)
+        public bool HasRegistration(Type? serviceType, string? contract = null)
         {
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
             lock (_lockObject)
             {
                 return RegisteredFactories.TryGetValue(serviceType, out var values)
@@ -59,8 +69,14 @@ namespace Splat.SimpleInjector
         }
 
         /// <inheritdoc />
-        public void Register(Func<object?> factory, Type serviceType, string? contract = null)
+        public void Register(Func<object?> factory, Type? serviceType, string? contract = null)
         {
+            var isNull = serviceType is null;
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
             lock (_lockObject)
             {
                 if (!RegisteredFactories.ContainsKey(serviceType))
@@ -68,19 +84,27 @@ namespace Splat.SimpleInjector
                     RegisteredFactories.Add(serviceType, new List<Func<object?>>());
                 }
 
-                RegisteredFactories[serviceType].Add(factory);
+                RegisteredFactories[serviceType].Add(() =>
+                    isNull
+                        ? new NullServiceType(factory)
+                        : factory());
             }
         }
 
         /// <inheritdoc />
-        public void UnregisterCurrent(Type serviceType, string? contract = null)
+        public void UnregisterCurrent(Type? serviceType, string? contract = null)
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc />
-        public void UnregisterAll(Type serviceType, string? contract = null)
+        public void UnregisterAll(Type? serviceType, string? contract = null)
         {
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
             lock (_lockObject)
             {
                 if (RegisteredFactories.ContainsKey(serviceType))

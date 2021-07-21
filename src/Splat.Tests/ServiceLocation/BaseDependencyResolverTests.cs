@@ -178,9 +178,10 @@ namespace Splat.Tests.ServiceLocation
         [Fact]
         public void NullResolverTests()
         {
-            IReadonlyDependencyResolver resolver = default;
-            IMutableDependencyResolver resolver1 = default;
-            IDependencyResolver resolver2 = default;
+            IReadonlyDependencyResolver? resolver = default;
+            IMutableDependencyResolver? resolver1 = default;
+            IDependencyResolver? resolver2 = default;
+#pragma warning disable CS8604 // Possible null reference argument.
             Assert.Throws<ArgumentNullException>(() => resolver.GetService<ILogManager>());
             Assert.Throws<ArgumentNullException>(() => resolver.GetServices<ILogManager>());
             Assert.Throws<ArgumentNullException>(() => resolver1.ServiceRegistrationCallback(typeof(ILogManager), (IDisposable d) => { d.Dispose(); }));
@@ -201,6 +202,7 @@ namespace Splat.Tests.ServiceLocation
             Assert.Throws<ArgumentNullException>(() => resolver1.RegisterConstantAnd(new ViewModelOne()));
             Assert.Throws<ArgumentNullException>(() => resolver1.RegisterConstantAnd(new ViewModelOne(), typeof(ViewModelOne)));
             Assert.Throws<ArgumentNullException>(() => resolver1.RegisterConstantAnd<ViewModelOne>());
+#pragma warning restore CS8604 // Possible null reference argument.
         }
 
         /// <summary>
@@ -210,7 +212,7 @@ namespace Splat.Tests.ServiceLocation
         public void RegisterAndTests()
         {
             var resolver = GetDependencyResolver();
-            Assert.Throws<ArgumentNullException>(() => resolver.RegisterAnd<IViewModelOne>(null));
+            Assert.Throws<ArgumentNullException>(() => resolver.RegisterAnd<IViewModelOne>(default!));
             resolver.RegisterAnd<ViewModelOne>("one")
                     .RegisterAnd<IViewModelOne, ViewModelOne>("two")
                     .RegisterAnd(() => new DefaultLogManager(), "three")

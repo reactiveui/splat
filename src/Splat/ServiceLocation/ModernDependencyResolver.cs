@@ -53,11 +53,16 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public bool HasRegistration(Type serviceType, string? contract = null)
+        public bool HasRegistration(Type? serviceType, string? contract = null)
         {
             if (_registry is null)
             {
                 return false;
+            }
+
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
             }
 
             var pair = GetKey(serviceType, contract);
@@ -65,21 +70,31 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Register(Func<object?> factory, Type serviceType, string? contract = null)
+        public void Register(Func<object?> factory, Type? serviceType, string? contract = null)
         {
-            var pair = GetKey(serviceType, contract);
-
             if (_registry is null)
             {
                 return;
             }
+
+            var isNull = serviceType is null;
+
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
+            var pair = GetKey(serviceType, contract);
 
             if (!_registry.ContainsKey(pair))
             {
                 _registry[pair] = new List<Func<object?>>();
             }
 
-            _registry[pair].Add(factory);
+            _registry[pair].Add(() =>
+                isNull
+                    ? new NullServiceType(factory)
+                    : factory());
 
             if (_callbackRegistry.ContainsKey(pair))
             {
@@ -108,11 +123,16 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public object? GetService(Type serviceType, string? contract = null)
+        public object? GetService(Type? serviceType, string? contract = null)
         {
             if (_registry is null)
             {
                 return default;
+            }
+
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
             }
 
             var pair = GetKey(serviceType, contract);
@@ -122,20 +142,30 @@ namespace Splat
             }
 
             var ret = _registry[pair].LastOrDefault();
-            return ret is null ? default : ret();
+            object? returnValue = default;
+            if (ret != null)
+            {
+                returnValue = ret();
+                if (returnValue is NullServiceType nullServiceType)
+                {
+                    return nullServiceType.Factory()!;
+                }
+            }
+
+            return returnValue;
         }
 
         /// <inheritdoc />
         public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
         {
-            if (serviceType == null)
-            {
-                throw new ArgumentNullException(nameof(serviceType));
-            }
-
             if (_registry is null)
             {
                 return Array.Empty<object>();
+            }
+
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
             }
 
             var pair = GetKey(serviceType, contract);
@@ -148,11 +178,16 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void UnregisterCurrent(Type serviceType, string? contract = null)
+        public void UnregisterCurrent(Type? serviceType, string? contract = null)
         {
             if (_registry is null)
             {
                 return;
+            }
+
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
             }
 
             var pair = GetKey(serviceType, contract);
@@ -172,11 +207,16 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void UnregisterAll(Type serviceType, string? contract = null)
+        public void UnregisterAll(Type? serviceType, string? contract = null)
         {
             if (_registry is null)
             {
                 return;
+            }
+
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
             }
 
             var pair = GetKey(serviceType, contract);
@@ -229,10 +269,7 @@ namespace Splat
         /// Useful if you want to generate temporary resolver using the <see cref="DependencyResolverMixins.WithResolver(IDependencyResolver, bool)"/> method.
         /// </summary>
         /// <returns>The newly generated <see cref="ModernDependencyResolver"/> class with the current registrations.</returns>
-        public ModernDependencyResolver Duplicate()
-        {
-            return new ModernDependencyResolver(_registry);
-        }
+        public ModernDependencyResolver Duplicate() => new(_registry);
 
         /// <inheritdoc />
         public void Dispose()
@@ -261,8 +298,8 @@ namespace Splat
         }
 
         private static (Type type, string contract) GetKey(
-            Type serviceType,
+            Type? serviceType,
             string? contract = null) =>
-            (serviceType, contract ?? string.Empty);
+            (serviceType!, contract ?? string.Empty);
     }
 }

@@ -8,7 +8,9 @@ namespace Splat.Common.Test
     /// <summary>
     /// Interface for ViewModelOne.
     /// </summary>
+#pragma warning disable CA1040 // Avoid empty interfaces
     public interface IViewModelOne
+#pragma warning restore CA1040 // Avoid empty interfaces
     {
     }
 }

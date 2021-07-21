@@ -21,6 +21,29 @@ namespace Splat.DryIoc.Tests
     public class DependencyResolverTests
     {
         /// <summary>
+        /// Shoulds the resolve nulls.
+        /// </summary>
+        [Fact]
+        public void Can_Register_And_Resolve_Null_Types()
+        {
+            var builder = new Container();
+            builder.UseDryIocDependencyResolver();
+
+            var foo = 5;
+            Locator.CurrentMutable.Register(() => foo, null);
+
+            var bar = 4;
+            var contract = "foo";
+            Locator.CurrentMutable.Register(() => bar, null, contract);
+
+            var value = Locator.Current.GetService(null);
+            Assert.Equal(foo, value);
+
+            value = Locator.Current.GetService(null, contract);
+            Assert.Equal(bar, value);
+        }
+
+        /// <summary>
         /// Should resolve the views.
         /// </summary>
         [Fact]

@@ -30,7 +30,7 @@ namespace Splat.Ninject
         }
 
         /// <inheritdoc />
-        public virtual object? GetService(Type serviceType, string? contract = null) =>
+        public virtual object? GetService(Type? serviceType, string? contract = null) =>
             GetServices(serviceType, contract).LastOrDefault()!;
 
         /// <inheritdoc />
@@ -55,8 +55,13 @@ namespace Splat.Ninject
         }
 
         /// <inheritdoc />
-        public bool HasRegistration(Type serviceType, string? contract = null)
+        public bool HasRegistration(Type? serviceType, string? contract = null)
         {
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
             return _kernel.CanResolve(serviceType, metadata => IsCorrectMetadata(metadata, contract));
         }
 
@@ -165,17 +170,6 @@ namespace Splat.Ninject
         {
             return (metadata?.Name is null && string.IsNullOrWhiteSpace(contract))
                    || (metadata?.Name is not null && metadata.Name.Equals(contract, StringComparison.OrdinalIgnoreCase));
-        }
-
-        [SuppressMessage("Design", "CA1812: Uninitialized class.", Justification = "Used in reflection.")]
-        private class NullServiceType
-        {
-            public NullServiceType(Func<object?> factory)
-            {
-                Factory = factory;
-            }
-
-            public Func<object?> Factory { get; }
         }
     }
 }
