@@ -126,6 +126,7 @@ namespace Splat.DryIoc
                 serviceType = typeof(NullServiceType);
             }
 
+            var key = (serviceType, contract ?? string.Empty);
             var hadvalue = _container.GetServiceRegistrations().Any(x =>
             {
                 if (x.ServiceType != serviceType)
@@ -133,7 +134,6 @@ namespace Splat.DryIoc
                     return false;
                 }
 
-                var key = (serviceType, contract ?? string.Empty);
                 if (key.Equals(x.OptionalServiceKey))
                 {
                     _container.Unregister(serviceType, key);
@@ -166,10 +166,31 @@ namespace Splat.DryIoc
             }
 
             var key = (serviceType, contract ?? string.Empty);
+            foreach (var x in _container.GetServiceRegistrations())
+            {
+                if (x.ServiceType != serviceType)
+                {
+                    continue;
+                }
 
-            _container.Unregister(serviceType, key);
-            _container.Unregister(serviceType, contract);
-            _container.Unregister(serviceType);
+                if (key.Equals(x.OptionalServiceKey))
+                {
+                    _container.Unregister(serviceType, key);
+                    continue;
+                }
+
+                if (contract is null && x.OptionalServiceKey is null)
+                {
+                    _container.Unregister(serviceType);
+                    continue;
+                }
+
+                if (x.OptionalServiceKey is string serviceKeyAsString
+                       && contract is not null && contract.Equals(serviceKeyAsString, StringComparison.Ordinal))
+                {
+                    _container.Unregister(serviceType, contract);
+                }
+            }
         }
 
         /// <inheritdoc />

@@ -41,8 +41,18 @@ namespace Splat.Tests.ServiceLocation
             Assert.Equal(1, values.Count());
 
             resolver.UnregisterCurrent(null);
-            values = resolver.GetServices(null);
-            Assert.Equal(0, values.Count());
+            var valuesNC = resolver.GetServices(null);
+            Assert.Equal(0, valuesNC.Count());
+            var valuesC = resolver.GetServices(null, contract);
+            Assert.Equal(1, valuesC.Count());
+
+            resolver.UnregisterAll(null);
+            valuesNC = resolver.GetServices(null);
+            Assert.Equal(0, valuesNC.Count());
+
+            resolver.UnregisterAll(null, contract);
+            valuesC = resolver.GetServices(null, contract);
+            Assert.Equal(0, valuesC.Count());
         }
 
         /// <inheritdoc />

@@ -53,6 +53,14 @@ namespace Splat.DryIoc.Tests
             Assert.Equal(0, valuesNC.Count());
             var valuesC = Locator.Current.GetServices(null, contract);
             Assert.Equal(1, valuesC.Count());
+
+            Locator.CurrentMutable.UnregisterAll(null);
+            valuesNC = Locator.Current.GetServices(null);
+            Assert.Equal(0, valuesNC.Count());
+
+            Locator.CurrentMutable.UnregisterAll(null, contract);
+            valuesC = Locator.Current.GetServices(null, contract);
+            Assert.Equal(0, valuesC.Count());
         }
 
         /// <summary>

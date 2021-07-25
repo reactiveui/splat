@@ -44,8 +44,18 @@ namespace Splat.Tests
             Assert.Equal(1, values.Count());
 
             container.CurrentMutable.UnregisterCurrent(null);
-            values = container.Current.GetServices(null);
-            Assert.Equal(0, values.Count());
+            var valuesNC = container.Current.GetServices(null);
+            Assert.Equal(0, valuesNC.Count());
+            var valuesC = container.Current.GetServices(null, contract);
+            Assert.Equal(1, valuesC.Count());
+
+            container.CurrentMutable.UnregisterAll(null);
+            valuesNC = container.Current.GetServices(null);
+            Assert.Equal(0, valuesNC.Count());
+
+            container.CurrentMutable.UnregisterAll(null, contract);
+            valuesC = container.Current.GetServices(null, contract);
+            Assert.Equal(0, valuesC.Count());
         }
 
         /// <summary>
