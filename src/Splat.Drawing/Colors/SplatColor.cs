@@ -16,7 +16,7 @@ namespace Splat
     public partial struct SplatColor : IEquatable<SplatColor>
     {
         // Private transparency (A) and R,G,B fields.
-        private long _value;
+        private uint _value;
 
         private short _state;
         private short _knownColor;
@@ -27,7 +27,7 @@ namespace Splat
         // however it's bad to keep a string (reference) in a struct
         private string _name;
 
-        internal SplatColor(long value, short state, short knownColor, string name)
+        internal SplatColor(uint value, short state, short knownColor, string name)
         {
             _value = value;
             _state = state;
@@ -136,7 +136,7 @@ namespace Splat
         /// Gets or sets the value of the color.
         /// </summary>
         [DataMember]
-        internal long Value
+        internal uint Value
         {
             get
             {
@@ -159,11 +159,8 @@ namespace Splat
         /// <param name="left">The first SplatColor to compare.</param>
         /// <param name="right">The second SplatColor to compare.</param>
         /// <returns>If they are equivalent to each other.</returns>
-        public static bool operator ==(SplatColor left, SplatColor right)
-        {
-            // Equals handles case of null on right side.
-            return left.Equals(right);
-        }
+        public static bool operator ==(SplatColor left, SplatColor right) =>
+            left.Equals(right);
 
         /// <summary>
         /// Compares two SplatColor references and determines if they are not equivalent based on their A,R,G,B values.
@@ -171,10 +168,8 @@ namespace Splat
         /// <param name="left">The first SplatColor to compare.</param>
         /// <param name="right">The second SplatColor to compare.</param>
         /// <returns>If they are not equivalent to each other.</returns>
-        public static bool operator !=(SplatColor left, SplatColor right)
-        {
-            return !(left == right);
-        }
+        public static bool operator !=(SplatColor left, SplatColor right) =>
+            !left.Equals(right);
 
         /// <summary>
         /// Creates a SplatColor from the RGB values.
@@ -200,11 +195,13 @@ namespace Splat
         public static SplatColor FromArgb(int alpha, int red, int green, int blue)
         {
             CheckARGBValues(alpha, red, green, blue);
-            return new SplatColor
+            var newColor = new SplatColor
             {
                 _state = (short)ColorType.ARGB,
-                Value = (int)((uint)alpha << 24) + (red << 16) + (green << 8) + blue
+                Value = ((uint)alpha << 24) + ((uint)red << 16) + ((uint)green << 8) + (uint)blue
             };
+
+            return CheckIfIsKnownColor(newColor);
         }
 
         /// <summary>
@@ -213,20 +210,16 @@ namespace Splat
         /// <param name="alpha">The new alpha component to set for the new <see cref="SplatColor"/>.</param>
         /// <param name="baseColor">The base color to use for the RGB values.</param>
         /// <returns>The new <see cref="SplatColor"/>.</returns>
-        public static SplatColor FromArgb(int alpha, SplatColor baseColor)
-        {
-            return FromArgb(alpha, baseColor.R, baseColor.G, baseColor.B);
-        }
+        public static SplatColor FromArgb(int alpha, SplatColor baseColor) =>
+            FromArgb(alpha, baseColor.R, baseColor.G, baseColor.B);
 
         /// <summary>
         /// Creates a new <see cref="SplatColor"/> from the specified int based ARGB value.
         /// </summary>
         /// <param name="argb">The int containing the ARGB values.</param>
         /// <returns>The new <see cref="SplatColor"/>.</returns>
-        public static SplatColor FromArgb(int argb)
-        {
-            return FromArgb((argb >> 24) & 0x0FF, (argb >> 16) & 0x0FF, (argb >> 8) & 0x0FF, argb & 0x0FF);
-        }
+        public static SplatColor FromArgb(uint argb) =>
+            FromArgb((int)((argb >> 24) & 0x0FF), (int)((argb >> 16) & 0x0FF), (int)((argb >> 8) & 0x0FF), (int)(argb & 0x0FF));
 
         /// <summary>
         /// Gets a SplatColor from a <see cref="KnownColor"/> value.
@@ -240,7 +233,7 @@ namespace Splat
             if ((n <= 0) || (n >= KnownColors.ArgbValues.Length))
             {
                 // This is what it returns!
-                c = FromArgb(0, 0, 0, 0);
+                c = SplatColor.Empty;
                 c._state |= (short)ColorType.Named;
             }
             else
@@ -276,7 +269,7 @@ namespace Splat
                 LogHost.Default.Debug(ex, "Unable to parse the known colour name.");
 
                 // This is what it returns!
-                var d = FromArgb(0, 0, 0, 0);
+                var d = SplatColor.Empty;
                 d._name = name;
                 d._state |= (short)ColorType.Named;
                 return d;
@@ -322,10 +315,7 @@ namespace Splat
         /// Gets the integer value of the color.
         /// </summary>
         /// <returns>The integer value.</returns>
-        public int ToArgb()
-        {
-            return (int)Value;
-        }
+        public uint ToArgb() => Value;
 
         /// <summary>
         /// Gets the hue of the color.
@@ -375,57 +365,22 @@ namespace Splat
 
         /// <summary>Gets the <see cref="KnownColor"/> of the current value (if one is available).</summary>
         /// <returns>Returns the KnownColor enum value for this color, 0 if is not known.</returns>
-        public KnownColor ToKnownColor()
-        {
-            return (KnownColor)_knownColor;
-        }
+        public KnownColor ToKnownColor() => (KnownColor)_knownColor;
 
         /// <inheritdoc />
         public override bool Equals(object? obj)
         {
-            if (!(obj is SplatColor))
+            if (obj is SplatColor splatColor)
             {
-                return false;
+                return Equals(splatColor);
             }
 
-            return Equals((SplatColor)obj);
+            return false;
         }
 
         /// <inheritdoc />
-        public bool Equals(SplatColor other)
-        {
-            if (Value != other.Value)
-            {
-                return false;
-            }
-
-            if (IsNamedColor != other.IsNamedColor)
-            {
-                return false;
-            }
-
-            if (IsSystemColor != other.IsSystemColor)
-            {
-                return false;
-            }
-
-            if (IsEmpty != other.IsEmpty)
-            {
-                return false;
-            }
-
-            if (IsNamedColor)
-            {
-                // then both are named (see previous check) and so we need to compare them
-                // but otherwise we don't as it kills performance (Name calls String.Format)
-                if (Name != other.Name)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
+        public bool Equals(SplatColor other) =>
+            A == other.A && R == other.R && G == other.G && B == other.B;
 
         /// <inheritdoc />
         public override int GetHashCode()
@@ -492,10 +447,8 @@ namespace Splat
             }
         }
 
-        private static ArgumentException CreateColorArgumentException(int value, string color)
-        {
-            return new($"'{value}' is not a valid value for '{color}'. '{color}' should be greater or equal to 0 and less than or equal to 255.");
-        }
+        private static ArgumentException CreateColorArgumentException(int value, string color) =>
+            new($"'{value}' is not a valid value for '{color}'. '{color}' should be greater or equal to 0 and less than or equal to 255.");
 
         private static void CheckARGBValues(int alpha, int red, int green, int blue)
         {
@@ -505,6 +458,24 @@ namespace Splat
             }
 
             CheckRGBValues(red, green, blue);
+        }
+
+        private static SplatColor CheckIfIsKnownColor(SplatColor splatColor)
+        {
+            try
+            {
+                var index = Array.IndexOf(KnownColors.ArgbValues, splatColor.Value);
+                if (index >= 0)
+                {
+                    var knownColorLookup = (KnownColor)index;
+                    return FromKnownColor(knownColorLookup);
+                }
+            }
+            catch
+            {
+            }
+
+            return splatColor;
         }
     }
 }

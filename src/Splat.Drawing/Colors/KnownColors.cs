@@ -15,10 +15,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -32,17 +32,18 @@ using System;
 
 namespace Splat
 {
-
 #if NET_2_0
   internal static class KnownColors {
 #else
+
     internal class KnownColors
     {
-
         private KnownColors()
         {
         }
+
 #endif
+
         // FindColorMatch relies on the index + 1 == KnowColor match
         static internal uint[] ArgbValues = new uint[]
         {
@@ -257,6 +258,7 @@ namespace Splat
         {
             switch (kc)
             {
+                case 0: return "Empty";
                 case 1: return "ActiveBorder";
                 case 2: return "ActiveCaption";
                 case 3: return "ActiveCaptionText";
