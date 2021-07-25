@@ -3,12 +3,15 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Splat.Tests.Mocks
 {
     /// <summary>
     /// A dummy class used during Locator testing.
     /// </summary>
-    internal class DummyObjectClass2 : IDummyInterface
+    [ExcludeFromCodeCoverage]
+    public class DummyObjectClass3 : IDummyInterface
     {
     }
 }

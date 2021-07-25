@@ -29,20 +29,57 @@ namespace Splat.DryIoc
         }
 
         /// <inheritdoc />
-        public virtual object? GetService(Type serviceType, string? contract = null) =>
-            string.IsNullOrEmpty(contract)
-                ? _container.ResolveMany(serviceType).LastOrDefault()
-                : _container.ResolveMany(serviceType, serviceKey: contract).LastOrDefault();
-
-        /// <inheritdoc />
-        public virtual IEnumerable<object> GetServices(Type serviceType, string? contract = null) =>
-            string.IsNullOrEmpty(contract)
-                ? _container.ResolveMany(serviceType)
-                : _container.ResolveMany(serviceType, serviceKey: contract);
-
-        /// <inheritdoc />
-        public bool HasRegistration(Type serviceType, string? contract = null)
+        public virtual object? GetService(Type? serviceType, string? contract = null)
         {
+            var isNull = serviceType is null;
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
+            var key = (serviceType, contract ?? string.Empty);
+            var registeredinSplat = _container.ResolveMany(serviceType, serviceKey: key).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
+            if (registeredinSplat.Any())
+            {
+                return registeredinSplat.LastOrDefault();
+            }
+
+            var registeredWithContract = _container.ResolveMany(serviceType, serviceKey: contract).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
+            if (registeredWithContract.Any())
+            {
+                return registeredWithContract.LastOrDefault();
+            }
+
+            return _container.ResolveMany(serviceType).Select(x => isNull ? ((NullServiceType)x).Factory()! : x).LastOrDefault();
+        }
+
+        /// <inheritdoc />
+        public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
+        {
+            var isNull = serviceType is null;
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
+            var key = (serviceType, contract ?? string.Empty);
+            var registeredinSplat = _container.ResolveMany(serviceType, serviceKey: key).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
+            if (registeredinSplat.Any())
+            {
+                return registeredinSplat;
+            }
+
+            return Array.Empty<object>();
+        }
+
+        /// <inheritdoc />
+        public bool HasRegistration(Type? serviceType, string? contract = null)
+        {
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
             return _container.GetServiceRegistrations().Any(x =>
             {
                 if (x.ServiceType != serviceType)
@@ -50,57 +87,109 @@ namespace Splat.DryIoc
                     return false;
                 }
 
-                if (contract is null)
-                {
-                    return x.OptionalServiceKey is null;
-                }
+                var key = (serviceType, contract ?? string.Empty);
 
-                return x.OptionalServiceKey is string serviceKeyAsString
-                       && contract.Equals(serviceKeyAsString, StringComparison.Ordinal);
+                return key.Equals(x.OptionalServiceKey) ||
+                (contract is null && x.OptionalServiceKey is null) ||
+            (x.OptionalServiceKey is string serviceKeyAsString
+                       && contract is not null && contract.Equals(serviceKeyAsString, StringComparison.Ordinal));
             });
         }
 
         /// <inheritdoc />
-        public virtual void Register(Func<object> factory, Type serviceType, string? contract = null)
+        public virtual void Register(Func<object?> factory, Type? serviceType, string? contract = null)
         {
             if (factory is null)
             {
                 throw new ArgumentNullException(nameof(factory));
             }
 
-            if (string.IsNullOrEmpty(contract))
+            var isNull = serviceType is null;
+            if (serviceType is null)
             {
-                _container.UseInstance(serviceType, factory(), IfAlreadyRegistered.AppendNewImplementation);
+                serviceType = typeof(NullServiceType);
             }
-            else
-            {
-                _container.UseInstance(serviceType, factory(), IfAlreadyRegistered.AppendNewImplementation, serviceKey: contract);
-            }
+
+            var key = (serviceType, contract ?? string.Empty);
+
+            _container.UseInstance(
+                serviceType,
+                isNull ? new NullServiceType(factory) : factory(),
+                serviceKey: key);
         }
 
         /// <inheritdoc />
-        public virtual void UnregisterCurrent(Type serviceType, string? contract = null)
+        public virtual void UnregisterCurrent(Type? serviceType, string? contract = null)
         {
-            if (string.IsNullOrEmpty(contract))
+            if (serviceType is null)
             {
-                _container.Unregister(serviceType);
+                serviceType = typeof(NullServiceType);
             }
-            else
+
+            var key = (serviceType, contract ?? string.Empty);
+            var hadvalue = _container.GetServiceRegistrations().Any(x =>
             {
-                _container.Unregister(serviceType, contract);
-            }
+                if (x.ServiceType != serviceType)
+                {
+                    return false;
+                }
+
+                if (key.Equals(x.OptionalServiceKey))
+                {
+                    _container.Unregister(serviceType, key);
+                    return true;
+                }
+
+                if (contract is null && x.OptionalServiceKey is null)
+                {
+                    _container.Unregister(serviceType);
+                    return true;
+                }
+
+                if (x.OptionalServiceKey is string serviceKeyAsString
+                       && contract is not null && contract.Equals(serviceKeyAsString, StringComparison.Ordinal))
+                {
+                    _container.Unregister(serviceType, contract);
+                    return true;
+                }
+
+                return false;
+            });
         }
 
         /// <inheritdoc />
-        public virtual void UnregisterAll(Type serviceType, string? contract = null)
+        public virtual void UnregisterAll(Type? serviceType, string? contract = null)
         {
-            if (string.IsNullOrEmpty(contract))
+            if (serviceType is null)
             {
-                _container.Unregister(serviceType);
+                serviceType = typeof(NullServiceType);
             }
-            else
+
+            var key = (serviceType, contract ?? string.Empty);
+            foreach (var x in _container.GetServiceRegistrations())
             {
-                _container.Unregister(serviceType, contract);
+                if (x.ServiceType != serviceType)
+                {
+                    continue;
+                }
+
+                if (key.Equals(x.OptionalServiceKey))
+                {
+                    _container.Unregister(serviceType, key);
+                    continue;
+                }
+
+                if (contract is null && x.OptionalServiceKey is null)
+                {
+                    _container.Unregister(serviceType);
+                    continue;
+                }
+
+                if (x.OptionalServiceKey is string serviceKeyAsString
+                       && contract is not null && contract.Equals(serviceKeyAsString, StringComparison.Ordinal))
+                {
+                    _container.Unregister(serviceType, contract);
+                }
             }
         }
 

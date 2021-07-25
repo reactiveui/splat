@@ -152,12 +152,24 @@ namespace Splat.Tests.ServiceLocation
         {
             var resolver = GetDependencyResolver();
 
-            // Setup NLog for Logging (doesn't matter if I actually configure NLog or not)
-            resolver.UseNLogWithWrappingFullLogger();
+            // NOTE:MicrosoftDependencyResolver test for this funtionality is in DependencyResolverTests
+            if (resolver.GetType().Name != "MicrosoftDependencyResolver")
+            {
+                // Setup NLog for Logging (doesn't matter if I actually configure NLog or not)
+                resolver.UseNLogWithWrappingFullLogger();
+                Locator.SetLocator(resolver);
+                Locator.CurrentMutable.InitializeSplat();
 
-            // Get the ILogManager instance (this should succeed, but fails in current code)
-            ILogManager lm = Locator.Current.GetService<ILogManager>();
-            Assert.NotNull(lm);
+                // Get the ILogManager instance
+                var lm = Locator.Current.GetService<ILogManager>();
+                Assert.NotNull(lm);
+
+                // now suceeds for AutoFac, Ninject and Splat
+#pragma warning disable CS8604 // Possible null reference argument.
+                var mgr = lm.GetLogger<NLogLogger>();
+#pragma warning restore CS8604 // Possible null reference argument.
+                Assert.NotNull(mgr);
+            }
         }
 
         /// <summary>
@@ -166,9 +178,10 @@ namespace Splat.Tests.ServiceLocation
         [Fact]
         public void NullResolverTests()
         {
-            IReadonlyDependencyResolver resolver = default;
-            IMutableDependencyResolver resolver1 = default;
-            IDependencyResolver resolver2 = default;
+            IReadonlyDependencyResolver? resolver = default;
+            IMutableDependencyResolver? resolver1 = default;
+            IDependencyResolver? resolver2 = default;
+#pragma warning disable CS8604 // Possible null reference argument.
             Assert.Throws<ArgumentNullException>(() => resolver.GetService<ILogManager>());
             Assert.Throws<ArgumentNullException>(() => resolver.GetServices<ILogManager>());
             Assert.Throws<ArgumentNullException>(() => resolver1.ServiceRegistrationCallback(typeof(ILogManager), (IDisposable d) => { d.Dispose(); }));
@@ -189,6 +202,7 @@ namespace Splat.Tests.ServiceLocation
             Assert.Throws<ArgumentNullException>(() => resolver1.RegisterConstantAnd(new ViewModelOne()));
             Assert.Throws<ArgumentNullException>(() => resolver1.RegisterConstantAnd(new ViewModelOne(), typeof(ViewModelOne)));
             Assert.Throws<ArgumentNullException>(() => resolver1.RegisterConstantAnd<ViewModelOne>());
+#pragma warning restore CS8604 // Possible null reference argument.
         }
 
         /// <summary>
@@ -198,7 +212,7 @@ namespace Splat.Tests.ServiceLocation
         public void RegisterAndTests()
         {
             var resolver = GetDependencyResolver();
-            Assert.Throws<ArgumentNullException>(() => resolver.RegisterAnd<IViewModelOne>(null));
+            Assert.Throws<ArgumentNullException>(() => resolver.RegisterAnd<IViewModelOne>(default!));
             resolver.RegisterAnd<ViewModelOne>("one")
                     .RegisterAnd<IViewModelOne, ViewModelOne>("two")
                     .RegisterAnd(() => new DefaultLogManager(), "three")
