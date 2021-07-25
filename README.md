@@ -38,11 +38,12 @@ Splat currently supports:
 
 [Always Be NuGetting](https://nuget.org/packages/Splat/). Package contains binaries for:
 
-* WPF (.NET 4.5)
-* Windows Forms
-* UWP
-* Xamarin (Android, iOS and Mac)
-* .NET Standard 1.0 and 2.0
+* .NET Framework 4.6.1, .NET Framework 4.7.2, .NET Standard 2.0 and .NET 5.0
+  * WPF
+  * Windows Forms
+  * UWP
+  * Xamarin (Android, iOS and Mac)
+  * Tizen
 
 ## Detecting whether you're in a unit test runner
 
