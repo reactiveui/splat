@@ -24,10 +24,8 @@ namespace Splat
         /// </summary>
         /// <param name="value">The color to convert.</param>
         /// <returns>The <see cref="UIColor"/> generated value.</returns>
-        public static UIColor ToNative(this SplatColor value)
-        {
-            return new(value.R / 255.0f, value.G / 255.0f, value.B / 255.0f, value.A / 255.0f);
-        }
+        public static UIColor ToNative(this SplatColor value) =>
+            new(value.R / 255.0f, value.G / 255.0f, value.B / 255.0f, value.A / 255.0f);
 
         /// <summary>
         /// Converts a <see cref="UIColor"/> into the cocoa native <see cref="SplatColor"/>.
@@ -50,10 +48,8 @@ namespace Splat
         /// </summary>
         /// <param name="value">The color to convert.</param>
         /// <returns>The <see cref="NSColor"/> generated.</returns>
-        public static NSColor ToNative(this SplatColor value)
-        {
-            return NSColor.FromSrgb(value.R / 255.0f, value.G / 255.0f, value.B / 255.0f, value.A / 255.0f);
-        }
+        public static NSColor ToNative(this SplatColor value) =>
+            NSColor.FromSrgb(value.R / 255.0f, value.G / 255.0f, value.B / 255.0f, value.A / 255.0f);
 
         /// <summary>
         /// Converts a <see cref="NSColor"/> into the cocoa native <see cref="SplatColor"/>.
