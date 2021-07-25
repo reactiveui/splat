@@ -8,7 +8,9 @@ namespace Splat.Tests.Mocks
     /// <summary>
     /// A dummy interface used during Locator testing.
     /// </summary>
-    internal interface IDummyInterface
+#pragma warning disable CA1040 // Avoid empty interfaces
+    public interface IDummyInterface
+#pragma warning restore CA1040 // Avoid empty interfaces
     {
     }
 }

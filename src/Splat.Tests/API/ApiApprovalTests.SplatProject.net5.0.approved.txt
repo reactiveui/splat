@@ -161,16 +161,13 @@ namespace Splat
     {
         public static T? GetService<T>(this Splat.IReadonlyDependencyResolver resolver, string? contract = null) { }
         public static System.Collections.Generic.IEnumerable<T> GetServices<T>(this Splat.IReadonlyDependencyResolver resolver, string? contract = null) { }
-        public static void Register<T>(this Splat.IMutableDependencyResolver resolver, System.Func<T> factory, string? contract = null)
-            where T :  notnull { }
+        public static void Register<T>(this Splat.IMutableDependencyResolver resolver, System.Func<T?> factory, string? contract = null) { }
         public static void Register<TAs, T>(this Splat.IMutableDependencyResolver resolver, string? contract = null)
             where T : new() { }
-        public static void RegisterConstant(this Splat.IMutableDependencyResolver resolver, object value, System.Type serviceType, string? contract = null) { }
-        public static void RegisterConstant<T>(this Splat.IMutableDependencyResolver resolver, T value, string? contract = null)
-            where T :  notnull { }
-        public static void RegisterLazySingleton(this Splat.IMutableDependencyResolver resolver, System.Func<object> valueFactory, System.Type serviceType, string? contract = null) { }
-        public static void RegisterLazySingleton<T>(this Splat.IMutableDependencyResolver resolver, System.Func<T> valueFactory, string? contract = null)
-            where T :  notnull { }
+        public static void RegisterConstant(this Splat.IMutableDependencyResolver resolver, object? value, System.Type? serviceType, string? contract = null) { }
+        public static void RegisterConstant<T>(this Splat.IMutableDependencyResolver resolver, T? value, string? contract = null) { }
+        public static void RegisterLazySingleton(this Splat.IMutableDependencyResolver resolver, System.Func<object?> valueFactory, System.Type? serviceType, string? contract = null) { }
+        public static void RegisterLazySingleton<T>(this Splat.IMutableDependencyResolver resolver, System.Func<T?> valueFactory, string? contract = null) { }
         public static System.IDisposable ServiceRegistrationCallback(this Splat.IMutableDependencyResolver resolver, System.Type serviceType, System.Action<System.IDisposable> callback) { }
         public static void UnregisterAll<T>(this Splat.IMutableDependencyResolver resolver, string? contract = null) { }
         public static void UnregisterCurrent<T>(this Splat.IMutableDependencyResolver resolver, string? contract = null) { }
@@ -196,16 +193,16 @@ namespace Splat
     }
     public class FuncDependencyResolver : Splat.IDependencyResolver, Splat.IMutableDependencyResolver, Splat.IReadonlyDependencyResolver, System.IDisposable
     {
-        public FuncDependencyResolver(System.Func<System.Type, string?, System.Collections.Generic.IEnumerable<object>> getAllServices, System.Action<System.Func<object>, System.Type, string?>? register = null, System.Action<System.Type, string?>? unregisterCurrent = null, System.Action<System.Type, string?>? unregisterAll = null, System.IDisposable? toDispose = null) { }
+        public FuncDependencyResolver(System.Func<System.Type?, string?, System.Collections.Generic.IEnumerable<object>> getAllServices, System.Action<System.Func<object?>, System.Type?, string?>? register = null, System.Action<System.Type?, string?>? unregisterCurrent = null, System.Action<System.Type?, string?>? unregisterAll = null, System.IDisposable? toDispose = null) { }
         public void Dispose() { }
         protected virtual void Dispose(bool isDisposing) { }
-        public object? GetService(System.Type serviceType, string? contract = null) { }
-        public System.Collections.Generic.IEnumerable<object> GetServices(System.Type serviceType, string? contract = null) { }
-        public bool HasRegistration(System.Type serviceType, string? contract = null) { }
-        public void Register(System.Func<object> factory, System.Type serviceType, string? contract = null) { }
+        public object? GetService(System.Type? serviceType, string? contract = null) { }
+        public System.Collections.Generic.IEnumerable<object> GetServices(System.Type? serviceType, string? contract = null) { }
+        public bool HasRegistration(System.Type? serviceType, string? contract = null) { }
+        public void Register(System.Func<object?> factory, System.Type? serviceType, string? contract = null) { }
         public System.IDisposable ServiceRegistrationCallback(System.Type serviceType, string? contract, System.Action<System.IDisposable> callback) { }
-        public void UnregisterAll(System.Type serviceType, string? contract = null) { }
-        public void UnregisterCurrent(System.Type serviceType, string? contract = null) { }
+        public void UnregisterAll(System.Type? serviceType, string? contract = null) { }
+        public void UnregisterCurrent(System.Type? serviceType, string? contract = null) { }
     }
     public class FuncLogManager : Splat.ILogManager
     {
@@ -412,16 +409,16 @@ namespace Splat
     }
     public interface IMutableDependencyResolver
     {
-        bool HasRegistration(System.Type serviceType, string? contract = null);
-        void Register(System.Func<object> factory, System.Type serviceType, string? contract = null);
+        bool HasRegistration(System.Type? serviceType, string? contract = null);
+        void Register(System.Func<object?> factory, System.Type? serviceType, string? contract = null);
         System.IDisposable ServiceRegistrationCallback(System.Type serviceType, string? contract, System.Action<System.IDisposable> callback);
-        void UnregisterAll(System.Type serviceType, string? contract = null);
-        void UnregisterCurrent(System.Type serviceType, string? contract = null);
+        void UnregisterAll(System.Type? serviceType, string? contract = null);
+        void UnregisterCurrent(System.Type? serviceType, string? contract = null);
     }
     public interface IReadonlyDependencyResolver
     {
-        object? GetService(System.Type serviceType, string? contract = null);
-        System.Collections.Generic.IEnumerable<object> GetServices(System.Type serviceType, string? contract = null);
+        object? GetService(System.Type? serviceType, string? contract = null);
+        System.Collections.Generic.IEnumerable<object> GetServices(System.Type? serviceType, string? contract = null);
     }
     public interface IStaticFullLogger
     {
@@ -519,19 +516,19 @@ namespace Splat
     public class ModernDependencyResolver : Splat.IDependencyResolver, Splat.IMutableDependencyResolver, Splat.IReadonlyDependencyResolver, System.IDisposable
     {
         public ModernDependencyResolver() { }
-        protected ModernDependencyResolver([System.Runtime.CompilerServices.TupleElementNames(new string[] {
+        protected ModernDependencyResolver([System.Runtime.CompilerServices.TupleElementNames(new string?[]?[] {
                 "serviceType",
-                "contract"})] System.Collections.Generic.Dictionary<System.ValueTuple<System.Type, string>, System.Collections.Generic.List<System.Func<object>>>? registry) { }
+                "contract"})] System.Collections.Generic.Dictionary<System.ValueTuple<System.Type, string?>, System.Collections.Generic.List<System.Func<object?>>>? registry) { }
         public void Dispose() { }
         protected virtual void Dispose(bool isDisposing) { }
         public Splat.ModernDependencyResolver Duplicate() { }
-        public object? GetService(System.Type serviceType, string? contract = null) { }
-        public System.Collections.Generic.IEnumerable<object> GetServices(System.Type serviceType, string? contract = null) { }
-        public bool HasRegistration(System.Type serviceType, string? contract = null) { }
-        public void Register(System.Func<object> factory, System.Type serviceType, string? contract = null) { }
+        public object? GetService(System.Type? serviceType, string? contract = null) { }
+        public System.Collections.Generic.IEnumerable<object> GetServices(System.Type? serviceType, string? contract = null) { }
+        public bool HasRegistration(System.Type? serviceType, string? contract = null) { }
+        public void Register(System.Func<object?> factory, System.Type? serviceType, string? contract = null) { }
         public System.IDisposable ServiceRegistrationCallback(System.Type serviceType, string? contract, System.Action<System.IDisposable> callback) { }
-        public void UnregisterAll(System.Type serviceType, string? contract = null) { }
-        public void UnregisterCurrent(System.Type serviceType, string? contract = null) { }
+        public void UnregisterAll(System.Type? serviceType, string? contract = null) { }
+        public void UnregisterCurrent(System.Type? serviceType, string? contract = null) { }
     }
     public class NullLogger : Splat.ILogger
     {
@@ -541,6 +538,11 @@ namespace Splat
         public void Write(System.Exception exception, [System.ComponentModel.Localizable(false)] string message, Splat.LogLevel logLevel) { }
         public void Write([System.ComponentModel.Localizable(false)] string message, [System.ComponentModel.Localizable(false)] System.Type type, Splat.LogLevel logLevel) { }
         public void Write(System.Exception exception, [System.ComponentModel.Localizable(false)] string message, [System.ComponentModel.Localizable(false)] System.Type type, Splat.LogLevel logLevel) { }
+    }
+    public class NullServiceType
+    {
+        public NullServiceType(System.Func<object?> factory) { }
+        public System.Func<object?> Factory { get; }
     }
     public static class PointMathExtensions
     {

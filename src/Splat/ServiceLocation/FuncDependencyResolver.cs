@@ -17,11 +17,11 @@ namespace Splat
     /// </summary>
     public class FuncDependencyResolver : IDependencyResolver
     {
-        private readonly Func<Type, string?, IEnumerable<object>> _innerGetServices;
-        private readonly Action<Func<object>, Type, string?>? _innerRegister;
-        private readonly Action<Type, string?>? _unregisterCurrent;
-        private readonly Action<Type, string?>? _unregisterAll;
-        private readonly Dictionary<(Type type, string callback), List<Action<IDisposable>>> _callbackRegistry = new();
+        private readonly Func<Type?, string?, IEnumerable<object>> _innerGetServices;
+        private readonly Action<Func<object?>, Type?, string?>? _innerRegister;
+        private readonly Action<Type?, string?>? _unregisterCurrent;
+        private readonly Action<Type?, string?>? _unregisterAll;
+        private readonly Dictionary<(Type? type, string callback), List<Action<IDisposable>>> _callbackRegistry = new();
 
         private IDisposable _inner;
         private bool _isDisposed;
@@ -35,10 +35,10 @@ namespace Splat
         /// <param name="unregisterAll">A func which will unregister all the registered elements for a service type and contract.</param>
         /// <param name="toDispose">A optional disposable which is called when this resolver is disposed.</param>
         public FuncDependencyResolver(
-            Func<Type, string?, IEnumerable<object>> getAllServices,
-            Action<Func<object>, Type, string?>? register = null,
-            Action<Type, string?>? unregisterCurrent = null,
-            Action<Type, string?>? unregisterAll = null,
+            Func<Type?, string?, IEnumerable<object>> getAllServices,
+            Action<Func<object?>, Type?, string?>? register = null,
+            Action<Type?, string?>? unregisterCurrent = null,
+            Action<Type?, string?>? unregisterAll = null,
             IDisposable? toDispose = null)
         {
             _innerGetServices = getAllServices;
@@ -49,32 +49,53 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public object? GetService(Type serviceType, string? contract = null)
+        public object? GetService(Type? serviceType, string? contract = null) =>
+            GetServices(serviceType, contract).LastOrDefault();
+
+        /// <inheritdoc />
+        public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
         {
-            return (GetServices(serviceType, contract) ?? Array.Empty<object>()).LastOrDefault();
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
+            return _innerGetServices(serviceType, contract) ?? Array.Empty<object>();
         }
 
         /// <inheritdoc />
-        public IEnumerable<object> GetServices(Type serviceType, string? contract = null)
+        public bool HasRegistration(Type? serviceType, string? contract = null)
         {
-            return _innerGetServices(serviceType, contract);
-        }
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
 
-        /// <inheritdoc />
-        public bool HasRegistration(Type serviceType, string? contract = null)
-        {
             return _innerGetServices(serviceType, contract) is not null;
         }
 
         /// <inheritdoc />
-        public void Register(Func<object> factory, Type serviceType, string? contract = null)
+        public void Register(Func<object?> factory, Type? serviceType, string? contract = null)
         {
             if (_innerRegister is null)
             {
                 throw new NotImplementedException();
             }
 
-            _innerRegister(factory, serviceType, contract);
+            var isNull = serviceType is null;
+
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
+            _innerRegister(
+                () =>
+                isNull
+                    ? new NullServiceType(factory)
+                    : factory(),
+                serviceType,
+                contract);
 
             var pair = (serviceType, contract ?? string.Empty);
 
@@ -90,12 +111,7 @@ namespace Splat
 
                     if (disp.IsDisposed)
                     {
-                        if (toRemove is null)
-                        {
-                            toRemove = new List<Action<IDisposable>>();
-                        }
-
-                        toRemove.Add(callback);
+                        (toRemove ??= new List<Action<IDisposable>>()).Add(callback);
                     }
                 }
 
@@ -110,22 +126,32 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void UnregisterCurrent(Type serviceType, string? contract = null)
+        public void UnregisterCurrent(Type? serviceType, string? contract = null)
         {
             if (_unregisterCurrent is null)
             {
                 throw new NotImplementedException();
             }
 
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
             _unregisterCurrent.Invoke(serviceType, contract);
         }
 
         /// <inheritdoc />
-        public void UnregisterAll(Type serviceType, string? contract = null)
+        public void UnregisterAll(Type? serviceType, string? contract = null)
         {
             if (_unregisterAll is null)
             {
                 throw new NotImplementedException();
+            }
+
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
             }
 
             _unregisterAll.Invoke(serviceType, contract);

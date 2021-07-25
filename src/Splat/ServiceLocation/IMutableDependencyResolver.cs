@@ -18,7 +18,7 @@ namespace Splat
         /// <param name="serviceType">The type to check for registration.</param>
         /// <returns>Whether there is a registration for the type.</returns>
         /// <param name="contract">A optional contract value which will indicates to only generate the value if this contract is specified.</param>
-        bool HasRegistration(Type serviceType, string? contract = null);
+        bool HasRegistration(Type? serviceType, string? contract = null);
 
         /// <summary>
         /// Register a function with the resolver which will generate a object
@@ -30,21 +30,21 @@ namespace Splat
         /// <param name="factory">The factory function which generates our object.</param>
         /// <param name="serviceType">The type which is used for the registration.</param>
         /// <param name="contract">A optional contract value which will indicates to only generate the value if this contract is specified.</param>
-        void Register(Func<object> factory, Type serviceType, string? contract = null);
+        void Register(Func<object?> factory, Type? serviceType, string? contract = null);
 
         /// <summary>
         /// Unregisters the current item based on the specified type and contract.
         /// </summary>
         /// <param name="serviceType">The service type to unregister.</param>
         /// <param name="contract">The optional contract value, which will only remove the value associated with the contract.</param>
-        void UnregisterCurrent(Type serviceType, string? contract = null);
+        void UnregisterCurrent(Type? serviceType, string? contract = null);
 
         /// <summary>
         /// Unregisters all the values associated with the specified type and contract.
         /// </summary>
         /// <param name="serviceType">The service type to unregister.</param>
         /// <param name="contract">The optional contract value, which will only remove the value associated with the contract.</param>
-        void UnregisterAll(Type serviceType, string? contract = null);
+        void UnregisterAll(Type? serviceType, string? contract = null);
 
         /// <summary>
         /// Register a callback to be called when a new service matching the type

@@ -30,38 +30,46 @@ namespace Splat.Ninject
         }
 
         /// <inheritdoc />
-        public virtual object? GetService(Type serviceType, string? contract = null) =>
-            GetServices(serviceType, contract)?.LastOrDefault();
+        public virtual object? GetService(Type? serviceType, string? contract = null) =>
+            GetServices(serviceType, contract).LastOrDefault()!;
 
         /// <inheritdoc />
-        public virtual IEnumerable<object> GetServices(Type serviceType, string? contract = null)
+        public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
         {
             var isNull = serviceType is null;
-            if (isNull)
+            if (serviceType is null)
             {
                 serviceType = typeof(NullServiceType);
             }
 
             if (isNull)
             {
-                return _kernel.GetAll(
-                    typeof(NullServiceType),
-                    contract);
+                try
+                {
+                    return _kernel.GetAll(typeof(NullServiceType), contract).ToArray();
+                }
+                catch
+                {
+                    return Array.Empty<object>();
+                }
             }
 
-            return _kernel.GetAll(
-                serviceType,
-                contract);
+            return _kernel.GetAll(serviceType, contract);
         }
 
         /// <inheritdoc />
-        public bool HasRegistration(Type serviceType, string? contract = null)
+        public bool HasRegistration(Type? serviceType, string? contract = null)
         {
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
             return _kernel.CanResolve(serviceType, metadata => IsCorrectMetadata(metadata, contract));
         }
 
         /// <inheritdoc />
-        public virtual void Register(Func<object> factory, Type serviceType, string? contract = null)
+        public virtual void Register(Func<object?> factory, Type? serviceType, string? contract = null)
         {
             var isNull = serviceType is null;
 
@@ -80,7 +88,7 @@ namespace Splat.Ninject
         }
 
         /// <inheritdoc />
-        public virtual void UnregisterCurrent(Type serviceType, string? contract = null)
+        public virtual void UnregisterCurrent(Type? serviceType, string? contract = null)
         {
             var isNull = serviceType is null;
 
@@ -107,7 +115,7 @@ namespace Splat.Ninject
         }
 
         /// <inheritdoc />
-        public virtual void UnregisterAll(Type serviceType, string? contract = null)
+        public virtual void UnregisterAll(Type? serviceType, string? contract = null)
         {
             var isNull = serviceType is null;
 
@@ -165,17 +173,6 @@ namespace Splat.Ninject
         {
             return (metadata?.Name is null && string.IsNullOrWhiteSpace(contract))
                    || (metadata?.Name is not null && metadata.Name.Equals(contract, StringComparison.OrdinalIgnoreCase));
-        }
-
-        [SuppressMessage("Design", "CA1812: Uninitialized class.", Justification = "Used in reflection.")]
-        private class NullServiceType
-        {
-            public NullServiceType(Func<object> factory)
-            {
-                Factory = factory;
-            }
-
-            public Func<object> Factory { get; }
         }
     }
 }

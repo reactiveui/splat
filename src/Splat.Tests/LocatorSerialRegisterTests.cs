@@ -311,8 +311,8 @@ namespace Splat.Tests
         public void FuncDependencyResolver_UnregisterAll()
         {
             bool unregisterAllCalled = false;
-            Type type = null;
-            string contract = null;
+            Type? type = null;
+            string? contract = null;
 
             var currentMutable = new FuncDependencyResolver(
                 (funcType, funcContract) => Array.Empty<object>(),
@@ -343,8 +343,8 @@ namespace Splat.Tests
         public void FuncDependencyResolver_UnregisterCurrent()
         {
             bool unregisterAllCalled = false;
-            Type type = null;
-            string contract = null;
+            Type? type = null;
+            string? contract = null;
 
             var currentMutable = new FuncDependencyResolver(
                 (funcType, funcContract) => Array.Empty<object>(),

@@ -11,21 +11,23 @@ using System.Linq;
 namespace Splat
 {
     /// <summary>
+    /// <para>
     /// This class is a dependency resolver written for modern C# 5.0 times.
     /// It implements all registrations via a Factory method. With the power
     /// of Closures, you can actually implement most lifetime styles (i.e.
     /// construct per call, lazy construct, singleton) using this.
-    ///
+    /// </para>
+    /// <para>
     /// Unless you have a very compelling reason not to, this is the only class
     /// you need in order to do dependency resolution, don't bother with using
     /// a full IoC container.
-    ///
-    /// This container is not thread safe.
+    /// </para>
+    /// <para>This container is not thread safe.</para>
     /// </summary>
     public class ModernDependencyResolver : IDependencyResolver
     {
-        private Dictionary<(Type serviceType, string contract), List<Func<object>>>? _registry;
-        private Dictionary<(Type serviceType, string contract), List<Action<IDisposable>>> _callbackRegistry;
+        private readonly Dictionary<(Type serviceType, string? contract), List<Action<IDisposable>>> _callbackRegistry;
+        private Dictionary<(Type serviceType, string? contract), List<Func<object?>>>? _registry;
 
         private bool _isDisposed;
 
@@ -41,21 +43,26 @@ namespace Splat
         /// Initializes a new instance of the <see cref="ModernDependencyResolver"/> class.
         /// </summary>
         /// <param name="registry">A registry of services.</param>
-        protected ModernDependencyResolver(Dictionary<(Type serviceType, string contract), List<Func<object>>>? registry)
+        protected ModernDependencyResolver(Dictionary<(Type serviceType, string? contract), List<Func<object?>>>? registry)
         {
             _registry = registry is not null ?
                 registry.ToDictionary(k => k.Key, v => v.Value.ToList()) :
-                new Dictionary<(Type serviceType, string contract), List<Func<object>>>();
+                new Dictionary<(Type serviceType, string? contract), List<Func<object?>>>();
 
-            _callbackRegistry = new Dictionary<(Type serviceType, string contract), List<Action<IDisposable>>>();
+            _callbackRegistry = new Dictionary<(Type serviceType, string? contract), List<Action<IDisposable>>>();
         }
 
         /// <inheritdoc />
-        public bool HasRegistration(Type serviceType, string? contract = null)
+        public bool HasRegistration(Type? serviceType, string? contract = null)
         {
             if (_registry is null)
             {
                 return false;
+            }
+
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
             }
 
             var pair = GetKey(serviceType, contract);
@@ -63,21 +70,31 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void Register(Func<object> factory, Type serviceType, string? contract = null)
+        public void Register(Func<object?> factory, Type? serviceType, string? contract = null)
         {
-            var pair = GetKey(serviceType, contract);
-
             if (_registry is null)
             {
                 return;
             }
 
-            if (!_registry.ContainsKey(pair))
+            var isNull = serviceType is null;
+
+            if (serviceType is null)
             {
-                _registry[pair] = new List<Func<object>>();
+                serviceType = typeof(NullServiceType);
             }
 
-            _registry[pair].Add(factory);
+            var pair = GetKey(serviceType, contract);
+
+            if (!_registry.ContainsKey(pair))
+            {
+                _registry[pair] = new List<Func<object?>>();
+            }
+
+            _registry[pair].Add(() =>
+                isNull
+                    ? new NullServiceType(factory)
+                    : factory());
 
             if (_callbackRegistry.ContainsKey(pair))
             {
@@ -91,12 +108,7 @@ namespace Splat
 
                     if (disp.IsDisposed)
                     {
-                        if (toRemove is null)
-                        {
-                            toRemove = new List<Action<IDisposable>>();
-                        }
-
-                        toRemove.Add(callback);
+                        (toRemove ??= new List<Action<IDisposable>>()).Add(callback);
                     }
                 }
 
@@ -111,11 +123,16 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public object? GetService(Type serviceType, string? contract = null)
+        public object? GetService(Type? serviceType, string? contract = null)
         {
             if (_registry is null)
             {
                 return default;
+            }
+
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
             }
 
             var pair = GetKey(serviceType, contract);
@@ -125,15 +142,30 @@ namespace Splat
             }
 
             var ret = _registry[pair].LastOrDefault();
-            return ret is null ? null : ret();
+            object? returnValue = default;
+            if (ret != null)
+            {
+                returnValue = ret();
+                if (returnValue is NullServiceType nullServiceType)
+                {
+                    return nullServiceType.Factory()!;
+                }
+            }
+
+            return returnValue;
         }
 
         /// <inheritdoc />
-        public IEnumerable<object> GetServices(Type serviceType, string? contract = null)
+        public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
         {
             if (_registry is null)
             {
                 return Array.Empty<object>();
+            }
+
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
             }
 
             var pair = GetKey(serviceType, contract);
@@ -142,15 +174,20 @@ namespace Splat
                 return Array.Empty<object>();
             }
 
-            return _registry[pair].Select(x => x()).ToList();
+            return _registry[pair].ConvertAll(x => x()!);
         }
 
         /// <inheritdoc />
-        public void UnregisterCurrent(Type serviceType, string? contract = null)
+        public void UnregisterCurrent(Type? serviceType, string? contract = null)
         {
             if (_registry is null)
             {
                 return;
+            }
+
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
             }
 
             var pair = GetKey(serviceType, contract);
@@ -170,16 +207,21 @@ namespace Splat
         }
 
         /// <inheritdoc />
-        public void UnregisterAll(Type serviceType, string? contract = null)
+        public void UnregisterAll(Type? serviceType, string? contract = null)
         {
             if (_registry is null)
             {
                 return;
             }
 
+            if (serviceType is null)
+            {
+                serviceType = typeof(NullServiceType);
+            }
+
             var pair = GetKey(serviceType, contract);
 
-            _registry[pair] = new List<Func<object>>();
+            _registry[pair] = new List<Func<object?>>();
         }
 
         /// <inheritdoc />
@@ -227,10 +269,7 @@ namespace Splat
         /// Useful if you want to generate temporary resolver using the <see cref="DependencyResolverMixins.WithResolver(IDependencyResolver, bool)"/> method.
         /// </summary>
         /// <returns>The newly generated <see cref="ModernDependencyResolver"/> class with the current registrations.</returns>
-        public ModernDependencyResolver Duplicate()
-        {
-            return new ModernDependencyResolver(_registry);
-        }
+        public ModernDependencyResolver Duplicate() => new(_registry);
 
         /// <inheritdoc />
         public void Dispose()
@@ -259,8 +298,8 @@ namespace Splat
         }
 
         private static (Type type, string contract) GetKey(
-            Type serviceType,
+            Type? serviceType,
             string? contract = null) =>
-            (serviceType, contract ?? string.Empty);
+            (serviceType!, contract ?? string.Empty);
     }
 }

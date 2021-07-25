@@ -16,6 +16,7 @@
     <PackageReleaseNotes>https://github.com/reactiveui/splat/releases</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/reactiveui/splat</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+	<WarningsAsErrors>nullable</WarningsAsErrors>
 
     <!-- disable sourcelink on mono, to workaround https://github.com/dotnet/sourcelink/issues/155 -->
     <EnableSourceLink Condition=" '$(OS)' != 'Windows_NT' AND '$(MSBuildRuntimeType)' != 'Core' ">false</EnableSourceLink>
