@@ -4,7 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-
+using System.Linq;
 using FluentAssertions;
 
 using Splat.Tests.Mocks;
@@ -32,11 +32,20 @@ namespace Splat.Tests
             var contract = "foo";
             container.CurrentMutable.Register(() => bar, null!, contract);
 
+            Assert.True(container.CurrentMutable.HasRegistration(null));
             var value = container.Current.GetService(null!);
             Assert.Equal(foo, value);
 
+            Assert.True(container.CurrentMutable.HasRegistration(null, contract));
             value = container.Current.GetService(null!, contract);
             Assert.Equal(bar, value);
+
+            var values = container.Current.GetServices(null);
+            Assert.Equal(1, values.Count());
+
+            container.CurrentMutable.UnregisterCurrent(null);
+            values = container.Current.GetServices(null);
+            Assert.Equal(0, values.Count());
         }
 
         /// <summary>

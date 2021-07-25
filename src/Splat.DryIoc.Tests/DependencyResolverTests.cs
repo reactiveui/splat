@@ -36,11 +36,23 @@ namespace Splat.DryIoc.Tests
             var contract = "foo";
             Locator.CurrentMutable.Register(() => bar, null, contract);
 
+            Assert.True(Locator.CurrentMutable.HasRegistration(null));
             var value = Locator.Current.GetService(null);
             Assert.Equal(foo, value);
 
+            Assert.True(Locator.CurrentMutable.HasRegistration(null, contract));
             value = Locator.Current.GetService(null, contract);
             Assert.Equal(bar, value);
+
+            var values = Locator.Current.GetServices(null);
+            Assert.Equal(foo, (int)values.First());
+            Assert.Equal(1, values.Count());
+
+            Locator.CurrentMutable.UnregisterCurrent(null);
+            var valuesNC = Locator.Current.GetServices(null);
+            Assert.Equal(0, valuesNC.Count());
+            var valuesC = Locator.Current.GetServices(null, contract);
+            Assert.Equal(1, valuesC.Count());
         }
 
         /// <summary>

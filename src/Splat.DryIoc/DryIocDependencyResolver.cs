@@ -69,13 +69,7 @@ namespace Splat.DryIoc
                 return registeredinSplat;
             }
 
-            var registeredWithContract = _container.ResolveMany(serviceType, serviceKey: contract).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
-            if (registeredWithContract.Any())
-            {
-                return registeredWithContract;
-            }
-
-            return _container.ResolveMany(serviceType).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
+            return Array.Empty<object>();
         }
 
         /// <inheritdoc />

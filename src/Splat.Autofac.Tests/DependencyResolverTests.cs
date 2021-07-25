@@ -4,6 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Linq;
 using Autofac;
 
 using FluentAssertions;
@@ -36,11 +37,25 @@ namespace Splat.Autofac.Tests
             Locator.CurrentMutable.Register(() => bar, null, contract);
             autofacResolver.SetLifetimeScope(builder.Build());
 
+            Assert.True(Locator.CurrentMutable.HasRegistration(null));
             var value = Locator.Current.GetService(null);
             Assert.Equal(foo, value);
 
+            Assert.True(Locator.CurrentMutable.HasRegistration(null, contract));
             value = Locator.Current.GetService(null, contract);
             Assert.Equal(bar, value);
+
+            var values = Locator.Current.GetServices(null);
+            Assert.Equal(foo, (int)values.First());
+            Assert.Equal(1, values.Count());
+
+            Assert.Throws<NotImplementedException>(() => Locator.CurrentMutable.UnregisterCurrent(null));
+            var valuesNC = Locator.Current.GetServices(null);
+            Assert.Equal(1, valuesNC.Count());
+            Assert.Equal(foo, (int)valuesNC.First());
+            var valuesC = Locator.Current.GetServices(null, contract);
+            Assert.Equal(1, valuesC.Count());
+            Assert.Equal(bar, (int)valuesC.First());
         }
 
         /// <summary>

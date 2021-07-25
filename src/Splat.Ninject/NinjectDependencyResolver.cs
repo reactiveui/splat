@@ -44,14 +44,17 @@ namespace Splat.Ninject
 
             if (isNull)
             {
-                return _kernel.GetAll(
-                    typeof(NullServiceType),
-                    contract);
+                try
+                {
+                    return _kernel.GetAll(typeof(NullServiceType), contract).ToArray();
+                }
+                catch
+                {
+                    return Array.Empty<object>();
+                }
             }
 
-            return _kernel.GetAll(
-                serviceType,
-                contract);
+            return _kernel.GetAll(serviceType, contract);
         }
 
         /// <inheritdoc />

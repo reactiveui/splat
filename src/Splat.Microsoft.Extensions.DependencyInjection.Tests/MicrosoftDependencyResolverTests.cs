@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Splat.Microsoft.Extensions.DependencyInjection;
@@ -24,15 +25,24 @@ namespace Splat.Tests.ServiceLocation
             var foo = 5;
             resolver.Register(() => foo, null!);
 
-            var value = resolver.GetService(null!);
-            Assert.Equal(foo, value);
-
             var bar = 4;
             var contract = "foo";
             resolver.Register(() => bar, null!, contract);
 
+            Assert.True(resolver.HasRegistration(null));
+            var value = resolver.GetService(null!);
+            Assert.Equal(foo, value);
+
+            Assert.True(resolver.HasRegistration(null, contract));
             value = resolver.GetService(null!, contract);
             Assert.Equal(bar, value);
+
+            var values = resolver.GetServices(null);
+            Assert.Equal(1, values.Count());
+
+            resolver.UnregisterCurrent(null);
+            values = resolver.GetServices(null);
+            Assert.Equal(0, values.Count());
         }
 
         /// <inheritdoc />

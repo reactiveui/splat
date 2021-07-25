@@ -52,6 +52,7 @@ namespace Splat.Autofac
         /// <inheritdoc />
         public virtual object? GetService(Type? serviceType, string? contract = null)
         {
+            var isNull = serviceType is null;
             if (serviceType is null)
             {
                 serviceType = typeof(NullServiceType);
@@ -59,7 +60,8 @@ namespace Splat.Autofac
 
             lock (_lockObject)
             {
-                return Resolve(serviceType, contract);
+                var result = Resolve(serviceType, contract);
+                return isNull ? (result as NullServiceType)?.Factory() : result;
             }
         }
 
@@ -90,6 +92,7 @@ namespace Splat.Autofac
         /// <inheritdoc />
         public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
         {
+            var isNull = serviceType is null;
             if (serviceType is null)
             {
                 serviceType = typeof(NullServiceType);
@@ -102,17 +105,27 @@ namespace Splat.Autofac
                     var enumerableType = typeof(IEnumerable<>).MakeGenericType(serviceType);
                     var instance = Resolve(enumerableType, contract);
 
-                    if (instance is not null)
+                    if (isNull && instance is IEnumerable<NullServiceType> nullService)
                     {
-                        return new object[] { instance };
+                        foreach (var item in nullService)
+                        {
+                            yield return item.Factory()!;
+                        }
+
+                        yield break;
+                    }
+                    else if (!isNull && instance is not null)
+                    {
+                        yield return new object[] { instance };
+                        yield break;
                     }
                 }
-                catch (DependencyResolutionException)
+                finally
                 {
                     // no op
                 }
 
-                return Enumerable.Empty<object>();
+                yield return Array.Empty<object>();
             }
         }
 
@@ -150,6 +163,7 @@ namespace Splat.Autofac
         [Obsolete("Because Autofac 5+ containers are immutable, this method should not be used by the end-user.")]
         public virtual void Register(Func<object?> factory, Type? serviceType, string? contract = null)
         {
+            var isNull = serviceType is null;
             if (serviceType is null)
             {
                 serviceType = typeof(NullServiceType);
@@ -167,21 +181,33 @@ namespace Splat.Autofac
                 // Second to child lifetimes in a temporary container, that is used only to satisfy ReactiveUI dependencies.
                 if (contract is null || string.IsNullOrWhiteSpace(contract))
                 {
-                    _builder.Register(_ => factory()!)
+                    _builder.Register(_ =>
+                        isNull
+                            ? new NullServiceType(factory)
+                            : factory()!)
                         .As(serviceType)
                         .AsImplementedInterfaces();
                     _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(internalBuilder =>
-                        internalBuilder.Register(_ => factory()!)
+                        internalBuilder.Register(_ =>
+                            isNull
+                                ? new NullServiceType(factory)
+                                : factory()!)
                             .As(serviceType)
                             .AsImplementedInterfaces());
                 }
                 else
                 {
-                    _builder.Register(_ => factory()!)
+                    _builder.Register(_ =>
+                        isNull
+                            ? new NullServiceType(factory)
+                            : factory()!)
                         .Named(contract, serviceType)
                         .AsImplementedInterfaces();
                     _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(internalBuilder =>
-                        internalBuilder.Register(_ => factory()!)
+                        internalBuilder.Register(_ =>
+                            isNull
+                                ? new NullServiceType(factory)
+                                : factory()!)
                             .Named(contract, serviceType)
                             .AsImplementedInterfaces());
                 }
@@ -245,7 +271,7 @@ namespace Splat.Autofac
             }
         }
 
-        private object? Resolve(Type? serviceType, string? contract)
+        private object? Resolve(Type serviceType, string? contract)
         {
             object serviceInstance;
 
@@ -253,11 +279,11 @@ namespace Splat.Autofac
 
             if (contract is null || string.IsNullOrWhiteSpace(contract))
             {
-                lifeTimeScope.TryResolve(serviceType!, out serviceInstance!);
+                lifeTimeScope.TryResolve(serviceType, out serviceInstance!);
             }
             else
             {
-                lifeTimeScope.TryResolveNamed(contract, serviceType!, out serviceInstance!);
+                lifeTimeScope.TryResolveNamed(contract, serviceType, out serviceInstance!);
             }
 
             return serviceInstance;
