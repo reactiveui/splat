@@ -19,7 +19,13 @@ namespace Splat.Benchmarks
         /// <param name="args">Arguments from the command line.</param>
         public static void Main(string[] args)
         {
-            BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
+            var results = BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
+            foreach (var result in results)
+            {
+                Console.WriteLine(result);
+            }
+
+            Console.ReadLine();
         }
     }
 }

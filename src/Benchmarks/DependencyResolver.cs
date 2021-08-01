@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 namespace Splat.Benchmarks
 {
 #pragma warning disable CA1001, CA1063
+
     /// <summary>
     /// <see cref="IDependencyResolver"/> implementation for benchmarking the Locator.
     /// </summary>
@@ -46,7 +47,12 @@ namespace Splat.Benchmarks
         /// <inheritdoc />
         public virtual void Dispose()
         {
+            GC.SuppressFinalize(this);
         }
+
+        /// <inheritdoc />
+        public bool HasRegistration(Type serviceType, string contract = null) => true;
     }
+
 #pragma warning restore CA1001, CA1063
 }
