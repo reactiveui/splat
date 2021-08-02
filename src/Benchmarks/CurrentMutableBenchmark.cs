@@ -7,14 +7,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 namespace Splat.Benchmarks
 {
     /// <summary>
     /// Benchmarks for the current mutable locator.
     /// </summary>
-    [ClrJob]
-    [CoreJob]
+    [SimpleJob(RuntimeMoniker.Net50)]
     [MemoryDiagnoser]
     [MarkdownExporterAttribute.GitHub]
     public class CurrentMutableBenchmark

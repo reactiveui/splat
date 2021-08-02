@@ -9,14 +9,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 namespace Splat.Benchmarks
 {
     /// <summary>
     /// Benchmarks for the current locator.
     /// </summary>
-    [ClrJob]
-    [CoreJob]
+    [SimpleJob(RuntimeMoniker.Net50)]
     [MemoryDiagnoser]
     [MarkdownExporterAttribute.GitHub]
     public class CurrentBenchmark
@@ -63,27 +63,27 @@ namespace Splat.Benchmarks
         /// </summary>
         /// <returns>The object.</returns>
         [Benchmark]
-        public List<ViewModel> GetServices() => (List<ViewModel>)Locator.Current.GetServices(typeof(ViewModel));
+        public List<ViewModel> GetServices() => new(Locator.Current.GetServices<ViewModel>());
 
         /// <summary>
         /// Benchamrks returning an enumerable of objects.
         /// </summary>
         /// <returns>The object.</returns>
         [Benchmark]
-        public List<ViewModel> GetServicesWithContract() => (List<ViewModel>)Locator.Current.GetServices(typeof(ViewModel), nameof(ViewModel));
+        public List<ViewModel> GetServicesWithContract() => new(Locator.Current.GetServices<ViewModel>(nameof(ViewModel)));
 
         /// <summary>
         /// Benchamrks returning an enumerable of objects.
         /// </summary>
         /// <returns>The object.</returns>
         [Benchmark]
-        public List<ViewModel> GetServicesGeneric() => Locator.Current.GetServices<ViewModel>().ToList();
+        public IEnumerable<ViewModel> GetServicesGeneric() => Locator.Current.GetServices<ViewModel>();
 
         /// <summary>
         /// Benchamrks returning an enumerable of objects.
         /// </summary>
         /// <returns>The object.</returns>
         [Benchmark]
-        public List<ViewModel> GetServicesGenericWithContract() => Locator.Current.GetServices<ViewModel>(nameof(ViewModel)).ToList();
+        public IEnumerable<ViewModel> GetServicesGenericWithContract() => Locator.Current.GetServices<ViewModel>(nameof(ViewModel));
     }
 }

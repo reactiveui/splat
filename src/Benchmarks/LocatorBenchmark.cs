@@ -7,16 +7,17 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 using Splat;
 
 namespace Splat.Benchmarks
 {
 #pragma warning disable CA1001 // Types that own disposable fields should be disposable
+
     /// <summary>
     /// Benchmarks for the service locator.
     /// </summary>
-    [ClrJob]
-    [CoreJob]
+    [SimpleJob(RuntimeMoniker.Net50)]
     [MemoryDiagnoser]
     [MarkdownExporterAttribute.GitHub]
     public class LocatorBenchmark
@@ -76,5 +77,6 @@ namespace Splat.Benchmarks
         [Benchmark]
         public bool AreResolverCallbackChangedNotificationsEnabled() => Locator.AreResolverCallbackChangedNotificationsEnabled();
     }
+
 #pragma warning restore CA1001 // Types that own disposable fields should be disposable
 }
