@@ -34,6 +34,39 @@ Splat currently supports:
 * A cross-platform logging framework
 * Simple yet flexible Service Location
 
+### Core Team
+
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top">
+        <img width="100" height="100" src="https://github.com/glennawatson.png?s=150">
+        <br>
+        <a href="https://github.com/glennawatson">Glenn Watson</a>
+        <p>Melbourne, Australia</p>
+      </td>
+      <td align="center" valign="top">
+        <img width="100" height="100" src="https://github.com/rlittlesii.png?s=150">
+        <br>
+        <a href="https://github.com/rlittlesii">Rodney Littles II</a>
+        <p>Texas, USA</p>
+      </td>
+      <td align="center" valign="top">
+        <img width="100" height="100" src="https://github.com/dpvreony.png?s=150">
+        <br>
+        <a href="https://github.com/chrispulman">David Vreony</a>
+        <p>UK</p>
+      </td>
+      <td align="center" valign="top">
+        <img width="100" height="100" src="https://github.com/chrispulman.png?s=150">
+        <br>
+        <a href="https://github.com/chrispulman">Chris Pulman</a>
+        <p>UK</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 ### How do I install?
 
 [Always Be NuGetting](https://nuget.org/packages/Splat/). Package contains binaries for:
