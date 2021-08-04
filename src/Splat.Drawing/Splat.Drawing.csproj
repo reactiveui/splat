@@ -12,7 +12,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" ($(TargetFramework.StartsWith('netcoreapp3')) or $(TargetFramework.StartsWith('net5'))) and '$(OS)' == 'Windows_NT' ">
+  <PropertyGroup Condition=" ($(TargetFramework.StartsWith('netcoreapp3')) or $(TargetFramework.StartsWith('net5')) or $(TargetFramework.StartsWith('net4'))) and '$(OS)' == 'Windows_NT' ">
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
@@ -38,15 +38,10 @@
   
   <ItemGroup Condition=" $(TargetFramework.StartsWith('net4')) ">
     <Compile Include="Platforms\net4\**\*.cs" />
-
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
     <Compile Include="Platforms\ReflectionStubs.cs" />
 
     <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
   </ItemGroup>
 
   <ItemGroup Condition=" $(TargetFramework.StartsWith('net46')) ">
