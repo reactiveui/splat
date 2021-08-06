@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net462;net472;netcoreapp3;net5.0;</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <Choose>
+    <When Condition="$(TargetFramework.StartsWith('net462'))">
+      <ItemGroup>
+        <!--<Compile Remove="DryIocReactiveUIDependencyTests.cs" />-->
+        <Compile Remove="AutoFacReactiveUIDependencyTests.cs" />
+        <Compile Remove="NinjectReactiveUIDependencyTests.cs" />
+        <Compile Remove="SimpleInjectorReactiveUIDependencyTests.cs" />
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFramework.StartsWith('net472'))">
+      <ItemGroup>
+        <Compile Remove="DryIocReactiveUIDependencyTests.cs" />
+        <!--<Compile Remove="AutoFacReactiveUIDependencyTests.cs" />-->
+        <Compile Remove="NinjectReactiveUIDependencyTests.cs" />
+        <Compile Remove="SimpleInjectorReactiveUIDependencyTests.cs" />
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFramework.StartsWith('netcoreapp3'))">
+      <ItemGroup>
+        <Compile Remove="DryIocReactiveUIDependencyTests.cs" />
+        <Compile Remove="AutoFacReactiveUIDependencyTests.cs" />
+        <!--<Compile Remove="NinjectReactiveUIDependencyTests.cs" />-->
+        <Compile Remove="SimpleInjectorReactiveUIDependencyTests.cs" />
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFramework.StartsWith('net5.0'))">
+      <ItemGroup>
+        <Compile Remove="DryIocReactiveUIDependencyTests.cs" />
+        <Compile Remove="AutoFacReactiveUIDependencyTests.cs" />
+        <Compile Remove="NinjectReactiveUIDependencyTests.cs" />
+        <!--<Compile Remove="SimpleInjectorReactiveUIDependencyTests.cs" />-->
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <ItemGroup>
+    <PackageReference Include="ReactiveUI" Version="14.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Splat.Autofac\Splat.Autofac.csproj" />
+    <ProjectReference Include="..\Splat.DryIoc\Splat.DryIoc.csproj" />
+    <ProjectReference Include="..\Splat.Ninject\Splat.Ninject.csproj" />
+    <ProjectReference Include="..\Splat.SimpleInjector\Splat.SimpleInjector.csproj" />
+  </ItemGroup>
+
+</Project>
