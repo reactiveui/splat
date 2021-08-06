@@ -41,9 +41,20 @@ namespace Splat.DryIoc
                 serviceType = typeof(NullServiceType);
             }
 
-            return string.IsNullOrEmpty(contract)
-                 ? _container.ResolveMany(serviceType).Select(x => isNull ? ((NullServiceType)x).Factory()! : x)
-                 : _container.ResolveMany(serviceType, serviceKey: contract).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
+            var key = (serviceType, contract ?? string.Empty);
+            var registeredinSplat = _container.ResolveMany(serviceType, serviceKey: key).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
+            if (registeredinSplat.Any())
+            {
+                return registeredinSplat;
+            }
+
+            var registeredWithContract = _container.ResolveMany(serviceType, serviceKey: contract).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
+            if (registeredWithContract.Any())
+            {
+                return registeredWithContract;
+            }
+
+            return _container.ResolveMany(serviceType).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
         }
 
         /// <inheritdoc />
@@ -66,8 +77,12 @@ namespace Splat.DryIoc
                     return x.OptionalServiceKey is null;
                 }
 
-                return x.OptionalServiceKey is string serviceKeyAsString
-                       && contract.Equals(serviceKeyAsString, StringComparison.Ordinal);
+                var key = (serviceType, contract ?? string.Empty);
+
+                return key.Equals(x.OptionalServiceKey) ||
+                (contract is null && x.OptionalServiceKey is null) ||
+            (x.OptionalServiceKey is string serviceKeyAsString
+                       && contract is not null && contract.Equals(serviceKeyAsString, StringComparison.Ordinal));
             });
         }
 
@@ -88,18 +103,19 @@ namespace Splat.DryIoc
             if (string.IsNullOrEmpty(contract))
             {
                 _container.UseInstance(
-                    serviceType,
-                    isNull ? new NullServiceType(factory) : factory(),
-                    IfAlreadyRegistered.AppendNewImplementation);
+                serviceType,
+                isNull ? new NullServiceType(factory) : factory(),
+                IfAlreadyRegistered.AppendNewImplementation);
+                return;
             }
-            else
-            {
-                _container.UseInstance(
-                    serviceType,
-                    isNull ? new NullServiceType(factory) : factory(),
-                    IfAlreadyRegistered.AppendNewImplementation,
-                    serviceKey: contract);
-            }
+
+            var key = (serviceType, contract);
+
+            _container.UseInstance(
+                serviceType,
+                isNull ? new NullServiceType(factory) : factory(),
+                IfAlreadyRegistered.AppendNewImplementation,
+                serviceKey: key);
         }
 
         /// <inheritdoc />
@@ -110,14 +126,35 @@ namespace Splat.DryIoc
                 serviceType = typeof(NullServiceType);
             }
 
-            if (string.IsNullOrEmpty(contract))
+            var key = (serviceType, contract ?? string.Empty);
+            var hadvalue = _container.GetServiceRegistrations().Any(x =>
             {
-                _container.Unregister(serviceType);
-            }
-            else
-            {
-                _container.Unregister(serviceType, contract);
-            }
+                if (x.ServiceType != serviceType)
+                {
+                    return false;
+                }
+
+                if (key.Equals(x.OptionalServiceKey))
+                {
+                    _container.Unregister(serviceType, key);
+                    return true;
+                }
+
+                if (contract is null && x.OptionalServiceKey is null)
+                {
+                    _container.Unregister(serviceType);
+                    return true;
+                }
+
+                if (x.OptionalServiceKey is string serviceKeyAsString
+                       && contract is not null && contract.Equals(serviceKeyAsString, StringComparison.Ordinal))
+                {
+                    _container.Unregister(serviceType, contract);
+                    return true;
+                }
+
+                return false;
+            });
         }
 
         /// <inheritdoc />
@@ -128,13 +165,31 @@ namespace Splat.DryIoc
                 serviceType = typeof(NullServiceType);
             }
 
-            if (string.IsNullOrEmpty(contract))
+            var key = (serviceType, contract ?? string.Empty);
+            foreach (var x in _container.GetServiceRegistrations())
             {
-                _container.Unregister(serviceType);
-            }
-            else
-            {
-                _container.Unregister(serviceType, contract);
+                if (x.ServiceType != serviceType)
+                {
+                    continue;
+                }
+
+                if (key.Equals(x.OptionalServiceKey))
+                {
+                    _container.Unregister(serviceType, key);
+                    continue;
+                }
+
+                if (contract is null && x.OptionalServiceKey is null)
+                {
+                    _container.Unregister(serviceType);
+                    continue;
+                }
+
+                if (x.OptionalServiceKey is string serviceKeyAsString
+                       && contract is not null && contract.Equals(serviceKeyAsString, StringComparison.Ordinal))
+                {
+                    _container.Unregister(serviceType, contract);
+                }
             }
         }
 

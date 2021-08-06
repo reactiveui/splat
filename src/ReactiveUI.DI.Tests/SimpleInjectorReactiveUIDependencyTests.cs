@@ -41,7 +41,7 @@ namespace ReactiveUI.DI.Tests
         /// Should register ReactiveUI creates command bindings.
         /// </summary>
         [Fact]
-        public void NinjectDependencyResolverShouldRegisterReactiveUICreatesCommandBinding()
+        public void SimpleInjectorDependencyResolverShouldRegisterReactiveUICreatesCommandBinding()
         {
             // Invoke RxApp which initializes the ReactiveUI platform.
             Container container = new();

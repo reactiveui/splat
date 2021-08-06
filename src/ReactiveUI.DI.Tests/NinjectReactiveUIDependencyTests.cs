@@ -24,7 +24,7 @@ namespace ReactiveUI.DI.Tests
         /// Should register ReactiveUI binding type converters.
         /// </summary>
         [Fact]
-        public void NinjectDependencyResolver_Should_Register_ReactiveUI_BindingTypeConverters()
+        public void NinjectDependencyResolverShouldRegisterReactiveUIBindingTypeConverters()
         {
             // Invoke RxApp which initializes the ReactiveUI platform.
             var container = new StandardKernel();
@@ -42,7 +42,7 @@ namespace ReactiveUI.DI.Tests
         /// Should register ReactiveUI creates command bindings.
         /// </summary>
         [Fact]
-        public void NinjectDependencyResolver_Should_Register_ReactiveUI_CreatesCommandBinding()
+        public void NinjectDependencyResolverShouldRegisterReactiveUICreatesCommandBinding()
         {
             // Invoke RxApp which initializes the ReactiveUI platform.
             var container = new StandardKernel();
