@@ -277,7 +277,7 @@ Thanks to @joelweiss for first creating this logger.
 
 
 ```cs
-// This System.Drawing class works, even on WinRT or WP8 where it's not supposed to exist
+// This System.Drawing class works, even on WinRT where it's not supposed to exist
 // Also, this works in a Portable Library, in your ViewModel
 ProfileBackgroundAccentColor = Color.FromArgb(255, 255, 255, 255);
 ```

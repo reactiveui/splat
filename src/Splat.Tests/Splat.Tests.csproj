@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Serilog.Exceptions" Version="5.7.0" />
+    <PackageReference Include="Serilog.Exceptions" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
