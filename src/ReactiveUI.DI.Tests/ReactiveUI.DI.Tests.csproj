@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net462;net472;netcoreapp3;net5.0;</TargetFrameworks>
     <IsPackable>false</IsPackable>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <Choose>

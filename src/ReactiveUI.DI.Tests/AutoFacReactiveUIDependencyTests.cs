@@ -5,8 +5,10 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using Autofac;
 using FluentAssertions;
+using ReactiveUI.DI.Tests.Mocks;
 using Splat;
 using Splat.Autofac;
 using Xunit;
@@ -22,7 +24,7 @@ namespace ReactiveUI.DI.Tests
         /// Should register ReactiveUI binding type converters.
         /// </summary>
         [Fact]
-        public void AutofacDependencyResolver_Should_Register_ReactiveUI_BindingTypeConverters()
+        public void AutofacDependencyResolverShouldRegisterReactiveUIBindingTypeConverters()
         {
             // Invoke RxApp which initializes the ReactiveUI platform.
             var builder = new ContainerBuilder();
@@ -42,7 +44,7 @@ namespace ReactiveUI.DI.Tests
         /// Should register ReactiveUI creates command bindings.
         /// </summary>
         [Fact]
-        public void AutofacDependencyResolver_Should_Register_ReactiveUI_CreatesCommandBinding()
+        public void AutofacDependencyResolverShouldRegisterReactiveUICreatesCommandBinding()
         {
             // Invoke RxApp which initializes the ReactiveUI platform.
             var builder = new ContainerBuilder();
@@ -56,6 +58,39 @@ namespace ReactiveUI.DI.Tests
             converters.Should().NotBeNull();
             converters.Should().Contain(x => x.GetType() == typeof(CreatesCommandBindingViaEvent));
             converters.Should().Contain(x => x.GetType() == typeof(CreatesCommandBindingViaCommandParameter));
+        }
+
+        /// <summary>
+        /// Automatics the fac when any test.
+        /// </summary>
+        [Fact]
+        public void AutoFacWhenAnyTest()
+        {
+            var builder = new ContainerBuilder();
+
+            var autofacResolver = builder.UseAutofacDependencyResolver();
+            Locator.CurrentMutable.RegisterConstant(new ActivatingViewFetcher(), typeof(IActivationForViewFetcher));
+            autofacResolver.InitializeSplat();
+            autofacResolver.InitializeReactiveUI();
+            var container = builder.Build();
+            autofacResolver.SetLifetimeScope(container);
+
+            var vm = new ActivatingViewModel();
+            var fixture = new ActivatingView
+            {
+                ViewModel = vm
+            };
+
+            Assert.Equal(0, vm.IsActiveCount);
+            Assert.Equal(0, fixture.IsActiveCount);
+
+            fixture.Loaded.OnNext(Unit.Default);
+            Assert.Equal(1, vm.IsActiveCount);
+            Assert.Equal(1, fixture.IsActiveCount);
+
+            fixture.Unloaded.OnNext(Unit.Default);
+            Assert.Equal(0, vm.IsActiveCount);
+            Assert.Equal(0, fixture.IsActiveCount);
         }
     }
 }
