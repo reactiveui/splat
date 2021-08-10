@@ -107,17 +107,11 @@ namespace Splat.Autofac
 
                     if (isNull && instance is IEnumerable<NullServiceType> nullService)
                     {
-                        foreach (var item in nullService)
-                        {
-                            yield return item.Factory()!;
-                        }
-
-                        yield break;
+                        return nullService.Select(item => item.Factory()!);
                     }
                     else if (!isNull && instance is not null)
                     {
-                        yield return new object[] { instance };
-                        yield break;
+                        return ((IEnumerable)instance).Cast<object>();
                     }
                 }
                 finally
@@ -125,7 +119,7 @@ namespace Splat.Autofac
                     // no op
                 }
 
-                yield return Array.Empty<object>();
+                return Array.Empty<object>();
             }
         }
 
