@@ -69,7 +69,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Prism.Tests", "Splat.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Drawing.Tests", "Splat.Drawing.Tests\Splat.Drawing.Tests.csproj", "{7E350DE5-B8C4-4EF1-9211-7B35643B1971}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReactiveUI.DI.Tests", "ReactiveUI.DI.Tests\ReactiveUI.DI.Tests.csproj", "{FEA4E637-0409-40BC-8518-860509FEEA64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.DI.Tests", "ReactiveUI.DI.Tests\ReactiveUI.DI.Tests.csproj", "{FEA4E637-0409-40BC-8518-860509FEEA64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
