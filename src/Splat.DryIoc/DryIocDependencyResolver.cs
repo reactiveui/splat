@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using DryIoc;
 
@@ -111,10 +112,16 @@ namespace Splat.DryIoc
 
             var key = (serviceType, contract);
 
+            if (HasRegistration(serviceType, contract))
+            {
+                Trace.WriteLine($"Warning: Service {serviceType} already exists with key {contract}, the registration will be replaced.");
+            }
+
+            // Keyed instances can only have a single instance so keep latest
             _container.UseInstance(
                 serviceType,
                 isNull ? new NullServiceType(factory) : factory(),
-                IfAlreadyRegistered.AppendNewImplementation,
+                IfAlreadyRegistered.Replace,
                 serviceKey: key);
         }
 
