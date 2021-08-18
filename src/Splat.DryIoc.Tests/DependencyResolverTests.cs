@@ -250,5 +250,21 @@ namespace Splat.DryIoc.Tests
             var d = Splat.Locator.Current.GetService<ILogManager>();
             Assert.IsType<FuncLogManager>(d);
         }
+
+        /// <summary>
+        /// DryIoc dependency resolver should resolve after duplicate keyed registratoion.
+        /// </summary>
+        [Fact]
+        public void DryIocDependencyResolver_Should_Resolve_AfterDuplicateKeyedRegistratoion()
+        {
+            var container = new Container();
+            container.UseDryIocDependencyResolver();
+            Locator.CurrentMutable.Register(() => new ViewModelOne(), typeof(ViewModelOne), "ViewModelOne");
+            Locator.CurrentMutable.Register(() => new ViewModelOne(), typeof(ViewModelOne), "ViewModelOne");
+
+            var vmOne = Locator.Current.GetService<ViewModelOne>("ViewModelOne");
+
+            vmOne.Should().NotBeNull();
+        }
     }
 }
