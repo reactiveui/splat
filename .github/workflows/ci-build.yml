@@ -38,19 +38,19 @@ jobs:
         dotnet-version: 6.0.x
         include-prerelease: true
 
-    - name: Install VS2022 preview
-      shell: bash
-      run: |
-        dotnet tool update -g dotnet-vs
-        vs install preview -sku:enterprise --quiet +Microsoft.VisualStudio.Component.ManagedDesktop.Core +Microsoft.NetCore.Component.DevelopmentTools +Microsoft.VisualStudio.Workload.NetCrossPlat +Microsoft.VisualStudio.Workload.Universal
-        echo "##vso[task.prependpath]$(vs where preview --prop=InstallationPath)\MSBuild\Current\Bin"
+    #- name: Install VS2022 preview
+    #  shell: bash
+    #  run: |
+    #    dotnet tool update -g dotnet-vs
+    #    vs install preview -sku:enterprise --quiet +Microsoft.VisualStudio.Component.ManagedDesktop.Core +Microsoft.NetCore.Component.DevelopmentTools +Microsoft.VisualStudio.Workload.NetCrossPlat +Microsoft.VisualStudio.Workload.Universal
+    #    echo "##vso[task.prependpath]$(vs where preview --prop=InstallationPath)\MSBuild\Current\Bin"
 
     - name: Add MSBuild to PATH
       uses: glennawatson/setup-msbuild@v1.0.3
 
-    #- name: Update VS2019
-    #  shell: powershell
-    #  run: Start-Process -Wait -PassThru -FilePath "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe" -ArgumentList "update --passive --norestart --installpath ""C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise"""
+    - name: Update VS2019
+      shell: powershell
+      run: Start-Process -Wait -PassThru -FilePath "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe" -ArgumentList "update --passive --norestart --installpath ""C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise"""
 
     - name: NBGV
       id: nbgv
@@ -63,7 +63,7 @@ jobs:
       working-directory: src
       
     - name: Build
-      run: msbuild /t:build,pack /nowarn:MSB4011 /maxcpucount /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=${{ env.configuration }}
+      run: msbuild /t:build,pack /nowarn:MSB4011 /maxcpucount /p:UseVsSdkVersion=17.0 /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=${{ env.configuration }}
       working-directory: src
 
     - name: Run Unit Tests and Generate Coverage
