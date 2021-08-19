@@ -117,7 +117,9 @@ namespace Splat
         /// <inheritdoc />
         public IBitmap? Create(float width, float height)
         {
-            return Bitmap.CreateBitmap((int)width, (int)height, Bitmap.Config.Argb8888)?.FromNative();
+            var config = Bitmap.Config.Argb8888 ?? throw new InvalidOperationException("The ARGB8888 bitmap format is unavailable");
+
+            return Bitmap.CreateBitmap((int)width, (int)height, config)?.FromNative();
         }
 
         internal static Dictionary<string, int> GetDrawableList(IFullLogger? log)
@@ -147,6 +149,11 @@ namespace Splat
 
                     foreach (var loaderException in e.LoaderExceptions)
                     {
+                        if (loaderException is null)
+                        {
+                            continue;
+                        }
+
                         log.Warn(loaderException, "Inner Exception for detecting drawing types.");
                     }
                 }
@@ -154,7 +161,7 @@ namespace Splat
                 // null check here because mono doesn't appear to follow the MSDN documentation
                 // as of July 2019.
                 return e.Types is not null
-                    ? e.Types.Where(x => x is not null).ToArray()
+                    ? e.Types.Where(x => x is not null).Select(x => x!).ToArray()
                     : Array.Empty<Type>();
             }
         }
@@ -169,6 +176,8 @@ namespace Splat
                 .SelectMany(a => GetTypesFromAssembly(a, log))
                 .Where(x => x.Name.Equals("Resource", StringComparison.Ordinal) && x.GetNestedType("Drawable") is not null)
                 .Select(x => x.GetNestedType("Drawable"))
+                .Where(x => x != null)
+                .Select(x => x!)
                 .ToArray();
 
             if (log?.IsDebugEnabled == true)
@@ -188,7 +197,7 @@ namespace Splat
                 .AsParallel()
                 .SelectMany(x => x.GetFields())
                 .Where(x => x.FieldType == typeof(int) && x.IsLiteral)
-                .ToDictionary(k => k.Name, v => (int)v.GetRawConstantValue());
+                .ToDictionary(k => k.Name, v => ((int?)v.GetRawConstantValue()) ?? 0);
 
             if (log?.IsDebugEnabled == true)
             {

@@ -66,7 +66,7 @@ namespace Splat
 
             // keep an eye on
             // https://raygun.com/forums/thread/92182
-#if NETSTANDARD2_0 || NET5_0
+#if NETSTANDARD2_0 || NET5_0 || NET6_0
             var messageBuilder = RaygunMessageBuilder.New(raygunSettings)
 #else
             var messageBuilder = RaygunMessageBuilder.New

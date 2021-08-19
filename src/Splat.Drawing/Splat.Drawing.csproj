@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
     <TargetFrameworks>MonoAndroid90;Xamarin.iOS10;Xamarin.Mac20;Xamarin.TVOS10;Xamarin.WatchOS10;tizen40;netstandard2.0;net6.0-android;net6.0-ios;net6.0-tvos;net6.0-macos</TargetFrameworks>
@@ -19,9 +19,11 @@
 
   <ItemGroup>
     <Compile Remove="Platforms\**\*.cs" />
+    <Compile Remove="Resources\**\*.*" />
     <EmbeddedResource Remove="Platforms\**\*.*" />
     <None Include="Platforms\**\*.cs" />
     <None Include="Colors\**\*.cs" />
+    <None Include="Resources\**\*.*" />
   </ItemGroup>
 
   <ItemGroup Condition=" $(TargetFramework.StartsWith('netstandard')) ">
@@ -94,6 +96,7 @@
     <Compile Include="Platforms\Android\**\*.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
 
+    <Compile Include="Resources\**\*.cs" />
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
 

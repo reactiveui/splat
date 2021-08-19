@@ -59,7 +59,6 @@ namespace Splat
     }
     public enum KnownColor
     {
-        Empty = 0,
         ActiveBorder = 1,
         ActiveCaption = 2,
         ActiveCaptionText = 3,
@@ -429,10 +428,10 @@ namespace Splat
         public override int GetHashCode() { }
         public float GetHue() { }
         public float GetSaturation() { }
-        public uint ToArgb() { }
+        public int ToArgb() { }
         public Splat.KnownColor ToKnownColor() { }
         public override string ToString() { }
-        public static Splat.SplatColor FromArgb(uint argb) { }
+        public static Splat.SplatColor FromArgb(int argb) { }
         public static Splat.SplatColor FromArgb(int alpha, Splat.SplatColor baseColor) { }
         public static Splat.SplatColor FromArgb(int red, int green, int blue) { }
         public static Splat.SplatColor FromArgb(int alpha, int red, int green, int blue) { }
