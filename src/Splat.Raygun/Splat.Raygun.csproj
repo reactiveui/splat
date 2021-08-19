@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net5.0;net6.0</TargetFrameworks>
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net461</TargetFrameworks>
     <AssemblyName>Splat.Raygun</AssemblyName>
     <RootNamespace>Splat</RootNamespace>
@@ -13,7 +13,12 @@
   </PropertyGroup>
 
   <Choose>
-    <When Condition=" $(TargetFramework.StartsWith('net5')) ">
+    <When Condition=" $(TargetFramework.StartsWith('net5'))">
+      <ItemGroup>
+        <PackageReference Include="Mindscape.Raygun4Net.NetCore" Version="6.3.1" />
+      </ItemGroup>
+    </When>
+    <When Condition=" $(TargetFramework.StartsWith('net6'))">
       <ItemGroup>
         <PackageReference Include="Mindscape.Raygun4Net.NetCore" Version="6.3.1" />
       </ItemGroup>
