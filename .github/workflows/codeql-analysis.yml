@@ -78,7 +78,7 @@ jobs:
         dotnet restore ${{ env.SOLUTION_PATH }} /bl:artifacts\\binlog\\restore.binlog
 
     - name: Run Build
-      run: msbuild /t:build /nowarn:MSB4011 /maxcpucount /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=Release /p:UseSharedCompilation=false
+      run: msbuild /t:build /nowarn:MSB4011 /maxcpucount /p:UseVsSdkVersion=17.0 /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=Release /p:UseSharedCompilation=false
       working-directory: src
 
 
