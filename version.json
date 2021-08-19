@@ -1,5 +1,5 @@
 {
-  "version": "12.1",
+  "version": "13.1",
   "publicReleaseRefSpec": [
     "^refs/heads/main$", // we release out of master
     "^refs/heads/preview/.*", // we release previews
