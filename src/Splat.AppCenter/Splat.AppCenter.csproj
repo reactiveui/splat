@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net5.0-windows10.0.17763.0;xamarin.ios10;monoandroid50;net6.0-windows10.0.17763.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net5.0-windows10.0.17763.0;net6.0-windows10.0.17763.0</TargetFrameworks>
     <!--need to consider? monoandroid50;xamarin.ios10,uap10.0 -->
     <AssemblyName>Splat.AppCenter</AssemblyName>
     <RootNamespace>Splat</RootNamespace>
