@@ -7,7 +7,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using PublicApiGenerator;
@@ -34,25 +33,16 @@ namespace Splat.Tests
         {
             var assembly = typeof(AssemblyFinder).Assembly;
             var generatorOptions = new ApiGeneratorOptions { WhitelistedNamespacePrefixes = new[] { "Splat" } };
-            var receivedPublicApi = Filter(assembly.GeneratePublicApi(generatorOptions));
-            return Verifier.Verify(receivedPublicApi).UniqueForRuntimeAndVersion();
-        }
-
-        private static string Filter(string text)
-        {
-            text = _removeCoverletSectionRegex.Replace(text, string.Empty);
-            return string.Join(Environment.NewLine, text.Split(
-                    new[]
-                    {
-                        Environment.NewLine
-                    },
-                    StringSplitOptions.RemoveEmptyEntries)
-                .Where(l =>
-                    !l.StartsWith("[assembly: AssemblyVersion(", StringComparison.InvariantCulture) &&
-                    !l.StartsWith("[assembly: AssemblyFileVersion(", StringComparison.InvariantCulture) &&
-                    !l.StartsWith("[assembly: AssemblyInformationalVersion(", StringComparison.InvariantCulture) &&
-                    !l.StartsWith("[assembly: System.Reflection.AssemblyMetadata(", StringComparison.InvariantCulture) &&
-                    !string.IsNullOrWhiteSpace(l)));
+            var apiText = assembly.GeneratePublicApi(generatorOptions);
+            apiText = _removeCoverletSectionRegex.Replace(apiText, string.Empty);
+            return Verifier.Verify(apiText)
+                .UniqueForRuntimeAndVersion()
+                .ScrubEmptyLines()
+                .ScrubLines(l =>
+                    l.StartsWith("[assembly: AssemblyVersion(", StringComparison.InvariantCulture) ||
+                    l.StartsWith("[assembly: AssemblyFileVersion(", StringComparison.InvariantCulture) ||
+                    l.StartsWith("[assembly: AssemblyInformationalVersion(", StringComparison.InvariantCulture) ||
+                    l.StartsWith("[assembly: System.Reflection.AssemblyMetadata(", StringComparison.InvariantCulture));
         }
     }
 }
