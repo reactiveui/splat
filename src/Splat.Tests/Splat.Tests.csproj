@@ -1,7 +1,7 @@
 <Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0-windows10.0.17763.0;uap10.0;xamarin.ios10;monoandroid50</TargetFrameworks>
+    <TargetFrameworks>net5.0-windows10.0.17763.0;uap10.0;xamarin.ios10;monoandroid50;net6.0-windows10.0.17763.0</TargetFrameworks>
     <NoWarn>$(NoWarn);1591;CA1707;SA1633;CA2000;CA1034</NoWarn>
     <LangVersion>latest</LangVersion>
     <LangVersion>latest</LangVersion>
