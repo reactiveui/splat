@@ -89,7 +89,7 @@ Before you submit your pull request consider the following guidelines:
     git push origin my-fix-branch
     ```
 
-In GitHub, send a pull request to `splat:develop`.
+In GitHub, send a pull request to `splat:main`.
 
 If we suggest changes, then:
 
