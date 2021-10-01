@@ -27,7 +27,7 @@ namespace Splat.Tests
         /// </summary>
         /// <param name="assembly">The assembly that is being checked.</param>
         /// <param name="filePath">The caller file path.</param>
-        public static Task CheckApproval2(this Assembly assembly, [CallerFilePath] string filePath = "")
+        public static Task CheckApproval(this Assembly assembly, [CallerFilePath] string filePath = "")
         {
             var generatorOptions = new ApiGeneratorOptions { WhitelistedNamespacePrefixes = new[] { "Splat" } };
             var apiText = assembly.GeneratePublicApi(generatorOptions);

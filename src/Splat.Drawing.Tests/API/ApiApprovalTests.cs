@@ -23,6 +23,6 @@ namespace Splat.Tests
         /// Tests to make sure the splat project is approved.
         /// </summary>
         [Fact]
-        public Task SplatUIProject() => typeof(IPlatformModeDetector).Assembly.CheckApproval2();
+        public Task SplatUIProject() => typeof(IPlatformModeDetector).Assembly.CheckApproval();
     }
 }

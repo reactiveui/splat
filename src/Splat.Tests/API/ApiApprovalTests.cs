@@ -24,7 +24,7 @@ namespace Splat.Tests
         /// Tests to make sure the splat project is approved.
         /// </summary>
         [Fact]
-        public Task SplatProject() => typeof(AssemblyFinder).Assembly.CheckApproval2();
+        public Task SplatProject() => typeof(AssemblyFinder).Assembly.CheckApproval();
     }
 }
 
