@@ -6,7 +6,6 @@
 using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using PublicApiGenerator;
 using VerifyXunit;
@@ -20,8 +19,6 @@ namespace Splat.Tests
     /// </summary>
     public static class ApiExtensions
     {
-        private static readonly Regex _removeCoverletSectionRegex = new(@"^namespace Coverlet\.Core\.Instrumentation\.Tracker.*?^}", RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.Compiled);
-
         /// <summary>
         /// Checks to make sure the API is approved.
         /// </summary>
@@ -31,7 +28,6 @@ namespace Splat.Tests
         {
             var generatorOptions = new ApiGeneratorOptions { WhitelistedNamespacePrefixes = new[] { "Splat" } };
             var apiText = assembly.GeneratePublicApi(generatorOptions);
-            apiText = _removeCoverletSectionRegex.Replace(apiText, string.Empty);
             return Verifier.Verify(apiText, null, filePath)
                 .UniqueForRuntimeAndVersion()
                 .ScrubEmptyLines()
