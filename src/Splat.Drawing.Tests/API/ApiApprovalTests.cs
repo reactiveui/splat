@@ -4,7 +4,11 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
+using VerifyXunit;
 using Xunit;
+
+#pragma warning disable SA1615 // Element return value should be documented
 
 namespace Splat.Tests
 {
@@ -12,15 +16,13 @@ namespace Splat.Tests
     /// Tests to make sure that the API matches the approved ones.
     /// </summary>
     [ExcludeFromCodeCoverage]
+    [UsesVerify]
     public class ApiApprovalTests
     {
         /// <summary>
         /// Tests to make sure the splat project is approved.
         /// </summary>
         [Fact]
-        public void SplatUIProject()
-        {
-            typeof(IPlatformModeDetector).Assembly.CheckApproval();
-        }
+        public Task SplatUIProject() => typeof(IPlatformModeDetector).Assembly.CheckApproval();
     }
 }

@@ -11,11 +11,14 @@
     <PackageProjectUrl>https://github.com/reactiveui/splat/</PackageProjectUrl>
     <PackageIconUrl>https://github.com/reactiveui/styleguide/blob/master/logo_splat/logo.png?raw=true</PackageIconUrl>
     <PackageDescription>A library to make things cross-platform that should be.</PackageDescription>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <Owners>xanaisbettsx;ghuntley</Owners>
     <PackageTags>drawing;colours;geometry;logging;unit test detection;service location;image handling;portable;xamarin;xamarin ios;xamarin mac;android;monodroid;uwp;net45</PackageTags>
     <PackageReleaseNotes>https://github.com/reactiveui/splat/releases</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/reactiveui/splat</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
 	<WarningsAsErrors>nullable</WarningsAsErrors>
 
     <!-- disable sourcelink on mono, to workaround https://github.com/dotnet/sourcelink/issues/155 -->
@@ -34,6 +37,10 @@
     <DebugType>Full</DebugType>
   </PropertyGroup>
   
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+  
   <ItemGroup Condition="$(IsTestProject) or $(MSBuildProjectName.Contains('TestRunner'))">
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
@@ -41,7 +48,7 @@
     <PackageReference Include="FluentAssertions" Version="6.1.0" />
     <PackageReference Include="Microsoft.Reactive.Testing" Version="5.0.0" />
     <PackageReference Include="PublicApiGenerator" Version="10.2.0" />
-    <PackageReference Include="DiffEngine" Version="8.0.0" />
+    <PackageReference Include="Verify.Xunit" Version="12.2.0" />
   </ItemGroup>
 
   <ItemGroup Condition="$(IsTestProject)">
