@@ -1,8 +1,8 @@
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Drawing.Tests")]
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Drawing.Tests")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.TestRunner.Android")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.TestRunner.Uwp")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Tests")]
-[assembly: System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v5.0", FrameworkDisplayName="")]
+[assembly: System.Runtime.Versioning.TargetFramework(".NETStandard,Version=v2.0", FrameworkDisplayName="")]
 namespace Splat
 {
     public class ActionLogger : Splat.ILogger
