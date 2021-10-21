@@ -89,7 +89,7 @@ namespace Splat
 
             if (source.CanFreeze)
             {
-                source.Freeze(); 
+                source.Freeze();
             }
         }
     }
