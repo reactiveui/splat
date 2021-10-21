@@ -86,7 +86,11 @@ namespace Splat
             source.BeginInit();
             block(source);
             source.EndInit();
-            source.Freeze();
+
+            if (source.CanFreeze)
+            {
+                source.Freeze();
+            }
         }
     }
 }
