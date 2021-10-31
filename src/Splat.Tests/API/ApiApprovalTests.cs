@@ -9,13 +9,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using VerifyXunit;
 using Xunit;
-#pragma warning disable SA1615 // Element return value should be documented
 
 namespace Splat.Tests
 {
     /// <summary>
     /// Tests to make sure that the API matches the approved ones.
     /// </summary>
+    /// <returns>A task to monitor the usage.<returns>
     [ExcludeFromCodeCoverage]
     [UsesVerify]
     public class ApiApprovalTests
