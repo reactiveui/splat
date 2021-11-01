@@ -9,7 +9,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using VerifyXunit;
 using Xunit;
-#pragma warning disable SA1615 // Element return value should be documented
 
 namespace Splat.Tests
 {
@@ -23,6 +22,7 @@ namespace Splat.Tests
         /// <summary>
         /// Tests to make sure the splat project is approved.
         /// </summary>
+        /// <returns>A task to monitor the usage.<returns>
         [Fact]
         public Task SplatProject() => typeof(AssemblyFinder).Assembly.CheckApproval();
     }
