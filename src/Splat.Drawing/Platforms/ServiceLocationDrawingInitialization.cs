@@ -23,8 +23,8 @@ namespace Splat
                 throw new ArgumentNullException(nameof(resolver));
             }
 
-#if !NETSTANDARD
-            // not supported in netstandard2.0
+#if !NETSTANDARD && !NET5_0 && !NET6_0
+            // not supported in netstandard2.0 or NET5/6 library
             if (!resolver.HasRegistration(typeof(IBitmapLoader)))
             {
                 resolver.RegisterLazySingleton(() => new PlatformBitmapLoader(), typeof(IBitmapLoader));
