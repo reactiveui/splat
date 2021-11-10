@@ -7,6 +7,8 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
+#pragma warning disable CA1716 // Identifiers should not match keywords
+
 namespace Splat
 {
     /// <summary>
@@ -359,3 +361,4 @@ namespace Splat
         void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel, [CallerMemberName]string? callerMemberName = null);
     }
 }
+#pragma warning restore CA1716 // Identifiers should not match keywords
