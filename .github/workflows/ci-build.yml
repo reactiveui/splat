@@ -11,7 +11,7 @@ env:
 
 jobs:
   call-workflow-setup-and-build:
-    uses: reactiveui/splat/.github/workflows/workflow-common-setup-and-build.yml
+    uses: reactiveui/splat/.github/workflows/workflow-common-setup-and-build.yml@8698411c14c9ab1d3a5fee67ff604ecf5fe8d9ef
     with:
       configuration: Release
       useVisualStudioPreview: false
