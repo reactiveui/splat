@@ -9,6 +9,8 @@ on:
 env:
   configuration: Release
   productNamespacePrefix: "Splat"
+  useVisualStudioPreview: false
+  useMauiCheckDotNetTool: true
 
 jobs:
   build:
@@ -16,7 +18,8 @@ jobs:
     outputs:
       nbgv: ${{ steps.nbgv.outputs.SemVer2 }}
     steps:
-    - name: Update VS2022 preview
+    - name: Update Visual Studio preview
+      if: env.useVisualStudioPreview
       shell: bash
       run: |
         dotnet tool update -g dotnet-vs
@@ -65,6 +68,11 @@ jobs:
         dotnet workload install tvos
         dotnet workload install macos
         dotnet workload install maui
+
+    - name: Run Maui Installation Check
+      if: env.useMauiCheckDotNetTool
+      shell: bash
+      run: |
         dotnet tool install -g Redth.Net.Maui.Check
         maui-check --non-interactive --fix
 
