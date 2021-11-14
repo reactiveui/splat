@@ -6,15 +6,19 @@ on:
       configuration:
         required: true
         type: string
-        
+
+      productNamespacePrefix:
+        required: true
+        type: string
+
       useVisualStudioPreview:
         required: true
         type: boolean
-        
+
       useMauiCheckDotNetTool:
         required: true
         type: boolean
-        
+
       runTests:
         required: true
         type: boolean
@@ -116,11 +120,11 @@ jobs:
       with:
         project-files: '**/*Tests*.csproj'
         no-build: true
-        exclude-filter: '[${{env.productNamespacePrefix}}.*.Tests.*]*,[${{env.productNamespacePrefix}}.Tests]*,[${{env.productNamespacePrefix}}.TestRunner.*]*'
-        include-filter: '[${{env.productNamespacePrefix}}*]*'
+        exclude-filter: '[${{inputs.productNamespacePrefix}}.*.Tests.*]*,[${{inputs.productNamespacePrefix}}.Tests]*,[${{inputs.productNamespacePrefix}}.TestRunner.*]*'
+        include-filter: '[${{inputs.productNamespacePrefix}}*]*'
         output-format: cobertura
         output: '../../artifacts/'
-        configuration: ${{ env.configuration }}
+        configuration: ${{ inputs.configuration }}
 
     - name: Upload Code Coverage
       if: inputs.runTests == true
@@ -178,4 +182,3 @@ jobs:
         SOURCE_URL: https://api.nuget.org/v3/index.json
       run: |
         dotnet nuget push -s ${{ env.SOURCE_URL }} -k ${{ env.NUGET_AUTH_TOKEN }} **/*.nupkg
-        
