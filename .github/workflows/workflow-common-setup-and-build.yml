@@ -15,6 +15,10 @@ on:
         required: true
         type: boolean
         
+      runTests:
+        required: true
+        type: boolean
+
       # nugetMode
       # 0: off
       # 1: pack and upload (CI build)
@@ -107,7 +111,7 @@ jobs:
       working-directory: src
 
     - name: Run Unit Tests and Generate Coverage
-      if: inputs.CreateTests == true
+      if: inputs.runTests == true
       uses: glennawatson/coverlet-msbuild@v1
       with:
         project-files: '**/*Tests*.csproj'
@@ -119,7 +123,7 @@ jobs:
         configuration: ${{ env.configuration }}
 
     - name: Upload Code Coverage
-      if: inputs.CreateTests == true
+      if: inputs.runTests == true
       shell: bash
       run: |
         echo $PWD
