@@ -19,7 +19,7 @@ jobs:
       nbgv: ${{ steps.nbgv.outputs.SemVer2 }}
     steps:
     - name: Update Visual Studio preview
-      if: env.useVisualStudioPreview
+      if: env.useVisualStudioPreview == true
       shell: bash
       run: |
         dotnet tool update -g dotnet-vs
@@ -70,7 +70,7 @@ jobs:
         dotnet workload install maui
 
     - name: Run Maui Installation Check
-      if: env.useMauiCheckDotNetTool
+      if: env.useMauiCheckDotNetTool == true
       shell: bash
       run: |
         dotnet tool install -g Redth.Net.Maui.Check
