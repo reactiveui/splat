@@ -11,7 +11,7 @@ env:
 
 jobs:
   build:
-    uses: reactiveui/splat/.github/workflows/workflow-common-setup-and-build.yml@31f963cd1707f1a420a18d85cc9fcc21948ddd76
+    uses: reactiveui/actions-common/.github/workflows/workflow-common-setup-and-build.yml@aafa6cacb7563a588ca7ab02f4dd34c077343e96
     with:
       configuration: Release
       productNamespacePrefix: "Splat"
