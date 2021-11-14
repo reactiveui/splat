@@ -11,37 +11,10 @@ env:
 
 jobs:
   call-workflow-setup-and-build:
-    uses: reactiveui/splat/.github/workflows/workflow-common-setup-and-build.yml@8698411c14c9ab1d3a5fee67ff604ecf5fe8d9ef
+    uses: reactiveui/splat/.github/workflows/workflow-common-setup-and-build.yml@7a918f28b9d8195f947d558784e7fa44bda67d7e
     with:
       configuration: Release
       useVisualStudioPreview: false
-      useMauiCheckDotNetTool: true
-  post_build:
-    runs-on: windows-2022
-    outputs:
-      nbgv: ${{ steps.nbgv.outputs.SemVer2 }}
-    steps:
-    - name: Run Unit Tests and Generate Coverage
-      uses: glennawatson/coverlet-msbuild@v1
-      with:
-        project-files: '**/*Tests*.csproj'
-        no-build: true
-        exclude-filter: '[${{env.productNamespacePrefix}}.*.Tests.*]*,[${{env.productNamespacePrefix}}.Tests]*,[${{env.productNamespacePrefix}}.TestRunner.*]*'
-        include-filter: '[${{env.productNamespacePrefix}}*]*'
-        output-format: cobertura
-        output: '../../artifacts/'
-        configuration: ${{ env.configuration }}
-
-    - name: Upload Code Coverage
-      shell: bash
-      run: |
-        echo $PWD
-        bash <(curl -s https://codecov.io/bash) -X gcov -X coveragepy -t ${{ env.CODECOV_TOKEN }} -s '$PWD/artifacts' -f '*.xml'
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-    - name: Create NuGet Artifacts
-      uses: actions/upload-artifact@master
-      with:
-        name: nuget
-        path: '**/*.nupkg'
+      useMauiCheckDotNetTool: false
+      runTests: true
+      createPackages: true
