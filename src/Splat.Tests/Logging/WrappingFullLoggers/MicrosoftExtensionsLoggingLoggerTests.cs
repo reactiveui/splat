@@ -62,8 +62,8 @@ namespace Splat.Tests.Logging
                 global::Microsoft.Extensions.Logging.LogLevel logLevel,
                 EventId eventId,
                 TState state,
-                Exception exception,
-                Func<TState, Exception, string> formatter)
+                Exception? exception,
+                Func<TState, Exception?, string> formatter)
             {
                 if (IsEnabled(logLevel))
                 {

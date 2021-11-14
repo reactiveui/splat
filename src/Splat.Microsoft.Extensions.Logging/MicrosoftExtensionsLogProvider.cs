@@ -38,7 +38,7 @@ namespace Splat.Microsoft.Extensions.Logging
             }
 
             /// <inheritdoc />
-            public void Log<TState>(global::Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+            public void Log<TState>(global::Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
             {
                 if (!IsEnabled(logLevel))
                 {
@@ -54,7 +54,7 @@ namespace Splat.Microsoft.Extensions.Logging
 
                 var message = formatter(state, exception);
 
-                LogHost.Default.Write(exception, message, splatLogLevel);
+                LogHost.Default.Write(exception!, message, splatLogLevel);
             }
 
             /// <inheritdoc />
@@ -64,9 +64,11 @@ namespace Splat.Microsoft.Extensions.Logging
             }
 
             /// <inheritdoc />
-            public IDisposable? BeginScope<TState>(TState state)
+            public IDisposable BeginScope<TState>(TState state)
             {
-                return null;
+                // documentation states we're allowed to return null.
+                // NRT in net6 causing build issue as of 2021-11-10.
+                return null!;
             }
         }
     }
