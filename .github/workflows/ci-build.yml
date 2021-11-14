@@ -7,94 +7,20 @@ on:
     branches: [ main ]
 
 env:
-  configuration: Release
   productNamespacePrefix: "Splat"
-  useVisualStudioPreview: false
-  useMauiCheckDotNetTool: true
 
 jobs:
-  build:
+  call-workflow-setup-and-build:
+    uses: reactiveui/splat/.github/workflows/workflow-common-setup-and-build.yml
+    with:
+      configuration: Release
+      useVisualStudioPreview: false
+      useMauiCheckDotNetTool: true
+  post_build:
     runs-on: windows-2022
     outputs:
       nbgv: ${{ steps.nbgv.outputs.SemVer2 }}
     steps:
-    - name: Update Visual Studio preview
-      if: env.useVisualStudioPreview == true
-      shell: bash
-      run: |
-        dotnet tool update -g dotnet-vs
-        vs update preview
-        vs modify preview +mobile +desktop +uwp +web
-        echo "##vso[task.prependpath]$(vs where preview --prop=InstallationPath)\MSBuild\Current\Bin"
-
-    - name: Install Windows SDK 10.0.16299
-      shell: pwsh
-      run: |
-        Invoke-WebRequest -Uri https://go.microsoft.com/fwlink/p/?linkid=864422 -OutFile winsdk.exe
-        $startInfo = New-Object System.Diagnostics.ProcessStartInfo
-        $startInfo.FileName = "winsdk.exe"
-        $startInfo.Arguments = "/norestart /quiet"
-        $process = New-Object System.Diagnostics.Process
-        $process.StartInfo = $startInfo
-        $process.Start()
-        $process.WaitForExit()
-
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v1.8.2
-      with:
-        dotnet-version: 3.1.x
-
-    - name: Install .NET 5
-      uses: actions/setup-dotnet@v1.8.2
-      with:
-        dotnet-version: 5.0.x
-
-    - name: Install .NET 6
-      uses: actions/setup-dotnet@v1.8.2
-      with:
-        dotnet-version: 6.0.x
-        include-prerelease: true
-
-    - name: Install DotNet workloads
-      shell: bash
-      run: |
-        dotnet workload install android
-        dotnet workload install ios
-        dotnet workload install tvos
-        dotnet workload install macos
-        dotnet workload install maui
-
-    - name: Run Maui Installation Check
-      if: env.useMauiCheckDotNetTool == true
-      shell: bash
-      run: |
-        dotnet tool install -g Redth.Net.Maui.Check
-        maui-check --non-interactive --fix
-
-    - name: Add MSBuild to PATH
-      uses: glennawatson/setup-msbuild@v1.0.3
-      with:
-        prerelease: true
-
-    - name: NBGV
-      id: nbgv
-      uses: dotnet/nbgv@master
-      with:
-        setAllVars: true
-
-    - name: NuGet Restore
-      run: dotnet restore
-      working-directory: src
-
-    - name: Build
-      run: msbuild /t:build,pack /nowarn:MSB4011 /maxcpucount /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=${{ env.configuration }}
-      working-directory: src
-
     - name: Run Unit Tests and Generate Coverage
       uses: glennawatson/coverlet-msbuild@v1
       with:
