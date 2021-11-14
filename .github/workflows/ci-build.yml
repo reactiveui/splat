@@ -10,7 +10,7 @@ env:
   productNamespacePrefix: "Splat"
 
 jobs:
-  call-workflow-setup-and-build:
+  build:
     uses: reactiveui/splat/.github/workflows/workflow-common-setup-and-build.yml@31f963cd1707f1a420a18d85cc9fcc21948ddd76
     with:
       configuration: Release
