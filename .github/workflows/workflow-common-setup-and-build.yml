@@ -21,7 +21,7 @@ on:
       # 2: sign and publish (Release action)
       nugetMode:
         required: true
-        type: integer
+        type: number
 
 jobs:
   build:
