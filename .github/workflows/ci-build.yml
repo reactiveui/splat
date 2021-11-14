@@ -11,9 +11,10 @@ env:
 
 jobs:
   call-workflow-setup-and-build:
-    uses: reactiveui/splat/.github/workflows/workflow-common-setup-and-build.yml@93a3b700ef406751d98061b41fa970a372d84165
+    uses: reactiveui/splat/.github/workflows/workflow-common-setup-and-build.yml@31f963cd1707f1a420a18d85cc9fcc21948ddd76
     with:
       configuration: Release
+      productNamespacePrefix: "Splat"
       useVisualStudioPreview: false
       useMauiCheckDotNetTool: false
       runTests: true
