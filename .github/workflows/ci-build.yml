@@ -17,4 +17,3 @@ jobs:
       productNamespacePrefix: "Splat"
       useVisualStudioPreview: false
       useMauiCheckDotNetTool: false
-      runTests: true
