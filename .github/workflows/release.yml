@@ -10,7 +10,7 @@ env:
   productNamespacePrefix: "Splat"
 
 jobs:
-  build:
+  release:
     uses: reactiveui/actions-common/.github/workflows/workflow-common-release.yml@main
     with:
       configuration: Release
