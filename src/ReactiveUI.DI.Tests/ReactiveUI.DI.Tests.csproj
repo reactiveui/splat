@@ -8,15 +8,6 @@
   </PropertyGroup>
 
   <Choose>
-    <When Condition="$(TargetFramework.StartsWith('net462'))">
-      <ItemGroup>
-        <!--<Compile Remove="DryIocReactiveUIDependencyTests.cs" />-->
-        <Compile Remove="AutoFacReactiveUIDependencyTests.cs" />
-        <Compile Remove="NinjectReactiveUIDependencyTests.cs" />
-        <Compile Remove="SimpleInjectorReactiveUIDependencyTests.cs" />
-        <ProjectReference Include="..\Splat.DryIoc\Splat.DryIoc.csproj" />
-      </ItemGroup>
-    </When>
     <When Condition="$(TargetFramework.StartsWith('net472'))">
       <ItemGroup>
         <Compile Remove="DryIocReactiveUIDependencyTests.cs" />
@@ -26,16 +17,7 @@
         <ProjectReference Include="..\Splat.Autofac\Splat.Autofac.csproj" />
       </ItemGroup>
     </When>
-    <When Condition="$(TargetFramework.StartsWith('netcoreapp3.1'))">
-      <ItemGroup>
-        <Compile Remove="DryIocReactiveUIDependencyTests.cs" />
-        <Compile Remove="AutoFacReactiveUIDependencyTests.cs" />
-        <!--<Compile Remove="NinjectReactiveUIDependencyTests.cs" />-->
-        <Compile Remove="SimpleInjectorReactiveUIDependencyTests.cs" />
-        <ProjectReference Include="..\Splat.Ninject\Splat.Ninject.csproj" />
-      </ItemGroup>
-    </When>
-    <When Condition="$(TargetFramework.StartsWith('net5.0'))">
+    <When Condition="$(TargetFramework.StartsWith('net6.0'))">
       <ItemGroup>
         <Compile Remove="DryIocReactiveUIDependencyTests.cs" />
         <Compile Remove="AutoFacReactiveUIDependencyTests.cs" />
