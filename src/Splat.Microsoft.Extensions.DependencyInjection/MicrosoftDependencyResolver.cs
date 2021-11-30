@@ -46,7 +46,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         /// Gets the internal Microsoft conainer,
         /// or build new if this instance was not initialized with one.
         /// </summary>
-        protected virtual IServiceProvider ServiceProvider
+        protected virtual IServiceProvider? ServiceProvider
         {
             get
             {
@@ -54,7 +54,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
                 {
                     if (_serviceProvider is null)
                     {
-                        _serviceProvider = _serviceCollection.BuildServiceProvider();
+                        _serviceProvider = _serviceCollection?.BuildServiceProvider();
                     }
 
                     return _serviceProvider;
@@ -88,6 +88,11 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         /// <inheritdoc />
         public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
         {
+            if (ServiceProvider is null)
+            {
+                throw new InvalidOperationException("The ServiceProvider is null.");
+            }
+
             var isNull = serviceType is null;
             if (serviceType is null)
             {
@@ -323,6 +328,11 @@ namespace Splat.Microsoft.Extensions.DependencyInjection
         private ContractDictionary? GetContractDictionary(Type serviceType, bool createIfNotExists)
         {
             var dicType = GetDictionaryType(serviceType);
+
+            if (ServiceProvider is null)
+            {
+                throw new InvalidOperationException("The ServiceProvider is null.");
+            }
 
             if (_isImmutable)
             {
