@@ -36,6 +36,11 @@ namespace Splat
             {
                 try
                 {
+                    if (data is null)
+                    {
+                        throw new InvalidOperationException("Failed to load stream");
+                    }
+
                     var bitmap = UIImage.LoadFromData(data);
                     if (bitmap is null)
                     {
@@ -46,13 +51,28 @@ namespace Splat
                 }
                 catch (Exception ex)
                 {
-                    LogHost.Default.Debug(ex, "Unable to parse the known colour name.");
+                    LogHost.Default.Debug(ex, "Unable to parse bitmap from byte stream.");
                     tcs.TrySetException(ex);
                 }
             });
 #else
-            tcs.TrySetResult(new CocoaBitmap(new UIImage(data)));
+
+            try
+            {
+                if (data is null)
+                {
+                    throw new InvalidOperationException("Failed to load stream");
+                }
+
+                tcs.TrySetResult(new CocoaBitmap(new UIImage(data)));
+            }
+            catch (Exception ex)
+            {
+                LogHost.Default.Debug(ex, "Unable to parse bitmap from byte stream.");
+                tcs.TrySetException(ex);
+            }
 #endif
+
             return tcs.Task;
         }
 
@@ -76,7 +96,7 @@ namespace Splat
                 }
                 catch (Exception ex)
                 {
-                    LogHost.Default.Debug(ex, "Unable to parse the known colour name.");
+                    LogHost.Default.Debug(ex, "Unable to parse bitmap from resource.");
                     tcs.TrySetException(ex);
                 }
             });
@@ -95,6 +115,7 @@ namespace Splat
                 }
                 catch (Exception ex)
                 {
+                    LogHost.Default.Debug(ex, "Unable to parse bitmap from resource.");
                     tcs.TrySetException(ex);
                 }
             });
