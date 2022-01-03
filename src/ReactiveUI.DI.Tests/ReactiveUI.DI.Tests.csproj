@@ -29,7 +29,7 @@
   </Choose>
 
   <ItemGroup>
-    <PackageReference Include="ReactiveUI" Version="17.1.9" />
+    <PackageReference Include="ReactiveUI" Version="17.1.17" />
   </ItemGroup>
 
 </Project>
