@@ -266,5 +266,29 @@ namespace Splat.DryIoc.Tests
 
             vmOne.Should().NotBeNull();
         }
+
+        /// <summary>
+        /// DryIoc dependency resolver should create a resolved object only once when resolving.
+        /// </summary>
+        [Fact]
+        public void DryIocDependencyResolver_Should_Create_Once_When_Resolving()
+        {
+            var container = new Container();
+            var count = 0;
+            container.RegisterDelegate(() =>
+            {
+                count++;
+                return new ViewModelOne();
+            });
+
+            var resolver = new DryIocDependencyResolver(container);
+
+            // Imitate a call to Locator.Current.GetService<ViewModelOne>()
+            var vms = resolver.GetServices(typeof(ViewModelOne));
+            count.Should().Be(1);
+            var vmOne = vms.LastOrDefault();
+            vmOne.Should().NotBeNull();
+            count.Should().Be(1);
+        }
     }
 }

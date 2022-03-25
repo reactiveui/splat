@@ -43,19 +43,19 @@ namespace Splat.DryIoc
             }
 
             var key = (serviceType, contract ?? string.Empty);
-            var registeredinSplat = _container.ResolveMany(serviceType, serviceKey: key).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
+            var registeredinSplat = _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray, serviceKey: key).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
             if (registeredinSplat.Any())
             {
                 return registeredinSplat;
             }
 
-            var registeredWithContract = _container.ResolveMany(serviceType, serviceKey: contract).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
+            var registeredWithContract = _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray, serviceKey: contract).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
             if (registeredWithContract.Any())
             {
                 return registeredWithContract;
             }
 
-            return _container.ResolveMany(serviceType).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
+            return _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
         }
 
         /// <inheritdoc />
