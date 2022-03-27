@@ -54,7 +54,7 @@ namespace Splat
                     using (var bmpStream = bmp.PixelBuffer.AsStream())
                     {
                         bmpStream.Seek(0, SeekOrigin.Begin);
-                        bmpStream.Write(pixels, 0, (int)bmpStream.Length);
+                        await bmpStream.WriteAsync(pixels, 0, (int)bmpStream.Length);
                         return (IBitmap?)new WriteableBitmapImageBitmap(bmp);
                     }
                 }

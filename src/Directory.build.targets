@@ -38,6 +38,9 @@
   <PropertyGroup Condition="$(TargetFramework.StartsWith('net6.0-tvos'))">
     <DefineConstants>$(DefineConstants);MONO;UIKIT;COCOA;TVOS</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="$(TargetFramework.StartsWith('net6.0-maccatalyst'))">
+    <DefineConstants>$(DefineConstants);MONO;UIKIT;COCOA;MACCATALYST</DefineConstants>
+  </PropertyGroup>
   <PropertyGroup Condition="$(TargetFramework.StartsWith('Xamarin.WatchOS'))">
     <DefineConstants>$(DefineConstants);MONO;UIKIT;COCOA</DefineConstants>
   </PropertyGroup>

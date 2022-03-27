@@ -157,6 +157,7 @@ dotnet_diagnostic.AvoidAsyncVoid.severity = suggestion
 dotnet_diagnostic.CA1000.severity = none
 dotnet_diagnostic.CA1001.severity = error
 dotnet_diagnostic.CA1009.severity = error
+dotnet_diagnostic.CA1014.severity = none
 dotnet_diagnostic.CA1016.severity = error
 dotnet_diagnostic.CA1030.severity = none
 dotnet_diagnostic.CA1031.severity = none

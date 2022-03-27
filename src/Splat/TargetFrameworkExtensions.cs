@@ -29,6 +29,7 @@ namespace Splat
         {
             return frameworkName switch
             {
+                ".NETCoreApp,Version=v7.0" => "net7.0",
                 ".NETCoreApp,Version=v6.0" => "net6.0",
                 ".NETCoreApp,Version=v5.0" => "net5.0",
                 ".NETCoreApp,Version=v3.1" => "netcoreapp3.1",
