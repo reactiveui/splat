@@ -75,7 +75,7 @@
 
   <ItemGroup>
     <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.406" PrivateAssets="all" />
-    <PackageReference Include="Roslynator.Analyzers" Version="4.0.2" PrivateAssets="All" />
+    <PackageReference Include="Roslynator.Analyzers" Version="4.1.0" PrivateAssets="All" />
   </ItemGroup>
   <!-- Net Analyzers config taken from : https://docs.microsoft.com/en-gb/visualstudio/code-quality/migrate-from-fxcop-analyzers-to-net-analyzers?view=vs-2019 -->
   <PropertyGroup>
