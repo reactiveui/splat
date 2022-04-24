@@ -103,7 +103,7 @@ namespace Splat.DryIoc
 
             if (string.IsNullOrEmpty(contract))
             {
-                _container.UseInstance(
+                _container.RegisterInstance(
                 serviceType,
                 isNull ? new NullServiceType(factory) : factory(),
                 IfAlreadyRegistered.AppendNewImplementation);
@@ -118,7 +118,7 @@ namespace Splat.DryIoc
             }
 
             // Keyed instances can only have a single instance so keep latest
-            _container.UseInstance(
+            _container.RegisterInstance(
                 serviceType,
                 isNull ? new NullServiceType(factory) : factory(),
                 IfAlreadyRegistered.Replace,

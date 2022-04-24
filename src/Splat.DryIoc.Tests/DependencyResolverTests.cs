@@ -244,7 +244,7 @@ namespace Splat.DryIoc.Tests
         public void DryIocDependencyResolver_PreInit_Should_ReturnRegisteredLogger()
         {
             var c = new Container();
-            c.UseInstance(typeof(ILogManager), new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())));
+            c.RegisterInstance(typeof(ILogManager), new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())));
             c.UseDryIocDependencyResolver();
 
             var d = Splat.Locator.Current.GetService<ILogManager>();
