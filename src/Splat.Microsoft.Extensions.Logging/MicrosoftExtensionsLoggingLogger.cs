@@ -48,18 +48,24 @@ namespace Splat.Microsoft.Extensions.Logging
         }
 
         /// <inheritdoc />
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1848:Use the LoggerMessage delegates", Justification = "Deliberate Usage")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "Deliberate Usage")]
         public void Write(string message, LogLevel logLevel)
         {
             _inner.Log(MsLoggingHelpers.Splat2MsLogDictionary[logLevel], message);
         }
 
         /// <inheritdoc />
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1848:Use the LoggerMessage delegates", Justification = "Deliberate Usage")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "Deliberate Usage")]
         public void Write(Exception exception, string message, LogLevel logLevel)
         {
             _inner.Log(MsLoggingHelpers.Splat2MsLogDictionary[logLevel], exception, message);
         }
 
         /// <inheritdoc />
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1848:Use the LoggerMessage delegates", Justification = "Deliberate Usage")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "Deliberate Usage")]
         public void Write(string message, Type type, LogLevel logLevel)
         {
             if (type is null)
@@ -74,6 +80,8 @@ namespace Splat.Microsoft.Extensions.Logging
         }
 
         /// <inheritdoc />
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1848:Use the LoggerMessage delegates", Justification = "Deliberate Usage")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "Deliberate Usage")]
         public void Write(Exception exception, string message, Type type, LogLevel logLevel)
         {
             if (type is null)

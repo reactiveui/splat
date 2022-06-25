@@ -66,7 +66,7 @@ namespace Splat
 
             // keep an eye on
             // https://raygun.com/forums/thread/92182
-#if NET461
+#if NET462
             var messageBuilder = RaygunMessageBuilder.New
 #else
             var messageBuilder = RaygunMessageBuilder.New(raygunSettings)
