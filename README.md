@@ -71,10 +71,11 @@ Splat currently supports:
 
 [Always Be NuGetting](https://nuget.org/packages/Splat/). Package contains binaries for:
 
-* .NET Framework 4.6.1, .NET Framework 4.7.2, .NET Standard 2.0 and .NET 6.0
+* .NET Framework 4.6.2, .NET Framework 4.7.2, .NET Standard 2.0 and .NET 6.0
   * WPF
   * Windows Forms
   * UWP
+  * Maui
   * Xamarin (Android, iOS and Mac)
   * Tizen
 
