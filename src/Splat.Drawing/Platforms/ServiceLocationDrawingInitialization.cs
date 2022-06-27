@@ -23,7 +23,7 @@ namespace Splat
                 throw new ArgumentNullException(nameof(resolver));
             }
 
-#if !NETSTANDARD && !NET5_0 && !NET6_0
+#if !IS_SHARED_NET
             // not supported in netstandard2.0 or NET5/6 library
             if (!resolver.HasRegistration(typeof(IBitmapLoader)))
             {
