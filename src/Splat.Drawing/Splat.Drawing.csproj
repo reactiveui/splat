@@ -12,7 +12,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" ($(TargetFramework.StartsWith('netcoreapp3')) or $(TargetFramework.StartsWith('net5.0-windows'))or $(TargetFramework.StartsWith('net6.0-windows')) or $(TargetFramework.StartsWith('net4'))) and '$(OS)' == 'Windows_NT' ">
+  <PropertyGroup Condition=" ($(TargetFramework.StartsWith('netcoreapp3')) or $(TargetFramework.StartsWith('net6.0-windows')) or $(TargetFramework.StartsWith('net4'))) and '$(OS)' == 'Windows_NT' ">
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
@@ -57,16 +57,8 @@
     <Compile Include="Platforms\ReflectionStubs.cs" />
   </ItemGroup>
 
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('net5.0-windows')) ">
-    <Compile Include="Platforms\net5\**\*.cs" />
-
-    <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
-    <Compile Include="Platforms\ReflectionStubs.cs" />
-  </ItemGroup>
-
   <ItemGroup Condition=" $(TargetFramework.StartsWith('net6.0-windows')) ">
-    <Compile Include="Platforms\net5\**\*.cs" />
-
+    <Compile Include="Platforms\net6\**\*.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
     <Compile Include="Platforms\ReflectionStubs.cs" />
   </ItemGroup>
