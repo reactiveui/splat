@@ -24,7 +24,7 @@ namespace Splat
             }
 
 #if !IS_SHARED_NET
-            // not supported in netstandard2.0 or NET5/6 library
+            // not supported in netstandard or NET6 library
             if (!resolver.HasRegistration(typeof(IBitmapLoader)))
             {
                 resolver.RegisterLazySingleton(() => new PlatformBitmapLoader(), typeof(IBitmapLoader));
