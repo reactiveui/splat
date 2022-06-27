@@ -1,4 +1,4 @@
-<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
     <TargetFrameworks>MonoAndroid90;Xamarin.iOS10;Xamarin.Mac20;Xamarin.TVOS10;Xamarin.WatchOS10;tizen40;netstandard2.0;net6.0;net6.0-android;net6.0-ios;net6.0-tvos;net6.0-macos;net6.0-maccatalyst</TargetFrameworks>
@@ -12,7 +12,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" ($(TargetFramework.StartsWith('netcoreapp3')) or $(TargetFramework.StartsWith('net5.0-windows'))or $(TargetFramework.StartsWith('net6.0-windows')) or $(TargetFramework.StartsWith('net4'))) and '$(OS)' == 'Windows_NT' ">
+  <PropertyGroup Condition=" ($(TargetFramework.StartsWith('netcoreapp3')) or $(TargetFramework.StartsWith('net6.0-windows')) or $(TargetFramework.StartsWith('net4'))) and '$(OS)' == 'Windows_NT' ">
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
@@ -30,7 +30,6 @@
     <PackageReference Include="System.Diagnostics.Contracts" Version="4.3.0" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
     <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
-
     <Compile Include="Platforms\ReflectionStubs.cs" />
   </ItemGroup>
 
@@ -42,7 +41,6 @@
     <Compile Include="Platforms\net4\**\*.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
     <Compile Include="Platforms\ReflectionStubs.cs" />
-
     <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
   </ItemGroup>
 
@@ -52,21 +50,12 @@
 
   <ItemGroup Condition=" $(TargetFramework.StartsWith('netcoreapp3')) ">
     <Compile Include="Platforms\netcoreapp3\**\*.cs" />
-
-    <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
-    <Compile Include="Platforms\ReflectionStubs.cs" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('net5.0-windows')) ">
-    <Compile Include="Platforms\net5\**\*.cs" />
-
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
     <Compile Include="Platforms\ReflectionStubs.cs" />
   </ItemGroup>
 
   <ItemGroup Condition=" $(TargetFramework.StartsWith('net6.0-windows')) ">
-    <Compile Include="Platforms\net5\**\*.cs" />
-
+    <Compile Include="Platforms\net6\**\*.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
     <Compile Include="Platforms\ReflectionStubs.cs" />
   </ItemGroup>
@@ -80,7 +69,6 @@
   <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS')) or $(TargetFramework.StartsWith('Xamarin.TVOS')) or $(TargetFramework.StartsWith('Xamarin.WatchOS')) ">
     <Compile Include="Platforms\Cocoa\**\*.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
-
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
 
@@ -91,7 +79,6 @@
 
   <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.Mac')) ">
     <Compile Include="Platforms\Cocoa\**\*.cs" />
-
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="netstandard" />
   </ItemGroup>
@@ -103,7 +90,6 @@
   <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
     <Compile Include="Platforms\Android\**\*.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
-
     <Compile Include="Resources\**\*.cs" />
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
@@ -111,7 +97,6 @@
   <ItemGroup Condition=" $(TargetFramework.StartsWith('net6.0-android')) ">
     <Compile Include="Platforms\Android\**\*.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
-
     <Compile Include="Resources\**\*.cs" />
   </ItemGroup>
 
