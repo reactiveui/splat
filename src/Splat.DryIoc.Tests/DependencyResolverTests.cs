@@ -65,6 +65,30 @@ namespace Splat.DryIoc.Tests
         /// Should resolve the views.
         /// </summary>
         [Fact]
+        public void DryIocDependencyResolver_Should_Register_But_Not_Create_Views()
+        {
+            var container = new Container();
+            container.UseDryIocDependencyResolver();
+
+            Splat.Locator.CurrentMutable.Register(() => new ViewThatShouldNotLoad(), typeof(IViewFor<ViewModelOne>));
+        }
+
+        /// <summary>
+        /// Should resolve the views.
+        /// </summary>
+        [Fact]
+        public void DryIocDependencyResolver_Should_Register_With_Contract_But_Not_Create_Views()
+        {
+            var container = new Container();
+            container.UseDryIocDependencyResolver();
+
+            Splat.Locator.CurrentMutable.Register(() => new ViewThatShouldNotLoad(), typeof(IViewFor<ViewModelOne>), "name");
+        }
+
+        /// <summary>
+        /// Should resolve the views.
+        /// </summary>
+        [Fact]
         public void DryIocDependencyResolver_Should_Resolve_Views()
         {
             var container = new Container();
@@ -107,6 +131,8 @@ namespace Splat.DryIoc.Tests
             container.Register<ViewModelOne>();
             container.Register<ViewModelTwo>();
             container.UseDryIocDependencyResolver();
+
+            Splat.Locator.CurrentMutable.Register(() => new ViewThatShouldNotLoad(), typeof(IViewFor<ViewModelOne>), "name");
 
             var vmOne = Locator.Current.GetService<ViewModelOne>();
             var vmTwo = Locator.Current.GetService<ViewModelTwo>();
@@ -255,7 +281,7 @@ namespace Splat.DryIoc.Tests
         /// DryIoc dependency resolver should resolve after duplicate keyed registratoion.
         /// </summary>
         [Fact]
-        public void DryIocDependencyResolver_Should_Resolve_AfterDuplicateKeyedRegistratoion()
+        public void DryIocDependencyResolver_Should_Resolve_AfterDuplicateKeyedRegistration()
         {
             var container = new Container();
             container.UseDryIocDependencyResolver();

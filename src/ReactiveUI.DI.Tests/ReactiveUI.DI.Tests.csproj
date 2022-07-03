@@ -5,12 +5,12 @@
     <NoWarn>$(NoWarn);1591;CA1707;SA1633;CA2000</NoWarn>
     <IsPackable>false</IsPackable>
     <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <Choose>
     <When Condition="$(TargetFramework.StartsWith('net472'))">
       <ItemGroup>
-        <Compile Remove="DryIocReactiveUIDependencyTests.cs" />
         <!--<Compile Remove="AutoFacReactiveUIDependencyTests.cs" />-->
         <Compile Remove="NinjectReactiveUIDependencyTests.cs" />
         <Compile Remove="SimpleInjectorReactiveUIDependencyTests.cs" />
@@ -19,7 +19,6 @@
     </When>
     <When Condition="$(TargetFramework.StartsWith('net6.0'))">
       <ItemGroup>
-        <Compile Remove="DryIocReactiveUIDependencyTests.cs" />
         <Compile Remove="AutoFacReactiveUIDependencyTests.cs" />
         <Compile Remove="NinjectReactiveUIDependencyTests.cs" />
         <!--<Compile Remove="SimpleInjectorReactiveUIDependencyTests.cs" />-->
@@ -30,6 +29,11 @@
 
   <ItemGroup>
     <PackageReference Include="ReactiveUI" Version="18.2.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />
+    <ProjectReference Include="..\Splat.DryIoc\Splat.DryIoc.csproj" />
   </ItemGroup>
 
 </Project>
