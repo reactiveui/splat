@@ -6,7 +6,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using DryIoc;
 
 namespace Splat.DryIoc
@@ -95,18 +97,26 @@ namespace Splat.DryIoc
                 throw new ArgumentNullException(nameof(factory));
             }
 
+#if TBC
             var isNull = serviceType is null;
             if (serviceType is null)
             {
                 serviceType = typeof(NullServiceType);
             }
+#else
+            if (serviceType is null)
+            {
+                throw new ArgumentNullException(nameof(serviceType));
+            }
+#endif
 
             if (string.IsNullOrEmpty(contract))
             {
-                _container.RegisterInstance(
-                serviceType,
-                isNull ? new NullServiceType(factory) : factory(),
-                IfAlreadyRegistered.AppendNewImplementation);
+                _container.RegisterDelegate(
+                    serviceType,
+                    context => CreateThenConvert(serviceType, factory),
+                    ifAlreadyRegistered: IfAlreadyRegistered.AppendNewImplementation);
+
                 return;
             }
 
@@ -118,10 +128,10 @@ namespace Splat.DryIoc
             }
 
             // Keyed instances can only have a single instance so keep latest
-            _container.RegisterInstance(
+            _container.RegisterDelegate(
                 serviceType,
-                isNull ? new NullServiceType(factory) : factory(),
-                IfAlreadyRegistered.Replace,
+                context => CreateThenConvert(serviceType, factory),
+                ifAlreadyRegistered: IfAlreadyRegistered.Replace,
                 serviceKey: key);
         }
 
@@ -223,6 +233,25 @@ namespace Splat.DryIoc
             {
                 _container?.Dispose();
             }
+        }
+
+        private static object? CreateThenConvert(Type serviceType, Func<object?> factory)
+        {
+            // we need to cast because we pass an object back and dryioc wants it explicitly cast.
+            // alternative (happy to be proven wrong) is to break the interface and add a Register<T>(...) method?
+            var instance = factory();
+
+            return instance != null ? Cast(serviceType, instance) : null;
+        }
+
+        private static object? Cast(Type type, object data)
+        {
+            // based upon https://stackoverflow.com/a/27584212
+            var dataParam = Expression.Parameter(typeof(object), "data");
+            var body = Expression.Block(Expression.Convert(Expression.Convert(dataParam, data.GetType()), type));
+
+            var run = Expression.Lambda(body, dataParam).Compile();
+            return run.DynamicInvoke(data);
         }
     }
 }
