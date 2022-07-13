@@ -27,9 +27,10 @@ namespace ReactiveUI.DI.Tests
         {
             // Invoke RxApp which initializes the ReactiveUI platform.
             var container = new Container();
-            container.UseDryIocDependencyResolver();
-            Locator.CurrentMutable.RegisterViewsForViewModels(typeof(ViewWithViewContractThatShouldNotLoad).Assembly);
-            Locator.CurrentMutable.InitializeReactiveUI();
+
+            var locator = new DryIocDependencyResolver(container);
+            locator.RegisterViewsForViewModels(typeof(ViewWithViewContractThatShouldNotLoad).Assembly);
+            locator.InitializeReactiveUI();
 
             var converters = container.Resolve<IEnumerable<ICreatesCommandBinding>>().ToList();
 
