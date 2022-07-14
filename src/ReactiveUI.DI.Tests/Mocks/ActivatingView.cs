@@ -18,7 +18,7 @@ namespace ReactiveUI.DI.Tests.Mocks
     public sealed class ActivatingView : ReactiveObject, IViewFor<ActivatingViewModel>, IDisposable
     {
         private int _count;
-        private ActivatingViewModel _viewModel;
+        private ActivatingViewModel? _viewModel;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ActivatingView"/> class.
@@ -53,7 +53,7 @@ namespace ReactiveUI.DI.Tests.Mocks
         /// <summary>
         /// Gets or sets the view model.
         /// </summary>
-        public ActivatingViewModel ViewModel
+        public ActivatingViewModel? ViewModel
         {
             get => _viewModel;
             set => this.RaiseAndSetIfChanged(ref _viewModel, value);
@@ -62,10 +62,10 @@ namespace ReactiveUI.DI.Tests.Mocks
         /// <summary>
         /// Gets or sets the view model.
         /// </summary>
-        object IViewFor.ViewModel
+        object? IViewFor.ViewModel
         {
             get => ViewModel;
-            set => ViewModel = (ActivatingViewModel)value;
+            set => ViewModel = (ActivatingViewModel?)value;
         }
 
         /// <summary>

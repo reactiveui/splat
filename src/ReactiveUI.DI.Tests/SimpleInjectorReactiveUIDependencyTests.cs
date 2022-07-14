@@ -27,10 +27,8 @@ namespace ReactiveUI.DI.Tests
             Container container = new();
             SimpleInjectorInitializer initializer = new();
 
-            Locator.SetLocator(initializer);
-            Locator.CurrentMutable.InitializeReactiveUI();
-            container.UseSimpleInjectorDependencyResolver(initializer);
-            var converters = Locator.Current.GetServices<IBindingTypeConverter>().ToList();
+            initializer.InitializeReactiveUI();
+            var converters = initializer.GetServices<IBindingTypeConverter>().ToList();
 
             converters.Should().NotBeNull();
             converters.Should().Contain(x => x.GetType() == typeof(StringConverter));
@@ -47,11 +45,9 @@ namespace ReactiveUI.DI.Tests
             Container container = new();
             SimpleInjectorInitializer initializer = new();
 
-            Locator.SetLocator(initializer);
-            Locator.CurrentMutable.InitializeReactiveUI();
-            container.UseSimpleInjectorDependencyResolver(initializer);
+            initializer.InitializeReactiveUI();
 
-            var converters = Locator.Current.GetServices<ICreatesCommandBinding>().ToList();
+            var converters = initializer.GetServices<ICreatesCommandBinding>().ToList();
 
             converters.Should().NotBeNull();
             converters.Should().Contain(x => x.GetType() == typeof(CreatesCommandBindingViaEvent));

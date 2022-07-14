@@ -3,12 +3,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using DryIoc;
 using FluentAssertions;
 using Splat;
+using Splat.Common.Test;
 using Splat.DryIoc;
 using Xunit;
 
@@ -20,15 +20,17 @@ namespace ReactiveUI.DI.Tests
     public class DryIocReactiveUIDependencyTests
     {
         /// <summary>
-        /// Dries the ioc dependency resolver should register reactive UI creates command binding.
+        /// DyyIoC dependency resolver should register reactive UI creates command binding.
         /// </summary>
         [Fact]
         public void DryIocDependencyResolverShouldRegisterReactiveUI()
         {
             // Invoke RxApp which initializes the ReactiveUI platform.
             var container = new Container();
-            container.UseDryIocDependencyResolver();
-            Locator.CurrentMutable.InitializeReactiveUI();
+
+            var locator = new DryIocDependencyResolver(container);
+            locator.RegisterViewsForViewModels(typeof(ViewWithViewContractThatShouldNotLoad).Assembly);
+            locator.InitializeReactiveUI();
 
             var converters = container.Resolve<IEnumerable<ICreatesCommandBinding>>().ToList();
 

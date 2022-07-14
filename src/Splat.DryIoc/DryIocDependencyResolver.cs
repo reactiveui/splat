@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using DryIoc;
 
 namespace Splat.DryIoc
@@ -36,26 +37,25 @@ namespace Splat.DryIoc
         /// <inheritdoc />
         public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
         {
-            var isNull = serviceType is null;
             if (serviceType is null)
             {
-                serviceType = typeof(NullServiceType);
+                throw new ArgumentNullException(nameof(serviceType));
             }
 
             var key = (serviceType, contract ?? string.Empty);
-            var registeredinSplat = _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray, serviceKey: key).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
+            var registeredinSplat = _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray, serviceKey: key);
             if (registeredinSplat.Any())
             {
                 return registeredinSplat;
             }
 
-            var registeredWithContract = _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray, serviceKey: contract).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
+            var registeredWithContract = _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray, serviceKey: contract);
             if (registeredWithContract.Any())
             {
                 return registeredWithContract;
             }
 
-            return _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
+            return _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray);
         }
 
         /// <inheritdoc />
@@ -63,7 +63,7 @@ namespace Splat.DryIoc
         {
             if (serviceType is null)
             {
-                serviceType = typeof(NullServiceType);
+                throw new ArgumentNullException(nameof(serviceType));
             }
 
             return _container.GetServiceRegistrations().Any(x =>
@@ -95,18 +95,18 @@ namespace Splat.DryIoc
                 throw new ArgumentNullException(nameof(factory));
             }
 
-            var isNull = serviceType is null;
             if (serviceType is null)
             {
-                serviceType = typeof(NullServiceType);
+                throw new ArgumentNullException(nameof(serviceType));
             }
 
             if (string.IsNullOrEmpty(contract))
             {
-                _container.RegisterInstance(
-                serviceType,
-                isNull ? new NullServiceType(factory) : factory(),
-                IfAlreadyRegistered.AppendNewImplementation);
+                _container.RegisterDelegate(
+                    serviceType,
+                    context => CreateThenConvert(serviceType, factory),
+                    ifAlreadyRegistered: IfAlreadyRegistered.AppendNewImplementation);
+
                 return;
             }
 
@@ -118,10 +118,10 @@ namespace Splat.DryIoc
             }
 
             // Keyed instances can only have a single instance so keep latest
-            _container.RegisterInstance(
+            _container.RegisterDelegate(
                 serviceType,
-                isNull ? new NullServiceType(factory) : factory(),
-                IfAlreadyRegistered.Replace,
+                context => CreateThenConvert(serviceType, factory),
+                ifAlreadyRegistered: IfAlreadyRegistered.Replace,
                 serviceKey: key);
         }
 
@@ -130,7 +130,7 @@ namespace Splat.DryIoc
         {
             if (serviceType is null)
             {
-                serviceType = typeof(NullServiceType);
+                throw new ArgumentNullException(nameof(serviceType));
             }
 
             var key = (serviceType, contract ?? string.Empty);
@@ -169,7 +169,7 @@ namespace Splat.DryIoc
         {
             if (serviceType is null)
             {
-                serviceType = typeof(NullServiceType);
+                throw new ArgumentNullException(nameof(serviceType));
             }
 
             var key = (serviceType, contract ?? string.Empty);
@@ -223,6 +223,25 @@ namespace Splat.DryIoc
             {
                 _container?.Dispose();
             }
+        }
+
+        private static object? CreateThenConvert(Type serviceType, Func<object?> factory)
+        {
+            // we need to cast because we pass an object back and dryioc wants it explicitly cast.
+            // alternative (happy to be proven wrong) is to break the interface and add a Register<T>(...) method?
+            var instance = factory();
+
+            return instance != null ? Cast(serviceType, instance) : null;
+        }
+
+        private static object? Cast(Type type, object data)
+        {
+            // based upon https://stackoverflow.com/a/27584212
+            var dataParam = Expression.Parameter(typeof(object), "data");
+            var body = Expression.Block(Expression.Convert(Expression.Convert(dataParam, data.GetType()), type));
+
+            var run = Expression.Lambda(body, dataParam).Compile();
+            return run.DynamicInvoke(data);
         }
     }
 }
