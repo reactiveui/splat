@@ -6,7 +6,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using DryIoc;
@@ -38,26 +37,25 @@ namespace Splat.DryIoc
         /// <inheritdoc />
         public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
         {
-            var isNull = serviceType is null;
             if (serviceType is null)
             {
-                serviceType = typeof(NullServiceType);
+                throw new ArgumentNullException(nameof(serviceType));
             }
 
             var key = (serviceType, contract ?? string.Empty);
-            var registeredinSplat = _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray, serviceKey: key).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
+            var registeredinSplat = _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray, serviceKey: key);
             if (registeredinSplat.Any())
             {
                 return registeredinSplat;
             }
 
-            var registeredWithContract = _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray, serviceKey: contract).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
+            var registeredWithContract = _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray, serviceKey: contract);
             if (registeredWithContract.Any())
             {
                 return registeredWithContract;
             }
 
-            return _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray).Select(x => isNull ? ((NullServiceType)x).Factory()! : x);
+            return _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray);
         }
 
         /// <inheritdoc />
@@ -65,7 +63,7 @@ namespace Splat.DryIoc
         {
             if (serviceType is null)
             {
-                serviceType = typeof(NullServiceType);
+                throw new ArgumentNullException(nameof(serviceType));
             }
 
             return _container.GetServiceRegistrations().Any(x =>
@@ -97,18 +95,10 @@ namespace Splat.DryIoc
                 throw new ArgumentNullException(nameof(factory));
             }
 
-#if TBC
-            var isNull = serviceType is null;
-            if (serviceType is null)
-            {
-                serviceType = typeof(NullServiceType);
-            }
-#else
             if (serviceType is null)
             {
                 throw new ArgumentNullException(nameof(serviceType));
             }
-#endif
 
             if (string.IsNullOrEmpty(contract))
             {
@@ -140,7 +130,7 @@ namespace Splat.DryIoc
         {
             if (serviceType is null)
             {
-                serviceType = typeof(NullServiceType);
+                throw new ArgumentNullException(nameof(serviceType));
             }
 
             var key = (serviceType, contract ?? string.Empty);
@@ -179,7 +169,7 @@ namespace Splat.DryIoc
         {
             if (serviceType is null)
             {
-                serviceType = typeof(NullServiceType);
+                throw new ArgumentNullException(nameof(serviceType));
             }
 
             var key = (serviceType, contract ?? string.Empty);

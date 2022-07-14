@@ -21,15 +21,17 @@ namespace Splat.DryIoc.Tests
         /// <summary>
         /// Shoulds the resolve nulls.
         /// </summary>
-        [Fact(Skip = "Further investigation required")]
+        [Fact] //// (Skip = "Further investigation required")]
         public void Can_Register_And_Resolve_Null_Types()
         {
             var builder = new Container();
             builder.UseDryIocDependencyResolver();
 
             var foo = 5;
-            Locator.CurrentMutable.Register(() => foo, null);
+            Assert.Throws<ArgumentNullException>(() => Locator.CurrentMutable.Register(() => foo, null));
 
+            // Tests skipped as functionality removed.
+#if SKIP_TEST
             var bar = 4;
             var contract = "foo";
             Locator.CurrentMutable.Register(() => bar, null, contract);
@@ -59,6 +61,7 @@ namespace Splat.DryIoc.Tests
             Locator.CurrentMutable.UnregisterAll(null, contract);
             valuesC = Locator.Current.GetServices(null, contract);
             Assert.Equal(0, valuesC.Count());
+#endif
         }
 
         /// <summary>
@@ -71,6 +74,7 @@ namespace Splat.DryIoc.Tests
             container.UseDryIocDependencyResolver();
 
             Splat.Locator.CurrentMutable.Register(() => new ViewThatShouldNotLoad(), typeof(IViewFor<ViewModelOne>));
+            Assert.Throws<InvalidOperationException>(() => Locator.Current.GetService<IViewFor<ViewModelOne>>());
         }
 
         /// <summary>
@@ -83,6 +87,7 @@ namespace Splat.DryIoc.Tests
             container.UseDryIocDependencyResolver();
 
             Splat.Locator.CurrentMutable.Register(() => new ViewThatShouldNotLoad(), typeof(IViewFor<ViewModelOne>), "name");
+            Assert.Throws<InvalidOperationException>(() => Locator.Current.GetService<IViewFor<ViewModelOne>>("name"));
         }
 
         /// <summary>
