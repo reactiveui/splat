@@ -773,3 +773,12 @@ namespace Splat.ApplicationPerformanceMonitoring
         void OnViewNavigation(string name);
     }
 }
+namespace Splat.ModeDetection
+{
+    public sealed class Mode : Splat.IModeDetector
+    {
+        public static readonly Splat.ModeDetection.Mode Run;
+        public static readonly Splat.ModeDetection.Mode Test;
+        public bool? InUnitTestRunner() { }
+    }
+}
