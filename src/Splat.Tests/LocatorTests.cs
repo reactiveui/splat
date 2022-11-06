@@ -26,18 +26,18 @@ namespace Splat.Tests
             var container = new InternalLocator();
 
             var foo = 5;
-            container.CurrentMutable.Register(() => foo, null!);
+            container.CurrentMutable.Register(() => foo, null);
 
             var bar = 4;
             var contract = "foo";
-            container.CurrentMutable.Register(() => bar, null!, contract);
+            container.CurrentMutable.Register(() => bar, null, contract);
 
             Assert.True(container.CurrentMutable.HasRegistration(null));
-            var value = container.Current.GetService(null!);
+            var value = container.Current.GetService(null);
             Assert.Equal(foo, value);
 
             Assert.True(container.CurrentMutable.HasRegistration(null, contract));
-            value = container.Current.GetService(null!, contract);
+            value = container.Current.GetService(null, contract);
             Assert.Equal(bar, value);
 
             var values = container.Current.GetServices(null);

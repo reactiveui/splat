@@ -22,19 +22,19 @@ namespace Splat.Tests.ServiceLocation
         public void Can_Register_And_Resolve_Null_Types()
         {
             var resolver = GetDependencyResolver();
-            var foo = 5;
-            resolver.Register(() => foo, null!);
+            const int foo = 5;
+            resolver.Register(() => foo, null);
 
-            var bar = 4;
-            var contract = "foo";
-            resolver.Register(() => bar, null!, contract);
+            const int bar = 4;
+            const string contract = "foo";
+            resolver.Register(() => bar, null, contract);
 
             Assert.True(resolver.HasRegistration(null));
-            var value = resolver.GetService(null!);
+            var value = resolver.GetService(null);
             Assert.Equal(foo, value);
 
             Assert.True(resolver.HasRegistration(null, contract));
-            value = resolver.GetService(null!, contract);
+            value = resolver.GetService(null, contract);
             Assert.Equal(bar, value);
 
             var values = resolver.GetServices(null);
