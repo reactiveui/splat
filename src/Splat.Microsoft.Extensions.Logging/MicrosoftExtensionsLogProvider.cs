@@ -65,6 +65,7 @@ namespace Splat.Microsoft.Extensions.Logging
 
             /// <inheritdoc />
             public IDisposable BeginScope<TState>(TState state)
+                 where TState : notnull
             {
                 // documentation states we're allowed to return null.
                 // NRT in net6 causing build issue as of 2021-11-10.

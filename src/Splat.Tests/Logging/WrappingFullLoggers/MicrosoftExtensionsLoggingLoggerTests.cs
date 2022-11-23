@@ -79,6 +79,7 @@ namespace Splat.Tests.Logging
 
             /// <inheritdoc/>
             public IDisposable BeginScope<TState>(TState state)
+                 where TState : notnull
             {
                 return ActionDisposable.Empty;
             }
