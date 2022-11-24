@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net462</TargetFrameworks>
@@ -12,7 +12,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Serilog" Version="2.12.0" />
-    <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Splat\Splat.csproj" />
