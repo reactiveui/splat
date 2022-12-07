@@ -101,8 +101,8 @@ public sealed class MemoizingMRUCache<TParam, TVal>
         _releaseFunction = onRelease;
         _maxCacheSize = maxSize;
         _comparer = paramComparer ?? EqualityComparer<TParam>.Default;
-        _cacheMRUList = new LinkedList<TParam>();
-        _cacheEntries = new Dictionary<TParam, (LinkedListNode<TParam> param, TVal value)>();
+        _cacheMRUList = new();
+        _cacheEntries = new();
     }
 
     /// <summary>
@@ -219,8 +219,8 @@ public sealed class MemoizingMRUCache<TParam, TVal>
         {
             if (_releaseFunction is null || _cacheEntries is null)
             {
-                _cacheMRUList = new LinkedList<TParam>();
-                _cacheEntries = new Dictionary<TParam, (LinkedListNode<TParam> param, TVal value)>(_comparer);
+                _cacheMRUList = new();
+                _cacheEntries = new(_comparer);
                 return;
             }
 
@@ -234,8 +234,8 @@ public sealed class MemoizingMRUCache<TParam, TVal>
             // no point doing it, if nothing to release
             oldCacheToClear = _cacheEntries;
 
-            _cacheMRUList = new LinkedList<TParam>();
-            _cacheEntries = new Dictionary<TParam, (LinkedListNode<TParam> param, TVal value)>(_comparer);
+            _cacheMRUList = new();
+            _cacheEntries = new(_comparer);
         }
 
         if (oldCacheToClear is null)

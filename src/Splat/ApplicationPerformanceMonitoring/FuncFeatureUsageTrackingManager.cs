@@ -20,15 +20,10 @@ public class FuncFeatureUsageTrackingManager : IFeatureUsageTrackingManager
     /// <param name="featureUsageTrackingSessionFunc">
     /// Factory function for a Feature Usage Tracking Session.
     /// </param>
-    public FuncFeatureUsageTrackingManager(Func<string, IFeatureUsageTrackingSession> featureUsageTrackingSessionFunc)
-    {
+    public FuncFeatureUsageTrackingManager(Func<string, IFeatureUsageTrackingSession> featureUsageTrackingSessionFunc) =>
         _featureUsageTrackingSessionFunc = featureUsageTrackingSessionFunc ??
                                            throw new ArgumentNullException(nameof(featureUsageTrackingSessionFunc));
-    }
 
     /// <inheritdoc/>
-    public IFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
-    {
-        return _featureUsageTrackingSessionFunc(featureName);
-    }
+    public IFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName) => _featureUsageTrackingSessionFunc(featureName);
 }

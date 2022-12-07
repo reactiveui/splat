@@ -16,7 +16,7 @@ namespace Splat.SimpleInjector;
 /// <seealso cref="Splat.IDependencyResolver" />
 public class SimpleInjectorDependencyResolver : IDependencyResolver
 {
-    private Container _container;
+    private readonly Container _container;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SimpleInjectorDependencyResolver"/> class.
@@ -34,10 +34,7 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     /// <inheritdoc />
     public object? GetService(Type? serviceType, string? contract = null)
     {
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         try
         {
@@ -59,10 +56,7 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     /// <inheritdoc />
     public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
     {
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         try
         {
@@ -83,10 +77,7 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     /// <inheritdoc />
     public bool HasRegistration(Type? serviceType, string? contract = null)
     {
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         return _container.GetCurrentRegistrations().Any(x => x.ServiceType == serviceType);
     }
@@ -99,22 +90,13 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     }
 
     /// <inheritdoc />
-    public void UnregisterCurrent(Type? serviceType, string? contract = null)
-    {
-        throw new NotImplementedException();
-    }
+    public void UnregisterCurrent(Type? serviceType, string? contract = null) => throw new NotImplementedException();
 
     /// <inheritdoc />
-    public void UnregisterAll(Type? serviceType, string? contract = null)
-    {
-        throw new NotImplementedException();
-    }
+    public void UnregisterAll(Type? serviceType, string? contract = null) => throw new NotImplementedException();
 
     /// <inheritdoc />
-    public IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback)
-    {
-        throw new NotImplementedException();
-    }
+    public IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) => throw new NotImplementedException();
 
     /// <inheritdoc />
     public void Dispose()

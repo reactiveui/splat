@@ -53,10 +53,7 @@ public class AutofacDependencyResolver : IDependencyResolver
     public virtual object? GetService(Type? serviceType, string? contract = null)
     {
         var isNull = serviceType is null;
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         lock (_lockObject)
         {
@@ -93,10 +90,7 @@ public class AutofacDependencyResolver : IDependencyResolver
     public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
     {
         var isNull = serviceType is null;
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         lock (_lockObject)
         {
@@ -105,13 +99,12 @@ public class AutofacDependencyResolver : IDependencyResolver
                 var enumerableType = typeof(IEnumerable<>).MakeGenericType(serviceType);
                 var instance = Resolve(enumerableType, contract);
 
-                if (isNull && instance is IEnumerable<NullServiceType> nullService)
+                switch (isNull)
                 {
-                    return nullService.Select(item => item.Factory()!);
-                }
-                else if (!isNull && instance is not null)
-                {
-                    return ((IEnumerable)instance).Cast<object>();
+                    case true when instance is IEnumerable<NullServiceType> nullService:
+                        return nullService.Select(item => item.Factory()!);
+                    case false when instance is not null:
+                        return ((IEnumerable)instance).Cast<object>();
                 }
             }
             finally
@@ -126,10 +119,7 @@ public class AutofacDependencyResolver : IDependencyResolver
     /// <inheritdoc />
     public bool HasRegistration(Type? serviceType, string? contract = null)
     {
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         lock (_lockObject)
         {
@@ -158,10 +148,7 @@ public class AutofacDependencyResolver : IDependencyResolver
     public virtual void Register(Func<object?> factory, Type? serviceType, string? contract = null)
     {
         var isNull = serviceType is null;
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         lock (_lockObject)
         {

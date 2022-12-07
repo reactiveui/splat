@@ -223,10 +223,8 @@ public class MemoizingMRUCacheTests
         Assert.NotNull(results);
     }
 
-    private static MemoizingMRUCache<string, DummyObjectClass1> GetTestInstance()
-    {
-        return new(
-            (param, o) => new DummyObjectClass1(),
+    private static MemoizingMRUCache<string, DummyObjectClass1> GetTestInstance() =>
+        new(
+            (param, o) => new(),
             256);
-    }
 }

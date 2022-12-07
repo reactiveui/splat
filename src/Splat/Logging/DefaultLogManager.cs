@@ -23,9 +23,9 @@ public sealed class DefaultLogManager : ILogManager
     /// <param name="dependencyResolver">A dependency resolver for testing purposes, will use the default Locator if null.</param>
     public DefaultLogManager(IReadonlyDependencyResolver? dependencyResolver = null)
     {
-        dependencyResolver = dependencyResolver ?? Locator.Current;
+        dependencyResolver ??= Locator.Current;
 
-        _loggerCache = new MemoizingMRUCache<Type, IFullLogger>(
+        _loggerCache = new(
             (type, _) =>
             {
                 var ret = dependencyResolver.GetService<ILogger>();

@@ -17,8 +17,5 @@ internal static class LogResolver
         (type, _) => global::log4net.LogManager.GetLogger(type),
         MaxCacheSize);
 
-    public static global::log4net.ILog Resolve(Type type)
-    {
-        return _loggerCache.Get(type, null);
-    }
+    public static global::log4net.ILog Resolve(Type type) => _loggerCache.Get(type, null);
 }

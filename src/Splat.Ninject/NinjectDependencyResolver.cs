@@ -18,16 +18,13 @@ namespace Splat.Ninject;
 /// <seealso cref="IMutableDependencyResolver" />
 public class NinjectDependencyResolver : IDependencyResolver
 {
-    private IKernel _kernel;
+    private readonly IKernel _kernel;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NinjectDependencyResolver"/> class.
     /// </summary>
     /// <param name="kernel">The kernel.</param>
-    public NinjectDependencyResolver(IKernel kernel)
-    {
-        _kernel = kernel;
-    }
+    public NinjectDependencyResolver(IKernel kernel) => _kernel = kernel;
 
     /// <inheritdoc />
     public virtual object? GetService(Type? serviceType, string? contract = null) =>
@@ -37,10 +34,7 @@ public class NinjectDependencyResolver : IDependencyResolver
     public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
     {
         var isNull = serviceType is null;
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         if (isNull)
         {
@@ -60,10 +54,7 @@ public class NinjectDependencyResolver : IDependencyResolver
     /// <inheritdoc />
     public bool HasRegistration(Type? serviceType, string? contract = null)
     {
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         return _kernel.CanResolve(serviceType, metadata => IsCorrectMetadata(metadata, contract));
     }
@@ -145,10 +136,7 @@ public class NinjectDependencyResolver : IDependencyResolver
     }
 
     /// <inheritdoc />
-    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback)
-    {
-        throw new NotImplementedException();
-    }
+    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) => throw new NotImplementedException();
 
     /// <inheritdoc />
     public void Dispose()
@@ -169,9 +157,7 @@ public class NinjectDependencyResolver : IDependencyResolver
         }
     }
 
-    private static bool IsCorrectMetadata(global::Ninject.Planning.Bindings.IBindingMetadata metadata, string? contract)
-    {
-        return (metadata?.Name is null && string.IsNullOrWhiteSpace(contract))
-               || (metadata?.Name is not null && metadata.Name.Equals(contract, StringComparison.OrdinalIgnoreCase));
-    }
+    private static bool IsCorrectMetadata(global::Ninject.Planning.Bindings.IBindingMetadata metadata, string? contract) =>
+        (metadata?.Name is null && string.IsNullOrWhiteSpace(contract))
+        || (metadata?.Name is not null && metadata.Name.Equals(contract, StringComparison.OrdinalIgnoreCase));
 }

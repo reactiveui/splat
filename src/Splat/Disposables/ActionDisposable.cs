@@ -15,10 +15,7 @@ internal sealed class ActionDisposable : IDisposable
 {
     private Action _block;
 
-    public ActionDisposable(Action block)
-    {
-        _block = block;
-    }
+    public ActionDisposable(Action block) => _block = block;
 
     /// <summary>
     /// Gets a action disposable which does nothing.
@@ -26,8 +23,5 @@ internal sealed class ActionDisposable : IDisposable
     public static IDisposable Empty => new ActionDisposable(() => { });
 
     /// <inheritdoc />
-    public void Dispose()
-    {
-        Interlocked.Exchange(ref _block, () => { })();
-    }
+    public void Dispose() => Interlocked.Exchange(ref _block, () => { })();
 }

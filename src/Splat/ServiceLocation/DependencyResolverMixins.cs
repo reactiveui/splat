@@ -192,10 +192,7 @@ public static class DependencyResolverMixins
     /// <param name="resolver">The resolver to register the service type with.</param>
     /// <param name="valueFactory">A factory method for generating a object of the specified type.</param>
     /// <param name="contract">A optional contract value which will indicates to only return the value if this contract is specified.</param>
-    public static void RegisterLazySingleton<T>(this IMutableDependencyResolver resolver, Func<T?> valueFactory, string? contract = null)
-    {
-        RegisterLazySingleton(resolver, () => valueFactory(), typeof(T), contract);
-    }
+    public static void RegisterLazySingleton<T>(this IMutableDependencyResolver resolver, Func<T?> valueFactory, string? contract = null) => RegisterLazySingleton(resolver, () => valueFactory(), typeof(T), contract);
 
     /// <summary>
     /// Unregisters the current the value for the specified type and the optional contract.

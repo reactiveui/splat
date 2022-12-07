@@ -48,17 +48,15 @@ public static class EnableFeatureUsageTrackingExtensions
             throw new ArgumentNullException(nameof(action));
         }
 
-        using (var session = instance.FeatureUsageTrackingSession(featureName))
+        using var session = instance.FeatureUsageTrackingSession(featureName);
+        try
         {
-            try
-            {
-                action(session);
-            }
-            catch (Exception exception)
-            {
-                session.OnException(exception);
-                throw;
-            }
+            action(session);
+        }
+        catch (Exception exception)
+        {
+            session.OnException(exception);
+            throw;
         }
     }
 
@@ -83,17 +81,15 @@ public static class EnableFeatureUsageTrackingExtensions
             throw new ArgumentNullException(nameof(action));
         }
 
-        using (var session = instance.SubFeature(featureName))
+        using var session = instance.SubFeature(featureName);
+        try
         {
-            try
-            {
-                action(session);
-            }
-            catch (Exception exception)
-            {
-                session.OnException(exception);
-                throw;
-            }
+            action(session);
+        }
+        catch (Exception exception)
+        {
+            session.OnException(exception);
+            throw;
         }
     }
 }

@@ -94,14 +94,7 @@ public partial struct SplatColor : IEquatable<SplatColor>
             if (_name is null)
             {
                 // Can happen with stuff deserialized from MS
-                if (IsNamedColor)
-                {
-                    _name = KnownColors.GetName(_knownColor);
-                }
-                else
-                {
-                    _name = $"{ToArgb():x}";
-                }
+                _name = IsNamedColor ? KnownColors.GetName(_knownColor) : $"{ToArgb():x}";
             }
 
             return _name;
@@ -178,10 +171,7 @@ public partial struct SplatColor : IEquatable<SplatColor>
     /// <param name="green">The green channel of the color.</param>
     /// <param name="blue">The blue channel of the color.</param>
     /// <returns>A splat color from the specified channels.</returns>
-    public static SplatColor FromArgb(int red, int green, int blue)
-    {
-        return FromArgb(255, red, green, blue);
-    }
+    public static SplatColor FromArgb(int red, int green, int blue) => FromArgb(255, red, green, blue);
 
     /// <summary>
     /// Creates a SplatColor from the RGB values.
@@ -232,12 +222,12 @@ public partial struct SplatColor : IEquatable<SplatColor>
         if ((n <= 0) || (n >= KnownColors.ArgbValues.Length))
         {
             // This is what it returns!
-            c = SplatColor.Empty;
+            c = Empty;
             c._state |= (short)ColorType.Named;
         }
         else
         {
-            c = SplatColor.Empty;
+            c = Empty;
             c._state = (short)(ColorType.ARGB | ColorType.Known | ColorType.Named);
             if ((n < 27) || (n > 169))
             {
@@ -268,7 +258,7 @@ public partial struct SplatColor : IEquatable<SplatColor>
             LogHost.Default.Debug(ex, "Unable to parse the known colour name.");
 
             // This is what it returns!
-            var d = SplatColor.Empty;
+            var d = Empty;
             d._name = name;
             d._state |= (short)ColorType.Named;
             return d;

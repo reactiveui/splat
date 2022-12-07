@@ -16,20 +16,14 @@ public static class ExceptionlessFeatureUsageTrackingSessionTests
     public sealed class ConstructorTests : BaseFeatureUsageTrackingTests.BaseConstructorTests<ExceptionlessFeatureUsageTrackingSession>
     {
         /// <inheritdoc/>
-        protected override ExceptionlessFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
-        {
-            return new(featureName);
-        }
+        protected override ExceptionlessFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName) => new(featureName);
     }
 
     /// <inheritdoc />>
     public sealed class SubFeatureMethodTests : BaseFeatureUsageTrackingTests.BaseSubFeatureMethodTests<ExceptionlessFeatureUsageTrackingSession>
     {
         /// <inheritdoc/>
-        protected override ExceptionlessFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
-        {
-            return new(featureName);
-        }
+        protected override ExceptionlessFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName) => new(featureName);
     }
 }
 

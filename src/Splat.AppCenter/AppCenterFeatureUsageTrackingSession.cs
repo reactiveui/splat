@@ -42,16 +42,10 @@ public sealed class AppCenterFeatureUsageTrackingSession : IFeatureUsageTracking
     public Guid ParentReference { get; }
 
     /// <inheritdoc />
-    public void Dispose()
-    {
-        TrackEvent("Feature Usage End");
-    }
+    public void Dispose() => TrackEvent("Feature Usage End");
 
     /// <inheritdoc />
-    public IFeatureUsageTrackingSession SubFeature(string description)
-    {
-        return new AppCenterFeatureUsageTrackingSession(description, FeatureReference);
-    }
+    public IFeatureUsageTrackingSession SubFeature(string description) => new AppCenterFeatureUsageTrackingSession(description, FeatureReference);
 
     /// <inheritdoc />
     public void OnException(Exception exception)

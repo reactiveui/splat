@@ -50,10 +50,7 @@ public class MicrosoftExtensionsLoggingLoggerTests : FullLoggerTestBase
         private readonly List<(LogLevel, string)> _logs = new();
         private readonly global::Microsoft.Extensions.Logging.LogLevel _logLevel;
 
-        public MockActualMicrosoftExtensionsLoggingLogger(global::Microsoft.Extensions.Logging.LogLevel logLevel)
-        {
-            _logLevel = logLevel;
-        }
+        public MockActualMicrosoftExtensionsLoggingLogger(global::Microsoft.Extensions.Logging.LogLevel logLevel) => _logLevel = logLevel;
 
         public ICollection<(LogLevel logLevel, string message)> Logs => _logs;
 
@@ -72,16 +69,11 @@ public class MicrosoftExtensionsLoggingLoggerTests : FullLoggerTestBase
         }
 
         /// <inheritdoc/>
-        public bool IsEnabled(global::Microsoft.Extensions.Logging.LogLevel logLevel)
-        {
-            return logLevel >= _logLevel;
-        }
+        public bool IsEnabled(global::Microsoft.Extensions.Logging.LogLevel logLevel) => logLevel >= _logLevel;
 
         /// <inheritdoc/>
         public IDisposable BeginScope<TState>(TState state)
-             where TState : notnull
-        {
-            return ActionDisposable.Empty;
-        }
+             where TState : notnull =>
+            ActionDisposable.Empty;
     }
 }

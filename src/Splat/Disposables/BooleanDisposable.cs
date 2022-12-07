@@ -22,10 +22,7 @@ internal sealed class BooleanDisposable : IDisposable
     {
     }
 
-    private BooleanDisposable(bool isDisposed)
-    {
-        _isDisposed = isDisposed;
-    }
+    private BooleanDisposable(bool isDisposed) => _isDisposed = isDisposed;
 
     /// <summary>
     /// Gets a value indicating whether the object is disposed.
@@ -35,8 +32,5 @@ internal sealed class BooleanDisposable : IDisposable
     /// <summary>
     /// Sets the status to disposed, which can be observer through the <see cref="IsDisposed"/> property.
     /// </summary>
-    public void Dispose()
-    {
-        _isDisposed = true;
-    }
+    public void Dispose() => _isDisposed = true;
 }

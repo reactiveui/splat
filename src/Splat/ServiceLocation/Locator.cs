@@ -12,10 +12,7 @@ namespace Splat;
 /// </summary>
 public static class Locator
 {
-    static Locator()
-    {
-        InternalLocator = new InternalLocator();
-    }
+    static Locator() => InternalLocator = new();
 
     /// <summary>
     /// Gets the read only dependency resolver. This class is used throughout
@@ -44,20 +41,14 @@ public static class Locator
     /// Allows setting the dependency resolver.
     /// </summary>
     /// <param name="dependencyResolver">The dependency resolver to set.</param>
-    public static void SetLocator(IDependencyResolver dependencyResolver)
-    {
-        InternalLocator.SetLocator(dependencyResolver);
-    }
+    public static void SetLocator(IDependencyResolver dependencyResolver) => InternalLocator.SetLocator(dependencyResolver);
 
     /// <summary>
     /// Gets the full locator.
     /// Note you should use <see cref="Current"/> or <see cref="CurrentMutable"/> in most situations.
     /// </summary>
     /// <returns>The locator.</returns>
-    public static IDependencyResolver GetLocator()
-    {
-        return InternalLocator.Internal;
-    }
+    public static IDependencyResolver GetLocator() => InternalLocator.Internal;
 
     /// <summary>
     /// This method allows libraries to register themselves to be set up
@@ -86,17 +77,11 @@ public static class Locator
     /// </summary>
     /// <returns>A disposable which when disposed will indicate the change
     /// notification is no longer needed.</returns>
-    public static IDisposable SuppressResolverCallbackChangedNotifications()
-    {
-        return InternalLocator.SuppressResolverCallbackChangedNotifications();
-    }
+    public static IDisposable SuppressResolverCallbackChangedNotifications() => InternalLocator.SuppressResolverCallbackChangedNotifications();
 
     /// <summary>
     /// Indicates if the we are notifying external classes of updates to the resolver being changed.
     /// </summary>
     /// <returns>A value indicating whether the notifications are happening.</returns>
-    public static bool AreResolverCallbackChangedNotificationsEnabled()
-    {
-        return InternalLocator.AreResolverCallbackChangedNotificationsEnabled();
-    }
+    public static bool AreResolverCallbackChangedNotificationsEnabled() => InternalLocator.AreResolverCallbackChangedNotificationsEnabled();
 }

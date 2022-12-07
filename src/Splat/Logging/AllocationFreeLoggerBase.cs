@@ -23,10 +23,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     /// Initializes a new instance of the <see cref="AllocationFreeLoggerBase"/> class.
     /// </summary>
     /// <param name="inner">The <see cref="Splat.ILogger" /> to wrap in this class.</param>
-    protected AllocationFreeLoggerBase(ILogger inner)
-    {
-        _inner = inner;
-    }
+    protected AllocationFreeLoggerBase(ILogger inner) => _inner = inner;
 
     /// <inheritdoc />
     public LogLevel Level => _inner.Level;
@@ -2454,26 +2451,14 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     }
 
     /// <inheritdoc />
-    public void Write([Localizable(false)] string message, LogLevel logLevel)
-    {
-        _inner.Write(message, logLevel);
-    }
+    public void Write([Localizable(false)] string message, LogLevel logLevel) => _inner.Write(message, logLevel);
 
     /// <inheritdoc />
-    public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel)
-    {
-        _inner.Write(exception, message, logLevel);
-    }
+    public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel) => _inner.Write(exception, message, logLevel);
 
     /// <inheritdoc />
-    public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
-    {
-        _inner.Write(message, type, logLevel);
-    }
+    public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel) => _inner.Write(message, type, logLevel);
 
     /// <inheritdoc />
-    public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
-    {
-        _inner.Write(exception, message, type, logLevel);
-    }
+    public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel) => _inner.Write(exception, message, type, logLevel);
 }

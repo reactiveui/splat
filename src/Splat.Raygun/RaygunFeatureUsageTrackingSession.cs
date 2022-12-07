@@ -87,20 +87,15 @@ public sealed class RaygunFeatureUsageTrackingSession : IFeatureUsageTrackingSes
     public string FeatureName { get; }
 
     /// <inheritdoc />
-    public IFeatureUsageTrackingSession SubFeature(string description)
-    {
-        return new RaygunFeatureUsageTrackingSession(
+    public IFeatureUsageTrackingSession SubFeature(string description) =>
+        new RaygunFeatureUsageTrackingSession(
             description,
             FeatureReference,
             _raygunClient,
             _raygunSettings);
-    }
 
     /// <inheritdoc />
-    public void OnException(Exception exception)
-    {
-        _raygunClient.SendInBackground(exception);
-    }
+    public void OnException(Exception exception) => _raygunClient.SendInBackground(exception);
 
     /// <inheritdoc />
     public void Dispose()

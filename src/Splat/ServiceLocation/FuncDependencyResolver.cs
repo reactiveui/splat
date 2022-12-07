@@ -55,10 +55,7 @@ public class FuncDependencyResolver : IDependencyResolver
     /// <inheritdoc />
     public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
     {
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         return _innerGetServices(serviceType, contract) ?? Array.Empty<object>();
     }
@@ -66,10 +63,7 @@ public class FuncDependencyResolver : IDependencyResolver
     /// <inheritdoc />
     public bool HasRegistration(Type? serviceType, string? contract = null)
     {
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         return _innerGetServices(serviceType, contract) is not null;
     }
@@ -84,10 +78,7 @@ public class FuncDependencyResolver : IDependencyResolver
 
         var isNull = serviceType is null;
 
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         _innerRegister(
             () =>
@@ -99,28 +90,30 @@ public class FuncDependencyResolver : IDependencyResolver
 
         var pair = (serviceType, contract ?? string.Empty);
 
-        if (_callbackRegistry.ContainsKey(pair))
+        if (!_callbackRegistry.TryGetValue(pair, out var callbackList))
         {
-            List<Action<IDisposable>>? toRemove = null;
+            return;
+        }
 
-            foreach (var callback in _callbackRegistry[pair])
+        List<Action<IDisposable>>? toRemove = null;
+
+        foreach (var callback in callbackList)
+        {
+            var disp = new BooleanDisposable();
+
+            callback(disp);
+
+            if (disp.IsDisposed)
             {
-                var disp = new BooleanDisposable();
-
-                callback(disp);
-
-                if (disp.IsDisposed)
-                {
-                    (toRemove ??= new List<Action<IDisposable>>()).Add(callback);
-                }
+                (toRemove ??= new()).Add(callback);
             }
+        }
 
-            if (toRemove is not null)
+        if (toRemove is not null)
+        {
+            foreach (var c in toRemove)
             {
-                foreach (var c in toRemove)
-                {
-                    _callbackRegistry[pair].Remove(c);
-                }
+                _callbackRegistry[pair].Remove(c);
             }
         }
     }
@@ -133,10 +126,7 @@ public class FuncDependencyResolver : IDependencyResolver
             throw new NotImplementedException();
         }
 
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         _unregisterCurrent.Invoke(serviceType, contract);
     }
@@ -149,10 +139,7 @@ public class FuncDependencyResolver : IDependencyResolver
             throw new NotImplementedException();
         }
 
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         _unregisterAll.Invoke(serviceType, contract);
     }
@@ -164,7 +151,7 @@ public class FuncDependencyResolver : IDependencyResolver
 
         if (!_callbackRegistry.ContainsKey(pair))
         {
-            _callbackRegistry[pair] = new List<Action<IDisposable>>();
+            _callbackRegistry[pair] = new();
         }
 
         _callbackRegistry[pair].Add(callback);

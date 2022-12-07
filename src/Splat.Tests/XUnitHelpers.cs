@@ -22,10 +22,7 @@ public static class XUnitHelpers
     {
         var values = Enum.GetValues(typeof(TEnum));
         var results = new List<object[]>(values.Length);
-        foreach (var value in values)
-        {
-            results.Add(new[] { value! });
-        }
+        results.AddRange(values.Cast<object?>().Select(value => new[] { value! }));
 
         return results;
     }

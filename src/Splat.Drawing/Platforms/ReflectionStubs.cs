@@ -60,15 +60,9 @@ internal static class ReflectionStubs
         return ti.BaseType.GetEvent(name, flags);
     }
 
-    public static IEnumerable<PropertyInfo> GetProperties(this Type value)
-    {
-        return value.GetTypeInfo().DeclaredProperties;
-    }
+    public static IEnumerable<PropertyInfo> GetProperties(this Type value) => value.GetTypeInfo().DeclaredProperties;
 
-    public static IEnumerable<FieldInfo> GetFields(this Type value)
-    {
-        return value.GetTypeInfo().DeclaredFields;
-    }
+    public static IEnumerable<FieldInfo> GetFields(this Type value) => value.GetTypeInfo().DeclaredFields;
 
     public static MethodInfo? GetMethod(this Type value, string methodName, Type[] paramTypes, BindingFlags flags = default)
     {
@@ -84,18 +78,9 @@ internal static class ReflectionStubs
         return ti.BaseType.GetMethod(methodName, paramTypes, flags);
     }
 
-    public static IEnumerable<MethodInfo> GetMethods(this Type value)
-    {
-        return value.GetTypeInfo().DeclaredMethods;
-    }
+    public static IEnumerable<MethodInfo> GetMethods(this Type value) => value.GetTypeInfo().DeclaredMethods;
 
-    public static IEnumerable<object> GetCustomAttributes(this Type value, Type attributeType, bool inherit)
-    {
-        return value.GetTypeInfo().GetCustomAttributes(attributeType, inherit);
-    }
+    public static IEnumerable<object> GetCustomAttributes(this Type value, Type attributeType, bool inherit) => value.GetTypeInfo().GetCustomAttributes(attributeType, inherit);
 
-    public static bool IsAssignableFrom(this Type value, Type anotherType)
-    {
-        return value.GetTypeInfo().IsAssignableFrom(anotherType.GetTypeInfo());
-    }
+    public static bool IsAssignableFrom(this Type value, Type anotherType) => value.GetTypeInfo().IsAssignableFrom(anotherType.GetTypeInfo());
 }

@@ -21,8 +21,5 @@ public static class Registration
     /// <param name="logger">The logger to register.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
     [Obsolete("This method will be removed in the future, Use Splat.Locator.CurrentMutable.UseSerilogWithWrappingFullLogger() instead.")]
-    public static void Register(global::Serilog.ILogger logger)
-    {
-        Locator.CurrentMutable.UseSerilogFullLogger(logger);
-    }
+    public static void Register(global::Serilog.ILogger logger) => Locator.CurrentMutable.UseSerilogFullLogger(logger);
 }

@@ -17,9 +17,8 @@ namespace Splat;
 public class PlatformBitmapLoader : IBitmapLoader
 {
     /// <inheritdoc />
-    public Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
-    {
-        return Task.Run<IBitmap?>(() =>
+    public Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight) =>
+        Task.Run<IBitmap?>(() =>
         {
             var ret = new BitmapImage();
 
@@ -41,12 +40,10 @@ public class PlatformBitmapLoader : IBitmapLoader
 
             return new BitmapSourceBitmap(ret);
         });
-    }
 
     /// <inheritdoc />
-    public Task<IBitmap?> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
-    {
-        return Task.Run<IBitmap?>(() =>
+    public Task<IBitmap?> LoadFromResource(string source, float? desiredWidth, float? desiredHeight) =>
+        Task.Run<IBitmap?>(() =>
         {
             var ret = new BitmapImage();
             WithInit(ret, x =>
@@ -61,18 +58,14 @@ public class PlatformBitmapLoader : IBitmapLoader
                     x.DecodePixelHeight = (int)desiredHeight;
                 }
 
-                x.UriSource = new Uri(source, UriKind.RelativeOrAbsolute);
+                x.UriSource = new(source, UriKind.RelativeOrAbsolute);
             });
 
             return new BitmapSourceBitmap(ret);
         });
-    }
 
     /// <inheritdoc />
-    public IBitmap Create(float width, float height)
-    {
-        return new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height, 96, 96, PixelFormats.Pbgra32, null));
-    }
+    public IBitmap Create(float width, float height) => new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height, 96, 96, PixelFormats.Pbgra32, null));
 
     private static void WithInit(BitmapImage source, Action<BitmapImage> block)
     {

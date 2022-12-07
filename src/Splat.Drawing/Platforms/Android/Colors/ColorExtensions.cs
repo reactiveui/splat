@@ -17,18 +17,12 @@ public static class ColorExtensions
     /// </summary>
     /// <param name="other">The System.Drawing.Color to convert.</param>
     /// <returns>A native android color.</returns>
-    public static Color ToNative(this System.Drawing.Color other)
-    {
-        return new(other.R, other.G, other.B, other.A);
-    }
+    public static Color ToNative(this System.Drawing.Color other) => new(other.R, other.G, other.B, other.A);
 
     /// <summary>
     /// Converts from a android native color to a <see cref="System.Drawing.Color"/>.
     /// </summary>
     /// <param name="other">The android native color to convert.</param>
     /// <returns>A System.Drawing.Color.</returns>
-    public static System.Drawing.Color FromNative(this Color other)
-    {
-        return System.Drawing.Color.FromArgb(other.A, other.R, other.G, other.B);
-    }
+    public static System.Drawing.Color FromNative(this Color other) => System.Drawing.Color.FromArgb(other.A, other.R, other.G, other.B);
 }

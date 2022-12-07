@@ -75,9 +75,9 @@ public class LocatorSerialRegisterTests
         var originalLocator = testLocator.Internal;
 
         var numberNotifications = 0;
-        Action notificationAction = () => numberNotifications++;
+        void NotificationAction() => numberNotifications++;
 
-        testLocator.RegisterResolverCallbackChanged(notificationAction);
+        testLocator.RegisterResolverCallbackChanged(NotificationAction);
 
         testLocator.SetLocator(new ModernDependencyResolver());
         testLocator.SetLocator(new ModernDependencyResolver());
@@ -100,9 +100,9 @@ public class LocatorSerialRegisterTests
         using (testLocator.SuppressResolverCallbackChangedNotifications())
         {
             var numberNotifications = 0;
-            Action notificationAction = () => numberNotifications++;
+            void NotificationAction() => numberNotifications++;
 
-            testLocator.RegisterResolverCallbackChanged(notificationAction);
+            testLocator.RegisterResolverCallbackChanged(NotificationAction);
 
             testLocator.SetLocator(new ModernDependencyResolver());
             testLocator.SetLocator(new ModernDependencyResolver());
@@ -120,10 +120,10 @@ public class LocatorSerialRegisterTests
     public void WithResolver_NotificationsDontHappen()
     {
         var numberNotifications = 0;
-        Action notificationAction = () => numberNotifications++;
+        void NotificationAction() => numberNotifications++;
 
         var testLocator = new InternalLocator();
-        testLocator.RegisterResolverCallbackChanged(notificationAction);
+        testLocator.RegisterResolverCallbackChanged(NotificationAction);
 
         using (testLocator.Internal.WithResolver())
         {
@@ -143,9 +143,9 @@ public class LocatorSerialRegisterTests
     public void WithResolver_NotificationsNotSuppressedHappen()
     {
         var numberNotifications = 0;
-        Action notificationAction = () => numberNotifications++;
+        void NotificationAction() => numberNotifications++;
 
-        Locator.RegisterResolverCallbackChanged(notificationAction);
+        Locator.RegisterResolverCallbackChanged(NotificationAction);
 
         using (Locator.GetLocator().WithResolver(false))
         {

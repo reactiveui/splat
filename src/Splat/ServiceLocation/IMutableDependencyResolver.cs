@@ -24,7 +24,7 @@ public interface IMutableDependencyResolver
     /// Register a function with the resolver which will generate a object
     /// for the specified service type.
     /// Optionally a contract can be registered which will indicate
-    /// that that registration will only work with that contract.
+    /// that registration will only work with that contract.
     /// Most implementations will use a stack based approach to allow for multile items to be registered.
     /// </summary>
     /// <param name="factory">The factory function which generates our object.</param>

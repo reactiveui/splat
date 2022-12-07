@@ -18,7 +18,7 @@ public class ActivatingViewModel : ReactiveObject, IActivatableViewModel
     /// </summary>
     public ActivatingViewModel()
     {
-        Activator = new ViewModelActivator();
+        Activator = new();
 
         this.WhenActivated(d =>
         {
@@ -28,9 +28,9 @@ public class ActivatingViewModel : ReactiveObject, IActivatableViewModel
     }
 
     /// <summary>
-    /// Gets or sets the Activator which will be used by the View when Activation/Deactivation occurs.
+    /// Gets the Activator which will be used by the View when Activation/Deactivation occurs.
     /// </summary>
-    public ViewModelActivator Activator { get; protected set; }
+    public ViewModelActivator Activator { get; }
 
     /// <summary>
     /// Gets or sets the active count.

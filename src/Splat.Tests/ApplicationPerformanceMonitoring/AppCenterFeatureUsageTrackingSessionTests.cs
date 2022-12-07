@@ -14,19 +14,13 @@ public static class AppCenterFeatureUsageTrackingSessionTests
     public sealed class ConstructorTests : BaseFeatureUsageTrackingTests.BaseConstructorTests<AppCenterFeatureUsageTrackingSession>
     {
         /// <inheritdoc/>
-        protected override AppCenterFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
-        {
-            return new(featureName);
-        }
+        protected override AppCenterFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName) => new(featureName);
     }
 
     /// <inheritdoc />
     public sealed class SubFeatureMethodTests : BaseFeatureUsageTrackingTests.BaseSubFeatureMethodTests<AppCenterFeatureUsageTrackingSession>
     {
         /// <inheritdoc/>
-        protected override AppCenterFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
-        {
-            return new(featureName);
-        }
+        protected override AppCenterFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName) => new(featureName);
     }
 }

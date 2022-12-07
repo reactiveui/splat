@@ -32,10 +32,7 @@ public sealed class Log4NetLogger : ILogger, IDisposable
     public LogLevel Level { get; private set; }
 
     /// <inheritdoc />
-    public void Dispose()
-    {
-        _inner.Logger.Repository.ConfigurationChanged -= OnInnerLoggerReconfigured;
-    }
+    public void Dispose() => _inner.Logger.Repository.ConfigurationChanged -= OnInnerLoggerReconfigured;
 
     /// <inheritdoc />
     public void Write(string message, LogLevel logLevel)
@@ -199,8 +196,5 @@ public sealed class Log4NetLogger : ILogger, IDisposable
         Level = LogLevel.Fatal;
     }
 
-    private void OnInnerLoggerReconfigured(object sender, EventArgs e)
-    {
-        SetLogLevel();
-    }
+    private void OnInnerLoggerReconfigured(object sender, EventArgs e) => SetLogLevel();
 }

@@ -45,24 +45,16 @@ public sealed class DefaultFeatureUsageTrackingSession : IFeatureUsageTrackingSe
     public string FeatureName { get; }
 
     /// <inheritdoc />
-    public IFeatureUsageTrackingSession SubFeature(string description)
-    {
-        return new DefaultFeatureUsageTrackingSession(description, FeatureReference);
-    }
+    public IFeatureUsageTrackingSession SubFeature(string description) => new DefaultFeatureUsageTrackingSession(description, FeatureReference);
 
     /// <inheritdoc />
-    public void OnException(Exception exception)
-    {
+    public void OnException(Exception exception) =>
         this.Log().InfoException(
             () => "Feature Usage Tracking Exception",
             exception);
-    }
 
     /// <inheritdoc/>
-    public void Dispose()
-    {
-        this.Log().Info(() => $"Feature Finish: {FeatureReference}");
-    }
+    public void Dispose() => this.Log().Info(() => $"Feature Finish: {FeatureReference}");
 
     private string GetSessionStartLogMessage()
     {

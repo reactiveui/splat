@@ -41,26 +41,14 @@ public class ActionLogger : ILogger
     public LogLevel Level { get; set; }
 
     /// <inheritdoc />
-    public void Write([Localizable(false)] string message, LogLevel logLevel)
-    {
-        _writeNoType?.Invoke(message, logLevel);
-    }
+    public void Write([Localizable(false)] string message, LogLevel logLevel) => _writeNoType?.Invoke(message, logLevel);
 
     /// <inheritdoc />
-    public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel)
-    {
-        _writeNoTypeWithException?.Invoke(exception, message, logLevel);
-    }
+    public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel) => _writeNoTypeWithException?.Invoke(exception, message, logLevel);
 
     /// <inheritdoc />
-    public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
-    {
-        _writeWithType?.Invoke(message, type, logLevel);
-    }
+    public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel) => _writeWithType?.Invoke(message, type, logLevel);
 
     /// <inheritdoc />
-    public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
-    {
-        _writeWithTypeAndException?.Invoke(exception, message, type, logLevel);
-    }
+    public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel) => _writeWithTypeAndException?.Invoke(exception, message, type, logLevel);
 }

@@ -25,11 +25,9 @@ public sealed class AppCenterViewTracking : IViewTracking
         Microsoft.AppCenter.Analytics.Analytics.TrackEvent("PageView", properties);
     }
 
-    private static IDictionary<string, string> GetProperties(string name)
-    {
-        return new Dictionary<string, string>
+    private static IDictionary<string, string> GetProperties(string name) =>
+        new Dictionary<string, string>
         {
             { "Name", name },
         };
-    }
 }

@@ -41,12 +41,10 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
         }
     }
 
-    private static bool SearchForAssembly(IEnumerable<string> assemblyList)
-    {
-        return AppDomain.CurrentDomain.GetAssemblies()
+    private static bool SearchForAssembly(IEnumerable<string> assemblyList) =>
+        AppDomain.CurrentDomain.GetAssemblies()
             .Select(x => x.FullName?.ToUpperInvariant())
             .Where(x => x is not null)
             .Select(x => x!)
             .Any(x => assemblyList.Any(name => x.IndexOf(name, StringComparison.InvariantCultureIgnoreCase) != -1));
-    }
 }

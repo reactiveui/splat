@@ -17,10 +17,7 @@ public static class ColorExtensions
     /// </summary>
     /// <param name="value">The System.Drawing.Color to convert.</param>
     /// <returns>A native XAML color.</returns>
-    public static Color ToNative(this System.Drawing.Color value)
-    {
-        return Color.FromArgb(value.A, value.R, value.G, value.B);
-    }
+    public static Color ToNative(this System.Drawing.Color value) => Color.FromArgb(value.A, value.R, value.G, value.B);
 
     /// <summary>
     /// Converts a <see cref="System.Drawing.Color"/> into the cocoa native <see cref="SolidColorBrush"/>.
@@ -39,8 +36,5 @@ public static class ColorExtensions
     /// </summary>
     /// <param name="value">The color to convert.</param>
     /// <returns>The <see cref="System.Drawing.Color"/> generated.</returns>
-    public static System.Drawing.Color FromNative(this Color value)
-    {
-        return System.Drawing.Color.FromArgb(value.A, value.R, value.G, value.B);
-    }
+    public static System.Drawing.Color FromNative(this Color value) => System.Drawing.Color.FromArgb(value.A, value.R, value.G, value.B);
 }

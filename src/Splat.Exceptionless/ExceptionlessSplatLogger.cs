@@ -18,13 +18,13 @@ namespace Splat.Exceptionless;
 [DebuggerDisplay("Name={_sourceType} Level={Level}")]
 public sealed class ExceptionlessSplatLogger : ILogger
 {
-    private static readonly KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>[] _mappings = new[]
+    private static readonly KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>[] _mappings =
     {
-        new KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>(LogLevel.Debug, global::Exceptionless.Logging.LogLevel.Debug),
-        new KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>(LogLevel.Info, global::Exceptionless.Logging.LogLevel.Info),
-        new KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>(LogLevel.Warn, global::Exceptionless.Logging.LogLevel.Warn),
-        new KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>(LogLevel.Error, global::Exceptionless.Logging.LogLevel.Error),
-        new KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>(LogLevel.Fatal, global::Exceptionless.Logging.LogLevel.Fatal),
+        new(LogLevel.Debug, global::Exceptionless.Logging.LogLevel.Debug),
+        new(LogLevel.Info, global::Exceptionless.Logging.LogLevel.Info),
+        new(LogLevel.Warn, global::Exceptionless.Logging.LogLevel.Warn),
+        new(LogLevel.Error, global::Exceptionless.Logging.LogLevel.Error),
+        new(LogLevel.Fatal, global::Exceptionless.Logging.LogLevel.Fatal),
     };
 
     private static readonly ImmutableDictionary<LogLevel, global::Exceptionless.Logging.LogLevel> _mappingsDictionary = _mappings.ToImmutableDictionary();
@@ -114,10 +114,7 @@ public sealed class ExceptionlessSplatLogger : ILogger
         CreateLog(exception, type.FullName ?? "(unknown)", message, _mappingsDictionary[logLevel]);
     }
 
-    private void CreateLog(string message, global::Exceptionless.Logging.LogLevel level)
-    {
-        CreateLog(_sourceType, message, level);
-    }
+    private void CreateLog(string message, global::Exceptionless.Logging.LogLevel level) => CreateLog(_sourceType, message, level);
 
     private void CreateLog(string type, string message, global::Exceptionless.Logging.LogLevel level)
     {
@@ -125,10 +122,7 @@ public sealed class ExceptionlessSplatLogger : ILogger
         _exceptionlessClient.ProcessQueue();
     }
 
-    private void CreateLog(Exception exception, string message, global::Exceptionless.Logging.LogLevel level)
-    {
-        CreateLog(exception, _sourceType, message, level);
-    }
+    private void CreateLog(Exception exception, string message, global::Exceptionless.Logging.LogLevel level) => CreateLog(exception, _sourceType, message, level);
 
     private void CreateLog(Exception exception, string type, string message, global::Exceptionless.Logging.LogLevel level)
     {
@@ -148,8 +142,7 @@ public sealed class ExceptionlessSplatLogger : ILogger
     /// <remarks>
     /// This was done so the Level property doesn't keep getting re-evaluated each time a Write method is called.
     /// </remarks>
-    private void SetLogLevel()
-    {
+    private void SetLogLevel() =>
         /*
         if (_inner.IsDebugEnabled)
         {
@@ -175,12 +168,7 @@ public sealed class ExceptionlessSplatLogger : ILogger
             return;
         }
         */
-
         Level = LogLevel.Fatal;
-    }
 
-    private void OnInnerLoggerReconfigured(object? sender, EventArgs e)
-    {
-        SetLogLevel();
-    }
+    private void OnInnerLoggerReconfigured(object? sender, EventArgs e) => SetLogLevel();
 }

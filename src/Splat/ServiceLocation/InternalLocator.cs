@@ -14,11 +14,10 @@ internal class InternalLocator : IDisposable
     // this has been done to have a default single instance. but allow isolation in unit tests.B
     private readonly List<Action> _resolverChanged = new();
     private volatile int _resolverChangedNotificationSuspendCount;
-    private IDependencyResolver _dependencyResolver;
 
     internal InternalLocator()
     {
-        _dependencyResolver = new ModernDependencyResolver();
+        Internal = new ModernDependencyResolver();
 
         RegisterResolverCallbackChanged(() =>
         {
@@ -39,21 +38,18 @@ internal class InternalLocator : IDisposable
     /// to simply use the default implementation.
     /// </summary>
     /// <value>The dependency resolver.</value>
-    public IReadonlyDependencyResolver Current => _dependencyResolver;
+    public IReadonlyDependencyResolver Current => Internal;
 
     /// <summary>
     /// Gets the mutable dependency resolver.
     /// The default resolver is also a mutable resolver, so this will be non-null.
     /// Use this to register new types on startup if you are using the default resolver.
     /// </summary>
-    public IMutableDependencyResolver CurrentMutable => _dependencyResolver;
+    public IMutableDependencyResolver CurrentMutable => Internal;
 
-    internal IDependencyResolver Internal => _dependencyResolver;
+    internal IDependencyResolver Internal { get; private set; }
 
-    public void Dispose()
-    {
-        _dependencyResolver?.Dispose();
-    }
+    public void Dispose() => Internal?.Dispose();
 
     /// <summary>
     /// Allows setting the dependency resolver.
@@ -61,7 +57,7 @@ internal class InternalLocator : IDisposable
     /// <param name="dependencyResolver">The dependency resolver to set.</param>
     public void SetLocator(IDependencyResolver dependencyResolver)
     {
-        _dependencyResolver = dependencyResolver ?? throw new ArgumentNullException(nameof(dependencyResolver));
+        Internal = dependencyResolver ?? throw new ArgumentNullException(nameof(dependencyResolver));
 
         // DV: is this needed if we're changing the behaviour of setlocator?
         /*
@@ -143,8 +139,5 @@ internal class InternalLocator : IDisposable
     /// Indicates if the we are notifying external classes of updates to the resolver being changed.
     /// </summary>
     /// <returns>A value indicating whether the notifications are happening.</returns>
-    public bool AreResolverCallbackChangedNotificationsEnabled()
-    {
-        return _resolverChangedNotificationSuspendCount == 0;
-    }
+    public bool AreResolverCallbackChangedNotificationsEnabled() => _resolverChangedNotificationSuspendCount == 0;
 }
