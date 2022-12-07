@@ -5,50 +5,48 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// Contains the default mode detector to detect if we are currently in a unit test.
+/// </summary>
+public class DefaultModeDetector : IModeDetector, IEnableLogger
 {
-    /// <summary>
-    /// Contains the default mode detector to detect if we are currently in a unit test.
-    /// </summary>
-    public class DefaultModeDetector : IModeDetector, IEnableLogger
+    /// <inheritdoc />
+    public bool? InUnitTestRunner()
     {
-        /// <inheritdoc />
-        public bool? InUnitTestRunner()
+        var testAssemblies = new[]
         {
-            var testAssemblies = new[]
-            {
-                "CSUNIT",
-                "NUNIT",
-                "XUNIT",
-                "MBUNIT",
-                "NBEHAVE",
-                "VISUALSTUDIO.QUALITYTOOLS",
-                "VISUALSTUDIO.TESTPLATFORM",
-                "FIXIE",
-                "NCRUNCH",
-            };
+            "CSUNIT",
+            "NUNIT",
+            "XUNIT",
+            "MBUNIT",
+            "NBEHAVE",
+            "VISUALSTUDIO.QUALITYTOOLS",
+            "VISUALSTUDIO.TESTPLATFORM",
+            "FIXIE",
+            "NCRUNCH",
+        };
 
-            try
-            {
-                return SearchForAssembly(testAssemblies);
-            }
-            catch (Exception e)
-            {
-                this.Log().Debug(e, "Unable to find unit test runner value");
-                return null;
-            }
-        }
-
-        private static bool SearchForAssembly(IEnumerable<string> assemblyList)
+        try
         {
-            return AppDomain.CurrentDomain.GetAssemblies()
-                .Select(x => x.FullName?.ToUpperInvariant())
-                .Where(x => x is not null)
-                .Select(x => x!)
-                .Any(x => assemblyList.Any(name => x.IndexOf(name, StringComparison.InvariantCultureIgnoreCase) != -1));
+            return SearchForAssembly(testAssemblies);
         }
+        catch (Exception e)
+        {
+            this.Log().Debug(e, "Unable to find unit test runner value");
+            return null;
+        }
+    }
+
+    private static bool SearchForAssembly(IEnumerable<string> assemblyList)
+    {
+        return AppDomain.CurrentDomain.GetAssemblies()
+            .Select(x => x.FullName?.ToUpperInvariant())
+            .Where(x => x is not null)
+            .Select(x => x!)
+            .Any(x => assemblyList.Any(name => x.IndexOf(name, StringComparison.InvariantCultureIgnoreCase) != -1));
     }
 }

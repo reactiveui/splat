@@ -5,31 +5,30 @@
 
 using System;
 
-namespace Splat.ApplicationPerformanceMonitoring
+namespace Splat.ApplicationPerformanceMonitoring;
+
+/// <summary>
+/// Func based Feature Usage Tracking Manager.
+/// </summary>
+public class FuncFeatureUsageTrackingManager : IFeatureUsageTrackingManager
 {
+    private readonly Func<string, IFeatureUsageTrackingSession> _featureUsageTrackingSessionFunc;
+
     /// <summary>
-    /// Func based Feature Usage Tracking Manager.
+    /// Initializes a new instance of the <see cref="FuncFeatureUsageTrackingManager"/> class.
     /// </summary>
-    public class FuncFeatureUsageTrackingManager : IFeatureUsageTrackingManager
+    /// <param name="featureUsageTrackingSessionFunc">
+    /// Factory function for a Feature Usage Tracking Session.
+    /// </param>
+    public FuncFeatureUsageTrackingManager(Func<string, IFeatureUsageTrackingSession> featureUsageTrackingSessionFunc)
     {
-        private readonly Func<string, IFeatureUsageTrackingSession> _featureUsageTrackingSessionFunc;
+        _featureUsageTrackingSessionFunc = featureUsageTrackingSessionFunc ??
+                                           throw new ArgumentNullException(nameof(featureUsageTrackingSessionFunc));
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FuncFeatureUsageTrackingManager"/> class.
-        /// </summary>
-        /// <param name="featureUsageTrackingSessionFunc">
-        /// Factory function for a Feature Usage Tracking Session.
-        /// </param>
-        public FuncFeatureUsageTrackingManager(Func<string, IFeatureUsageTrackingSession> featureUsageTrackingSessionFunc)
-        {
-            _featureUsageTrackingSessionFunc = featureUsageTrackingSessionFunc ??
-                                               throw new ArgumentNullException(nameof(featureUsageTrackingSessionFunc));
-        }
-
-        /// <inheritdoc/>
-        public IFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
-        {
-            return _featureUsageTrackingSessionFunc(featureName);
-        }
+    /// <inheritdoc/>
+    public IFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
+    {
+        return _featureUsageTrackingSessionFunc(featureName);
     }
 }

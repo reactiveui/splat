@@ -3,31 +3,30 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// Specified which edge of a rectangle to use.
+/// </summary>
+public enum RectEdge
 {
     /// <summary>
-    /// Specified which edge of a rectangle to use.
+    /// The left of the rectangle.
     /// </summary>
-    public enum RectEdge
-    {
-        /// <summary>
-        /// The left of the rectangle.
-        /// </summary>
-        Left,
+    Left,
 
-        /// <summary>
-        /// The top of the rectangle.
-        /// </summary>
-        Top,
+    /// <summary>
+    /// The top of the rectangle.
+    /// </summary>
+    Top,
 
-        /// <summary>
-        /// The right of the rectangle.
-        /// </summary>
-        Right,
+    /// <summary>
+    /// The right of the rectangle.
+    /// </summary>
+    Right,
 
-        /// <summary>
-        /// The bottom of the rectangle.
-        /// </summary>
-        Bottom,
-    }
+    /// <summary>
+    /// The bottom of the rectangle.
+    /// </summary>
+    Bottom,
 }

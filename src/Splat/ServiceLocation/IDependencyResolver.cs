@@ -4,15 +4,13 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// Represents a dependency resolver, a service to look up global class
+/// instances or types.
+/// </summary>
+public interface IDependencyResolver : IReadonlyDependencyResolver, IMutableDependencyResolver, IDisposable
 {
-    /// <summary>
-    /// Represents a dependency resolver, a service to look up global class
-    /// instances or types.
-    /// </summary>
-    public interface IDependencyResolver : IReadonlyDependencyResolver, IMutableDependencyResolver, IDisposable
-    {
-    }
 }

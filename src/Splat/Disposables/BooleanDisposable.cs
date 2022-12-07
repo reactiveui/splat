@@ -4,44 +4,39 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// Represents a disposable resource that can be checked for disposal status.
+/// Based on the System.Reactive.Disposable class.
+/// </summary>
+internal sealed class BooleanDisposable : IDisposable
 {
+    private volatile bool _isDisposed;
+
     /// <summary>
-    /// Represents a disposable resource that can be checked for disposal status.
-    /// Based on the System.Reactive.Disposable class.
+    /// Initializes a new instance of the <see cref="BooleanDisposable"/> class.
     /// </summary>
-    internal sealed class BooleanDisposable : IDisposable
+    public BooleanDisposable()
     {
-        private volatile bool _isDisposed;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BooleanDisposable"/> class.
-        /// </summary>
-        public BooleanDisposable()
-        {
-        }
+    private BooleanDisposable(bool isDisposed)
+    {
+        _isDisposed = isDisposed;
+    }
 
-        private BooleanDisposable(bool isDisposed)
-        {
-            _isDisposed = isDisposed;
-        }
+    /// <summary>
+    /// Gets a value indicating whether the object is disposed.
+    /// </summary>
+    public bool IsDisposed => _isDisposed;
 
-        /// <summary>
-        /// Gets a value indicating whether the object is disposed.
-        /// </summary>
-        public bool IsDisposed => _isDisposed;
-
-        /// <summary>
-        /// Sets the status to disposed, which can be observer through the <see cref="IsDisposed"/> property.
-        /// </summary>
-        public void Dispose()
-        {
-            _isDisposed = true;
-        }
+    /// <summary>
+    /// Sets the status to disposed, which can be observer through the <see cref="IsDisposed"/> property.
+    /// </summary>
+    public void Dispose()
+    {
+        _isDisposed = true;
     }
 }

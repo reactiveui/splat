@@ -3,15 +3,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-namespace Splat.Common.Test
-{
-    /// <summary>
-    /// Interface for ViewModelOne.
-    /// </summary>
-#pragma warning disable CA1040 // Avoid empty interfaces
+namespace Splat.Common.Test;
 
-    public interface IViewModelOne
-#pragma warning restore CA1040 // Avoid empty interfaces
-    {
-    }
+/// <summary>
+/// Interface for ViewModelOne.
+/// </summary>
+public interface IViewModelOne
+{
 }

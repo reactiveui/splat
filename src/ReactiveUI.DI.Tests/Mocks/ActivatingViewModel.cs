@@ -5,36 +5,35 @@
 
 using System.Reactive.Disposables;
 
-namespace ReactiveUI.DI.Tests.Mocks
+namespace ReactiveUI.DI.Tests.Mocks;
+
+/// <summary>
+/// ActivatingViewModel.
+/// </summary>
+/// <seealso cref="ReactiveUI.ReactiveObject" />
+public class ActivatingViewModel : ReactiveObject, IActivatableViewModel
 {
     /// <summary>
-    /// ActivatingViewModel.
+    /// Initializes a new instance of the <see cref="ActivatingViewModel"/> class.
     /// </summary>
-    /// <seealso cref="ReactiveUI.ReactiveObject" />
-    public class ActivatingViewModel : ReactiveObject, IActivatableViewModel
+    public ActivatingViewModel()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ActivatingViewModel"/> class.
-        /// </summary>
-        public ActivatingViewModel()
+        Activator = new ViewModelActivator();
+
+        this.WhenActivated(d =>
         {
-            Activator = new ViewModelActivator();
-
-            this.WhenActivated(d =>
-            {
-                IsActiveCount++;
-                d(Disposable.Create(() => IsActiveCount--));
-            });
-        }
-
-        /// <summary>
-        /// Gets or sets the Activator which will be used by the View when Activation/Deactivation occurs.
-        /// </summary>
-        public ViewModelActivator Activator { get; protected set; }
-
-        /// <summary>
-        /// Gets or sets the active count.
-        /// </summary>
-        public int IsActiveCount { get; protected set; }
+            IsActiveCount++;
+            d(Disposable.Create(() => IsActiveCount--));
+        });
     }
+
+    /// <summary>
+    /// Gets or sets the Activator which will be used by the View when Activation/Deactivation occurs.
+    /// </summary>
+    public ViewModelActivator Activator { get; protected set; }
+
+    /// <summary>
+    /// Gets or sets the active count.
+    /// </summary>
+    public int IsActiveCount { get; protected set; }
 }

@@ -6,75 +6,74 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Splat.Microsoft.Extensions.Logging
+namespace Splat.Microsoft.Extensions.Logging;
+
+/// <summary>
+/// Microsoft.Extensions.Logging specific extensions for the Mutable Dependency Resolver.
+/// </summary>
+public static class MicrosoftExtensionsLoggingExtensions
 {
     /// <summary>
-    /// Microsoft.Extensions.Logging specific extensions for the Mutable Dependency Resolver.
+    /// Simple helper to initialize Microsoft.Extensions.Logging within Splat with the Wrapping Full Logger.
     /// </summary>
-    public static class MicrosoftExtensionsLoggingExtensions
+    /// <remarks>
+    /// You should configure Microsoft.Extensions.Logging prior to calling this method.
+    /// </remarks>
+    /// <param name="instance">
+    /// An instance of Mutable Dependency Resolver.
+    /// </param>
+    /// <param name="loggerFactory">
+    /// An instance of the Microsoft.Extensions.Logging Logger Factory.
+    /// </param>
+    /// <example>
+    /// <code>
+    /// Locator.CurrentMutable.UseMicrosoftExtensionsLoggingWithWrappingFullLogger();
+    /// </code>
+    /// </example>
+    public static void UseMicrosoftExtensionsLoggingWithWrappingFullLogger(
+        this IMutableDependencyResolver instance,
+        ILoggerFactory loggerFactory)
     {
-        /// <summary>
-        /// Simple helper to initialize Microsoft.Extensions.Logging within Splat with the Wrapping Full Logger.
-        /// </summary>
-        /// <remarks>
-        /// You should configure Microsoft.Extensions.Logging prior to calling this method.
-        /// </remarks>
-        /// <param name="instance">
-        /// An instance of Mutable Dependency Resolver.
-        /// </param>
-        /// <param name="loggerFactory">
-        /// An instance of the Microsoft.Extensions.Logging Logger Factory.
-        /// </param>
-        /// <example>
-        /// <code>
-        /// Locator.CurrentMutable.UseMicrosoftExtensionsLoggingWithWrappingFullLogger();
-        /// </code>
-        /// </example>
-        public static void UseMicrosoftExtensionsLoggingWithWrappingFullLogger(
-            this IMutableDependencyResolver instance,
-            ILoggerFactory loggerFactory)
+        var funcLogManager = new FuncLogManager(type =>
         {
-            var funcLogManager = new FuncLogManager(type =>
-            {
-                var actualLogger = loggerFactory.CreateLogger(type.ToString());
-                var miniLoggingWrapper = new MicrosoftExtensionsLoggingLogger(actualLogger);
-                return new WrappingFullLogger(miniLoggingWrapper);
-            });
+            var actualLogger = loggerFactory.CreateLogger(type.ToString());
+            var miniLoggingWrapper = new MicrosoftExtensionsLoggingLogger(actualLogger);
+            return new WrappingFullLogger(miniLoggingWrapper);
+        });
 
-            instance.RegisterConstant(funcLogManager, typeof(ILogManager));
+        instance.RegisterConstant(funcLogManager, typeof(ILogManager));
+    }
+
+    /// <summary>
+    /// Registers a <see cref="MicrosoftExtensionsLogProvider"/> with the service collection.
+    /// </summary>
+    /// <param name="builder">The logging builder to register.</param>
+    /// <returns>The logging builder.</returns>
+    public static ILoggingBuilder AddSplat(this ILoggingBuilder builder)
+    {
+        if (builder is null)
+        {
+            throw new System.ArgumentNullException(nameof(builder));
         }
 
-        /// <summary>
-        /// Registers a <see cref="MicrosoftExtensionsLogProvider"/> with the service collection.
-        /// </summary>
-        /// <param name="builder">The logging builder to register.</param>
-        /// <returns>The logging builder.</returns>
-        public static ILoggingBuilder AddSplat(this ILoggingBuilder builder)
+        builder.Services.AddSingleton<ILoggerProvider, MicrosoftExtensionsLogProvider>();
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds a <see cref="MicrosoftExtensionsLogProvider"/> to the logger factory.
+    /// </summary>
+    /// <param name="loggerFactory">Our logger provider.</param>
+    /// <returns>The factory.</returns>
+    public static ILoggerFactory AddSplat(this ILoggerFactory loggerFactory)
+    {
+        if (loggerFactory is null)
         {
-            if (builder is null)
-            {
-                throw new System.ArgumentNullException(nameof(builder));
-            }
-
-            builder.Services.AddSingleton<ILoggerProvider, MicrosoftExtensionsLogProvider>();
-
-            return builder;
+            throw new System.ArgumentNullException(nameof(loggerFactory));
         }
 
-        /// <summary>
-        /// Adds a <see cref="MicrosoftExtensionsLogProvider"/> to the logger factory.
-        /// </summary>
-        /// <param name="loggerFactory">Our logger provider.</param>
-        /// <returns>The factory.</returns>
-        public static ILoggerFactory AddSplat(this ILoggerFactory loggerFactory)
-        {
-            if (loggerFactory is null)
-            {
-                throw new System.ArgumentNullException(nameof(loggerFactory));
-            }
-
-            loggerFactory.AddProvider(new MicrosoftExtensionsLogProvider());
-            return loggerFactory;
-        }
+        loggerFactory.AddProvider(new MicrosoftExtensionsLogProvider());
+        return loggerFactory;
     }
 }

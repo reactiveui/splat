@@ -18,6 +18,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Using Remove="System.Drawing" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <Compile Remove="Platforms\**\*.cs" />
     <Compile Remove="Resources\**\*.*" />
     <EmbeddedResource Remove="Platforms\**\*.*" />

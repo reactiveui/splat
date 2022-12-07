@@ -5,19 +5,18 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace Splat.Common.Test
+namespace Splat.Common.Test;
+
+/// <summary>
+/// View Model One.
+/// </summary>
+[ExcludeFromCodeCoverage]
+public class ViewModelOne : IViewModelOne
 {
     /// <summary>
-    /// View Model One.
+    /// Initializes a new instance of the <see cref="ViewModelOne"/> class.
     /// </summary>
-    [ExcludeFromCodeCoverage]
-    public class ViewModelOne : IViewModelOne
+    public ViewModelOne()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ViewModelOne"/> class.
-        /// </summary>
-        public ViewModelOne()
-        {
-        }
     }
 }

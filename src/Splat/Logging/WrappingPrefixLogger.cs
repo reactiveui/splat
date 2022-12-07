@@ -5,65 +5,63 @@
 
 using System;
 using System.ComponentModel;
-using System.Globalization;
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// A prefix logger which wraps a <see cref="ILogger"/>.
+/// </summary>
+public class WrappingPrefixLogger : ILogger
 {
+    private readonly ILogger _inner;
+    private readonly string _prefix;
+
     /// <summary>
-    /// A prefix logger which wraps a <see cref="ILogger"/>.
+    /// Initializes a new instance of the <see cref="WrappingPrefixLogger"/> class.
+    /// Placeholder.
     /// </summary>
-    public class WrappingPrefixLogger : ILogger
+    /// <param name="inner">The <see cref="ILogger"/> to wrap in this class.</param>
+    /// <param name="callingType">The type which will be calling this logger.</param>
+    public WrappingPrefixLogger(ILogger inner, Type callingType)
     {
-        private readonly ILogger _inner;
-        private readonly string _prefix;
+        _inner = inner;
+        _prefix = $"{callingType?.Name}: ";
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WrappingPrefixLogger"/> class.
-        /// Placeholder.
-        /// </summary>
-        /// <param name="inner">The <see cref="ILogger"/> to wrap in this class.</param>
-        /// <param name="callingType">The type which will be calling this logger.</param>
-        public WrappingPrefixLogger(ILogger inner, Type callingType)
+    /// <inheritdoc />
+    public LogLevel Level => _inner.Level;
+
+    /// <inheritdoc />
+    public void Write([Localizable(false)]string message, LogLevel logLevel)
+    {
+        _inner.Write(_prefix + message, logLevel);
+    }
+
+    /// <inheritdoc />
+    public void Write(Exception exception, [Localizable(false)]string message, LogLevel logLevel)
+    {
+        _inner.Write(exception, _prefix + message, logLevel);
+    }
+
+    /// <inheritdoc />
+    public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
+    {
+        if (type is null)
         {
-            _inner = inner;
-            _prefix = $"{callingType?.Name}: ";
+            throw new ArgumentNullException(nameof(type));
         }
 
-        /// <inheritdoc />
-        public LogLevel Level => _inner.Level;
+        _inner.Write($"{type.Name}: {message}", type, logLevel);
+    }
 
-        /// <inheritdoc />
-        public void Write([Localizable(false)]string message, LogLevel logLevel)
+    /// <inheritdoc />
+    public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
+    {
+        if (type is null)
         {
-            _inner.Write(_prefix + message, logLevel);
+            throw new ArgumentNullException(nameof(type));
         }
 
-        /// <inheritdoc />
-        public void Write(Exception exception, [Localizable(false)]string message, LogLevel logLevel)
-        {
-            _inner.Write(exception, _prefix + message, logLevel);
-        }
-
-        /// <inheritdoc />
-        public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
-        {
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
-            _inner.Write($"{type.Name}: {message}", type, logLevel);
-        }
-
-        /// <inheritdoc />
-        public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
-        {
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
-            _inner.Write(exception, $"{type.Name}: {message}", type, logLevel);
-        }
+        _inner.Write(exception, $"{type.Name}: {message}", type, logLevel);
     }
 }

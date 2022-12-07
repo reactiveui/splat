@@ -5,44 +5,45 @@
 
 using System.Collections.Generic;
 using System.Linq;
+
 using DryIoc;
+
 using FluentAssertions;
-using Splat;
-using Splat.Common.Test;
+
 using Splat.DryIoc;
+
 using Xunit;
 
-namespace ReactiveUI.DI.Tests
+namespace ReactiveUI.DI.Tests;
+
+/// <summary>
+/// DryIoc ReactiveUI Dependency Tests.
+/// </summary>
+public class DryIocReactiveUIDependencyTests
 {
     /// <summary>
-    /// DryIoc ReactiveUI Dependency Tests.
+    /// DyyIoC dependency resolver should register reactive UI creates command binding.
     /// </summary>
-    public class DryIocReactiveUIDependencyTests
+    [Fact]
+    public void DryIocDependencyResolverShouldRegisterReactiveUI()
     {
-        /// <summary>
-        /// DyyIoC dependency resolver should register reactive UI creates command binding.
-        /// </summary>
-        [Fact]
-        public void DryIocDependencyResolverShouldRegisterReactiveUI()
-        {
-            // Invoke RxApp which initializes the ReactiveUI platform.
-            var container = new Container();
+        // Invoke RxApp which initializes the ReactiveUI platform.
+        var container = new Container();
 
-            var locator = new DryIocDependencyResolver(container);
-            locator.RegisterViewsForViewModels(typeof(ViewWithViewContractThatShouldNotLoad).Assembly);
-            locator.InitializeReactiveUI();
+        var locator = new DryIocDependencyResolver(container);
+        locator.RegisterViewsForViewModels(typeof(ViewWithViewContractThatShouldNotLoad).Assembly);
+        locator.InitializeReactiveUI();
 
-            var converters = container.Resolve<IEnumerable<ICreatesCommandBinding>>().ToList();
+        var converters = container.Resolve<IEnumerable<ICreatesCommandBinding>>().ToList();
 
-            converters.Should().NotBeNull();
-            converters.Should().Contain(x => x.GetType() == typeof(CreatesCommandBindingViaEvent));
-            converters.Should().Contain(x => x.GetType() == typeof(CreatesCommandBindingViaCommandParameter));
+        converters.Should().NotBeNull();
+        converters.Should().Contain(x => x.GetType() == typeof(CreatesCommandBindingViaEvent));
+        converters.Should().Contain(x => x.GetType() == typeof(CreatesCommandBindingViaCommandParameter));
 
-            var convertersb = container.Resolve<IEnumerable<IBindingTypeConverter>>().ToList();
+        var convertersb = container.Resolve<IEnumerable<IBindingTypeConverter>>().ToList();
 
-            convertersb.Should().NotBeNull();
-            convertersb.Should().Contain(x => x.GetType() == typeof(StringConverter));
-            convertersb.Should().Contain(x => x.GetType() == typeof(EqualityTypeConverter));
-        }
+        convertersb.Should().NotBeNull();
+        convertersb.Should().Contain(x => x.GetType() == typeof(StringConverter));
+        convertersb.Should().Contain(x => x.GetType() == typeof(EqualityTypeConverter));
     }
 }

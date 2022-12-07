@@ -5,51 +5,50 @@
 
 using Splat.ApplicationPerformanceMonitoring;
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// Initialization logic for Splat interacting with Dependency Resolvers.
+/// </summary>
+public static class ServiceLocationInitialization
 {
     /// <summary>
-    /// Initialization logic for Splat interacting with Dependency Resolvers.
+    /// Registers all the default registrations that are needed by the Splat module.
     /// </summary>
-    public static class ServiceLocationInitialization
+    /// <param name="resolver">The resolver to register the needed service types against.</param>
+    public static void InitializeSplat(this IMutableDependencyResolver resolver)
     {
-        /// <summary>
-        /// Registers all the default registrations that are needed by the Splat module.
-        /// </summary>
-        /// <param name="resolver">The resolver to register the needed service types against.</param>
-        public static void InitializeSplat(this IMutableDependencyResolver resolver)
+        if (resolver is null)
         {
-            if (resolver is null)
-            {
-                throw new System.ArgumentNullException(nameof(resolver));
-            }
-
-            RegisterDefaultLogManager(resolver);
-            RegisterLogger(resolver);
-            RegisterApplicationPerformanceMonitoring(resolver);
+            throw new System.ArgumentNullException(nameof(resolver));
         }
 
-        private static void RegisterApplicationPerformanceMonitoring(IMutableDependencyResolver resolver)
-        {
-            if (!resolver.HasRegistration(typeof(IFeatureUsageTrackingManager)))
-            {
-                resolver.RegisterConstant(new DefaultFeatureUsageTrackingManager(), typeof(IFeatureUsageTrackingManager));
-            }
-        }
+        RegisterDefaultLogManager(resolver);
+        RegisterLogger(resolver);
+        RegisterApplicationPerformanceMonitoring(resolver);
+    }
 
-        private static void RegisterDefaultLogManager(IMutableDependencyResolver resolver)
+    private static void RegisterApplicationPerformanceMonitoring(IMutableDependencyResolver resolver)
+    {
+        if (!resolver.HasRegistration(typeof(IFeatureUsageTrackingManager)))
         {
-            if (!resolver.HasRegistration(typeof(ILogManager)))
-            {
-                resolver.Register(() => new DefaultLogManager(), typeof(ILogManager));
-            }
+            resolver.RegisterConstant(new DefaultFeatureUsageTrackingManager(), typeof(IFeatureUsageTrackingManager));
         }
+    }
 
-        private static void RegisterLogger(IMutableDependencyResolver resolver)
+    private static void RegisterDefaultLogManager(IMutableDependencyResolver resolver)
+    {
+        if (!resolver.HasRegistration(typeof(ILogManager)))
         {
-            if (!resolver.HasRegistration(typeof(ILogger)))
-            {
-                resolver.RegisterConstant(new DebugLogger(), typeof(ILogger));
-            }
+            resolver.Register(() => new DefaultLogManager(), typeof(ILogManager));
+        }
+    }
+
+    private static void RegisterLogger(IMutableDependencyResolver resolver)
+    {
+        if (!resolver.HasRegistration(typeof(ILogger)))
+        {
+            resolver.RegisterConstant(new DebugLogger(), typeof(ILogger));
         }
     }
 }

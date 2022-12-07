@@ -1,43 +1,42 @@
 ﻿using Splat.ModeDetection;
 using Xunit;
 
-namespace Splat.Tests.ModeDetection
+namespace Splat.Tests.ModeDetection;
+
+/// <summary>
+/// Unit tests for the <see cref="Mode"/> class.
+/// </summary>
+public class ModeTests
 {
     /// <summary>
-    /// Unit tests for the <see cref="Mode"/> class.
+    /// Tests the <see cref="Mode.Run"/> mode.
     /// </summary>
-    public class ModeTests
+    [Fact]
+    public void RunModeTest()
     {
-        /// <summary>
-        /// Tests the <see cref="Mode.Run"/> mode.
-        /// </summary>
-        [Fact]
-        public void RunModeTest()
-        {
-            // Arrange
-            ModeDetector.OverrideModeDetector(Mode.Run);
+        // Arrange
+        ModeDetector.OverrideModeDetector(Mode.Run);
 
-            // Act
-            var inUnitTestRunner = ModeDetector.InUnitTestRunner();
+        // Act
+        var inUnitTestRunner = ModeDetector.InUnitTestRunner();
 
-            // Assert
-            Assert.False(inUnitTestRunner);
-        }
+        // Assert
+        Assert.False(inUnitTestRunner);
+    }
 
-        /// <summary>
-        /// Tests the <see cref="Mode.Test"/> mode.
-        /// </summary>
-        [Fact]
-        public void TestModeTest()
-        {
-            // Arrange
-            ModeDetector.OverrideModeDetector(Mode.Test);
+    /// <summary>
+    /// Tests the <see cref="Mode.Test"/> mode.
+    /// </summary>
+    [Fact]
+    public void TestModeTest()
+    {
+        // Arrange
+        ModeDetector.OverrideModeDetector(Mode.Test);
 
-            // Act
-            var inUnitTestRunner = ModeDetector.InUnitTestRunner();
+        // Act
+        var inUnitTestRunner = ModeDetector.InUnitTestRunner();
 
-            // Assert
-            Assert.True(inUnitTestRunner);
-        }
+        // Assert
+        Assert.True(inUnitTestRunner);
     }
 }

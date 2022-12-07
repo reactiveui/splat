@@ -4,378 +4,376 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// Provides extension methods to the <see cref="IFullLogger"/> interface.
+/// </summary>
+public static class FullLoggerExtensions
 {
     /// <summary>
-    /// Provides extension methods to the <see cref="IFullLogger"/> interface.
+    /// Sends the value provided by the provided delegate, only if Debug is enabled.
     /// </summary>
-    public static class FullLoggerExtensions
+    /// <param name="logger">The logger to use.</param>
+    /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
+    public static void Debug(this IFullLogger logger, Func<string> function)
     {
-        /// <summary>
-        /// Sends the value provided by the provided delegate, only if Debug is enabled.
-        /// </summary>
-        /// <param name="logger">The logger to use.</param>
-        /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
-        public static void Debug(this IFullLogger logger, Func<string> function)
+        if (logger is null)
         {
-            if (logger is null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
-
-            if (function is null)
-            {
-                throw new ArgumentNullException(nameof(function));
-            }
-
-            if (logger.IsDebugEnabled)
-            {
-                logger.Debug(function.Invoke());
-            }
+            throw new ArgumentNullException(nameof(logger));
         }
 
-        /// <summary>
-        /// Sends the value provided by the provided delegate, only if Debug is enabled.
-        /// </summary>
-        /// <typeparam name="T">The type of object we are logging about.</typeparam>
-        /// <param name="logger">The logger to use.</param>
-        /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
-        public static void Debug<T>(this IFullLogger logger, Func<string> function)
+        if (function is null)
         {
-            if (logger is null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
-
-            if (function is null)
-            {
-                throw new ArgumentNullException(nameof(function));
-            }
-
-            if (logger.IsDebugEnabled)
-            {
-                logger.Debug<T>(function.Invoke());
-            }
+            throw new ArgumentNullException(nameof(function));
         }
 
-        /// <summary>
-        /// Sends the value provided by the provided delegate, only if Debug is enabled.
-        /// </summary>
-        /// <param name="logger">The logger to use.</param>
-        /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
-        /// <param name="exception">A exception to log about.</param>
-        public static void DebugException(this IFullLogger logger, Func<string> function, Exception exception)
+        if (logger.IsDebugEnabled)
         {
-            if (logger is null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
+            logger.Debug(function.Invoke());
+        }
+    }
 
-            if (function is null)
-            {
-                throw new ArgumentNullException(nameof(function));
-            }
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Debug is enabled.
+    /// </summary>
+    /// <typeparam name="T">The type of object we are logging about.</typeparam>
+    /// <param name="logger">The logger to use.</param>
+    /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
+    public static void Debug<T>(this IFullLogger logger, Func<string> function)
+    {
+        if (logger is null)
+        {
+            throw new ArgumentNullException(nameof(logger));
+        }
 
-            if (logger.IsDebugEnabled)
-            {
+        if (function is null)
+        {
+            throw new ArgumentNullException(nameof(function));
+        }
+
+        if (logger.IsDebugEnabled)
+        {
+            logger.Debug<T>(function.Invoke());
+        }
+    }
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Debug is enabled.
+    /// </summary>
+    /// <param name="logger">The logger to use.</param>
+    /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
+    /// <param name="exception">A exception to log about.</param>
+    public static void DebugException(this IFullLogger logger, Func<string> function, Exception exception)
+    {
+        if (logger is null)
+        {
+            throw new ArgumentNullException(nameof(logger));
+        }
+
+        if (function is null)
+        {
+            throw new ArgumentNullException(nameof(function));
+        }
+
+        if (logger.IsDebugEnabled)
+        {
 #pragma warning disable CS0618 // Type or member is obsolete
-                logger.DebugException(function.Invoke(), exception);
+            logger.DebugException(function.Invoke(), exception);
 #pragma warning restore CS0618 // Type or member is obsolete
-            }
+        }
+    }
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Debug is enabled.
+    /// </summary>
+    /// <param name="logger">The logger to use.</param>
+    /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
+    public static void Info(this IFullLogger logger, Func<string> function)
+    {
+        if (logger is null)
+        {
+            throw new ArgumentNullException(nameof(logger));
         }
 
-        /// <summary>
-        /// Sends the value provided by the provided delegate, only if Debug is enabled.
-        /// </summary>
-        /// <param name="logger">The logger to use.</param>
-        /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
-        public static void Info(this IFullLogger logger, Func<string> function)
+        if (function is null)
         {
-            if (logger is null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
-
-            if (function is null)
-            {
-                throw new ArgumentNullException(nameof(function));
-            }
-
-            if (logger.IsInfoEnabled)
-            {
-                logger.Info(function.Invoke());
-            }
+            throw new ArgumentNullException(nameof(function));
         }
 
-        /// <summary>
-        /// Sends the value provided by the provided delegate, only if Debug is enabled.
-        /// </summary>
-        /// <typeparam name="T">The type of object we are logging about.</typeparam>
-        /// <param name="logger">The logger to use.</param>
-        /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
-        public static void Info<T>(this IFullLogger logger, Func<string> function)
+        if (logger.IsInfoEnabled)
         {
-            if (logger is null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
+            logger.Info(function.Invoke());
+        }
+    }
 
-            if (function is null)
-            {
-                throw new ArgumentNullException(nameof(function));
-            }
-
-            if (logger.IsInfoEnabled)
-            {
-                logger.Info<T>(function.Invoke());
-            }
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Debug is enabled.
+    /// </summary>
+    /// <typeparam name="T">The type of object we are logging about.</typeparam>
+    /// <param name="logger">The logger to use.</param>
+    /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
+    public static void Info<T>(this IFullLogger logger, Func<string> function)
+    {
+        if (logger is null)
+        {
+            throw new ArgumentNullException(nameof(logger));
         }
 
-        /// <summary>
-        /// Sends the value provided by the provided delegate, only if Info is enabled.
-        /// </summary>
-        /// <param name="logger">The logger to use.</param>
-        /// <param name="function">The function to evaluate if Info logging is enabled.</param>
-        /// <param name="exception">A exception to log about.</param>
-        public static void InfoException(this IFullLogger logger, Func<string> function, Exception exception)
+        if (function is null)
         {
-            if (logger is null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
+            throw new ArgumentNullException(nameof(function));
+        }
 
-            if (function is null)
-            {
-                throw new ArgumentNullException(nameof(function));
-            }
+        if (logger.IsInfoEnabled)
+        {
+            logger.Info<T>(function.Invoke());
+        }
+    }
 
-            if (logger.IsInfoEnabled)
-            {
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Info is enabled.
+    /// </summary>
+    /// <param name="logger">The logger to use.</param>
+    /// <param name="function">The function to evaluate if Info logging is enabled.</param>
+    /// <param name="exception">A exception to log about.</param>
+    public static void InfoException(this IFullLogger logger, Func<string> function, Exception exception)
+    {
+        if (logger is null)
+        {
+            throw new ArgumentNullException(nameof(logger));
+        }
+
+        if (function is null)
+        {
+            throw new ArgumentNullException(nameof(function));
+        }
+
+        if (logger.IsInfoEnabled)
+        {
 #pragma warning disable CS0618 // Type or member is obsolete
-                logger.InfoException(function.Invoke(), exception);
+            logger.InfoException(function.Invoke(), exception);
 #pragma warning restore CS0618 // Type or member is obsolete
-            }
+        }
+    }
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Warn is enabled.
+    /// </summary>
+    /// <param name="logger">The logger to use.</param>
+    /// <param name="function">The function to evaluate if Warn logging is enabled.</param>
+    public static void Warn(this IFullLogger logger, Func<string> function)
+    {
+        if (logger is null)
+        {
+            throw new ArgumentNullException(nameof(logger));
         }
 
-        /// <summary>
-        /// Sends the value provided by the provided delegate, only if Warn is enabled.
-        /// </summary>
-        /// <param name="logger">The logger to use.</param>
-        /// <param name="function">The function to evaluate if Warn logging is enabled.</param>
-        public static void Warn(this IFullLogger logger, Func<string> function)
+        if (function is null)
         {
-            if (logger is null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
-
-            if (function is null)
-            {
-                throw new ArgumentNullException(nameof(function));
-            }
-
-            if (logger.IsWarnEnabled)
-            {
-                logger.Warn(function.Invoke());
-            }
+            throw new ArgumentNullException(nameof(function));
         }
 
-        /// <summary>
-        /// Sends the value provided by the provided delegate, only if Warn is enabled.
-        /// </summary>
-        /// <typeparam name="T">The type of object we are logging about.</typeparam>
-        /// <param name="logger">The logger to use.</param>
-        /// <param name="function">The function to evaluate if Warn logging is enabled.</param>
-        public static void Warn<T>(this IFullLogger logger, Func<string> function)
+        if (logger.IsWarnEnabled)
         {
-            if (logger is null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
+            logger.Warn(function.Invoke());
+        }
+    }
 
-            if (function is null)
-            {
-                throw new ArgumentNullException(nameof(function));
-            }
-
-            if (logger.IsWarnEnabled)
-            {
-                logger.Warn<T>(function.Invoke());
-            }
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Warn is enabled.
+    /// </summary>
+    /// <typeparam name="T">The type of object we are logging about.</typeparam>
+    /// <param name="logger">The logger to use.</param>
+    /// <param name="function">The function to evaluate if Warn logging is enabled.</param>
+    public static void Warn<T>(this IFullLogger logger, Func<string> function)
+    {
+        if (logger is null)
+        {
+            throw new ArgumentNullException(nameof(logger));
         }
 
-        /// <summary>
-        /// Sends the value provided by the provided delegate, only if Warn is enabled.
-        /// </summary>
-        /// <param name="logger">The logger to use.</param>
-        /// <param name="function">The function to evaluate if Warn logging is enabled.</param>
-        /// <param name="exception">A exception to log about.</param>
-        public static void WarnException(this IFullLogger logger, Func<string> function, Exception exception)
+        if (function is null)
         {
-            if (logger is null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
+            throw new ArgumentNullException(nameof(function));
+        }
 
-            if (function is null)
-            {
-                throw new ArgumentNullException(nameof(function));
-            }
+        if (logger.IsWarnEnabled)
+        {
+            logger.Warn<T>(function.Invoke());
+        }
+    }
 
-            if (logger.IsWarnEnabled)
-            {
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Warn is enabled.
+    /// </summary>
+    /// <param name="logger">The logger to use.</param>
+    /// <param name="function">The function to evaluate if Warn logging is enabled.</param>
+    /// <param name="exception">A exception to log about.</param>
+    public static void WarnException(this IFullLogger logger, Func<string> function, Exception exception)
+    {
+        if (logger is null)
+        {
+            throw new ArgumentNullException(nameof(logger));
+        }
+
+        if (function is null)
+        {
+            throw new ArgumentNullException(nameof(function));
+        }
+
+        if (logger.IsWarnEnabled)
+        {
 #pragma warning disable CS0618 // Type or member is obsolete
-                logger.WarnException(function.Invoke(), exception);
+            logger.WarnException(function.Invoke(), exception);
 #pragma warning restore CS0618 // Type or member is obsolete
-            }
+        }
+    }
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Error is enabled.
+    /// </summary>
+    /// <param name="logger">The logger to use.</param>
+    /// <param name="function">The function to evaluate if Error logging is enabled.</param>
+    public static void Error(this IFullLogger logger, Func<string> function)
+    {
+        if (logger is null)
+        {
+            throw new ArgumentNullException(nameof(logger));
         }
 
-        /// <summary>
-        /// Sends the value provided by the provided delegate, only if Error is enabled.
-        /// </summary>
-        /// <param name="logger">The logger to use.</param>
-        /// <param name="function">The function to evaluate if Error logging is enabled.</param>
-        public static void Error(this IFullLogger logger, Func<string> function)
+        if (function is null)
         {
-            if (logger is null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
-
-            if (function is null)
-            {
-                throw new ArgumentNullException(nameof(function));
-            }
-
-            if (logger.IsErrorEnabled)
-            {
-                logger.Error(function.Invoke());
-            }
+            throw new ArgumentNullException(nameof(function));
         }
 
-        /// <summary>
-        /// Sends the value provided by the provided delegate, only if Error is enabled.
-        /// </summary>
-        /// <typeparam name="T">The type of object we are logging about.</typeparam>
-        /// <param name="logger">The logger to use.</param>
-        /// <param name="function">The function to evaluate if Error logging is enabled.</param>
-        public static void Error<T>(this IFullLogger logger, Func<string> function)
+        if (logger.IsErrorEnabled)
         {
-            if (logger is null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
+            logger.Error(function.Invoke());
+        }
+    }
 
-            if (function is null)
-            {
-                throw new ArgumentNullException(nameof(function));
-            }
-
-            if (logger.IsErrorEnabled)
-            {
-                logger.Error<T>(function.Invoke());
-            }
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Error is enabled.
+    /// </summary>
+    /// <typeparam name="T">The type of object we are logging about.</typeparam>
+    /// <param name="logger">The logger to use.</param>
+    /// <param name="function">The function to evaluate if Error logging is enabled.</param>
+    public static void Error<T>(this IFullLogger logger, Func<string> function)
+    {
+        if (logger is null)
+        {
+            throw new ArgumentNullException(nameof(logger));
         }
 
-        /// <summary>
-        /// Sends the value provided by the provided delegate, only if Error is enabled.
-        /// </summary>
-        /// <param name="logger">The logger to use.</param>
-        /// <param name="function">The function to evaluate if Error logging is enabled.</param>
-        /// <param name="exception">A exception to log about.</param>
-        public static void ErrorException(this IFullLogger logger, Func<string> function, Exception exception)
+        if (function is null)
         {
-            if (logger is null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
+            throw new ArgumentNullException(nameof(function));
+        }
 
-            if (function is null)
-            {
-                throw new ArgumentNullException(nameof(function));
-            }
+        if (logger.IsErrorEnabled)
+        {
+            logger.Error<T>(function.Invoke());
+        }
+    }
 
-            if (logger.IsErrorEnabled)
-            {
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Error is enabled.
+    /// </summary>
+    /// <param name="logger">The logger to use.</param>
+    /// <param name="function">The function to evaluate if Error logging is enabled.</param>
+    /// <param name="exception">A exception to log about.</param>
+    public static void ErrorException(this IFullLogger logger, Func<string> function, Exception exception)
+    {
+        if (logger is null)
+        {
+            throw new ArgumentNullException(nameof(logger));
+        }
+
+        if (function is null)
+        {
+            throw new ArgumentNullException(nameof(function));
+        }
+
+        if (logger.IsErrorEnabled)
+        {
 #pragma warning disable CS0618 // Type or member is obsolete
-                logger.ErrorException(function.Invoke(), exception);
+            logger.ErrorException(function.Invoke(), exception);
 #pragma warning restore CS0618 // Type or member is obsolete
-            }
+        }
+    }
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Fatal is enabled.
+    /// </summary>
+    /// <param name="logger">The logger to use.</param>
+    /// <param name="function">The function to evaluate if Fatal logging is enabled.</param>
+    public static void Fatal(this IFullLogger logger, Func<string> function)
+    {
+        if (logger is null)
+        {
+            throw new ArgumentNullException(nameof(logger));
         }
 
-        /// <summary>
-        /// Sends the value provided by the provided delegate, only if Fatal is enabled.
-        /// </summary>
-        /// <param name="logger">The logger to use.</param>
-        /// <param name="function">The function to evaluate if Fatal logging is enabled.</param>
-        public static void Fatal(this IFullLogger logger, Func<string> function)
+        if (function is null)
         {
-            if (logger is null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
-
-            if (function is null)
-            {
-                throw new ArgumentNullException(nameof(function));
-            }
-
-            if (logger.IsFatalEnabled)
-            {
-                logger.Fatal(function.Invoke());
-            }
+            throw new ArgumentNullException(nameof(function));
         }
 
-        /// <summary>
-        /// Sends the value provided by the provided delegate, only if Fatal is enabled.
-        /// </summary>
-        /// <typeparam name="T">The type of object we are logging about.</typeparam>
-        /// <param name="logger">The logger to use.</param>
-        /// <param name="function">The function to evaluate if Fatal logging is enabled.</param>
-        public static void Fatal<T>(this IFullLogger logger, Func<string> function)
+        if (logger.IsFatalEnabled)
         {
-            if (logger is null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
+            logger.Fatal(function.Invoke());
+        }
+    }
 
-            if (function is null)
-            {
-                throw new ArgumentNullException(nameof(function));
-            }
-
-            if (logger.IsFatalEnabled)
-            {
-                logger.Fatal<T>(function.Invoke());
-            }
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Fatal is enabled.
+    /// </summary>
+    /// <typeparam name="T">The type of object we are logging about.</typeparam>
+    /// <param name="logger">The logger to use.</param>
+    /// <param name="function">The function to evaluate if Fatal logging is enabled.</param>
+    public static void Fatal<T>(this IFullLogger logger, Func<string> function)
+    {
+        if (logger is null)
+        {
+            throw new ArgumentNullException(nameof(logger));
         }
 
-        /// <summary>
-        /// Sends the value provided by the provided delegate, only if Fatal is enabled.
-        /// </summary>
-        /// <param name="logger">The logger to use.</param>
-        /// <param name="function">The function to evaluate if Fatal logging is enabled.</param>
-        /// <param name="exception">A exception to log about.</param>
-        public static void FatalException(this IFullLogger logger, Func<string> function, Exception exception)
+        if (function is null)
         {
-            if (logger is null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
+            throw new ArgumentNullException(nameof(function));
+        }
 
-            if (function is null)
-            {
-                throw new ArgumentNullException(nameof(function));
-            }
+        if (logger.IsFatalEnabled)
+        {
+            logger.Fatal<T>(function.Invoke());
+        }
+    }
 
-            if (logger.IsFatalEnabled)
-            {
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Fatal is enabled.
+    /// </summary>
+    /// <param name="logger">The logger to use.</param>
+    /// <param name="function">The function to evaluate if Fatal logging is enabled.</param>
+    /// <param name="exception">A exception to log about.</param>
+    public static void FatalException(this IFullLogger logger, Func<string> function, Exception exception)
+    {
+        if (logger is null)
+        {
+            throw new ArgumentNullException(nameof(logger));
+        }
+
+        if (function is null)
+        {
+            throw new ArgumentNullException(nameof(function));
+        }
+
+        if (logger.IsFatalEnabled)
+        {
 #pragma warning disable CS0618 // Type or member is obsolete
-                logger.ErrorException(function.Invoke(), exception);
+            logger.ErrorException(function.Invoke(), exception);
 #pragma warning restore CS0618 // Type or member is obsolete
-            }
         }
     }
 }

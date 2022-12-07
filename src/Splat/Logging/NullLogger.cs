@@ -6,34 +6,33 @@
 using System;
 using System.ComponentModel;
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// a logger which will never emit any value.
+/// </summary>
+public class NullLogger : ILogger
 {
-    /// <summary>
-    /// a logger which will never emit any value.
-    /// </summary>
-    public class NullLogger : ILogger
+    /// <inheritdoc />
+    public LogLevel Level { get; set; }
+
+    /// <inheritdoc />
+    public void Write([Localizable(false)] string message, LogLevel logLevel)
     {
-        /// <inheritdoc />
-        public LogLevel Level { get; set; }
+    }
 
-        /// <inheritdoc />
-        public void Write([Localizable(false)] string message, LogLevel logLevel)
-        {
-        }
+    /// <inheritdoc />
+    public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel)
+    {
+    }
 
-        /// <inheritdoc />
-        public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel)
-        {
-        }
+    /// <inheritdoc />
+    public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
+    {
+    }
 
-        /// <inheritdoc />
-        public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
-        {
-        }
-
-        /// <inheritdoc />
-        public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
-        {
-        }
+    /// <inheritdoc />
+    public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
+    {
     }
 }

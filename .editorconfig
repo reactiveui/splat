@@ -12,9 +12,11 @@ indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
 
+[project.json]
+indent_size = 2
+
 # C# files
 [*.cs]
-
 # New line preferences
 csharp_new_line_before_open_brace = all
 csharp_new_line_before_else = true
@@ -151,27 +153,21 @@ csharp_space_between_method_declaration_parameter_list_parentheses = false
 csharp_space_between_parentheses = false
 csharp_space_between_square_brackets = false
 
-# analyzers
+# analyzers.ruleset
 dotnet_diagnostic.AvoidAsyncVoid.severity = suggestion
-
-dotnet_diagnostic.CA1000.severity = none
 dotnet_diagnostic.CA1001.severity = error
 dotnet_diagnostic.CA1009.severity = error
-dotnet_diagnostic.CA1014.severity = none
 dotnet_diagnostic.CA1016.severity = error
-dotnet_diagnostic.CA1030.severity = none
-dotnet_diagnostic.CA1031.severity = none
-dotnet_diagnostic.CA1033.severity = none
 dotnet_diagnostic.CA1036.severity = none
 dotnet_diagnostic.CA1049.severity = error
 dotnet_diagnostic.CA1056.severity = suggestion
 dotnet_diagnostic.CA1060.severity = error
 dotnet_diagnostic.CA1061.severity = error
+dotnet_diagnostic.CA1062.severity = none
 dotnet_diagnostic.CA1063.severity = error
 dotnet_diagnostic.CA1065.severity = error
 dotnet_diagnostic.CA1301.severity = error
-dotnet_diagnostic.CA1303.severity = none
-dotnet_diagnostic.CA1308.severity = none
+dotnet_diagnostic.CA1305.severity = none
 dotnet_diagnostic.CA1400.severity = error
 dotnet_diagnostic.CA1401.severity = error
 dotnet_diagnostic.CA1403.severity = error
@@ -186,7 +182,7 @@ dotnet_diagnostic.CA1810.severity = none
 dotnet_diagnostic.CA1821.severity = error
 dotnet_diagnostic.CA1900.severity = error
 dotnet_diagnostic.CA1901.severity = error
-dotnet_diagnostic.CA2000.severity = none
+dotnet_diagnostic.CA2000.severity = suggestion
 dotnet_diagnostic.CA2002.severity = error
 dotnet_diagnostic.CA2007.severity = none
 dotnet_diagnostic.CA2100.severity = error
@@ -230,7 +226,6 @@ dotnet_diagnostic.CA2238.severity = error
 dotnet_diagnostic.CA2240.severity = error
 dotnet_diagnostic.CA2241.severity = error
 dotnet_diagnostic.CA2242.severity = error
-
 dotnet_diagnostic.RCS1001.severity = error
 dotnet_diagnostic.RCS1018.severity = error
 dotnet_diagnostic.RCS1037.severity = error
@@ -243,7 +238,6 @@ dotnet_diagnostic.RCS1074.severity = error
 dotnet_diagnostic.RCS1090.severity = error
 dotnet_diagnostic.RCS1138.severity = error
 dotnet_diagnostic.RCS1139.severity = error
-dotnet_diagnostic.RCS1158.severity = none
 dotnet_diagnostic.RCS1163.severity = suggestion
 dotnet_diagnostic.RCS1168.severity = suggestion
 dotnet_diagnostic.RCS1188.severity = error
@@ -251,7 +245,6 @@ dotnet_diagnostic.RCS1201.severity = error
 dotnet_diagnostic.RCS1207.severity = error
 dotnet_diagnostic.RCS1211.severity = error
 dotnet_diagnostic.RCS1507.severity = error
-
 dotnet_diagnostic.SA1000.severity = error
 dotnet_diagnostic.SA1001.severity = error
 dotnet_diagnostic.SA1002.severity = error
@@ -348,10 +341,9 @@ dotnet_diagnostic.SA1311.severity = none
 dotnet_diagnostic.SA1312.severity = error
 dotnet_diagnostic.SA1313.severity = error
 dotnet_diagnostic.SA1314.severity = error
-dotnet_diagnostic.SA1316.severity = none
 dotnet_diagnostic.SA1400.severity = error
 dotnet_diagnostic.SA1401.severity = error
-dotnet_diagnostic.SA1402.severity = error
+dotnet_diagnostic.SA1402.severity = none
 dotnet_diagnostic.SA1403.severity = error
 dotnet_diagnostic.SA1404.severity = error
 dotnet_diagnostic.SA1405.severity = error
@@ -362,9 +354,9 @@ dotnet_diagnostic.SA1410.severity = error
 dotnet_diagnostic.SA1411.severity = error
 dotnet_diagnostic.SA1413.severity = none
 dotnet_diagnostic.SA1500.severity = error
-dotnet_diagnostic.SA1501.severity = error
+dotnet_diagnostic.SA1501.severity = none
 dotnet_diagnostic.SA1502.severity = error
-dotnet_diagnostic.SA1503.severity = error
+dotnet_diagnostic.SA1503.severity = none
 dotnet_diagnostic.SA1504.severity = error
 dotnet_diagnostic.SA1505.severity = error
 dotnet_diagnostic.SA1506.severity = error
@@ -419,15 +411,12 @@ dotnet_diagnostic.SA1640.severity = error
 dotnet_diagnostic.SA1641.severity = error
 dotnet_diagnostic.SA1642.severity = error
 dotnet_diagnostic.SA1643.severity = error
+dotnet_diagnostic.SA1648.severity = error
 dotnet_diagnostic.SA1649.severity = error
 dotnet_diagnostic.SA1651.severity = error
-
 dotnet_diagnostic.SX1101.severity = error
 dotnet_diagnostic.SX1309.severity = error
 dotnet_diagnostic.SX1623.severity = none
-
-dotnet_diagnostic.IDE0046.severity = suggestion
-dotnet_diagnostic.IDE0060.severity = none
 
 # C++ Files
 [*.{cpp,h,in}]
@@ -435,11 +424,8 @@ curly_bracket_next_line = true
 indent_brace_style = Allman
 
 # Xml project files
-[*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,nativeproj,locproj}]
+[*.{csproj,vcxproj,vcxproj.filters,proj,nativeproj,locproj}]
 indent_size = 2
-
-[*.{csproj,vbproj,proj,nativeproj,locproj}]
-charset = utf-8
 
 # Xml build files
 [*.builds]
@@ -461,5 +447,5 @@ indent_size = 2
 [*.sh]
 end_of_line = lf
 
-[*.{cmd,bat}]
+[*.{cmd, bat}]
 end_of_line = crlf

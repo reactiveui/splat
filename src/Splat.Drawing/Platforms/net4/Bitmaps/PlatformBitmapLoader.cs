@@ -9,81 +9,80 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// A XAML based platform bitmap loader which will load our bitmaps for us.
+/// </summary>
+public class PlatformBitmapLoader : IBitmapLoader
 {
-    /// <summary>
-    /// A XAML based platform bitmap loader which will load our bitmaps for us.
-    /// </summary>
-    public class PlatformBitmapLoader : IBitmapLoader
+    /// <inheritdoc />
+    public Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
     {
-        /// <inheritdoc />
-        public Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
+        return Task.Run<IBitmap?>(() =>
         {
-            return Task.Run<IBitmap?>(() =>
-            {
-                var ret = new BitmapImage();
+            var ret = new BitmapImage();
 
-                WithInit(ret, source =>
+            WithInit(ret, source =>
+            {
+                if (desiredWidth is not null)
                 {
-                    if (desiredWidth is not null)
-                    {
-                        source.DecodePixelWidth = (int)desiredWidth;
-                    }
+                    source.DecodePixelWidth = (int)desiredWidth;
+                }
 
-                    if (desiredHeight is not null)
-                    {
-                        source.DecodePixelHeight = (int)desiredHeight;
-                    }
-
-                    source.StreamSource = sourceStream;
-                    source.CacheOption = BitmapCacheOption.OnLoad;
-                });
-
-                return new BitmapSourceBitmap(ret);
-            });
-        }
-
-        /// <inheritdoc />
-        public Task<IBitmap?> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
-        {
-            return Task.Run<IBitmap?>(() =>
-            {
-                var ret = new BitmapImage();
-                WithInit(ret, x =>
+                if (desiredHeight is not null)
                 {
-                    if (desiredWidth is not null)
-                    {
-                        x.DecodePixelWidth = (int)desiredWidth;
-                    }
+                    source.DecodePixelHeight = (int)desiredHeight;
+                }
 
-                    if (desiredHeight is not null)
-                    {
-                        x.DecodePixelHeight = (int)desiredHeight;
-                    }
-
-                    x.UriSource = new Uri(source, UriKind.RelativeOrAbsolute);
-                });
-
-                return new BitmapSourceBitmap(ret);
+                source.StreamSource = sourceStream;
+                source.CacheOption = BitmapCacheOption.OnLoad;
             });
-        }
 
-        /// <inheritdoc />
-        public IBitmap Create(float width, float height)
+            return new BitmapSourceBitmap(ret);
+        });
+    }
+
+    /// <inheritdoc />
+    public Task<IBitmap?> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
+    {
+        return Task.Run<IBitmap?>(() =>
         {
-            return new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height, 96, 96, PixelFormats.Pbgra32, null));
-        }
-
-        private static void WithInit(BitmapImage source, Action<BitmapImage> block)
-        {
-            source.BeginInit();
-            block(source);
-            source.EndInit();
-
-            if (source.CanFreeze)
+            var ret = new BitmapImage();
+            WithInit(ret, x =>
             {
-                source.Freeze();
-            }
+                if (desiredWidth is not null)
+                {
+                    x.DecodePixelWidth = (int)desiredWidth;
+                }
+
+                if (desiredHeight is not null)
+                {
+                    x.DecodePixelHeight = (int)desiredHeight;
+                }
+
+                x.UriSource = new Uri(source, UriKind.RelativeOrAbsolute);
+            });
+
+            return new BitmapSourceBitmap(ret);
+        });
+    }
+
+    /// <inheritdoc />
+    public IBitmap Create(float width, float height)
+    {
+        return new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height, 96, 96, PixelFormats.Pbgra32, null));
+    }
+
+    private static void WithInit(BitmapImage source, Action<BitmapImage> block)
+    {
+        source.BeginInit();
+        block(source);
+        source.EndInit();
+
+        if (source.CanFreeze)
+        {
+            source.Freeze();
         }
     }
 }

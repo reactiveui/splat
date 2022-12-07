@@ -4,73 +4,69 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Diagnostics;
+
 using Microsoft.Extensions.Logging;
 
-namespace Splat.Microsoft.Extensions.Logging
+namespace Splat.Microsoft.Extensions.Logging;
+
+/// <summary>
+/// A logging provider which talks to Splat.
+/// </summary>
+public sealed class MicrosoftExtensionsLogProvider : ILoggerProvider
 {
-    /// <summary>
-    /// A logging provider which talks to Splat.
-    /// </summary>
-    public sealed class MicrosoftExtensionsLogProvider : ILoggerProvider
+    /// <inheritdoc />
+    public void Dispose()
     {
-        /// <inheritdoc />
-        public void Dispose()
+    }
+
+    /// <inheritdoc />
+    public global::Microsoft.Extensions.Logging.ILogger CreateLogger(string categoryName)
+    {
+        return new SplatLoggingAdapter(categoryName);
+    }
+
+    private class SplatLoggingAdapter : global::Microsoft.Extensions.Logging.ILogger
+    {
+        private readonly string _categoryName;
+
+        public SplatLoggingAdapter(string categoryName)
         {
+            _categoryName = categoryName;
         }
 
         /// <inheritdoc />
-        public global::Microsoft.Extensions.Logging.ILogger CreateLogger(string categoryName)
+        public void Log<TState>(global::Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
-            return new SplatLoggingAdapter(categoryName);
+            if (!IsEnabled(logLevel))
+            {
+                return;
+            }
+
+            if (formatter is null)
+            {
+                throw new ArgumentNullException(nameof(formatter));
+            }
+
+            var splatLogLevel = MsLoggingHelpers.MsLog2SplatDictionary[logLevel];
+
+            var message = formatter(state, exception);
+
+            LogHost.Default.Write(exception!, message, splatLogLevel);
         }
 
-        private class SplatLoggingAdapter : global::Microsoft.Extensions.Logging.ILogger
+        /// <inheritdoc />
+        public bool IsEnabled(global::Microsoft.Extensions.Logging.LogLevel logLevel)
         {
-            private readonly string _categoryName;
+            return logLevel != global::Microsoft.Extensions.Logging.LogLevel.None;
+        }
 
-            public SplatLoggingAdapter(string categoryName)
-            {
-                _categoryName = categoryName;
-            }
-
-            /// <inheritdoc />
-            public void Log<TState>(global::Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
-            {
-                if (!IsEnabled(logLevel))
-                {
-                    return;
-                }
-
-                if (formatter is null)
-                {
-                    throw new ArgumentNullException(nameof(formatter));
-                }
-
-                var splatLogLevel = MsLoggingHelpers.MsLog2SplatDictionary[logLevel];
-
-                var message = formatter(state, exception);
-
-                LogHost.Default.Write(exception!, message, splatLogLevel);
-            }
-
-            /// <inheritdoc />
-            public bool IsEnabled(global::Microsoft.Extensions.Logging.LogLevel logLevel)
-            {
-                return logLevel != global::Microsoft.Extensions.Logging.LogLevel.None;
-            }
-
-            /// <inheritdoc />
-            public IDisposable BeginScope<TState>(TState state)
-                 where TState : notnull
-            {
-                // documentation states we're allowed to return null.
-                // NRT in net6 causing build issue as of 2021-11-10.
-                return null!;
-            }
+        /// <inheritdoc />
+        public IDisposable BeginScope<TState>(TState state)
+             where TState : notnull
+        {
+            // documentation states we're allowed to return null.
+            // NRT in net6 causing build issue as of 2021-11-10.
+            return null!;
         }
     }
 }

@@ -5,13 +5,12 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace Splat.Common.Test
+namespace Splat.Common.Test;
+
+/// <summary>
+/// View Model Two.
+/// </summary>
+[ExcludeFromCodeCoverage]
+public class ViewModelTwo
 {
-    /// <summary>
-    /// View Model Two.
-    /// </summary>
-    [ExcludeFromCodeCoverage]
-    public class ViewModelTwo
-    {
-    }
 }

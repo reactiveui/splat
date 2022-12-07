@@ -5,21 +5,20 @@
 
 using System;
 
-namespace Splat.Log4Net
-{
-    /// <summary>
-    /// Resolves a logger to the specified type.
-    /// </summary>
-    internal static class LogResolver
-    {
-        private const int MaxCacheSize = 16;
-        private static readonly MemoizingMRUCache<Type, global::log4net.ILog> _loggerCache = new(
-            (type, _) => global::log4net.LogManager.GetLogger(type),
-            MaxCacheSize);
+namespace Splat.Log4Net;
 
-        public static global::log4net.ILog Resolve(Type type)
-        {
-            return _loggerCache.Get(type, null);
-        }
+/// <summary>
+/// Resolves a logger to the specified type.
+/// </summary>
+internal static class LogResolver
+{
+    private const int MaxCacheSize = 16;
+    private static readonly MemoizingMRUCache<Type, global::log4net.ILog> _loggerCache = new(
+        (type, _) => global::log4net.LogManager.GetLogger(type),
+        MaxCacheSize);
+
+    public static global::log4net.ILog Resolve(Type type)
+    {
+        return _loggerCache.Get(type, null);
     }
 }
