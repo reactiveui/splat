@@ -5,13 +5,12 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace Splat.Tests.Mocks
+namespace Splat.Tests.Mocks;
+
+/// <summary>
+/// A dummy class used during Locator testing.
+/// </summary>
+[ExcludeFromCodeCoverage]
+public class DummyObjectClass3 : IDummyInterface
 {
-    /// <summary>
-    /// A dummy class used during Locator testing.
-    /// </summary>
-    [ExcludeFromCodeCoverage]
-    public class DummyObjectClass3 : IDummyInterface
-    {
-    }
 }

@@ -4,146 +4,145 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+
 using Splat.ApplicationPerformanceMonitoring;
+
 using Xunit;
 
-namespace Splat.Tests.ApplicationPerformanceMonitoring
+namespace Splat.Tests.ApplicationPerformanceMonitoring;
+
+/// <summary>
+/// Unit Tests for the IEnableFeatureUsageTracking Extensions.
+/// </summary>
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2201:Do not raise reserved exception types", Justification = "Deliberate Usage")]
+public static class EnableFeatureUsageTrackingExtensionsTests
 {
     /// <summary>
-    /// Unit Tests for the IEnableFeatureUsageTracking Extensions.
+    /// Dummy object for testing IEnableFeatureUsageTracking.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2201:Do not raise reserved exception types", Justification = "Deliberate Usage")]
-    public static class EnableFeatureUsageTrackingExtensionsTests
+    public sealed class TestObjectThatSupportsFeatureUsageTracking : IEnableFeatureUsageTracking
+    {
+    }
+
+    /// <summary>
+    /// Unit tests for the FeatureUsageTrackingExtensionMethod.
+    /// </summary>
+    public sealed class FeatureUsageTrackingSessionMethod
     {
         /// <summary>
-        /// Dummy object for testing IEnableFeatureUsageTracking.
+        /// Test to ensure a default feature usage tracking session is set up.
         /// </summary>
-        public sealed class TestObjectThatSupportsFeatureUsageTracking : IEnableFeatureUsageTracking
+        [Fact]
+        public void ReturnsInstance()
         {
+            var instance = new TestObjectThatSupportsFeatureUsageTracking();
+            const string expected = "featureName";
+            using (var result = instance.FeatureUsageTrackingSession(expected))
+            {
+                Assert.NotNull(result);
+                Assert.IsType<DefaultFeatureUsageTrackingSession>(result);
+                Assert.Equal(expected, result.FeatureName);
+            }
         }
 
         /// <summary>
-        /// Unit tests for the FeatureUsageTrackingExtensionMethod.
+        /// Test to ensure a default feature usage tracking session handles an exception.
         /// </summary>
-        public sealed class FeatureUsageTrackingSessionMethod
+        [Fact]
+        public void HandleOnException()
         {
-            /// <summary>
-            /// Test to ensure a default feature usage tracking session is set up.
-            /// </summary>
-            [Fact]
-            public void ReturnsInstance()
+            var instance = new TestObjectThatSupportsFeatureUsageTracking();
+            using (var result = instance.FeatureUsageTrackingSession("featureName"))
             {
-                var instance = new TestObjectThatSupportsFeatureUsageTracking();
-                const string expected = "featureName";
-                using (var result = instance.FeatureUsageTrackingSession(expected))
-                {
-                    Assert.NotNull(result);
-                    Assert.IsType<DefaultFeatureUsageTrackingSession>(result);
-                    Assert.Equal(expected, result.FeatureName);
-                }
+                Assert.NotNull(result);
+                Assert.IsType<DefaultFeatureUsageTrackingSession>(result);
+                result.OnException(new Exception("Test"));
             }
+        }
 
-            /// <summary>
-            /// Test to ensure a default feature usage tracking session handles an exception.
-            /// </summary>
-            [Fact]
-            public void HandleOnException()
+        /// <summary>
+        /// Test to make sure a sub-feature is returned.
+        /// </summary>
+        [Fact]
+        public void ReturnsSubFeatureInstance()
+        {
+            var instance = new TestObjectThatSupportsFeatureUsageTracking();
+            using (var result = instance.FeatureUsageTrackingSession("featureName"))
             {
-                var instance = new TestObjectThatSupportsFeatureUsageTracking();
-                using (var result = instance.FeatureUsageTrackingSession("featureName"))
+                Assert.NotNull(result);
+                Assert.IsType<DefaultFeatureUsageTrackingSession>(result);
+                const string expected = "Sub-feature Name";
+                using (var subFeature = result.SubFeature(expected))
                 {
-                    Assert.NotNull(result);
-                    Assert.IsType<DefaultFeatureUsageTrackingSession>(result);
-                    result.OnException(new Exception("Test"));
-                }
-            }
-
-            /// <summary>
-            /// Test to make sure a sub-feature is returned.
-            /// </summary>
-            [Fact]
-            public void ReturnsSubFeatureInstance()
-            {
-                var instance = new TestObjectThatSupportsFeatureUsageTracking();
-                using (var result = instance.FeatureUsageTrackingSession("featureName"))
-                {
-                    Assert.NotNull(result);
-                    Assert.IsType<DefaultFeatureUsageTrackingSession>(result);
-                    const string expected = "Sub-feature Name";
-                    using (var subFeature = result.SubFeature(expected))
-                    {
-                        Assert.NotNull(subFeature);
-                        Assert.IsType<DefaultFeatureUsageTrackingSession>(subFeature);
-                        Assert.Equal(expected, subFeature.FeatureName);
-                    }
-                }
-            }
-
-            /// <summary>
-            /// Test to make sure a sub-feature handles an Exception.
-            /// </summary>
-            [Fact]
-            public void SubFeatureHandlesOnException()
-            {
-                var instance = new TestObjectThatSupportsFeatureUsageTracking();
-                using (var result = instance.FeatureUsageTrackingSession("featureName"))
-                {
-                    Assert.NotNull(result);
-                    Assert.IsType<DefaultFeatureUsageTrackingSession>(result);
-                    using (var subFeature = result.SubFeature("Sub-feature Name"))
-                    {
-                        Assert.NotNull(subFeature);
-                        Assert.IsType<DefaultFeatureUsageTrackingSession>(subFeature);
-                        subFeature.OnException(new Exception("Sub-feature"));
-                    }
+                    Assert.NotNull(subFeature);
+                    Assert.IsType<DefaultFeatureUsageTrackingSession>(subFeature);
+                    Assert.Equal(expected, subFeature.FeatureName);
                 }
             }
         }
 
         /// <summary>
-        /// Unit tests for the WithFeatureUsageTrackingSession Method.
+        /// Test to make sure a sub-feature handles an Exception.
         /// </summary>
-        public sealed class WithFeatureUsageTrackingSessionMethod
+        [Fact]
+        public void SubFeatureHandlesOnException()
         {
-            /// <summary>
-            /// Test to ensure a default feature usage tracking session is set up.
-            /// </summary>
-            [Fact]
-            public void HandlesAction()
+            var instance = new TestObjectThatSupportsFeatureUsageTracking();
+            using (var result = instance.FeatureUsageTrackingSession("featureName"))
             {
-                var instance = new TestObjectThatSupportsFeatureUsageTracking();
-                var handled = false;
-
-                instance.WithFeatureUsageTrackingSession(
-                    "FeatureName",
-                    _ => handled = true);
-
-                Assert.True(handled);
+                Assert.NotNull(result);
+                Assert.IsType<DefaultFeatureUsageTrackingSession>(result);
+                using (var subFeature = result.SubFeature("Sub-feature Name"))
+                {
+                    Assert.NotNull(subFeature);
+                    Assert.IsType<DefaultFeatureUsageTrackingSession>(subFeature);
+                    subFeature.OnException(new Exception("Sub-feature"));
+                }
             }
         }
+    }
 
+    /// <summary>
+    /// Unit tests for the WithFeatureUsageTrackingSession Method.
+    /// </summary>
+    public sealed class WithFeatureUsageTrackingSessionMethod
+    {
         /// <summary>
-        /// Unit tests for the WithSubFeatureUsageTrackingSession Method.
+        /// Test to ensure a default feature usage tracking session is set up.
         /// </summary>
-        public sealed class WithSubFeatureUsageTrackingSessionMethod
+        [Fact]
+        public void HandlesAction()
         {
-            /// <summary>
-            /// Test to ensure a default feature usage tracking session is set up.
-            /// </summary>
-            [Fact]
-            public void HandlesAction()
-            {
-                var instance = new TestObjectThatSupportsFeatureUsageTracking();
-                var handled = false;
+            var instance = new TestObjectThatSupportsFeatureUsageTracking();
+            var handled = false;
 
-                instance.WithFeatureUsageTrackingSession(
-                    "FeatureName",
-                    session => session.WithSubFeatureUsageTrackingSession("SubFeature", _ => handled = true));
+            instance.WithFeatureUsageTrackingSession(
+                "FeatureName",
+                _ => handled = true);
 
-                Assert.True(handled);
-            }
+            Assert.True(handled);
+        }
+    }
+
+    /// <summary>
+    /// Unit tests for the WithSubFeatureUsageTrackingSession Method.
+    /// </summary>
+    public sealed class WithSubFeatureUsageTrackingSessionMethod
+    {
+        /// <summary>
+        /// Test to ensure a default feature usage tracking session is set up.
+        /// </summary>
+        [Fact]
+        public void HandlesAction()
+        {
+            var instance = new TestObjectThatSupportsFeatureUsageTracking();
+            var handled = false;
+
+            instance.WithFeatureUsageTrackingSession(
+                "FeatureName",
+                session => session.WithSubFeatureUsageTrackingSession("SubFeature", _ => handled = true));
+
+            Assert.True(handled);
         }
     }
 }

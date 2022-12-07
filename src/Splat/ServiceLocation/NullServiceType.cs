@@ -5,22 +5,21 @@
 
 using System;
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// Null Service Type.
+/// </summary>
+public class NullServiceType
 {
     /// <summary>
-    /// Null Service Type.
+    /// Initializes a new instance of the <see cref="NullServiceType"/> class.
     /// </summary>
-    public class NullServiceType
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NullServiceType"/> class.
-        /// </summary>
-        /// <param name="factory">The value factory.</param>
-        public NullServiceType(Func<object?> factory) => Factory = factory;
+    /// <param name="factory">The value factory.</param>
+    public NullServiceType(Func<object?> factory) => Factory = factory;
 
-        /// <summary>
-        /// Gets the Factory.
-        /// </summary>
-        public Func<object?> Factory { get; }
-    }
+    /// <summary>
+    /// Gets the Factory.
+    /// </summary>
+    public Func<object?> Factory { get; }
 }

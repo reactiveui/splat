@@ -7,77 +7,76 @@ using System;
 using Exceptionless;
 using Splat.ApplicationPerformanceMonitoring;
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// Feature Usage Tracking integration for Exceptionless.
+/// </summary>
+public sealed class ExceptionlessFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
 {
     /// <summary>
-    /// Feature Usage Tracking integration for Exceptionless.
+    /// Initializes a new instance of the <see cref="ExceptionlessFeatureUsageTrackingSession"/> class.
     /// </summary>
-    public sealed class ExceptionlessFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
+    /// <param name="featureName">Name of the feature.</param>
+    public ExceptionlessFeatureUsageTrackingSession(string featureName)
+        : this(featureName, Guid.Empty)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ExceptionlessFeatureUsageTrackingSession"/> class.
-        /// </summary>
-        /// <param name="featureName">Name of the feature.</param>
-        public ExceptionlessFeatureUsageTrackingSession(string featureName)
-            : this(featureName, Guid.Empty)
+    }
+
+    internal ExceptionlessFeatureUsageTrackingSession(
+        string featureName,
+        Guid parentReference)
+    {
+        if (string.IsNullOrWhiteSpace(featureName))
         {
+            throw new ArgumentNullException(nameof(featureName));
         }
 
-        internal ExceptionlessFeatureUsageTrackingSession(
-            string featureName,
-            Guid parentReference)
+        ParentReference = parentReference;
+        FeatureName = featureName;
+        FeatureReference = Guid.NewGuid();
+
+        var client = ExceptionlessClient.Default;
+        var eventBuilder = client.CreateFeatureUsage(featureName);
+
+        if (!parentReference.Equals(Guid.Empty))
         {
-            if (string.IsNullOrWhiteSpace(featureName))
-            {
-                throw new ArgumentNullException(nameof(featureName));
-            }
-
-            ParentReference = parentReference;
-            FeatureName = featureName;
-            FeatureReference = Guid.NewGuid();
-
-            var client = ExceptionlessClient.Default;
-            var eventBuilder = client.CreateFeatureUsage(featureName);
-
-            if (!parentReference.Equals(Guid.Empty))
-            {
-                eventBuilder.SetEventReference(FeatureName, FeatureReference.ToString());
-            }
-
-            eventBuilder.SetReferenceId(FeatureReference.ToString());
-            eventBuilder.Submit();
+            eventBuilder.SetEventReference(FeatureName, FeatureReference.ToString());
         }
 
-        /// <inheritdoc />
-        public Guid ParentReference { get; }
+        eventBuilder.SetReferenceId(FeatureReference.ToString());
+        eventBuilder.Submit();
+    }
 
-        /// <inheritdoc />
-        public Guid FeatureReference { get; }
+    /// <inheritdoc />
+    public Guid ParentReference { get; }
 
-        /// <inheritdoc />
-        public string FeatureName { get; }
+    /// <inheritdoc />
+    public Guid FeatureReference { get; }
 
-        /// <inheritdoc />
-        public IFeatureUsageTrackingSession SubFeature(string description)
-        {
-            return new ExceptionlessFeatureUsageTrackingSession(
-                description,
-                FeatureReference);
-        }
+    /// <inheritdoc />
+    public string FeatureName { get; }
 
-        /// <inheritdoc />
-        public void OnException(Exception exception)
-        {
-            var eventBuilder = exception.ToExceptionless()
-                .SetEventReference(FeatureName, ParentReference.ToString())
-                .SetReferenceId(FeatureReference.ToString());
+    /// <inheritdoc />
+    public IFeatureUsageTrackingSession SubFeature(string description)
+    {
+        return new ExceptionlessFeatureUsageTrackingSession(
+            description,
+            FeatureReference);
+    }
 
-            eventBuilder.Submit();
-        }
+    /// <inheritdoc />
+    public void OnException(Exception exception)
+    {
+        var eventBuilder = exception.ToExceptionless()
+            .SetEventReference(FeatureName, ParentReference.ToString())
+            .SetReferenceId(FeatureReference.ToString());
 
-        /// <inheritdoc />
-        public void Dispose()
-        {
-        }
+        eventBuilder.Submit();
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
     }
 }

@@ -5,18 +5,17 @@
 
 using DryIoc;
 
-namespace Splat.DryIoc
+namespace Splat.DryIoc;
+
+/// <summary>
+/// Extension methods for the DryIoc adapter.
+/// </summary>
+public static class SplatDryIocExtensions
 {
     /// <summary>
-    /// Extension methods for the DryIoc adapter.
+    /// Initializes an instance of <see cref="DryIocDependencyResolver"/> that overrides the default <see cref="Locator"/>.
     /// </summary>
-    public static class SplatDryIocExtensions
-    {
-        /// <summary>
-        /// Initializes an instance of <see cref="DryIocDependencyResolver"/> that overrides the default <see cref="Locator"/>.
-        /// </summary>
-        /// <param name="container">The container.</param>
-        public static void UseDryIocDependencyResolver(this IContainer container) =>
-            Locator.SetLocator(new DryIocDependencyResolver(container));
-    }
+    /// <param name="container">The container.</param>
+    public static void UseDryIocDependencyResolver(this IContainer container) =>
+        Locator.SetLocator(new DryIocDependencyResolver(container));
 }

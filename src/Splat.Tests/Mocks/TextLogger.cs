@@ -7,46 +7,45 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Splat.Tests.Mocks
+namespace Splat.Tests.Mocks;
+
+/// <summary>
+/// A <see cref="TextWriter"/> implementation of <see cref="ILogger"/> for testing.
+/// </summary>
+/// <seealso cref="Splat.ILogger" />
+public class TextLogger : ILogger, IMockLogTarget
 {
-    /// <summary>
-    /// A <see cref="TextWriter"/> implementation of <see cref="ILogger"/> for testing.
-    /// </summary>
-    /// <seealso cref="Splat.ILogger" />
-    public class TextLogger : ILogger, IMockLogTarget
+    private readonly List<Type> _types = new();
+    private readonly List<(LogLevel, string)> _logs = new();
+
+    /// <inheritdoc />
+    public ICollection<(LogLevel logLevel, string message)> Logs => _logs;
+
+    /// <inheritdoc />
+    public LogLevel Level { get; set; }
+
+    /// <inheritdoc />
+    public void Write(string message, LogLevel logLevel)
     {
-        private readonly List<Type> _types = new();
-        private readonly List<(LogLevel, string)> _logs = new();
+        _logs.Add((logLevel, message));
+    }
 
-        /// <inheritdoc />
-        public ICollection<(LogLevel logLevel, string message)> Logs => _logs;
+    /// <inheritdoc />
+    public void Write(Exception exception, string message, LogLevel logLevel)
+    {
+        Write($"{message} {exception}", logLevel);
+    }
 
-        /// <inheritdoc />
-        public LogLevel Level { get; set; }
+    /// <inheritdoc />
+    public void Write(string message, Type type, LogLevel logLevel)
+    {
+        _logs.Add((logLevel, message));
+        _types.Add(type);
+    }
 
-        /// <inheritdoc />
-        public void Write(string message, LogLevel logLevel)
-        {
-            _logs.Add((logLevel, message));
-        }
-
-        /// <inheritdoc />
-        public void Write(Exception exception, string message, LogLevel logLevel)
-        {
-            Write($"{message} {exception}", logLevel);
-        }
-
-        /// <inheritdoc />
-        public void Write(string message, Type type, LogLevel logLevel)
-        {
-            _logs.Add((logLevel, message));
-            _types.Add(type);
-        }
-
-        /// <inheritdoc />
-        public void Write(Exception exception, string message, Type type, LogLevel logLevel)
-        {
-            Write($"{message} {exception}", type, logLevel);
-        }
+    /// <inheritdoc />
+    public void Write(Exception exception, string message, Type type, LogLevel logLevel)
+    {
+        Write($"{message} {exception}", type, logLevel);
     }
 }

@@ -3,21 +3,20 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// Specifies that compressed bitmap format.
+/// </summary>
+public enum CompressedBitmapFormat
 {
     /// <summary>
-    /// Specifies that compressed bitmap format.
+    /// Store the bitmap as a PNG format.
     /// </summary>
-    public enum CompressedBitmapFormat
-    {
-        /// <summary>
-        /// Store the bitmap as a PNG format.
-        /// </summary>
-        Png,
+    Png,
 
-        /// <summary>
-        /// Store the bitmap as a JPEG format.
-        /// </summary>
-        Jpeg,
-    }
+    /// <summary>
+    /// Store the bitmap as a JPEG format.
+    /// </summary>
+    Jpeg,
 }

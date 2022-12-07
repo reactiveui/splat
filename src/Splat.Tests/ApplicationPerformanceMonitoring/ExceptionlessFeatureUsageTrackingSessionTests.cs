@@ -4,35 +4,31 @@
 // See the LICENSE file in the project root for full license information.
 
 #if !WINDOWS_UWP && !ANDROID
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Splat.Tests.ApplicationPerformanceMonitoring
+namespace Splat.Tests.ApplicationPerformanceMonitoring;
+
+/// <summary>
+/// Unit Tests for Exceptionless Feature Usage Tracking.
+/// </summary>
+public static class ExceptionlessFeatureUsageTrackingSessionTests
 {
-    /// <summary>
-    /// Unit Tests for Exceptionless Feature Usage Tracking.
-    /// </summary>
-    public static class ExceptionlessFeatureUsageTrackingSessionTests
+    /// <inheritdoc />>
+    public sealed class ConstructorTests : BaseFeatureUsageTrackingTests.BaseConstructorTests<ExceptionlessFeatureUsageTrackingSession>
     {
-        /// <inheritdoc />>
-        public sealed class ConstructorTests : BaseFeatureUsageTrackingTests.BaseConstructorTests<ExceptionlessFeatureUsageTrackingSession>
+        /// <inheritdoc/>
+        protected override ExceptionlessFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
         {
-            /// <inheritdoc/>
-            protected override ExceptionlessFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
-            {
-                return new(featureName);
-            }
+            return new(featureName);
         }
+    }
 
-        /// <inheritdoc />>
-        public sealed class SubFeatureMethodTests : BaseFeatureUsageTrackingTests.BaseSubFeatureMethodTests<ExceptionlessFeatureUsageTrackingSession>
+    /// <inheritdoc />>
+    public sealed class SubFeatureMethodTests : BaseFeatureUsageTrackingTests.BaseSubFeatureMethodTests<ExceptionlessFeatureUsageTrackingSession>
+    {
+        /// <inheritdoc/>
+        protected override ExceptionlessFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
         {
-            /// <inheritdoc/>
-            protected override ExceptionlessFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
-            {
-                return new(featureName);
-            }
+            return new(featureName);
         }
     }
 }

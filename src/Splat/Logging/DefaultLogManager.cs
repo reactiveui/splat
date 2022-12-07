@@ -5,52 +5,51 @@
 
 using System;
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// The default log manager provided by splat.
+/// This log manager will cache the loggers for each type,
+/// This will use the default registered <see cref="ILogger"/> inside the <see cref="Locator"/>.
+/// </summary>
+public sealed class DefaultLogManager : ILogManager
 {
+    private static readonly IFullLogger _nullLogger = new WrappingFullLogger(new NullLogger());
+    private readonly MemoizingMRUCache<Type, IFullLogger> _loggerCache;
+
     /// <summary>
-    /// The default log manager provided by splat.
-    /// This log manager will cache the loggers for each type,
-    /// This will use the default registered <see cref="ILogger"/> inside the <see cref="Locator"/>.
+    /// Initializes a new instance of the <see cref="DefaultLogManager"/> class.
     /// </summary>
-    public sealed class DefaultLogManager : ILogManager
+    /// <param name="dependencyResolver">A dependency resolver for testing purposes, will use the default Locator if null.</param>
+    public DefaultLogManager(IReadonlyDependencyResolver? dependencyResolver = null)
     {
-        private static readonly IFullLogger _nullLogger = new WrappingFullLogger(new NullLogger());
-        private readonly MemoizingMRUCache<Type, IFullLogger> _loggerCache;
+        dependencyResolver = dependencyResolver ?? Locator.Current;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultLogManager"/> class.
-        /// </summary>
-        /// <param name="dependencyResolver">A dependency resolver for testing purposes, will use the default Locator if null.</param>
-        public DefaultLogManager(IReadonlyDependencyResolver? dependencyResolver = null)
-        {
-            dependencyResolver = dependencyResolver ?? Locator.Current;
-
-            _loggerCache = new MemoizingMRUCache<Type, IFullLogger>(
-                (type, _) =>
+        _loggerCache = new MemoizingMRUCache<Type, IFullLogger>(
+            (type, _) =>
+            {
+                var ret = dependencyResolver.GetService<ILogger>();
+                if (ret is null)
                 {
-                    var ret = dependencyResolver.GetService<ILogger>();
-                    if (ret is null)
-                    {
-                        throw new LoggingException("Couldn't find an ILogger. This should never happen, your dependency resolver is probably broken.");
-                    }
+                    throw new LoggingException("Couldn't find an ILogger. This should never happen, your dependency resolver is probably broken.");
+                }
 
-                    return new WrappingFullLogger(new WrappingPrefixLogger(ret, type));
-                },
-                64);
+                return new WrappingFullLogger(new WrappingPrefixLogger(ret, type));
+            },
+            64);
+    }
+
+    /// <inheritdoc />
+    public IFullLogger GetLogger(Type type)
+    {
+        if (type == typeof(MemoizingMRUCache<Type, IFullLogger>))
+        {
+            return _nullLogger;
         }
 
-        /// <inheritdoc />
-        public IFullLogger GetLogger(Type type)
+        lock (_loggerCache)
         {
-            if (type == typeof(MemoizingMRUCache<Type, IFullLogger>))
-            {
-                return _nullLogger;
-            }
-
-            lock (_loggerCache)
-            {
-                return _loggerCache.Get(type);
-            }
+            return _loggerCache.Get(type);
         }
     }
 }

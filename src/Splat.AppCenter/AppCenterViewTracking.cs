@@ -3,35 +3,33 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
-using System.Text;
+
 using Splat.ApplicationPerformanceMonitoring;
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// View Tracking integration for AppCenter.
+/// </summary>
+public sealed class AppCenterViewTracking : IViewTracking
 {
     /// <summary>
-    /// View Tracking integration for AppCenter.
+    /// Track a view navigation using just a name.
     /// </summary>
-    public sealed class AppCenterViewTracking : IViewTracking
+    /// <param name="name">Name of the view.</param>
+    public void OnViewNavigation(string name)
     {
-        /// <summary>
-        /// Track a view navigation using just a name.
-        /// </summary>
-        /// <param name="name">Name of the view.</param>
-        public void OnViewNavigation(string name)
-        {
-            var properties = GetProperties(name);
+        var properties = GetProperties(name);
 
-            Microsoft.AppCenter.Analytics.Analytics.TrackEvent("PageView", properties);
-        }
+        Microsoft.AppCenter.Analytics.Analytics.TrackEvent("PageView", properties);
+    }
 
-        private static IDictionary<string, string> GetProperties(string name)
+    private static IDictionary<string, string> GetProperties(string name)
+    {
+        return new Dictionary<string, string>
         {
-            return new Dictionary<string, string>
-            {
-                { "Name", name },
-            };
-        }
+            { "Name", name },
+        };
     }
 }

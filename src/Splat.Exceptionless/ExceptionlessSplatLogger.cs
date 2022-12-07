@@ -10,178 +10,177 @@ using System.Diagnostics;
 using System.Linq;
 using Exceptionless;
 
-namespace Splat.Exceptionless
+namespace Splat.Exceptionless;
+
+/// <summary>
+/// Exceptionless Logger into Splat.
+/// </summary>
+[DebuggerDisplay("Name={_sourceType} Level={Level}")]
+public sealed class ExceptionlessSplatLogger : ILogger
 {
-    /// <summary>
-    /// Exceptionless Logger into Splat.
-    /// </summary>
-    [DebuggerDisplay("Name={_sourceType} Level={Level}")]
-    public sealed class ExceptionlessSplatLogger : ILogger
+    private static readonly KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>[] _mappings = new[]
     {
-        private static readonly KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>[] _mappings = new[]
+        new KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>(LogLevel.Debug, global::Exceptionless.Logging.LogLevel.Debug),
+        new KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>(LogLevel.Info, global::Exceptionless.Logging.LogLevel.Info),
+        new KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>(LogLevel.Warn, global::Exceptionless.Logging.LogLevel.Warn),
+        new KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>(LogLevel.Error, global::Exceptionless.Logging.LogLevel.Error),
+        new KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>(LogLevel.Fatal, global::Exceptionless.Logging.LogLevel.Fatal),
+    };
+
+    private static readonly ImmutableDictionary<LogLevel, global::Exceptionless.Logging.LogLevel> _mappingsDictionary = _mappings.ToImmutableDictionary();
+
+    private readonly string _sourceType;
+    private readonly ExceptionlessClient _exceptionlessClient;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExceptionlessSplatLogger"/> class.
+    /// </summary>
+    /// <param name="sourceType">The type being tracked.</param>
+    /// <param name="exceptionlessClient">The exceptionless client instance to use.</param>
+    public ExceptionlessSplatLogger(
+        Type sourceType,
+        ExceptionlessClient exceptionlessClient)
+    {
+        if (sourceType is null)
         {
-            new KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>(LogLevel.Debug, global::Exceptionless.Logging.LogLevel.Debug),
-            new KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>(LogLevel.Info, global::Exceptionless.Logging.LogLevel.Info),
-            new KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>(LogLevel.Warn, global::Exceptionless.Logging.LogLevel.Warn),
-            new KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>(LogLevel.Error, global::Exceptionless.Logging.LogLevel.Error),
-            new KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>(LogLevel.Fatal, global::Exceptionless.Logging.LogLevel.Fatal)
-        };
-
-        private static readonly ImmutableDictionary<LogLevel, global::Exceptionless.Logging.LogLevel> _mappingsDictionary = _mappings.ToImmutableDictionary();
-
-        private readonly string _sourceType;
-        private readonly ExceptionlessClient _exceptionlessClient;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ExceptionlessSplatLogger"/> class.
-        /// </summary>
-        /// <param name="sourceType">The type being tracked.</param>
-        /// <param name="exceptionlessClient">The exceptionless client instance to use.</param>
-        public ExceptionlessSplatLogger(
-            Type sourceType,
-            ExceptionlessClient exceptionlessClient)
-        {
-            if (sourceType is null)
-            {
-                throw new ArgumentNullException(nameof(sourceType));
-            }
-
-            _sourceType = sourceType.FullName ?? throw new ArgumentException("Cannot find the source type name", nameof(sourceType));
-            _exceptionlessClient = exceptionlessClient ?? throw new ArgumentNullException(nameof(exceptionlessClient));
-            _exceptionlessClient.Configuration.Changed += OnInnerLoggerReconfigured;
-
-            if (_exceptionlessClient.Configuration.Settings.TryGetValue("@@log:*", out var logLevel))
-            {
-                var l = global::Exceptionless.Logging.LogLevel.FromString(logLevel);
-                Level = _mappingsDictionary.First(x => x.Value == l).Key;
-            }
+            throw new ArgumentNullException(nameof(sourceType));
         }
 
-        /// <inheritdoc />
-        public LogLevel Level { get; private set; }
+        _sourceType = sourceType.FullName ?? throw new ArgumentException("Cannot find the source type name", nameof(sourceType));
+        _exceptionlessClient = exceptionlessClient ?? throw new ArgumentNullException(nameof(exceptionlessClient));
+        _exceptionlessClient.Configuration.Changed += OnInnerLoggerReconfigured;
 
-        /// <inheritdoc />
-        public void Write(string message, LogLevel logLevel)
+        if (_exceptionlessClient.Configuration.Settings.TryGetValue("@@log:*", out var logLevel))
         {
-            if ((int)logLevel < (int)Level)
-            {
-                return;
-            }
+            var l = global::Exceptionless.Logging.LogLevel.FromString(logLevel);
+            Level = _mappingsDictionary.First(x => x.Value == l).Key;
+        }
+    }
 
-            CreateLog(message, _mappingsDictionary[logLevel]);
+    /// <inheritdoc />
+    public LogLevel Level { get; private set; }
+
+    /// <inheritdoc />
+    public void Write(string message, LogLevel logLevel)
+    {
+        if ((int)logLevel < (int)Level)
+        {
+            return;
         }
 
-        /// <inheritdoc />
-        public void Write(Exception exception, string message, LogLevel logLevel)
-        {
-            if ((int)logLevel < (int)Level)
-            {
-                return;
-            }
+        CreateLog(message, _mappingsDictionary[logLevel]);
+    }
 
-            CreateLog(exception, message, _mappingsDictionary[logLevel]);
+    /// <inheritdoc />
+    public void Write(Exception exception, string message, LogLevel logLevel)
+    {
+        if ((int)logLevel < (int)Level)
+        {
+            return;
         }
 
-        /// <inheritdoc />
-        public void Write(string message, Type type, LogLevel logLevel)
+        CreateLog(exception, message, _mappingsDictionary[logLevel]);
+    }
+
+    /// <inheritdoc />
+    public void Write(string message, Type type, LogLevel logLevel)
+    {
+        if (type is null)
         {
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
-            if ((int)logLevel < (int)Level)
-            {
-                return;
-            }
-
-            CreateLog(type.FullName ?? "(unknown)", message, _mappingsDictionary[logLevel]);
+            throw new ArgumentNullException(nameof(type));
         }
 
-        /// <inheritdoc />
-        public void Write(Exception exception, string message, Type type, LogLevel logLevel)
+        if ((int)logLevel < (int)Level)
         {
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
-            if ((int)logLevel < (int)Level)
-            {
-                return;
-            }
-
-            CreateLog(exception, type.FullName ?? "(unknown)", message, _mappingsDictionary[logLevel]);
+            return;
         }
 
-        private void CreateLog(string message, global::Exceptionless.Logging.LogLevel level)
+        CreateLog(type.FullName ?? "(unknown)", message, _mappingsDictionary[logLevel]);
+    }
+
+    /// <inheritdoc />
+    public void Write(Exception exception, string message, Type type, LogLevel logLevel)
+    {
+        if (type is null)
         {
-            CreateLog(_sourceType, message, level);
+            throw new ArgumentNullException(nameof(type));
         }
 
-        private void CreateLog(string type, string message, global::Exceptionless.Logging.LogLevel level)
+        if ((int)logLevel < (int)Level)
         {
-            _exceptionlessClient.SubmitLog(type, message, level);
-            _exceptionlessClient.ProcessQueue();
+            return;
         }
 
-        private void CreateLog(Exception exception, string message, global::Exceptionless.Logging.LogLevel level)
+        CreateLog(exception, type.FullName ?? "(unknown)", message, _mappingsDictionary[logLevel]);
+    }
+
+    private void CreateLog(string message, global::Exceptionless.Logging.LogLevel level)
+    {
+        CreateLog(_sourceType, message, level);
+    }
+
+    private void CreateLog(string type, string message, global::Exceptionless.Logging.LogLevel level)
+    {
+        _exceptionlessClient.SubmitLog(type, message, level);
+        _exceptionlessClient.ProcessQueue();
+    }
+
+    private void CreateLog(Exception exception, string message, global::Exceptionless.Logging.LogLevel level)
+    {
+        CreateLog(exception, _sourceType, message, level);
+    }
+
+    private void CreateLog(Exception exception, string type, string message, global::Exceptionless.Logging.LogLevel level)
+    {
+        _exceptionlessClient.CreateLog(
+            type,
+            message,
+            level)
+            .SetException(exception)
+            .Submit();
+
+        _exceptionlessClient.ProcessQueue();
+    }
+
+    /// <summary>
+    /// Works out the log level.
+    /// </summary>
+    /// <remarks>
+    /// This was done so the Level property doesn't keep getting re-evaluated each time a Write method is called.
+    /// </remarks>
+    private void SetLogLevel()
+    {
+        /*
+        if (_inner.IsDebugEnabled)
         {
-            CreateLog(exception, _sourceType, message, level);
+            Level = LogLevel.Debug;
+            return;
         }
 
-        private void CreateLog(Exception exception, string type, string message, global::Exceptionless.Logging.LogLevel level)
+        if (_inner.IsInfoEnabled)
         {
-            _exceptionlessClient.CreateLog(
-                type,
-                message,
-                level)
-                .SetException(exception)
-                .Submit();
-
-            _exceptionlessClient.ProcessQueue();
+            Level = LogLevel.Info;
+            return;
         }
 
-        /// <summary>
-        /// Works out the log level.
-        /// </summary>
-        /// <remarks>
-        /// This was done so the Level property doesn't keep getting re-evaluated each time a Write method is called.
-        /// </remarks>
-        private void SetLogLevel()
+        if (_inner.IsWarnEnabled)
         {
-            /*
-            if (_inner.IsDebugEnabled)
-            {
-                Level = LogLevel.Debug;
-                return;
-            }
-
-            if (_inner.IsInfoEnabled)
-            {
-                Level = LogLevel.Info;
-                return;
-            }
-
-            if (_inner.IsWarnEnabled)
-            {
-                Level = LogLevel.Warn;
-                return;
-            }
-
-            if (_inner.IsErrorEnabled)
-            {
-                Level = LogLevel.Error;
-                return;
-            }
-            */
-
-            Level = LogLevel.Fatal;
+            Level = LogLevel.Warn;
+            return;
         }
 
-        private void OnInnerLoggerReconfigured(object? sender, EventArgs e)
+        if (_inner.IsErrorEnabled)
         {
-            SetLogLevel();
+            Level = LogLevel.Error;
+            return;
         }
+        */
+
+        Level = LogLevel.Fatal;
+    }
+
+    private void OnInnerLoggerReconfigured(object? sender, EventArgs e)
+    {
+        SetLogLevel();
     }
 }

@@ -8,142 +8,141 @@ using System.Collections.Generic;
 using System.Linq;
 using SimpleInjector;
 
-namespace Splat.SimpleInjector
+namespace Splat.SimpleInjector;
+
+/// <summary>
+/// Simple Injector implementation for <see cref="IMutableDependencyResolver"/>.
+/// </summary>
+/// <seealso cref="Splat.IDependencyResolver" />
+public class SimpleInjectorDependencyResolver : IDependencyResolver
 {
+    private Container _container;
+
     /// <summary>
-    /// Simple Injector implementation for <see cref="IMutableDependencyResolver"/>.
+    /// Initializes a new instance of the <see cref="SimpleInjectorDependencyResolver"/> class.
     /// </summary>
-    /// <seealso cref="Splat.IDependencyResolver" />
-    public class SimpleInjectorDependencyResolver : IDependencyResolver
+    /// <param name="container">The container.</param>
+    /// <param name="initializer">The initializer.</param>
+    public SimpleInjectorDependencyResolver(Container container, SimpleInjectorInitializer initializer)
     {
-        private Container _container;
+        _container = container ?? throw new ArgumentNullException(nameof(container));
+        _ = initializer ?? throw new ArgumentNullException(nameof(initializer));
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SimpleInjectorDependencyResolver"/> class.
-        /// </summary>
-        /// <param name="container">The container.</param>
-        /// <param name="initializer">The initializer.</param>
-        public SimpleInjectorDependencyResolver(Container container, SimpleInjectorInitializer initializer)
+        RegisterFactories(initializer);
+    }
+
+    /// <inheritdoc />
+    public object? GetService(Type? serviceType, string? contract = null)
+    {
+        if (serviceType is null)
         {
-            _container = container ?? throw new ArgumentNullException(nameof(container));
-            _ = initializer ?? throw new ArgumentNullException(nameof(initializer));
-
-            RegisterFactories(initializer);
+            serviceType = typeof(NullServiceType);
         }
 
-        /// <inheritdoc />
-        public object? GetService(Type? serviceType, string? contract = null)
+        try
         {
-            if (serviceType is null)
+            var registration = _container.GetRegistration(serviceType);
+            if (registration is not null)
             {
-                serviceType = typeof(NullServiceType);
+                return registration.GetInstance();
             }
 
-            try
-            {
-                InstanceProducer? registration = _container.GetRegistration(serviceType);
-                if (registration is not null)
-                {
-                    return registration.GetInstance();
-                }
+            var registers = _container.GetAllInstances(serviceType);
+            return registers.LastOrDefault()!;
+        }
+        catch
+        {
+            return default;
+        }
+    }
 
-                IEnumerable<object> registers = _container.GetAllInstances(serviceType);
-                return registers.LastOrDefault()!;
-            }
-            catch
-            {
-                return default;
-            }
+    /// <inheritdoc />
+    public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
+    {
+        if (serviceType is null)
+        {
+            serviceType = typeof(NullServiceType);
         }
 
-        /// <inheritdoc />
-        public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
+        try
         {
-            if (serviceType is null)
-            {
-                serviceType = typeof(NullServiceType);
-            }
-
-            try
-            {
-                return _container.GetAllInstances(serviceType);
-            }
-            catch
-            {
-                InstanceProducer? registration = _container.GetRegistration(serviceType);
-                if (registration is not null)
-                {
-                    return new[] { registration.GetInstance() };
-                }
-
-                return Array.Empty<object>();
-            }
+            return _container.GetAllInstances(serviceType);
         }
-
-        /// <inheritdoc />
-        public bool HasRegistration(Type? serviceType, string? contract = null)
+        catch
         {
-            if (serviceType is null)
+            var registration = _container.GetRegistration(serviceType);
+            if (registration is not null)
             {
-                serviceType = typeof(NullServiceType);
+                return new[] { registration.GetInstance() };
             }
 
-            return _container.GetCurrentRegistrations().Any(x => x.ServiceType == serviceType);
+            return Array.Empty<object>();
+        }
+    }
+
+    /// <inheritdoc />
+    public bool HasRegistration(Type? serviceType, string? contract = null)
+    {
+        if (serviceType is null)
+        {
+            serviceType = typeof(NullServiceType);
         }
 
-        /// <inheritdoc />
-        public void Register(Func<object?> factory, Type? serviceType, string? contract = null)
-        {
-            // The function does nothing because there should be no registration called on this object.
-            // Anyway, Locator.SetLocator performs some unnecessary registrations.
-        }
+        return _container.GetCurrentRegistrations().Any(x => x.ServiceType == serviceType);
+    }
 
-        /// <inheritdoc />
-        public void UnregisterCurrent(Type? serviceType, string? contract = null)
-        {
-            throw new NotImplementedException();
-        }
+    /// <inheritdoc />
+    public void Register(Func<object?> factory, Type? serviceType, string? contract = null)
+    {
+        // The function does nothing because there should be no registration called on this object.
+        // Anyway, Locator.SetLocator performs some unnecessary registrations.
+    }
 
-        /// <inheritdoc />
-        public void UnregisterAll(Type? serviceType, string? contract = null)
-        {
-            throw new NotImplementedException();
-        }
+    /// <inheritdoc />
+    public void UnregisterCurrent(Type? serviceType, string? contract = null)
+    {
+        throw new NotImplementedException();
+    }
 
-        /// <inheritdoc />
-        public IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback)
-        {
-            throw new NotImplementedException();
-        }
+    /// <inheritdoc />
+    public void UnregisterAll(Type? serviceType, string? contract = null)
+    {
+        throw new NotImplementedException();
+    }
 
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+    /// <inheritdoc />
+    public IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback)
+    {
+        throw new NotImplementedException();
+    }
 
-        /// <summary>
-        /// Disposes of the instance.
-        /// </summary>
-        /// <param name="disposing">Whether or not the instance is disposing.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _container.Dispose();
-            }
-        }
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 
-        private void RegisterFactories(SimpleInjectorInitializer initializer)
+    /// <summary>
+    /// Disposes of the instance.
+    /// </summary>
+    /// <param name="disposing">Whether or not the instance is disposing.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
         {
-            foreach (KeyValuePair<Type, List<Func<object?>>> typeFactories in initializer.RegisteredFactories)
-            {
-                _container.Collection.Register(
-                    typeFactories.Key,
-                    typeFactories.Value.Select(n =>
-                        new TransientSimpleInjectorRegistration(_container, typeFactories.Key, n)));
-            }
+            _container.Dispose();
+        }
+    }
+
+    private void RegisterFactories(SimpleInjectorInitializer initializer)
+    {
+        foreach (var typeFactories in initializer.RegisteredFactories)
+        {
+            _container.Collection.Register(
+                typeFactories.Key,
+                typeFactories.Value.Select(n =>
+                    new TransientSimpleInjectorRegistration(_container, typeFactories.Key, n)));
         }
     }
 }

@@ -5,18 +5,17 @@
 
 using Ninject;
 
-namespace Splat.Ninject
+namespace Splat.Ninject;
+
+/// <summary>
+/// Extension methods for the Ninject adapter.
+/// </summary>
+public static class SplatNinjectExtensions
 {
     /// <summary>
-    /// Extension methods for the Ninject adapter.
+    /// Initializes an instance of <see cref="NinjectDependencyResolver"/> that overrides the default <see cref="Locator"/>.
     /// </summary>
-    public static class SplatNinjectExtensions
-    {
-        /// <summary>
-        /// Initializes an instance of <see cref="NinjectDependencyResolver"/> that overrides the default <see cref="Locator"/>.
-        /// </summary>
-        /// <param name="kernel">The kernel.</param>
-        public static void UseNinjectDependencyResolver(this IKernel kernel) =>
-            Locator.SetLocator(new NinjectDependencyResolver(kernel));
-    }
+    /// <param name="kernel">The kernel.</param>
+    public static void UseNinjectDependencyResolver(this IKernel kernel) =>
+        Locator.SetLocator(new NinjectDependencyResolver(kernel));
 }

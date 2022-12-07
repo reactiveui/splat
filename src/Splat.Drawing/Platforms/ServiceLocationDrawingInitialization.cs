@@ -5,31 +5,30 @@
 
 using System;
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// Provides service location for the Splat.Drawing packages.
+/// </summary>
+public static class ServiceLocationDrawingInitialization
 {
     /// <summary>
-    /// Provides service location for the Splat.Drawing packages.
+    /// Registers the platform bitmap loader for the current platform.
     /// </summary>
-    public static class ServiceLocationDrawingInitialization
+    /// <param name="resolver">The resolver to register against.</param>
+    public static void RegisterPlatformBitmapLoader(this IMutableDependencyResolver resolver)
     {
-        /// <summary>
-        /// Registers the platform bitmap loader for the current platform.
-        /// </summary>
-        /// <param name="resolver">The resolver to register against.</param>
-        public static void RegisterPlatformBitmapLoader(this IMutableDependencyResolver resolver)
+        if (resolver is null)
         {
-            if (resolver is null)
-            {
-                throw new ArgumentNullException(nameof(resolver));
-            }
+            throw new ArgumentNullException(nameof(resolver));
+        }
 
 #if !IS_SHARED_NET
-            // not supported in netstandard or NET6 library
-            if (!resolver.HasRegistration(typeof(IBitmapLoader)))
-            {
-                resolver.RegisterLazySingleton(() => new PlatformBitmapLoader(), typeof(IBitmapLoader));
-            }
-#endif
+        // not supported in netstandard or NET6 library
+        if (!resolver.HasRegistration(typeof(IBitmapLoader)))
+        {
+            resolver.RegisterLazySingleton(() => new PlatformBitmapLoader(), typeof(IBitmapLoader));
         }
+#endif
     }
 }

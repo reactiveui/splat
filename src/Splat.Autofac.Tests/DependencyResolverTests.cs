@@ -13,271 +13,270 @@ using Splat.Common.Test;
 using Splat.Tests.ServiceLocation;
 using Xunit;
 
-namespace Splat.Autofac.Tests
+namespace Splat.Autofac.Tests;
+
+/// <summary>
+/// Tests to show the <see cref="AutofacDependencyResolver"/> works correctly.
+/// </summary>
+public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDependencyResolver>
 {
     /// <summary>
-    /// Tests to show the <see cref="AutofacDependencyResolver"/> works correctly.
+    /// Shoulds the resolve nulls.
     /// </summary>
-    public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDependencyResolver>
+    [Fact]
+    public void Can_Register_And_Resolve_Null_Types()
     {
-        /// <summary>
-        /// Shoulds the resolve nulls.
-        /// </summary>
-        [Fact]
-        public void Can_Register_And_Resolve_Null_Types()
-        {
-            var builder = new ContainerBuilder();
-            var autofacResolver = builder.UseAutofacDependencyResolver();
+        var builder = new ContainerBuilder();
+        var autofacResolver = builder.UseAutofacDependencyResolver();
 
-            var foo = 5;
-            Locator.CurrentMutable.Register(() => foo, null);
+        var foo = 5;
+        Locator.CurrentMutable.Register(() => foo, null);
 
-            var bar = 4;
-            var contract = "foo";
-            Locator.CurrentMutable.Register(() => bar, null, contract);
-            autofacResolver.SetLifetimeScope(builder.Build());
+        var bar = 4;
+        var contract = "foo";
+        Locator.CurrentMutable.Register(() => bar, null, contract);
+        autofacResolver.SetLifetimeScope(builder.Build());
 
-            Assert.True(Locator.CurrentMutable.HasRegistration(null));
-            var value = Locator.Current.GetService(null);
-            Assert.Equal(foo, value);
+        Assert.True(Locator.CurrentMutable.HasRegistration(null));
+        var value = Locator.Current.GetService(null);
+        Assert.Equal(foo, value);
 
-            Assert.True(Locator.CurrentMutable.HasRegistration(null, contract));
-            value = Locator.Current.GetService(null, contract);
-            Assert.Equal(bar, value);
+        Assert.True(Locator.CurrentMutable.HasRegistration(null, contract));
+        value = Locator.Current.GetService(null, contract);
+        Assert.Equal(bar, value);
 
-            var values = Locator.Current.GetServices(null);
-            Assert.Equal(foo, (int)values.First());
-            Assert.Equal(1, values.Count());
+        var values = Locator.Current.GetServices(null);
+        Assert.Equal(foo, (int)values.First());
+        Assert.Equal(1, values.Count());
 
-            Assert.Throws<NotImplementedException>(() => Locator.CurrentMutable.UnregisterCurrent(null));
-            var valuesNC = Locator.Current.GetServices(null);
-            Assert.Equal(1, valuesNC.Count());
-            Assert.Equal(foo, (int)valuesNC.First());
-            var valuesC = Locator.Current.GetServices(null, contract);
-            Assert.Equal(1, valuesC.Count());
-            Assert.Equal(bar, (int)valuesC.First());
-        }
+        Assert.Throws<NotImplementedException>(() => Locator.CurrentMutable.UnregisterCurrent(null));
+        var valuesNC = Locator.Current.GetServices(null);
+        Assert.Equal(1, valuesNC.Count());
+        Assert.Equal(foo, (int)valuesNC.First());
+        var valuesC = Locator.Current.GetServices(null, contract);
+        Assert.Equal(1, valuesC.Count());
+        Assert.Equal(bar, (int)valuesC.First());
+    }
 
-        /// <summary>
-        /// Shoulds the resolve views.
-        /// </summary>
-        [Fact]
-        public void AutofacDependencyResolver_Should_Resolve_Views()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<ViewOne>().As<IViewFor<ViewModelOne>>();
-            builder.RegisterType<ViewTwo>().As<IViewFor<ViewModelTwo>>();
+    /// <summary>
+    /// Shoulds the resolve views.
+    /// </summary>
+    [Fact]
+    public void AutofacDependencyResolver_Should_Resolve_Views()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ViewOne>().As<IViewFor<ViewModelOne>>();
+        builder.RegisterType<ViewTwo>().As<IViewFor<ViewModelTwo>>();
 
-            var autofacResolver = builder.UseAutofacDependencyResolver();
-            autofacResolver.SetLifetimeScope(builder.Build());
+        var autofacResolver = builder.UseAutofacDependencyResolver();
+        autofacResolver.SetLifetimeScope(builder.Build());
 
-            var viewOne = Locator.Current.GetService(typeof(IViewFor<ViewModelOne>));
-            var viewTwo = Locator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
+        var viewOne = Locator.Current.GetService(typeof(IViewFor<ViewModelOne>));
+        var viewTwo = Locator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
-            viewOne.Should().NotBeNull();
-            viewOne.Should().BeOfType<ViewOne>();
-            viewTwo.Should().NotBeNull();
-            viewTwo.Should().BeOfType<ViewTwo>();
-        }
+        viewOne.Should().NotBeNull();
+        viewOne.Should().BeOfType<ViewOne>();
+        viewTwo.Should().NotBeNull();
+        viewTwo.Should().BeOfType<ViewTwo>();
+    }
 
-        /// <summary>
-        /// Shoulds the resolve views.
-        /// </summary>
-        [Fact]
-        public void AutofacDependencyResolver_Should_Resolve_Named_View()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<ViewTwo>().Named<IViewFor<ViewModelTwo>>("Other");
+    /// <summary>
+    /// Shoulds the resolve views.
+    /// </summary>
+    [Fact]
+    public void AutofacDependencyResolver_Should_Resolve_Named_View()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ViewTwo>().Named<IViewFor<ViewModelTwo>>("Other");
 
-            var autofacResolver = builder.UseAutofacDependencyResolver();
-            autofacResolver.SetLifetimeScope(builder.Build());
+        var autofacResolver = builder.UseAutofacDependencyResolver();
+        autofacResolver.SetLifetimeScope(builder.Build());
 
-            var viewTwo = Locator.Current.GetService(typeof(IViewFor<ViewModelTwo>), "Other");
+        var viewTwo = Locator.Current.GetService(typeof(IViewFor<ViewModelTwo>), "Other");
 
-            viewTwo.Should().NotBeNull();
-            viewTwo.Should().BeOfType<ViewTwo>();
-        }
+        viewTwo.Should().NotBeNull();
+        viewTwo.Should().BeOfType<ViewTwo>();
+    }
 
-        /// <summary>
-        /// Shoulds the resolve view models.
-        /// </summary>
-        [Fact]
-        public void AutofacDependencyResolver_Should_Resolve_View_Models()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<ViewModelOne>().AsSelf();
-            builder.RegisterType<ViewModelTwo>().AsSelf();
+    /// <summary>
+    /// Shoulds the resolve view models.
+    /// </summary>
+    [Fact]
+    public void AutofacDependencyResolver_Should_Resolve_View_Models()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ViewModelOne>().AsSelf();
+        builder.RegisterType<ViewModelTwo>().AsSelf();
 
-            var autofacResolver = builder.UseAutofacDependencyResolver();
-            autofacResolver.SetLifetimeScope(builder.Build());
+        var autofacResolver = builder.UseAutofacDependencyResolver();
+        autofacResolver.SetLifetimeScope(builder.Build());
 
-            var vmOne = Locator.Current.GetService<ViewModelOne>();
-            var vmTwo = Locator.Current.GetService<ViewModelTwo>();
+        var vmOne = Locator.Current.GetService<ViewModelOne>();
+        var vmTwo = Locator.Current.GetService<ViewModelTwo>();
 
-            vmOne.Should().NotBeNull();
-            vmTwo.Should().NotBeNull();
-        }
+        vmOne.Should().NotBeNull();
+        vmTwo.Should().NotBeNull();
+    }
 
-        /// <summary>
-        /// Shoulds the resolve screen.
-        /// </summary>
-        [Fact]
-        public void AutofacDependencyResolver_Should_Resolve_Screen()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<MockScreen>().As<IScreen>().SingleInstance();
+    /// <summary>
+    /// Shoulds the resolve screen.
+    /// </summary>
+    [Fact]
+    public void AutofacDependencyResolver_Should_Resolve_Screen()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<MockScreen>().As<IScreen>().SingleInstance();
 
-            var autofacResolver = builder.UseAutofacDependencyResolver();
-            autofacResolver.SetLifetimeScope(builder.Build());
+        var autofacResolver = builder.UseAutofacDependencyResolver();
+        autofacResolver.SetLifetimeScope(builder.Build());
 
-            var screen = Locator.Current.GetService<IScreen>();
+        var screen = Locator.Current.GetService<IScreen>();
 
-            screen.Should().NotBeNull();
-            screen.Should().BeOfType<MockScreen>();
-        }
+        screen.Should().NotBeNull();
+        screen.Should().BeOfType<MockScreen>();
+    }
 
-        /// <summary>
-        /// Should throw an exception if service registration call back called.
-        /// </summary>
-        [Fact]
-        public void AutofacDependencyResolver_Should_Throw_If_ServiceRegistrationCallback_Called()
-        {
-            var builder = new ContainerBuilder();
+    /// <summary>
+    /// Should throw an exception if service registration call back called.
+    /// </summary>
+    [Fact]
+    public void AutofacDependencyResolver_Should_Throw_If_ServiceRegistrationCallback_Called()
+    {
+        var builder = new ContainerBuilder();
 
-            var autofacResolver = builder.UseAutofacDependencyResolver();
-            autofacResolver.SetLifetimeScope(builder.Build());
+        var autofacResolver = builder.UseAutofacDependencyResolver();
+        autofacResolver.SetLifetimeScope(builder.Build());
 
-            var result = Record.Exception(() =>
-                Locator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
+        var result = Record.Exception(() =>
+            Locator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
 
-            result.Should().BeOfType<NotImplementedException>();
-        }
+        result.Should().BeOfType<NotImplementedException>();
+    }
 
-        /// <summary>
-        /// Check to ensure the correct logger is returned.
-        /// </summary>
-        /// <remarks>
-        /// Introduced for Splat #331.
-        /// </remarks>
-        [Fact]
-        public void AutofacDependencyResolver_Should_ReturnRegisteredLogger()
-        {
-            var builder = new ContainerBuilder();
+    /// <summary>
+    /// Check to ensure the correct logger is returned.
+    /// </summary>
+    /// <remarks>
+    /// Introduced for Splat #331.
+    /// </remarks>
+    [Fact]
+    public void AutofacDependencyResolver_Should_ReturnRegisteredLogger()
+    {
+        var builder = new ContainerBuilder();
 
-            var autofacResolver = builder.UseAutofacDependencyResolver();
+        var autofacResolver = builder.UseAutofacDependencyResolver();
 
-            Locator.CurrentMutable.RegisterConstant(
-                new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())),
-                typeof(ILogManager));
+        Locator.CurrentMutable.RegisterConstant(
+            new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())),
+            typeof(ILogManager));
 
-            autofacResolver.SetLifetimeScope(builder.Build());
+        autofacResolver.SetLifetimeScope(builder.Build());
 
-            var logManager = Locator.Current.GetService<ILogManager>();
-            Assert.IsType<FuncLogManager>(logManager);
-        }
+        var logManager = Locator.Current.GetService<ILogManager>();
+        Assert.IsType<FuncLogManager>(logManager);
+    }
 
-        /// <summary>
-        /// Test that a pre-init logger isn't overriden.
-        /// </summary>
-        /// <remarks>
-        /// Introduced for Splat #331.
-        /// </remarks>
-        [Fact]
-        public void AutofacDependencyResolver_PreInit_Should_ReturnRegisteredLogger()
-        {
-            var builder = new ContainerBuilder();
+    /// <summary>
+    /// Test that a pre-init logger isn't overriden.
+    /// </summary>
+    /// <remarks>
+    /// Introduced for Splat #331.
+    /// </remarks>
+    [Fact]
+    public void AutofacDependencyResolver_PreInit_Should_ReturnRegisteredLogger()
+    {
+        var builder = new ContainerBuilder();
 
-            var autofacResolver = builder.UseAutofacDependencyResolver();
+        var autofacResolver = builder.UseAutofacDependencyResolver();
 
-            builder.Register(_ => new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger()))).As(typeof(ILogManager))
-                .AsImplementedInterfaces();
+        builder.Register(_ => new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger()))).As(typeof(ILogManager))
+            .AsImplementedInterfaces();
 
-            autofacResolver.SetLifetimeScope(builder.Build());
+        autofacResolver.SetLifetimeScope(builder.Build());
 
-            var logManager = Locator.Current.GetService<ILogManager>();
-            Assert.IsType<FuncLogManager>(logManager);
-        }
+        var logManager = Locator.Current.GetService<ILogManager>();
+        Assert.IsType<FuncLogManager>(logManager);
+    }
 
-        /// <summary>
-        ///     <inheritdoc cref="AutofacDependencyResolver.UnregisterCurrent"/>
-        /// </summary>
-        [Fact]
-        public override void UnregisterCurrent_Doesnt_Throw_When_List_Empty()
-        {
-        }
+    /// <summary>
+    ///     <inheritdoc cref="AutofacDependencyResolver.UnregisterCurrent"/>
+    /// </summary>
+    [Fact]
+    public override void UnregisterCurrent_Doesnt_Throw_When_List_Empty()
+    {
+    }
 
-        /// <summary>
-        ///     <inheritdoc cref="AutofacDependencyResolver.UnregisterCurrent"/>
-        /// </summary>
-        [Fact]
-        public override void UnregisterCurrent_Remove_Last()
-        {
-        }
+    /// <summary>
+    ///     <inheritdoc cref="AutofacDependencyResolver.UnregisterCurrent"/>
+    /// </summary>
+    [Fact]
+    public override void UnregisterCurrent_Remove_Last()
+    {
+    }
 
-        /// <summary>
-        ///     <inheritdoc cref="AutofacDependencyResolver.UnregisterCurrent"/>
-        /// </summary>
-        [Fact]
-        public override void UnregisterCurrentByName_Doesnt_Throw_When_List_Empty()
-        {
-        }
+    /// <summary>
+    ///     <inheritdoc cref="AutofacDependencyResolver.UnregisterCurrent"/>
+    /// </summary>
+    [Fact]
+    public override void UnregisterCurrentByName_Doesnt_Throw_When_List_Empty()
+    {
+    }
 
-        /// <summary>
-        ///     <inheritdoc cref="AutofacDependencyResolver.UnregisterAll"/>
-        /// </summary>
-        [Fact]
-        public override void UnregisterAll_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
-        {
-        }
+    /// <summary>
+    ///     <inheritdoc cref="AutofacDependencyResolver.UnregisterAll"/>
+    /// </summary>
+    [Fact]
+    public override void UnregisterAll_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
+    {
+    }
 
-        /// <summary>
-        ///     <inheritdoc cref="AutofacDependencyResolver.UnregisterAll"/>
-        /// </summary>
-        [Fact]
-        public override void UnregisterAllByContract_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
-        {
-        }
+    /// <summary>
+    ///     <inheritdoc cref="AutofacDependencyResolver.UnregisterAll"/>
+    /// </summary>
+    [Fact]
+    public override void UnregisterAllByContract_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
+    {
+    }
 
-        /// <summary>
-        ///     <inheritdoc cref="AutofacDependencyResolver.UnregisterAll"/>
-        ///     <inheritdoc cref="BaseDependencyResolverTests{T}.HasRegistration"/>
-        /// </summary>
-        [Fact]
-        public override void HasRegistration()
-        {
+    /// <summary>
+    ///     <inheritdoc cref="AutofacDependencyResolver.UnregisterAll"/>
+    ///     <inheritdoc cref="BaseDependencyResolverTests{T}.HasRegistration"/>
+    /// </summary>
+    [Fact]
+    public override void HasRegistration()
+    {
 #pragma warning disable CS0618 // Type or member is obsolete
-            var type = typeof(string);
-            const string contractOne = "ContractOne";
-            const string contractTwo = "ContractTwo";
-            var resolver = GetDependencyResolver();
+        var type = typeof(string);
+        const string contractOne = "ContractOne";
+        const string contractTwo = "ContractTwo";
+        var resolver = GetDependencyResolver();
 
-            Assert.False(resolver.HasRegistration(type));
-            Assert.False(resolver.HasRegistration(type, contractOne));
-            Assert.False(resolver.HasRegistration(type, contractTwo));
+        Assert.False(resolver.HasRegistration(type));
+        Assert.False(resolver.HasRegistration(type, contractOne));
+        Assert.False(resolver.HasRegistration(type, contractTwo));
 
-            resolver.Register(() => "unnamed", type);
-            Assert.True(resolver.HasRegistration(type));
-            Assert.False(resolver.HasRegistration(type, contractOne));
-            Assert.False(resolver.HasRegistration(type, contractTwo));
+        resolver.Register(() => "unnamed", type);
+        Assert.True(resolver.HasRegistration(type));
+        Assert.False(resolver.HasRegistration(type, contractOne));
+        Assert.False(resolver.HasRegistration(type, contractTwo));
 
-            resolver.Register(() => contractOne, type, contractOne);
-            Assert.True(resolver.HasRegistration(type));
-            Assert.True(resolver.HasRegistration(type, contractOne));
-            Assert.False(resolver.HasRegistration(type, contractTwo));
+        resolver.Register(() => contractOne, type, contractOne);
+        Assert.True(resolver.HasRegistration(type));
+        Assert.True(resolver.HasRegistration(type, contractOne));
+        Assert.False(resolver.HasRegistration(type, contractTwo));
 
-            resolver.Register(() => contractTwo, type, contractTwo);
-            Assert.True(resolver.HasRegistration(type));
-            Assert.True(resolver.HasRegistration(type, contractOne));
-            Assert.True(resolver.HasRegistration(type, contractTwo));
+        resolver.Register(() => contractTwo, type, contractTwo);
+        Assert.True(resolver.HasRegistration(type));
+        Assert.True(resolver.HasRegistration(type, contractOne));
+        Assert.True(resolver.HasRegistration(type, contractTwo));
 #pragma warning restore CS0618 // Type or member is obsolete
-        }
+    }
 
-        /// <inheritdoc />
-        protected override AutofacDependencyResolver GetDependencyResolver()
-        {
-            var builder = new ContainerBuilder();
+    /// <inheritdoc />
+    protected override AutofacDependencyResolver GetDependencyResolver()
+    {
+        var builder = new ContainerBuilder();
 
-            return builder.UseAutofacDependencyResolver();
-        }
+        return builder.UseAutofacDependencyResolver();
     }
 }

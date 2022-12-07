@@ -10,19 +10,18 @@ using Xunit;
 
 #pragma warning disable SA1615 // Element return value should be documented
 
-namespace Splat.Tests
+namespace Splat.Tests;
+
+/// <summary>
+/// Tests to make sure that the API matches the approved ones.
+/// </summary>
+[ExcludeFromCodeCoverage]
+[UsesVerify]
+public class ApiApprovalTests
 {
     /// <summary>
-    /// Tests to make sure that the API matches the approved ones.
+    /// Tests to make sure the splat project is approved.
     /// </summary>
-    [ExcludeFromCodeCoverage]
-    [UsesVerify]
-    public class ApiApprovalTests
-    {
-        /// <summary>
-        /// Tests to make sure the splat project is approved.
-        /// </summary>
-        [Fact]
-        public Task SplatUIProject() => typeof(IPlatformModeDetector).Assembly.CheckApproval();
-    }
+    [Fact]
+    public Task SplatUIProject() => typeof(IPlatformModeDetector).Assembly.CheckApproval();
 }

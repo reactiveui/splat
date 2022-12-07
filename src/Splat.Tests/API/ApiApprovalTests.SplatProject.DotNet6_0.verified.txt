@@ -2,7 +2,7 @@
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.TestRunner.Android")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.TestRunner.Uwp")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Tests")]
-[assembly: System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v6.0", FrameworkDisplayName="")]
+[assembly: System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v6.0", FrameworkDisplayName=".NET 6.0")]
 namespace Splat
 {
     public class ActionLogger : Splat.ILogger

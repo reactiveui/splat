@@ -10,22 +10,21 @@ using System.Threading.Tasks;
 using VerifyXunit;
 using Xunit;
 
-namespace Splat.Tests
+namespace Splat.Tests;
+
+/// <summary>
+/// Tests to make sure that the API matches the approved ones.
+/// </summary>
+[ExcludeFromCodeCoverage]
+[UsesVerify]
+public class ApiApprovalTests
 {
     /// <summary>
-    /// Tests to make sure that the API matches the approved ones.
+    /// Tests to make sure the splat project is approved.
     /// </summary>
-    [ExcludeFromCodeCoverage]
-    [UsesVerify]
-    public class ApiApprovalTests
-    {
-        /// <summary>
-        /// Tests to make sure the splat project is approved.
-        /// </summary>
-        /// <returns>A task to monitor the usage.</returns>
-        [Fact]
-        public Task SplatProject() => typeof(AssemblyFinder).Assembly.CheckApproval();
-    }
+    /// <returns>A task to monitor the usage.</returns>
+    [Fact]
+    public Task SplatProject() => typeof(AssemblyFinder).Assembly.CheckApproval();
 }
 
 #endif

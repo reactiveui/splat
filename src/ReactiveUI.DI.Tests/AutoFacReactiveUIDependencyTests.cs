@@ -13,80 +13,79 @@ using Splat;
 using Splat.Autofac;
 using Xunit;
 
-namespace ReactiveUI.DI.Tests
+namespace ReactiveUI.DI.Tests;
+
+/// <summary>
+/// AutoFac ReactiveUI DependencyTests.
+/// </summary>
+public class AutoFacReactiveUIDependencyTests
 {
     /// <summary>
-    /// AutoFac ReactiveUI DependencyTests.
+    /// Should register ReactiveUI binding type converters.
     /// </summary>
-    public class AutoFacReactiveUIDependencyTests
+    [Fact]
+    public void AutofacDependencyResolverShouldRegisterReactiveUIBindingTypeConverters()
     {
-        /// <summary>
-        /// Should register ReactiveUI binding type converters.
-        /// </summary>
-        [Fact]
-        public void AutofacDependencyResolverShouldRegisterReactiveUIBindingTypeConverters()
-        {
-            // Invoke RxApp which initializes the ReactiveUI platform.
-            var builder = new ContainerBuilder();
-            var locator = new AutofacDependencyResolver(builder);
-            locator.InitializeReactiveUI();
-            Locator.SetLocator(locator);
-            var container = builder.Build();
+        // Invoke RxApp which initializes the ReactiveUI platform.
+        var builder = new ContainerBuilder();
+        var locator = new AutofacDependencyResolver(builder);
+        locator.InitializeReactiveUI();
+        Locator.SetLocator(locator);
+        var container = builder.Build();
 
-            var converters = container.Resolve<IEnumerable<IBindingTypeConverter>>().ToList();
+        var converters = container.Resolve<IEnumerable<IBindingTypeConverter>>().ToList();
 
-            converters.Should().NotBeNull();
-            converters.Should().Contain(x => x.GetType() == typeof(StringConverter));
-            converters.Should().Contain(x => x.GetType() == typeof(EqualityTypeConverter));
-        }
+        converters.Should().NotBeNull();
+        converters.Should().Contain(x => x.GetType() == typeof(StringConverter));
+        converters.Should().Contain(x => x.GetType() == typeof(EqualityTypeConverter));
+    }
 
-        /// <summary>
-        /// Should register ReactiveUI creates command bindings.
-        /// </summary>
-        [Fact]
-        public void AutofacDependencyResolverShouldRegisterReactiveUICreatesCommandBinding()
-        {
-            // Invoke RxApp which initializes the ReactiveUI platform.
-            var builder = new ContainerBuilder();
-            var locator = new AutofacDependencyResolver(builder);
-            locator.InitializeReactiveUI();
-            Locator.SetLocator(locator);
-            var container = builder.Build();
+    /// <summary>
+    /// Should register ReactiveUI creates command bindings.
+    /// </summary>
+    [Fact]
+    public void AutofacDependencyResolverShouldRegisterReactiveUICreatesCommandBinding()
+    {
+        // Invoke RxApp which initializes the ReactiveUI platform.
+        var builder = new ContainerBuilder();
+        var locator = new AutofacDependencyResolver(builder);
+        locator.InitializeReactiveUI();
+        Locator.SetLocator(locator);
+        var container = builder.Build();
 
-            var converters = container.Resolve<IEnumerable<ICreatesCommandBinding>>().ToList();
+        var converters = container.Resolve<IEnumerable<ICreatesCommandBinding>>().ToList();
 
-            converters.Should().NotBeNull();
-            converters.Should().Contain(x => x.GetType() == typeof(CreatesCommandBindingViaEvent));
-            converters.Should().Contain(x => x.GetType() == typeof(CreatesCommandBindingViaCommandParameter));
-        }
+        converters.Should().NotBeNull();
+        converters.Should().Contain(x => x.GetType() == typeof(CreatesCommandBindingViaEvent));
+        converters.Should().Contain(x => x.GetType() == typeof(CreatesCommandBindingViaCommandParameter));
+    }
 
-        /// <summary>
-        /// Automatics the fac when any test.
-        /// </summary>
-        [Fact]
-        public void AutoFacWhenAnyTest()
-        {
-            var builder = new ContainerBuilder();
+    /// <summary>
+    /// Automatics the fac when any test.
+    /// </summary>
+    [Fact]
+    public void AutoFacWhenAnyTest()
+    {
+        var builder = new ContainerBuilder();
 
-            var autofacResolver = builder.UseAutofacDependencyResolver();
-            Locator.CurrentMutable.RegisterConstant(new ActivatingViewFetcher(), typeof(IActivationForViewFetcher));
-            autofacResolver.InitializeSplat();
-            autofacResolver.InitializeReactiveUI();
-            var container = builder.Build();
+        var autofacResolver = builder.UseAutofacDependencyResolver();
+        Locator.CurrentMutable.RegisterConstant(new ActivatingViewFetcher(), typeof(IActivationForViewFetcher));
+        autofacResolver.InitializeSplat();
+        autofacResolver.InitializeReactiveUI();
+        var container = builder.Build();
 
-            var vm = new ActivatingViewModel();
-            var fixture = new ActivatingView { ViewModel = vm };
+        var vm = new ActivatingViewModel();
+        var fixture = new ActivatingView { ViewModel = vm };
 
-            Assert.Equal(0, vm.IsActiveCount);
-            Assert.Equal(0, fixture.IsActiveCount);
+        Assert.Equal(0, vm.IsActiveCount);
+        Assert.Equal(0, fixture.IsActiveCount);
 
-            fixture.Loaded.OnNext(Unit.Default);
-            Assert.Equal(1, vm.IsActiveCount);
-            Assert.Equal(1, fixture.IsActiveCount);
+        fixture.Loaded.OnNext(Unit.Default);
+        Assert.Equal(1, vm.IsActiveCount);
+        Assert.Equal(1, fixture.IsActiveCount);
 
-            fixture.Unloaded.OnNext(Unit.Default);
-            Assert.Equal(0, vm.IsActiveCount);
-            Assert.Equal(0, fixture.IsActiveCount);
-        }
+        fixture.Unloaded.OnNext(Unit.Default);
+        Assert.Equal(0, vm.IsActiveCount);
+        Assert.Equal(0, fixture.IsActiveCount);
     }
 }

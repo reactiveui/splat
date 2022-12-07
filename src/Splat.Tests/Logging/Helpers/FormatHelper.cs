@@ -5,22 +5,21 @@
 
 using System;
 
-namespace Splat.Tests.Logging
+namespace Splat.Tests.Logging;
+
+/// <summary>
+/// Contains help with formatting.
+/// </summary>
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2201:Do not raise reserved exception types", Justification = "Deliberate Usage")]
+public static class FormatHelper
 {
     /// <summary>
-    /// Contains help with formatting.
+    /// A constant for the new lines.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2201:Do not raise reserved exception types", Justification = "Deliberate Usage")]
-    public static class FormatHelper
-    {
-        /// <summary>
-        /// A constant for the new lines.
-        /// </summary>
-        internal static readonly char[] NewLine = Environment.NewLine.ToCharArray();
+    internal static readonly char[] NewLine = Environment.NewLine.ToCharArray();
 
-        /// <summary>
-        /// Gets an exception for testing.
-        /// </summary>
-        internal static Exception Exception => new();
-    }
+    /// <summary>
+    /// Gets an exception for testing.
+    /// </summary>
+    internal static Exception Exception => new();
 }

@@ -6,133 +6,131 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace Splat.SimpleInjector
+namespace Splat.SimpleInjector;
+
+/// <summary>
+/// sad.
+/// </summary>
+public class SimpleInjectorInitializer : IDependencyResolver
 {
+    private readonly object _lockObject = new();
+
     /// <summary>
-    /// sad.
+    /// Gets dictionary of registered factories.
     /// </summary>
-    public class SimpleInjectorInitializer : IDependencyResolver
+    public Dictionary<Type, List<Func<object?>>> RegisteredFactories { get; }
+        = new();
+
+    /// <inheritdoc />
+    public object? GetService(Type? serviceType, string? contract = null)
     {
-        private readonly object _lockObject = new();
-
-        /// <summary>
-        /// Gets dictionary of registered factories.
-        /// </summary>
-        public Dictionary<Type, List<Func<object?>>> RegisteredFactories { get; }
-            = new();
-
-        /// <inheritdoc />
-        public object? GetService(Type? serviceType, string? contract = null)
+        if (serviceType is null)
         {
-            if (serviceType is null)
-            {
-                serviceType = typeof(NullServiceType);
-            }
-
-            lock (_lockObject)
-            {
-                Func<object?>? fact = RegisteredFactories[serviceType].LastOrDefault();
-                return fact?.Invoke()!;
-            }
+            serviceType = typeof(NullServiceType);
         }
 
-        /// <inheritdoc/>
-        public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
+        lock (_lockObject)
         {
-            if (serviceType is null)
-            {
-                serviceType = typeof(NullServiceType);
-            }
+            var fact = RegisteredFactories[serviceType].LastOrDefault();
+            return fact?.Invoke()!;
+        }
+    }
 
-            lock (_lockObject)
-            {
-                return RegisteredFactories[serviceType]
-                    .Select(n => n()!);
-            }
+    /// <inheritdoc/>
+    public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
+    {
+        if (serviceType is null)
+        {
+            serviceType = typeof(NullServiceType);
         }
 
-        /// <inheritdoc />
-        public bool HasRegistration(Type? serviceType, string? contract = null)
+        lock (_lockObject)
         {
-            if (serviceType is null)
+            return RegisteredFactories[serviceType]
+                .Select(n => n()!);
+        }
+    }
+
+    /// <inheritdoc />
+    public bool HasRegistration(Type? serviceType, string? contract = null)
+    {
+        if (serviceType is null)
+        {
+            serviceType = typeof(NullServiceType);
+        }
+
+        lock (_lockObject)
+        {
+            return RegisteredFactories.TryGetValue(serviceType, out var values)
+                   && values.Count > 0;
+        }
+    }
+
+    /// <inheritdoc />
+    public void Register(Func<object?> factory, Type? serviceType, string? contract = null)
+    {
+        var isNull = serviceType is null;
+        if (serviceType is null)
+        {
+            serviceType = typeof(NullServiceType);
+        }
+
+        lock (_lockObject)
+        {
+            if (!RegisteredFactories.ContainsKey(serviceType))
             {
-                serviceType = typeof(NullServiceType);
+                RegisteredFactories.Add(serviceType, new List<Func<object?>>());
             }
 
-            lock (_lockObject)
+            RegisteredFactories[serviceType].Add(() =>
+                isNull
+                    ? new NullServiceType(factory)
+                    : factory());
+        }
+    }
+
+    /// <inheritdoc />
+    public void UnregisterCurrent(Type? serviceType, string? contract = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public void UnregisterAll(Type? serviceType, string? contract = null)
+    {
+        if (serviceType is null)
+        {
+            serviceType = typeof(NullServiceType);
+        }
+
+        lock (_lockObject)
+        {
+            if (RegisteredFactories.ContainsKey(serviceType))
             {
-                return RegisteredFactories.TryGetValue(serviceType, out var values)
-                       && values.Count > 0;
+                RegisteredFactories.Remove(serviceType);
             }
         }
+    }
 
-        /// <inheritdoc />
-        public void Register(Func<object?> factory, Type? serviceType, string? contract = null)
-        {
-            var isNull = serviceType is null;
-            if (serviceType is null)
-            {
-                serviceType = typeof(NullServiceType);
-            }
+    /// <inheritdoc />
+    public IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback)
+    {
+        throw new NotImplementedException();
+    }
 
-            lock (_lockObject)
-            {
-                if (!RegisteredFactories.ContainsKey(serviceType))
-                {
-                    RegisteredFactories.Add(serviceType, new List<Func<object?>>());
-                }
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 
-                RegisteredFactories[serviceType].Add(() =>
-                    isNull
-                        ? new NullServiceType(factory)
-                        : factory());
-            }
-        }
-
-        /// <inheritdoc />
-        public void UnregisterCurrent(Type? serviceType, string? contract = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
-        public void UnregisterAll(Type? serviceType, string? contract = null)
-        {
-            if (serviceType is null)
-            {
-                serviceType = typeof(NullServiceType);
-            }
-
-            lock (_lockObject)
-            {
-                if (RegisteredFactories.ContainsKey(serviceType))
-                {
-                    RegisteredFactories.Remove(serviceType);
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        public IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="isDisposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool isDisposing)
-        {
-        }
+    /// <summary>
+    /// Releases unmanaged and - optionally - managed resources.
+    /// </summary>
+    /// <param name="isDisposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+    protected virtual void Dispose(bool isDisposing)
+    {
     }
 }
