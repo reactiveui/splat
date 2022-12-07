@@ -12,118 +12,117 @@ using Splat.SimpleInjector;
 
 using Xunit;
 
-namespace Splat.Simplnjector
+namespace Splat.Simplnjector;
+
+/// <summary>
+/// Tests to show the <see cref="SimpleInjectorDependencyResolver"/> works correctly.
+/// </summary>
+public class DependencyResolverTests
 {
     /// <summary>
-    /// Tests to show the <see cref="SimpleInjectorDependencyResolver"/> works correctly.
+    /// Simples the injector dependency resolver should resolve a view model.
     /// </summary>
-    public class DependencyResolverTests
+    [Fact]
+    public void SimpleInjectorDependencyResolver_Should_Resolve_View_Model()
     {
-        /// <summary>
-        /// Simples the injector dependency resolver should resolve a view model.
-        /// </summary>
-        [Fact]
-        public void SimpleInjectorDependencyResolver_Should_Resolve_View_Model()
-        {
-            var container = new Container();
-            container.Register<ViewModelOne>();
-            container.UseSimpleInjectorDependencyResolver(new SimpleInjectorInitializer());
+        var container = new Container();
+        container.Register<ViewModelOne>();
+        container.UseSimpleInjectorDependencyResolver(new SimpleInjectorInitializer());
 
-            var viewModel = Locator.Current.GetService(typeof(ViewModelOne));
+        var viewModel = Locator.Current.GetService(typeof(ViewModelOne));
 
-            viewModel.Should().NotBeNull();
-            viewModel.Should().BeOfType<ViewModelOne>();
-        }
+        viewModel.Should().NotBeNull();
+        viewModel.Should().BeOfType<ViewModelOne>();
+    }
 
-        /// <summary>
-        /// Simples the injector dependency resolver should resolve a view model.
-        /// </summary>
-        [Fact]
-        public void SimpleInjectorDependencyResolver_Should_Resolve_View_Model_Directly()
-        {
-            var container = new SimpleInjectorInitializer();
-            container.Register(() => new ViewModelOne());
+    /// <summary>
+    /// Simples the injector dependency resolver should resolve a view model.
+    /// </summary>
+    [Fact]
+    public void SimpleInjectorDependencyResolver_Should_Resolve_View_Model_Directly()
+    {
+        var container = new SimpleInjectorInitializer();
+        container.Register(() => new ViewModelOne());
 
-            var viewModel = container.GetService<ViewModelOne>();
+        var viewModel = container.GetService<ViewModelOne>();
 
-            viewModel.Should().NotBeNull();
-            viewModel.Should().BeOfType<ViewModelOne>();
-        }
+        viewModel.Should().NotBeNull();
+        viewModel.Should().BeOfType<ViewModelOne>();
+    }
 
-        /// <summary>
-        /// Simples the injector dependency resolver should resolve a view.
-        /// </summary>
-        [Fact]
-        public void SimpleInjectorDependencyResolver_Should_Resolve_View()
-        {
-            var container = new Container();
-            container.Register<IViewFor<ViewModelOne>, ViewOne>();
-            container.UseSimpleInjectorDependencyResolver(new SimpleInjectorInitializer());
+    /// <summary>
+    /// Simples the injector dependency resolver should resolve a view.
+    /// </summary>
+    [Fact]
+    public void SimpleInjectorDependencyResolver_Should_Resolve_View()
+    {
+        var container = new Container();
+        container.Register<IViewFor<ViewModelOne>, ViewOne>();
+        container.UseSimpleInjectorDependencyResolver(new SimpleInjectorInitializer());
 
-            var view = Locator.Current.GetService(typeof(IViewFor<ViewModelOne>));
+        var view = Locator.Current.GetService(typeof(IViewFor<ViewModelOne>));
 
-            view.Should().NotBeNull();
-            view.Should().BeOfType<ViewOne>();
-        }
+        view.Should().NotBeNull();
+        view.Should().BeOfType<ViewOne>();
+    }
 
-        /// <summary>
-        /// Simples the injector dependency resolver should resolve the screen.
-        /// </summary>
-        [Fact]
-        public void SimpleInjectorDependencyResolver_Should_Resolve_Screen()
-        {
-            var container = new Container();
-            container.RegisterSingleton<IScreen, MockScreen>();
-            container.UseSimpleInjectorDependencyResolver(new SimpleInjectorInitializer());
+    /// <summary>
+    /// Simples the injector dependency resolver should resolve the screen.
+    /// </summary>
+    [Fact]
+    public void SimpleInjectorDependencyResolver_Should_Resolve_Screen()
+    {
+        var container = new Container();
+        container.RegisterSingleton<IScreen, MockScreen>();
+        container.UseSimpleInjectorDependencyResolver(new SimpleInjectorInitializer());
 
-            var screen = Locator.Current.GetService(typeof(IScreen));
+        var screen = Locator.Current.GetService(typeof(IScreen));
 
-            screen.Should().NotBeNull();
-            screen.Should().BeOfType<MockScreen>();
-        }
+        screen.Should().NotBeNull();
+        screen.Should().BeOfType<MockScreen>();
+    }
 
-        /// <summary>
-        /// Should not throw during initialization of ReactiveUI.
-        /// </summary>
-        [Fact]
-        public void SimpleInjectorDependencyResolver_Splat_Initialization_ShouldNotThrow()
-        {
-            Container container = new();
-            SimpleInjectorInitializer initializer = new();
+    /// <summary>
+    /// Should not throw during initialization of ReactiveUI.
+    /// </summary>
+    [Fact]
+    public void SimpleInjectorDependencyResolver_Splat_Initialization_ShouldNotThrow()
+    {
+        Container container = new();
+        SimpleInjectorInitializer initializer = new();
 
-            Locator.SetLocator(initializer);
-            Locator.CurrentMutable.InitializeSplat();
-            container.UseSimpleInjectorDependencyResolver(initializer);
-        }
+        Locator.SetLocator(initializer);
+        Locator.CurrentMutable.InitializeSplat();
+        container.UseSimpleInjectorDependencyResolver(initializer);
+    }
 
-        /// <summary>
-        /// Should resolve dependency registered during Splat initialization.
-        /// </summary>
-        [Fact]
-        public void SimpleInjectorDependencyResolver_ShouldResolveSplatRegisteredDependency()
-        {
-            Container container = new();
-            SimpleInjectorInitializer initializer = new();
+    /// <summary>
+    /// Should resolve dependency registered during Splat initialization.
+    /// </summary>
+    [Fact]
+    public void SimpleInjectorDependencyResolver_ShouldResolveSplatRegisteredDependency()
+    {
+        Container container = new();
+        SimpleInjectorInitializer initializer = new();
 
-            Locator.SetLocator(initializer);
-            Locator.CurrentMutable.InitializeSplat();
-            container.UseSimpleInjectorDependencyResolver(initializer);
+        Locator.SetLocator(initializer);
+        Locator.CurrentMutable.InitializeSplat();
+        container.UseSimpleInjectorDependencyResolver(initializer);
 
-            var dependency = Locator.Current.GetService(typeof(ILogger)) as ILogger;
-            Assert.NotNull(dependency);
-        }
+        var dependency = Locator.Current.GetService(typeof(ILogger)) as ILogger;
+        Assert.NotNull(dependency);
+    }
 
-        /// <summary>
-        /// Should resolve dependency registered during Splat initialization.
-        /// </summary>
-        [Fact]
-        public void SimpleInjectorDependencyResolver_CollectionShouldNeverReturnNull()
-        {
-            var container = new Container();
-            container.UseSimpleInjectorDependencyResolver(new SimpleInjectorInitializer());
+    /// <summary>
+    /// Should resolve dependency registered during Splat initialization.
+    /// </summary>
+    [Fact]
+    public void SimpleInjectorDependencyResolver_CollectionShouldNeverReturnNull()
+    {
+        var container = new Container();
+        container.UseSimpleInjectorDependencyResolver(new SimpleInjectorInitializer());
 
-            var views = Locator.Current.GetServices(typeof(ViewOne));
-            Assert.NotNull(views);
-        }
+        var views = Locator.Current.GetServices(typeof(ViewOne));
+        Assert.NotNull(views);
     }
 }

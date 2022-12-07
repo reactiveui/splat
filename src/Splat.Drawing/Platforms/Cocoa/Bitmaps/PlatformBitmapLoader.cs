@@ -4,12 +4,12 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 
 #if UIKIT
 using Foundation;
+
 using UIKit;
 #else
 using Foundation;
@@ -18,45 +18,22 @@ using UIApplication = AppKit.NSApplication;
 using UIImage = AppKit.NSImage;
 #endif
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// A <see cref="IBitmapLoader"/> which will load Cocoa based bitmaps.
+/// </summary>
+public class PlatformBitmapLoader : IBitmapLoader
 {
-    /// <summary>
-    /// A <see cref="IBitmapLoader"/> which will load Cocoa based bitmaps.
-    /// </summary>
-    public class PlatformBitmapLoader : IBitmapLoader
+    /// <inheritdoc />
+    public Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
     {
-        /// <inheritdoc />
-        public Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
-        {
-            var data = NSData.FromStream(sourceStream);
+        var data = NSData.FromStream(sourceStream);
 
-            var tcs = new TaskCompletionSource<IBitmap?>();
+        var tcs = new TaskCompletionSource<IBitmap?>();
 #if UIKIT
-            NSRunLoop.InvokeInBackground(() =>
-            {
-                try
-                {
-                    if (data is null)
-                    {
-                        throw new InvalidOperationException("Failed to load stream");
-                    }
-
-                    var bitmap = UIImage.LoadFromData(data);
-                    if (bitmap is null)
-                    {
-                        throw new InvalidOperationException("Failed to load image");
-                    }
-
-                    tcs.TrySetResult(new CocoaBitmap(bitmap));
-                }
-                catch (Exception ex)
-                {
-                    LogHost.Default.Debug(ex, "Unable to parse bitmap from byte stream.");
-                    tcs.TrySetException(ex);
-                }
-            });
-#else
-
+        NSRunLoop.InvokeInBackground(() =>
+        {
             try
             {
                 if (data is null)
@@ -64,69 +41,91 @@ namespace Splat
                     throw new InvalidOperationException("Failed to load stream");
                 }
 
-                tcs.TrySetResult(new CocoaBitmap(new UIImage(data)));
+                var bitmap = UIImage.LoadFromData(data);
+                if (bitmap is null)
+                {
+                    throw new InvalidOperationException("Failed to load image");
+                }
+
+                tcs.TrySetResult(new CocoaBitmap(bitmap));
             }
             catch (Exception ex)
             {
                 LogHost.Default.Debug(ex, "Unable to parse bitmap from byte stream.");
                 tcs.TrySetException(ex);
             }
+        });
+#else
+
+        try
+        {
+            if (data is null)
+            {
+                throw new InvalidOperationException("Failed to load stream");
+            }
+
+            tcs.TrySetResult(new CocoaBitmap(new UIImage(data)));
+        }
+        catch (Exception ex)
+        {
+            LogHost.Default.Debug(ex, "Unable to parse bitmap from byte stream.");
+            tcs.TrySetException(ex);
+        }
 #endif
 
-            return tcs.Task;
-        }
+        return tcs.Task;
+    }
 
-        /// <inheritdoc />
-        public Task<IBitmap?> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
-        {
-            var tcs = new TaskCompletionSource<IBitmap?>();
+    /// <inheritdoc />
+    public Task<IBitmap?> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
+    {
+        var tcs = new TaskCompletionSource<IBitmap?>();
 
 #if UIKIT
-            NSRunLoop.InvokeInBackground(() =>
-            {
-                try
-                {
-                    var bitmap = UIImage.FromBundle(source);
-                    if (bitmap is null)
-                    {
-                        throw new InvalidOperationException("Failed to load image from resource: " + source);
-                    }
-
-                    tcs.TrySetResult(new CocoaBitmap(bitmap));
-                }
-                catch (Exception ex)
-                {
-                    LogHost.Default.Debug(ex, "Unable to parse bitmap from resource.");
-                    tcs.TrySetException(ex);
-                }
-            });
-#else
-            NSRunLoop.Main.BeginInvokeOnMainThread(() =>
-            {
-                try
-                {
-                    var bitmap = UIImage.ImageNamed(source);
-                    if (bitmap is null)
-                    {
-                        throw new InvalidOperationException("Failed to load image from resource: " + source);
-                    }
-
-                    tcs.TrySetResult(new CocoaBitmap(bitmap));
-                }
-                catch (Exception ex)
-                {
-                    LogHost.Default.Debug(ex, "Unable to parse bitmap from resource.");
-                    tcs.TrySetException(ex);
-                }
-            });
-#endif
-            return tcs.Task;
-        }
-
-        /// <inheritdoc />
-        public IBitmap Create(float width, float height)
+        NSRunLoop.InvokeInBackground(() =>
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                var bitmap = UIImage.FromBundle(source);
+                if (bitmap is null)
+                {
+                    throw new InvalidOperationException("Failed to load image from resource: " + source);
+                }
+
+                tcs.TrySetResult(new CocoaBitmap(bitmap));
+            }
+            catch (Exception ex)
+            {
+                LogHost.Default.Debug(ex, "Unable to parse bitmap from resource.");
+                tcs.TrySetException(ex);
+            }
+        });
+#else
+        NSRunLoop.Main.BeginInvokeOnMainThread(() =>
+        {
+            try
+            {
+                var bitmap = UIImage.ImageNamed(source);
+                if (bitmap is null)
+                {
+                    throw new InvalidOperationException("Failed to load image from resource: " + source);
+                }
+
+                tcs.TrySetResult(new CocoaBitmap(bitmap));
+            }
+            catch (Exception ex)
+            {
+                LogHost.Default.Debug(ex, "Unable to parse bitmap from resource.");
+                tcs.TrySetException(ex);
+            }
+        });
+#endif
+        return tcs.Task;
+    }
+
+    /// <inheritdoc />
+    public IBitmap Create(float width, float height)
+    {
+        throw new NotImplementedException();
     }
 }

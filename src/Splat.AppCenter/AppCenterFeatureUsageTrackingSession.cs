@@ -7,80 +7,79 @@ using System;
 using System.Collections.Generic;
 using Splat.ApplicationPerformanceMonitoring;
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// Feature Usage Tracking Client for AppCenter.
+/// </summary>
+public sealed class AppCenterFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
 {
     /// <summary>
-    /// Feature Usage Tracking Client for AppCenter.
+    /// Initializes a new instance of the <see cref="AppCenterFeatureUsageTrackingSession"/> class.
     /// </summary>
-    public sealed class AppCenterFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
+    /// <param name="featureName">The name of the feature.</param>
+    public AppCenterFeatureUsageTrackingSession(string featureName)
+        : this(featureName, Guid.Empty)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AppCenterFeatureUsageTrackingSession"/> class.
-        /// </summary>
-        /// <param name="featureName">The name of the feature.</param>
-        public AppCenterFeatureUsageTrackingSession(string featureName)
-            : this(featureName, Guid.Empty)
+    }
+
+    internal AppCenterFeatureUsageTrackingSession(string featureName, Guid parentReference)
+    {
+        FeatureName = featureName;
+        FeatureReference = Guid.NewGuid();
+        ParentReference = parentReference;
+
+        TrackEvent("Feature Usage Start");
+    }
+
+    /// <inheritdoc/>
+    public string FeatureName { get; }
+
+    /// <inheritdoc/>
+    public Guid FeatureReference { get; }
+
+    /// <inheritdoc/>
+    public Guid ParentReference { get; }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        TrackEvent("Feature Usage End");
+    }
+
+    /// <inheritdoc />
+    public IFeatureUsageTrackingSession SubFeature(string description)
+    {
+        return new AppCenterFeatureUsageTrackingSession(description, FeatureReference);
+    }
+
+    /// <inheritdoc />
+    public void OnException(Exception exception)
+    {
+        var properties = GetProperties();
+        Microsoft.AppCenter.Crashes.Crashes.TrackError(exception, properties);
+    }
+
+    private IDictionary<string, string> GetProperties()
+    {
+        var properties = new Dictionary<string, string>
         {
+            { "Name", FeatureName },
+            { "Reference", FeatureReference.ToString() },
+        };
+
+        if (ParentReference != Guid.Empty)
+        {
+            properties.Add("ParentReference", ParentReference.ToString());
         }
 
-        internal AppCenterFeatureUsageTrackingSession(string featureName, Guid parentReference)
-        {
-            FeatureName = featureName;
-            FeatureReference = Guid.NewGuid();
-            ParentReference = parentReference;
+        return properties;
+    }
 
-            TrackEvent("Feature Usage Start");
-        }
+    private void TrackEvent(string eventName)
+    {
+        var properties = GetProperties();
 
-        /// <inheritdoc/>
-        public string FeatureName { get; }
-
-        /// <inheritdoc/>
-        public Guid FeatureReference { get; }
-
-        /// <inheritdoc/>
-        public Guid ParentReference { get; }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            TrackEvent("Feature Usage End");
-        }
-
-        /// <inheritdoc />
-        public IFeatureUsageTrackingSession SubFeature(string description)
-        {
-            return new AppCenterFeatureUsageTrackingSession(description, FeatureReference);
-        }
-
-        /// <inheritdoc />
-        public void OnException(Exception exception)
-        {
-            var properties = GetProperties();
-            Microsoft.AppCenter.Crashes.Crashes.TrackError(exception, properties);
-        }
-
-        private IDictionary<string, string> GetProperties()
-        {
-            var properties = new Dictionary<string, string>
-            {
-                { "Name", FeatureName },
-                { "Reference", FeatureReference.ToString() },
-            };
-
-            if (ParentReference != Guid.Empty)
-            {
-                properties.Add("ParentReference", ParentReference.ToString());
-            }
-
-            return properties;
-        }
-
-        private void TrackEvent(string eventName)
-        {
-            var properties = GetProperties();
-
-            Microsoft.AppCenter.Analytics.Analytics.TrackEvent(eventName, properties);
-        }
+        Microsoft.AppCenter.Analytics.Analytics.TrackEvent(eventName, properties);
     }
 }

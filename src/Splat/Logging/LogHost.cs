@@ -6,57 +6,56 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// Contains helper methods to get access to the Default <see cref="IFullLogger"/>.
+/// </summary>
+public static class LogHost
 {
     /// <summary>
-    /// Contains helper methods to get access to the Default <see cref="IFullLogger"/>.
+    /// Gets the default <see cref="IFullLogger"/> registered within the <see cref="Locator"/>.
     /// </summary>
-    public static class LogHost
+    [SuppressMessage("Design", "CA1065: Do not raise exceptions in properties", Justification = "Very rare scenario")]
+    public static IStaticFullLogger Default
     {
-        /// <summary>
-        /// Gets the default <see cref="IFullLogger"/> registered within the <see cref="Locator"/>.
-        /// </summary>
-        [SuppressMessage("Design", "CA1065: Do not raise exceptions in properties", Justification = "Very rare scenario")]
-        public static IStaticFullLogger Default
+        get
         {
-            get
-            {
-                /*
-                 * DV - this will need an extension of the dependency resolver.
-                 * RegisterLazy(Func<IReadOnlyDependencyResolver, object> factory);
-                 * which will allow a lazy instance of the static logger.
-                 *
-                 * return Locator.Current.GetService<IStaticFullLogger>();
-                 */
+            /*
+             * DV - this will need an extension of the dependency resolver.
+             * RegisterLazy(Func<IReadOnlyDependencyResolver, object> factory);
+             * which will allow a lazy instance of the static logger.
+             *
+             * return Locator.Current.GetService<IStaticFullLogger>();
+             */
 
-                var factory = Locator.Current.GetService<ILogManager>();
-                if (factory is null)
-                {
-                    throw new LoggingException("ILogManager is null. This should never happen, your dependency resolver is broken");
-                }
-
-                var fullLogger = factory.GetLogger(typeof(LogHost));
-
-                return new StaticFullLogger(fullLogger);
-            }
-        }
-
-        /// <summary>
-        /// Call this method to write log entries on behalf of the current class.
-        /// </summary>
-        /// <typeparam name="T">The type to get the <see cref="IFullLogger"/> for.</typeparam>
-        /// <param name="logClassInstance">The class we are getting the logger for.</param>
-        /// <returns>The <see cref="IFullLogger"/> for the class type.</returns>
-        public static IFullLogger Log<T>(this T logClassInstance)
-            where T : IEnableLogger
-        {
             var factory = Locator.Current.GetService<ILogManager>();
             if (factory is null)
             {
-                throw new InvalidOperationException("ILogManager is null. This should never happen, your dependency resolver is broken");
+                throw new LoggingException("ILogManager is null. This should never happen, your dependency resolver is broken");
             }
 
-            return factory.GetLogger<T>();
+            var fullLogger = factory.GetLogger(typeof(LogHost));
+
+            return new StaticFullLogger(fullLogger);
         }
+    }
+
+    /// <summary>
+    /// Call this method to write log entries on behalf of the current class.
+    /// </summary>
+    /// <typeparam name="T">The type to get the <see cref="IFullLogger"/> for.</typeparam>
+    /// <param name="logClassInstance">The class we are getting the logger for.</param>
+    /// <returns>The <see cref="IFullLogger"/> for the class type.</returns>
+    public static IFullLogger Log<T>(this T logClassInstance)
+        where T : IEnableLogger
+    {
+        var factory = Locator.Current.GetService<ILogManager>();
+        if (factory is null)
+        {
+            throw new InvalidOperationException("ILogManager is null. This should never happen, your dependency resolver is broken");
+        }
+
+        return factory.GetLogger<T>();
     }
 }

@@ -7,15 +7,14 @@ using System;
 using System.Linq.Expressions;
 using SimpleInjector;
 
-namespace Splat.SimpleInjector
-{
-    internal class TransientSimpleInjectorRegistration : Registration
-    {
-        public TransientSimpleInjectorRegistration(Container container, Type implementationType, Func<object?>? instanceCreator = null)
-            : base(Lifestyle.Transient, container, implementationType, instanceCreator!)
-        {
-        }
+namespace Splat.SimpleInjector;
 
-        public override Expression BuildExpression() => BuildTransientExpression();
+internal class TransientSimpleInjectorRegistration : Registration
+{
+    public TransientSimpleInjectorRegistration(Container container, Type implementationType, Func<object?>? instanceCreator = null)
+        : base(Lifestyle.Transient, container, implementationType, instanceCreator!)
+    {
     }
+
+    public override Expression BuildExpression() => BuildTransientExpression();
 }

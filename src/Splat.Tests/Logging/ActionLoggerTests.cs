@@ -7,338 +7,337 @@ using System;
 using Splat.Tests.Mocks;
 using Xunit;
 
-namespace Splat.Tests.Logging
+namespace Splat.Tests.Logging;
+
+/// <summary>
+/// Tests associated with the <see cref="ActionLogger"/> class.
+/// </summary>
+public class ActionLoggerTests
 {
     /// <summary>
-    /// Tests associated with the <see cref="ActionLogger"/> class.
+    /// Test to make sure the message writes.
     /// </summary>
-    public class ActionLoggerTests
+    [Fact]
+    public void Write_Should_Emit_Message()
     {
-        /// <summary>
-        /// Test to make sure the message writes.
-        /// </summary>
-        [Fact]
-        public void Write_Should_Emit_Message()
-        {
-            string? passedMessage = null;
-            LogLevel? passedLevel = null;
+        string? passedMessage = null;
+        LogLevel? passedLevel = null;
 
-            var logger = new ActionLogger(
-                (message, level) =>
-                {
-                    passedMessage = message;
-                    passedLevel = level;
-                },
-                null!,
-                null!,
-                null!);
+        var logger = new ActionLogger(
+            (message, level) =>
+            {
+                passedMessage = message;
+                passedLevel = level;
+            },
+            null!,
+            null!,
+            null!);
 
-            var fullLogger = new WrappingFullLogger(logger);
+        var fullLogger = new WrappingFullLogger(logger);
 
-            fullLogger.Write("This is a test.", LogLevel.Debug);
+        fullLogger.Write("This is a test.", LogLevel.Debug);
 
-            Assert.Equal("This is a test.", passedMessage);
-            Assert.Equal(LogLevel.Debug, passedLevel);
-        }
+        Assert.Equal("This is a test.", passedMessage);
+        Assert.Equal(LogLevel.Debug, passedLevel);
+    }
 
-        /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
-        /// </summary>
-        [Fact]
-        public void Debug_With_Generic_Type_Should_Emit_Message_And_Type()
-        {
-            string? passedMessage = null;
-            LogLevel? passedLevel = null;
-            Type? passedType = null;
+    /// <summary>
+    /// Test to make sure the generic type parameter is passed to the logger.
+    /// </summary>
+    [Fact]
+    public void Debug_With_Generic_Type_Should_Emit_Message_And_Type()
+    {
+        string? passedMessage = null;
+        LogLevel? passedLevel = null;
+        Type? passedType = null;
 
-            var logger = new ActionLogger(
-                null!,
-                (message, type, level) =>
-                {
-                    passedMessage = message;
-                    passedType = type;
-                    passedLevel = level;
-                },
-                null!,
-                null!);
+        var logger = new ActionLogger(
+            null!,
+            (message, type, level) =>
+            {
+                passedMessage = message;
+                passedType = type;
+                passedLevel = level;
+            },
+            null!,
+            null!);
 
-            var fullLogger = new WrappingFullLogger(logger);
+        var fullLogger = new WrappingFullLogger(logger);
 
-            fullLogger.Debug<DummyObjectClass1>("This is a test.");
+        fullLogger.Debug<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal("This is a test.", passedMessage);
-            Assert.Equal(LogLevel.Debug, passedLevel);
-            Assert.Equal(typeof(DummyObjectClass1), passedType);
-        }
+        Assert.Equal("This is a test.", passedMessage);
+        Assert.Equal(LogLevel.Debug, passedLevel);
+        Assert.Equal(typeof(DummyObjectClass1), passedType);
+    }
 
-        /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
-        /// </summary>
-        [Fact]
-        public void Debug_With_Generic_Type_Should_Emit_Message_And_Type_Provided()
-        {
-            string? passedMessage = null;
-            LogLevel? passedLevel = null;
-            Type? passedType = null;
+    /// <summary>
+    /// Test to make sure the generic type parameter is passed to the logger.
+    /// </summary>
+    [Fact]
+    public void Debug_With_Generic_Type_Should_Emit_Message_And_Type_Provided()
+    {
+        string? passedMessage = null;
+        LogLevel? passedLevel = null;
+        Type? passedType = null;
 
-            var logger = new ActionLogger(
-                null!,
-                (message, type, level) =>
-                {
-                    passedMessage = message;
-                    passedType = type;
-                    passedLevel = level;
-                },
-                null!,
-                null!);
+        var logger = new ActionLogger(
+            null!,
+            (message, type, level) =>
+            {
+                passedMessage = message;
+                passedType = type;
+                passedLevel = level;
+            },
+            null!,
+            null!);
 
-            var fullLogger = new WrappingFullLogger(logger);
+        var fullLogger = new WrappingFullLogger(logger);
 
-            fullLogger.Debug<DummyObjectClass2>("This is a test.");
+        fullLogger.Debug<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal("This is a test.", passedMessage);
-            Assert.Equal(LogLevel.Debug, passedLevel);
-            Assert.Equal(typeof(DummyObjectClass2), passedType);
-        }
+        Assert.Equal("This is a test.", passedMessage);
+        Assert.Equal(LogLevel.Debug, passedLevel);
+        Assert.Equal(typeof(DummyObjectClass2), passedType);
+    }
 
-        /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
-        /// </summary>
-        [Fact]
-        public void Info_With_Generic_Type_Should_Emit_Message_And_Type()
-        {
-            string? passedMessage = null;
-            LogLevel? passedLevel = null;
-            Type? passedType = null;
+    /// <summary>
+    /// Test to make sure the generic type parameter is passed to the logger.
+    /// </summary>
+    [Fact]
+    public void Info_With_Generic_Type_Should_Emit_Message_And_Type()
+    {
+        string? passedMessage = null;
+        LogLevel? passedLevel = null;
+        Type? passedType = null;
 
-            var logger = new ActionLogger(
-                null!,
-                (message, type, level) =>
-                {
-                    passedMessage = message;
-                    passedType = type;
-                    passedLevel = level;
-                },
-                null!,
-                null!);
+        var logger = new ActionLogger(
+            null!,
+            (message, type, level) =>
+            {
+                passedMessage = message;
+                passedType = type;
+                passedLevel = level;
+            },
+            null!,
+            null!);
 
-            var fullLogger = new WrappingFullLogger(logger);
+        var fullLogger = new WrappingFullLogger(logger);
 
-            fullLogger.Info<DummyObjectClass1>("This is a test.");
+        fullLogger.Info<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal("This is a test.", passedMessage);
-            Assert.Equal(LogLevel.Info, passedLevel);
-            Assert.Equal(typeof(DummyObjectClass1), passedType);
-        }
+        Assert.Equal("This is a test.", passedMessage);
+        Assert.Equal(LogLevel.Info, passedLevel);
+        Assert.Equal(typeof(DummyObjectClass1), passedType);
+    }
 
-        /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
-        /// </summary>
-        [Fact]
-        public void Info_With_Generic_Type_Should_Emit_Message_And_Type_Provided()
-        {
-            string? passedMessage = null;
-            LogLevel? passedLevel = null;
-            Type? passedType = null;
+    /// <summary>
+    /// Test to make sure the generic type parameter is passed to the logger.
+    /// </summary>
+    [Fact]
+    public void Info_With_Generic_Type_Should_Emit_Message_And_Type_Provided()
+    {
+        string? passedMessage = null;
+        LogLevel? passedLevel = null;
+        Type? passedType = null;
 
-            var logger = new ActionLogger(
-                null!,
-                (message, type, level) =>
-                {
-                    passedMessage = message;
-                    passedType = type;
-                    passedLevel = level;
-                },
-                null!,
-                null!);
+        var logger = new ActionLogger(
+            null!,
+            (message, type, level) =>
+            {
+                passedMessage = message;
+                passedType = type;
+                passedLevel = level;
+            },
+            null!,
+            null!);
 
-            var fullLogger = new WrappingFullLogger(logger);
+        var fullLogger = new WrappingFullLogger(logger);
 
-            fullLogger.Info<DummyObjectClass2>("This is a test.");
+        fullLogger.Info<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal("This is a test.", passedMessage);
-            Assert.Equal(LogLevel.Info, passedLevel);
-            Assert.Equal(typeof(DummyObjectClass2), passedType);
-        }
+        Assert.Equal("This is a test.", passedMessage);
+        Assert.Equal(LogLevel.Info, passedLevel);
+        Assert.Equal(typeof(DummyObjectClass2), passedType);
+    }
 
-        /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
-        /// </summary>
-        [Fact]
-        public void Warn_With_Generic_Type_Should_Emit_Message_And_Type()
-        {
-            string? passedMessage = null;
-            LogLevel? passedLevel = null;
-            Type? passedType = null;
+    /// <summary>
+    /// Test to make sure the generic type parameter is passed to the logger.
+    /// </summary>
+    [Fact]
+    public void Warn_With_Generic_Type_Should_Emit_Message_And_Type()
+    {
+        string? passedMessage = null;
+        LogLevel? passedLevel = null;
+        Type? passedType = null;
 
-            var logger = new ActionLogger(
-                null!,
-                (message, type, level) =>
-                {
-                    passedMessage = message;
-                    passedType = type;
-                    passedLevel = level;
-                },
-                null!,
-                null!);
+        var logger = new ActionLogger(
+            null!,
+            (message, type, level) =>
+            {
+                passedMessage = message;
+                passedType = type;
+                passedLevel = level;
+            },
+            null!,
+            null!);
 
-            var fullLogger = new WrappingFullLogger(logger);
+        var fullLogger = new WrappingFullLogger(logger);
 
-            fullLogger.Warn<DummyObjectClass1>("This is a test.");
+        fullLogger.Warn<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal("This is a test.", passedMessage);
-            Assert.Equal(LogLevel.Warn, passedLevel);
-            Assert.Equal(typeof(DummyObjectClass1), passedType);
-        }
+        Assert.Equal("This is a test.", passedMessage);
+        Assert.Equal(LogLevel.Warn, passedLevel);
+        Assert.Equal(typeof(DummyObjectClass1), passedType);
+    }
 
-        /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
-        /// </summary>
-        [Fact]
-        public void Warn_With_Generic_Type_Should_Emit_Message_And_Type_Provided()
-        {
-            string? passedMessage = null;
-            LogLevel? passedLevel = null;
-            Type? passedType = null;
+    /// <summary>
+    /// Test to make sure the generic type parameter is passed to the logger.
+    /// </summary>
+    [Fact]
+    public void Warn_With_Generic_Type_Should_Emit_Message_And_Type_Provided()
+    {
+        string? passedMessage = null;
+        LogLevel? passedLevel = null;
+        Type? passedType = null;
 
-            var logger = new ActionLogger(
-                null!,
-                (message, type, level) =>
-                {
-                    passedMessage = message;
-                    passedType = type;
-                    passedLevel = level;
-                },
-                null!,
-                null!);
+        var logger = new ActionLogger(
+            null!,
+            (message, type, level) =>
+            {
+                passedMessage = message;
+                passedType = type;
+                passedLevel = level;
+            },
+            null!,
+            null!);
 
-            var fullLogger = new WrappingFullLogger(logger);
+        var fullLogger = new WrappingFullLogger(logger);
 
-            fullLogger.Warn<DummyObjectClass2>("This is a test.");
+        fullLogger.Warn<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal("This is a test.", passedMessage);
-            Assert.Equal(LogLevel.Warn, passedLevel);
-            Assert.Equal(typeof(DummyObjectClass2), passedType);
-        }
+        Assert.Equal("This is a test.", passedMessage);
+        Assert.Equal(LogLevel.Warn, passedLevel);
+        Assert.Equal(typeof(DummyObjectClass2), passedType);
+    }
 
-        /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
-        /// </summary>
-        [Fact]
-        public void Error_With_Generic_Type_Should_Emit_Message_And_Type()
-        {
-            string? passedMessage = null;
-            LogLevel? passedLevel = null;
-            Type? passedType = null;
+    /// <summary>
+    /// Test to make sure the generic type parameter is passed to the logger.
+    /// </summary>
+    [Fact]
+    public void Error_With_Generic_Type_Should_Emit_Message_And_Type()
+    {
+        string? passedMessage = null;
+        LogLevel? passedLevel = null;
+        Type? passedType = null;
 
-            var logger = new ActionLogger(
-                null!,
-                (message, type, level) =>
-                {
-                    passedMessage = message;
-                    passedType = type;
-                    passedLevel = level;
-                },
-                null!,
-                null!);
+        var logger = new ActionLogger(
+            null!,
+            (message, type, level) =>
+            {
+                passedMessage = message;
+                passedType = type;
+                passedLevel = level;
+            },
+            null!,
+            null!);
 
-            var fullLogger = new WrappingFullLogger(logger);
+        var fullLogger = new WrappingFullLogger(logger);
 
-            fullLogger.Error<DummyObjectClass1>("This is a test.");
+        fullLogger.Error<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal("This is a test.", passedMessage);
-            Assert.Equal(LogLevel.Error, passedLevel);
-            Assert.Equal(typeof(DummyObjectClass1), passedType);
-        }
+        Assert.Equal("This is a test.", passedMessage);
+        Assert.Equal(LogLevel.Error, passedLevel);
+        Assert.Equal(typeof(DummyObjectClass1), passedType);
+    }
 
-        /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
-        /// </summary>
-        [Fact]
-        public void Error_With_Generic_Type_Should_Emit_Message_And_Type_Provided()
-        {
-            string? passedMessage = null;
-            LogLevel? passedLevel = null;
-            Type? passedType = null;
+    /// <summary>
+    /// Test to make sure the generic type parameter is passed to the logger.
+    /// </summary>
+    [Fact]
+    public void Error_With_Generic_Type_Should_Emit_Message_And_Type_Provided()
+    {
+        string? passedMessage = null;
+        LogLevel? passedLevel = null;
+        Type? passedType = null;
 
-            var logger = new ActionLogger(
-                null!,
-                (message, type, level) =>
-                {
-                    passedMessage = message;
-                    passedType = type;
-                    passedLevel = level;
-                },
-                null!,
-                null!);
+        var logger = new ActionLogger(
+            null!,
+            (message, type, level) =>
+            {
+                passedMessage = message;
+                passedType = type;
+                passedLevel = level;
+            },
+            null!,
+            null!);
 
-            var fullLogger = new WrappingFullLogger(logger);
+        var fullLogger = new WrappingFullLogger(logger);
 
-            fullLogger.Error<DummyObjectClass2>("This is a test.");
+        fullLogger.Error<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal("This is a test.", passedMessage);
-            Assert.Equal(LogLevel.Error, passedLevel);
-            Assert.Equal(typeof(DummyObjectClass2), passedType);
-        }
+        Assert.Equal("This is a test.", passedMessage);
+        Assert.Equal(LogLevel.Error, passedLevel);
+        Assert.Equal(typeof(DummyObjectClass2), passedType);
+    }
 
-        /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
-        /// </summary>
-        [Fact]
-        public void Fatal_With_Generic_Type_Should_Emit_Message_And_Type()
-        {
-            string? passedMessage = null;
-            LogLevel? passedLevel = null;
-            Type? passedType = null;
+    /// <summary>
+    /// Test to make sure the generic type parameter is passed to the logger.
+    /// </summary>
+    [Fact]
+    public void Fatal_With_Generic_Type_Should_Emit_Message_And_Type()
+    {
+        string? passedMessage = null;
+        LogLevel? passedLevel = null;
+        Type? passedType = null;
 
-            var logger = new ActionLogger(
-                null!,
-                (message, type, level) =>
-                {
-                    passedMessage = message;
-                    passedType = type;
-                    passedLevel = level;
-                },
-                null!,
-                null!);
+        var logger = new ActionLogger(
+            null!,
+            (message, type, level) =>
+            {
+                passedMessage = message;
+                passedType = type;
+                passedLevel = level;
+            },
+            null!,
+            null!);
 
-            var fullLogger = new WrappingFullLogger(logger);
+        var fullLogger = new WrappingFullLogger(logger);
 
-            fullLogger.Fatal<DummyObjectClass1>("This is a test.");
+        fullLogger.Fatal<DummyObjectClass1>("This is a test.");
 
-            Assert.Equal("This is a test.", passedMessage);
-            Assert.Equal(LogLevel.Fatal, passedLevel);
-            Assert.Equal(typeof(DummyObjectClass1), passedType);
-        }
+        Assert.Equal("This is a test.", passedMessage);
+        Assert.Equal(LogLevel.Fatal, passedLevel);
+        Assert.Equal(typeof(DummyObjectClass1), passedType);
+    }
 
-        /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
-        /// </summary>
-        [Fact]
-        public void Fatal_With_Generic_Type_Should_Emit_Message_And_Type_Provided()
-        {
-            string? passedMessage = null;
-            LogLevel? passedLevel = null;
-            Type? passedType = null;
+    /// <summary>
+    /// Test to make sure the generic type parameter is passed to the logger.
+    /// </summary>
+    [Fact]
+    public void Fatal_With_Generic_Type_Should_Emit_Message_And_Type_Provided()
+    {
+        string? passedMessage = null;
+        LogLevel? passedLevel = null;
+        Type? passedType = null;
 
-            var logger = new ActionLogger(
-                null!,
-                (message, type, level) =>
-                {
-                    passedMessage = message;
-                    passedType = type;
-                    passedLevel = level;
-                },
-                null!,
-                null!);
+        var logger = new ActionLogger(
+            null!,
+            (message, type, level) =>
+            {
+                passedMessage = message;
+                passedType = type;
+                passedLevel = level;
+            },
+            null!,
+            null!);
 
-            var fullLogger = new WrappingFullLogger(logger);
+        var fullLogger = new WrappingFullLogger(logger);
 
-            fullLogger.Fatal<DummyObjectClass2>("This is a test.");
+        fullLogger.Fatal<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal("This is a test.", passedMessage);
-            Assert.Equal(LogLevel.Fatal, passedLevel);
-            Assert.Equal(typeof(DummyObjectClass2), passedType);
-        }
+        Assert.Equal("This is a test.", passedMessage);
+        Assert.Equal(LogLevel.Fatal, passedLevel);
+        Assert.Equal(typeof(DummyObjectClass2), passedType);
     }
 }

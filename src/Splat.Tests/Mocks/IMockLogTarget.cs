@@ -5,16 +5,15 @@
 
 using System.Collections.Generic;
 
-namespace Splat.Tests.Mocks
+namespace Splat.Tests.Mocks;
+
+/// <summary>
+/// A target with our desired logs.
+/// </summary>
+public interface IMockLogTarget
 {
     /// <summary>
-    /// A target with our desired logs.
+    /// Gets the logs that have been sent.
     /// </summary>
-    public interface IMockLogTarget
-    {
-        /// <summary>
-        /// Gets the logs that have been sent.
-        /// </summary>
-        ICollection<(LogLevel logLevel, string message)> Logs { get; }
-    }
+    ICollection<(LogLevel logLevel, string message)> Logs { get; }
 }

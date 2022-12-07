@@ -6,202 +6,201 @@
 using System;
 using System.Diagnostics;
 
-namespace Splat.Log4Net
+namespace Splat.Log4Net;
+
+/// <summary>
+/// Log4Net Logger integration into Splat.
+/// </summary>
+[DebuggerDisplay("Name={_inner.Logger.Name} Level={Level}")]
+public sealed class Log4NetLogger : ILogger, IDisposable
 {
+    private readonly global::log4net.ILog _inner;
+
     /// <summary>
-    /// Log4Net Logger integration into Splat.
+    /// Initializes a new instance of the <see cref="Log4NetLogger"/> class.
     /// </summary>
-    [DebuggerDisplay("Name={_inner.Logger.Name} Level={Level}")]
-    public sealed class Log4NetLogger : ILogger, IDisposable
+    /// <param name="inner">The actual log4net logger.</param>
+    /// <exception cref="ArgumentNullException">Log4Net logger not passed.</exception>
+    public Log4NetLogger(global::log4net.ILog inner)
     {
-        private readonly global::log4net.ILog _inner;
+        _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+        SetLogLevel();
+        _inner.Logger.Repository.ConfigurationChanged += OnInnerLoggerReconfigured;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Log4NetLogger"/> class.
-        /// </summary>
-        /// <param name="inner">The actual log4net logger.</param>
-        /// <exception cref="ArgumentNullException">Log4Net logger not passed.</exception>
-        public Log4NetLogger(global::log4net.ILog inner)
+    /// <inheritdoc />
+    public LogLevel Level { get; private set; }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _inner.Logger.Repository.ConfigurationChanged -= OnInnerLoggerReconfigured;
+    }
+
+    /// <inheritdoc />
+    public void Write(string message, LogLevel logLevel)
+    {
+        switch (logLevel)
         {
-            _inner = inner ?? throw new ArgumentNullException(nameof(inner));
-            SetLogLevel();
-            _inner.Logger.Repository.ConfigurationChanged += OnInnerLoggerReconfigured;
+            case LogLevel.Debug:
+                _inner.Debug(message);
+
+                break;
+            case LogLevel.Info:
+                _inner.Info(message);
+
+                break;
+            case LogLevel.Warn:
+                _inner.Warn(message);
+
+                break;
+            case LogLevel.Error:
+                _inner.Error(message);
+
+                break;
+            case LogLevel.Fatal:
+                _inner.Fatal(message);
+
+                break;
+            default:
+                _inner.Debug(message);
+
+                break;
+        }
+    }
+
+    /// <inheritdoc />
+    public void Write(Exception exception, string message, LogLevel logLevel)
+    {
+        switch (logLevel)
+        {
+            case LogLevel.Debug:
+                _inner.Debug(message, exception);
+                break;
+            case LogLevel.Info:
+                _inner.Info(message, exception);
+
+                break;
+            case LogLevel.Warn:
+                _inner.Warn(message, exception);
+
+                break;
+            case LogLevel.Error:
+                _inner.Error(message, exception);
+
+                break;
+            case LogLevel.Fatal:
+                _inner.Fatal(message, exception);
+
+                break;
+            default:
+                _inner.Debug(message, exception);
+
+                break;
+        }
+    }
+
+    /// <inheritdoc />
+    public void Write(string message, Type type, LogLevel logLevel)
+    {
+        var logger = LogResolver.Resolve(type);
+        switch (logLevel)
+        {
+            case LogLevel.Debug:
+                logger.Debug(message);
+                break;
+            case LogLevel.Info:
+                logger.Info(message);
+
+                break;
+            case LogLevel.Warn:
+                logger.Warn(message);
+
+                break;
+            case LogLevel.Error:
+                logger.Error(message);
+
+                break;
+            case LogLevel.Fatal:
+                logger.Fatal(message);
+
+                break;
+            default:
+                logger.Debug(message);
+
+                break;
+        }
+    }
+
+    /// <inheritdoc />
+    public void Write(Exception exception, string message, Type type, LogLevel logLevel)
+    {
+        var logger = LogResolver.Resolve(type);
+        switch (logLevel)
+        {
+            case LogLevel.Debug:
+                logger.Debug(message, exception);
+                break;
+            case LogLevel.Info:
+                logger.Info(message, exception);
+
+                break;
+            case LogLevel.Warn:
+                logger.Warn(message, exception);
+
+                break;
+            case LogLevel.Error:
+                logger.Error(message, exception);
+
+                break;
+            case LogLevel.Fatal:
+                logger.Fatal(message, exception);
+
+                break;
+            default:
+                logger.Debug(message, exception);
+
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Works out the log level.
+    /// </summary>
+    /// <remarks>
+    /// This was done so the Level property doesn't keep getting re-evaluated each time a Write method is called.
+    /// </remarks>
+    private void SetLogLevel()
+    {
+        if (_inner.IsDebugEnabled)
+        {
+            Level = LogLevel.Debug;
+            return;
         }
 
-        /// <inheritdoc />
-        public LogLevel Level { get; private set; }
-
-        /// <inheritdoc />
-        public void Dispose()
+        if (_inner.IsInfoEnabled)
         {
-            _inner.Logger.Repository.ConfigurationChanged -= OnInnerLoggerReconfigured;
+            Level = LogLevel.Info;
+            return;
         }
 
-        /// <inheritdoc />
-        public void Write(string message, LogLevel logLevel)
+        if (_inner.IsWarnEnabled)
         {
-            switch (logLevel)
-            {
-                case LogLevel.Debug:
-                    _inner.Debug(message);
-
-                    break;
-                case LogLevel.Info:
-                    _inner.Info(message);
-
-                    break;
-                case LogLevel.Warn:
-                    _inner.Warn(message);
-
-                    break;
-                case LogLevel.Error:
-                    _inner.Error(message);
-
-                    break;
-                case LogLevel.Fatal:
-                    _inner.Fatal(message);
-
-                    break;
-                default:
-                    _inner.Debug(message);
-
-                    break;
-            }
+            Level = LogLevel.Warn;
+            return;
         }
 
-        /// <inheritdoc />
-        public void Write(Exception exception, string message, LogLevel logLevel)
+        if (_inner.IsErrorEnabled)
         {
-            switch (logLevel)
-            {
-                case LogLevel.Debug:
-                    _inner.Debug(message, exception);
-                    break;
-                case LogLevel.Info:
-                    _inner.Info(message, exception);
-
-                    break;
-                case LogLevel.Warn:
-                    _inner.Warn(message, exception);
-
-                    break;
-                case LogLevel.Error:
-                    _inner.Error(message, exception);
-
-                    break;
-                case LogLevel.Fatal:
-                    _inner.Fatal(message, exception);
-
-                    break;
-                default:
-                    _inner.Debug(message, exception);
-
-                    break;
-            }
+            Level = LogLevel.Error;
+            return;
         }
 
-        /// <inheritdoc />
-        public void Write(string message, Type type, LogLevel logLevel)
-        {
-            var logger = LogResolver.Resolve(type);
-            switch (logLevel)
-            {
-                case LogLevel.Debug:
-                    logger.Debug(message);
-                    break;
-                case LogLevel.Info:
-                    logger.Info(message);
+        Level = LogLevel.Fatal;
+    }
 
-                    break;
-                case LogLevel.Warn:
-                    logger.Warn(message);
-
-                    break;
-                case LogLevel.Error:
-                    logger.Error(message);
-
-                    break;
-                case LogLevel.Fatal:
-                    logger.Fatal(message);
-
-                    break;
-                default:
-                    logger.Debug(message);
-
-                    break;
-            }
-        }
-
-        /// <inheritdoc />
-        public void Write(Exception exception, string message, Type type, LogLevel logLevel)
-        {
-            var logger = LogResolver.Resolve(type);
-            switch (logLevel)
-            {
-                case LogLevel.Debug:
-                    logger.Debug(message, exception);
-                    break;
-                case LogLevel.Info:
-                    logger.Info(message, exception);
-
-                    break;
-                case LogLevel.Warn:
-                    logger.Warn(message, exception);
-
-                    break;
-                case LogLevel.Error:
-                    logger.Error(message, exception);
-
-                    break;
-                case LogLevel.Fatal:
-                    logger.Fatal(message, exception);
-
-                    break;
-                default:
-                    logger.Debug(message, exception);
-
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Works out the log level.
-        /// </summary>
-        /// <remarks>
-        /// This was done so the Level property doesn't keep getting re-evaluated each time a Write method is called.
-        /// </remarks>
-        private void SetLogLevel()
-        {
-            if (_inner.IsDebugEnabled)
-            {
-                Level = LogLevel.Debug;
-                return;
-            }
-
-            if (_inner.IsInfoEnabled)
-            {
-                Level = LogLevel.Info;
-                return;
-            }
-
-            if (_inner.IsWarnEnabled)
-            {
-                Level = LogLevel.Warn;
-                return;
-            }
-
-            if (_inner.IsErrorEnabled)
-            {
-                Level = LogLevel.Error;
-                return;
-            }
-
-            Level = LogLevel.Fatal;
-        }
-
-        private void OnInnerLoggerReconfigured(object sender, EventArgs e)
-        {
-            SetLogLevel();
-        }
+    private void OnInnerLoggerReconfigured(object sender, EventArgs e)
+    {
+        SetLogLevel();
     }
 }

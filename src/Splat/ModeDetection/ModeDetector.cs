@@ -3,61 +3,60 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// A helper class which detect if we are currently running via a unit test or design mode.
+/// </summary>
+public static class ModeDetector
 {
+    private static bool? _cachedInUnitTestRunnerResult;
+
     /// <summary>
-    /// A helper class which detect if we are currently running via a unit test or design mode.
+    /// Initializes static members of the <see cref="ModeDetector"/> class.
     /// </summary>
-    public static class ModeDetector
+    static ModeDetector()
     {
-        private static bool? _cachedInUnitTestRunnerResult;
+        Current = new DefaultModeDetector();
+    }
 
-        /// <summary>
-        /// Initializes static members of the <see cref="ModeDetector"/> class.
-        /// </summary>
-        static ModeDetector()
+    /// <summary>
+    /// Gets or sets the current mode detector set.
+    /// </summary>
+    private static IModeDetector Current { get; set; }
+
+    /// <summary>
+    /// Overrides the mode detector with one of your own provided ones.
+    /// </summary>
+    /// <param name="modeDetector">The mode detector to use.</param>
+    public static void OverrideModeDetector(IModeDetector modeDetector)
+    {
+        Current = modeDetector;
+        _cachedInUnitTestRunnerResult = null;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether we are currently running from a unit test.
+    /// </summary>
+    /// <returns>If we are currently running from a unit test.</returns>
+    public static bool InUnitTestRunner()
+    {
+        if (_cachedInUnitTestRunnerResult.HasValue)
         {
-            Current = new DefaultModeDetector();
+            return _cachedInUnitTestRunnerResult.Value;
         }
 
-        /// <summary>
-        /// Gets or sets the current mode detector set.
-        /// </summary>
-        private static IModeDetector Current { get; set; }
-
-        /// <summary>
-        /// Overrides the mode detector with one of your own provided ones.
-        /// </summary>
-        /// <param name="modeDetector">The mode detector to use.</param>
-        public static void OverrideModeDetector(IModeDetector modeDetector)
+        if (Current is not null)
         {
-            Current = modeDetector;
-            _cachedInUnitTestRunnerResult = null;
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether we are currently running from a unit test.
-        /// </summary>
-        /// <returns>If we are currently running from a unit test.</returns>
-        public static bool InUnitTestRunner()
-        {
+            _cachedInUnitTestRunnerResult = Current.InUnitTestRunner();
             if (_cachedInUnitTestRunnerResult.HasValue)
             {
                 return _cachedInUnitTestRunnerResult.Value;
             }
-
-            if (Current is not null)
-            {
-                _cachedInUnitTestRunnerResult = Current.InUnitTestRunner();
-                if (_cachedInUnitTestRunnerResult.HasValue)
-                {
-                    return _cachedInUnitTestRunnerResult.Value;
-                }
-            }
-
-            // We have no sane platform-independent way to detect a unit test
-            // runner :-/
-            return false;
         }
+
+        // We have no sane platform-independent way to detect a unit test
+        // runner :-/
+        return false;
     }
 }

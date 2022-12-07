@@ -5,19 +5,18 @@
 
 using SimpleInjector;
 
-namespace Splat.SimpleInjector
+namespace Splat.SimpleInjector;
+
+/// <summary>
+/// Extension methods for the SimpleInjector adapter.
+/// </summary>
+public static class SplatSimpleInjectorExtensions
 {
     /// <summary>
-    /// Extension methods for the SimpleInjector adapter.
+    /// Initializes an instance of <see cref="SimpleInjectorDependencyResolver"/> that overrides the default <see cref="Locator"/>.
     /// </summary>
-    public static class SplatSimpleInjectorExtensions
-    {
-        /// <summary>
-        /// Initializes an instance of <see cref="SimpleInjectorDependencyResolver"/> that overrides the default <see cref="Locator"/>.
-        /// </summary>
-        /// <param name="container">Simple Injector container.</param>
-        /// <param name="initializer">Initializer.</param>
-        public static void UseSimpleInjectorDependencyResolver(this Container container, SimpleInjectorInitializer initializer) =>
-            Locator.SetLocator(new SimpleInjectorDependencyResolver(container, initializer));
-    }
+    /// <param name="container">Simple Injector container.</param>
+    /// <param name="initializer">Initializer.</param>
+    public static void UseSimpleInjectorDependencyResolver(this Container container, SimpleInjectorInitializer initializer) =>
+        Locator.SetLocator(new SimpleInjectorDependencyResolver(container, initializer));
 }

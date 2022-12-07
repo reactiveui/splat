@@ -3,13 +3,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-namespace Splat.Common.Test
+namespace Splat.Common.Test;
+
+/// <summary>
+/// Represents a screen.
+/// </summary>
+public interface IScreen
 {
-    /// <summary>
-    /// Represents a screen.
-    /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Avoid empty interfaces", Justification = "For mocks only.")]
-    public interface IScreen
-    {
-    }
 }

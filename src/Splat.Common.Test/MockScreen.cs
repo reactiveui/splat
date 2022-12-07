@@ -5,14 +5,13 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace Splat.Common.Test
+namespace Splat.Common.Test;
+
+/// <summary>
+/// An <see cref="IScreen"/> implementation.
+/// </summary>
+/// <seealso cref="IScreen" />
+[ExcludeFromCodeCoverage]
+public class MockScreen : IScreen
 {
-    /// <summary>
-    /// An <see cref="IScreen"/> implementation.
-    /// </summary>
-    /// <seealso cref="IScreen" />
-    [ExcludeFromCodeCoverage]
-    public class MockScreen : IScreen
-    {
-    }
 }

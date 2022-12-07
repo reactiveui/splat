@@ -3,19 +3,18 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-namespace Splat.ApplicationPerformanceMonitoring
+namespace Splat.ApplicationPerformanceMonitoring;
+
+/// <summary>
+/// Default implementation of the Feature Usage Tracking Manager.
+/// </summary>
+public sealed class DefaultFeatureUsageTrackingManager : FuncFeatureUsageTrackingManager
 {
     /// <summary>
-    /// Default implementation of the Feature Usage Tracking Manager.
+    /// Initializes a new instance of the <see cref="DefaultFeatureUsageTrackingManager"/> class.
     /// </summary>
-    public sealed class DefaultFeatureUsageTrackingManager : FuncFeatureUsageTrackingManager
+    public DefaultFeatureUsageTrackingManager()
+        : base(featureName => new DefaultFeatureUsageTrackingSession(featureName))
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultFeatureUsageTrackingManager"/> class.
-        /// </summary>
-        public DefaultFeatureUsageTrackingManager()
-            : base(featureName => new DefaultFeatureUsageTrackingSession(featureName))
-        {
-        }
     }
 }

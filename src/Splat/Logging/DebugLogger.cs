@@ -11,58 +11,57 @@
 using System;
 using System.ComponentModel;
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// A logger which will send messages to the debug logger.
+/// </summary>
+public class DebugLogger : ILogger
 {
-    /// <summary>
-    /// A logger which will send messages to the debug logger.
-    /// </summary>
-    public class DebugLogger : ILogger
+    /// <inheritdoc />
+    public LogLevel Level { get; set; }
+
+    /// <inheritdoc />
+    public void Write([Localizable(false)] string message, LogLevel logLevel)
     {
-        /// <inheritdoc />
-        public LogLevel Level { get; set; }
-
-        /// <inheritdoc />
-        public void Write([Localizable(false)] string message, LogLevel logLevel)
+        if ((int)logLevel < (int)Level)
         {
-            if ((int)logLevel < (int)Level)
-            {
-                return;
-            }
-
-            System.Diagnostics.Debug.WriteLine(message);
+            return;
         }
 
-        /// <inheritdoc />
-        public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel)
-        {
-            if ((int)logLevel < (int)Level)
-            {
-                return;
-            }
+        System.Diagnostics.Debug.WriteLine(message);
+    }
 
-            System.Diagnostics.Debug.WriteLine($"{message} - {exception}");
+    /// <inheritdoc />
+    public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel)
+    {
+        if ((int)logLevel < (int)Level)
+        {
+            return;
         }
 
-        /// <inheritdoc />
-        public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
-        {
-            if ((int)logLevel < (int)Level)
-            {
-                return;
-            }
+        System.Diagnostics.Debug.WriteLine($"{message} - {exception}");
+    }
 
-            System.Diagnostics.Debug.WriteLine(message, type?.Name);
+    /// <inheritdoc />
+    public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
+    {
+        if ((int)logLevel < (int)Level)
+        {
+            return;
         }
 
-        /// <inheritdoc />
-        public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
-        {
-            if ((int)logLevel < (int)Level)
-            {
-                return;
-            }
+        System.Diagnostics.Debug.WriteLine(message, type?.Name);
+    }
 
-            System.Diagnostics.Debug.WriteLine($"{message} - {exception}", type?.Name);
+    /// <inheritdoc />
+    public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
+    {
+        if ((int)logLevel < (int)Level)
+        {
+            return;
         }
+
+        System.Diagnostics.Debug.WriteLine($"{message} - {exception}", type?.Name);
     }
 }

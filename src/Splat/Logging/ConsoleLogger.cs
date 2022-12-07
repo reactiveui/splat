@@ -7,64 +7,63 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// A logger which will send messages to the console.
+/// </summary>
+public class ConsoleLogger : ILogger
 {
     /// <summary>
-    /// A logger which will send messages to the console.
+    /// Gets or sets the exception message format.
+    /// First parameter will be the message, second will be the exception.
     /// </summary>
-    public class ConsoleLogger : ILogger
+    public string ExceptionMessageFormat { get; set; } = "{0} - {1}";
+
+    /// <inheritdoc />
+    public LogLevel Level { get; set; }
+
+    /// <inheritdoc />
+    public void Write([Localizable(false)] string message, LogLevel logLevel)
     {
-        /// <summary>
-        /// Gets or sets the exception message format.
-        /// First parameter will be the message, second will be the exception.
-        /// </summary>
-        public string ExceptionMessageFormat { get; set; } = "{0} - {1}";
-
-        /// <inheritdoc />
-        public LogLevel Level { get; set; }
-
-        /// <inheritdoc />
-        public void Write([Localizable(false)] string message, LogLevel logLevel)
+        if ((int)logLevel < (int)Level)
         {
-            if ((int)logLevel < (int)Level)
-            {
-                return;
-            }
-
-            Console.WriteLine(message);
+            return;
         }
 
-        /// <inheritdoc />
-        public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel)
-        {
-            if ((int)logLevel < (int)Level)
-            {
-                return;
-            }
+        Console.WriteLine(message);
+    }
 
-            Console.WriteLine(string.Format(CultureInfo.InvariantCulture, ExceptionMessageFormat, message, exception));
+    /// <inheritdoc />
+    public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel)
+    {
+        if ((int)logLevel < (int)Level)
+        {
+            return;
         }
 
-        /// <inheritdoc />
-        public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
-        {
-            if ((int)logLevel < (int)Level)
-            {
-                return;
-            }
+        Console.WriteLine(string.Format(CultureInfo.InvariantCulture, ExceptionMessageFormat, message, exception));
+    }
 
-            Console.WriteLine(message);
+    /// <inheritdoc />
+    public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
+    {
+        if ((int)logLevel < (int)Level)
+        {
+            return;
         }
 
-        /// <inheritdoc />
-        public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
-        {
-            if ((int)logLevel < (int)Level)
-            {
-                return;
-            }
+        Console.WriteLine(message);
+    }
 
-            Console.WriteLine(string.Format(CultureInfo.InvariantCulture, ExceptionMessageFormat, message, exception));
+    /// <inheritdoc />
+    public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
+    {
+        if ((int)logLevel < (int)Level)
+        {
+            return;
         }
+
+        Console.WriteLine(string.Format(CultureInfo.InvariantCulture, ExceptionMessageFormat, message, exception));
     }
 }

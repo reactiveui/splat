@@ -8,47 +8,45 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
-namespace Splat
+namespace Splat;
+
+internal static class AssemblyFinder
 {
-    internal static class AssemblyFinder
+    /// <summary>
+    /// Attempt to find the type based on the specified string.
+    /// </summary>
+    /// <typeparam name="T">The type to cast the value to if we find it.</typeparam>
+    /// <param name="fullTypeName">The name of the full type.</param>
+    /// <returns>The created object or the default value.</returns>
+    public static T? AttemptToLoadType<T>(string fullTypeName)
     {
-        /// <summary>
-        /// Attempt to find the type based on the specified string.
-        /// </summary>
-        /// <typeparam name="T">The type to cast the value to if we find it.</typeparam>
-        /// <param name="fullTypeName">The name of the full type.</param>
-        /// <returns>The created object or the default value.</returns>
-        [SuppressMessage("Globalization", "CA1307:Specify StringComparison for clarity", Justification = "Not available all platforms.")]
-        public static T? AttemptToLoadType<T>(string fullTypeName)
+        var thisType = typeof(AssemblyFinder);
+
+        var thisTypeName = thisType.AssemblyQualifiedName;
+
+        if (thisTypeName is null)
         {
-            var thisType = typeof(AssemblyFinder);
-
-            var thisTypeName = thisType.AssemblyQualifiedName;
-
-            if (thisTypeName is null)
-            {
-                return default;
-            }
-
-            var toSearch = new[]
-            {
-                thisTypeName.Replace(thisType.FullName + ", ", string.Empty),
-                thisTypeName.Replace(thisType.FullName + ", ", string.Empty).Replace(".Portable", string.Empty),
-            }.Select(x => new AssemblyName(x)).ToArray();
-
-            foreach (var assembly in toSearch)
-            {
-                var fullName = fullTypeName + ", " + assembly.FullName;
-                var type = Type.GetType(fullName, false);
-                if (type is null)
-                {
-                    continue;
-                }
-
-                return (T?)Activator.CreateInstance(type);
-            }
-
             return default;
         }
+
+        var toSearch = new[]
+        {
+            thisTypeName.Replace(thisType.FullName + ", ", string.Empty),
+            thisTypeName.Replace(thisType.FullName + ", ", string.Empty).Replace(".Portable", string.Empty),
+        }.Select(x => new AssemblyName(x)).ToArray();
+
+        foreach (var assembly in toSearch)
+        {
+            var fullName = fullTypeName + ", " + assembly.FullName;
+            var type = Type.GetType(fullName, false);
+            if (type is null)
+            {
+                continue;
+            }
+
+            return (T?)Activator.CreateInstance(type);
+        }
+
+        return default;
     }
 }

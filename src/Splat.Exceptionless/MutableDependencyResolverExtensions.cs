@@ -5,37 +5,36 @@
 
 using Exceptionless;
 
-namespace Splat.Exceptionless
+namespace Splat.Exceptionless;
+
+/// <summary>
+/// Exceptionless specific extensions for the Mutable Dependency Resolver.
+/// </summary>
+public static class MutableDependencyResolverExtensions
 {
     /// <summary>
-    /// Exceptionless specific extensions for the Mutable Dependency Resolver.
+    /// Simple helper to initialize Exceptionless within Splat with the Wrapping Full Logger.
     /// </summary>
-    public static class MutableDependencyResolverExtensions
+    /// <remarks>
+    /// You should configure Exceptionless prior to calling this method.
+    /// </remarks>
+    /// <param name="instance">
+    /// An instance of Mutable Dependency Resolver.
+    /// </param>
+    /// <param name="exceptionlessClient">The exceptionless client instance to use.</param>
+    /// <example>
+    /// <code>
+    /// Locator.CurrentMutable.UseExceptionlessWithWrappingFullLogger(exception);
+    /// </code>
+    /// </example>
+    public static void UseExceptionlessWithWrappingFullLogger(this IMutableDependencyResolver instance, ExceptionlessClient exceptionlessClient)
     {
-        /// <summary>
-        /// Simple helper to initialize Exceptionless within Splat with the Wrapping Full Logger.
-        /// </summary>
-        /// <remarks>
-        /// You should configure Exceptionless prior to calling this method.
-        /// </remarks>
-        /// <param name="instance">
-        /// An instance of Mutable Dependency Resolver.
-        /// </param>
-        /// <param name="exceptionlessClient">The exceptionless client instance to use.</param>
-        /// <example>
-        /// <code>
-        /// Locator.CurrentMutable.UseExceptionlessWithWrappingFullLogger(exception);
-        /// </code>
-        /// </example>
-        public static void UseExceptionlessWithWrappingFullLogger(this IMutableDependencyResolver instance, ExceptionlessClient exceptionlessClient)
+        var funcLogManager = new FuncLogManager(type =>
         {
-            var funcLogManager = new FuncLogManager(type =>
-            {
-                var miniLoggingWrapper = new ExceptionlessSplatLogger(type, exceptionlessClient);
-                return new WrappingFullLogger(miniLoggingWrapper);
-            });
+            var miniLoggingWrapper = new ExceptionlessSplatLogger(type, exceptionlessClient);
+            return new WrappingFullLogger(miniLoggingWrapper);
+        });
 
-            instance.RegisterConstant(funcLogManager, typeof(ILogManager));
-        }
+        instance.RegisterConstant(funcLogManager, typeof(ILogManager));
     }
 }

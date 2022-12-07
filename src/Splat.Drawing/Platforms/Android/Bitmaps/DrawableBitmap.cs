@@ -7,46 +7,46 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Android.Graphics.Drawables;
 
-namespace Splat
+namespace Splat;
+
+internal sealed class DrawableBitmap : IBitmap
 {
-    internal sealed class DrawableBitmap : IBitmap
+    private Drawable? _inner;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DrawableBitmap"/> class.
+    /// </summary>
+    /// <param name="inner">The drawable bitmap to wrap.</param>
+    public DrawableBitmap(Drawable inner)
     {
-        private Drawable? _inner;
+        _inner = inner;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DrawableBitmap"/> class.
-        /// </summary>
-        /// <param name="inner">The drawable bitmap to wrap.</param>
-        public DrawableBitmap(Drawable inner)
+    /// <inheritdoc />
+    public float Width => Inner.IntrinsicWidth;
+
+    /// <inheritdoc />
+    public float Height => Inner.IntrinsicHeight;
+
+    /// <summary>
+    /// Gets the internal Drawable we are wrapping.
+    /// </summary>
+    internal Drawable Inner => _inner ?? throw new InvalidOperationException("Attempting to retrieve a disposed bitmap");
+
+    public Task Save(CompressedBitmapFormat format, float quality, Stream target)
+    {
+        throw new NotSupportedException("You can't save resources");
+    }
+
+    public void Dispose()
+    {
+        var disp = Interlocked.Exchange(ref _inner, null);
+        if (disp is not null)
         {
-            _inner = inner;
-        }
-
-        /// <inheritdoc />
-        public float Width => Inner.IntrinsicWidth;
-
-        /// <inheritdoc />
-        public float Height => Inner.IntrinsicHeight;
-
-        /// <summary>
-        /// Gets the internal Drawable we are wrapping.
-        /// </summary>
-        internal Drawable Inner => _inner ?? throw new InvalidOperationException("Attempting to retrieve a disposed bitmap");
-
-        public Task Save(CompressedBitmapFormat format, float quality, Stream target)
-        {
-            throw new NotSupportedException("You can't save resources");
-        }
-
-        public void Dispose()
-        {
-            var disp = Interlocked.Exchange(ref _inner, null);
-            if (disp is not null)
-            {
-                disp.Dispose();
-            }
+            disp.Dispose();
         }
     }
 }

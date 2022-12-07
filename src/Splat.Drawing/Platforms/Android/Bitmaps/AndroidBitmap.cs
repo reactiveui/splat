@@ -7,53 +7,53 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Android.Graphics;
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// Wraps a android native bitmap into the splat <see cref="IBitmap"/>.
+/// </summary>
+internal sealed class AndroidBitmap : IBitmap
 {
+    private Bitmap? _inner;
+
     /// <summary>
-    /// Wraps a android native bitmap into the splat <see cref="IBitmap"/>.
+    /// Initializes a new instance of the <see cref="AndroidBitmap"/> class.
     /// </summary>
-    internal sealed class AndroidBitmap : IBitmap
+    /// <param name="inner">The bitmap we are wrapping.</param>
+    public AndroidBitmap(Bitmap inner)
     {
-        private Bitmap? _inner;
+        _inner = inner;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AndroidBitmap"/> class.
-        /// </summary>
-        /// <param name="inner">The bitmap we are wrapping.</param>
-        public AndroidBitmap(Bitmap inner)
+    /// <inheritdoc />
+    public float Width => _inner?.Width ?? 0;
+
+    /// <inheritdoc />
+    public float Height => _inner?.Height ?? 0;
+
+    /// <summary>
+    /// Gets the internal bitmap we are wrapping.
+    /// </summary>
+    internal Bitmap Inner => _inner ?? throw new InvalidOperationException("Attempt to access a disposed Bitmap");
+
+    /// <inheritdoc />
+    public Task Save(CompressedBitmapFormat format, float quality, Stream target)
+    {
+        if (_inner is null)
         {
-            _inner = inner;
+            return Task.CompletedTask;
         }
 
-        /// <inheritdoc />
-        public float Width => _inner?.Width ?? 0;
+        var fmt = format == CompressedBitmapFormat.Jpeg ? Bitmap.CompressFormat.Jpeg : Bitmap.CompressFormat.Png;
+        return Task.Run(() => _inner.Compress(fmt, (int)(quality * 100), target));
+    }
 
-        /// <inheritdoc />
-        public float Height => _inner?.Height ?? 0;
-
-        /// <summary>
-        /// Gets the internal bitmap we are wrapping.
-        /// </summary>
-        internal Bitmap Inner => _inner ?? throw new InvalidOperationException("Attempt to access a disposed Bitmap");
-
-        /// <inheritdoc />
-        public Task Save(CompressedBitmapFormat format, float quality, Stream target)
-        {
-            if (_inner is null)
-            {
-                return Task.CompletedTask;
-            }
-
-            var fmt = format == CompressedBitmapFormat.Jpeg ? Bitmap.CompressFormat.Jpeg : Bitmap.CompressFormat.Png;
-            return Task.Run(() => _inner.Compress(fmt, (int)(quality * 100), target));
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Interlocked.Exchange(ref _inner, null)?.Dispose();
-        }
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        Interlocked.Exchange(ref _inner, null)?.Dispose();
     }
 }

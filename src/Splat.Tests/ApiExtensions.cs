@@ -12,30 +12,29 @@ using VerifyXunit;
 
 #pragma warning disable SA1615 // Element return value should be documented
 
-namespace Splat.Tests
+namespace Splat.Tests;
+
+/// <summary>
+/// A helper for doing API approvals.
+/// </summary>
+public static class ApiExtensions
 {
     /// <summary>
-    /// A helper for doing API approvals.
+    /// Checks to make sure the API is approved.
     /// </summary>
-    public static class ApiExtensions
+    /// <param name="assembly">The assembly that is being checked.</param>
+    /// <param name="filePath">The caller file path.</param>
+    public static Task CheckApproval(this Assembly assembly, [CallerFilePath] string filePath = "")
     {
-        /// <summary>
-        /// Checks to make sure the API is approved.
-        /// </summary>
-        /// <param name="assembly">The assembly that is being checked.</param>
-        /// <param name="filePath">The caller file path.</param>
-        public static Task CheckApproval(this Assembly assembly, [CallerFilePath] string filePath = "")
-        {
-            var generatorOptions = new ApiGeneratorOptions { WhitelistedNamespacePrefixes = new[] { "Splat" } };
-            var apiText = assembly.GeneratePublicApi(generatorOptions);
-            return Verifier.Verify(apiText, null, filePath)
-                .UniqueForRuntimeAndVersion()
-                .ScrubEmptyLines()
-                .ScrubLines(l =>
-                    l.StartsWith("[assembly: AssemblyVersion(", StringComparison.InvariantCulture) ||
-                    l.StartsWith("[assembly: AssemblyFileVersion(", StringComparison.InvariantCulture) ||
-                    l.StartsWith("[assembly: AssemblyInformationalVersion(", StringComparison.InvariantCulture) ||
-                    l.StartsWith("[assembly: System.Reflection.AssemblyMetadata(", StringComparison.InvariantCulture));
-        }
+        var generatorOptions = new ApiGeneratorOptions { WhitelistedNamespacePrefixes = new[] { "Splat" } };
+        var apiText = assembly.GeneratePublicApi(generatorOptions);
+        return Verifier.Verify(apiText, null, filePath)
+            .UniqueForRuntimeAndVersion()
+            .ScrubEmptyLines()
+            .ScrubLines(l =>
+                l.StartsWith("[assembly: AssemblyVersion(", StringComparison.InvariantCulture) ||
+                l.StartsWith("[assembly: AssemblyFileVersion(", StringComparison.InvariantCulture) ||
+                l.StartsWith("[assembly: AssemblyInformationalVersion(", StringComparison.InvariantCulture) ||
+                l.StartsWith("[assembly: System.Reflection.AssemblyMetadata(", StringComparison.InvariantCulture));
     }
 }

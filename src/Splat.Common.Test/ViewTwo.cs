@@ -5,23 +5,22 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace Splat.Common.Test
-{
-    /// <summary>
-    /// View Two.
-    /// </summary>
-    /// <seealso cref="ViewModelTwo" />
-    [ExcludeFromCodeCoverage]
-    public class ViewTwo : IViewFor<ViewModelTwo>
-    {
-        /// <inheritdoc />
-        object? IViewFor.ViewModel
-        {
-            get => ViewModel;
-            set => ViewModel = (ViewModelTwo?)value;
-        }
+namespace Splat.Common.Test;
 
-        /// <inheritdoc />
-        public ViewModelTwo? ViewModel { get; set; }
+/// <summary>
+/// View Two.
+/// </summary>
+/// <seealso cref="ViewModelTwo" />
+[ExcludeFromCodeCoverage]
+public class ViewTwo : IViewFor<ViewModelTwo>
+{
+    /// <inheritdoc />
+    object? IViewFor.ViewModel
+    {
+        get => ViewModel;
+        set => ViewModel = (ViewModelTwo?)value;
     }
+
+    /// <inheritdoc />
+    public ViewModelTwo? ViewModel { get; set; }
 }

@@ -10,48 +10,47 @@ using Splat;
 using Splat.SimpleInjector;
 using Xunit;
 
-namespace ReactiveUI.DI.Tests
+namespace ReactiveUI.DI.Tests;
+
+/// <summary>
+/// SimpleInjector ReactiveUI Dependency Tests.
+/// </summary>
+public class SimpleInjectorReactiveUIDependencyTests
 {
     /// <summary>
-    /// SimpleInjector ReactiveUI Dependency Tests.
+    /// Should register ReactiveUI binding type converters.
     /// </summary>
-    public class SimpleInjectorReactiveUIDependencyTests
+    [Fact]
+    public void SimpleInjectorDependencyResolverShouldRegisterReactiveUIBindingTypeConverters()
     {
-        /// <summary>
-        /// Should register ReactiveUI binding type converters.
-        /// </summary>
-        [Fact]
-        public void SimpleInjectorDependencyResolverShouldRegisterReactiveUIBindingTypeConverters()
-        {
-            // Invoke RxApp which initializes the ReactiveUI platform.
-            Container container = new();
-            SimpleInjectorInitializer initializer = new();
+        // Invoke RxApp which initializes the ReactiveUI platform.
+        Container container = new();
+        SimpleInjectorInitializer initializer = new();
 
-            initializer.InitializeReactiveUI();
-            var converters = initializer.GetServices<IBindingTypeConverter>().ToList();
+        initializer.InitializeReactiveUI();
+        var converters = initializer.GetServices<IBindingTypeConverter>().ToList();
 
-            converters.Should().NotBeNull();
-            converters.Should().Contain(x => x.GetType() == typeof(StringConverter));
-            converters.Should().Contain(x => x.GetType() == typeof(EqualityTypeConverter));
-        }
+        converters.Should().NotBeNull();
+        converters.Should().Contain(x => x.GetType() == typeof(StringConverter));
+        converters.Should().Contain(x => x.GetType() == typeof(EqualityTypeConverter));
+    }
 
-        /// <summary>
-        /// Should register ReactiveUI creates command bindings.
-        /// </summary>
-        [Fact]
-        public void SimpleInjectorDependencyResolverShouldRegisterReactiveUICreatesCommandBinding()
-        {
-            // Invoke RxApp which initializes the ReactiveUI platform.
-            Container container = new();
-            SimpleInjectorInitializer initializer = new();
+    /// <summary>
+    /// Should register ReactiveUI creates command bindings.
+    /// </summary>
+    [Fact]
+    public void SimpleInjectorDependencyResolverShouldRegisterReactiveUICreatesCommandBinding()
+    {
+        // Invoke RxApp which initializes the ReactiveUI platform.
+        Container container = new();
+        SimpleInjectorInitializer initializer = new();
 
-            initializer.InitializeReactiveUI();
+        initializer.InitializeReactiveUI();
 
-            var converters = initializer.GetServices<ICreatesCommandBinding>().ToList();
+        var converters = initializer.GetServices<ICreatesCommandBinding>().ToList();
 
-            converters.Should().NotBeNull();
-            converters.Should().Contain(x => x.GetType() == typeof(CreatesCommandBindingViaEvent));
-            converters.Should().Contain(x => x.GetType() == typeof(CreatesCommandBindingViaCommandParameter));
-        }
+        converters.Should().NotBeNull();
+        converters.Should().Contain(x => x.GetType() == typeof(CreatesCommandBindingViaEvent));
+        converters.Should().Contain(x => x.GetType() == typeof(CreatesCommandBindingViaCommandParameter));
     }
 }

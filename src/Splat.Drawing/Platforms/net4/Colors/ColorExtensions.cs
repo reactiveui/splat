@@ -5,43 +5,42 @@
 
 using System.Windows.Media;
 
-namespace Splat
+namespace Splat;
+
+/// <summary>
+/// Provides extension methods for interacting with colors, to and from the XAML colors.
+/// </summary>
+public static class ColorExtensions
 {
     /// <summary>
-    /// Provides extension methods for interacting with colors, to and from the XAML colors.
+    /// Converts a <see cref="System.Drawing.Color"/> to a XAML native color.
     /// </summary>
-    public static class ColorExtensions
+    /// <param name="value">The System.Drawing.Color to convert.</param>
+    /// <returns>A native XAML color.</returns>
+    public static Color ToNative(this System.Drawing.Color value)
     {
-        /// <summary>
-        /// Converts a <see cref="System.Drawing.Color"/> to a XAML native color.
-        /// </summary>
-        /// <param name="value">The System.Drawing.Color to convert.</param>
-        /// <returns>A native XAML color.</returns>
-        public static Color ToNative(this System.Drawing.Color value)
-        {
-            return Color.FromArgb(value.A, value.R, value.G, value.B);
-        }
+        return Color.FromArgb(value.A, value.R, value.G, value.B);
+    }
 
-        /// <summary>
-        /// Converts a <see cref="System.Drawing.Color"/> into the cocoa native <see cref="SolidColorBrush"/>.
-        /// </summary>
-        /// <param name="value">The color to convert.</param>
-        /// <returns>The <see cref="SolidColorBrush"/> generated.</returns>
-        public static SolidColorBrush ToNativeBrush(this System.Drawing.Color value)
-        {
-            var ret = new SolidColorBrush(value.ToNative());
-            ret.Freeze();
-            return ret;
-        }
+    /// <summary>
+    /// Converts a <see cref="System.Drawing.Color"/> into the cocoa native <see cref="SolidColorBrush"/>.
+    /// </summary>
+    /// <param name="value">The color to convert.</param>
+    /// <returns>The <see cref="SolidColorBrush"/> generated.</returns>
+    public static SolidColorBrush ToNativeBrush(this System.Drawing.Color value)
+    {
+        var ret = new SolidColorBrush(value.ToNative());
+        ret.Freeze();
+        return ret;
+    }
 
-        /// <summary>
-        /// Converts a <see cref="SolidColorBrush"/> into the XAML <see cref="System.Drawing.Color"/>.
-        /// </summary>
-        /// <param name="value">The color to convert.</param>
-        /// <returns>The <see cref="System.Drawing.Color"/> generated.</returns>
-        public static System.Drawing.Color FromNative(this Color value)
-        {
-            return System.Drawing.Color.FromArgb(value.A, value.R, value.G, value.B);
-        }
+    /// <summary>
+    /// Converts a <see cref="SolidColorBrush"/> into the XAML <see cref="System.Drawing.Color"/>.
+    /// </summary>
+    /// <param name="value">The color to convert.</param>
+    /// <returns>The <see cref="System.Drawing.Color"/> generated.</returns>
+    public static System.Drawing.Color FromNative(this Color value)
+    {
+        return System.Drawing.Color.FromArgb(value.A, value.R, value.G, value.B);
     }
 }

@@ -5,31 +5,30 @@
 
 using System;
 
-namespace Splat.Common.Test
+namespace Splat.Common.Test;
+
+/// <summary>
+/// This is a test view relating to issue #889.
+/// It's intended to ensure that view registration by different DI\IoC implementations
+/// does not create an instance at the point of registration.
+/// </summary>
+public sealed class ViewThatShouldNotLoad : IViewFor<ViewModelOne>
 {
     /// <summary>
-    /// This is a test view relating to issue #889.
-    /// It's intended to ensure that view registration by different DI\IoC implementations
-    /// does not create an instance at the point of registration.
+    /// Initializes a new instance of the <see cref="ViewThatShouldNotLoad"/> class.
     /// </summary>
-    public sealed class ViewThatShouldNotLoad : IViewFor<ViewModelOne>
+    public ViewThatShouldNotLoad()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ViewThatShouldNotLoad"/> class.
-        /// </summary>
-        public ViewThatShouldNotLoad()
-        {
-            throw new InvalidOperationException("This view should not be created.");
-        }
-
-        /// <inheritdoc />
-        object? IViewFor.ViewModel
-        {
-            get => ViewModel;
-            set => ViewModel = (ViewModelOne?)value;
-        }
-
-        /// <inheritdoc />
-        public ViewModelOne? ViewModel { get; set; }
+        throw new InvalidOperationException("This view should not be created.");
     }
+
+    /// <inheritdoc />
+    object? IViewFor.ViewModel
+    {
+        get => ViewModel;
+        set => ViewModel = (ViewModelOne?)value;
+    }
+
+    /// <inheritdoc />
+    public ViewModelOne? ViewModel { get; set; }
 }

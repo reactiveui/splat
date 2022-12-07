@@ -6,14 +6,12 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
-namespace Splat.ApplicationPerformanceMonitoring
+namespace Splat.ApplicationPerformanceMonitoring;
+
+/// <summary>
+/// Interface for exposing Feature Usage Tracking as an extension to a class.
+/// </summary>
+[ComVisible(false)]
+public interface IEnableFeatureUsageTracking
 {
-    /// <summary>
-    /// Interface for exposing Feature Usage Tracking as an extension to a class.
-    /// </summary>
-    [SuppressMessage("Design", "CA1040: Avoid empty interfaces", Justification = "Deliberate use")]
-    [ComVisible(false)]
-    public interface IEnableFeatureUsageTracking
-    {
-    }
 }
