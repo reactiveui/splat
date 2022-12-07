@@ -26,26 +26,20 @@ public static class RaygunFeatureUsageTrackingSessionTests
         var raygunClient = new RaygunClient(apiKey);
 #endif
 
-        return new RaygunFeatureUsageTrackingSession(featureName, raygunClient, raygunSettings);
+        return new(featureName, raygunClient, raygunSettings);
     }
 
     /// <inheritdoc />>
     public sealed class ConstructorTests : BaseFeatureUsageTrackingTests.BaseConstructorTests<RaygunFeatureUsageTrackingSession>
     {
         /// <inheritdoc/>
-        protected override RaygunFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
-        {
-            return GetRaygunFeatureUsageTrackingSession(featureName);
-        }
+        protected override RaygunFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName) => GetRaygunFeatureUsageTrackingSession(featureName);
     }
 
     /// <inheritdoc />>
     public sealed class SubFeatureMethodTests : BaseFeatureUsageTrackingTests.BaseSubFeatureMethodTests<RaygunFeatureUsageTrackingSession>
     {
         /// <inheritdoc/>
-        protected override RaygunFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
-        {
-            return GetRaygunFeatureUsageTrackingSession(featureName);
-        }
+        protected override RaygunFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName) => GetRaygunFeatureUsageTrackingSession(featureName);
     }
 }

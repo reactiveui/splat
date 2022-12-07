@@ -27,7 +27,7 @@ public class DependencyResolverTests
     {
         var container = new Container();
         container.Register<ViewModelOne>();
-        container.UseSimpleInjectorDependencyResolver(new SimpleInjectorInitializer());
+        container.UseSimpleInjectorDependencyResolver(new());
 
         var viewModel = Locator.Current.GetService(typeof(ViewModelOne));
 
@@ -58,7 +58,7 @@ public class DependencyResolverTests
     {
         var container = new Container();
         container.Register<IViewFor<ViewModelOne>, ViewOne>();
-        container.UseSimpleInjectorDependencyResolver(new SimpleInjectorInitializer());
+        container.UseSimpleInjectorDependencyResolver(new());
 
         var view = Locator.Current.GetService(typeof(IViewFor<ViewModelOne>));
 
@@ -74,7 +74,7 @@ public class DependencyResolverTests
     {
         var container = new Container();
         container.RegisterSingleton<IScreen, MockScreen>();
-        container.UseSimpleInjectorDependencyResolver(new SimpleInjectorInitializer());
+        container.UseSimpleInjectorDependencyResolver(new());
 
         var screen = Locator.Current.GetService(typeof(IScreen));
 
@@ -120,7 +120,7 @@ public class DependencyResolverTests
     public void SimpleInjectorDependencyResolver_CollectionShouldNeverReturnNull()
     {
         var container = new Container();
-        container.UseSimpleInjectorDependencyResolver(new SimpleInjectorInitializer());
+        container.UseSimpleInjectorDependencyResolver(new());
 
         var views = Locator.Current.GetServices(typeof(ViewOne));
         Assert.NotNull(views);

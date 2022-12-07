@@ -18,14 +18,8 @@ public class FuncLogManager : ILogManager
     /// Initializes a new instance of the <see cref="FuncLogManager"/> class.
     /// </summary>
     /// <param name="getLoggerFunc">The function which will be used to generate the <see cref="IFullLogger"/>.</param>
-    public FuncLogManager(Func<Type, IFullLogger> getLoggerFunc)
-    {
-        _inner = getLoggerFunc;
-    }
+    public FuncLogManager(Func<Type, IFullLogger> getLoggerFunc) => _inner = getLoggerFunc;
 
     /// <inheritdoc />
-    public IFullLogger GetLogger(Type type)
-    {
-        return _inner(type);
-    }
+    public IFullLogger GetLogger(Type type) => _inner(type);
 }

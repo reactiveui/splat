@@ -14,9 +14,6 @@ public static class AppCenterViewTrackingTests
     public sealed class ConstructorMethod : BaseViewTrackingTests.ConstructorMethod<AppCenterViewTracking>
     {
         /// <inheritdoc/>
-        protected override AppCenterViewTracking GetViewTracking()
-        {
-            return new();
-        }
+        protected override AppCenterViewTracking GetViewTracking() => new();
     }
 }

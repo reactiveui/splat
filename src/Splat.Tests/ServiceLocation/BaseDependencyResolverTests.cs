@@ -62,7 +62,7 @@ public abstract class BaseDependencyResolverTests<T>
     {
         var resolver = GetDependencyResolver();
         var type = typeof(ILogManager);
-        var contract = "named";
+        const string contract = "named";
         resolver.Register(() => new DefaultLogManager(), type);
         resolver.Register(() => new DefaultLogManager(), type, contract);
         resolver.UnregisterCurrent(type, contract);
@@ -182,7 +182,7 @@ public abstract class BaseDependencyResolverTests<T>
 #pragma warning disable CS8604 // Possible null reference argument.
         Assert.Throws<ArgumentNullException>(() => resolver.GetService<ILogManager>());
         Assert.Throws<ArgumentNullException>(() => resolver.GetServices<ILogManager>());
-        Assert.Throws<ArgumentNullException>(() => resolver1.ServiceRegistrationCallback(typeof(ILogManager), (IDisposable d) => { d.Dispose(); }));
+        Assert.Throws<ArgumentNullException>(() => resolver1.ServiceRegistrationCallback(typeof(ILogManager), d => d.Dispose()));
         Assert.Throws<ArgumentNullException>(() => resolver2.WithResolver().Dispose());
         Assert.Throws<ArgumentNullException>(() => resolver1.Register<ILogManager>(() => new DefaultLogManager()));
         Assert.Throws<ArgumentNullException>(() => resolver1.RegisterConstant<ILogManager>(new DefaultLogManager()));
@@ -190,7 +190,7 @@ public abstract class BaseDependencyResolverTests<T>
         Assert.Throws<ArgumentNullException>(() => resolver1.RegisterLazySingletonAnd(() => new DefaultLogManager(), typeof(ILogManager)));
         Assert.Throws<ArgumentNullException>(() => resolver1.RegisterLazySingleton(() => new DefaultLogManager()));
         Assert.Throws<ArgumentNullException>(() => resolver1.RegisterLazySingletonAnd<ViewModelOne>("eight"));
-        Assert.Throws<ArgumentNullException>(() => resolver1.RegisterLazySingletonAnd<DefaultLogManager>(() => new DefaultLogManager(), "seven"));
+        Assert.Throws<ArgumentNullException>(() => resolver1.RegisterLazySingletonAnd<DefaultLogManager>(() => new(), "seven"));
         Assert.Throws<ArgumentNullException>(() => resolver1.UnregisterCurrent<ILogManager>());
         Assert.Throws<ArgumentNullException>(() => resolver1.UnregisterAll<ILogManager>());
         Assert.Throws<ArgumentNullException>(() => resolver1.RegisterAnd<ViewModelOne>());
@@ -219,7 +219,7 @@ public abstract class BaseDependencyResolverTests<T>
                 .RegisterConstantAnd(new ViewModelOne(), typeof(ViewModelOne), "six")
                 .RegisterLazySingletonAnd(() => new DefaultLogManager(), typeof(ILogManager), "seven")
                 .RegisterLazySingletonAnd<ViewModelOne>("eight")
-                .RegisterLazySingletonAnd<DefaultLogManager>(() => new DefaultLogManager(), "seven")
+                .RegisterLazySingletonAnd<DefaultLogManager>(() => new(), "seven")
                 .Register<IViewModelOne, ViewModelOne>();
     }
 

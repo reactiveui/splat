@@ -23,10 +23,7 @@ internal sealed class AndroidBitmap : IBitmap
     /// Initializes a new instance of the <see cref="AndroidBitmap"/> class.
     /// </summary>
     /// <param name="inner">The bitmap we are wrapping.</param>
-    public AndroidBitmap(Bitmap inner)
-    {
-        _inner = inner;
-    }
+    public AndroidBitmap(Bitmap inner) => _inner = inner;
 
     /// <inheritdoc />
     public float Width => _inner?.Width ?? 0;
@@ -52,8 +49,5 @@ internal sealed class AndroidBitmap : IBitmap
     }
 
     /// <inheritdoc />
-    public void Dispose()
-    {
-        Interlocked.Exchange(ref _inner, null)?.Dispose();
-    }
+    public void Dispose() => Interlocked.Exchange(ref _inner, null)?.Dispose();
 }

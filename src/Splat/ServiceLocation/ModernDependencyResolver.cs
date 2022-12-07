@@ -46,9 +46,9 @@ public class ModernDependencyResolver : IDependencyResolver
     {
         _registry = registry is not null ?
             registry.ToDictionary(k => k.Key, v => v.Value.ToList()) :
-            new Dictionary<(Type serviceType, string? contract), List<Func<object?>>>();
+            new();
 
-        _callbackRegistry = new Dictionary<(Type serviceType, string? contract), List<Action<IDisposable>>>();
+        _callbackRegistry = new();
     }
 
     /// <inheritdoc />
@@ -59,10 +59,7 @@ public class ModernDependencyResolver : IDependencyResolver
             return false;
         }
 
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         var pair = GetKey(serviceType, contract);
         return _registry.TryGetValue(pair, out var registrations) && registrations.Count > 0;
@@ -78,16 +75,13 @@ public class ModernDependencyResolver : IDependencyResolver
 
         var isNull = serviceType is null;
 
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         var pair = GetKey(serviceType, contract);
 
         if (!_registry.ContainsKey(pair))
         {
-            _registry[pair] = new List<Func<object?>>();
+            _registry[pair] = new();
         }
 
         _registry[pair].Add(() =>
@@ -95,28 +89,30 @@ public class ModernDependencyResolver : IDependencyResolver
                 ? new NullServiceType(factory)
                 : factory());
 
-        if (_callbackRegistry.ContainsKey(pair))
+        if (!_callbackRegistry.TryGetValue(pair, out var callbackList))
         {
-            List<Action<IDisposable>>? toRemove = null;
+            return;
+        }
 
-            foreach (var callback in _callbackRegistry[pair])
+        List<Action<IDisposable>>? toRemove = null;
+
+        foreach (var callback in callbackList)
+        {
+            var disp = new BooleanDisposable();
+
+            callback(disp);
+
+            if (disp.IsDisposed)
             {
-                var disp = new BooleanDisposable();
-
-                callback(disp);
-
-                if (disp.IsDisposed)
-                {
-                    (toRemove ??= new List<Action<IDisposable>>()).Add(callback);
-                }
+                (toRemove ??= new()).Add(callback);
             }
+        }
 
-            if (toRemove is not null)
+        if (toRemove is not null)
+        {
+            foreach (var c in toRemove)
             {
-                foreach (var c in toRemove)
-                {
-                    _callbackRegistry[pair].Remove(c);
-                }
+                _callbackRegistry[pair].Remove(c);
             }
         }
     }
@@ -129,10 +125,7 @@ public class ModernDependencyResolver : IDependencyResolver
             return default;
         }
 
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         var pair = GetKey(serviceType, contract);
         if (!_registry.ContainsKey(pair))
@@ -162,10 +155,7 @@ public class ModernDependencyResolver : IDependencyResolver
             return Array.Empty<object>();
         }
 
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         var pair = GetKey(serviceType, contract);
         if (!_registry.ContainsKey(pair))
@@ -184,10 +174,7 @@ public class ModernDependencyResolver : IDependencyResolver
             return;
         }
 
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         var pair = GetKey(serviceType, contract);
 
@@ -213,14 +200,11 @@ public class ModernDependencyResolver : IDependencyResolver
             return;
         }
 
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         var pair = GetKey(serviceType, contract);
 
-        _registry[pair] = new List<Func<object?>>();
+        _registry[pair] = new();
     }
 
     /// <inheritdoc />
@@ -245,19 +229,21 @@ public class ModernDependencyResolver : IDependencyResolver
 
         if (!_callbackRegistry.ContainsKey(pair))
         {
-            _callbackRegistry[pair] = new List<Action<IDisposable>>();
+            _callbackRegistry[pair] = new();
         }
 
         _callbackRegistry[pair].Add(callback);
 
         var disp = new ActionDisposable(() => _callbackRegistry[pair].Remove(callback));
 
-        if (_registry.ContainsKey(pair))
+        if (!_registry.TryGetValue(pair, out var callbackList))
         {
-            foreach (var s in _registry[pair])
-            {
-                callback(disp);
-            }
+            return disp;
+        }
+
+        foreach (var s in callbackList)
+        {
+            callback(disp);
         }
 
         return disp;

@@ -41,22 +41,13 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     }
 
     /// <inheritdoc />
-    public void Debug<T>(IFormatProvider formatProvider, T value)
-    {
-        _inner.Write(string.Format(formatProvider, "{0}", value), LogLevel.Debug);
-    }
+    public void Debug<T>(IFormatProvider formatProvider, T value) => _inner.Write(string.Format(formatProvider, "{0}", value), LogLevel.Debug);
 
     /// <inheritdoc />
-    public void DebugException(string? message, Exception exception)
-    {
-        _inner.Write(exception, $"{message}: {exception}", LogLevel.Debug);
-    }
+    public void DebugException(string? message, Exception exception) => _inner.Write(exception, $"{message}: {exception}", LogLevel.Debug);
 
     /// <inheritdoc />
-    public void Debug(Exception exception, string? message)
-    {
-        _inner.Write(exception, $"{message}", LogLevel.Debug);
-    }
+    public void Debug(Exception exception, string? message) => _inner.Write(exception, $"{message}", LogLevel.Debug);
 
     /// <inheritdoc />
     public void Debug(IFormatProvider formatProvider, string message, params object[] args)
@@ -67,16 +58,10 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     }
 
     /// <inheritdoc />
-    public void Debug(string? message)
-    {
-        _inner.Write(message ?? "(null)", LogLevel.Debug);
-    }
+    public void Debug(string? message) => _inner.Write(message ?? "(null)", LogLevel.Debug);
 
     /// <inheritdoc />
-    public void Debug<T>(string? message)
-    {
-        _inner.Write(message ?? "(null)", typeof(T), LogLevel.Debug);
-    }
+    public void Debug<T>(string? message) => _inner.Write(message ?? "(null)", typeof(T), LogLevel.Debug);
 
     /// <inheritdoc />
     public void Debug(string message, params object[] args)
@@ -93,22 +78,13 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     }
 
     /// <inheritdoc />
-    public void Debug<TArgument>(IFormatProvider formatProvider, string message, TArgument argument)
-    {
-        _inner.Write(string.Format(formatProvider, message, argument), LogLevel.Debug);
-    }
+    public void Debug<TArgument>(IFormatProvider formatProvider, string message, TArgument argument) => _inner.Write(string.Format(formatProvider, message, argument), LogLevel.Debug);
 
     /// <inheritdoc />
-    public void Debug<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2)
-    {
-        _inner.Write(string.Format(formatProvider, message, argument1, argument2), LogLevel.Debug);
-    }
+    public void Debug<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) => _inner.Write(string.Format(formatProvider, message, argument1, argument2), LogLevel.Debug);
 
     /// <inheritdoc />
-    public void Debug<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
-    {
-        _inner.Write(string.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Debug);
-    }
+    public void Debug<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) => _inner.Write(string.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Debug);
 
     /// <inheritdoc />
     public void Info<T>(T value)
@@ -122,22 +98,13 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     }
 
     /// <inheritdoc />
-    public void Info<T>(IFormatProvider formatProvider, T value)
-    {
-        _inner.Write(string.Format(formatProvider, "{0}", value), LogLevel.Info);
-    }
+    public void Info<T>(IFormatProvider formatProvider, T value) => _inner.Write(string.Format(formatProvider, "{0}", value), LogLevel.Info);
 
     /// <inheritdoc />
-    public void InfoException(string? message, Exception exception)
-    {
-        _inner.Write(exception, $"{message}: {exception}", LogLevel.Info);
-    }
+    public void InfoException(string? message, Exception exception) => _inner.Write(exception, $"{message}: {exception}", LogLevel.Info);
 
     /// <inheritdoc />
-    public void Info(Exception exception, string? message)
-    {
-        _inner.Write(exception, $"{message}", LogLevel.Info);
-    }
+    public void Info(Exception exception, string? message) => _inner.Write(exception, $"{message}", LogLevel.Info);
 
     /// <inheritdoc />
     public void Info(IFormatProvider formatProvider, string message, params object[] args)
@@ -147,16 +114,10 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     }
 
     /// <inheritdoc />
-    public void Info(string? message)
-    {
-        _inner.Write(message ?? "(null)", LogLevel.Info);
-    }
+    public void Info(string? message) => _inner.Write(message ?? "(null)", LogLevel.Info);
 
     /// <inheritdoc />
-    public void Info<T>(string? message)
-    {
-        _inner.Write(message ?? "(null)", typeof(T), LogLevel.Info);
-    }
+    public void Info<T>(string? message) => _inner.Write(message ?? "(null)", typeof(T), LogLevel.Info);
 
     /// <inheritdoc />
     public void Info(string message, params object[] args)
@@ -173,22 +134,13 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     }
 
     /// <inheritdoc />
-    public void Info<TArgument>(IFormatProvider formatProvider, string message, TArgument argument)
-    {
-        _inner.Write(string.Format(formatProvider, message, argument), LogLevel.Info);
-    }
+    public void Info<TArgument>(IFormatProvider formatProvider, string message, TArgument argument) => _inner.Write(string.Format(formatProvider, message, argument), LogLevel.Info);
 
     /// <inheritdoc />
-    public void Info<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2)
-    {
-        _inner.Write(string.Format(formatProvider, message, argument1, argument2), LogLevel.Info);
-    }
+    public void Info<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) => _inner.Write(string.Format(formatProvider, message, argument1, argument2), LogLevel.Info);
 
     /// <inheritdoc />
-    public void Info<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
-    {
-        _inner.Write(string.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Info);
-    }
+    public void Info<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) => _inner.Write(string.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Info);
 
     /// <inheritdoc />
     public void Warn<T>(T value)
@@ -202,22 +154,13 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     }
 
     /// <inheritdoc />
-    public void Warn<T>(IFormatProvider formatProvider, T value)
-    {
-        _inner.Write(string.Format(formatProvider, "{0}", value), LogLevel.Warn);
-    }
+    public void Warn<T>(IFormatProvider formatProvider, T value) => _inner.Write(string.Format(formatProvider, "{0}", value), LogLevel.Warn);
 
     /// <inheritdoc />
-    public void WarnException(string? message, Exception exception)
-    {
-        _inner.Write(exception, $"{message}: {exception}", LogLevel.Warn);
-    }
+    public void WarnException(string? message, Exception exception) => _inner.Write(exception, $"{message}: {exception}", LogLevel.Warn);
 
     /// <inheritdoc />
-    public void Warn(Exception exception, string? message)
-    {
-        _inner.Write(exception, $"{message}", LogLevel.Warn);
-    }
+    public void Warn(Exception exception, string? message) => _inner.Write(exception, $"{message}", LogLevel.Warn);
 
     /// <inheritdoc />
     public void Warn(IFormatProvider formatProvider, string message, params object[] args)
@@ -227,16 +170,10 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     }
 
     /// <inheritdoc />
-    public void Warn(string? message)
-    {
-        _inner.Write(message ?? "(null)", LogLevel.Warn);
-    }
+    public void Warn(string? message) => _inner.Write(message ?? "(null)", LogLevel.Warn);
 
     /// <inheritdoc />
-    public void Warn<T>(string? message)
-    {
-        _inner.Write(message ?? "(null)", typeof(T), LogLevel.Warn);
-    }
+    public void Warn<T>(string? message) => _inner.Write(message ?? "(null)", typeof(T), LogLevel.Warn);
 
     /// <inheritdoc />
     public void Warn(string message, params object[] args)
@@ -253,22 +190,13 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     }
 
     /// <inheritdoc />
-    public void Warn<TArgument>(IFormatProvider formatProvider, string message, TArgument argument)
-    {
-        _inner.Write(string.Format(formatProvider, message, argument), LogLevel.Warn);
-    }
+    public void Warn<TArgument>(IFormatProvider formatProvider, string message, TArgument argument) => _inner.Write(string.Format(formatProvider, message, argument), LogLevel.Warn);
 
     /// <inheritdoc />
-    public void Warn<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2)
-    {
-        _inner.Write(string.Format(formatProvider, message, argument1, argument2), LogLevel.Warn);
-    }
+    public void Warn<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) => _inner.Write(string.Format(formatProvider, message, argument1, argument2), LogLevel.Warn);
 
     /// <inheritdoc />
-    public void Warn<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
-    {
-        _inner.Write(string.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Warn);
-    }
+    public void Warn<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) => _inner.Write(string.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Warn);
 
     /// <inheritdoc />
     public void Error<T>(T value)
@@ -282,22 +210,13 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     }
 
     /// <inheritdoc />
-    public void Error<T>(IFormatProvider formatProvider, T value)
-    {
-        _inner.Write(string.Format(formatProvider, "{0}", value), LogLevel.Error);
-    }
+    public void Error<T>(IFormatProvider formatProvider, T value) => _inner.Write(string.Format(formatProvider, "{0}", value), LogLevel.Error);
 
     /// <inheritdoc />
-    public void ErrorException(string? message, Exception exception)
-    {
-        _inner.Write(exception, $"{message}: {exception}", LogLevel.Error);
-    }
+    public void ErrorException(string? message, Exception exception) => _inner.Write(exception, $"{message}: {exception}", LogLevel.Error);
 
     /// <inheritdoc />
-    public void Error(Exception exception, string? message)
-    {
-        _inner.Write(exception, $"{message}", LogLevel.Error);
-    }
+    public void Error(Exception exception, string? message) => _inner.Write(exception, $"{message}", LogLevel.Error);
 
     /// <inheritdoc />
     public void Error(IFormatProvider formatProvider, string message, params object[] args)
@@ -307,16 +226,10 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     }
 
     /// <inheritdoc />
-    public void Error(string? message)
-    {
-        _inner.Write(message ?? "(null)", LogLevel.Error);
-    }
+    public void Error(string? message) => _inner.Write(message ?? "(null)", LogLevel.Error);
 
     /// <inheritdoc />
-    public void Error<T>(string? message)
-    {
-        _inner.Write(message ?? "(null)", typeof(T), LogLevel.Error);
-    }
+    public void Error<T>(string? message) => _inner.Write(message ?? "(null)", typeof(T), LogLevel.Error);
 
     /// <inheritdoc />
     public void Error(string message, params object[] args)
@@ -333,22 +246,13 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     }
 
     /// <inheritdoc />
-    public void Error<TArgument>(IFormatProvider formatProvider, string message, TArgument argument)
-    {
-        _inner.Write(string.Format(formatProvider, message, argument), LogLevel.Error);
-    }
+    public void Error<TArgument>(IFormatProvider formatProvider, string message, TArgument argument) => _inner.Write(string.Format(formatProvider, message, argument), LogLevel.Error);
 
     /// <inheritdoc />
-    public void Error<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2)
-    {
-        _inner.Write(string.Format(formatProvider, message, argument1, argument2), LogLevel.Error);
-    }
+    public void Error<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) => _inner.Write(string.Format(formatProvider, message, argument1, argument2), LogLevel.Error);
 
     /// <inheritdoc />
-    public void Error<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
-    {
-        _inner.Write(string.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Error);
-    }
+    public void Error<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) => _inner.Write(string.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Error);
 
     /// <inheritdoc />
     public void Fatal<T>(T value)
@@ -362,22 +266,13 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     }
 
     /// <inheritdoc />
-    public void Fatal<T>(IFormatProvider formatProvider, T value)
-    {
-        _inner.Write(string.Format(formatProvider, "{0}", value), LogLevel.Fatal);
-    }
+    public void Fatal<T>(IFormatProvider formatProvider, T value) => _inner.Write(string.Format(formatProvider, "{0}", value), LogLevel.Fatal);
 
     /// <inheritdoc />
-    public void FatalException(string? message, Exception exception)
-    {
-        _inner.Write(exception, $"{message}: {exception}", LogLevel.Fatal);
-    }
+    public void FatalException(string? message, Exception exception) => _inner.Write(exception, $"{message}: {exception}", LogLevel.Fatal);
 
     /// <inheritdoc />
-    public void Fatal(Exception exception, string? message)
-    {
-        _inner.Write(exception, $"{message}", LogLevel.Fatal);
-    }
+    public void Fatal(Exception exception, string? message) => _inner.Write(exception, $"{message}", LogLevel.Fatal);
 
     /// <inheritdoc />
     public void Fatal(IFormatProvider formatProvider, string message, params object[] args)
@@ -387,16 +282,10 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     }
 
     /// <inheritdoc />
-    public void Fatal(string? message)
-    {
-        _inner.Write(message ?? "(null)", LogLevel.Fatal);
-    }
+    public void Fatal(string? message) => _inner.Write(message ?? "(null)", LogLevel.Fatal);
 
     /// <inheritdoc />
-    public void Fatal<T>(string? message)
-    {
-        _inner.Write(message ?? "(null)", typeof(T), LogLevel.Fatal);
-    }
+    public void Fatal<T>(string? message) => _inner.Write(message ?? "(null)", typeof(T), LogLevel.Fatal);
 
     /// <inheritdoc />
     public void Fatal(string message, params object[] args)
@@ -413,22 +302,13 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     }
 
     /// <inheritdoc />
-    public void Fatal<TArgument>(IFormatProvider formatProvider, string message, TArgument argument)
-    {
-        _inner.Write(string.Format(formatProvider, message, argument), LogLevel.Fatal);
-    }
+    public void Fatal<TArgument>(IFormatProvider formatProvider, string message, TArgument argument) => _inner.Write(string.Format(formatProvider, message, argument), LogLevel.Fatal);
 
     /// <inheritdoc />
-    public void Fatal<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2)
-    {
-        _inner.Write(string.Format(formatProvider, message, argument1, argument2), LogLevel.Fatal);
-    }
+    public void Fatal<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) => _inner.Write(string.Format(formatProvider, message, argument1, argument2), LogLevel.Fatal);
 
     /// <inheritdoc />
-    public void Fatal<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3)
-    {
-        _inner.Write(string.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Fatal);
-    }
+    public void Fatal<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) => _inner.Write(string.Format(formatProvider, message, argument1, argument2, argument3), LogLevel.Fatal);
 
     private string InvokeStringFormat(IFormatProvider formatProvider, string message, object[] args)
     {

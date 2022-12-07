@@ -58,10 +58,7 @@ public class NLogLoggerTests : FullLoggerTestBase
     {
         private readonly List<(LogLevel, string)> _logs = new();
 
-        public MemoryTargetWrapper()
-        {
-            Name = "test wrapper";
-        }
+        public MemoryTargetWrapper() => Name = "test wrapper";
 
         public ICollection<(LogLevel logLevel, string message)> Logs => _logs;
 
@@ -69,9 +66,6 @@ public class NLogLoggerTests : FullLoggerTestBase
         /// Renders the logging event message and adds it to the internal ArrayList of log messages.
         /// </summary>
         /// <param name="logEvent">The logging event.</param>
-        protected override void Write(LogEventInfo logEvent)
-        {
-            _logs.Add((_NLog2Splat[logEvent.Level], RenderLogEvent(Layout, logEvent)));
-        }
+        protected override void Write(LogEventInfo logEvent) => _logs.Add((_NLog2Splat[logEvent.Level], RenderLogEvent(Layout, logEvent)));
     }
 }

@@ -15,10 +15,7 @@ public static class PlatformModeDetector
     /// <summary>
     /// Initializes static members of the <see cref="PlatformModeDetector"/> class.
     /// </summary>
-    static PlatformModeDetector()
-    {
-        Current = new DefaultPlatformModeDetector();
-    }
+    static PlatformModeDetector() => Current = new DefaultPlatformModeDetector();
 
     /// <summary>
     /// Gets or sets the current mode detector set.

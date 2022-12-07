@@ -56,10 +56,7 @@ public class ExceptionlessLoggerTests : FullLoggerTestBase
         return (new WrappingFullLogger(inner), logTarget);
     }
 
-    private static LogLevel GetSplatLogLevel(global::Exceptionless.Logging.LogLevel logLevel)
-    {
-        return _exceptionless2Splat[logLevel];
-    }
+    private static LogLevel GetSplatLogLevel(global::Exceptionless.Logging.LogLevel logLevel) => _exceptionless2Splat[logLevel];
 
     private static void PluginAction(EventPluginContext obj, InMemoryExceptionlessLogTarget logTarget)
     {
@@ -83,10 +80,7 @@ public class ExceptionlessLoggerTests : FullLoggerTestBase
 
     private class InMemoryExceptionlessLogTarget : IMockLogTarget
     {
-        public InMemoryExceptionlessLogTarget()
-        {
-            Logs = new List<(LogLevel logLevel, string message)>();
-        }
+        public InMemoryExceptionlessLogTarget() => Logs = new List<(LogLevel logLevel, string message)>();
 
         public ICollection<(LogLevel logLevel, string message)> Logs { get; }
     }

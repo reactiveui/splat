@@ -17,20 +17,14 @@ public static class PointExtensions
     /// </summary>
     /// <param name="value">The value to convert.</param>
     /// <returns>A <see cref="Point"/> of the value.</returns>
-    public static Point ToNative(this System.Drawing.Point value)
-    {
-        return new(value.X, value.Y);
-    }
+    public static Point ToNative(this System.Drawing.Point value) => new(value.X, value.Y);
 
     /// <summary>
     /// Convert a <see cref="System.Drawing.PointF"/> to the android native <see cref="PointF"/>.
     /// </summary>
     /// <param name="value">The value to convert.</param>
     /// <returns>A <see cref="PointF"/> of the value.</returns>
-    public static PointF ToNative(this System.Drawing.PointF value)
-    {
-        return new(value.X, value.Y);
-    }
+    public static PointF ToNative(this System.Drawing.PointF value) => new(value.X, value.Y);
 
     /// <summary>
     /// Converts a <see cref="Point"/> to a <see cref="System.Drawing.Point"/>.
@@ -44,7 +38,7 @@ public static class PointExtensions
             throw new System.ArgumentNullException(nameof(value));
         }
 
-        return new System.Drawing.Point(value.X, value.Y);
+        return new(value.X, value.Y);
     }
 
     /// <summary>
@@ -59,6 +53,6 @@ public static class PointExtensions
             throw new System.ArgumentNullException(nameof(value));
         }
 
-        return new System.Drawing.PointF(value.X, value.Y);
+        return new(value.X, value.Y);
     }
 }

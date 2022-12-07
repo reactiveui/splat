@@ -58,12 +58,10 @@ public sealed class ExceptionlessFeatureUsageTrackingSession : IFeatureUsageTrac
     public string FeatureName { get; }
 
     /// <inheritdoc />
-    public IFeatureUsageTrackingSession SubFeature(string description)
-    {
-        return new ExceptionlessFeatureUsageTrackingSession(
+    public IFeatureUsageTrackingSession SubFeature(string description) =>
+        new ExceptionlessFeatureUsageTrackingSession(
             description,
             FeatureReference);
-    }
 
     /// <inheritdoc />
     public void OnException(Exception exception)

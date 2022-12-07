@@ -64,7 +64,7 @@ public class PlatformBitmapLoader : IBitmapLoader
                 throw new InvalidOperationException("Failed to load stream");
             }
 
-            tcs.TrySetResult(new CocoaBitmap(new UIImage(data)));
+            tcs.TrySetResult(new CocoaBitmap(new(data)));
         }
         catch (Exception ex)
         {
@@ -124,8 +124,5 @@ public class PlatformBitmapLoader : IBitmapLoader
     }
 
     /// <inheritdoc />
-    public IBitmap Create(float width, float height)
-    {
-        throw new NotImplementedException();
-    }
+    public IBitmap Create(float width, float height) => throw new NotImplementedException();
 }

@@ -27,7 +27,7 @@ public static class ApplicationInsightsViewTrackingTests
             };
             var telemetryClient = new TelemetryClient(telemetryConfiguration);
 
-            return new ApplicationInsightsViewTracking(telemetryClient);
+            return new(telemetryClient);
         }
     }
 }

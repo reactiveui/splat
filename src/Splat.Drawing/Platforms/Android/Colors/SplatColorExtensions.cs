@@ -17,18 +17,12 @@ public static class SplatColorExtensions
     /// </summary>
     /// <param name="value">The color to convert.</param>
     /// <returns>The <see cref="Color"/> generated.</returns>
-    public static Color ToNative(this SplatColor value)
-    {
-        return new(value.R, value.G, value.B, value.A);
-    }
+    public static Color ToNative(this SplatColor value) => new(value.R, value.G, value.B, value.A);
 
     /// <summary>
     /// Converts a <see cref="Color"/> into the android native <see cref="SplatColor"/>.
     /// </summary>
     /// <param name="value">The color to convert.</param>
     /// <returns>The <see cref="SplatColor"/> generated.</returns>
-    public static SplatColor FromNative(this Color value)
-    {
-        return SplatColor.FromArgb(value.A, value.R, value.G, value.B);
-    }
+    public static SplatColor FromNative(this Color value) => SplatColor.FromArgb(value.A, value.R, value.G, value.B);
 }

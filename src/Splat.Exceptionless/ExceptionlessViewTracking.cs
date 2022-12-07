@@ -22,10 +22,7 @@ public sealed class ExceptionlessViewTracking : IViewTracking
     /// Initializes a new instance of the <see cref="ExceptionlessViewTracking"/> class.
     /// </summary>
     /// <param name="exceptionlessClient">The exceptionless client to use.</param>
-    public ExceptionlessViewTracking(ExceptionlessClient exceptionlessClient)
-    {
-        _exceptionlessClient = exceptionlessClient ?? throw new ArgumentNullException(nameof(exceptionlessClient));
-    }
+    public ExceptionlessViewTracking(ExceptionlessClient exceptionlessClient) => _exceptionlessClient = exceptionlessClient ?? throw new ArgumentNullException(nameof(exceptionlessClient));
 
     /// <summary>
     /// Track a view navigation using just a name.

@@ -59,7 +59,7 @@ public class SerilogLoggerTests : FullLoggerTestBase
         var originalLocator = Locator.InternalLocator;
         try
         {
-            Locator.InternalLocator = new InternalLocator();
+            Locator.InternalLocator = new();
             var (seriLogger, target) = CreateSerilogger(LogLevel.Debug);
             Log.Logger = seriLogger;
 
@@ -88,7 +88,7 @@ public class SerilogLoggerTests : FullLoggerTestBase
         var originalLocator = Locator.InternalLocator;
         try
         {
-            Locator.InternalLocator = new InternalLocator();
+            Locator.InternalLocator = new();
             var (seriLogger, target) = CreateSerilogger(LogLevel.Debug);
             Locator.CurrentMutable.UseSerilogFullLogger(seriLogger);
 

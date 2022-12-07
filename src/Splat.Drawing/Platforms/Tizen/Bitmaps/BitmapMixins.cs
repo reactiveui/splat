@@ -17,10 +17,7 @@ public static class BitmapMixins
     /// </summary>
     /// <param name="value">The bitmap to convert.</param>
     /// <returns>A <see cref="IBitmap"/> bitmap.</returns>
-    public static IBitmap FromNative(this BitmapFrame value)
-    {
-        return new TizenBitmap(value);
-    }
+    public static IBitmap FromNative(this BitmapFrame value) => new TizenBitmap(value);
 
     /// <summary>
     /// Converts <see cref="IBitmap"/> to a <see cref="BitmapFrame"/>.

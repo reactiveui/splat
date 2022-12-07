@@ -23,17 +23,15 @@ public static class BitmapMixins
     /// <returns>A <see cref="Drawable"/> bitmap.</returns>
     public static Drawable ToNative(this IBitmap value)
     {
-        if (value is null)
+        switch (value)
         {
-            throw new System.ArgumentNullException(nameof(value));
+            case null:
+                throw new System.ArgumentNullException(nameof(value));
+            case AndroidBitmap androidBitmap:
+                return new BitmapDrawable(Application.Context.Resources, androidBitmap.Inner);
+            default:
+                return ((DrawableBitmap)value).Inner;
         }
-
-        if (value is AndroidBitmap androidBitmap)
-        {
-            return new BitmapDrawable(Application.Context.Resources, androidBitmap.Inner);
-        }
-
-        return ((DrawableBitmap)value).Inner;
     }
 
     /// <summary>
@@ -63,8 +61,5 @@ public static class BitmapMixins
     /// </summary>
     /// <param name="value">The native bitmap to convert from.</param>
     /// <returns>A <see cref="IBitmap"/> bitmap.</returns>
-    public static IBitmap FromNative(this Drawable value)
-    {
-        return new DrawableBitmap(value);
-    }
+    public static IBitmap FromNative(this Drawable value) => new DrawableBitmap(value);
 }

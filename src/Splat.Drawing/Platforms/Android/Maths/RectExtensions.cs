@@ -17,20 +17,14 @@ public static class RectExtensions
     /// </summary>
     /// <param name="value">The value to convert.</param>
     /// <returns>A <see cref="Rect"/> of the value.</returns>
-    public static Rect ToNative(this System.Drawing.Rectangle value)
-    {
-        return new(value.X, value.Y, value.X + value.Width, value.Y + value.Height);
-    }
+    public static Rect ToNative(this System.Drawing.Rectangle value) => new(value.X, value.Y, value.X + value.Width, value.Y + value.Height);
 
     /// <summary>
     /// Convert a <see cref="System.Drawing.RectangleF"/> to the android native <see cref="RectF"/>.
     /// </summary>
     /// <param name="value">The value to convert.</param>
     /// <returns>A <see cref="RectF"/> of the value.</returns>
-    public static RectF ToNative(this System.Drawing.RectangleF value)
-    {
-        return new(value.X, value.Y, value.X + value.Width, value.Y + value.Height);
-    }
+    public static RectF ToNative(this System.Drawing.RectangleF value) => new(value.X, value.Y, value.X + value.Width, value.Y + value.Height);
 
     /// <summary>
     /// Converts a <see cref="Rect"/> to a <see cref="System.Drawing.Rectangle"/>.
@@ -44,7 +38,7 @@ public static class RectExtensions
             throw new System.ArgumentNullException(nameof(value));
         }
 
-        return new System.Drawing.Rectangle(value.Left, value.Top, value.Width(), value.Height());
+        return new(value.Left, value.Top, value.Width(), value.Height());
     }
 
     /// <summary>
@@ -59,6 +53,6 @@ public static class RectExtensions
             throw new System.ArgumentNullException(nameof(value));
         }
 
-        return new System.Drawing.RectangleF(value.Left, value.Top, value.Width(), value.Height());
+        return new(value.Left, value.Top, value.Width(), value.Height());
     }
 }

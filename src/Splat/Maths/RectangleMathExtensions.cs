@@ -18,10 +18,7 @@ public static class RectangleMathExtensions
     /// </summary>
     /// <param name="value">The rectangle to perform the calculation against.</param>
     /// <returns>The point of the center of the rectangle.</returns>
-    public static PointF Center(this RectangleF value)
-    {
-        return new(value.X + (value.Width / 2.0f), value.Y + (value.Height / 2.0f));
-    }
+    public static PointF Center(this RectangleF value) => new(value.X + (value.Width / 2.0f), value.Y + (value.Height / 2.0f));
 
     /// <summary>
     /// Divide the specified Rectangle into two component rectangles.
@@ -86,11 +83,9 @@ public static class RectangleMathExtensions
     /// </summary>
     /// <param name="value">The rectangle to perform the calculation against.</param>
     /// <param name="containingRect">The containing rectangle.</param>
-    /// <returns>The inverted rentangle.</returns>
-    public static RectangleF InvertWithin(this RectangleF value, RectangleF containingRect)
-    {
-        return new(value.X, containingRect.Height - value.Bottom, value.Width, value.Height);
-    }
+    /// <returns>The inverted rectangle.</returns>
+    public static RectangleF InvertWithin(this RectangleF value, RectangleF containingRect) =>
+        value with { Y = containingRect.Height - value.Bottom };
 
     /// <summary>
     /// Creates a new RectangleF as a Copy of an existing one .

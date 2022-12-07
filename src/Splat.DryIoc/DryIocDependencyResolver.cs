@@ -19,16 +19,13 @@ namespace Splat.DryIoc;
 /// <seealso cref="Splat.IDependencyResolver" />
 public class DryIocDependencyResolver : IDependencyResolver
 {
-    private IContainer _container;
+    private readonly IContainer _container;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DryIocDependencyResolver" /> class.
     /// </summary>
     /// <param name="container">The container.</param>
-    public DryIocDependencyResolver(IContainer? container = null)
-    {
-        _container = container ?? new Container();
-    }
+    public DryIocDependencyResolver(IContainer? container = null) => _container = container ?? new Container();
 
     /// <inheritdoc />
     public virtual object? GetService(Type? serviceType, string? contract = null) =>
@@ -83,7 +80,7 @@ public class DryIocDependencyResolver : IDependencyResolver
             return key.Equals(x.OptionalServiceKey) ||
             (contract is null && x.OptionalServiceKey is null) ||
         (x.OptionalServiceKey is string serviceKeyAsString
-                   && contract is not null && contract.Equals(serviceKeyAsString, StringComparison.Ordinal));
+                   && contract?.Equals(serviceKeyAsString, StringComparison.Ordinal) == true);
         });
     }
 
@@ -154,7 +151,7 @@ public class DryIocDependencyResolver : IDependencyResolver
             }
 
             if (x.OptionalServiceKey is string serviceKeyAsString
-                   && contract is not null && contract.Equals(serviceKeyAsString, StringComparison.Ordinal))
+                   && contract?.Equals(serviceKeyAsString, StringComparison.Ordinal) == true)
             {
                 _container.Unregister(serviceType, contract);
                 return true;
@@ -193,7 +190,7 @@ public class DryIocDependencyResolver : IDependencyResolver
             }
 
             if (x.OptionalServiceKey is string serviceKeyAsString
-                   && contract is not null && contract.Equals(serviceKeyAsString, StringComparison.Ordinal))
+                   && contract?.Equals(serviceKeyAsString, StringComparison.Ordinal) == true)
             {
                 _container.Unregister(serviceType, contract);
             }
@@ -201,10 +198,7 @@ public class DryIocDependencyResolver : IDependencyResolver
     }
 
     /// <inheritdoc />
-    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback)
-    {
-        throw new NotImplementedException();
-    }
+    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) => throw new NotImplementedException();
 
     /// <inheritdoc />
     public void Dispose()

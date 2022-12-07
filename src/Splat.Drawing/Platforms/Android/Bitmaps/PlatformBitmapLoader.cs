@@ -26,10 +26,7 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
     /// <summary>
     /// Initializes a new instance of the <see cref="PlatformBitmapLoader"/> class.
     /// </summary>
-    public PlatformBitmapLoader()
-    {
-        _drawableList = GetDrawableList();
-    }
+    public PlatformBitmapLoader() => _drawableList = GetDrawableList();
 
     /// <inheritdoc />
     public async Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
@@ -216,10 +213,7 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
         return result;
     }
 
-    private static IBitmap? GetFromDrawable(Android.Graphics.Drawables.Drawable? drawable)
-    {
-        return drawable is null ? null : new DrawableBitmap(drawable);
-    }
+    private static IBitmap? GetFromDrawable(Android.Graphics.Drawables.Drawable? drawable) => drawable is null ? null : new DrawableBitmap(drawable);
 
     /// <summary>
     /// Checks to make sure the last 2 bytes are as expected.
@@ -237,10 +231,7 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
                && sourceStream.ReadByte() == 0xD9;
     }
 
-    private static Dictionary<string, int> GetDrawableList()
-    {
-        return GetDrawableList(Locator.Current.GetService<ILogManager>()?.GetLogger(typeof(PlatformBitmapLoader)));
-    }
+    private static Dictionary<string, int> GetDrawableList() => GetDrawableList(Locator.Current.GetService<ILogManager>()?.GetLogger(typeof(PlatformBitmapLoader)));
 
     private void AttemptStreamByteCorrection(Stream sourceStream)
     {

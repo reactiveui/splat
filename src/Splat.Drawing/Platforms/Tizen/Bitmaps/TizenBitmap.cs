@@ -12,7 +12,7 @@ namespace Splat;
 /// </summary>
 internal sealed class TizenBitmap : IBitmap
 {
-    private static readonly ImageDecoder[] _decoderList = new ImageDecoder[]
+    private static readonly ImageDecoder[] _decoderList =
     {
         new JpegDecoder(),
         new PngDecoder(),
@@ -24,24 +24,15 @@ internal sealed class TizenBitmap : IBitmap
     /// Initializes a new instance of the <see cref="TizenBitmap"/> class.
     /// </summary>
     /// <param name="image">The image in bytes we are wrapping. Will generate a native platform bitmap for us.</param>
-    public TizenBitmap(byte[] image)
-    {
-        Inner = GetBitmapFrame(image);
-    }
+    public TizenBitmap(byte[] image) => Inner = GetBitmapFrame(image);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TizenBitmap"/> class.
     /// </summary>
     /// <param name="imageResourceName">The name of the image resource to load.</param>
-    public TizenBitmap(string imageResourceName)
-    {
-        Inner = GetBitmapFrame(File.ReadAllBytes(imageResourceName));
-    }
+    public TizenBitmap(string imageResourceName) => Inner = GetBitmapFrame(File.ReadAllBytes(imageResourceName));
 
-    public TizenBitmap(BitmapFrame image)
-    {
-        Inner = image;
-    }
+    public TizenBitmap(BitmapFrame image) => Inner = image;
 
     /// <inheritdoc />
     public float Width => Inner?.Size.Width ?? 0;
@@ -74,17 +65,17 @@ internal sealed class TizenBitmap : IBitmap
                     break;
                 case CompressedBitmapFormat.Png:
                     encoder = new PngEncoder();
-                    if (qualityPercent == 100)
+                    switch (qualityPercent)
                     {
-                        ((PngEncoder)encoder).Compression = PngCompression.None;
-                    }
-                    else if (qualityPercent < 10)
-                    {
-                        ((PngEncoder)encoder).Compression = PngCompression.Level1;
-                    }
-                    else
-                    {
-                        ((PngEncoder)encoder).Compression = (PngCompression)(qualityPercent / 10);
+                        case 100:
+                            ((PngEncoder)encoder).Compression = PngCompression.None;
+                            break;
+                        case < 10:
+                            ((PngEncoder)encoder).Compression = PngCompression.Level1;
+                            break;
+                        default:
+                            ((PngEncoder)encoder).Compression = (PngCompression)(qualityPercent / 10);
+                            break;
                     }
 
                     break;
@@ -95,7 +86,7 @@ internal sealed class TizenBitmap : IBitmap
                 return Task.CompletedTask;
             }
 
-            encoder.SetResolution(new Tizen.Multimedia.Size((int)Width, (int)Height));
+            encoder.SetResolution(new((int)Width, (int)Height));
             return encoder.EncodeAsync(Inner.Buffer, target);
         }
         finally
@@ -105,10 +96,7 @@ internal sealed class TizenBitmap : IBitmap
     }
 
     /// <inheritdoc />
-    public void Dispose()
-    {
-        Inner = null;
-    }
+    public void Dispose() => Inner = null;
 
     private static BitmapFrame? GetBitmapFrame(byte[] imageBuffer)
     {

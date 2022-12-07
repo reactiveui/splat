@@ -163,8 +163,5 @@ public class TargetFrameworkExtensionsTests
     /// <param name="expected">The expected result.</param>
     [Theory]
     [MemberData(nameof(FrameworkNamesTestSource))]
-    public void ReturnsName(string frameworkName, string expected)
-    {
-        Assert.Equal(expected, TargetFrameworkExtensions.GetTargetFrameworkName(frameworkName));
-    }
+    public void ReturnsName(string frameworkName, string expected) => Assert.Equal(expected, TargetFrameworkExtensions.GetTargetFrameworkName(frameworkName));
 }

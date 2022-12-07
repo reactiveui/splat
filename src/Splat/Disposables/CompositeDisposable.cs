@@ -26,10 +26,7 @@ internal sealed class CompositeDisposable : IDisposable
     /// <summary>
     /// Initializes a new instance of the <see cref="CompositeDisposable"/> class with no disposables contained by it initially.
     /// </summary>
-    public CompositeDisposable()
-    {
-        _disposables = new List<IDisposable>();
-    }
+    public CompositeDisposable() => _disposables = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CompositeDisposable"/> class with the specified number of disposables.
@@ -43,7 +40,7 @@ internal sealed class CompositeDisposable : IDisposable
             throw new ArgumentOutOfRangeException(nameof(capacity));
         }
 
-        _disposables = new List<IDisposable>(capacity);
+        _disposables = new(capacity);
     }
 
     /// <summary>
@@ -59,7 +56,7 @@ internal sealed class CompositeDisposable : IDisposable
             throw new ArgumentNullException(nameof(disposables));
         }
 
-        _disposables = new List<IDisposable>(disposables.Length);
+        _disposables = new(disposables.Length);
         Init(disposables);
     }
 
@@ -71,24 +68,23 @@ internal sealed class CompositeDisposable : IDisposable
     /// <exception cref="ArgumentException">Any of the disposables in the <paramref name="disposables"/> collection is <c>null</c>.</exception>
     public CompositeDisposable(IEnumerable<IDisposable> disposables)
     {
-        if (disposables is null)
+        switch (disposables)
         {
-            throw new ArgumentNullException(nameof(disposables));
-        }
+            case null:
+                throw new ArgumentNullException(nameof(disposables));
 
-        // If the disposables is a collection, get its size
-        // and use it as a capacity hint for the copy.
-        if (disposables is ICollection<IDisposable> c)
-        {
-            _disposables = new List<IDisposable>(c.Count);
-            Init(disposables);
-        }
-        else
-        {
-            _disposables = new List<IDisposable>(DefaultCapacity);
+            // If the disposables is a collection, get its size
+            // and use it as a capacity hint for the copy.
+            case ICollection<IDisposable> c:
+                _disposables = new(c.Count);
+                Init(disposables);
+                break;
+            default:
+                _disposables = new(DefaultCapacity);
 
-            // Unknown sized disposables, use the default capacity hint
-            Init(disposables);
+                // Unknown sized disposables, use the default capacity hint
+                Init(disposables);
+                break;
         }
     }
 

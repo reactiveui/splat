@@ -25,10 +25,7 @@ public class SimpleInjectorInitializer : IDependencyResolver
     /// <inheritdoc />
     public object? GetService(Type? serviceType, string? contract = null)
     {
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         lock (_lockObject)
         {
@@ -40,10 +37,7 @@ public class SimpleInjectorInitializer : IDependencyResolver
     /// <inheritdoc/>
     public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
     {
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         lock (_lockObject)
         {
@@ -55,10 +49,7 @@ public class SimpleInjectorInitializer : IDependencyResolver
     /// <inheritdoc />
     public bool HasRegistration(Type? serviceType, string? contract = null)
     {
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         lock (_lockObject)
         {
@@ -71,16 +62,13 @@ public class SimpleInjectorInitializer : IDependencyResolver
     public void Register(Func<object?> factory, Type? serviceType, string? contract = null)
     {
         var isNull = serviceType is null;
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         lock (_lockObject)
         {
             if (!RegisteredFactories.ContainsKey(serviceType))
             {
-                RegisteredFactories.Add(serviceType, new List<Func<object?>>());
+                RegisteredFactories.Add(serviceType, new());
             }
 
             RegisteredFactories[serviceType].Add(() =>
@@ -91,33 +79,21 @@ public class SimpleInjectorInitializer : IDependencyResolver
     }
 
     /// <inheritdoc />
-    public void UnregisterCurrent(Type? serviceType, string? contract = null)
-    {
-        throw new NotImplementedException();
-    }
+    public void UnregisterCurrent(Type? serviceType, string? contract = null) => throw new NotImplementedException();
 
     /// <inheritdoc />
     public void UnregisterAll(Type? serviceType, string? contract = null)
     {
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         lock (_lockObject)
         {
-            if (RegisteredFactories.ContainsKey(serviceType))
-            {
-                RegisteredFactories.Remove(serviceType);
-            }
+            RegisteredFactories.Remove(serviceType);
         }
     }
 
     /// <inheritdoc />
-    public IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback)
-    {
-        throw new NotImplementedException();
-    }
+    public IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) => throw new NotImplementedException();
 
     /// <inheritdoc />
     public void Dispose()

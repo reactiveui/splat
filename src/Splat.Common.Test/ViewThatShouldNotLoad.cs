@@ -17,10 +17,7 @@ public sealed class ViewThatShouldNotLoad : IViewFor<ViewModelOne>
     /// <summary>
     /// Initializes a new instance of the <see cref="ViewThatShouldNotLoad"/> class.
     /// </summary>
-    public ViewThatShouldNotLoad()
-    {
-        throw new InvalidOperationException("This view should not be created.");
-    }
+    public ViewThatShouldNotLoad() => throw new InvalidOperationException("This view should not be created.");
 
     /// <inheritdoc />
     object? IViewFor.ViewModel

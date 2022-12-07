@@ -17,20 +17,17 @@ namespace ReactiveUI.DI.Tests.Mocks;
 /// <seealso cref="ReactiveUI.IActivatableView" />
 public sealed class ActivatingView : ReactiveObject, IViewFor<ActivatingViewModel>, IDisposable
 {
-    private int _count;
     private ActivatingViewModel? _viewModel;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ActivatingView"/> class.
     /// </summary>
-    public ActivatingView()
-    {
+    public ActivatingView() =>
         this.WhenActivated(d =>
         {
-            _count++;
-            d(Disposable.Create(() => _count--));
+            IsActiveCount++;
+            d(Disposable.Create(() => IsActiveCount--));
         });
-    }
 
     /// <summary>
     /// Gets the count.
@@ -38,7 +35,7 @@ public sealed class ActivatingView : ReactiveObject, IViewFor<ActivatingViewMode
     /// <value>
     /// The count.
     /// </value>
-    public int IsActiveCount => _count;
+    public int IsActiveCount { get; private set; }
 
     /// <summary>
     /// Gets the loaded.

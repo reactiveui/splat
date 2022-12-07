@@ -15,10 +15,7 @@ public static class ModeDetector
     /// <summary>
     /// Initializes static members of the <see cref="ModeDetector"/> class.
     /// </summary>
-    static ModeDetector()
-    {
-        Current = new DefaultModeDetector();
-    }
+    static ModeDetector() => Current = new DefaultModeDetector();
 
     /// <summary>
     /// Gets or sets the current mode detector set.

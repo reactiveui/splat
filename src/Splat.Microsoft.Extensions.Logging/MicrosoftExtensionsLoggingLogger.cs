@@ -23,10 +23,7 @@ public sealed class MicrosoftExtensionsLoggingLogger : ILogger
     /// </summary>
     /// <param name="inner">The actual Microsoft.Extensions.Logging logger.</param>
     /// <exception cref="ArgumentNullException">Microsoft.Extensions.Logging logger not passed.</exception>
-    public MicrosoftExtensionsLoggingLogger(global::Microsoft.Extensions.Logging.ILogger inner)
-    {
-        _inner = inner ?? throw new ArgumentNullException(nameof(inner));
-    }
+    public MicrosoftExtensionsLoggingLogger(global::Microsoft.Extensions.Logging.ILogger inner) => _inner = inner ?? throw new ArgumentNullException(nameof(inner));
 
     /// <inheritdoc />
     public LogLevel Level
@@ -49,18 +46,12 @@ public sealed class MicrosoftExtensionsLoggingLogger : ILogger
     /// <inheritdoc />
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1848:Use the LoggerMessage delegates", Justification = "Deliberate Usage")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "Deliberate Usage")]
-    public void Write(string message, LogLevel logLevel)
-    {
-        _inner.Log(MsLoggingHelpers.Splat2MsLogDictionary[logLevel], message);
-    }
+    public void Write(string message, LogLevel logLevel) => _inner.Log(MsLoggingHelpers.Splat2MsLogDictionary[logLevel], message);
 
     /// <inheritdoc />
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1848:Use the LoggerMessage delegates", Justification = "Deliberate Usage")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "Deliberate Usage")]
-    public void Write(Exception exception, string message, LogLevel logLevel)
-    {
-        _inner.Log(MsLoggingHelpers.Splat2MsLogDictionary[logLevel], exception, message);
-    }
+    public void Write(Exception exception, string message, LogLevel logLevel) => _inner.Log(MsLoggingHelpers.Splat2MsLogDictionary[logLevel], exception, message);
 
     /// <inheritdoc />
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1848:Use the LoggerMessage delegates", Justification = "Deliberate Usage")]

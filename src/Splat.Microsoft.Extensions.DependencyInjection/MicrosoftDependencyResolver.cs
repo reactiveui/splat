@@ -31,10 +31,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver
     /// Initializes a new instance of the <see cref="MicrosoftDependencyResolver" /> class with an <see cref="IServiceCollection"/>.
     /// </summary>
     /// <param name="services">An instance of <see cref="IServiceCollection"/>.</param>
-    public MicrosoftDependencyResolver(IServiceCollection? services = null)
-    {
-        _serviceCollection = services ?? new ServiceCollection();
-    }
+    public MicrosoftDependencyResolver(IServiceCollection? services = null) => _serviceCollection = services ?? new ServiceCollection();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MicrosoftDependencyResolver" /> class with a configured service Provider.
@@ -53,10 +50,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver
         {
             lock (_syncLock)
             {
-                if (_serviceProvider is null)
-                {
-                    _serviceProvider = _serviceCollection?.BuildServiceProvider();
-                }
+                _serviceProvider ??= _serviceCollection?.BuildServiceProvider();
 
                 return _serviceProvider;
             }
@@ -95,10 +89,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver
         }
 
         var isNull = serviceType is null;
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         IEnumerable<object> services;
 
@@ -138,10 +129,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver
 
         var isNull = serviceType is null;
 
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         lock (_syncLock)
         {
@@ -172,10 +160,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver
             throw new InvalidOperationException(ImmutableExceptionMessage);
         }
 
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         lock (_syncLock)
         {
@@ -219,35 +204,38 @@ public class MicrosoftDependencyResolver : IDependencyResolver
             throw new InvalidOperationException(ImmutableExceptionMessage);
         }
 
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         lock (_syncLock)
         {
-            if (contract is null && _serviceCollection is not null)
+            switch (contract)
             {
-                var sds = _serviceCollection
-                    .Where(s => s.ServiceType == serviceType)
-                    .ToList();
+                case null when _serviceCollection is not null:
+                    {
+                        var sds = _serviceCollection
+                            .Where(s => s.ServiceType == serviceType)
+                            .ToList();
 
-                foreach (var sd in sds)
-                {
-                    _serviceCollection.Remove(sd);
-                }
-            }
-            else if (contract is null)
-            {
-                throw new ArgumentException("There must be a valid contract if there is no service collection.", nameof(contract));
-            }
-            else
-            {
-                var dic = GetContractDictionary(serviceType, false);
-                if (dic?.TryRemoveContract(contract) == true && dic.IsEmpty)
-                {
-                    RemoveContractService(serviceType);
-                }
+                        foreach (var sd in sds)
+                        {
+                            _serviceCollection.Remove(sd);
+                        }
+
+                        break;
+                    }
+
+                case null:
+                    throw new ArgumentException("There must be a valid contract if there is no service collection.", nameof(contract));
+                default:
+                    {
+                        var dic = GetContractDictionary(serviceType, false);
+                        if (dic?.TryRemoveContract(contract) == true && dic.IsEmpty)
+                        {
+                            RemoveContractService(serviceType);
+                        }
+
+                        break;
+                    }
             }
 
             // required so that it gets rebuilt if not injected externally.
@@ -256,19 +244,12 @@ public class MicrosoftDependencyResolver : IDependencyResolver
     }
 
     /// <inheritdoc />
-    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback)
-    {
-        // this method is not used by RxUI
-        throw new NotImplementedException();
-    }
+    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) => throw new NotImplementedException();
 
     /// <inheritdoc/>
     public virtual bool HasRegistration(Type? serviceType, string? contract = null)
     {
-        if (serviceType is null)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        serviceType ??= typeof(NullServiceType);
 
         if (!_isImmutable)
         {
@@ -385,9 +366,9 @@ public class MicrosoftDependencyResolver : IDependencyResolver
             : Array.Empty<Func<object?>>();
 
         public void AddFactory(string contract, Func<object?> factory) =>
-            _dictionary.AddOrUpdate(contract, _ => new List<Func<object?>> { factory }, (_, list) =>
+            _dictionary.AddOrUpdate(contract, _ => new() { factory }, (_, list) =>
             {
-                (list ??= new List<Func<object?>>()).Add(factory);
+                (list ??= new()).Add(factory);
                 return list;
             });
 

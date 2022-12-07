@@ -190,35 +190,23 @@ public class CoverageColorTests
     /// Invalids the ARGB color A throws.
     /// </summary>
     [Fact]
-    public void InvalidARGBColorAThrows()
-    {
-        Assert.Throws<ArgumentException>(() => SplatColor.FromArgb(256, 0, 0, 0));
-    }
+    public void InvalidARGBColorAThrows() => Assert.Throws<ArgumentException>(() => SplatColor.FromArgb(256, 0, 0, 0));
 
     /// <summary>
     /// Invalids the ARGB color r throws.
     /// </summary>
     [Fact]
-    public void InvalidARGBColorRThrows()
-    {
-        Assert.Throws<ArgumentException>(() => SplatColor.FromArgb(0, 256, 0, 0));
-    }
+    public void InvalidARGBColorRThrows() => Assert.Throws<ArgumentException>(() => SplatColor.FromArgb(0, 256, 0, 0));
 
     /// <summary>
     /// Invalids the ARGB color g throws.
     /// </summary>
     [Fact]
-    public void InvalidARGBColorGThrows()
-    {
-        Assert.Throws<ArgumentException>(() => SplatColor.FromArgb(0, 0, 256, 0));
-    }
+    public void InvalidARGBColorGThrows() => Assert.Throws<ArgumentException>(() => SplatColor.FromArgb(0, 0, 256, 0));
 
     /// <summary>
     /// Invalids the ARGB color b throws.
     /// </summary>
     [Fact]
-    public void InvalidARGBColorBThrows()
-    {
-        Assert.Throws<ArgumentException>(() => SplatColor.FromArgb(0, 0, 0, 256));
-    }
+    public void InvalidARGBColorBThrows() => Assert.Throws<ArgumentException>(() => SplatColor.FromArgb(0, 0, 0, 256));
 }

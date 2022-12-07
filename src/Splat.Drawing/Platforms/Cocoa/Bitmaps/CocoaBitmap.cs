@@ -33,10 +33,7 @@ internal sealed class CocoaBitmap : IBitmap
     /// Initializes a new instance of the <see cref="CocoaBitmap"/> class.
     /// </summary>
     /// <param name="inner">The native image we are wrapping.</param>
-    public CocoaBitmap(UIImage inner)
-    {
-        _inner = inner;
-    }
+    public CocoaBitmap(UIImage inner) => _inner = inner;
 
     /// <inheritdoc />
     public float Width => (float)(_inner?.Size.Width ?? 0);
@@ -71,7 +68,7 @@ internal sealed class CocoaBitmap : IBitmap
             var imageRep = new NSBitmapImageRep(cgImage);
 
             var props = format == CompressedBitmapFormat.Png ?
-                new NSDictionary() :
+                new() :
                 new NSDictionary(new NSNumber(quality), new NSString("NSImageCompressionFactor"));
 
             var type = format == CompressedBitmapFormat.Png ? NSBitmapImageFileType.Png : NSBitmapImageFileType.Jpeg;

@@ -79,20 +79,11 @@ public sealed class BitmapLoaderTests
         }
     }
 
-    private static Stream GetBitmapStream()
-    {
-        return GetStream("splatlogo.bmp");
-    }
+    private static Stream GetBitmapStream() => GetStream("splatlogo.bmp");
 
-    private static Stream GetJpegStream()
-    {
-        return GetStream("splatlogo.jpg");
-    }
+    private static Stream GetJpegStream() => GetStream("splatlogo.jpg");
 
-    private static Stream GetPngStream()
-    {
-        return GetStream("splatlogo.png");
-    }
+    private static Stream GetPngStream() => GetStream("splatlogo.png");
 
     private static Stream GetStream(string imageName)
     {

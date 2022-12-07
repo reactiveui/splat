@@ -20,19 +20,13 @@ public sealed class MicrosoftExtensionsLogProvider : ILoggerProvider
     }
 
     /// <inheritdoc />
-    public global::Microsoft.Extensions.Logging.ILogger CreateLogger(string categoryName)
-    {
-        return new SplatLoggingAdapter(categoryName);
-    }
+    public global::Microsoft.Extensions.Logging.ILogger CreateLogger(string categoryName) => new SplatLoggingAdapter(categoryName);
 
     private class SplatLoggingAdapter : global::Microsoft.Extensions.Logging.ILogger
     {
         private readonly string _categoryName;
 
-        public SplatLoggingAdapter(string categoryName)
-        {
-            _categoryName = categoryName;
-        }
+        public SplatLoggingAdapter(string categoryName) => _categoryName = categoryName;
 
         /// <inheritdoc />
         public void Log<TState>(global::Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
@@ -55,18 +49,14 @@ public sealed class MicrosoftExtensionsLogProvider : ILoggerProvider
         }
 
         /// <inheritdoc />
-        public bool IsEnabled(global::Microsoft.Extensions.Logging.LogLevel logLevel)
-        {
-            return logLevel != global::Microsoft.Extensions.Logging.LogLevel.None;
-        }
+        public bool IsEnabled(global::Microsoft.Extensions.Logging.LogLevel logLevel) => logLevel != global::Microsoft.Extensions.Logging.LogLevel.None;
 
         /// <inheritdoc />
         public IDisposable BeginScope<TState>(TState state)
-             where TState : notnull
-        {
+             where TState : notnull =>
+
             // documentation states we're allowed to return null.
             // NRT in net6 causing build issue as of 2021-11-10.
-            return null!;
-        }
+            null!;
     }
 }

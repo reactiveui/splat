@@ -25,16 +25,10 @@ public class TextLogger : ILogger, IMockLogTarget
     public LogLevel Level { get; set; }
 
     /// <inheritdoc />
-    public void Write(string message, LogLevel logLevel)
-    {
-        _logs.Add((logLevel, message));
-    }
+    public void Write(string message, LogLevel logLevel) => _logs.Add((logLevel, message));
 
     /// <inheritdoc />
-    public void Write(Exception exception, string message, LogLevel logLevel)
-    {
-        Write($"{message} {exception}", logLevel);
-    }
+    public void Write(Exception exception, string message, LogLevel logLevel) => Write($"{message} {exception}", logLevel);
 
     /// <inheritdoc />
     public void Write(string message, Type type, LogLevel logLevel)
@@ -44,8 +38,5 @@ public class TextLogger : ILogger, IMockLogTarget
     }
 
     /// <inheritdoc />
-    public void Write(Exception exception, string message, Type type, LogLevel logLevel)
-    {
-        Write($"{message} {exception}", type, logLevel);
-    }
+    public void Write(Exception exception, string message, Type type, LogLevel logLevel) => Write($"{message} {exception}", type, logLevel);
 }

@@ -32,16 +32,10 @@ public class WrappingPrefixLogger : ILogger
     public LogLevel Level => _inner.Level;
 
     /// <inheritdoc />
-    public void Write([Localizable(false)]string message, LogLevel logLevel)
-    {
-        _inner.Write(_prefix + message, logLevel);
-    }
+    public void Write([Localizable(false)]string message, LogLevel logLevel) => _inner.Write(_prefix + message, logLevel);
 
     /// <inheritdoc />
-    public void Write(Exception exception, [Localizable(false)]string message, LogLevel logLevel)
-    {
-        _inner.Write(exception, _prefix + message, logLevel);
-    }
+    public void Write(Exception exception, [Localizable(false)]string message, LogLevel logLevel) => _inner.Write(exception, _prefix + message, logLevel);
 
     /// <inheritdoc />
     public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)

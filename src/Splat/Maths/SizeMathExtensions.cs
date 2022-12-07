@@ -33,8 +33,5 @@ public static class SizeMathExtensions
     /// <param name="value">The size we doing the operation against.</param>
     /// <param name="factor">The amount to scale by.</param>
     /// <returns>The scaled size.</returns>
-    public static SizeF ScaledBy(this SizeF value, float factor)
-    {
-        return new(value.Width * factor, value.Height * factor);
-    }
+    public static SizeF ScaledBy(this SizeF value, float factor) => new(value.Width * factor, value.Height * factor);
 }

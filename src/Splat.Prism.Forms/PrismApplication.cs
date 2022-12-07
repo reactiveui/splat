@@ -25,8 +25,5 @@ public abstract class PrismApplication : PrismApplicationBase
     }
 
     /// <inheritdoc/>
-    protected override IContainerExtension CreateContainerExtension()
-    {
-        return new SplatContainerExtension();
-    }
+    protected override IContainerExtension CreateContainerExtension() => new SplatContainerExtension();
 }

@@ -20,10 +20,7 @@ internal sealed class DrawableBitmap : IBitmap
     /// Initializes a new instance of the <see cref="DrawableBitmap"/> class.
     /// </summary>
     /// <param name="inner">The drawable bitmap to wrap.</param>
-    public DrawableBitmap(Drawable inner)
-    {
-        _inner = inner;
-    }
+    public DrawableBitmap(Drawable inner) => _inner = inner;
 
     /// <inheritdoc />
     public float Width => Inner.IntrinsicWidth;
@@ -36,10 +33,7 @@ internal sealed class DrawableBitmap : IBitmap
     /// </summary>
     internal Drawable Inner => _inner ?? throw new InvalidOperationException("Attempting to retrieve a disposed bitmap");
 
-    public Task Save(CompressedBitmapFormat format, float quality, Stream target)
-    {
-        throw new NotSupportedException("You can't save resources");
-    }
+    public Task Save(CompressedBitmapFormat format, float quality, Stream target) => throw new NotSupportedException("You can't save resources");
 
     public void Dispose()
     {

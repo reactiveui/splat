@@ -56,7 +56,7 @@ public static class EnableFeatureUsageTrackingExtensionsTests
             {
                 Assert.NotNull(result);
                 Assert.IsType<DefaultFeatureUsageTrackingSession>(result);
-                result.OnException(new Exception("Test"));
+                result.OnException(new("Test"));
             }
         }
 
@@ -96,7 +96,7 @@ public static class EnableFeatureUsageTrackingExtensionsTests
                 {
                     Assert.NotNull(subFeature);
                     Assert.IsType<DefaultFeatureUsageTrackingSession>(subFeature);
-                    subFeature.OnException(new Exception("Sub-feature"));
+                    subFeature.OnException(new("Sub-feature"));
                 }
             }
         }

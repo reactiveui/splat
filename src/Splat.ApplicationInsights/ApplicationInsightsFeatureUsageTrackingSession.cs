@@ -52,19 +52,14 @@ public sealed class ApplicationInsightsFeatureUsageTrackingSession : IFeatureUsa
     public string FeatureName { get; }
 
     /// <inheritdoc />
-    public void Dispose()
-    {
-        TrackEvent("Feature Usage End");
-    }
+    public void Dispose() => TrackEvent("Feature Usage End");
 
     /// <inheritdoc />
-    public IFeatureUsageTrackingSession SubFeature(string description)
-    {
-        return new ApplicationInsightsFeatureUsageTrackingSession(
+    public IFeatureUsageTrackingSession SubFeature(string description) =>
+        new ApplicationInsightsFeatureUsageTrackingSession(
             description,
             FeatureReference,
             _telemetryClient);
-    }
 
     /// <inheritdoc />
     public void OnException(Exception exception)

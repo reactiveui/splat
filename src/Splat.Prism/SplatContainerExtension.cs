@@ -39,10 +39,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     public IScopedProvider CurrentScope => throw new NotImplementedException();
 
     /// <inheritdoc/>
-    public IScopedProvider CreateScope()
-    {
-        throw new NotSupportedException();
-    }
+    public IScopedProvider CreateScope() => throw new NotSupportedException();
 
     /// <inheritdoc/>
     public void Dispose()
@@ -57,28 +54,16 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     }
 
     /// <inheritdoc/>
-    public IContainerRegistry RegisterScoped(Type type, Func<IContainerProvider, object> factoryMethod)
-    {
-        throw new NotSupportedException();
-    }
+    public IContainerRegistry RegisterScoped(Type type, Func<IContainerProvider, object> factoryMethod) => throw new NotSupportedException();
 
     /// <inheritdoc/>
-    public bool IsRegistered(Type type)
-    {
-        return Instance.HasRegistration(type);
-    }
+    public bool IsRegistered(Type type) => Instance.HasRegistration(type);
 
     /// <inheritdoc/>
-    public bool IsRegistered(Type type, string name)
-    {
-        return Instance.HasRegistration(type, name);
-    }
+    public bool IsRegistered(Type type, string name) => Instance.HasRegistration(type, name);
 
     /// <inheritdoc/>
-    public IContainerRegistry RegisterManySingleton(Type type, params Type[] serviceTypes)
-    {
-        throw new NotSupportedException();
-    }
+    public IContainerRegistry RegisterManySingleton(Type type, params Type[] serviceTypes) => throw new NotSupportedException();
 
     /// <inheritdoc/>
     public IContainerRegistry Register(Type from, Type to)
@@ -141,16 +126,10 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     }
 
     /// <inheritdoc/>
-    public IContainerRegistry RegisterScoped(Type @from, Type to)
-    {
-        throw new NotSupportedException();
-    }
+    public IContainerRegistry RegisterScoped(Type from, Type to) => throw new NotSupportedException();
 
     /// <inheritdoc/>
-    public IContainerRegistry RegisterScoped(Type type, Func<object> factoryMethod)
-    {
-        throw new NotSupportedException();
-    }
+    public IContainerRegistry RegisterScoped(Type type, Func<object> factoryMethod) => throw new NotSupportedException();
 
     /// <summary>
     /// Registers an object with the default registration func.
@@ -227,22 +206,13 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     }
 
     /// <inheritdoc/>
-    public IContainerRegistry RegisterSingleton(Type type, Func<object> factoryMethod)
-    {
-        throw new NotSupportedException();
-    }
+    public IContainerRegistry RegisterSingleton(Type type, Func<object> factoryMethod) => throw new NotSupportedException();
 
     /// <inheritdoc/>
-    public IContainerRegistry RegisterSingleton(Type type, Func<IContainerProvider, object> factoryMethod)
-    {
-        throw new NotSupportedException();
-    }
+    public IContainerRegistry RegisterSingleton(Type type, Func<IContainerProvider, object> factoryMethod) => throw new NotSupportedException();
 
     /// <inheritdoc/>
-    public object? Resolve(Type type)
-    {
-        return Instance.GetService(type);
-    }
+    public object? Resolve(Type type) => Instance.GetService(type);
 
     /// <inheritdoc/>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Defined by outside interface not in Splat")]
@@ -257,10 +227,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     }
 
     /// <inheritdoc/>
-    public object? Resolve(Type type, string name)
-    {
-        return Instance.GetService(type, name);
-    }
+    public object? Resolve(Type type, string name) => Instance.GetService(type, name);
 
     /// <inheritdoc/>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Defined by outside interface not in Splat")]

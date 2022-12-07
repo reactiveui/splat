@@ -18,10 +18,7 @@ internal sealed class BitmapSourceBitmap : IBitmap
     /// Initializes a new instance of the <see cref="BitmapSourceBitmap"/> class.
     /// </summary>
     /// <param name="bitmap">The platform native bitmap we are wrapping.</param>
-    public BitmapSourceBitmap(BitmapSource bitmap)
-    {
-        Inner = bitmap;
-    }
+    public BitmapSourceBitmap(BitmapSource bitmap) => Inner = bitmap;
 
     /// <inheritdoc />
     public float Width => (float)(Inner?.Width ?? 0f);
@@ -54,8 +51,5 @@ internal sealed class BitmapSourceBitmap : IBitmap
     }
 
     /// <inheritdoc />
-    public void Dispose()
-    {
-        Inner = null;
-    }
+    public void Dispose() => Inner = null;
 }

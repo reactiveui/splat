@@ -24,7 +24,7 @@ public static class PointMathExtensions
         // NB: I have no idea but Archimedes does this, soooooooo....
         return new PointF((float)Math.Floor((double)value.X), (float)Math.Floor((double)value.Y));
 #else
-        return new PointF((float)Math.Floor((double)value.X), (float)Math.Ceiling((double)value.Y));
+        return new((float)Math.Floor((double)value.X), (float)Math.Ceiling((double)value.Y));
 #endif
     }
 
@@ -35,10 +35,7 @@ public static class PointMathExtensions
     /// <param name="other">The point to compare against.</param>
     /// <param name="epsilon">The tolerated epsilon value.</param>
     /// <returns>If the value is equal based on the epsilon.</returns>
-    public static bool WithinEpsilonOf(this PointF value, PointF other, float epsilon)
-    {
-        return value.DistanceTo(other) < epsilon;
-    }
+    public static bool WithinEpsilonOf(this PointF value, PointF other, float epsilon) => value.DistanceTo(other) < epsilon;
 
     /// <summary>
     /// Calculates the Dot product of two points.
@@ -46,10 +43,7 @@ public static class PointMathExtensions
     /// <param name="value">The point value to use for the calculation.</param>
     /// <param name="other">The point to perform the dot product against.</param>
     /// <returns>The calculated dot product.</returns>
-    public static float DotProduct(this PointF value, PointF other)
-    {
-        return (value.X * other.X) + (value.Y * other.Y);
-    }
+    public static float DotProduct(this PointF value, PointF other) => (value.X * other.X) + (value.Y * other.Y);
 
     /// <summary>
     /// Scales a PointF by a scalar factor.
@@ -57,20 +51,14 @@ public static class PointMathExtensions
     /// <param name="value">The point value to use for the calculation.</param>
     /// <param name="factor">The amount to scale by.</param>
     /// <returns>The scaled point.</returns>
-    public static PointF ScaledBy(this PointF value, float factor)
-    {
-        return new(value.X * factor, value.Y * factor);
-    }
+    public static PointF ScaledBy(this PointF value, float factor) => new(value.X * factor, value.Y * factor);
 
     /// <summary>
     /// Calculates the magnitude of a point from (0,0).
     /// </summary>
     /// <param name="value">The point value to use for the calculation.</param>
     /// <returns>The length of the point.</returns>
-    public static float Length(this PointF value)
-    {
-        return PointF.Empty.DistanceTo(value);
-    }
+    public static float Length(this PointF value) => PointF.Empty.DistanceTo(value);
 
     /// <summary>
     /// Normalize the specified PointF (i.e. makes its magnitude = 1.0f).
@@ -85,7 +73,7 @@ public static class PointMathExtensions
             return value;
         }
 
-        return new PointF(value.X / length, value.Y / length);
+        return new(value.X / length, value.Y / length);
     }
 
     /// <summary>
@@ -93,10 +81,7 @@ public static class PointMathExtensions
     /// </summary>
     /// <param name="value">The point value to use for the calculation.</param>
     /// <returns>The angle that has been generated.</returns>
-    public static float AngleInDegrees(this PointF value)
-    {
-        return (float)(Math.Atan2(value.Y, value.X) * 180.0f / Math.PI);
-    }
+    public static float AngleInDegrees(this PointF value) => (float)(Math.Atan2(value.Y, value.X) * 180.0f / Math.PI);
 
     /// <summary>
     /// Projects a PointF along a specified direction.

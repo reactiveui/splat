@@ -29,7 +29,7 @@ public static class ApplicationInsightsFeatureUsageTrackingSessionTests
             };
             var telemetryClient = new TelemetryClient(telemetryConfiguration);
 
-            return new ApplicationInsightsFeatureUsageTrackingSession(featureName, telemetryClient);
+            return new(featureName, telemetryClient);
         }
     }
 
@@ -45,7 +45,7 @@ public static class ApplicationInsightsFeatureUsageTrackingSessionTests
             };
             var telemetryClient = new TelemetryClient(telemetryConfiguration);
 
-            return new ApplicationInsightsFeatureUsageTrackingSession(featureName, telemetryClient);
+            return new(featureName, telemetryClient);
         }
     }
 }

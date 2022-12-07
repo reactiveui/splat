@@ -25,9 +25,8 @@ public static class TargetFrameworkExtensions
         return GetTargetFrameworkName(targetFrameworkAttribute?.FrameworkName);
     }
 
-    internal static string? GetTargetFrameworkName(string? frameworkName)
-    {
-        return frameworkName switch
+    internal static string? GetTargetFrameworkName(string? frameworkName) =>
+        frameworkName switch
         {
             ".NETCoreApp,Version=v7.0" => "net7.0",
             ".NETCoreApp,Version=v6.0" => "net6.0",
@@ -65,5 +64,4 @@ public static class TargetFrameworkExtensions
             ".NETFramework,Version=v1.1" => "net11",
             _ => null,
         };
-    }
 }
