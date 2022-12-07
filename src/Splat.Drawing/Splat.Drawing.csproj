@@ -1,8 +1,8 @@
 <Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFrameworks>MonoAndroid11.0;MonoAndroid12.1;Xamarin.iOS10;Xamarin.Mac20;Xamarin.TVOS10;Xamarin.WatchOS10;tizen40;netstandard2.0;net6.0;net6.0-android;net6.0-ios;net6.0-tvos;net6.0-macos;net6.0-maccatalyst</TargetFrameworks>
-    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net462;net472;uap10.0.16299;net6.0-windows</TargetFrameworks>
+    <TargetFrameworks>MonoAndroid12.0;MonoAndroid12.1;MonoAndroid13.0;Xamarin.iOS10;Xamarin.Mac20;Xamarin.TVOS10;Xamarin.WatchOS10;tizen40;netstandard2.0;net6.0;net6.0-android;net6.0-ios;net6.0-tvos;net6.0-macos;net6.0-maccatalyst;net7.0;net7.0-android;net7.0-ios;net7.0-tvos;net7.0-macos;net7.0-maccatalyst</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net462;net472;net6.0-windows;net7.0-windows</TargetFrameworks>
     <RootNamespace>Splat</RootNamespace>
     <Authors>.NET Foundation and Contributors</Authors>
     <Description>A library to make things cross-platform that should be</Description>
@@ -12,7 +12,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" ($(TargetFramework.StartsWith('netcoreapp3')) or $(TargetFramework.StartsWith('net6.0-windows')) or $(TargetFramework.StartsWith('net4'))) and '$(OS)' == 'Windows_NT' ">
+  <PropertyGroup Condition=" ($(TargetFramework.StartsWith('net6.0-windows')) or $(TargetFramework.StartsWith('net7.0-windows')) or $(TargetFramework.StartsWith('net4'))) and '$(OS)' == 'Windows_NT' ">
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
@@ -66,22 +66,10 @@
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('netcoreapp3')) ">
-    <Compile Include="Platforms\netcoreapp3\**\*.cs" />
-    <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
-    <Compile Include="Platforms\ReflectionStubs.cs" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('net6.0-windows')) ">
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('net6.0-windows')) or $(TargetFramework.StartsWith('net7.0-windows')) ">
     <Compile Include="Platforms\net6\**\*.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
     <Compile Include="Platforms\ReflectionStubs.cs" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('uap')) ">
-    <Compile Include="Platforms\WinRT\**\*.cs" />
-    <Compile Include="Platforms\ReflectionStubs.cs" />
-    <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS')) or $(TargetFramework.StartsWith('Xamarin.TVOS')) or $(TargetFramework.StartsWith('Xamarin.WatchOS')) ">
@@ -90,7 +78,7 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
 
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('net6.0-ios')) or $(TargetFramework.StartsWith('net6.0-tvos')) or $(TargetFramework.StartsWith('net6.0-maccatalyst'))">
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('net6.0-ios')) or $(TargetFramework.StartsWith('net6.0-tvos')) or $(TargetFramework.StartsWith('net6.0-maccatalyst')) or $(TargetFramework.StartsWith('net7.0-ios')) or $(TargetFramework.StartsWith('net7.0-tvos')) or $(TargetFramework.StartsWith('net7.0-maccatalyst'))">
     <Compile Include="Platforms\Cocoa\**\*.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
   </ItemGroup>
@@ -101,7 +89,7 @@
     <Reference Include="netstandard" />
   </ItemGroup>
 
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('net6.0-macos')) ">
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('net6.0-macos')) or $(TargetFramework.StartsWith('net7.0-macos')) ">
     <Compile Include="Platforms\Cocoa\**\*.cs" />
   </ItemGroup>
 
@@ -112,7 +100,7 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
 
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('net6.0-android')) ">
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('net6.0-android')) or $(TargetFramework.StartsWith('net7.0-android')) ">
     <Compile Include="Platforms\Android\**\*.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
     <Compile Include="Resources\**\*.cs" />

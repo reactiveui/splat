@@ -5,7 +5,7 @@
 
 namespace Splat;
 
-#if PORTABLE || WINDOWS_PHONE || NETFX_CORE
+#if PORTABLE || WINDOWS_PHONE
 /// <summary>
 /// Specifies whether a property should be localized.
 /// </summary>
