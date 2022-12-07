@@ -8,13 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-#if NETFX_CORE
-using System.Threading;
-using System.Threading.Tasks;
-
-using Windows.ApplicationModel;
-#endif
-
 namespace Splat;
 
 /// <summary>
@@ -38,9 +31,6 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
     /// <inheritdoc />
     public bool? InDesignMode()
     {
-#if NETFX_CORE
-        return DesignMode.DesignModeEnabled;
-#else
         if (_cachedInDesignModeResult.HasValue)
         {
             return _cachedInDesignModeResult.Value;
@@ -93,6 +83,5 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
         _cachedInDesignModeResult = false;
 
         return _cachedInDesignModeResult;
-#endif
     }
 }
