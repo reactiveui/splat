@@ -119,7 +119,6 @@ public sealed class ExceptionlessSplatLogger : ILogger
     private void CreateLog(string type, string message, global::Exceptionless.Logging.LogLevel level)
     {
         _exceptionlessClient.SubmitLog(type, message, level);
-        _exceptionlessClient.ProcessQueue();
     }
 
     private void CreateLog(Exception exception, string message, global::Exceptionless.Logging.LogLevel level) => CreateLog(exception, _sourceType, message, level);
@@ -132,8 +131,6 @@ public sealed class ExceptionlessSplatLogger : ILogger
             level)
             .SetException(exception)
             .Submit();
-
-        _exceptionlessClient.ProcessQueue();
     }
 
     /// <summary>
