@@ -26,7 +26,7 @@ public static class ApiExtensions
     /// <param name="filePath">The caller file path.</param>
     public static Task CheckApproval(this Assembly assembly, [CallerFilePath] string filePath = "")
     {
-        var generatorOptions = new ApiGeneratorOptions { WhitelistedNamespacePrefixes = new[] { "Splat" } };
+        var generatorOptions = new ApiGeneratorOptions { AllowNamespacePrefixes = new[] { "Splat" } };
         var apiText = assembly.GeneratePublicApi(generatorOptions);
         return Verifier.Verify(apiText, null, filePath)
             .UniqueForRuntimeAndVersion()
