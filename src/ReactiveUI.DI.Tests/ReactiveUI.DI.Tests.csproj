@@ -28,7 +28,7 @@
   </Choose>
 
   <ItemGroup>
-    <PackageReference Include="ReactiveUI" Version="18.4.26" />
+    <PackageReference Include="ReactiveUI" Version="18.4.34" />
   </ItemGroup>
 
   <ItemGroup>
