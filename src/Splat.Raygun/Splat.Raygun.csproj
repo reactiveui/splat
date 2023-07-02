@@ -30,7 +30,7 @@
     </When>
     <When Condition=" $(TargetFramework.StartsWith('net4')) ">
       <ItemGroup>
-        <PackageReference Include="Mindscape.Raygun4Net" Version="5.13.0" />
+        <PackageReference Include="Mindscape.Raygun4Net" Version="6.0.3" />
       </ItemGroup>
     </When>
   </Choose>
