@@ -3,10 +3,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Linq.Expressions;
 using DryIoc;
 
@@ -34,11 +31,6 @@ public class DryIocDependencyResolver : IDependencyResolver
     /// <inheritdoc />
     public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
     {
-        if (serviceType is null)
-        {
-            throw new ArgumentNullException(nameof(serviceType));
-        }
-
         var key = (serviceType, contract ?? string.Empty);
         var registeredinSplat = _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray, serviceKey: key);
         if (registeredinSplat.Any())
@@ -47,42 +39,36 @@ public class DryIocDependencyResolver : IDependencyResolver
         }
 
         var registeredWithContract = _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray, serviceKey: contract);
-        if (registeredWithContract.Any())
-        {
-            return registeredWithContract;
-        }
-
-        return _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray);
+        return registeredWithContract.Any()
+            ? registeredWithContract
+            : _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray);
     }
 
     /// <inheritdoc />
-    public bool HasRegistration(Type? serviceType, string? contract = null)
-    {
-        if (serviceType is null)
+    public bool HasRegistration(Type? serviceType, string? contract = null) =>
+        serviceType switch
         {
-            throw new ArgumentNullException(nameof(serviceType));
-        }
-
-        return _container.GetServiceRegistrations().Any(x =>
-        {
-            if (x.ServiceType != serviceType)
+            null => throw new ArgumentNullException(nameof(serviceType)),
+            _ => _container.GetServiceRegistrations().Any(x =>
             {
-                return false;
-            }
+                if (x.ServiceType != serviceType)
+                {
+                    return false;
+                }
 
-            if (contract is null)
-            {
-                return x.OptionalServiceKey is null;
-            }
+                if (contract is null)
+                {
+                    return x.OptionalServiceKey is null;
+                }
 
-            var key = (serviceType, contract ?? string.Empty);
+                var key = (serviceType, contract ?? string.Empty);
 
-            return key.Equals(x.OptionalServiceKey) ||
-            (contract is null && x.OptionalServiceKey is null) ||
-        (x.OptionalServiceKey is string serviceKeyAsString
-                   && contract?.Equals(serviceKeyAsString, StringComparison.Ordinal) == true);
-        });
-    }
+                return key.Equals(x.OptionalServiceKey) ||
+                (contract is null && x.OptionalServiceKey is null) ||
+                (x.OptionalServiceKey is string serviceKeyAsString
+                 && contract?.Equals(serviceKeyAsString, StringComparison.Ordinal) == true);
+            })
+        };
 
     /// <inheritdoc />
     public virtual void Register(Func<object?> factory, Type? serviceType, string? contract = null)
@@ -92,16 +78,11 @@ public class DryIocDependencyResolver : IDependencyResolver
             throw new ArgumentNullException(nameof(factory));
         }
 
-        if (serviceType is null)
-        {
-            throw new ArgumentNullException(nameof(serviceType));
-        }
-
         if (string.IsNullOrEmpty(contract))
         {
             _container.RegisterDelegate(
                 serviceType,
-                context => CreateThenConvert(serviceType, factory),
+                _ => CreateThenConvert(serviceType!, factory),
                 ifAlreadyRegistered: IfAlreadyRegistered.AppendNewImplementation);
 
             return;
@@ -117,7 +98,7 @@ public class DryIocDependencyResolver : IDependencyResolver
         // Keyed instances can only have a single instance so keep latest
         _container.RegisterDelegate(
             serviceType,
-            context => CreateThenConvert(serviceType, factory),
+            _ => CreateThenConvert(serviceType!, factory),
             ifAlreadyRegistered: IfAlreadyRegistered.Replace,
             serviceKey: key);
     }
@@ -125,11 +106,6 @@ public class DryIocDependencyResolver : IDependencyResolver
     /// <inheritdoc />
     public virtual void UnregisterCurrent(Type? serviceType, string? contract = null)
     {
-        if (serviceType is null)
-        {
-            throw new ArgumentNullException(nameof(serviceType));
-        }
-
         var key = (serviceType, contract ?? string.Empty);
         var hadvalue = _container.GetServiceRegistrations().Any(x =>
         {
@@ -164,11 +140,6 @@ public class DryIocDependencyResolver : IDependencyResolver
     /// <inheritdoc />
     public virtual void UnregisterAll(Type? serviceType, string? contract = null)
     {
-        if (serviceType is null)
-        {
-            throw new ArgumentNullException(nameof(serviceType));
-        }
-
         var key = (serviceType, contract ?? string.Empty);
         foreach (var x in _container.GetServiceRegistrations())
         {

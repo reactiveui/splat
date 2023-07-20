@@ -91,11 +91,8 @@ public partial struct SplatColor : IEquatable<SplatColor>
       return String.Format ("{0:x}", ToArgb ());
 #else
             // name is required for serialization under 1.x, but not under 2.0
-            if (_name is null)
-            {
-                // Can happen with stuff deserialized from MS
-                _name = IsNamedColor ? KnownColors.GetName(_knownColor) : $"{ToArgb():x}";
-            }
+            // Can happen with stuff deserialized from MS
+            _name ??= IsNamedColor ? KnownColors.GetName(_knownColor) : $"{ToArgb():x}";
 
             return _name;
 #endif
@@ -357,15 +354,11 @@ public partial struct SplatColor : IEquatable<SplatColor>
     public KnownColor ToKnownColor() => (KnownColor)_knownColor;
 
     /// <inheritdoc />
-    public override bool Equals(object? obj)
+    public override bool Equals(object? obj) => obj switch
     {
-        if (obj is SplatColor splatColor)
-        {
-            return Equals(splatColor);
-        }
-
-        return false;
-    }
+        SplatColor splatColor => Equals(splatColor),
+        _ => false
+    };
 
     /// <inheritdoc />
     public bool Equals(SplatColor other) =>
@@ -392,12 +385,7 @@ public partial struct SplatColor : IEquatable<SplatColor>
         }
 
         // Use the property here, not the field.
-        if (IsNamedColor)
-        {
-            return "SplatColor [" + Name + "]";
-        }
-
-        return $"SplatColor [A={A}, R={R}, G={G}, B={B}]";
+        return IsNamedColor ? "SplatColor [" + Name + "]" : $"SplatColor [A={A}, R={R}, G={G}, B={B}]";
     }
 
 #if TARGET_JVM

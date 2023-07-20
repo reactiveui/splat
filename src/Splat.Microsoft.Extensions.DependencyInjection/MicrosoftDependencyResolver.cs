@@ -3,13 +3,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Splat.Microsoft.Extensions.DependencyInjection;
@@ -260,12 +256,11 @@ public class MicrosoftDependencyResolver : IDependencyResolver
 
             var dictionary = (ContractDictionary?)_serviceCollection?.FirstOrDefault(sd => sd.ServiceType == GetDictionaryType(serviceType))?.ImplementationInstance;
 
-            if (dictionary is null)
+            return dictionary switch
             {
-                return false;
-            }
-
-            return dictionary.GetFactories(contract).Select(f => f()).Any();
+                null => false,
+                _ => dictionary.GetFactories(contract).Select(f => f()).Any()
+            };
         }
 
         if (contract is null)
