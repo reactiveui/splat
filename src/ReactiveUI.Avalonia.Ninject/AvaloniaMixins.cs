@@ -3,11 +3,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using DryIoc;
 using Ninject;
 using ReactiveUI;
 using Splat;
-using Splat.DryIoc;
 using Splat.Ninject;
 
 namespace Avalonia.ReactiveUI.Splat
@@ -23,7 +21,7 @@ namespace Avalonia.ReactiveUI.Splat
         /// <param name="builder">The builder.</param>
         /// <param name="configure">The configure.</param>
         /// <returns>An App Builder.</returns>
-        public static AppBuilder UseReactiveUIWithDryIoc(this AppBuilder builder, Action<StandardKernel> configure) =>
+        public static AppBuilder UseReactiveUIWithNinject(this AppBuilder builder, Action<StandardKernel> configure) =>
             builder switch
             {
                 null => throw new ArgumentNullException(nameof(builder)),
