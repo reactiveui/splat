@@ -78,6 +78,13 @@ public class DryIocDependencyResolver : IDependencyResolver
             throw new ArgumentNullException(nameof(factory));
         }
 
+#pragma warning disable RCS1256 // Invalid argument null check.
+        if (serviceType is null)
+        {
+            throw new ArgumentNullException(nameof(serviceType));
+        }
+#pragma warning restore RCS1256 // Invalid argument null check.
+
         if (string.IsNullOrEmpty(contract))
         {
             _container.RegisterDelegate(
