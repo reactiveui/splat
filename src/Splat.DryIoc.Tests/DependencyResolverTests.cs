@@ -28,7 +28,7 @@ public class DependencyResolverTests
         builder.UseDryIocDependencyResolver();
 
         var foo = 5;
-        Assert.Throws<ArgumentNullException>(() => Locator.CurrentMutable.Register(() => foo, null));
+        Assert.Throws<NullReferenceException>(() => Locator.CurrentMutable.Register(() => foo, null));
 
         // Tests skipped as functionality removed.
 #if SKIP_TEST
