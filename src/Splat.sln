@@ -74,13 +74,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.DI.Tests", "Reac
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Avalonia", "Avalonia", "{45E17593-668F-4369-B281-801119B81725}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReactiveUI.Avalonia.Microsoft.Extensions.DependencyInjection", "ReactiveUI.Avalonia.Microsoft.Extensions.DependencyInjection\ReactiveUI.Avalonia.Microsoft.Extensions.DependencyInjection.csproj", "{2BB2C493-7E83-451E-BD75-CEA0FCADC39D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.Avalonia.Microsoft.Extensions.DependencyInjection", "ReactiveUI.Avalonia.Microsoft.Extensions.DependencyInjection\ReactiveUI.Avalonia.Microsoft.Extensions.DependencyInjection.csproj", "{2BB2C493-7E83-451E-BD75-CEA0FCADC39D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReactiveUI.Avalonia", "ReactiveUI.Avalonia\ReactiveUI.Avalonia.csproj", "{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.Avalonia", "ReactiveUI.Avalonia\ReactiveUI.Avalonia.csproj", "{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReactiveUI.Avalonia.DryIoc", "ReactiveUI.Avalonia.DryIoc\ReactiveUI.Avalonia.DryIoc.csproj", "{E721320D-D994-4591-B5C4-183B08A1E9C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.Avalonia.DryIoc", "ReactiveUI.Avalonia.DryIoc\ReactiveUI.Avalonia.DryIoc.csproj", "{E721320D-D994-4591-B5C4-183B08A1E9C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReactiveUI.Avalonia.Autofac", "ReactiveUI.Avalonia.Autofac\ReactiveUI.Avalonia.Autofac.csproj", "{A1341AAE-334B-4F80-90BA-919B04D1397A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.Avalonia.Autofac", "ReactiveUI.Avalonia.Autofac\ReactiveUI.Avalonia.Autofac.csproj", "{A1341AAE-334B-4F80-90BA-919B04D1397A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReactiveUI.Avalonia.Ninject", "ReactiveUI.Avalonia.Ninject\ReactiveUI.Avalonia.Ninject.csproj", "{28A6724D-B858-4FBC-936C-8B1EE218CF29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -716,6 +718,26 @@ Global
 		{A1341AAE-334B-4F80-90BA-919B04D1397A}.Release|x64.Build.0 = Release|Any CPU
 		{A1341AAE-334B-4F80-90BA-919B04D1397A}.Release|x86.ActiveCfg = Release|Any CPU
 		{A1341AAE-334B-4F80-90BA-919B04D1397A}.Release|x86.Build.0 = Release|Any CPU
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29}.Debug|ARM.Build.0 = Debug|Any CPU
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29}.Debug|x64.Build.0 = Debug|Any CPU
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29}.Debug|x86.Build.0 = Debug|Any CPU
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29}.Release|ARM.ActiveCfg = Release|Any CPU
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29}.Release|ARM.Build.0 = Release|Any CPU
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29}.Release|ARM64.Build.0 = Release|Any CPU
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29}.Release|x64.ActiveCfg = Release|Any CPU
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29}.Release|x64.Build.0 = Release|Any CPU
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29}.Release|x86.ActiveCfg = Release|Any CPU
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -753,6 +775,7 @@ Global
 		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC} = {45E17593-668F-4369-B281-801119B81725}
 		{E721320D-D994-4591-B5C4-183B08A1E9C4} = {45E17593-668F-4369-B281-801119B81725}
 		{A1341AAE-334B-4F80-90BA-919B04D1397A} = {45E17593-668F-4369-B281-801119B81725}
+		{28A6724D-B858-4FBC-936C-8B1EE218CF29} = {45E17593-668F-4369-B281-801119B81725}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E833ED14-B971-4E09-B27E-76E99BC0FC10}

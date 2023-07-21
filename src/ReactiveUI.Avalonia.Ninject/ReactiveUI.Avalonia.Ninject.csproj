@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net6.0;net7.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\ReactiveUI.Avalonia\*.cs" LinkBase="Avalonia" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Splat.Ninject\NinjectDependencyResolver.cs" Link="NinjectDependencyResolver.cs" />
+    <Compile Include="..\Splat.Ninject\SplatNinjectExtensions.cs" Link="SplatNinjectExtensions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.0.0" />
+    <PackageReference Include="ReactiveUI" Version="19.4.1" />
+    <PackageReference Include="Ninject" Version="3.3.6" />
+    <ProjectReference Include="..\Splat\Splat.csproj" />
+  </ItemGroup>
+</Project>
