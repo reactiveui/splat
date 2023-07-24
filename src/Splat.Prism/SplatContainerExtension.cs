@@ -3,11 +3,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Concurrent;
-using System.Linq;
-using System.Threading;
-
 using Prism.Ioc;
 
 namespace Splat.Prism;
@@ -216,35 +212,24 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
 
     /// <inheritdoc/>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Defined by outside interface not in Splat")]
-    public object? Resolve(Type type, params (Type Type, object Instance)[] parameters)
-    {
-        if (_types.TryGetValue((type, null), out var resolvedType))
-        {
-            return Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance)) ?? throw new InvalidOperationException("Could not create type");
-        }
-
-        return default;
-    }
+    public object? Resolve(Type type, params (Type Type, object Instance)[] parameters) =>
+        _types.TryGetValue((type, null), out var resolvedType)
+            ? Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance)) ?? throw new InvalidOperationException("Could not create type")
+            : default;
 
     /// <inheritdoc/>
     public object? Resolve(Type type, string name) => Instance.GetService(type, name);
 
     /// <inheritdoc/>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Defined by outside interface not in Splat")]
-    public object? Resolve(Type type, string name, params (Type Type, object Instance)[] parameters)
-    {
-        if (!_types.TryGetValue((type, name), out var resolvedType))
-        {
-            if (resolvedType is null)
+    public object? Resolve(Type type, string name, params (Type Type, object Instance)[] parameters) =>
+        !_types.TryGetValue((type, name), out var resolvedType)
+            ? resolvedType switch
             {
-                return default;
+                null => default,
+                _ => Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance))
             }
-
-            return Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance))!;
-        }
-
-        return default;
-    }
+            : default;
 
     /// <summary>
     /// Disposes data associated with the extension.

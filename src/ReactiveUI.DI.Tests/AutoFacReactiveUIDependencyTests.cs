@@ -72,7 +72,7 @@ public class AutoFacReactiveUIDependencyTests
         Locator.CurrentMutable.RegisterConstant(new ActivatingViewFetcher(), typeof(IActivationForViewFetcher));
         autofacResolver.InitializeSplat();
         autofacResolver.InitializeReactiveUI();
-        var container = builder.Build();
+        _ = builder.Build();
 
         var vm = new ActivatingViewModel();
         var fixture = new ActivatingView { ViewModel = vm };
