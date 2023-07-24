@@ -20,10 +20,10 @@ namespace ReactiveUI.Avalonia.Splat
         /// Uses the splat with microsoft dependency resolver.
         /// </summary>
         /// <param name="builder">The builder.</param>
-        /// <param name="configure">The configure.</param>
-        /// <param name="getServiceProvider">The get service provider.</param>
+        /// <param name="containerConfig">The configure.</param>
+        /// <param name="withResolver">The get service provider.</param>
         /// <returns>An App Builder.</returns>
-        public static AppBuilder UseReactiveUIWithMicrosoftDependencyResolver(this AppBuilder builder, Action<IServiceCollection> configure, Action<IServiceProvider?>? getServiceProvider = null) =>
+        public static AppBuilder UseReactiveUIWithMicrosoftDependencyResolver(this AppBuilder builder, Action<IServiceCollection> containerConfig, Action<IServiceProvider?>? withResolver = null) =>
             builder switch
             {
                 null => throw new ArgumentNullException(nameof(builder)),
@@ -34,21 +34,30 @@ namespace ReactiveUI.Avalonia.Splat
                         return;
                     }
 
-                    IServiceCollection services = new ServiceCollection();
-                    Locator.CurrentMutable.RegisterConstant(services, typeof(IServiceCollection));
-                    services.UseMicrosoftDependencyResolver();
-
-                    RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
-
-                    configure(services);
-                    if (getServiceProvider is null)
+                    if (containerConfig is null)
                     {
-                        return;
+                        throw new ArgumentNullException(nameof(containerConfig));
                     }
 
-                    var serviceProvider = services.BuildServiceProvider();
-                    serviceProvider.UseMicrosoftDependencyResolver();
-                    getServiceProvider(serviceProvider);
+                    IServiceCollection serviceCollection = new ServiceCollection();
+                    Locator.CurrentMutable.RegisterConstant(serviceCollection, typeof(IServiceCollection));
+                    Locator.SetLocator(new MicrosoftDependencyResolver(serviceCollection));
+                    RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
+                    containerConfig(serviceCollection);
+                    var serviceProvider = serviceCollection.BuildServiceProvider();
+                    if (Locator.Current is MicrosoftDependencyResolver resolver)
+                    {
+                        resolver.UpdateContainer(serviceProvider);
+                    }
+                    else
+                    {
+                        Locator.SetLocator(new MicrosoftDependencyResolver(serviceProvider));
+                    }
+
+                    if (withResolver is not null)
+                    {
+                        withResolver(serviceProvider);
+                    }
                 })
             };
     }

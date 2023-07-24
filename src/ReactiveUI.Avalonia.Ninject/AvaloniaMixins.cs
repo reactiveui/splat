@@ -19,9 +19,9 @@ namespace Avalonia.ReactiveUI.Splat
         /// Uses the splat with dry ioc.
         /// </summary>
         /// <param name="builder">The builder.</param>
-        /// <param name="configure">The configure.</param>
+        /// <param name="containerConfig">The configure.</param>
         /// <returns>An App Builder.</returns>
-        public static AppBuilder UseReactiveUIWithNinject(this AppBuilder builder, Action<StandardKernel> configure) =>
+        public static AppBuilder UseReactiveUIWithNinject(this AppBuilder builder, Action<StandardKernel> containerConfig) =>
             builder switch
             {
                 null => throw new ArgumentNullException(nameof(builder)),
@@ -32,13 +32,16 @@ namespace Avalonia.ReactiveUI.Splat
                         return;
                     }
 
+                    if (containerConfig is null)
+                    {
+                        throw new ArgumentNullException(nameof(containerConfig));
+                    }
+
                     var container = new StandardKernel();
                     Locator.CurrentMutable.RegisterConstant(container, typeof(StandardKernel));
-                    container.UseNinjectDependencyResolver();
-
+                    Locator.SetLocator(new NinjectDependencyResolver(container));
                     RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
-
-                    configure(container);
+                    containerConfig(container);
                 })
             };
     }

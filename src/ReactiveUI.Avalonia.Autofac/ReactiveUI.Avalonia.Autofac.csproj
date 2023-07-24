@@ -8,7 +8,6 @@
   <ItemGroup>
     <Compile Include="..\ReactiveUI.Avalonia\*.cs" LinkBase="Avalonia" />
     <Compile Include="..\Splat.Autofac\AutofacDependencyResolver.cs" Link="AutofacDependencyResolver.cs" />
-    <Compile Include="..\Splat.Autofac\SplatAutofacExtensions.cs" Link="SplatAutofacExtensions.cs" />
   </ItemGroup>
 
   <ItemGroup>

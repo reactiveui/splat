@@ -9,7 +9,6 @@
   <ItemGroup>
     <Compile Include="..\ReactiveUI.Avalonia\*.cs" LinkBase="Avalonia" />
     <Compile Include="..\Splat.DryIoc\DryIocDependencyResolver.cs" Link="DryIocDependencyResolver.cs" />
-    <Compile Include="..\Splat.DryIoc\SplatDryIocExtensions.cs" Link="SplatDryIocExtensions.cs" />
   </ItemGroup>
   
   <ItemGroup>

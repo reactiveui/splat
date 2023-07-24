@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <Compile Include="..\Splat.Ninject\NinjectDependencyResolver.cs" Link="NinjectDependencyResolver.cs" />
-    <Compile Include="..\Splat.Ninject\SplatNinjectExtensions.cs" Link="SplatNinjectExtensions.cs" />
   </ItemGroup>
 
   <ItemGroup>

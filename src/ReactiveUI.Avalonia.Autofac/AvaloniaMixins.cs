@@ -19,13 +19,13 @@ namespace Avalonia.ReactiveUI.Splat
         /// Uses the splat with dry ioc.
         /// </summary>
         /// <param name="builder">The builder.</param>
-        /// <param name="configure">The configure.</param>
-        /// <param name="getResolver">The get resolver.</param>
+        /// <param name="containerConfig">The configure.</param>
+        /// <param name="withResolver">The get resolver.</param>
         /// <returns>
         /// An App Builder.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">builder.</exception>
-        public static AppBuilder UseReactiveUIWithAutofac(this AppBuilder builder, Action<ContainerBuilder> configure, Action<AutofacDependencyResolver>? getResolver = null) =>
+        public static AppBuilder UseReactiveUIWithAutofac(this AppBuilder builder, Action<ContainerBuilder> containerConfig, Action<AutofacDependencyResolver>? withResolver = null) =>
             builder switch
             {
                 null => throw new ArgumentNullException(nameof(builder)),
@@ -36,18 +36,24 @@ namespace Avalonia.ReactiveUI.Splat
                         return;
                     }
 
+                    if (containerConfig is null)
+                    {
+                        throw new ArgumentNullException(nameof(containerConfig));
+                    }
+
                     var builder = new ContainerBuilder();
-                    var autofacResolver = builder.UseAutofacDependencyResolver();
+                    var autofacResolver = new AutofacDependencyResolver(builder);
+                    Locator.SetLocator(autofacResolver);
                     builder.RegisterInstance(autofacResolver);
                     autofacResolver.InitializeReactiveUI();
                     RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
-                    configure(builder);
+                    containerConfig(builder);
                     var container = builder.Build();
                     autofacResolver.SetLifetimeScope(container);
 
-                    if (getResolver is not null)
+                    if (withResolver is not null)
                     {
-                        getResolver(autofacResolver);
+                        withResolver(autofacResolver);
                     }
                 })
             };

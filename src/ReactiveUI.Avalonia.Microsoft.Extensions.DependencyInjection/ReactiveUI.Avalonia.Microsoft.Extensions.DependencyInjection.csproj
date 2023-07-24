@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <Compile Include="..\Splat.Microsoft.Extensions.DependencyInjection\MicrosoftDependencyResolver.cs" Link="MicrosoftDependencyResolver.cs" />
-    <Compile Include="..\Splat.Microsoft.Extensions.DependencyInjection\SplatMicrosoftExtensions.cs" Link="SplatMicrosoftExtensions.cs" />
     <Compile Include="..\ReactiveUI.Avalonia\*.cs" LinkBase="Avalonia" />
   </ItemGroup>
 
