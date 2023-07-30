@@ -57,7 +57,7 @@ namespace Avalonia.ReactiveUI
                 builder switch
                 {
                     null => throw new ArgumentNullException(nameof(builder)),
-                    _ => builder.UseReactiveUI().AfterPlatformServicesSetup(_ =>
+                    _ => builder.AfterPlatformServicesSetup(_ =>
                     {
                         if (Locator.CurrentMutable is null)
                         {
@@ -78,6 +78,11 @@ namespace Avalonia.ReactiveUI
                         {
                             throw new ArgumentNullException(nameof(dependencyResolverFactory));
                         }
+
+                        PlatformRegistrationManager.SetRegistrationNamespaces(RegistrationNamespace.Avalonia);
+                        RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
+                        Locator.CurrentMutable.RegisterConstant(new AvaloniaActivationForViewFetcher(), typeof(IActivationForViewFetcher));
+                        Locator.CurrentMutable.RegisterConstant(new AutoDataTemplateBindingHook(), typeof(IPropertyBindingHook));
 
                         var container = containerFactory();
                         Locator.CurrentMutable.RegisterConstant(container, typeof(Container));
