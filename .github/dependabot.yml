@@ -10,4 +10,25 @@ updates:
   directory: "/"
   schedule:
     # Check for updates to GitHub Actions every weekday
-    interval: "monthly"  
+    interval: "monthly"
+  groups:
+    ms-appcenter:
+      patterns:
+        - "microsoft.appcenter.*"
+    avalonia:
+      patterns:
+        - "avalonia"
+        - "avalonia.*"
+    reactive-extensions:
+      patterns:
+        - "system.reactive.*"
+        - "microsoft.reactive.*"
+    xunit:
+      patterns:
+        - "xunit"
+        - "xunit.*"
+    dotnet:
+      # you may need to add groupings above this if non core .NET projects are getting grouped into this.
+      patterns:
+        - "system.*"
+        - "microsoft.*"
