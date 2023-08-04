@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net6.0;net7.0</TargetFrameworks>
@@ -12,7 +12,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.0.0" />
+    <PackageReference Include="Avalonia" Version="11.0.2" />
     <PackageReference Include="ReactiveUI" Version="19.4.1" />
     <PackageReference Include="DryIoc.Dll" Version="5.4.1" />
     <ProjectReference Include="..\Splat\Splat.csproj" />
