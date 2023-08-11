@@ -4,13 +4,6 @@ updates:
   directory: "/src"
   schedule:
     interval: monthly
-    time: "00:00"
-  open-pull-requests-limit: 10
-- package-ecosystem: "github-actions"
-  directory: "/"
-  schedule:
-    # Check for updates to GitHub Actions every weekday
-    interval: "monthly"
   groups:
     ms-appcenter:
       patterns:
@@ -32,3 +25,7 @@ updates:
       patterns:
         - "system.*"
         - "microsoft.*"
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    interval: monthly
