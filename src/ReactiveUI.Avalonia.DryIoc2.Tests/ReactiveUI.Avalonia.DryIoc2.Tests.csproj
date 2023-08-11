@@ -49,10 +49,10 @@
     <!--
     <ProjectReference Include="..\ReactiveUI.Avalonia.Ninject\ReactiveUI.Avalonia.Ninject.csproj" />
     -->
-    <PackageReference Include="Avalonia.Desktop" Version="11.0.2" />
-    <PackageReference Include="Avalonia.Headless.XUnit" Version="11.0.2" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.2" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.2" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.0.3" />
+    <PackageReference Include="Avalonia.Headless.XUnit" Version="11.0.3" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.3" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.3" />
   </ItemGroup>
 
 </Project>
