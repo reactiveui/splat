@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0</TargetFrameworks>
+    <TargetFrameworks>net6.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
     <NoWarn>$(NoWarn);1591;CA1707;SA1600;SA1601;SA1633;CA2000</NoWarn>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <DefineConstants>$(DefineConstants);DRYIOC2</DefineConstants>
+    <DefineConstants>$(DefineConstants);MICROSOFT1</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,11 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\ReactiveUI.Avalonia.DryIoc1.Tests\AvaloniaUIThreadTestsDryIoc.cs" Link="AvaloniaUIThreadTestsDryIoc.cs" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\ReactiveUI.Avalonia.DryIoc\ReactiveUI.Avalonia.DryIoc.csproj" />
+    <ProjectReference Include="..\ReactiveUI.Avalonia.Microsoft.Extensions.DependencyInjection\Splat.Avalonia.Microsoft.Extensions.DependencyInjection.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,6 +49,11 @@
     <PackageReference Include="Avalonia.Headless.XUnit" Version="11.0.4" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.4" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Mocks\ViewModels\" />
+    <Folder Include="Mocks\Views\" />
   </ItemGroup>
 
 </Project>

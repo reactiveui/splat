@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net6.0;net7.0</TargetFrameworks>
@@ -9,12 +9,10 @@
 
   <ItemGroup>
     <Compile Include="..\Splat.Microsoft.Extensions.DependencyInjection\MicrosoftDependencyResolver.cs" Link="MicrosoftDependencyResolver.cs" />
-    <Compile Include="..\ReactiveUI.Avalonia\*.cs" LinkBase="Avalonia" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.0.4" />
-    <PackageReference Include="ReactiveUI" Version="19.4.1" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>

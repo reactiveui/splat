@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net6.0;net7.0</TargetFrameworks>
@@ -6,13 +6,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\ReactiveUI.Avalonia\*.cs" LinkBase="Avalonia" />
     <Compile Include="..\Splat.Autofac\AutofacDependencyResolver.cs" Link="AutofacDependencyResolver.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.0.4" />
-    <PackageReference Include="ReactiveUI" Version="19.4.1" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.4" />
     <PackageReference Include="Autofac" Version="7.*" />
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>

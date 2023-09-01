@@ -38,7 +38,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\ReactiveUI.Avalonia.DryIoc\ReactiveUI.Avalonia.DryIoc.csproj" />
+    <ProjectReference Include="..\ReactiveUI.Avalonia.DryIoc\Splat.Avalonia.DryIoc.csproj" />
   </ItemGroup>
 
   <ItemGroup>

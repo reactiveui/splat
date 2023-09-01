@@ -60,5 +60,56 @@ namespace ReactiveUI.Avalonia.Splat
                     }
                 })
             };
+
+        /// <summary>
+        /// Uses the reactive UI with di container.
+        /// </summary>
+        /// <typeparam name="TContainer">The type of the container.</typeparam>
+        /// <param name="builder">The builder.</param>
+        /// <param name="containerFactory">The container factory.</param>
+        /// <param name="containerConfig">The container configuration.</param>
+        /// <param name="dependencyResolverFactory">The dependency resolver factory.</param>
+        /// <returns>
+        /// An AppBuilder.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">builder.</exception>
+        public static AppBuilder UseReactiveUIWithDIContainer<TContainer>(
+            this AppBuilder builder,
+            Func<TContainer> containerFactory,
+            Action<TContainer> containerConfig,
+            Func<TContainer, IDependencyResolver> dependencyResolverFactory) =>
+                builder switch
+                {
+                    null => throw new ArgumentNullException(nameof(builder)),
+                    _ => builder.UseReactiveUI().AfterPlatformServicesSetup(_ =>
+                    {
+                        if (Locator.CurrentMutable is null)
+                        {
+                            return;
+                        }
+
+                        if (containerFactory is null)
+                        {
+                            throw new ArgumentNullException(nameof(containerFactory));
+                        }
+
+                        if (containerConfig is null)
+                        {
+                            throw new ArgumentNullException(nameof(containerConfig));
+                        }
+
+                        if (dependencyResolverFactory is null)
+                        {
+                            throw new ArgumentNullException(nameof(dependencyResolverFactory));
+                        }
+
+                        var container = containerFactory();
+                        Locator.CurrentMutable.RegisterConstant(container, typeof(TContainer));
+                        var dependencyResolver = dependencyResolverFactory(container);
+                        Locator.SetLocator(dependencyResolver);
+                        RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
+                        containerConfig(container);
+                    })
+                };
     }
 }

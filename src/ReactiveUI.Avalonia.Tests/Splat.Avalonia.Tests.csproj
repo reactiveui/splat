@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ReactiveUI.Avalonia.Microsoft.Extensions.DependencyInjection\ReactiveUI.Avalonia.Microsoft.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\ReactiveUI.Avalonia.Microsoft.Extensions.DependencyInjection\Splat.Avalonia.Microsoft.Extensions.DependencyInjection.csproj" />
   </ItemGroup>
 
   <ItemGroup>

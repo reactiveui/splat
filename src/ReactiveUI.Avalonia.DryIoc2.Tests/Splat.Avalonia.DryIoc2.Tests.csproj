@@ -8,7 +8,7 @@
     <NoWarn>$(NoWarn);1591;CA1707;SA1600;SA1601;SA1633;CA2000</NoWarn>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <DefineConstants>$(DefineConstants);MICROSOFT2</DefineConstants>
+    <DefineConstants>$(DefineConstants);DRYIOC2</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,16 +37,18 @@
     <Compile Include="..\ReactiveUI.Avalonia.Tests\Mocks\Views\FooView.axaml.cs" Link="Mocks\Views\FooView.axaml.cs" />
   </ItemGroup>
 
-
   <ItemGroup>
-    <Compile Include="..\ReactiveUI.Avalonia.Microsoft1.Tests\AvaloniaUIThreadTestsMicrosoft.cs" Link="AvaloniaUIThreadTestsMicrosoft.cs" />
+    <Compile Include="..\ReactiveUI.Avalonia.DryIoc1.Tests\AvaloniaUIThreadTestsDryIoc.cs" Link="AvaloniaUIThreadTestsDryIoc.cs" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\ReactiveUI.Avalonia.DryIoc\Splat.Avalonia.DryIoc.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ReactiveUI.Avalonia.Microsoft.Extensions.DependencyInjection\ReactiveUI.Avalonia.Microsoft.Extensions.DependencyInjection.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <!--
+    <ProjectReference Include="..\ReactiveUI.Avalonia.Ninject\ReactiveUI.Avalonia.Ninject.csproj" />
+    -->
     <PackageReference Include="Avalonia.Desktop" Version="11.0.4" />
     <PackageReference Include="Avalonia.Headless.XUnit" Version="11.0.4" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.4" />
