@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.0.3" />
+    <PackageReference Include="Avalonia" Version="11.0.4" />
     <PackageReference Include="ReactiveUI" Version="19.4.1" />
   </ItemGroup>
 </Project>
