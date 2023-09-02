@@ -74,23 +74,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.DI.Tests", "Reac
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Avalonia", "Avalonia", "{45E17593-668F-4369-B281-801119B81725}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.Microsoft.Extensions.DependencyInjection", "ReactiveUI.Avalonia.Microsoft.Extensions.DependencyInjection\Splat.Avalonia.Microsoft.Extensions.DependencyInjection.csproj", "{2BB2C493-7E83-451E-BD75-CEA0FCADC39D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.Microsoft.Extensions.DependencyInjection", "Splat.Avalonia.Microsoft.Extensions.DependencyInjection\Splat.Avalonia.Microsoft.Extensions.DependencyInjection.csproj", "{2BB2C493-7E83-451E-BD75-CEA0FCADC39D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.DryIoc", "ReactiveUI.Avalonia.DryIoc\Splat.Avalonia.DryIoc.csproj", "{E721320D-D994-4591-B5C4-183B08A1E9C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.DryIoc", "Splat.Avalonia.DryIoc\Splat.Avalonia.DryIoc.csproj", "{E721320D-D994-4591-B5C4-183B08A1E9C4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.Autofac", "ReactiveUI.Avalonia.Autofac\Splat.Avalonia.Autofac.csproj", "{A1341AAE-334B-4F80-90BA-919B04D1397A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.Autofac", "Splat.Avalonia.Autofac\Splat.Avalonia.Autofac.csproj", "{A1341AAE-334B-4F80-90BA-919B04D1397A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.Ninject", "ReactiveUI.Avalonia.Ninject\Splat.Avalonia.Ninject.csproj", "{28A6724D-B858-4FBC-936C-8B1EE218CF29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.Ninject", "Splat.Avalonia.Ninject\Splat.Avalonia.Ninject.csproj", "{28A6724D-B858-4FBC-936C-8B1EE218CF29}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.Tests", "ReactiveUI.Avalonia.Tests\Splat.Avalonia.Tests.csproj", "{A0D1D486-D088-48EE-A286-3960B1E147C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.Tests", "Splat.Avalonia.Tests\Splat.Avalonia.Tests.csproj", "{A0D1D486-D088-48EE-A286-3960B1E147C4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.Microsoft1.Tests", "ReactiveUI.Avalonia.Microsoft1.Tests\Splat.Avalonia.Microsoft1.Tests.csproj", "{D42F8B39-B034-4919-AEDB-35E17223B4A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.Microsoft1.Tests", "Splat.Avalonia.Microsoft1.Tests\Splat.Avalonia.Microsoft1.Tests.csproj", "{D42F8B39-B034-4919-AEDB-35E17223B4A0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.Microsoft2.Tests", "ReactiveUI.Avalonia.Microsoft2.Tests\Splat.Avalonia.Microsoft2.Tests.csproj", "{F59BA878-C795-4821-AFCD-877DE01B57A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.Microsoft2.Tests", "Splat.Avalonia.Microsoft2.Tests\Splat.Avalonia.Microsoft2.Tests.csproj", "{F59BA878-C795-4821-AFCD-877DE01B57A3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.DryIoc1.Tests", "ReactiveUI.Avalonia.DryIoc1.Tests\Splat.Avalonia.DryIoc1.Tests.csproj", "{9CD61101-82AB-4C3E-B559-7323AFF779B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.DryIoc1.Tests", "Splat.Avalonia.DryIoc1.Tests\Splat.Avalonia.DryIoc1.Tests.csproj", "{9CD61101-82AB-4C3E-B559-7323AFF779B4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.DryIoc2.Tests", "ReactiveUI.Avalonia.DryIoc2.Tests\Splat.Avalonia.DryIoc2.Tests.csproj", "{E47B2228-4EA0-47FF-964B-92EA8E1F0E9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.DryIoc2.Tests", "Splat.Avalonia.DryIoc2.Tests\Splat.Avalonia.DryIoc2.Tests.csproj", "{E47B2228-4EA0-47FF-964B-92EA8E1F0E9A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
