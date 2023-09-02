@@ -3,11 +3,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
-
-using Xunit;
-
 [module: System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldShouldBePrivate", Justification = "XUnit Theories.")]
 
 namespace Splat.Tests.Colors;

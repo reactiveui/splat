@@ -5,9 +5,6 @@
 
 #if !WINDOWS_UWP && !ANDROID
 
-using System;
-using System.Collections.Generic;
-
 using Exceptionless;
 using Exceptionless.Models;
 using Exceptionless.Plugins;

@@ -3,15 +3,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
-using System.Linq;
 using System.Reactive;
 using Autofac;
 using FluentAssertions;
 using ReactiveUI.DI.Tests.Mocks;
 using Splat;
 using Splat.Autofac;
-using Xunit;
 
 namespace ReactiveUI.DI.Tests;
 

@@ -4,9 +4,6 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using VerifyXunit;
-using Xunit;
 
 #pragma warning disable SA1615 // Element return value should be documented
 

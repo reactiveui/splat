@@ -3,10 +3,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
-using System.IO;
-using System.Threading.Tasks;
-
 #if UIKIT
 using Foundation;
 
@@ -41,12 +37,7 @@ public class PlatformBitmapLoader : IBitmapLoader
                     throw new InvalidOperationException("Failed to load stream");
                 }
 
-                var bitmap = UIImage.LoadFromData(data);
-                if (bitmap is null)
-                {
-                    throw new InvalidOperationException("Failed to load image");
-                }
-
+                var bitmap = UIImage.LoadFromData(data) ?? throw new InvalidOperationException("Failed to load image");
                 tcs.TrySetResult(new CocoaBitmap(bitmap));
             }
             catch (Exception ex)
@@ -86,12 +77,7 @@ public class PlatformBitmapLoader : IBitmapLoader
         {
             try
             {
-                var bitmap = UIImage.FromBundle(source);
-                if (bitmap is null)
-                {
-                    throw new InvalidOperationException("Failed to load image from resource: " + source);
-                }
-
+                var bitmap = UIImage.FromBundle(source) ?? throw new InvalidOperationException("Failed to load image from resource: " + source);
                 tcs.TrySetResult(new CocoaBitmap(bitmap));
             }
             catch (Exception ex)

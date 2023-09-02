@@ -3,15 +3,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
-
 using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;
 
 using Splat.Common.Test;
 using Splat.NLog;
-using Xunit;
 
 namespace Splat.Microsoft.Extensions.DependencyInjection.Tests;
 

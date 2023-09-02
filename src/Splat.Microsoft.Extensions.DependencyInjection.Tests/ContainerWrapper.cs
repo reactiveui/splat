@@ -1,6 +1,4 @@
-﻿using System;
-
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Splat.Microsoft.Extensions.DependencyInjection.Tests;
 

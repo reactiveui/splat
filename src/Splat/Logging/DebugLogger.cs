@@ -8,7 +8,6 @@
 // the call to Debug.WriteLine will not be in the release binary
 #define DEBUG
 
-using System;
 using System.ComponentModel;
 
 namespace Splat;
