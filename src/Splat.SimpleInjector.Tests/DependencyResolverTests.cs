@@ -10,8 +10,6 @@ using SimpleInjector;
 using Splat.Common.Test;
 using Splat.SimpleInjector;
 
-using Xunit;
-
 namespace Splat.Simplnjector;
 
 /// <summary>

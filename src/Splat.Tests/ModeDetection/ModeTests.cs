@@ -1,5 +1,4 @@
 ﻿using Splat.ModeDetection;
-using Xunit;
 
 namespace Splat.Tests.ModeDetection;
 

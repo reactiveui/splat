@@ -1,8 +1,4 @@
-﻿using Avalonia;
-using Avalonia.ReactiveUI;
-using ReactiveUIDemo;
-
-namespace ReactiveUI.Avalonia.Tests
+﻿namespace ReactiveUI.Avalonia.Tests
 {
     public class AvaloniaUIThreadTestsMain
     {

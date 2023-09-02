@@ -4,11 +4,8 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.Globalization;
-using System.Linq;
 
 using Splat.Tests.Mocks;
-
-using Xunit;
 
 namespace Splat.Tests.Logging;
 

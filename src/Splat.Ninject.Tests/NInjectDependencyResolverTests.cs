@@ -1,10 +1,6 @@
-﻿using System.Linq;
-
-using Ninject;
+﻿using Ninject;
 
 using Splat.Tests.ServiceLocation;
-
-using Xunit;
 
 namespace Splat.Ninject.Tests;
 

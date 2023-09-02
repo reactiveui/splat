@@ -3,12 +3,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System.Linq;
 using FluentAssertions;
 using SimpleInjector;
 using Splat;
 using Splat.SimpleInjector;
-using Xunit;
 
 namespace ReactiveUI.DI.Tests;
 

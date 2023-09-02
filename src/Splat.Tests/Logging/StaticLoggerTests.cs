@@ -1,9 +1,6 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Linq;
 using Splat.Tests.Mocks;
-using Xunit;
 
 namespace Splat.Tests.Logging;
 

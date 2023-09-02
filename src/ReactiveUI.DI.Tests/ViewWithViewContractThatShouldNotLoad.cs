@@ -1,5 +1,4 @@
-﻿using System;
-using Splat.Common.Test;
+﻿using Splat.Common.Test;
 
 namespace ReactiveUI.DI.Tests;
 

@@ -4,7 +4,6 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace Splat;

@@ -3,15 +3,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
-using System.Linq;
 using Autofac;
 
 using FluentAssertions;
 
 using Splat.Common.Test;
 using Splat.Tests.ServiceLocation;
-using Xunit;
 
 namespace Splat.Autofac.Tests;
 

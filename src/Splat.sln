@@ -74,25 +74,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.DI.Tests", "Reac
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Avalonia", "Avalonia", "{45E17593-668F-4369-B281-801119B81725}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.Avalonia.Microsoft.Extensions.DependencyInjection", "ReactiveUI.Avalonia.Microsoft.Extensions.DependencyInjection\ReactiveUI.Avalonia.Microsoft.Extensions.DependencyInjection.csproj", "{2BB2C493-7E83-451E-BD75-CEA0FCADC39D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.Microsoft.Extensions.DependencyInjection", "Splat.Avalonia.Microsoft.Extensions.DependencyInjection\Splat.Avalonia.Microsoft.Extensions.DependencyInjection.csproj", "{2BB2C493-7E83-451E-BD75-CEA0FCADC39D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.Avalonia", "ReactiveUI.Avalonia\ReactiveUI.Avalonia.csproj", "{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.DryIoc", "Splat.Avalonia.DryIoc\Splat.Avalonia.DryIoc.csproj", "{E721320D-D994-4591-B5C4-183B08A1E9C4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.Avalonia.DryIoc", "ReactiveUI.Avalonia.DryIoc\ReactiveUI.Avalonia.DryIoc.csproj", "{E721320D-D994-4591-B5C4-183B08A1E9C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.Autofac", "Splat.Avalonia.Autofac\Splat.Avalonia.Autofac.csproj", "{A1341AAE-334B-4F80-90BA-919B04D1397A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.Avalonia.Autofac", "ReactiveUI.Avalonia.Autofac\ReactiveUI.Avalonia.Autofac.csproj", "{A1341AAE-334B-4F80-90BA-919B04D1397A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.Ninject", "Splat.Avalonia.Ninject\Splat.Avalonia.Ninject.csproj", "{28A6724D-B858-4FBC-936C-8B1EE218CF29}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.Avalonia.Ninject", "ReactiveUI.Avalonia.Ninject\ReactiveUI.Avalonia.Ninject.csproj", "{28A6724D-B858-4FBC-936C-8B1EE218CF29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.Tests", "Splat.Avalonia.Tests\Splat.Avalonia.Tests.csproj", "{A0D1D486-D088-48EE-A286-3960B1E147C4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.Avalonia.Tests", "ReactiveUI.Avalonia.Tests\ReactiveUI.Avalonia.Tests.csproj", "{A0D1D486-D088-48EE-A286-3960B1E147C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.Microsoft1.Tests", "Splat.Avalonia.Microsoft1.Tests\Splat.Avalonia.Microsoft1.Tests.csproj", "{D42F8B39-B034-4919-AEDB-35E17223B4A0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.Avalonia.Microsoft1.Tests", "ReactiveUI.Avalonia.Microsoft1.Tests\ReactiveUI.Avalonia.Microsoft1.Tests.csproj", "{D42F8B39-B034-4919-AEDB-35E17223B4A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.Microsoft2.Tests", "Splat.Avalonia.Microsoft2.Tests\Splat.Avalonia.Microsoft2.Tests.csproj", "{F59BA878-C795-4821-AFCD-877DE01B57A3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.Avalonia.Microsoft2.Tests", "ReactiveUI.Avalonia.Microsoft2.Tests\ReactiveUI.Avalonia.Microsoft2.Tests.csproj", "{F59BA878-C795-4821-AFCD-877DE01B57A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.DryIoc1.Tests", "Splat.Avalonia.DryIoc1.Tests\Splat.Avalonia.DryIoc1.Tests.csproj", "{9CD61101-82AB-4C3E-B559-7323AFF779B4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.Avalonia.DryIoc1.Tests", "ReactiveUI.Avalonia.DryIoc1.Tests\ReactiveUI.Avalonia.DryIoc1.Tests.csproj", "{9CD61101-82AB-4C3E-B559-7323AFF779B4}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.Avalonia.DryIoc2.Tests", "ReactiveUI.Avalonia.DryIoc2.Tests\ReactiveUI.Avalonia.DryIoc2.Tests.csproj", "{E47B2228-4EA0-47FF-964B-92EA8E1F0E9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.DryIoc2.Tests", "Splat.Avalonia.DryIoc2.Tests\Splat.Avalonia.DryIoc2.Tests.csproj", "{E47B2228-4EA0-47FF-964B-92EA8E1F0E9A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -668,26 +666,6 @@ Global
 		{2BB2C493-7E83-451E-BD75-CEA0FCADC39D}.Release|x64.Build.0 = Release|Any CPU
 		{2BB2C493-7E83-451E-BD75-CEA0FCADC39D}.Release|x86.ActiveCfg = Release|Any CPU
 		{2BB2C493-7E83-451E-BD75-CEA0FCADC39D}.Release|x86.Build.0 = Release|Any CPU
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}.Debug|ARM.Build.0 = Debug|Any CPU
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}.Debug|ARM64.ActiveCfg = Debug|Any CPU
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}.Debug|ARM64.Build.0 = Debug|Any CPU
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}.Debug|x64.Build.0 = Debug|Any CPU
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}.Debug|x86.Build.0 = Debug|Any CPU
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}.Release|ARM.ActiveCfg = Release|Any CPU
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}.Release|ARM.Build.0 = Release|Any CPU
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}.Release|ARM64.ActiveCfg = Release|Any CPU
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}.Release|ARM64.Build.0 = Release|Any CPU
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}.Release|x64.ActiveCfg = Release|Any CPU
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}.Release|x64.Build.0 = Release|Any CPU
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}.Release|x86.ActiveCfg = Release|Any CPU
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC}.Release|x86.Build.0 = Release|Any CPU
 		{E721320D-D994-4591-B5C4-183B08A1E9C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E721320D-D994-4591-B5C4-183B08A1E9C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E721320D-D994-4591-B5C4-183B08A1E9C4}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -882,7 +860,6 @@ Global
 		{FEA4E637-0409-40BC-8518-860509FEEA64} = {3F8EA9C2-D6D1-4B18-8670-DFC24B96972E}
 		{45E17593-668F-4369-B281-801119B81725} = {651320D6-1048-4F87-9D8E-75134FAFABDA}
 		{2BB2C493-7E83-451E-BD75-CEA0FCADC39D} = {45E17593-668F-4369-B281-801119B81725}
-		{8DB09353-DEE3-4A9F-AA5B-B37982D79FEC} = {45E17593-668F-4369-B281-801119B81725}
 		{E721320D-D994-4591-B5C4-183B08A1E9C4} = {45E17593-668F-4369-B281-801119B81725}
 		{A1341AAE-334B-4F80-90BA-919B04D1397A} = {45E17593-668F-4369-B281-801119B81725}
 		{28A6724D-B858-4FBC-936C-8B1EE218CF29} = {45E17593-668F-4369-B281-801119B81725}

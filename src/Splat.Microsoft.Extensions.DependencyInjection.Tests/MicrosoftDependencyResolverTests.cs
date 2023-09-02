@@ -1,8 +1,4 @@
-﻿using System.Linq;
-
-using Splat.Microsoft.Extensions.DependencyInjection;
-
-using Xunit;
+﻿using Splat.Microsoft.Extensions.DependencyInjection;
 
 namespace Splat.Tests.ServiceLocation;
 

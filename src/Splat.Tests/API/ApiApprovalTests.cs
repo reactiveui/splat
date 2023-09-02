@@ -6,9 +6,6 @@
 #if !WINDOWS_UWP && !ANDROID
 
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using VerifyXunit;
-using Xunit;
 
 namespace Splat.Tests;
 

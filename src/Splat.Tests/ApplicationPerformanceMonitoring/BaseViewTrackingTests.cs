@@ -5,8 +5,6 @@
 
 using Splat.ApplicationPerformanceMonitoring;
 
-using Xunit;
-
 namespace Splat.Tests.ApplicationPerformanceMonitoring;
 
 /// <summary>

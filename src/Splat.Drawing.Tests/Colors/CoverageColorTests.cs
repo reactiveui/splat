@@ -1,8 +1,4 @@
-﻿using System;
-
-using Xunit;
-
-namespace Splat.Drawing.Tests.Colors;
+﻿namespace Splat.Drawing.Tests.Colors;
 
 /// <summary>
 /// Coverage Color Tests.
