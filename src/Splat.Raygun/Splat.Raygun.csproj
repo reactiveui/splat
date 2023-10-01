@@ -15,17 +15,17 @@
   <Choose>
     <When Condition=" $(TargetFramework.StartsWith('net7'))">
       <ItemGroup>
-        <PackageReference Include="Mindscape.Raygun4Net.NetCore" Version="6.4.3" />
+        <PackageReference Include="Mindscape.Raygun4Net.NetCore" Version="7.0.0" />
       </ItemGroup>
     </When>
     <When Condition=" $(TargetFramework.StartsWith('net6'))">
       <ItemGroup>
-        <PackageReference Include="Mindscape.Raygun4Net.NetCore" Version="6.4.3" />
+        <PackageReference Include="Mindscape.Raygun4Net.NetCore" Version="7.0.0" />
       </ItemGroup>
     </When>
     <When Condition=" $(TargetFramework.StartsWith('netstandard')) ">
       <ItemGroup>
-        <PackageReference Include="Mindscape.Raygun4Net.NetCore" Version="6.4.3" />
+        <PackageReference Include="Mindscape.Raygun4Net.NetCore" Version="7.0.0" />
       </ItemGroup>
     </When>
     <When Condition=" $(TargetFramework.StartsWith('net4')) ">
