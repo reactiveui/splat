@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net6.0</TargetFrameworks>
@@ -45,10 +45,10 @@
     <!--
     <ProjectReference Include="..\Splat.Avalonia.Ninject\ReactiveUI.Avalonia.Ninject.csproj" />
     -->
-    <PackageReference Include="Avalonia.Desktop" Version="11.0.4" />
-    <PackageReference Include="Avalonia.Headless.XUnit" Version="11.0.4" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.4" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.4" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.0.5" />
+    <PackageReference Include="Avalonia.Headless.XUnit" Version="11.0.5" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.5" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.5" />
   </ItemGroup>
 
   <ItemGroup>
