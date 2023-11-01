@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net6.0;net7.0</TargetFrameworks>
@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.4" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.5" />
     <PackageReference Include="Autofac" Version="7.*" />
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>
