@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
+﻿// Copyright (c) 2023 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -11,15 +11,13 @@ namespace Splat.Ninject;
 /// Ninject implementation for <see cref="IMutableDependencyResolver"/>.
 /// </summary>
 /// <seealso cref="IMutableDependencyResolver" />
-public class NinjectDependencyResolver : IDependencyResolver
+/// <remarks>
+/// Initializes a new instance of the <see cref="NinjectDependencyResolver"/> class.
+/// </remarks>
+/// <param name="kernel">The kernel.</param>
+public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 {
-    private readonly IKernel _kernel;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="NinjectDependencyResolver"/> class.
-    /// </summary>
-    /// <param name="kernel">The kernel.</param>
-    public NinjectDependencyResolver(IKernel kernel) => _kernel = kernel;
+    private readonly IKernel _kernel = kernel;
 
     /// <inheritdoc />
     public virtual object? GetService(Type? serviceType, string? contract = null) =>
@@ -33,6 +31,7 @@ public class NinjectDependencyResolver : IDependencyResolver
 
         if (isNull)
         {
+#pragma warning disable CA1031 // Do not catch general exception types
             try
             {
                 return _kernel.GetAll(typeof(NullServiceType), contract).ToArray();
@@ -41,6 +40,7 @@ public class NinjectDependencyResolver : IDependencyResolver
             {
                 return Array.Empty<object>();
             }
+#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         return _kernel.GetAll(serviceType, contract);

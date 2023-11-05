@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
+﻿// Copyright (c) 2023 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -11,15 +11,13 @@ namespace Splat;
 /// <summary>
 /// A full wrapping logger over Serilog.
 /// </summary>
-public class SerilogFullLogger : IFullLogger
+/// <remarks>
+/// Initializes a new instance of the <see cref="SerilogFullLogger"/> class.
+/// </remarks>
+/// <param name="logger">The logger we are wrapping.</param>
+public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
 {
-    private readonly global::Serilog.ILogger _logger;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SerilogFullLogger"/> class.
-    /// </summary>
-    /// <param name="logger">The logger we are wrapping.</param>
-    public SerilogFullLogger(global::Serilog.ILogger logger) => _logger = logger;
+    private readonly global::Serilog.ILogger _logger = logger;
 
     /// <inheritdoc />
     public bool IsDebugEnabled => _logger.IsEnabled(LogEventLevel.Debug);

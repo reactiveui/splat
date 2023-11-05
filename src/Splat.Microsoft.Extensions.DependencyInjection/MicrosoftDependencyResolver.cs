@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
+﻿// Copyright (c) 2023 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -363,12 +363,12 @@ public class MicrosoftDependencyResolver : IDependencyResolver
         public void AddFactory(string contract, Func<object?> factory) =>
             _dictionary.AddOrUpdate(contract, _ => new() { factory }, (_, list) =>
             {
-                (list ??= new()).Add(factory);
+                (list ??= []).Add(factory);
                 return list;
             });
 
         public void RemoveLastFactory(string contract) =>
-            _dictionary.AddOrUpdate(contract, new List<Func<object?>>(), (_, list) =>
+            _dictionary.AddOrUpdate(contract, [], (_, list) =>
             {
                 var lastIndex = list.Count - 1;
                 if (lastIndex > 0)

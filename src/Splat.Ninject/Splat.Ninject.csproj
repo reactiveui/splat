@@ -4,7 +4,6 @@
     <TargetFrameworks>netstandard2.0;net6.0;net7.0</TargetFrameworks>
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net462</TargetFrameworks>
     <Description>Autofac adapter for Splat</Description>
-    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 

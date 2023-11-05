@@ -24,7 +24,7 @@ public class ConsoleLoggerTests : FullLoggerTestBase
 
     private class ConsoleWriter : TextWriter, IMockLogTarget
     {
-        private readonly List<(LogLevel logLevel, string message)> _logs = new();
+        private readonly List<(LogLevel logLevel, string message)> _logs = [];
 
         public override Encoding Encoding => Encoding.UTF8;
 

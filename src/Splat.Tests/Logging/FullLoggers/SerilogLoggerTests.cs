@@ -128,7 +128,7 @@ public class SerilogLoggerTests : FullLoggerTestBase
     private class LogTarget : ILogEventSink, IMockLogTarget
     {
         private static readonly MessageTemplateTextFormatter _formatter = new("{Message} {Exception}", CultureInfo.InvariantCulture);
-        private readonly List<(LogLevel logLevel, string message)> _logs = new();
+        private readonly List<(LogLevel logLevel, string message)> _logs = [];
 
         public ICollection<(LogLevel logLevel, string message)> Logs => _logs;
 

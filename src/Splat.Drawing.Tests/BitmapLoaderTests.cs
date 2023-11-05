@@ -17,12 +17,12 @@ public sealed class BitmapLoaderTests
     /// <summary>
     /// Gets the test data for the Load Suceeds Unit Test.
     /// </summary>
-    public static TheoryData<Func<Stream>> LoadSucceedsTestData { get; } = new()
-    {
+    public static TheoryData<Func<Stream>> LoadSucceedsTestData { get; } =
+    [
         GetPngStream,
         GetJpegStream,
         GetBitmapStream,
-    };
+    ];
 
     /// <summary>
     /// Test to ensure the bitmap loader initializes properly.

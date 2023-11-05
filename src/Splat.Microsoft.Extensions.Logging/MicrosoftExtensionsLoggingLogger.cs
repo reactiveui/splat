@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
+﻿// Copyright (c) 2023 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -12,17 +12,15 @@ namespace Splat.Microsoft.Extensions.Logging;
 /// <summary>
 /// Microsoft.Extensions.Logging Logger integration into Splat.
 /// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="MicrosoftExtensionsLoggingLogger"/> class.
+/// </remarks>
+/// <param name="inner">The actual Microsoft.Extensions.Logging logger.</param>
+/// <exception cref="ArgumentNullException">Microsoft.Extensions.Logging logger not passed.</exception>
 [DebuggerDisplay("Name={_inner.GetType()} Level={Level}")]
-public sealed class MicrosoftExtensionsLoggingLogger : ILogger
+public sealed class MicrosoftExtensionsLoggingLogger(global::Microsoft.Extensions.Logging.ILogger inner) : ILogger
 {
-    private readonly global::Microsoft.Extensions.Logging.ILogger _inner;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MicrosoftExtensionsLoggingLogger"/> class.
-    /// </summary>
-    /// <param name="inner">The actual Microsoft.Extensions.Logging logger.</param>
-    /// <exception cref="ArgumentNullException">Microsoft.Extensions.Logging logger not passed.</exception>
-    public MicrosoftExtensionsLoggingLogger(global::Microsoft.Extensions.Logging.ILogger inner) => _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+    private readonly global::Microsoft.Extensions.Logging.ILogger _inner = inner ?? throw new ArgumentNullException(nameof(inner));
 
     /// <inheritdoc />
     public LogLevel Level

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
+﻿// Copyright (c) 2023 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -11,15 +11,13 @@ namespace Splat;
 /// <summary>
 /// A full logger which used by the default static logger to allow capture of .NET framework caller data. Wraps a <see cref="IFullLogger"/>.
 /// </summary>
-public sealed class StaticFullLogger : IStaticFullLogger
+/// <remarks>
+/// Initializes a new instance of the <see cref="StaticFullLogger"/> class.
+/// </remarks>
+/// <param name="fullLogger">The <see cref="IFullLogger"/> to wrap in this class.</param>
+public sealed class StaticFullLogger(IFullLogger fullLogger) : IStaticFullLogger
 {
-    private readonly IFullLogger _fullLogger;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="StaticFullLogger"/> class.
-    /// </summary>
-    /// <param name="fullLogger">The <see cref="IFullLogger"/> to wrap in this class.</param>
-    public StaticFullLogger(IFullLogger fullLogger) => _fullLogger = fullLogger ?? throw new ArgumentNullException(nameof(fullLogger));
+    private readonly IFullLogger _fullLogger = fullLogger ?? throw new ArgumentNullException(nameof(fullLogger));
 
     /// <inheritdoc/>
     public LogLevel Level => _fullLogger.Level;

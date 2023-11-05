@@ -43,12 +43,10 @@ public class MicrosoftExtensionsLoggingLoggerTests : FullLoggerTestBase
     /// <summary>
     /// Mock Logger for Testing Microsoft.Extensions.Logging.
     /// </summary>
-    private sealed class MockActualMicrosoftExtensionsLoggingLogger : global::Microsoft.Extensions.Logging.ILogger, IMockLogTarget
+    private sealed class MockActualMicrosoftExtensionsLoggingLogger(global::Microsoft.Extensions.Logging.LogLevel logLevel) : global::Microsoft.Extensions.Logging.ILogger, IMockLogTarget
     {
-        private readonly List<(LogLevel, string)> _logs = new();
-        private readonly global::Microsoft.Extensions.Logging.LogLevel _logLevel;
-
-        public MockActualMicrosoftExtensionsLoggingLogger(global::Microsoft.Extensions.Logging.LogLevel logLevel) => _logLevel = logLevel;
+        private readonly List<(LogLevel, string)> _logs = [];
+        private readonly global::Microsoft.Extensions.Logging.LogLevel _logLevel = logLevel;
 
         public ICollection<(LogLevel logLevel, string message)> Logs => _logs;
 

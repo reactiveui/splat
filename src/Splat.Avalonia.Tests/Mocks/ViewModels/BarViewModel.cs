@@ -2,12 +2,10 @@
 
 namespace ReactiveUIDemo.ViewModels
 {
-    internal class BarViewModel : ReactiveObject, IRoutableViewModel
+    internal class BarViewModel(IScreen screen) : ReactiveObject, IRoutableViewModel
     {
-        public BarViewModel(IScreen screen) => HostScreen = screen;
-
         public string UrlPathSegment => "Bar";
 
-        public IScreen HostScreen { get; }
+        public IScreen HostScreen { get; } = screen;
     }
 }

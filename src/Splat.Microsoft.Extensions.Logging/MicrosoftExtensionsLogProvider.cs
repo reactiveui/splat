@@ -1,4 +1,4 @@
-// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
+// Copyright (c) 2023 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -20,11 +20,9 @@ public sealed class MicrosoftExtensionsLogProvider : ILoggerProvider
     /// <inheritdoc />
     public global::Microsoft.Extensions.Logging.ILogger CreateLogger(string categoryName) => new SplatLoggingAdapter(categoryName);
 
-    private class SplatLoggingAdapter : global::Microsoft.Extensions.Logging.ILogger
+    private class SplatLoggingAdapter(string categoryName) : global::Microsoft.Extensions.Logging.ILogger
     {
-        private readonly string _categoryName;
-
-        public SplatLoggingAdapter(string categoryName) => _categoryName = categoryName;
+        private readonly string _categoryName = categoryName;
 
         /// <inheritdoc />
         public void Log<TState>(global::Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)

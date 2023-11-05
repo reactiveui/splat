@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFrameworks>net6.0</TargetFrameworks>
     <NoWarn>$(NoWarn);CA1707;CS1574</NoWarn>
-    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 

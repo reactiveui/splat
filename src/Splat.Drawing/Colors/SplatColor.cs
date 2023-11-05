@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
+﻿// Copyright (c) 2023 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -244,6 +244,7 @@ public partial struct SplatColor : IEquatable<SplatColor>
     /// <returns>The generated SplatValue.</returns>
     public static SplatColor FromName(string name)
     {
+#pragma warning disable CA1031 // Do not catch general exception types
         try
         {
             KnownColor kc = (KnownColor)Enum.Parse(typeof(KnownColor), name, true);
@@ -259,6 +260,7 @@ public partial struct SplatColor : IEquatable<SplatColor>
             d._state |= (short)ColorType.Named;
             return d;
         }
+#pragma warning restore CA1031 // Do not catch general exception types
     }
 
     /// <summary>
@@ -438,6 +440,7 @@ internal static SplatColor FromArgbSystem (int alpha, int red, int green, int bl
 
     private static SplatColor CheckIfIsKnownColor(SplatColor splatColor)
     {
+#pragma warning disable CA1031 // Do not catch general exception types
         try
         {
             var index = Array.IndexOf(KnownColors.ArgbValues, splatColor.Value);
@@ -450,6 +453,7 @@ internal static SplatColor FromArgbSystem (int alpha, int red, int green, int bl
         catch
         {
         }
+#pragma warning restore CA1031 // Do not catch general exception types
 
         return splatColor;
     }

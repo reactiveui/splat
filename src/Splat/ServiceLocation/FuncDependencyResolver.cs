@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
+﻿// Copyright (c) 2023 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -10,38 +10,30 @@ namespace Splat;
 /// GetService is always implemented via GetServices().LastOrDefault().
 /// This container is not thread safe.
 /// </summary>
-public class FuncDependencyResolver : IDependencyResolver
+/// <remarks>
+/// Initializes a new instance of the <see cref="FuncDependencyResolver"/> class.
+/// </remarks>
+/// <param name="getAllServices">A func which will return all the services contained for the specified service type and contract.</param>
+/// <param name="register">A func which will be called when a service type and contract are registered.</param>
+/// <param name="unregisterCurrent">A func which will unregister the current registered element for a service type and contract.</param>
+/// <param name="unregisterAll">A func which will unregister all the registered elements for a service type and contract.</param>
+/// <param name="toDispose">A optional disposable which is called when this resolver is disposed.</param>
+public class FuncDependencyResolver(
+    Func<Type?, string?, IEnumerable<object>> getAllServices,
+    Action<Func<object?>, Type?, string?>? register = null,
+    Action<Type?, string?>? unregisterCurrent = null,
+    Action<Type?, string?>? unregisterAll = null,
+    IDisposable? toDispose = null) : IDependencyResolver
 {
-    private readonly Func<Type?, string?, IEnumerable<object>> _innerGetServices;
-    private readonly Action<Func<object?>, Type?, string?>? _innerRegister;
-    private readonly Action<Type?, string?>? _unregisterCurrent;
-    private readonly Action<Type?, string?>? _unregisterAll;
-    private readonly Dictionary<(Type? type, string callback), List<Action<IDisposable>>> _callbackRegistry = new();
+    private readonly Func<Type?, string?, IEnumerable<object>> _innerGetServices = getAllServices;
+    private readonly Action<Func<object?>, Type?, string?>? _innerRegister = register;
+    private readonly Action<Type?, string?>? _unregisterCurrent = unregisterCurrent;
+    private readonly Action<Type?, string?>? _unregisterAll = unregisterAll;
+    private readonly Dictionary<(Type? type, string callback), List<Action<IDisposable>>> _callbackRegistry = [];
 
-    private IDisposable _inner;
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Field is Disposed using Interlocked method")]
+    private IDisposable _inner = toDispose ?? ActionDisposable.Empty;
     private bool _isDisposed;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FuncDependencyResolver"/> class.
-    /// </summary>
-    /// <param name="getAllServices">A func which will return all the services contained for the specified service type and contract.</param>
-    /// <param name="register">A func which will be called when a service type and contract are registered.</param>
-    /// <param name="unregisterCurrent">A func which will unregister the current registered element for a service type and contract.</param>
-    /// <param name="unregisterAll">A func which will unregister all the registered elements for a service type and contract.</param>
-    /// <param name="toDispose">A optional disposable which is called when this resolver is disposed.</param>
-    public FuncDependencyResolver(
-        Func<Type?, string?, IEnumerable<object>> getAllServices,
-        Action<Func<object?>, Type?, string?>? register = null,
-        Action<Type?, string?>? unregisterCurrent = null,
-        Action<Type?, string?>? unregisterAll = null,
-        IDisposable? toDispose = null)
-    {
-        _innerGetServices = getAllServices;
-        _innerRegister = register;
-        _unregisterCurrent = unregisterCurrent;
-        _unregisterAll = unregisterAll;
-        _inner = toDispose ?? ActionDisposable.Empty;
-    }
 
     /// <inheritdoc />
     public object? GetService(Type? serviceType, string? contract = null) =>
@@ -100,7 +92,7 @@ public class FuncDependencyResolver : IDependencyResolver
 
             if (disp.IsDisposed)
             {
-                (toRemove ??= new()).Add(callback);
+                (toRemove ??= []).Add(callback);
             }
         }
 
@@ -146,7 +138,7 @@ public class FuncDependencyResolver : IDependencyResolver
 
         if (!_callbackRegistry.ContainsKey(pair))
         {
-            _callbackRegistry[pair] = new();
+            _callbackRegistry[pair] = [];
         }
 
         _callbackRegistry[pair].Add(callback);
