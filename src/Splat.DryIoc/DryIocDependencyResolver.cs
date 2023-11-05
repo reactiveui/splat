@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
+﻿// Copyright (c) 2023 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -14,15 +14,13 @@ namespace Splat.DryIoc;
 /// https://bitbucket.org/dadhi/dryioc/wiki/Home.
 /// </summary>
 /// <seealso cref="Splat.IDependencyResolver" />
-public class DryIocDependencyResolver : IDependencyResolver
+/// <remarks>
+/// Initializes a new instance of the <see cref="DryIocDependencyResolver" /> class.
+/// </remarks>
+/// <param name="container">The container.</param>
+public class DryIocDependencyResolver(IContainer? container = null) : IDependencyResolver
 {
-    private readonly IContainer _container;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DryIocDependencyResolver" /> class.
-    /// </summary>
-    /// <param name="container">The container.</param>
-    public DryIocDependencyResolver(IContainer? container = null) => _container = container ?? new Container();
+    private readonly IContainer _container = container ?? new Container();
 
     /// <inheritdoc />
     public virtual object? GetService(Type? serviceType, string? contract = null) =>

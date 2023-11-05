@@ -55,7 +55,7 @@ public class NLogLoggerTests : FullLoggerTestBase
 
     private class MemoryTargetWrapper : TargetWithLayout, IMockLogTarget
     {
-        private readonly List<(LogLevel, string)> _logs = new();
+        private readonly List<(LogLevel, string)> _logs = [];
 
         public MemoryTargetWrapper() => Name = "test wrapper";
 

@@ -77,11 +77,9 @@ public class Log4NetLoggerTests : FullLoggerTestBase
         return memoryWrapper;
     }
 
-    private class MemoryTargetWrapper : IMockLogTarget
+    private class MemoryTargetWrapper(global::log4net.Appender.MemoryAppender memoryTarget) : IMockLogTarget
     {
-        public MemoryTargetWrapper(global::log4net.Appender.MemoryAppender memoryTarget) => MemoryTarget = memoryTarget;
-
-        public global::log4net.Appender.MemoryAppender MemoryTarget { get; }
+        public global::log4net.Appender.MemoryAppender MemoryTarget { get; } = memoryTarget;
 
         public ICollection<(LogLevel logLevel, string message)> Logs
         {

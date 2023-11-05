@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
+﻿// Copyright (c) 2023 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -12,15 +12,13 @@ namespace Splat;
 /// <summary>
 /// View Tracking integration for Application Insights.
 /// </summary>
-public sealed class ApplicationInsightsViewTracking : IViewTracking
+/// <remarks>
+/// Initializes a new instance of the <see cref="ApplicationInsightsViewTracking"/> class.
+/// </remarks>
+/// <param name="telemetryClient">The Application Insights telemetry client instance to use.</param>
+public sealed class ApplicationInsightsViewTracking(TelemetryClient telemetryClient) : IViewTracking
 {
-    private readonly TelemetryClient _telemetryClient;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ApplicationInsightsViewTracking"/> class.
-    /// </summary>
-    /// <param name="telemetryClient">The Application Insights telemetry client instance to use.</param>
-    public ApplicationInsightsViewTracking(TelemetryClient telemetryClient) => _telemetryClient = telemetryClient;
+    private readonly TelemetryClient _telemetryClient = telemetryClient;
 
     /// <summary>
     /// Track a view navigation using just a name.

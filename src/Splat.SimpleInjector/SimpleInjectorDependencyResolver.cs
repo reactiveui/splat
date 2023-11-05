@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
+﻿// Copyright (c) 2023 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -33,6 +33,7 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     {
         serviceType ??= typeof(NullServiceType);
 
+#pragma warning disable CA1031 // Do not catch general exception types
         try
         {
             var registration = _container.GetRegistration(serviceType);
@@ -48,6 +49,7 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
         {
             return default;
         }
+#pragma warning restore CA1031 // Do not catch general exception types
     }
 
     /// <inheritdoc />
@@ -55,6 +57,7 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     {
         serviceType ??= typeof(NullServiceType);
 
+#pragma warning disable CA1031 // Do not catch general exception types
         try
         {
             return _container.GetAllInstances(serviceType);
@@ -62,13 +65,13 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
         catch
         {
             var registration = _container.GetRegistration(serviceType);
-            if (registration is not null)
+            return registration switch
             {
-                return new[] { registration.GetInstance() };
-            }
-
-            return Array.Empty<object>();
+                not null => new[] { registration.GetInstance() },
+                _ => Array.Empty<object>()
+            };
         }
+#pragma warning restore CA1031 // Do not catch general exception types
     }
 
     /// <inheritdoc />

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
+﻿// Copyright (c) 2023 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -11,22 +11,14 @@ namespace Splat;
 /// <summary>
 /// A full logger which wraps a <see cref="ILogger"/>.
 /// </summary>
-public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
+/// <remarks>
+/// Initializes a new instance of the <see cref="WrappingFullLogger"/> class.
+/// </remarks>
+/// <param name="inner">The <see cref="ILogger"/> to wrap in this class.</param>
+public class WrappingFullLogger(ILogger inner) : AllocationFreeLoggerBase(inner), IFullLogger
 {
-    private readonly ILogger _inner;
-    private readonly MethodInfo _stringFormat;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="WrappingFullLogger"/> class.
-    /// </summary>
-    /// <param name="inner">The <see cref="ILogger"/> to wrap in this class.</param>
-    public WrappingFullLogger(ILogger inner)
-        : base(inner)
-    {
-        _inner = inner ?? throw new ArgumentNullException(nameof(inner));
-
-        _stringFormat = typeof(string).GetMethod("Format", new[] { typeof(IFormatProvider), typeof(string), typeof(object[]) }) ?? throw new InvalidOperationException("Cannot find the Format method which is required.");
-    }
+    private readonly ILogger _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+    private readonly MethodInfo _stringFormat = typeof(string).GetMethod("Format", new[] { typeof(IFormatProvider), typeof(string), typeof(object[]) }) ?? throw new InvalidOperationException("Cannot find the Format method which is required.");
 
     /// <inheritdoc />
     public void Debug<T>(T value)

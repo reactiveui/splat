@@ -8,32 +8,12 @@
     <Authors>.NET Foundation and Contributors</Authors>
     <Description>Raygun integrations for Splat</Description>
     <PackageId>Splat.Raygun</PackageId>
-    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-  
-  <Choose>
-    <When Condition=" $(TargetFramework.StartsWith('net7'))">
-      <ItemGroup>
-        <PackageReference Include="Mindscape.Raygun4Net.NetCore" Version="7.0.0" />
-      </ItemGroup>
-    </When>
-    <When Condition=" $(TargetFramework.StartsWith('net6'))">
-      <ItemGroup>
-        <PackageReference Include="Mindscape.Raygun4Net.NetCore" Version="7.0.0" />
-      </ItemGroup>
-    </When>
-    <When Condition=" $(TargetFramework.StartsWith('netstandard')) ">
-      <ItemGroup>
-        <PackageReference Include="Mindscape.Raygun4Net.NetCore" Version="7.0.0" />
-      </ItemGroup>
-    </When>
-    <When Condition=" $(TargetFramework.StartsWith('net4')) ">
-      <ItemGroup>
-        <PackageReference Include="Mindscape.Raygun4Net" Version="7.0.1" />
-      </ItemGroup>
-    </When>
-  </Choose>
+
+  <ItemGroup>
+    <PackageReference Include="Mindscape.Raygun4Net.NetCore" Version="7.1.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Splat\Splat.csproj" />

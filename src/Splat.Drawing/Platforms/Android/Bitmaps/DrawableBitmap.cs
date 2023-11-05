@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
+﻿// Copyright (c) 2023 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -7,15 +7,14 @@ using Android.Graphics.Drawables;
 
 namespace Splat;
 
-internal sealed class DrawableBitmap : IBitmap
+/// <summary>
+/// Initializes a new instance of the <see cref="DrawableBitmap"/> class.
+/// </summary>
+/// <param name="inner">The drawable bitmap to wrap.</param>
+internal sealed class DrawableBitmap(Drawable inner) : IBitmap
 {
-    private Drawable? _inner;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DrawableBitmap"/> class.
-    /// </summary>
-    /// <param name="inner">The drawable bitmap to wrap.</param>
-    public DrawableBitmap(Drawable inner) => _inner = inner;
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Is Disposed using Interlocked method")]
+    private Drawable? _inner = inner;
 
     /// <inheritdoc />
     public float Width => Inner.IntrinsicWidth;

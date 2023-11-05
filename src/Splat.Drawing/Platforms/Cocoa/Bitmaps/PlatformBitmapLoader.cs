@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
+﻿// Copyright (c) 2023 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -30,6 +30,7 @@ public class PlatformBitmapLoader : IBitmapLoader
 #if UIKIT
         NSRunLoop.InvokeInBackground(() =>
         {
+#pragma warning disable CA1031 // Do not catch general exception types
             try
             {
                 if (data is null)
@@ -42,9 +43,10 @@ public class PlatformBitmapLoader : IBitmapLoader
             }
             catch (Exception ex)
             {
-                LogHost.Default.Debug(ex, "Unable to parse bitmap from byte stream.");
+                LogHost.Default.Debug(ex.ToString(), "Unable to parse bitmap from byte stream.");
                 tcs.TrySetException(ex);
             }
+#pragma warning restore CA1031 // Do not catch general exception types
         });
 #else
 
@@ -75,6 +77,7 @@ public class PlatformBitmapLoader : IBitmapLoader
 #if UIKIT
         NSRunLoop.InvokeInBackground(() =>
         {
+#pragma warning disable CA1031 // Do not catch general exception types
             try
             {
                 var bitmap = UIImage.FromBundle(source) ?? throw new InvalidOperationException("Failed to load image from resource: " + source);
@@ -82,9 +85,10 @@ public class PlatformBitmapLoader : IBitmapLoader
             }
             catch (Exception ex)
             {
-                LogHost.Default.Debug(ex, "Unable to parse bitmap from resource.");
+                LogHost.Default.Debug(ex.ToString(), "Unable to parse bitmap from resource.");
                 tcs.TrySetException(ex);
             }
+#pragma warning restore CA1031 // Do not catch general exception types
         });
 #else
         NSRunLoop.Main.BeginInvokeOnMainThread(() =>

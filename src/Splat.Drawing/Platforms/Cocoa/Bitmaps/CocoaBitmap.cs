@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
+﻿// Copyright (c) 2023 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -20,15 +20,14 @@ namespace Splat;
 /// <summary>
 /// Wraps a cocoa native bitmap into the splat <see cref="IBitmap"/>.
 /// </summary>
-internal sealed class CocoaBitmap : IBitmap
+/// <remarks>
+/// Initializes a new instance of the <see cref="CocoaBitmap"/> class.
+/// </remarks>
+/// <param name="inner">The native image we are wrapping.</param>
+internal sealed class CocoaBitmap(UIImage inner) : IBitmap
 {
-    private UIImage? _inner;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CocoaBitmap"/> class.
-    /// </summary>
-    /// <param name="inner">The native image we are wrapping.</param>
-    public CocoaBitmap(UIImage inner) => _inner = inner;
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed in a Interlocked method")]
+    private UIImage? _inner = inner;
 
     /// <inheritdoc />
     public float Width => (float)(_inner?.Size.Width ?? 0);

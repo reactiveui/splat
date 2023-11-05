@@ -7,11 +7,10 @@
     <Authors>.NET Foundation and Contributors</Authors>
     <Description>NLog integrations for Splat</Description>
     <PackageId>Splat.NLog</PackageId>
-    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="NLog" Version="5.2.4" />
+    <PackageReference Include="NLog" Version="5.2.5" />
     <PackageReference Include="System.Collections.Immutable" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>

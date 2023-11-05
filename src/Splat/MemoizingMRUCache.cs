@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
+﻿// Copyright (c) 2023 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -99,7 +99,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
         _maxCacheSize = maxSize;
         _comparer = paramComparer ?? EqualityComparer<TParam>.Default;
         _cacheMRUList = new();
-        _cacheEntries = new();
+        _cacheEntries = [];
     }
 
     /// <summary>
@@ -245,6 +245,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
             var exceptions = new List<Exception>(oldCacheToClear.Count);
             foreach (var item in oldCacheToClear)
             {
+#pragma warning disable CA1031 // Do not catch general exception types
                 try
                 {
                     _releaseFunction?.Invoke(item.Value.value);
@@ -253,6 +254,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
                 {
                     exceptions.Add(e);
                 }
+#pragma warning restore CA1031 // Do not catch general exception types
             }
 
             if (exceptions.Count > 0)

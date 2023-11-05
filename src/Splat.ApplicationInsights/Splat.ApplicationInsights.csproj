@@ -7,7 +7,6 @@
     <Authors>.NET Foundation and Contributors</Authors>
     <Description>ApplicationInsights integrations for Splat</Description>
     <PackageId>Splat.ApplicationInsights</PackageId>
-    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>

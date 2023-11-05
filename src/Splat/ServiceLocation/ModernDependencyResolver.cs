@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
+﻿// Copyright (c) 2023 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -42,9 +42,9 @@ public class ModernDependencyResolver : IDependencyResolver
     {
         _registry = registry is not null ?
             registry.ToDictionary(k => k.Key, v => v.Value.ToList()) :
-            new();
+            [];
 
-        _callbackRegistry = new();
+        _callbackRegistry = [];
     }
 
     /// <inheritdoc />
@@ -77,7 +77,7 @@ public class ModernDependencyResolver : IDependencyResolver
 
         if (!_registry.ContainsKey(pair))
         {
-            _registry[pair] = new();
+            _registry[pair] = [];
         }
 
         _registry[pair].Add(() =>
@@ -100,7 +100,7 @@ public class ModernDependencyResolver : IDependencyResolver
 
             if (disp.IsDisposed)
             {
-                (toRemove ??= new()).Add(callback);
+                (toRemove ??= []).Add(callback);
             }
         }
 
@@ -200,7 +200,7 @@ public class ModernDependencyResolver : IDependencyResolver
 
         var pair = GetKey(serviceType, contract);
 
-        _registry[pair] = new();
+        _registry[pair] = [];
     }
 
     /// <inheritdoc />
@@ -225,7 +225,7 @@ public class ModernDependencyResolver : IDependencyResolver
 
         if (!_callbackRegistry.ContainsKey(pair))
         {
-            _callbackRegistry[pair] = new();
+            _callbackRegistry[pair] = [];
         }
 
         _callbackRegistry[pair].Add(callback);

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
+﻿// Copyright (c) 2023 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -57,16 +57,15 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
                 OutHeight = (int)desiredHeight.Value,
             };
 
-            var noPadding = new Rect(0, 0, 0, 0);
+            using var noPadding = new Rect(0, 0, 0, 0);
             bitmap = await Task.Run(() => BitmapFactory.DecodeStream(sourceStream, noPadding, opts)).ConfigureAwait(true);
         }
 
-        if (bitmap is null)
+        return bitmap switch
         {
-            throw new IOException("Failed to load bitmap from source stream");
-        }
-
-        return bitmap.FromNative();
+            null => throw new IOException("Failed to load bitmap from source stream"),
+            _ => bitmap.FromNative()
+        };
     }
 
     /// <inheritdoc />
@@ -85,26 +84,22 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
             throw new InvalidOperationException("No resources found in the application.");
         }
 
-        var id = default(int);
-        if (int.TryParse(source, out id))
+        if (int.TryParse(source, out var id))
         {
             return Task.Run(() => GetFromDrawable(res.GetDrawable(id, theme)));
         }
 
-        if (_drawableList.ContainsKey(source))
+        if (_drawableList.TryGetValue(source, out var value))
         {
-            return Task.Run(() => GetFromDrawable(res.GetDrawable(_drawableList[source], theme)));
+            return Task.Run(() => GetFromDrawable(res.GetDrawable(value, theme)));
         }
 
         // NB: On iOS, you have to pass the extension, but on Android it's
         // stripped - try stripping the extension to see if there's a Drawable.
         var key = System.IO.Path.GetFileNameWithoutExtension(source);
-        if (_drawableList.ContainsKey(key))
-        {
-            return Task.Run(() => GetFromDrawable(res.GetDrawable(_drawableList[key], theme)));
-        }
-
-        throw new ArgumentException("Either pass in an integer ID cast to a string, or the name of a drawable resource");
+        return _drawableList.TryGetValue(key, out var intValue)
+            ? Task.Run(() => GetFromDrawable(res.GetDrawable(intValue, theme)))
+            : throw new ArgumentException("Either pass in an integer ID cast to a string, or the name of a drawable resource");
     }
 
     /// <inheritdoc />
