@@ -32,10 +32,14 @@ public static class SplatColorExtensions
     /// <returns>The <see cref="SplatColor"/> generated.</returns>
     public static SplatColor FromNative(this UIColor value)
     {
-        if (value is null)
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(value);
+#else
+        if (value == null)
         {
-            throw new ArgumentNullException(nameof(value));
+            throw new System.ArgumentNullException(nameof(value));
         }
+#endif
 
         value.GetRGBA(out var r, out var g, out var b, out var a);
         return SplatColor.FromArgb((int)(a * 255.0f), (int)(r * 255.0f), (int)(g * 255.0f), (int)(b * 255.0f));
@@ -56,10 +60,14 @@ public static class SplatColorExtensions
     /// <returns>The <see cref="SplatColor"/> generated.</returns>
     public static SplatColor FromNative(this NSColor value)
     {
-        if (value is null)
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(value);
+#else
+        if (value == null)
         {
-            throw new ArgumentNullException(nameof(value));
+            throw new System.ArgumentNullException(nameof(value));
         }
+#endif
 
         value.GetRgba(out var r, out var g, out var b, out var a);
         return SplatColor.FromArgb((int)(a * 255.0f), (int)(r * 255.0f), (int)(g * 255.0f), (int)(b * 255.0f));

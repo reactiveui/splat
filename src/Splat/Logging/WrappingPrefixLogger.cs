@@ -25,18 +25,22 @@ public class WrappingPrefixLogger(ILogger inner, Type callingType) : ILogger
     public LogLevel Level => _inner.Level;
 
     /// <inheritdoc />
-    public void Write([Localizable(false)]string message, LogLevel logLevel) => _inner.Write(_prefix + message, logLevel);
+    public void Write([Localizable(false)] string message, LogLevel logLevel) => _inner.Write(_prefix + message, logLevel);
 
     /// <inheritdoc />
-    public void Write(Exception exception, [Localizable(false)]string message, LogLevel logLevel) => _inner.Write(exception, _prefix + message, logLevel);
+    public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel) => _inner.Write(exception, _prefix + message, logLevel);
 
     /// <inheritdoc />
     public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
     {
+#if NETSTANDARD
         if (type is null)
         {
             throw new ArgumentNullException(nameof(type));
         }
+#else
+        ArgumentNullException.ThrowIfNull(type);
+#endif
 
         _inner.Write($"{type.Name}: {message}", type, logLevel);
     }
@@ -44,10 +48,14 @@ public class WrappingPrefixLogger(ILogger inner, Type callingType) : ILogger
     /// <inheritdoc />
     public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
     {
+#if NETSTANDARD
         if (type is null)
         {
             throw new ArgumentNullException(nameof(type));
         }
+#else
+        ArgumentNullException.ThrowIfNull(type);
+#endif
 
         _inner.Write(exception, $"{type.Name}: {message}", type, logLevel);
     }

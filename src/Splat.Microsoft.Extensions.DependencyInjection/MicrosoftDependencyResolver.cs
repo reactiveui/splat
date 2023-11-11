@@ -59,10 +59,14 @@ public class MicrosoftDependencyResolver : IDependencyResolver
     /// <param name="serviceProvider">A ready to use service provider.</param>
     public void UpdateContainer(IServiceProvider serviceProvider)
     {
+#if NETSTANDARD || NETFRAMEWORK
         if (serviceProvider is null)
         {
             throw new ArgumentNullException(nameof(serviceProvider));
         }
+#else
+        ArgumentNullException.ThrowIfNull(serviceProvider);
+#endif
 
         lock (_syncLock)
         {
@@ -384,7 +388,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver
     }
 
     [SuppressMessage("Design", "CA1812: Unused class.", Justification = "Used in reflection.")]
-    private class ContractDictionary<T> : ContractDictionary
+    private sealed class ContractDictionary<T> : ContractDictionary
     {
     }
 }

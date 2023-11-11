@@ -5,7 +5,7 @@ using ReactiveUIDemo.ViewModels;
 
 namespace ReactiveUIDemo.Views
 {
-    internal partial class FooView : UserControl, IViewFor<FooViewModel>
+    internal sealed partial class FooView : UserControl, IViewFor<FooViewModel>
     {
         public FooView() => InitializeComponent();
 

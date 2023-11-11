@@ -19,18 +19,12 @@ public static class BitmapMixins
     /// </summary>
     /// <param name="value">The bitmap to convert.</param>
     /// <returns>A <see cref="Drawable"/> bitmap.</returns>
-    public static Drawable ToNative(this IBitmap value)
+    public static Drawable ToNative(this IBitmap value) => value switch
     {
-        switch (value)
-        {
-            case null:
-                throw new System.ArgumentNullException(nameof(value));
-            case AndroidBitmap androidBitmap:
-                return new BitmapDrawable(Application.Context.Resources, androidBitmap.Inner);
-            default:
-                return ((DrawableBitmap)value).Inner;
-        }
-    }
+        null => throw new System.ArgumentNullException(nameof(value)),
+        AndroidBitmap androidBitmap => new BitmapDrawable(Application.Context.Resources, androidBitmap.Inner),
+        _ => ((DrawableBitmap)value).Inner,
+    };
 
     /// <summary>
     /// Converts a <see cref="Bitmap"/> to a splat <see cref="IBitmap"/>.
@@ -40,10 +34,14 @@ public static class BitmapMixins
     /// <returns>A <see cref="IBitmap"/> bitmap.</returns>
     public static IBitmap FromNative(this Bitmap value, bool copy = false)
     {
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(value);
+#else
         if (value is null)
         {
             throw new System.ArgumentNullException(nameof(value));
         }
+#endif
 
         if (copy)
         {

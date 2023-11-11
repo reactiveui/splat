@@ -51,7 +51,7 @@ internal sealed class CocoaBitmap(UIImage inner) : IBitmap
         return Task.Run(() =>
         {
 #if UIKIT
-            var data = format == CompressedBitmapFormat.Jpeg ? _inner.AsJPEG((float)quality) : _inner.AsPNG();
+            var data = (format == CompressedBitmapFormat.Jpeg ? _inner.AsJPEG((float)quality) : _inner.AsPNG())!;
             data.AsStream().CopyTo(target);
 
 #else

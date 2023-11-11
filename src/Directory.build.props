@@ -26,7 +26,7 @@
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <ImplicitUsings>true</ImplicitUsings>
     <LangVersion>preview</LangVersion>
-    <NoWarn>$(NoWarn);VSSpell001</NoWarn>
+    <NoWarn>$(NoWarn);VSSpell001;SA1010</NoWarn>
 
     <!-- disable sourcelink on mono, to workaround https://github.com/dotnet/sourcelink/issues/155 -->
     <EnableSourceLink Condition=" '$(OS)' != 'Windows_NT' AND '$(MSBuildRuntimeType)' != 'Core' ">false</EnableSourceLink>
@@ -52,13 +52,13 @@
   </PropertyGroup>
 
   <ItemGroup Condition="$(IsTestProject) or $(MSBuildProjectName.Contains('TestRunner'))">
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="xunit" Version="2.6.1" />
     <PackageReference Include="Xunit.StaFact" Version="1.1.11" />
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
     <PackageReference Include="Microsoft.Reactive.Testing" Version="6.0.0" />
     <PackageReference Include="PublicApiGenerator" Version="11.0.0" />
-    <PackageReference Include="Verify.Xunit" Version="22.1.4" />
+    <PackageReference Include="Verify.Xunit" Version="22.2.0" />
   </ItemGroup>
 
   <ItemGroup Condition="$(IsTestProject)">
@@ -82,7 +82,7 @@
   <ItemGroup>
     <PackageReference Include="Nerdbank.GitVersioning" Version="3.6.133" PrivateAssets="all" />
     <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.507" PrivateAssets="all" />
-    <PackageReference Include="Roslynator.Analyzers" Version="4.6.1" PrivateAssets="All" />
+    <PackageReference Include="Roslynator.Analyzers" Version="4.6.2" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>

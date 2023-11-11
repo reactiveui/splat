@@ -33,10 +33,14 @@ public static class RectExtensions
     /// <returns>A <see cref="System.Drawing.Rectangle"/> of the value.</returns>
     public static System.Drawing.Rectangle FromNative(this Rect value)
     {
-        if (value is null)
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(value);
+#else
+        if (value == null)
         {
             throw new System.ArgumentNullException(nameof(value));
         }
+#endif
 
         return new(value.Left, value.Top, value.Width(), value.Height());
     }
@@ -48,10 +52,14 @@ public static class RectExtensions
     /// <returns>A <see cref="System.Drawing.RectangleF"/> of the value.</returns>
     public static System.Drawing.RectangleF FromNative(this RectF value)
     {
-        if (value is null)
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(value);
+#else
+        if (value == null)
         {
             throw new System.ArgumentNullException(nameof(value));
         }
+#endif
 
         return new(value.Left, value.Top, value.Width(), value.Height());
     }

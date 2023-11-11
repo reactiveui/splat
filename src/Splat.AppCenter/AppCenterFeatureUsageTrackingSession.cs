@@ -52,7 +52,7 @@ public sealed class AppCenterFeatureUsageTrackingSession : IFeatureUsageTracking
         Microsoft.AppCenter.Crashes.Crashes.TrackError(exception, properties);
     }
 
-    private IDictionary<string, string> GetProperties()
+    private Dictionary<string, string> GetProperties()
     {
         var properties = new Dictionary<string, string>
         {

@@ -43,12 +43,12 @@ public class SplatColorTests
         Assert.NotNull(splatColor.Name);
     }
 
-    private static IEnumerable<object[]> GetEnumAsTestTheory()
-    {
-        var values = Enum.GetValues(typeof(KnownColor));
-        var results = new List<object[]>(values.Length);
-        results.AddRange(values.Cast<object?>().Select(value => new[] { value! }));
+    ////private static IEnumerable<object[]> GetEnumAsTestTheory()
+    ////{
+    ////    var values = Enum.GetValues(typeof(KnownColor));
+    ////    var results = new List<object[]>(values.Length);
+    ////    results.AddRange(values.Cast<object?>().Select(value => new[] { value! }));
 
-        return results;
-    }
+    ////    return results;
+    ////}
 }

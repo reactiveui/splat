@@ -75,7 +75,7 @@ public class ExceptionlessLoggerTests : FullLoggerTestBase
         logTarget.Logs.Add(tuple);
     }
 
-    private class InMemoryExceptionlessLogTarget : IMockLogTarget
+    private sealed class InMemoryExceptionlessLogTarget : IMockLogTarget
     {
         public InMemoryExceptionlessLogTarget() => Logs = new List<(LogLevel logLevel, string message)>();
 

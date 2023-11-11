@@ -491,7 +491,6 @@ namespace Splat
     {
         public LoggingException() { }
         public LoggingException(string message) { }
-        protected LoggingException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public LoggingException(string message, System.Exception innerException) { }
     }
     public sealed class MemoizingMRUCache<TParam, TVal>

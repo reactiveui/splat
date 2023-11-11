@@ -47,10 +47,14 @@ internal sealed class CompositeDisposable : IDisposable
     /// <exception cref="ArgumentException">Any of the disposables in the <paramref name="disposables"/> collection is <c>null</c>.</exception>
     public CompositeDisposable(params IDisposable[] disposables)
     {
+#if NETSTANDARD
         if (disposables is null)
         {
             throw new ArgumentNullException(nameof(disposables));
         }
+#else
+        ArgumentNullException.ThrowIfNull(disposables);
+#endif
 
         _disposables = new(disposables.Length);
         Init(disposables);

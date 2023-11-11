@@ -86,7 +86,7 @@ public class FuncDependencyResolver(
 
         foreach (var callback in callbackList)
         {
-            var disp = new BooleanDisposable();
+            using var disp = new BooleanDisposable();
 
             callback(disp);
 
@@ -136,14 +136,15 @@ public class FuncDependencyResolver(
     {
         var pair = (serviceType, contract ?? string.Empty);
 
-        if (!_callbackRegistry.ContainsKey(pair))
+        if (!_callbackRegistry.TryGetValue(pair, out var value))
         {
-            _callbackRegistry[pair] = [];
+            value = [];
+            _callbackRegistry[pair] = value;
         }
 
-        _callbackRegistry[pair].Add(callback);
+        value.Add(callback);
 
-        return new ActionDisposable(() => _callbackRegistry[pair].Remove(callback));
+        return new ActionDisposable(() => value.Remove(callback));
     }
 
     /// <inheritdoc />

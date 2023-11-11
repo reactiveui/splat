@@ -19,7 +19,7 @@ namespace Splat.Tests.Logging;
 /// </summary>
 public class SerilogLoggerTests : FullLoggerTestBase
 {
-    private static readonly char[] NewLine = Environment.NewLine.ToCharArray();
+    private static readonly char[] _newLine = Environment.NewLine.ToCharArray();
 
     /// <summary>
     /// Gets a list of mappings of Serilog levels and equivalent Splat log levels.
@@ -66,7 +66,7 @@ public class SerilogLoggerTests : FullLoggerTestBase
             logger.Log().Debug<DummyObjectClass2>("This is a test.");
 
             Assert.Equal(1, target.Logs.Count);
-            Assert.Equal("This is a test.", target.Logs.Last().message!.Trim(NewLine).Trim());
+            Assert.Equal("This is a test.", target.Logs.Last().message!.Trim(_newLine).Trim());
         }
         finally
         {
@@ -94,7 +94,7 @@ public class SerilogLoggerTests : FullLoggerTestBase
             logger.Log().Debug<DummyObjectClass2>("This is a test.");
 
             Assert.Equal(1, target.Logs.Count);
-            Assert.Equal("This is a test.", target.Logs.Last().message!.Trim(NewLine).Trim());
+            Assert.Equal("This is a test.", target.Logs.Last().message!.Trim(_newLine).Trim());
         }
         finally
         {
@@ -125,7 +125,7 @@ public class SerilogLoggerTests : FullLoggerTestBase
         return (log, messages);
     }
 
-    private class LogTarget : ILogEventSink, IMockLogTarget
+    private sealed class LogTarget : ILogEventSink, IMockLogTarget
     {
         private static readonly MessageTemplateTextFormatter _formatter = new("{Message} {Exception}", CultureInfo.InvariantCulture);
         private readonly List<(LogLevel logLevel, string message)> _logs = [];

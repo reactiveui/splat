@@ -26,10 +26,14 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
     /// <inheritdoc />
     public async Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
     {
-        if (sourceStream is null)
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(sourceStream);
+#else
+        if (sourceStream == null)
         {
             throw new ArgumentNullException(nameof(sourceStream));
         }
+#endif
 
         // this is a rough check to do with the termination check for #479
         if (sourceStream.Length < 2)
@@ -51,7 +55,7 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
         }
         else
         {
-            var opts = new BitmapFactory.Options()
+            using var opts = new BitmapFactory.Options()
             {
                 OutWidth = (int)desiredWidth.Value,
                 OutHeight = (int)desiredHeight.Value,
@@ -86,19 +90,19 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
 
         if (int.TryParse(source, out var id))
         {
-            return Task.Run(() => GetFromDrawable(res.GetDrawable(id, theme)));
+            return Task.Run<IBitmap?>(() => GetFromDrawable(res.GetDrawable(id, theme)));
         }
 
         if (_drawableList.TryGetValue(source, out var value))
         {
-            return Task.Run(() => GetFromDrawable(res.GetDrawable(value, theme)));
+            return Task.Run<IBitmap?>(() => GetFromDrawable(res.GetDrawable(value, theme)));
         }
 
         // NB: On iOS, you have to pass the extension, but on Android it's
         // stripped - try stripping the extension to see if there's a Drawable.
         var key = System.IO.Path.GetFileNameWithoutExtension(source);
         return _drawableList.TryGetValue(key, out var intValue)
-            ? Task.Run(() => GetFromDrawable(res.GetDrawable(intValue, theme)))
+            ? Task.Run<IBitmap?>(() => GetFromDrawable(res.GetDrawable(intValue, theme)))
             : throw new ArgumentException("Either pass in an integer ID cast to a string, or the name of a drawable resource");
     }
 
@@ -107,7 +111,9 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
     {
         var config = Bitmap.Config.Argb8888 ?? throw new InvalidOperationException("The ARGB8888 bitmap format is unavailable");
 
+#pragma warning disable CA2000 // Dispose objects before losing scope
         return Bitmap.CreateBitmap((int)width, (int)height, config)?.FromNative();
+#pragma warning restore CA2000 // Dispose objects before losing scope
     }
 
     internal static Dictionary<string, int> GetDrawableList(IFullLogger? log)
@@ -150,7 +156,7 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
             // as of July 2019.
             return e.Types is not null
                 ? e.Types.Where(x => x is not null).Select(x => x!).ToArray()
-                : Array.Empty<Type>();
+                : [];
         }
     }
 
@@ -203,7 +209,7 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
         return result;
     }
 
-    private static IBitmap? GetFromDrawable(Android.Graphics.Drawables.Drawable? drawable) => drawable is null ? null : new DrawableBitmap(drawable);
+    private static DrawableBitmap? GetFromDrawable(Android.Graphics.Drawables.Drawable? drawable) => drawable is null ? null : new DrawableBitmap(drawable);
 
     /// <summary>
     /// Checks to make sure the last 2 bytes are as expected.

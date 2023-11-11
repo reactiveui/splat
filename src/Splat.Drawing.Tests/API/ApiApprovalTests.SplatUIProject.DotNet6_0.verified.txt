@@ -17,7 +17,6 @@ namespace Splat
     {
         public BitmapLoaderException() { }
         public BitmapLoaderException(string message) { }
-        protected BitmapLoaderException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public BitmapLoaderException(string message, System.Exception innerException) { }
     }
     public static class BitmapMixins

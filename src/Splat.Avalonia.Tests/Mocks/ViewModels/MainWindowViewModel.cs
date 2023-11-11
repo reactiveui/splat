@@ -2,7 +2,7 @@
 
 namespace ReactiveUIDemo.ViewModels
 {
-    internal class MainWindowViewModel : ReactiveObject
+    internal sealed class MainWindowViewModel : ReactiveObject
     {
         public RoutedViewHostPageViewModel RoutedViewHost { get; } = new();
     }

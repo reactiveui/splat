@@ -71,7 +71,11 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
                 var exeName = new FileInfo(entry.Location).Name;
 
                 if (designEnvironments.Any(x =>
+#if NETSTANDARD || NETFRAMEWORK || TIZEN
                     x.IndexOf(exeName, StringComparison.InvariantCultureIgnoreCase) != -1))
+#else
+                    x.Contains(exeName, StringComparison.InvariantCultureIgnoreCase)))
+#endif
                 {
                     _cachedInDesignModeResult = true;
                 }

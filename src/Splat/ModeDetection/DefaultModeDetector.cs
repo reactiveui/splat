@@ -44,5 +44,9 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
             .Select(x => x.FullName?.ToUpperInvariant())
             .Where(x => x is not null)
             .Select(x => x!)
+#if NETSTANDARD
             .Any(x => assemblyList.Any(name => x.IndexOf(name, StringComparison.InvariantCultureIgnoreCase) != -1));
+#else
+            .Any(x => assemblyList.Any(name => x.Contains(name, StringComparison.InvariantCultureIgnoreCase)));
+#endif
 }
