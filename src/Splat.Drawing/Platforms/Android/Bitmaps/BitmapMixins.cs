@@ -21,7 +21,7 @@ public static class BitmapMixins
     /// <returns>A <see cref="Drawable"/> bitmap.</returns>
     public static Drawable ToNative(this IBitmap value) => value switch
     {
-        null => throw new System.ArgumentNullException(nameof(value)),
+        null => throw new ArgumentNullException(nameof(value)),
         AndroidBitmap androidBitmap => new BitmapDrawable(Application.Context.Resources, androidBitmap.Inner),
         _ => ((DrawableBitmap)value).Inner,
     };
@@ -39,7 +39,7 @@ public static class BitmapMixins
 #else
         if (value is null)
         {
-            throw new System.ArgumentNullException(nameof(value));
+            throw new ArgumentNullException(nameof(value));
         }
 #endif
 

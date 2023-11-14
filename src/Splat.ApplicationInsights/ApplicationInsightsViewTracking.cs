@@ -32,7 +32,7 @@ public sealed class ApplicationInsightsViewTracking(TelemetryClient telemetryCli
     /// <param name="telemetry">Telemetry data.</param>
     public void OnViewNavigation(PageViewTelemetry telemetry)
     {
-        var pageViewTelemetry = GetPageViewTelemetry();
+        _ = GetPageViewTelemetry();
         _telemetryClient.TrackPageView(telemetry);
     }
 

@@ -74,7 +74,7 @@ internal class InternalLocator : IDisposable
             {
                 // NB: Prevent deadlocks should we reenter this setter from
                 // the callbacks
-                currentCallbacks = _resolverChanged.ToArray();
+                currentCallbacks = [.. _resolverChanged];
             }
 
             foreach (var block in currentCallbacks)

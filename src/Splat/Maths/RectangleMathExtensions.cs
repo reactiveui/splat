@@ -28,8 +28,7 @@ public static class RectangleMathExtensions
     /// <returns>The set of rectnagles that are generated.</returns>
     public static Tuple<RectangleF, RectangleF> Divide(this RectangleF value, float amount, RectEdge fromEdge)
     {
-        var delta = default(float);
-
+        float delta;
         switch (fromEdge)
         {
         case RectEdge.Left:
@@ -74,11 +73,12 @@ public static class RectangleMathExtensions
     }
 
     /// <summary>
-    /// Vertically inverts the coordinates of the rectangle within containingRect.
-    ///
+    /// <para>Vertically inverts the coordinates of the rectangle within containingRect.</para>
+    /// <para>
     /// value can effectively be used to change the coordinate system of a rectangle.
     /// For example, if `rect` is defined for a coordinate system starting at the
     /// top-left, the result will be a rectangle relative to the bottom-left.
+    /// </para>
     /// </summary>
     /// <param name="value">The rectangle to perform the calculation against.</param>
     /// <param name="containingRect">The containing rectangle.</param>
@@ -87,10 +87,11 @@ public static class RectangleMathExtensions
         value with { Y = containingRect.Height - value.Bottom };
 
     /// <summary>
-    /// Creates a new RectangleF as a Copy of an existing one .
-    ///
+    /// <para>Creates a new RectangleF as a Copy of an existing one .</para>
+    /// <para>
     /// value is useful when you have a rectangle that is almost what you
     /// want, but you just want to change a couple properties.
+    /// </para>
     /// </summary>
     /// <param name="value">The rectangle to perform the calculation against.</param>
     /// <param name="x">Optional new x coordinate of the rectangle to use.</param>

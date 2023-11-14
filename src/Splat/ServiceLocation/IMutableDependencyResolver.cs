@@ -45,11 +45,14 @@ public interface IMutableDependencyResolver
     void UnregisterAll(Type? serviceType, string? contract = null);
 
     /// <summary>
+    /// <para>
     /// Register a callback to be called when a new service matching the type
     /// and contract is registered.
-    ///
+    /// </para>
+    /// <para>
     /// When registered, the callback is also called for each currently matching
     /// service.
+    /// </para>
     /// </summary>
     /// <returns>When disposed removes the callback.</returns>
     /// <param name="serviceType">The type which is used for the registration.</param>

@@ -32,9 +32,6 @@ internal sealed class DrawableBitmap(Drawable inner) : IBitmap
     public void Dispose()
     {
         var disp = Interlocked.Exchange(ref _inner, null);
-        if (disp is not null)
-        {
-            disp.Dispose();
-        }
+        disp?.Dispose();
     }
 }

@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mindscape.Raygun4Net.NetCore" Version="7.1.0" />
+    <PackageReference Include="Mindscape.Raygun4Net.NetCore" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -38,7 +38,7 @@ public static class RectExtensions
 #else
         if (value == null)
         {
-            throw new System.ArgumentNullException(nameof(value));
+            throw new ArgumentNullException(nameof(value));
         }
 #endif
 
@@ -57,7 +57,7 @@ public static class RectExtensions
 #else
         if (value == null)
         {
-            throw new System.ArgumentNullException(nameof(value));
+            throw new ArgumentNullException(nameof(value));
         }
 #endif
 

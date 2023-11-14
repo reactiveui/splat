@@ -9,18 +9,9 @@ namespace Splat;
 /// Represents a disposable resource that can be checked for disposal status.
 /// Based on the System.Reactive.Disposable class.
 /// </summary>
-internal sealed class BooleanDisposable : IDisposable
+internal sealed class BooleanDisposable() : IDisposable
 {
     private volatile bool _isDisposed;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BooleanDisposable"/> class.
-    /// </summary>
-    public BooleanDisposable()
-    {
-    }
-
-    private BooleanDisposable(bool isDisposed) => _isDisposed = isDisposed;
 
     /// <summary>
     /// Gets a value indicating whether the object is disposed.
