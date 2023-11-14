@@ -21,15 +21,11 @@ public static class BitmapMixins
     /// </summary>
     /// <param name="value">The bitmap to convert.</param>
     /// <returns>A <see cref="UIImage"/> bitmap.</returns>
-    public static UIImage ToNative(this IBitmap value)
+    public static UIImage ToNative(this IBitmap value) => value switch
     {
-        if (value is null)
-        {
-            throw new System.ArgumentNullException(nameof(value));
-        }
-
-        return ((CocoaBitmap)value).Inner;
-    }
+        null => throw new ArgumentNullException(nameof(value)),
+        _ => ((CocoaBitmap)value).Inner
+    };
 
     /// <summary>
     /// Converts a <see cref="UIImage"/> to a splat <see cref="IBitmap"/>.
@@ -37,18 +33,9 @@ public static class BitmapMixins
     /// <param name="value">The native bitmap to convert from.</param>
     /// <param name="copy">Whether to copy the android bitmap or not.</param>
     /// <returns>A <see cref="IBitmap"/> bitmap.</returns>
-    public static IBitmap FromNative(this UIImage value, bool copy = false)
+    public static IBitmap FromNative(this UIImage value, bool copy = false) => value switch
     {
-        if (value is null)
-        {
-            throw new System.ArgumentNullException(nameof(value));
-        }
-
-        if (copy)
-        {
-            return new CocoaBitmap((UIImage)value.Copy());
-        }
-
-        return new CocoaBitmap(value);
-    }
+        null => throw new ArgumentNullException(nameof(value)),
+        _ => copy ? new CocoaBitmap((UIImage)value.Copy()) : (IBitmap)new CocoaBitmap(value)
+    };
 }

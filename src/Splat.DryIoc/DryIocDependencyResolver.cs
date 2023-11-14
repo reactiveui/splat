@@ -71,16 +71,21 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
     /// <inheritdoc />
     public virtual void Register(Func<object?> factory, Type? serviceType, string? contract = null)
     {
+#pragma warning disable RCS1256 // Invalid argument null check.
+#if NETSTANDARD || NETFRAMEWORK
         if (factory is null)
         {
             throw new ArgumentNullException(nameof(factory));
         }
 
-#pragma warning disable RCS1256 // Invalid argument null check.
         if (serviceType is null)
         {
             throw new ArgumentNullException(nameof(serviceType));
         }
+#else
+        ArgumentNullException.ThrowIfNull(factory);
+        ArgumentNullException.ThrowIfNull(serviceType);
+#endif
 #pragma warning restore RCS1256 // Invalid argument null check.
 
         if (string.IsNullOrEmpty(contract))

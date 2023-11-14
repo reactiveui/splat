@@ -2,7 +2,7 @@
 
 namespace ReactiveUIDemo.ViewModels
 {
-    internal class RoutedViewHostPageViewModel : ReactiveObject, IScreen
+    internal sealed class RoutedViewHostPageViewModel : ReactiveObject, IScreen
     {
         public RoutedViewHostPageViewModel()
         {

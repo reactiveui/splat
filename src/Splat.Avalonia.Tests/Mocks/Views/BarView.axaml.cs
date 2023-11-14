@@ -5,7 +5,7 @@ using ReactiveUIDemo.ViewModels;
 
 namespace ReactiveUIDemo.Views
 {
-    internal partial class BarView : UserControl, IViewFor<BarViewModel>
+    internal sealed partial class BarView : UserControl, IViewFor<BarViewModel>
     {
         public BarView() => InitializeComponent();
 

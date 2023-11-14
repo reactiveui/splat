@@ -16,16 +16,9 @@ public sealed class AppCenterViewTracking : IViewTracking
     /// Track a view navigation using just a name.
     /// </summary>
     /// <param name="name">Name of the view.</param>
-    public void OnViewNavigation(string name)
-    {
-        var properties = GetProperties(name);
+    public void OnViewNavigation(string name) =>
+        Microsoft.AppCenter.Analytics.Analytics.TrackEvent("PageView", GetProperties(name));
 
-        Microsoft.AppCenter.Analytics.Analytics.TrackEvent("PageView", properties);
-    }
-
-    private static IDictionary<string, string> GetProperties(string name) =>
-        new Dictionary<string, string>
-        {
-            { "Name", name },
-        };
+    private static Dictionary<string, string> GetProperties(string name) =>
+        new() { { "Name", name }, };
 }

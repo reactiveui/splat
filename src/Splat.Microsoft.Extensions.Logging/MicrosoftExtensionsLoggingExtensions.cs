@@ -51,10 +51,14 @@ public static class MicrosoftExtensionsLoggingExtensions
     /// <returns>The logging builder.</returns>
     public static ILoggingBuilder AddSplat(this ILoggingBuilder builder)
     {
+#if NETSTANDARD || NETFRAMEWORK
         if (builder is null)
         {
             throw new System.ArgumentNullException(nameof(builder));
         }
+#else
+        ArgumentNullException.ThrowIfNull(builder);
+#endif
 
         builder.Services.AddSingleton<ILoggerProvider, MicrosoftExtensionsLogProvider>();
 
@@ -68,12 +72,18 @@ public static class MicrosoftExtensionsLoggingExtensions
     /// <returns>The factory.</returns>
     public static ILoggerFactory AddSplat(this ILoggerFactory loggerFactory)
     {
+#if NETSTANDARD || NETFRAMEWORK
         if (loggerFactory is null)
         {
             throw new System.ArgumentNullException(nameof(loggerFactory));
         }
+#else
+        ArgumentNullException.ThrowIfNull(loggerFactory);
+#endif
 
+#pragma warning disable CA2000 // Dispose objects before losing scope
         loggerFactory.AddProvider(new MicrosoftExtensionsLogProvider());
+#pragma warning restore CA2000 // Dispose objects before losing scope
         return loggerFactory;
     }
 }

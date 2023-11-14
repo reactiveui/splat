@@ -35,11 +35,14 @@ namespace Avalonia.ReactiveUI.Splat
                     {
                         return;
                     }
-
+#if NETSTANDARD
                     if (containerConfig is null)
                     {
                         throw new ArgumentNullException(nameof(containerConfig));
                     }
+#else
+                    ArgumentNullException.ThrowIfNull(containerConfig);
+#endif
 
                     var builder = new ContainerBuilder();
                     var autofacResolver = new AutofacDependencyResolver(builder);
@@ -85,6 +88,7 @@ namespace Avalonia.ReactiveUI.Splat
                             return;
                         }
 
+#if NETSTANDARD
                         if (containerFactory is null)
                         {
                             throw new ArgumentNullException(nameof(containerFactory));
@@ -99,6 +103,11 @@ namespace Avalonia.ReactiveUI.Splat
                         {
                             throw new ArgumentNullException(nameof(dependencyResolverFactory));
                         }
+#else
+                        ArgumentNullException.ThrowIfNull(containerFactory);
+                        ArgumentNullException.ThrowIfNull(containerConfig);
+                        ArgumentNullException.ThrowIfNull(dependencyResolverFactory);
+#endif
 
                         var container = containerFactory();
                         Locator.CurrentMutable.RegisterConstant(container, typeof(TContainer));

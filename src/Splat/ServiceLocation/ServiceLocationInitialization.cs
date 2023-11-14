@@ -18,10 +18,14 @@ public static class ServiceLocationInitialization
     /// <param name="resolver">The resolver to register the needed service types against.</param>
     public static void InitializeSplat(this IMutableDependencyResolver resolver)
     {
+#if NETSTANDARD
         if (resolver is null)
         {
             throw new System.ArgumentNullException(nameof(resolver));
         }
+#else
+        System.ArgumentNullException.ThrowIfNull(resolver);
+#endif
 
         RegisterDefaultLogManager(resolver);
         RegisterLogger(resolver);

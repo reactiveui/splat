@@ -2,7 +2,7 @@
 
 namespace ReactiveUIDemo.ViewModels
 {
-    internal class FooViewModel(IScreen screen) : ReactiveObject, IRoutableViewModel
+    internal sealed class FooViewModel(IScreen screen) : ReactiveObject, IRoutableViewModel
     {
         public string UrlPathSegment => "Foo";
 

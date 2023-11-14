@@ -315,8 +315,10 @@ public sealed class StaticLoggerTests
 
         private static StaticFullLogger GetLogger(LogLevel logLevel)
         {
-            var textLogger = new TextLogger();
-            textLogger.Level = logLevel;
+            var textLogger = new TextLogger
+            {
+                Level = logLevel
+            };
 
             var wrappingFullLogger = new WrappingFullLogger(textLogger);
             return new(wrappingFullLogger);
@@ -332,10 +334,10 @@ public sealed class StaticLoggerTests
             Assert.Equal(1, textLogger.Logs.Count);
             var line = textLogger.Logs.First();
 
-            var startOfCallerMemberSuffix = line.message.IndexOf("(", StringComparison.Ordinal);
+            var startOfCallerMemberSuffix = line.message.IndexOf('(', StringComparison.Ordinal);
             Assert.True(startOfCallerMemberSuffix > 0);
 
-            var endOfCallerMemberSuffix = line.message.IndexOf(")", startOfCallerMemberSuffix, StringComparison.Ordinal);
+            var endOfCallerMemberSuffix = line.message.IndexOf(')', startOfCallerMemberSuffix);
             Assert.True(endOfCallerMemberSuffix > startOfCallerMemberSuffix + 1);
         }
     }

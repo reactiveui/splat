@@ -4,7 +4,7 @@
     <TargetFrameworks>net6.0-windows10.0.17763.0</TargetFrameworks>
 
     <IsPackable>false</IsPackable>
-    <NoWarn>$(NoWarn);1591;CA1707;SA1633;CA2000</NoWarn>
+    <NoWarn>$(NoWarn);1591;CA1707;SA1633;CA2000;CA1851</NoWarn>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 

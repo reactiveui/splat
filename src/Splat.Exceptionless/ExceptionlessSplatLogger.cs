@@ -16,13 +16,13 @@ namespace Splat.Exceptionless;
 public sealed class ExceptionlessSplatLogger : ILogger
 {
     private static readonly KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>[] _mappings =
-    {
+    [
         new(LogLevel.Debug, global::Exceptionless.Logging.LogLevel.Debug),
         new(LogLevel.Info, global::Exceptionless.Logging.LogLevel.Info),
         new(LogLevel.Warn, global::Exceptionless.Logging.LogLevel.Warn),
         new(LogLevel.Error, global::Exceptionless.Logging.LogLevel.Error),
         new(LogLevel.Fatal, global::Exceptionless.Logging.LogLevel.Fatal),
-    };
+    ];
 
     private static readonly ImmutableDictionary<LogLevel, global::Exceptionless.Logging.LogLevel> _mappingsDictionary = _mappings.ToImmutableDictionary();
 
@@ -38,10 +38,14 @@ public sealed class ExceptionlessSplatLogger : ILogger
         Type sourceType,
         ExceptionlessClient exceptionlessClient)
     {
+#if NETSTANDARD || NETFRAMEWORK
         if (sourceType is null)
         {
             throw new ArgumentNullException(nameof(sourceType));
         }
+#else
+        ArgumentNullException.ThrowIfNull(sourceType);
+#endif
 
         _sourceType = sourceType.FullName ?? throw new ArgumentException("Cannot find the source type name", nameof(sourceType));
         _exceptionlessClient = exceptionlessClient ?? throw new ArgumentNullException(nameof(exceptionlessClient));
@@ -82,10 +86,14 @@ public sealed class ExceptionlessSplatLogger : ILogger
     /// <inheritdoc />
     public void Write(string message, Type type, LogLevel logLevel)
     {
+#if NETSTANDARD || NETFRAMEWORK
         if (type is null)
         {
             throw new ArgumentNullException(nameof(type));
         }
+#else
+        ArgumentNullException.ThrowIfNull(type);
+#endif
 
         if ((int)logLevel < (int)Level)
         {
@@ -98,10 +106,14 @@ public sealed class ExceptionlessSplatLogger : ILogger
     /// <inheritdoc />
     public void Write(Exception exception, string message, Type type, LogLevel logLevel)
     {
+#if NETSTANDARD || NETFRAMEWORK
         if (type is null)
         {
             throw new ArgumentNullException(nameof(type));
         }
+#else
+        ArgumentNullException.ThrowIfNull(type);
+#endif
 
         if ((int)logLevel < (int)Level)
         {
@@ -113,22 +125,18 @@ public sealed class ExceptionlessSplatLogger : ILogger
 
     private void CreateLog(string message, global::Exceptionless.Logging.LogLevel level) => CreateLog(_sourceType, message, level);
 
-    private void CreateLog(string type, string message, global::Exceptionless.Logging.LogLevel level)
-    {
+    private void CreateLog(string type, string message, global::Exceptionless.Logging.LogLevel level) =>
         _exceptionlessClient.SubmitLog(type, message, level);
-    }
 
     private void CreateLog(Exception exception, string message, global::Exceptionless.Logging.LogLevel level) => CreateLog(exception, _sourceType, message, level);
 
-    private void CreateLog(Exception exception, string type, string message, global::Exceptionless.Logging.LogLevel level)
-    {
+    private void CreateLog(Exception exception, string type, string message, global::Exceptionless.Logging.LogLevel level) =>
         _exceptionlessClient.CreateLog(
             type,
             message,
             level)
             .SetException(exception)
             .Submit();
-    }
 
     /// <summary>
     /// Works out the log level.

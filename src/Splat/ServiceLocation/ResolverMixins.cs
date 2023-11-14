@@ -20,10 +20,14 @@ public static class ResolverMixins
     public static IMutableDependencyResolver RegisterAnd<T>(this IMutableDependencyResolver resolver, string? contract = null)
         where T : new()
     {
+#if NETSTANDARD
         if (resolver is null)
         {
             throw new ArgumentNullException(nameof(resolver));
         }
+#else
+        ArgumentNullException.ThrowIfNull(resolver);
+#endif
 
         resolver.Register(() => new T(), typeof(T), contract);
         return resolver;
@@ -39,6 +43,7 @@ public static class ResolverMixins
     /// <returns>The resolver.</returns>
     public static IMutableDependencyResolver RegisterAnd<T>(this IMutableDependencyResolver resolver, Func<T> factory, string? contract = null)
     {
+#if NETSTANDARD
         if (resolver is null)
         {
             throw new ArgumentNullException(nameof(resolver));
@@ -48,6 +53,10 @@ public static class ResolverMixins
         {
             throw new ArgumentNullException(nameof(factory));
         }
+#else
+        ArgumentNullException.ThrowIfNull(resolver);
+        ArgumentNullException.ThrowIfNull(factory);
+#endif
 
         resolver.Register(() => factory()!, typeof(T), contract);
         return resolver;
@@ -64,10 +73,14 @@ public static class ResolverMixins
     public static IMutableDependencyResolver RegisterAnd<TAs, T>(this IMutableDependencyResolver resolver, string? contract = null)
         where T : new()
     {
+#if NETSTANDARD
         if (resolver is null)
         {
             throw new ArgumentNullException(nameof(resolver));
         }
+#else
+        ArgumentNullException.ThrowIfNull(resolver);
+#endif
 
         resolver.Register(() => new T(), typeof(TAs), contract);
         return resolver;
@@ -84,6 +97,7 @@ public static class ResolverMixins
     /// <returns>The resolver.</returns>
     public static IMutableDependencyResolver RegisterAnd<TAs, T>(this IMutableDependencyResolver resolver, Func<T> factory, string? contract = null)
     {
+#if NETSTANDARD
         if (resolver is null)
         {
             throw new ArgumentNullException(nameof(resolver));
@@ -93,6 +107,10 @@ public static class ResolverMixins
         {
             throw new ArgumentNullException(nameof(factory));
         }
+#else
+        ArgumentNullException.ThrowIfNull(resolver);
+        ArgumentNullException.ThrowIfNull(factory);
+#endif
 
         resolver.Register(() => factory()!, typeof(TAs), contract);
         return resolver;
@@ -108,10 +126,14 @@ public static class ResolverMixins
     /// <returns>The resolver.</returns>
     public static IMutableDependencyResolver RegisterConstantAnd(this IMutableDependencyResolver resolver, object value, Type serviceType, string? contract = null)
     {
+#if NETSTANDARD
         if (resolver is null)
         {
             throw new ArgumentNullException(nameof(resolver));
         }
+#else
+        ArgumentNullException.ThrowIfNull(resolver);
+#endif
 
         resolver.Register(() => value, serviceType, contract);
         return resolver;
@@ -127,10 +149,14 @@ public static class ResolverMixins
     public static IMutableDependencyResolver RegisterConstantAnd<T>(this IMutableDependencyResolver resolver, string? contract = null)
         where T : new()
     {
+#if NETSTANDARD
         if (resolver is null)
         {
             throw new ArgumentNullException(nameof(resolver));
         }
+#else
+        ArgumentNullException.ThrowIfNull(resolver);
+#endif
 
         var value = new T();
         return resolver.RegisterAnd(() => value, contract);
@@ -146,10 +172,14 @@ public static class ResolverMixins
     /// <returns>The resolver.</returns>
     public static IMutableDependencyResolver RegisterConstantAnd<T>(this IMutableDependencyResolver resolver, T value, string? contract = null)
     {
+#if NETSTANDARD
         if (resolver is null)
         {
             throw new ArgumentNullException(nameof(resolver));
         }
+#else
+        ArgumentNullException.ThrowIfNull(resolver);
+#endif
 
         return resolver.RegisterAnd(() => value, contract);
     }
@@ -165,10 +195,14 @@ public static class ResolverMixins
     /// <returns>The resolver.</returns>
     public static IMutableDependencyResolver RegisterLazySingletonAnd(this IMutableDependencyResolver resolver, Func<object> valueFactory, Type serviceType, string? contract = null)
     {
+#if NETSTANDARD
         if (resolver is null)
         {
             throw new ArgumentNullException(nameof(resolver));
         }
+#else
+        ArgumentNullException.ThrowIfNull(resolver);
+#endif
 
         var val = new Lazy<object>(valueFactory, LazyThreadSafetyMode.ExecutionAndPublication);
         resolver.Register(() => val.Value, serviceType, contract);
@@ -186,10 +220,14 @@ public static class ResolverMixins
     public static IMutableDependencyResolver RegisterLazySingletonAnd<T>(this IMutableDependencyResolver resolver, string? contract = null)
         where T : new()
     {
+#if NETSTANDARD
         if (resolver is null)
         {
             throw new ArgumentNullException(nameof(resolver));
         }
+#else
+        ArgumentNullException.ThrowIfNull(resolver);
+#endif
 
         var val = new Lazy<object>(() => new T(), LazyThreadSafetyMode.ExecutionAndPublication);
         resolver.Register(() => val.Value, typeof(T), contract);
@@ -207,10 +245,14 @@ public static class ResolverMixins
     /// <returns>The resolver.</returns>
     public static IMutableDependencyResolver RegisterLazySingletonAnd<T>(this IMutableDependencyResolver resolver, Func<T> valueFactory, string? contract = null)
     {
+#if NETSTANDARD
         if (resolver is null)
         {
             throw new ArgumentNullException(nameof(resolver));
         }
+#else
+        ArgumentNullException.ThrowIfNull(resolver);
+#endif
 
         var val = new Lazy<object>(() => valueFactory()!, LazyThreadSafetyMode.ExecutionAndPublication);
         resolver.Register(() => val.Value, typeof(T), contract);

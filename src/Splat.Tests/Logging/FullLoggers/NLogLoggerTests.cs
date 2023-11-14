@@ -16,7 +16,7 @@ namespace Splat.Tests.Logging;
 /// </summary>
 public class NLogLoggerTests : FullLoggerTestBase
 {
-    private static readonly Dictionary<global::NLog.LogLevel, LogLevel> _NLog2Splat = new()
+    private static readonly Dictionary<global::NLog.LogLevel, LogLevel> _nLog2Splat = new()
     {
             { global::NLog.LogLevel.Debug, LogLevel.Debug },
             { global::NLog.LogLevel.Error, LogLevel.Error },
@@ -53,7 +53,7 @@ public class NLogLoggerTests : FullLoggerTestBase
         return (new NLogLogger(LogManager.GetCurrentClassLogger()), errorTarget);
     }
 
-    private class MemoryTargetWrapper : TargetWithLayout, IMockLogTarget
+    private sealed class MemoryTargetWrapper : TargetWithLayout, IMockLogTarget
     {
         private readonly List<(LogLevel, string)> _logs = [];
 
@@ -65,6 +65,6 @@ public class NLogLoggerTests : FullLoggerTestBase
         /// Renders the logging event message and adds it to the internal ArrayList of log messages.
         /// </summary>
         /// <param name="logEvent">The logging event.</param>
-        protected override void Write(LogEventInfo logEvent) => _logs.Add((_NLog2Splat[logEvent.Level], RenderLogEvent(Layout, logEvent)));
+        protected override void Write(LogEventInfo logEvent) => _logs.Add((_nLog2Splat[logEvent.Level], RenderLogEvent(Layout, logEvent)));
     }
 }

@@ -22,7 +22,7 @@ public class ConsoleLoggerTests : FullLoggerTestBase
         return (new WrappingFullLogger(new WrappingLogLevelLogger(new ConsoleLogger { Level = minimumLogLevel, ExceptionMessageFormat = "{0} {1}" })), outputWriter);
     }
 
-    private class ConsoleWriter : TextWriter, IMockLogTarget
+    private sealed class ConsoleWriter : TextWriter, IMockLogTarget
     {
         private readonly List<(LogLevel logLevel, string message)> _logs = [];
 
@@ -32,7 +32,7 @@ public class ConsoleLoggerTests : FullLoggerTestBase
 
         public override void WriteLine(string? value)
         {
-            var colonIndex = value!.IndexOf(":", StringComparison.InvariantCulture);
+            var colonIndex = value!.IndexOf(':', StringComparison.InvariantCulture);
             var level = (LogLevel)Enum.Parse(typeof(LogLevel), value.AsSpan(0, colonIndex));
             var message = value.Substring(colonIndex + 1).Trim();
             _logs.Add((level, message));

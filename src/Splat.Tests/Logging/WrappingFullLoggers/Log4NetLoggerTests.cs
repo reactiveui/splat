@@ -77,7 +77,7 @@ public class Log4NetLoggerTests : FullLoggerTestBase
         return memoryWrapper;
     }
 
-    private class MemoryTargetWrapper(global::log4net.Appender.MemoryAppender memoryTarget) : IMockLogTarget
+    private sealed class MemoryTargetWrapper(global::log4net.Appender.MemoryAppender memoryTarget) : IMockLogTarget
     {
         public global::log4net.Appender.MemoryAppender MemoryTarget { get; } = memoryTarget;
 
@@ -90,12 +90,11 @@ public class Log4NetLoggerTests : FullLoggerTestBase
                 {
                     var currentLevel = _log4Net2Splat[x.Level];
 
-                    if (x.ExceptionObject is not null)
+                    return x.ExceptionObject switch
                     {
-                        return (currentLevel, $"{x.MessageObject} {x.ExceptionObject}");
-                    }
-
-                    return (currentLevel, x.MessageObject.ToString()!);
+                        not null => (currentLevel, $"{x.MessageObject} {x.ExceptionObject}"),
+                        _ => (currentLevel, x.MessageObject.ToString()!)
+                    };
                 }).ToList();
             }
         }

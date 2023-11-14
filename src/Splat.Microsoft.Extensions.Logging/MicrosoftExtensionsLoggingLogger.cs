@@ -55,10 +55,14 @@ public sealed class MicrosoftExtensionsLoggingLogger(global::Microsoft.Extension
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "Deliberate Usage")]
     public void Write(string message, Type type, LogLevel logLevel)
     {
+#if NETSTANDARD || NETFRAMEWORK
         if (type is null)
         {
             throw new ArgumentNullException(nameof(type));
         }
+#else
+        ArgumentNullException.ThrowIfNull(type);
+#endif
 
         using (_inner.BeginScope(type.ToString()))
         {
@@ -71,10 +75,14 @@ public sealed class MicrosoftExtensionsLoggingLogger(global::Microsoft.Extension
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "Deliberate Usage")]
     public void Write(Exception exception, string message, Type type, LogLevel logLevel)
     {
+#if NETSTANDARD || NETFRAMEWORK
         if (type is null)
         {
             throw new ArgumentNullException(nameof(type));
         }
+#else
+        ArgumentNullException.ThrowIfNull(type);
+#endif
 
         using (_inner.BeginScope(type.ToString()))
         {

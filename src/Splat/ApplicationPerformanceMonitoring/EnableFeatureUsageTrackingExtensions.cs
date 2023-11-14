@@ -17,9 +17,11 @@ public static class EnableFeatureUsageTrackingExtensions
     /// <param name="instance">instance of class that uses IEnableFeatureUsageTracking.</param>
     /// <param name="featureName">Name of the feature.</param>
     /// <returns>Feature Usage Tracking Session.</returns>
+#pragma warning disable RCS1175 // Unused 'this' parameter.
     public static IFeatureUsageTrackingSession FeatureUsageTrackingSession(
         this IEnableFeatureUsageTracking instance,
         string featureName)
+#pragma warning restore RCS1175 // Unused 'this' parameter.
     {
         var featureUsageTrackingSession = Locator.Current.GetService<IFeatureUsageTrackingManager>();
         return featureUsageTrackingSession switch
@@ -40,10 +42,14 @@ public static class EnableFeatureUsageTrackingExtensions
         string featureName,
         Action<IFeatureUsageTrackingSession> action)
     {
+#if NETSTANDARD
         if (action is null)
         {
             throw new ArgumentNullException(nameof(action));
         }
+#else
+        ArgumentNullException.ThrowIfNull(action);
+#endif
 
         using var session = instance.FeatureUsageTrackingSession(featureName);
         try
@@ -68,6 +74,7 @@ public static class EnableFeatureUsageTrackingExtensions
         string featureName,
         Action<IFeatureUsageTrackingSession> action)
     {
+#if NETSTANDARD
         if (instance is null)
         {
             throw new ArgumentNullException(nameof(instance));
@@ -77,6 +84,10 @@ public static class EnableFeatureUsageTrackingExtensions
         {
             throw new ArgumentNullException(nameof(action));
         }
+#else
+        ArgumentNullException.ThrowIfNull(instance);
+        ArgumentNullException.ThrowIfNull(action);
+#endif
 
         using var session = instance.SubFeature(featureName);
         try

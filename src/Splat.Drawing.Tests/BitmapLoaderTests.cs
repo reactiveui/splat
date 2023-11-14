@@ -17,12 +17,9 @@ public sealed class BitmapLoaderTests
     /// <summary>
     /// Gets the test data for the Load Suceeds Unit Test.
     /// </summary>
-    public static TheoryData<Func<Stream>> LoadSucceedsTestData { get; } =
-    [
-        GetPngStream,
-        GetJpegStream,
-        GetBitmapStream,
-    ];
+#pragma warning disable IDE0028 // Simplify collection initialization
+    public static TheoryData<Func<Stream>> LoadSucceedsTestData { get; } = new() { GetPngStream, GetJpegStream, GetBitmapStream };
+#pragma warning restore IDE0028 // Simplify collection initialization
 
     /// <summary>
     /// Test to ensure the bitmap loader initializes properly.
@@ -57,10 +54,7 @@ public sealed class BitmapLoaderTests
     [MemberData(nameof(LoadSucceedsTestData))]
     public void Load_Succeeds(Func<Stream> getStream)
     {
-        if (getStream is null)
-        {
-            throw new ArgumentNullException(nameof(getStream));
-        }
+        ArgumentNullException.ThrowIfNull(getStream);
 
         var instance = new Splat.PlatformBitmapLoader();
 

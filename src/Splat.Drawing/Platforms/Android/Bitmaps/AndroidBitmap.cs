@@ -38,7 +38,7 @@ internal sealed class AndroidBitmap(Bitmap inner) : IBitmap
             return Task.CompletedTask;
         }
 
-        var fmt = format == CompressedBitmapFormat.Jpeg ? Bitmap.CompressFormat.Jpeg : Bitmap.CompressFormat.Png;
+        var fmt = (format == CompressedBitmapFormat.Jpeg ? Bitmap.CompressFormat.Jpeg : Bitmap.CompressFormat.Png)!;
         return Task.Run(() => _inner.Compress(fmt, (int)(quality * 100), target));
     }
 

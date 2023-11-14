@@ -62,12 +62,13 @@ public class SimpleInjectorInitializer : IDependencyResolver
 
         lock (_lockObject)
         {
-            if (!RegisteredFactories.ContainsKey(serviceType))
+            if (!RegisteredFactories.TryGetValue(serviceType, out var value))
             {
-                RegisteredFactories.Add(serviceType, []);
+                value = [];
+                RegisteredFactories.Add(serviceType, value);
             }
 
-            RegisteredFactories[serviceType].Add(() =>
+            value.Add(() =>
                 isNull
                     ? new NullServiceType(factory)
                     : factory());

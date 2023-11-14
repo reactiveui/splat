@@ -34,10 +34,14 @@ namespace ReactiveUI.Avalonia.Splat
                         return;
                     }
 
+#if NETSTANDARD
                     if (containerConfig is null)
                     {
                         throw new ArgumentNullException(nameof(containerConfig));
                     }
+#else
+                    ArgumentNullException.ThrowIfNull(containerConfig);
+#endif
 
                     IServiceCollection serviceCollection = new ServiceCollection();
                     Locator.CurrentMutable.RegisterConstant(serviceCollection, typeof(IServiceCollection));
@@ -88,6 +92,7 @@ namespace ReactiveUI.Avalonia.Splat
                             return;
                         }
 
+#if NETSTANDARD
                         if (containerFactory is null)
                         {
                             throw new ArgumentNullException(nameof(containerFactory));
@@ -102,6 +107,11 @@ namespace ReactiveUI.Avalonia.Splat
                         {
                             throw new ArgumentNullException(nameof(dependencyResolverFactory));
                         }
+#else
+                        ArgumentNullException.ThrowIfNull(containerFactory);
+                        ArgumentNullException.ThrowIfNull(containerConfig);
+                        ArgumentNullException.ThrowIfNull(dependencyResolverFactory);
+#endif
 
                         var container = containerFactory();
                         Locator.CurrentMutable.RegisterConstant(container, typeof(TContainer));
