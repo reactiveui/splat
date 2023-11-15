@@ -12,7 +12,7 @@
   
   <ItemGroup>
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.5" />
-    <PackageReference Include="DryIoc.Dll" Version="5.4.2" />
+    <PackageReference Include="DryIoc.Dll" Version="5.4.3" />
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>
 </Project>

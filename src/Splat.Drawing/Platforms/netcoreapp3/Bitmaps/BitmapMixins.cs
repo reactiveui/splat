@@ -18,10 +18,7 @@ namespace Splat
         /// </summary>
         /// <param name="value">The bitmap to convert.</param>
         /// <returns>A <see cref="BitmapSource"/> bitmap.</returns>
-        public static IBitmap FromNative(this BitmapSource value)
-        {
-            return new BitmapSourceBitmap(value);
-        }
+        public static IBitmap FromNative(this BitmapSource value) => new BitmapSourceBitmap(value);
 
         /// <summary>
         /// Converts a <see cref="BitmapSource"/> to a splat <see cref="IBitmap"/>.

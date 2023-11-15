@@ -18,14 +18,12 @@ public static class PointMathExtensions
     /// <param name="value">The point value to use for the calculation.</param>
     /// <returns>The point that has been floored.</returns>
     public static PointF Floor(this Point value)
-    {
 #if UIKIT
         // NB: I have no idea but Archimedes does this, soooooooo....
-        return new PointF((float)Math.Floor((double)value.X), (float)Math.Floor((double)value.Y));
+        => new PointF((float)Math.Floor((double)value.X), (float)Math.Floor((double)value.Y));
 #else
-        return new((float)Math.Floor((double)value.X), (float)Math.Ceiling((double)value.Y));
+        => new((float)Math.Floor((double)value.X), (float)Math.Ceiling((double)value.Y));
 #endif
-    }
 
     /// <summary>
     /// Determines whether two points are within 'epsilon' of each other.
@@ -64,16 +62,11 @@ public static class PointMathExtensions
     /// </summary>
     /// <param name="value">The point value to use for the calculation.</param>
     /// <returns>The normalized point.</returns>
-    public static PointF Normalize(this PointF value)
+    public static PointF Normalize(this PointF value) => (float)value.Length() switch
     {
-        var length = value.Length();
-        if (length == 0.0f)
-        {
-            return value;
-        }
-
-        return new(value.X / length, value.Y / length);
-    }
+        0.0f => value,
+        _ => new(value.X / (float)value.Length(), value.Y / (float)value.Length())
+    };
 
     /// <summary>
     /// Calculates the angle in degrees of a PointF.

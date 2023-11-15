@@ -13,12 +13,12 @@ namespace Splat;
 internal sealed class TizenBitmap : IBitmap
 {
     private static readonly ImageDecoder[] _decoderList =
-    {
+    [
         new JpegDecoder(),
         new PngDecoder(),
         new BmpDecoder(),
         new GifDecoder(),
-    };
+    ];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TizenBitmap"/> class.
@@ -65,19 +65,12 @@ internal sealed class TizenBitmap : IBitmap
                     break;
                 case CompressedBitmapFormat.Png:
                     encoder = new PngEncoder();
-                    switch (qualityPercent)
+                    ((PngEncoder)encoder).Compression = qualityPercent switch
                     {
-                        case 100:
-                            ((PngEncoder)encoder).Compression = PngCompression.None;
-                            break;
-                        case < 10:
-                            ((PngEncoder)encoder).Compression = PngCompression.Level1;
-                            break;
-                        default:
-                            ((PngEncoder)encoder).Compression = (PngCompression)(qualityPercent / 10);
-                            break;
-                    }
-
+                        100 => PngCompression.None,
+                        < 10 => PngCompression.Level1,
+                        _ => (PngCompression)(qualityPercent / 10),
+                    };
                     break;
             }
 

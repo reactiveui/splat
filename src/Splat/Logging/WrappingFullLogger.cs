@@ -18,7 +18,7 @@ namespace Splat;
 public class WrappingFullLogger(ILogger inner) : AllocationFreeLoggerBase(inner), IFullLogger
 {
     private readonly ILogger _inner = inner ?? throw new ArgumentNullException(nameof(inner));
-    private readonly MethodInfo _stringFormat = typeof(string).GetMethod("Format", new[] { typeof(IFormatProvider), typeof(string), typeof(object[]) }) ?? throw new InvalidOperationException("Cannot find the Format method which is required.");
+    private readonly MethodInfo _stringFormat = typeof(string).GetMethod("Format", [typeof(IFormatProvider), typeof(string), typeof(object[])]) ?? throw new InvalidOperationException("Cannot find the Format method which is required.");
 
     /// <inheritdoc />
     public void Debug<T>(T value)

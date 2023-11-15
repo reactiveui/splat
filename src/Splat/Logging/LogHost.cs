@@ -28,12 +28,7 @@ public static class LogHost
              * return Locator.Current.GetService<IStaticFullLogger>();
              */
 
-            var factory = Locator.Current.GetService<ILogManager>();
-            if (factory is null)
-            {
-                throw new LoggingException("ILogManager is null. This should never happen, your dependency resolver is broken");
-            }
-
+            var factory = Locator.Current.GetService<ILogManager>() ?? throw new LoggingException("ILogManager is null. This should never happen, your dependency resolver is broken");
             var fullLogger = factory.GetLogger(typeof(LogHost));
 
             return new StaticFullLogger(fullLogger);
@@ -46,15 +41,16 @@ public static class LogHost
     /// <typeparam name="T">The type to get the <see cref="IFullLogger"/> for.</typeparam>
     /// <param name="logClassInstance">The class we are getting the logger for.</param>
     /// <returns>The <see cref="IFullLogger"/> for the class type.</returns>
+#pragma warning disable RCS1175 // Unused 'this' parameter.
     public static IFullLogger Log<T>(this T logClassInstance)
+#pragma warning restore RCS1175 // Unused 'this' parameter.
         where T : IEnableLogger
     {
         var factory = Locator.Current.GetService<ILogManager>();
-        if (factory is null)
+        return factory switch
         {
-            throw new InvalidOperationException("ILogManager is null. This should never happen, your dependency resolver is broken");
-        }
-
-        return factory.GetLogger<T>();
+            null => throw new InvalidOperationException("ILogManager is null. This should never happen, your dependency resolver is broken"),
+            _ => factory.GetLogger<T>()
+        };
     }
 }

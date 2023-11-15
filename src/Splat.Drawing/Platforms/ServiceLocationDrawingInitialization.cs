@@ -21,7 +21,7 @@ public static class ServiceLocationDrawingInitialization
 #else
         if (resolver == null)
         {
-            throw new System.ArgumentNullException(nameof(resolver));
+            throw new ArgumentNullException(nameof(resolver));
         }
 #endif
 

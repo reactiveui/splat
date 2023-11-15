@@ -27,12 +27,11 @@ public sealed class DefaultLogManager : ILogManager
             (type, _) =>
             {
                 var ret = dependencyResolver.GetService<ILogger>();
-                if (ret is null)
+                return ret switch
                 {
-                    throw new LoggingException("Couldn't find an ILogger. This should never happen, your dependency resolver is probably broken.");
-                }
-
-                return new WrappingFullLogger(new WrappingPrefixLogger(ret, type));
+                    null => throw new LoggingException("Couldn't find an ILogger. This should never happen, your dependency resolver is probably broken."),
+                    _ => new WrappingFullLogger(new WrappingPrefixLogger(ret, type))
+                };
             },
             64);
     }

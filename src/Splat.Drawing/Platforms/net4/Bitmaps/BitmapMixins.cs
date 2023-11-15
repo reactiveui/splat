@@ -24,13 +24,9 @@ public static class BitmapMixins
     /// </summary>
     /// <param name="value">The native bitmap to convert from.</param>
     /// <returns>A <see cref="IBitmap"/> bitmap.</returns>
-    public static BitmapSource ToNative(this IBitmap value)
+    public static BitmapSource ToNative(this IBitmap value) => value switch
     {
-        if (value is null)
-        {
-            throw new System.ArgumentNullException(nameof(value));
-        }
-
-        return ((BitmapSourceBitmap)value).Inner ?? throw new InvalidOperationException("There is not a valid bitmap");
-    }
+        null => throw new ArgumentNullException(nameof(value)),
+        _ => ((BitmapSourceBitmap)value).Inner ?? throw new InvalidOperationException("There is not a valid bitmap")
+    };
 }

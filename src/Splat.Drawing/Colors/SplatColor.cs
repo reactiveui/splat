@@ -54,7 +54,7 @@ public partial struct SplatColor : IEquatable<SplatColor>
     /// <summary>
     /// Gets a value indicating whether the current color is transparent black. Eg where R,G,B,A == 0.
     /// </summary>
-    public bool IsEmpty => _state == (short)ColorType.Empty;
+    public readonly bool IsEmpty => _state == (short)ColorType.Empty;
 
     /// <summary>
     /// Gets the alpha component of the color.
@@ -101,17 +101,17 @@ public partial struct SplatColor : IEquatable<SplatColor>
     /// <summary>
     /// Gets a value indicating whether the color is part of the <see cref="ColorType.Known"/> group.
     /// </summary>
-    public bool IsKnownColor => (_state & ((short)ColorType.Known)) != 0;
+    public readonly bool IsKnownColor => (_state & ((short)ColorType.Known)) != 0;
 
     /// <summary>
     /// Gets a value indicating whether the color is part of the <see cref="ColorType.System"/> group.
     /// </summary>
-    public bool IsSystemColor => (_state & ((short)ColorType.System)) != 0;
+    public readonly bool IsSystemColor => (_state & ((short)ColorType.System)) != 0;
 
     /// <summary>
     /// Gets a value indicating whether the color is par tof the <see cref="ColorType.Known"/> or <see cref="ColorType.Named"/> groups.
     /// </summary>
-    public bool IsNamedColor => (_state & (short)(ColorType.Known | ColorType.Named)) != 0;
+    public readonly bool IsNamedColor => (_state & (short)(ColorType.Known | ColorType.Named)) != 0;
 
 #if TARGET_JVM
     /// <summary>
@@ -352,7 +352,7 @@ public partial struct SplatColor : IEquatable<SplatColor>
 
     /// <summary>Gets the <see cref="KnownColor"/> of the current value (if one is available).</summary>
     /// <returns>Returns the KnownColor enum value for this color, 0 if is not known.</returns>
-    public KnownColor ToKnownColor() => (KnownColor)_knownColor;
+    public readonly KnownColor ToKnownColor() => (KnownColor)_knownColor;
 
     /// <inheritdoc />
     public override bool Equals(object? obj) => obj switch

@@ -8,13 +8,16 @@ using System.Diagnostics.Contracts;
 namespace Splat;
 
 /// <summary>
+/// <para>
 /// This data structure is a representation of a memoizing cache - i.e. a
 /// class that will evaluate a function, but keep a cache of recently
 /// evaluated parameters.
-///
+/// </para>
+/// <para>
 /// Since this is a memoizing cache, it is important that this function be a
 /// "pure" function in the mathematical sense - that a key *always* maps to
 /// a corresponding return value.
+/// </para>
 /// </summary>
 /// <typeparam name="TParam">The type of the parameter to the calculation function.</typeparam>
 /// <typeparam name="TVal">The type of the value returned by the calculation

@@ -27,12 +27,11 @@ public static class BitmapLoader
         get
         {
             var ret = _current;
-            if (ret is null)
+            return ret switch
             {
-                throw new BitmapLoaderException("Could not find a default bitmap loader. This should never happen, your dependency resolver is broken");
-            }
-
-            return ret;
+                null => throw new BitmapLoaderException("Could not find a default bitmap loader. This should never happen, your dependency resolver is broken"),
+                _ => ret
+            };
         }
         set => _current = value;
     }

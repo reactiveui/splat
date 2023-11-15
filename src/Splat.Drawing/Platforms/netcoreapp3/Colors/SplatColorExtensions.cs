@@ -17,10 +17,8 @@ namespace Splat
         /// </summary>
         /// <param name="value">The color to convert.</param>
         /// <returns>The <see cref="Color"/> generated.</returns>
-        public static Color ToNative(this SplatColor value)
-        {
-            return Color.FromArgb(value.A, value.R, value.G, value.B);
-        }
+        public static Color ToNative(this SplatColor value) =>
+            Color.FromArgb(value.A, value.R, value.G, value.B);
 
         /// <summary>
         /// Converts a <see cref="SplatColor"/> into the XAML <see cref="SolidColorBrush"/>.
@@ -39,9 +37,7 @@ namespace Splat
         /// </summary>
         /// <param name="value">The color to convert.</param>
         /// <returns>The <see cref="SplatColor"/> generated.</returns>
-        public static SplatColor FromNative(this Color value)
-        {
-            return SplatColor.FromArgb(value.A, value.R, value.G, value.B);
-        }
+        public static SplatColor FromNative(this Color value) =>
+            SplatColor.FromArgb(value.A, value.R, value.G, value.B);
     }
 }
