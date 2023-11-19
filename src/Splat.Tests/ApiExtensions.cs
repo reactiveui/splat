@@ -7,8 +7,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using PublicApiGenerator;
 
-#pragma warning disable SA1615 // Element return value should be documented
-
 namespace Splat.Tests;
 
 /// <summary>
@@ -20,12 +18,16 @@ public static class ApiExtensions
     /// Checks to make sure the API is approved.
     /// </summary>
     /// <param name="assembly">The assembly that is being checked.</param>
+    /// <param name="namespaces">The namespaces.</param>
     /// <param name="filePath">The caller file path.</param>
-    public static Task CheckApproval(this Assembly assembly, [CallerFilePath] string filePath = "")
+    /// <returns>
+    /// A Task.
+    /// </returns>
+    public static async Task CheckApproval(this Assembly assembly, string[] namespaces, [CallerFilePath] string filePath = "")
     {
-        var generatorOptions = new ApiGeneratorOptions { AllowNamespacePrefixes = new[] { "Splat" } };
+        var generatorOptions = new ApiGeneratorOptions { AllowNamespacePrefixes = namespaces };
         var apiText = assembly.GeneratePublicApi(generatorOptions);
-        return Verifier.Verify(apiText, null, filePath)
+        var result = await Verify(apiText, null, filePath)
             .UniqueForRuntimeAndVersion()
             .ScrubEmptyLines()
             .ScrubLines(l =>

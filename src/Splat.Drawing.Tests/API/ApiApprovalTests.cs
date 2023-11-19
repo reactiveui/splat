@@ -20,5 +20,5 @@ public class ApiApprovalTests
     /// Tests to make sure the splat project is approved.
     /// </summary>
     [Fact]
-    public Task SplatUIProject() => typeof(IPlatformModeDetector).Assembly.CheckApproval();
+    public Task SplatUIProject() => typeof(IPlatformModeDetector).Assembly.CheckApproval(["Splat"]);
 }

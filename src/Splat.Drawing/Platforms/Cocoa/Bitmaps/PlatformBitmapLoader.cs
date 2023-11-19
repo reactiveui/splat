@@ -22,6 +22,7 @@ namespace Splat;
 public class PlatformBitmapLoader : IBitmapLoader
 {
     /// <inheritdoc />
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "By Design")]
     public Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
     {
         var data = NSData.FromStream(sourceStream);
@@ -70,6 +71,7 @@ public class PlatformBitmapLoader : IBitmapLoader
     }
 
     /// <inheritdoc />
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "By Design")]
     public Task<IBitmap?> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
     {
         var tcs = new TaskCompletionSource<IBitmap?>();

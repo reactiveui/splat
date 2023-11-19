@@ -3,11 +3,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-#if !WINDOWS_UWP
-
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
-
 using Splat.ApplicationInsights;
 
 namespace Splat.Tests.ApplicationPerformanceMonitoring;
@@ -49,5 +46,3 @@ public static class ApplicationInsightsFeatureUsageTrackingSessionTests
         }
     }
 }
-
-#endif
