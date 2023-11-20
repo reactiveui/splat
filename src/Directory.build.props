@@ -26,6 +26,7 @@
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <ImplicitUsings>true</ImplicitUsings>
     <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
     <NoWarn>$(NoWarn);VSSpell001;SA1010</NoWarn>
 
     <!-- disable sourcelink on mono, to workaround https://github.com/dotnet/sourcelink/issues/155 -->
@@ -37,6 +38,8 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <!-- Include PDB in the built .nupkg -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <SplatTargetFrameworks>netstandard2.0;net6.0;net7.0;net8.0</SplatTargetFrameworks>
+    <SplatWindowsTargetFrameworks>net6.0-windows10.0.17763.0;net7.0-windows10.0.17763.0;net8.0-windows10.0.17763.0</SplatWindowsTargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition="$(IsTestProject) != 'true'">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
@@ -53,7 +56,7 @@
 
   <ItemGroup Condition="$(IsTestProject) or $(MSBuildProjectName.Contains('TestRunner'))">
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    <PackageReference Include="xunit" Version="2.6.1" />
+    <PackageReference Include="xunit" Version="2.6.2" />
     <PackageReference Include="Xunit.StaFact" Version="1.1.11" />
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
     <PackageReference Include="Microsoft.Reactive.Testing" Version="6.0.0" />
@@ -62,8 +65,8 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(IsTestProject)">
-    <PackageReference Include="xunit.runner.console" Version="2.6.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+    <PackageReference Include="xunit.runner.console" Version="2.6.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.4" />
     <PackageReference Include="coverlet.msbuild" Version="6.0.0" />
   </ItemGroup>
 

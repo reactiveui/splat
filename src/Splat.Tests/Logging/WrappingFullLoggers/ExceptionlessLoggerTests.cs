@@ -3,7 +3,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-#if !WINDOWS_UWP && !ANDROID
+#if !ANDROID
 
 using Exceptionless;
 using Exceptionless.Models;
@@ -82,5 +82,4 @@ public class ExceptionlessLoggerTests : FullLoggerTestBase
         public ICollection<(LogLevel logLevel, string message)> Logs { get; }
     }
 }
-
 #endif

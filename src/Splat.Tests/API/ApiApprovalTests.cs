@@ -3,8 +3,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-#if !WINDOWS_UWP && !ANDROID
-
+#if !ANDROID
 using System.Diagnostics.CodeAnalysis;
 
 namespace Splat.Tests;
@@ -21,7 +20,6 @@ public class ApiApprovalTests
     /// </summary>
     /// <returns>A task to monitor the usage.</returns>
     [Fact]
-    public Task SplatProject() => typeof(AssemblyFinder).Assembly.CheckApproval();
+    public Task SplatProject() => typeof(AssemblyFinder).Assembly.CheckApproval(["Splat"]);
 }
-
 #endif

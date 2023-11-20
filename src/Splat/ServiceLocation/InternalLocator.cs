@@ -9,13 +9,15 @@ internal class InternalLocator : IDisposable
 {
     // this has been done to have a default single instance. but allow isolation in unit tests.B
     private readonly List<Action> _resolverChanged = [];
+    private readonly IDisposable _resolverChangedNotification;
     private volatile int _resolverChangedNotificationSuspendCount;
+    private bool _disposedValue;
 
     internal InternalLocator()
     {
         Internal = new ModernDependencyResolver();
 
-        RegisterResolverCallbackChanged(() =>
+        _resolverChangedNotification = RegisterResolverCallbackChanged(() =>
         {
             if (CurrentMutable is null)
             {
@@ -45,7 +47,14 @@ internal class InternalLocator : IDisposable
 
     internal IDependencyResolver Internal { get; private set; }
 
-    public void Dispose() => Internal?.Dispose();
+    /// <summary>
+    /// Releases unmanaged and - optionally - managed resources.
+    /// </summary>
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
 
     /// <summary>
     /// Allows setting the dependency resolver.
@@ -55,18 +64,6 @@ internal class InternalLocator : IDisposable
     {
         Internal = dependencyResolver ?? throw new ArgumentNullException(nameof(dependencyResolver));
 
-        // DV: is this needed if we're changing the behaviour of setlocator?
-        /*
-        if (ModeDetector.InUnitTestRunner())
-        {
-            _unitTestDependencyResolver = value;
-            _dependencyResolver = _dependencyResolver ?? value;
-        }
-        else
-        {
-            _dependencyResolver = value;
-        }
-        */
         if (AreResolverCallbackChangedNotificationsEnabled())
         {
             var currentCallbacks = default(Action[]);
@@ -136,4 +133,18 @@ internal class InternalLocator : IDisposable
     /// </summary>
     /// <returns>A value indicating whether the notifications are happening.</returns>
     public bool AreResolverCallbackChangedNotificationsEnabled() => _resolverChangedNotificationSuspendCount == 0;
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposedValue)
+        {
+            if (disposing)
+            {
+                Internal.Dispose();
+                _resolverChangedNotification.Dispose();
+            }
+
+            _disposedValue = true;
+        }
+    }
 }
