@@ -26,14 +26,7 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
     /// <inheritdoc />
     public async Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
     {
-#if NET6_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(sourceStream);
-#else
-        if (sourceStream == null)
-        {
-            throw new ArgumentNullException(nameof(sourceStream));
-        }
-#endif
+        sourceStream.ThrowArgumentNullExceptionIfNull(nameof(sourceStream));
 
         // this is a rough check to do with the termination check for #479
         if (sourceStream.Length < 2)

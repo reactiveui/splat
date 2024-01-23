@@ -6,6 +6,7 @@
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Splat.Tests")]
+[assembly: InternalsVisibleTo("Splat.Drawing")]
 [assembly: InternalsVisibleTo("Splat.Drawing.Tests")]
 [assembly: InternalsVisibleTo("Splat.TestRunner.Android")]
 [assembly: InternalsVisibleTo("Splat.TestRunner.Uwp")]

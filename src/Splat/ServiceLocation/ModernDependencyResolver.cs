@@ -202,20 +202,8 @@ public class ModernDependencyResolver : IDependencyResolver
     /// <inheritdoc />
     public IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback)
     {
-#if NETSTANDARD
-        if (serviceType is null)
-        {
-            throw new ArgumentNullException(nameof(serviceType));
-        }
-
-        if (callback is null)
-        {
-            throw new ArgumentNullException(nameof(callback));
-        }
-#else
-        ArgumentNullException.ThrowIfNull(serviceType);
-        ArgumentNullException.ThrowIfNull(callback);
-#endif
+        serviceType.ThrowArgumentNullExceptionIfNull(nameof(serviceType));
+        callback.ThrowArgumentNullExceptionIfNull(nameof(callback));
 
         if (_registry is null)
         {

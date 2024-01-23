@@ -42,10 +42,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Desktop" Version="11.0.5" />
-    <PackageReference Include="Avalonia.Headless.XUnit" Version="11.0.5" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.5" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.6" />
+    <PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaReactiveUIVersion)" />
+    <PackageReference Include="Avalonia.Headless.XUnit" Version="$(AvaloniaReactiveUIVersion)" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaReactiveUIVersion)" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="$(AvaloniaReactiveUIVersion)" />
   </ItemGroup>
 
 </Project>

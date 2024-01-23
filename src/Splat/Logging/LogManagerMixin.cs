@@ -18,14 +18,7 @@ public static class LogManagerMixin
     /// <returns>A logger for the specified type.</returns>
     public static IFullLogger GetLogger<T>(this ILogManager logManager)
     {
-#if NETSTANDARD
-        if (logManager is null)
-        {
-            throw new System.ArgumentNullException(nameof(logManager));
-        }
-#else
-        System.ArgumentNullException.ThrowIfNull(logManager);
-#endif
+        logManager.ThrowArgumentNullExceptionIfNull(nameof(logManager));
 
         return logManager.GetLogger(typeof(T));
     }

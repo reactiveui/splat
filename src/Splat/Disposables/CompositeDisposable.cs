@@ -31,14 +31,7 @@ internal sealed class CompositeDisposable : IDisposable
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> is less than zero.</exception>
     public CompositeDisposable(int capacity)
     {
-#if NET8_0_OR_GREATER
-        ArgumentOutOfRangeException.ThrowIfNegative(capacity);
-#else
-        if (capacity < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(capacity));
-        }
-#endif
+        capacity.ThrowArgumentNullExceptionIfNull(nameof(capacity));
 
         _disposables = new(capacity);
     }
@@ -51,14 +44,7 @@ internal sealed class CompositeDisposable : IDisposable
     /// <exception cref="ArgumentException">Any of the disposables in the <paramref name="disposables"/> collection is <c>null</c>.</exception>
     public CompositeDisposable(params IDisposable[] disposables)
     {
-#if NETSTANDARD
-        if (disposables is null)
-        {
-            throw new ArgumentNullException(nameof(disposables));
-        }
-#else
-        ArgumentNullException.ThrowIfNull(disposables);
-#endif
+        disposables.ThrowArgumentNullExceptionIfNull(nameof(disposables));
 
         _disposables = new(disposables.Length);
         Init(disposables);
