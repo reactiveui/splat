@@ -16,14 +16,7 @@ public static class ServiceLocationDrawingInitialization
     /// <param name="resolver">The resolver to register against.</param>
     public static void RegisterPlatformBitmapLoader(this IMutableDependencyResolver resolver)
     {
-#if NET6_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(resolver);
-#else
-        if (resolver == null)
-        {
-            throw new ArgumentNullException(nameof(resolver));
-        }
-#endif
+        resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
 
 #if !IS_SHARED_NET
         // not supported in netstandard or NET6 library

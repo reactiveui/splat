@@ -1,4 +1,5 @@
-﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Drawing.Tests")]
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Drawing")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Drawing.Tests")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.TestRunner.Android")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.TestRunner.Uwp")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Tests")]

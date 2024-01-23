@@ -63,14 +63,7 @@ public static class Locator
     /// ignore this.</returns>
     public static IDisposable RegisterResolverCallbackChanged(Action callback)
     {
-#if NETSTANDARD
-        if (callback is null)
-        {
-            throw new ArgumentNullException(nameof(callback));
-        }
-#else
-        ArgumentNullException.ThrowIfNull(callback);
-#endif
+        callback.ThrowArgumentNullExceptionIfNull(nameof(callback));
 
         return InternalLocator.RegisterResolverCallbackChanged(callback);
     }
