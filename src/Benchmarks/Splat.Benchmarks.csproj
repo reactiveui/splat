@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <TargetFramework>net6.0</TargetFramework>
@@ -10,11 +9,10 @@
     <NoWarn>;1591;1701;1702;1705;CA1822</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="*" />
-    <PackageReference Include="System.Reactive" Version="5.*" />
+    <PackageReference Include="BenchmarkDotNet" />
+    <PackageReference Include="System.Reactive" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>
-
 </Project>

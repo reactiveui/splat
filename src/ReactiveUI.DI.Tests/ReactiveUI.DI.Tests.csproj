@@ -1,12 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>net472;net6.0;</TargetFrameworks>
     <NoWarn>$(NoWarn);1591;CA1707;SA1633;CA2000</NoWarn>
     <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <Choose>
     <When Condition="$(TargetFramework.StartsWith('net472'))">
       <ItemGroup>
@@ -25,14 +23,11 @@
       </ItemGroup>
     </When>
   </Choose>
-
   <ItemGroup>
-    <PackageReference Include="ReactiveUI" Version="19.5.41" />
+    <PackageReference Include="ReactiveUI" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />
     <ProjectReference Include="..\Splat.DryIoc\Splat.DryIoc.csproj" />
   </ItemGroup>
-
 </Project>

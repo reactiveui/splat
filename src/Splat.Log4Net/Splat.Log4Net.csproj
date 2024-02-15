@@ -8,41 +8,37 @@
     <Description>Log4Net integrations for Splat</Description>
     <PackageId>Splat.Log4Net</PackageId>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="log4net" Version="2.0.15" />
-
+    <PackageReference Include="log4net" />
     <!-- Override old versions provided in the .NET Standard 1.3 package -->
-    <PackageReference Include="System.AppContext" Version="4.3.0" />
-    <PackageReference Include="System.Collections.NonGeneric" Version="4.3.0" />
-    <PackageReference Include="System.Console" Version="4.3.1" />
-    <PackageReference Include="System.Diagnostics.Debug" Version="4.3.0" />
-    <PackageReference Include="System.Diagnostics.Process" Version="4.3.0" />
-    <PackageReference Include="System.Diagnostics.StackTrace" Version="4.3.0" />
-    <PackageReference Include="System.Diagnostics.TraceSource" Version="4.3.0" />
-    <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
-    <PackageReference Include="System.IO.FileSystem.Watcher" Version="4.3.0" />
-    <PackageReference Include="System.Linq" Version="4.3.0" />
-    <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
-    <PackageReference Include="System.Net.Requests" Version="4.3.0" />
-    <PackageReference Include="System.Net.Sockets" Version="4.3.0" />
-    <PackageReference Include="System.Reflection" Version="4.3.0" />
-    <PackageReference Include="System.Reflection.Extensions" Version="4.3.0" />
-    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.7.0" />
-    <PackageReference Include="System.Runtime.Extensions" Version="4.3.1" />
-    <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
-    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-    <PackageReference Include="System.Threading" Version="4.3.0" />
-    <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
-    <PackageReference Include="System.Threading.Timer" Version="4.3.0" />
-    <PackageReference Include="System.Xml.ReaderWriter" Version="4.3.1" />
-    <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
+    <PackageReference Include="System.AppContext" />
+    <PackageReference Include="System.Collections.NonGeneric" />
+    <PackageReference Include="System.Console" />
+    <PackageReference Include="System.Diagnostics.Debug" />
+    <PackageReference Include="System.Diagnostics.Process" />
+    <PackageReference Include="System.Diagnostics.StackTrace" />
+    <PackageReference Include="System.Diagnostics.TraceSource" />
+    <PackageReference Include="System.IO.FileSystem" />
+    <PackageReference Include="System.IO.FileSystem.Watcher" />
+    <PackageReference Include="System.Linq" />
+    <PackageReference Include="System.Net.NameResolution" />
+    <PackageReference Include="System.Net.Requests" />
+    <PackageReference Include="System.Net.Sockets" />
+    <PackageReference Include="System.Reflection" />
+    <PackageReference Include="System.Reflection.Extensions" />
+    <PackageReference Include="System.Reflection.TypeExtensions" />
+    <PackageReference Include="System.Runtime.Extensions" />
+    <PackageReference Include="System.Runtime.InteropServices" />
+    <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" />
+    <PackageReference Include="System.Runtime.Serialization.Formatters" />
+    <PackageReference Include="System.Text.RegularExpressions" />
+    <PackageReference Include="System.Threading" />
+    <PackageReference Include="System.Threading.Thread" />
+    <PackageReference Include="System.Threading.Timer" />
+    <PackageReference Include="System.Xml.ReaderWriter" />
+    <PackageReference Include="System.Xml.XmlDocument" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>
-
 </Project>

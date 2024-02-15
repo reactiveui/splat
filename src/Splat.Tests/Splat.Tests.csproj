@@ -1,15 +1,12 @@
 <Project Sdk="MSBuild.Sdk.Extras">
-
   <PropertyGroup>
     <TargetFrameworks>net6.0-windows10.0.17763.0;net7.0-windows10.0.17763.0;net8.0-windows10.0.17763.0</TargetFrameworks>
     <NoWarn>$(NoWarn);1591;CA1707;SA1633;CA2000;CA1034</NoWarn>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Serilog.Exceptions" Version="8.4.0+build.694" />
+    <PackageReference Include="Serilog.Exceptions" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Splat.ApplicationInsights\Splat.ApplicationInsights.csproj" />
     <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />
@@ -22,7 +19,6 @@
     <ProjectReference Include="..\Splat.Serilog\Splat.Serilog.csproj" />
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <None Update="splatlogo.bmp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

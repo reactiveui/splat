@@ -1,16 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>net6.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
     <NoWarn>$(NoWarn);1591;CA1707;SA1600;SA1601;SA1633;CA2000</NoWarn>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     <DefineConstants>$(DefineConstants);DRYIOC1</DefineConstants>
   </PropertyGroup>
-
   <ItemGroup>
     <AvaloniaXaml Include="..\Splat.Avalonia.Tests\Mocks\App.axaml" Link="Mocks\App.axaml">
       <SubType>Designer</SubType>
@@ -25,7 +22,6 @@
       <SubType>Designer</SubType>
     </AvaloniaXaml>
   </ItemGroup>
-
   <ItemGroup>
     <Compile Include="..\Splat.Avalonia.Tests\Mocks\App.axaml.cs" Link="Mocks\App.axaml.cs" />
     <Compile Include="..\Splat.Avalonia.Tests\Mocks\MainWindow.axaml.cs" Link="Mocks\MainWindow.axaml.cs" />
@@ -36,16 +32,13 @@
     <Compile Include="..\Splat.Avalonia.Tests\Mocks\Views\BarView.axaml.cs" Link="Mocks\Views\BarView.axaml.cs" />
     <Compile Include="..\Splat.Avalonia.Tests\Mocks\Views\FooView.axaml.cs" Link="Mocks\Views\FooView.axaml.cs" />
   </ItemGroup>
-  
   <ItemGroup>
     <ProjectReference Include="..\Splat.Avalonia.DryIoc\Splat.Avalonia.DryIoc.csproj" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaReactiveUIVersion)" />
-    <PackageReference Include="Avalonia.Headless.XUnit" Version="$(AvaloniaReactiveUIVersion)" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaReactiveUIVersion)" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="$(AvaloniaReactiveUIVersion)" />
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Avalonia.Headless.XUnit" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="Avalonia.Fonts.Inter" />
   </ItemGroup>
-
 </Project>

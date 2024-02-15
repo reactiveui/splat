@@ -9,11 +9,9 @@
     <PackageId>Splat.ApplicationInsights</PackageId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.21.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>
-
 </Project>

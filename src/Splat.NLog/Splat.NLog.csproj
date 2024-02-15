@@ -9,8 +9,8 @@
     <PackageId>Splat.NLog</PackageId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="NLog" Version="5.2.6" />
-    <PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
+    <PackageReference Include="NLog" />
+    <PackageReference Include="System.Collections.Immutable" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Splat\Splat.csproj" />

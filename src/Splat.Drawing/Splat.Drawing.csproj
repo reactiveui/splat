@@ -1,5 +1,4 @@
 <Project Sdk="MSBuild.Sdk.Extras">
-
   <PropertyGroup>
     <TargetFrameworks>$(SplatTargetFrameworks);MonoAndroid13.0;Xamarin.iOS10;Xamarin.Mac20;Xamarin.TVOS10;Xamarin.WatchOS10;tizen40;net7.0-android;net7.0-ios;net7.0-tvos;net7.0-macos;net7.0-maccatalyst;net8.0-android;net8.0-ios;net8.0-tvos;net8.0-macos;net8.0-maccatalyst</TargetFrameworks>
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net462;net472;$(SplatWindowsTargetFrameworks)</TargetFrameworks>
@@ -10,16 +9,13 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <PropertyGroup Condition="($(TargetFramework.EndsWith('-windows10.0.17763.0')) or $(TargetFramework.StartsWith('net4'))) and '$(OS)' == 'Windows_NT'">
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
-
   <ItemGroup>
     <Using Remove="System.Drawing" />
   </ItemGroup>
-  
   <ItemGroup>
     <Compile Remove="Platforms\**\*.cs" />
     <Compile Remove="Resources\**\*.*" />
@@ -28,7 +24,6 @@
     <None Include="Colors\**\*.cs" />
     <None Include="Resources\**\*.*" />
   </ItemGroup>
-
   <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.Mac')) ">
     <Compile Include="Platforms\apple-common\**\*.cs" />
     <Compile Include="Platforms\mac\**\*.cs" />
@@ -36,73 +31,60 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="netstandard" />
   </ItemGroup>
-  
   <ItemGroup Condition=" $(TargetFramework.StartsWith('netstandard')) ">
-    <PackageReference Include="System.Diagnostics.Contracts" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
-    <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.Diagnostics.Contracts" />
+    <PackageReference Include="System.Runtime.Serialization.Primitives" />
+    <PackageReference Include="System.Drawing.Primitives" />
     <Compile Include="Platforms\ReflectionStubs.cs" />
   </ItemGroup>
-
   <ItemGroup Condition=" !$(TargetFramework.StartsWith('netstandard')) ">
     <Compile Include="Platforms\ServiceLocationDrawingInitialization.cs" />
   </ItemGroup>
-
   <ItemGroup Condition=" $(TargetFramework.StartsWith('net4')) ">
     <Compile Include="Platforms\net4\**\*.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
     <Compile Include="Platforms\ReflectionStubs.cs" />
-    <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.Drawing.Primitives" />
   </ItemGroup>
-
   <ItemGroup Condition=" $(TargetFramework.StartsWith('net46')) ">
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="System.ValueTuple" />
   </ItemGroup>
-
   <ItemGroup Condition="$(TargetFramework.EndsWith('0-windows10.0.17763.0'))">
     <Compile Include="Platforms\net6\**\*.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
     <Compile Include="Platforms\ReflectionStubs.cs" />
   </ItemGroup>
-
   <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS')) or $(TargetFramework.StartsWith('Xamarin.TVOS')) or $(TargetFramework.StartsWith('Xamarin.WatchOS')) ">
     <Compile Include="Platforms\Cocoa\**\*.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
-
   <ItemGroup Condition="$(TargetFramework.EndsWith('0-ios')) or $(TargetFramework.EndsWith('0-tvos')) or $(TargetFramework.EndsWith('0-maccatalyst'))">
     <Compile Include="Platforms\Cocoa\**\*.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
   </ItemGroup>
-
   <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.Mac')) ">
     <Compile Include="Platforms\Cocoa\**\*.cs" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="netstandard" />
   </ItemGroup>
-
   <ItemGroup Condition="$(TargetFramework.EndsWith('0-macos'))">
     <Compile Include="Platforms\Cocoa\**\*.cs" />
   </ItemGroup>
-
   <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
     <Compile Include="Platforms\Android\**\*.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
     <Compile Include="Resources\**\*.cs" />
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
-
   <ItemGroup Condition=" $(TargetFramework.EndsWith('0-android'))">
     <Compile Include="Platforms\Android\**\*.cs" />
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs" />
     <Compile Include="Resources\**\*.cs" />
   </ItemGroup>
-
   <ItemGroup Condition=" $(TargetFramework.StartsWith('tizen')) ">
     <Compile Include="Platforms\Tizen\**\*.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>
