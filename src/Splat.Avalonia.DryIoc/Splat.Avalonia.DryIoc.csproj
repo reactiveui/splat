@@ -1,18 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>$(SplatTargetFrameworks)</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="..\Splat.DryIoc\DryIocDependencyResolver.cs" Link="DryIocDependencyResolver.cs" />
   </ItemGroup>
-  
   <ItemGroup>
-    <PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaReactiveUIVersion)" />
-    <PackageReference Include="DryIoc.Dll" Version="5.4.3" />
+    <PackageReference Include="Avalonia.ReactiveUI" />
+    <PackageReference Include="DryIoc.Dll" />
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>
 </Project>

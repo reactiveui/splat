@@ -1,19 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>$(SplatTargetFrameworks)</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="..\Splat.Microsoft.Extensions.DependencyInjection\MicrosoftDependencyResolver.cs" Link="MicrosoftDependencyResolver.cs" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaReactiveUIVersion)" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Avalonia.ReactiveUI" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>
-
 </Project>

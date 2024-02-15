@@ -5,11 +5,9 @@
     <NoWarn>$(NoWarn);CA1801</NoWarn>
     <Description>DryIoc adapter for Splat</Description>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="DryIoc.Dll" Version="5.4.3" />
+    <PackageReference Include="DryIoc.Dll" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>

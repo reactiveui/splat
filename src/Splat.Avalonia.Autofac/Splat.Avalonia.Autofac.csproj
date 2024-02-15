@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>$(SplatTargetFrameworks)</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -8,10 +7,9 @@
   <ItemGroup>
     <Compile Include="..\Splat.Autofac\AutofacDependencyResolver.cs" Link="AutofacDependencyResolver.cs" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaReactiveUIVersion)" />
-    <PackageReference Include="Autofac" Version="7.*" />
+    <PackageReference Include="Avalonia.ReactiveUI" />
+    <PackageReference Include="Autofac" />
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>
 </Project>

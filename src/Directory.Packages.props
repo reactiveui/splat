@@ -1,0 +1,90 @@
+﻿<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AvaloniaVersion>11.0.9</AvaloniaVersion>
+    <ReactiveUIVersion>19.5.41</ReactiveUIVersion>
+    <XUnitVersion>2.6.6</XUnitVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Autofac" Version="7.1.0" />
+    <PackageVersion Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="Avalonia.Headless.XUnit" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="coverlet.msbuild" Version="6.0.0" />
+    <PackageVersion Include="DryIoc.Dll" Version="5.4.3" />
+    <PackageVersion Include="Exceptionless" Version="6.0.3" />
+    <PackageVersion Include="log4net" Version="2.0.15" />
+    <PackageVersion Include="Microsoft.AppCenter.Analytics" Version="5.0.3" />
+    <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="5.0.3" />
+    <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.21.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
+    <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="8.0.0" />
+    <PackageVersion Include="Nerdbank.GitVersioning" Version="3.6.133" />
+    <PackageVersion Include="Ninject" Version="3.3.6" />
+    <PackageVersion Include="NLog" Version="5.2.6" />
+    <PackageVersion Include="Prism.Core" Version="8.1.97" />
+    <PackageVersion Include="Prism.Forms" Version="8.1.97" />
+    <PackageVersion Include="ReactiveUI" Version="$(ReactiveUIVersion)" />
+    <PackageVersion Include="Roslynator.Analyzers" Version="4.6.2" />
+    <PackageVersion Include="Serilog" Version="3.1.1" />
+    <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
+    <PackageVersion Include="SimpleInjector" Version="5.4.2" />
+    <PackageVersion Include="stylecop.analyzers" Version="1.2.0-beta.507" />
+    <PackageVersion Include="System.AppContext" Version="4.3.0" />
+    <PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
+    <PackageVersion Include="System.Collections.NonGeneric" Version="4.3.0" />
+    <PackageVersion Include="System.Console" Version="4.3.1" />
+    <PackageVersion Include="System.Diagnostics.Debug" Version="4.3.0" />
+    <PackageVersion Include="System.Diagnostics.Process" Version="4.3.0" />
+    <PackageVersion Include="System.Diagnostics.StackTrace" Version="4.3.0" />
+    <PackageVersion Include="System.Diagnostics.TraceSource" Version="4.3.0" />
+    <PackageVersion Include="System.IO.FileSystem" Version="4.3.0" />
+    <PackageVersion Include="System.IO.FileSystem.Watcher" Version="4.3.0" />
+    <PackageVersion Include="System.Linq" Version="4.3.0" />
+    <PackageVersion Include="System.Net.NameResolution" Version="4.3.0" />
+    <PackageVersion Include="System.Net.Requests" Version="4.3.0" />
+    <PackageVersion Include="System.Net.Sockets" Version="4.3.0" />
+    <PackageVersion Include="System.Reflection" Version="4.3.0" />
+    <PackageVersion Include="System.Reflection.Extensions" Version="4.3.0" />
+    <PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0" />
+    <PackageVersion Include="System.Runtime.Extensions" Version="4.3.1" />
+    <PackageVersion Include="System.Runtime.InteropServices" Version="4.3.0" />
+    <PackageVersion Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
+    <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
+    <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
+    <PackageVersion Include="System.Threading" Version="4.3.0" />
+    <PackageVersion Include="System.Threading.Thread" Version="4.3.0" />
+    <PackageVersion Include="System.Threading.Timer" Version="4.3.0" />
+    <PackageVersion Include="System.Xml.ReaderWriter" Version="4.3.1" />
+    <PackageVersion Include="System.Xml.XmlDocument" Version="4.3.0" />
+    <PackageVersion Include="xunit.runner.console" Version="$(XUnitVersion)" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.6" />
+  </ItemGroup>
+  <ItemGroup Condition="$(IsTestProject) or $(MSBuildProjectName.Contains('TestRunner'))">
+    <PackageVersion Include="FluentAssertions" Version="6.12.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageVersion Include="Microsoft.Reactive.Testing" Version="6.0.0" />
+    <PackageVersion Include="PublicApiGenerator" Version="11.1.0" />
+    <PackageVersion Include="Verify.Xunit" Version="23.0.0" />
+    <PackageVersion Include="xunit" Version="$(XUnitVersion)" />
+    <PackageVersion Include="Xunit.StaFact" Version="1.1.11" />
+  </ItemGroup>
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
+    <PackageVersion Include="System.Drawing.Primitives" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net46'))">
+    <PackageVersion Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup Condition="$(TargetFramework.StartsWith('netstandard'))">
+    <PackageVersion Include="System.Diagnostics.Contracts" Version="4.3.0" />
+    <PackageVersion Include="System.Drawing.Primitives" Version="4.3.0" />
+    <PackageVersion Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
+  </ItemGroup>
+</Project>

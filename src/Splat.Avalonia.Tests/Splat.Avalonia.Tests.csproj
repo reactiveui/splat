@@ -1,28 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
     <NoWarn>$(NoWarn);1591;CA1707;SA1600;SA1601;SA1633;CA2000</NoWarn>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     <DefineConstants>$(DefineConstants);MAIN</DefineConstants>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Splat.Avalonia.Microsoft.Extensions.DependencyInjection\Splat.Avalonia.Microsoft.Extensions.DependencyInjection.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <!--
     <ProjectReference Include="..\ReactiveUI.Avalonia.Ninject\ReactiveUI.Avalonia.Ninject.csproj" />
     -->
-    <PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaReactiveUIVersion)" />
-    <PackageReference Include="Avalonia.Headless.XUnit" Version="$(AvaloniaReactiveUIVersion)" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaReactiveUIVersion)" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="$(AvaloniaReactiveUIVersion)" />
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Avalonia.Headless.XUnit" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="Avalonia.Fonts.Inter" />
   </ItemGroup>
-
 </Project>

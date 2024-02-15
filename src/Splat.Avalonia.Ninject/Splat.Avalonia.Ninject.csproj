@@ -1,18 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>$(SplatTargetFrameworks)</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="..\Splat.Ninject\NinjectDependencyResolver.cs" Link="NinjectDependencyResolver.cs" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaReactiveUIVersion)" />
-    <PackageReference Include="Ninject" Version="3.3.6" />
+    <PackageReference Include="Avalonia.ReactiveUI" />
+    <PackageReference Include="Ninject" />
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>
 </Project>

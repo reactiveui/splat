@@ -9,12 +9,10 @@
     <PackageId>Splat.Exceptionless</PackageId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Exceptionless" Version="6.0.3" />
-    <PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
+    <PackageReference Include="Exceptionless" />
+    <PackageReference Include="System.Collections.Immutable" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>
-
 </Project>
