@@ -27,6 +27,6 @@
     <PackageVersion Include="PublicApiGenerator" Version="4.0.0" />
     <PackageVersion Include="Verify.Xunit" Version="1.0.0-beta.1" />
     <PackageVersion Include="xunit" Version="$(XUnitVersion)" />
-    <PackageVersion Include="Xunit.StaFact" Version="0.1.7-alpha" />
+    <PackageVersion Include="Xunit.StaFact" Version="1.1.11" />
   </ItemGroup>
 </Project>
