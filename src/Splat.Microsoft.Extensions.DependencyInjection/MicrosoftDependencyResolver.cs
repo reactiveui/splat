@@ -17,7 +17,6 @@ namespace Splat.Microsoft.Extensions.DependencyInjection;
 public class MicrosoftDependencyResolver : IDependencyResolver
 {
     private const string ImmutableExceptionMessage = "This container has already been built and cannot be modified.";
-    private static readonly Type _dictionaryType = typeof(ContractDictionary<>);
     private readonly object _syncLock = new();
     private IServiceCollection? _serviceCollection;
     private bool _isImmutable;
@@ -91,7 +90,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver
         var isNull = serviceType is null;
         serviceType ??= typeof(NullServiceType);
 
-        IEnumerable<object> services;
+        IEnumerable<object> services = Enumerable.Empty<object>();
 
         if (contract is null || string.IsNullOrWhiteSpace(contract))
         {
@@ -99,21 +98,19 @@ public class MicrosoftDependencyResolver : IDependencyResolver
             services = ServiceProvider.GetServices(serviceType)
                 .Where(a => a is not null)
                 .Select(a => a!);
-
-            if (isNull)
-            {
-                services = services
-                    .Cast<NullServiceType>()
-                    .Select(nst => nst.Factory()!);
-            }
         }
-        else
+        else if (ServiceProvider is IKeyedServiceProvider serviceProvider)
         {
-            var dic = GetContractDictionary(serviceType, false);
-            services = dic?
-                .GetFactories(contract)
-                .Select(f => f()!)
-                ?? Array.Empty<object>();
+            services = serviceProvider.GetKeyedServices(serviceType, contract)
+                .Where(a => a is not null)
+                .Select(a => a!);
+        }
+
+        if (isNull)
+        {
+            services = services
+                .Cast<NullServiceType>()
+                .Select(nst => nst.Factory()!);
         }
 
         return services;
@@ -142,9 +139,10 @@ public class MicrosoftDependencyResolver : IDependencyResolver
             }
             else
             {
-                var dic = GetContractDictionary(serviceType, true);
-
-                dic?.AddFactory(contract, factory);
+                _serviceCollection?.AddKeyedTransient(serviceType, contract, (_, __) =>
+                isNull
+                ? new NullServiceType(factory)
+                : factory()!);
             }
 
             // required so that it gets rebuilt if not injected externally.
@@ -166,7 +164,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver
         {
             if (contract is null || string.IsNullOrWhiteSpace(contract))
             {
-                var sd = _serviceCollection?.LastOrDefault(s => s.ServiceType == serviceType);
+                var sd = _serviceCollection?.LastOrDefault(s => !s.IsKeyedService && s.ServiceType == serviceType);
                 if (sd is not null)
                 {
                     _serviceCollection?.Remove(sd);
@@ -174,14 +172,13 @@ public class MicrosoftDependencyResolver : IDependencyResolver
             }
             else
             {
-                var dic = GetContractDictionary(serviceType, false);
-                if (dic is not null)
+                var sd = _serviceCollection?.LastOrDefault(sd => sd.IsKeyedService
+                                                            && sd.ServiceKey is string serviceKey
+                                                            && serviceKey == contract
+                                                            && sd.ServiceType == serviceType);
+                if (sd is not null)
                 {
-                    dic.RemoveLastFactory(contract);
-                    if (dic.IsEmpty)
-                    {
-                        RemoveContractService(serviceType);
-                    }
+                    _serviceCollection?.Remove(sd);
                 }
             }
 
@@ -208,34 +205,31 @@ public class MicrosoftDependencyResolver : IDependencyResolver
 
         lock (_syncLock)
         {
-            switch (contract)
+            if (_serviceCollection is null)
             {
-                case null when _serviceCollection is not null:
-                    {
-                        var sds = _serviceCollection
-                            .Where(s => s.ServiceType == serviceType)
-                            .ToList();
+                // required so that it gets rebuilt if not injected externally.
+                _serviceProvider = null;
+                return;
+            }
 
-                        foreach (var sd in sds)
-                        {
-                            _serviceCollection.Remove(sd);
-                        }
+            IEnumerable<ServiceDescriptor> sds = Enumerable.Empty<ServiceDescriptor>();
 
-                        break;
-                    }
+            if (contract is null || string.IsNullOrWhiteSpace(contract))
+            {
+                sds = _serviceCollection.Where(s => !s.IsKeyedService && s.ServiceType == serviceType);
+            }
+            else
+            {
+                sds = _serviceCollection
+                  .Where(sd => sd.IsKeyedService
+                            && sd.ServiceKey is string serviceKey
+                            && serviceKey == contract
+                            && sd.ServiceType == serviceType);
+            }
 
-                case null:
-                    throw new ArgumentException("There must be a valid contract if there is no service collection.", nameof(contract));
-                default:
-                    {
-                        var dic = GetContractDictionary(serviceType, false);
-                        if (dic?.TryRemoveContract(contract) == true && dic.IsEmpty)
-                        {
-                            RemoveContractService(serviceType);
-                        }
-
-                        break;
-                    }
+            foreach (var sd in sds.ToList())
+            {
+                _serviceCollection.Remove(sd);
             }
 
             // required so that it gets rebuilt if not injected externally.
@@ -255,16 +249,10 @@ public class MicrosoftDependencyResolver : IDependencyResolver
         {
             if (contract is null || string.IsNullOrWhiteSpace(contract))
             {
-                return _serviceCollection?.Any(sd => sd.ServiceType == serviceType) == true;
+                return _serviceCollection?.Any(sd => !sd.IsKeyedService && sd.ServiceType == serviceType) == true;
             }
 
-            var dictionary = (ContractDictionary?)_serviceCollection?.FirstOrDefault(sd => sd.ServiceType == GetDictionaryType(serviceType))?.ImplementationInstance;
-
-            return dictionary switch
-            {
-                null => false,
-                _ => dictionary.GetFactories(contract).Select(f => f()).Any()
-            };
+            return _serviceCollection?.Any(sd => sd.IsKeyedService && sd.ServiceKey is string serviceKey && serviceKey == contract && sd.ServiceType == serviceType) == true;
         }
 
         if (contract is null)
@@ -273,8 +261,12 @@ public class MicrosoftDependencyResolver : IDependencyResolver
             return service is not null;
         }
 
-        var dic = GetContractDictionary(serviceType, false);
-        return dic?.IsEmpty == false;
+        if (_serviceProvider is IKeyedServiceProvider keyedServiceProvider)
+        {
+            return keyedServiceProvider.GetKeyedService(serviceType, contract) is not null;
+        }
+
+        return false;
     }
 
     /// <inheritdoc />
@@ -289,106 +281,6 @@ public class MicrosoftDependencyResolver : IDependencyResolver
     /// </summary>
     /// <param name="disposing">Whether or not the instance is disposing.</param>
     protected virtual void Dispose(bool disposing)
-    {
-    }
-
-    private static Type GetDictionaryType(Type serviceType) => _dictionaryType.MakeGenericType(serviceType);
-
-    private void RemoveContractService(Type serviceType)
-    {
-        var dicType = GetDictionaryType(serviceType);
-        var sd = _serviceCollection?.SingleOrDefault(s => s.ServiceType == serviceType);
-
-        if (sd is not null)
-        {
-            _serviceCollection?.Remove(sd);
-        }
-    }
-
-    [SuppressMessage("Naming Rules", "SA1300", Justification = "Intentional")]
-    private ContractDictionary? GetContractDictionary(Type serviceType, bool createIfNotExists)
-    {
-        var dicType = GetDictionaryType(serviceType);
-
-        if (ServiceProvider is null)
-        {
-            throw new InvalidOperationException("The ServiceProvider is null.");
-        }
-
-        if (_isImmutable)
-        {
-            return (ContractDictionary?)ServiceProvider.GetService(dicType);
-        }
-
-        var dic = getDictionary();
-        if (createIfNotExists && dic is null)
-        {
-            lock (_syncLock)
-            {
-                if (createIfNotExists)
-                {
-                    dic = (ContractDictionary?)Activator.CreateInstance(dicType);
-
-                    if (dic is not null)
-                    {
-                        _serviceCollection?.AddSingleton(dicType, dic);
-                    }
-                }
-            }
-        }
-
-        return dic;
-
-        ContractDictionary? getDictionary() => _serviceCollection?
-                .Where(sd => sd.ServiceType == dicType)
-                .Select(sd => sd.ImplementationInstance)
-                .Cast<ContractDictionary>()
-                .SingleOrDefault();
-    }
-
-    private class ContractDictionary
-    {
-        private readonly ConcurrentDictionary<string, List<Func<object?>>> _dictionary = new();
-
-        public bool IsEmpty => _dictionary.IsEmpty;
-
-        public bool TryRemoveContract(string contract) =>
-            _dictionary.TryRemove(contract, out var _);
-
-        public Func<object?>? GetFactory(string contract) =>
-            GetFactories(contract)
-                .LastOrDefault();
-
-        public IEnumerable<Func<object?>> GetFactories(string contract) =>
-            _dictionary.TryGetValue(contract, out var collection)
-            ? collection ?? Enumerable.Empty<Func<object?>>()
-            : Array.Empty<Func<object?>>();
-
-        public void AddFactory(string contract, Func<object?> factory) =>
-            _dictionary.AddOrUpdate(contract, _ => new() { factory }, (_, list) =>
-            {
-                (list ??= []).Add(factory);
-                return list;
-            });
-
-        public void RemoveLastFactory(string contract) =>
-            _dictionary.AddOrUpdate(contract, [], (_, list) =>
-            {
-                var lastIndex = list.Count - 1;
-                if (lastIndex > 0)
-                {
-                    list.RemoveAt(lastIndex);
-                }
-
-                // TODO if list empty remove contract entirely
-                // need to find how to atomically update or remove
-                // https://github.com/dotnet/corefx/issues/24246
-                return list;
-            });
-    }
-
-    [SuppressMessage("Design", "CA1812: Unused class.", Justification = "Used in reflection.")]
-    private sealed class ContractDictionary<T> : ContractDictionary
     {
     }
 }
