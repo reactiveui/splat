@@ -11,7 +11,7 @@
     <XUnitVersion>2.6.6</XUnitVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Autofac" Version="7.1.0" />
+    <PackageVersion Include="Autofac" Version="8.0.0" />
     <PackageVersion Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="Avalonia.Headless.XUnit" Version="$(AvaloniaVersion)" />
