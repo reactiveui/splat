@@ -112,7 +112,7 @@
     <PackageReference Include="xunit.runner.devices">
       <Version>2.*</Version>
     </PackageReference>
-    <PackageReference Include="Serilog.Exceptions" Version="8.1.0" />
+    <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Splat.AppCenter\Splat.AppCenter.csproj">
