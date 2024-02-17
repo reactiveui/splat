@@ -14,7 +14,7 @@
     <PackageVersion Include="coverlet.msbuild" Version="1.0.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-62905-03" />
     <PackageVersion Include="Nerdbank.GitVersioning" Version="1.0.0-beta-gf8a674c064" />
-    <PackageVersion Include="Roslynator.Analyzers" Version="1.0.0-beta" />
+    <PackageVersion Include="Roslynator.Analyzers" Version="4.10.0" />
     <PackageVersion Include="stylecop.analyzers" Version="1.0.0-alpha001" />
     <PackageVersion Include="System.Reactive" Version="6.0.0" />
     <PackageVersion Include="xunit.runner.console" Version="$(XUnitVersion)" />
