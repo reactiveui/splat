@@ -3,30 +3,11 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
-  <PropertyGroup>
-    <XUnitVersion>2.0.0-rc4-build2924</XUnitVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="$(IsTestProject) or $(MSBuildProjectName.Contains('TestRunner'))">
-    <XUnitVersion>1.7.0.1540</XUnitVersion>
-  </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="BenchmarkDotNet" Version="0.13.12" />
-    <PackageVersion Include="coverlet.msbuild" Version="1.0.0" />
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-62905-03" />
-    <PackageVersion Include="Nerdbank.GitVersioning" Version="1.0.0-beta-gf8a674c064" />
-    <PackageVersion Include="Roslynator.Analyzers" Version="4.10.0" />
-    <PackageVersion Include="stylecop.analyzers" Version="1.0.0-alpha001" />
-    <PackageVersion Include="System.Reactive" Version="6.0.0" />
-    <PackageVersion Include="xunit.runner.console" Version="$(XUnitVersion)" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.6" />
   </ItemGroup>
-  <ItemGroup Condition="$(IsTestProject) or $(MSBuildProjectName.Contains('TestRunner'))">
-    <PackageVersion Include="FluentAssertions" Version="1.3.0.1" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="15.9.2" />
-    <PackageVersion Include="Microsoft.Reactive.Testing" Version="0.0.1-alpha-00362" />
-    <PackageVersion Include="PublicApiGenerator" Version="4.0.0" />
-    <PackageVersion Include="Verify.Xunit" Version="1.0.0-beta.1" />
-    <PackageVersion Include="xunit" Version="$(XUnitVersion)" />
-    <PackageVersion Include="Xunit.StaFact" Version="1.1.11" />
-  </ItemGroup>
+
+   <!-- Inherit parent props file if one exists. -->
+  <Import Condition="$([MSBuild]::GetPathOfFileAbove('Directory.Packages.props', '$(MSBuildThisFileDirectory)../')) != ''"
+          Project="$([MSBuild]::GetPathOfFileAbove('Directory.Packages.props', '$(MSBuildThisFileDirectory)../'))" />
 </Project>
