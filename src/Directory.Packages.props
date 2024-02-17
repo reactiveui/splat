@@ -27,7 +27,7 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
-    <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="8.0.0" />
+    <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="8.0.1" />
     <PackageVersion Include="Nerdbank.GitVersioning" Version="3.6.133" />
     <PackageVersion Include="Ninject" Version="3.3.6" />
     <PackageVersion Include="NLog" Version="5.2.6" />
