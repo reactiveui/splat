@@ -144,10 +144,10 @@
       <Version>6.2.13</Version>
     </PackageReference>
     <PackageReference Include="MSTest.TestAdapter">
-      <Version>3.2.0</Version>
+      <Version>3.2.1</Version>
     </PackageReference>
     <PackageReference Include="MSTest.TestFramework">
-      <Version>3.2.0</Version>
+      <Version>3.2.1</Version>
     </PackageReference>
     <PackageReference Include="xunit.runner.devices">
       <Version>2.5.25</Version>
