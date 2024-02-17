@@ -22,7 +22,7 @@
     <PackageVersion Include="Exceptionless" Version="6.0.3" />
     <PackageVersion Include="log4net" Version="2.0.15" />
     <PackageVersion Include="Microsoft.AppCenter.Analytics" Version="$(AppCenterVersion)" />
-    <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="5$(AppCenterVersion)" />
+    <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="$(AppCenterVersion)" />
     <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.21.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.0" />
