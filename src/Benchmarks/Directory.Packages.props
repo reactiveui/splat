@@ -12,7 +12,7 @@
   <ItemGroup>
     <PackageVersion Include="BenchmarkDotNet" Version="0.13.12" />
     <PackageVersion Include="coverlet.msbuild" Version="1.0.0" />
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-62905-03" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageVersion Include="Nerdbank.GitVersioning" Version="3.6.133" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.10.0" />
     <PackageVersion Include="stylecop.analyzers" Version="1.0.0-alpha001" />
