@@ -22,7 +22,7 @@
   </ItemGroup>
   <ItemGroup Condition="$(IsTestProject) or $(MSBuildProjectName.Contains('TestRunner'))">
     <PackageVersion Include="FluentAssertions" Version="1.3.0.1" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="15.9.2" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageVersion Include="Microsoft.Reactive.Testing" Version="6.0.0" />
     <PackageVersion Include="PublicApiGenerator" Version="4.0.0" />
     <PackageVersion Include="Verify.Xunit" Version="1.0.0-beta.1" />
