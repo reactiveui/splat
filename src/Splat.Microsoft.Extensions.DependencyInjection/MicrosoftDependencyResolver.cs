@@ -6,6 +6,7 @@
 using System.Collections.Concurrent;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Splat.Microsoft.Extensions.DependencyInjection;
@@ -172,10 +173,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver
             }
             else
             {
-                var sd = _serviceCollection?.LastOrDefault(sd => sd.IsKeyedService
-                                                            && sd.ServiceKey is string serviceKey
-                                                            && serviceKey == contract
-                                                            && sd.ServiceType == serviceType);
+                var sd = _serviceCollection?.LastOrDefault(sd => MatchesKeyedContract(serviceType, contract, sd));
                 if (sd is not null)
                 {
                     _serviceCollection?.Remove(sd);
@@ -252,7 +250,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver
                 return _serviceCollection?.Any(sd => !sd.IsKeyedService && sd.ServiceType == serviceType) == true;
             }
 
-            return _serviceCollection?.Any(sd => sd.IsKeyedService && sd.ServiceKey is string serviceKey && serviceKey == contract && sd.ServiceType == serviceType) == true;
+            return _serviceCollection?.Any(sd => MatchesKeyedContract(serviceType, contract, sd)) == true;
         }
 
         if (contract is null)
@@ -283,4 +281,10 @@ public class MicrosoftDependencyResolver : IDependencyResolver
     protected virtual void Dispose(bool disposing)
     {
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool MatchesKeyedContract(Type? serviceType, string contract, ServiceDescriptor sd) =>
+        sd.ServiceType == serviceType
+        && sd is { IsKeyedService: true, ServiceKey: string serviceKey }
+        && serviceKey == contract;
 }
