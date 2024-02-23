@@ -191,7 +191,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver
     /// ignoring the <paramref name="serviceType"/> argument.
     /// </summary>
     /// <param name="serviceType">The service type to unregister.</param>
-    /// <param name="contract">This parameter is ignored. Service will be removed from all contracts.</param>
+    /// <param name="contract">A optional value which will remove only an object registered with the same contract.</param>
     public virtual void UnregisterAll(Type? serviceType, string? contract = null)
     {
         if (_isImmutable)
@@ -219,10 +219,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver
             else
             {
                 sds = _serviceCollection
-                  .Where(sd => sd.IsKeyedService
-                            && sd.ServiceKey is string serviceKey
-                            && serviceKey == contract
-                            && sd.ServiceType == serviceType);
+                  .Where(sd => MatchesKeyedContract(serviceType, contract, sd));
             }
 
             foreach (var sd in sds.ToList())
