@@ -20,7 +20,7 @@
     <PackageVersion Include="coverlet.msbuild" Version="6.0.0" />
     <PackageVersion Include="DryIoc.Dll" Version="5.4.3" />
     <PackageVersion Include="Exceptionless" Version="6.0.3" />
-    <PackageVersion Include="log4net" Version="2.0.15" />
+    <PackageVersion Include="log4net" Version="2.0.16" />
     <PackageVersion Include="Microsoft.AppCenter.Analytics" Version="$(AppCenterVersion)" />
     <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="$(AppCenterVersion)" />
     <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.22.0" />
