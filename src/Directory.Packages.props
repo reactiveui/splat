@@ -20,14 +20,14 @@
     <PackageVersion Include="coverlet.msbuild" Version="6.0.0" />
     <PackageVersion Include="DryIoc.Dll" Version="5.4.3" />
     <PackageVersion Include="Exceptionless" Version="6.0.3" />
-    <PackageVersion Include="log4net" Version="2.0.15" />
+    <PackageVersion Include="log4net" Version="2.0.16" />
     <PackageVersion Include="Microsoft.AppCenter.Analytics" Version="$(AppCenterVersion)" />
     <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="$(AppCenterVersion)" />
     <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.22.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
-    <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="9.0.2" />
+    <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="9.0.4" />
     <PackageVersion Include="Nerdbank.GitVersioning" Version="3.6.133" />
     <PackageVersion Include="Ninject" Version="3.3.6" />
     <PackageVersion Include="NLog" Version="5.2.8" />
