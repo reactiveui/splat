@@ -8,7 +8,7 @@
     <AvaloniaVersion>11.0.9</AvaloniaVersion>
     <RxVersion>6.0.0</RxVersion>
     <ReactiveUIVersion>19.5.41</ReactiveUIVersion>
-    <XUnitVersion>2.6.6</XUnitVersion>
+    <XUnitVersion>2.7.0</XUnitVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Autofac" Version="8.0.0" />
@@ -72,7 +72,7 @@
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageVersion Include="Microsoft.Reactive.Testing" Version="$(RxVersion)" />
     <PackageVersion Include="PublicApiGenerator" Version="11.1.0" />
-    <PackageVersion Include="Verify.Xunit" Version="23.2.0" />
+    <PackageVersion Include="Verify.Xunit" Version="23.3.0" />
     <PackageVersion Include="xunit" Version="$(XUnitVersion)" />
     <PackageVersion Include="Xunit.StaFact" Version="1.1.11" />
   </ItemGroup>
