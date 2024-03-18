@@ -8,7 +8,7 @@
     <AvaloniaVersion>11.0.9</AvaloniaVersion>
     <RxVersion>6.0.0</RxVersion>
     <ReactiveUIVersion>19.5.41</ReactiveUIVersion>
-    <XUnitVersion>2.6.6</XUnitVersion>
+    <XUnitVersion>2.7.0</XUnitVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Autofac" Version="8.0.0" />
