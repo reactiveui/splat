@@ -19,7 +19,7 @@
     <PackageVersion Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.2" />
     <PackageVersion Include="DryIoc.Dll" Version="5.4.3" />
-    <PackageVersion Include="Exceptionless" Version="6.0.3" />
+    <PackageVersion Include="Exceptionless" Version="6.0.4" />
     <PackageVersion Include="log4net" Version="2.0.17" />
     <PackageVersion Include="Microsoft.AppCenter.Analytics" Version="$(AppCenterVersion)" />
     <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="$(AppCenterVersion)" />
