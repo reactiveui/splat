@@ -7,8 +7,7 @@
     <AppCenterVersion>5.0.3</AppCenterVersion>
     <AvaloniaVersion>11.0.9</AvaloniaVersion>
     <RxVersion>6.0.0</RxVersion>
-    <ReactiveUIVersion>19.5.41</ReactiveUIVersion>
-    <XUnitVersion>2.6.6</XUnitVersion>
+    <XUnitVersion>2.8.0</XUnitVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Autofac" Version="8.0.0" />
@@ -33,7 +32,7 @@
     <PackageVersion Include="NLog" Version="5.2.8" />
     <PackageVersion Include="Prism.Core" Version="8.1.97" />
     <PackageVersion Include="Prism.Forms" Version="8.1.97" />
-    <PackageVersion Include="ReactiveUI" Version="$(ReactiveUIVersion)" />
+    <PackageVersion Include="ReactiveUI" Version="19.6.12" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.12.1" />
     <PackageVersion Include="Serilog" Version="3.1.1" />
     <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
@@ -66,15 +65,15 @@
     <PackageVersion Include="System.Threading.Timer" Version="4.3.0" />
     <PackageVersion Include="System.Xml.ReaderWriter" Version="4.3.1" />
     <PackageVersion Include="System.Xml.XmlDocument" Version="4.3.0" />
+    <PackageVersion Include="xunit" Version="$(XUnitVersion)" />
     <PackageVersion Include="xunit.runner.console" Version="$(XUnitVersion)" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.8" />
+    <PackageVersion Include="Verify.Xunit" Version="23.2.0" />
+    <PackageVersion Include="Xunit.StaFact" Version="1.1.11" />
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageVersion Include="Microsoft.Reactive.Testing" Version="$(RxVersion)" />
     <PackageVersion Include="PublicApiGenerator" Version="11.1.0" />
-    <PackageVersion Include="Verify.Xunit" Version="23.2.0" />
-    <PackageVersion Include="xunit" Version="$(XUnitVersion)" />
-    <PackageVersion Include="Xunit.StaFact" Version="1.1.11" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
     <PackageVersion Include="System.Drawing.Primitives" Version="4.3.0" />
