@@ -74,12 +74,12 @@ Splat currently supports:
 [Always Be NuGetting](https://nuget.org/packages/Splat/). Package contains binaries for:
 
 * .NET Framework 4.6.2, .NET Framework 4.7.2, .NET Standard 2.0, .NET 6.0, .NET 7.0, and .NET 8.0
+- Works with:
   * WPF
   * Windows Forms
-  * UWP
-  * Maui
-  * Xamarin (Android, iOS and Mac)
-  * Tizen
+  * WinUI 3
+  * Maui (WinUI, Android, iOS and Mac)
+  * Avalonia
 
 ## Detecting whether you're in a unit test runner
 
