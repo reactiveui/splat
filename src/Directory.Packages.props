@@ -29,14 +29,14 @@
     <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="10.1.1" />
     <PackageVersion Include="Nerdbank.GitVersioning" Version="3.6.133" />
     <PackageVersion Include="Ninject" Version="3.3.6" />
-    <PackageVersion Include="NLog" Version="5.2.8" />
+    <PackageVersion Include="NLog" Version="5.3.1" />
     <PackageVersion Include="Prism.Core" Version="8.1.97" />
     <PackageVersion Include="Prism.Forms" Version="8.1.97" />
     <PackageVersion Include="ReactiveUI" Version="19.6.12" />
-    <PackageVersion Include="Roslynator.Analyzers" Version="4.12.1" />
+    <PackageVersion Include="Roslynator.Analyzers" Version="4.12.2" />
     <PackageVersion Include="Serilog" Version="3.1.1" />
     <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
-    <PackageVersion Include="SimpleInjector" Version="5.4.4" />
+    <PackageVersion Include="SimpleInjector" Version="5.4.5" />
     <PackageVersion Include="stylecop.analyzers" Version="1.2.0-beta.556" />
     <PackageVersion Include="System.AppContext" Version="4.3.0" />
     <PackageVersion Include="System.Collections.Immutable" Version="8.0.0" />
@@ -67,7 +67,7 @@
     <PackageVersion Include="System.Xml.XmlDocument" Version="4.3.0" />
     <PackageVersion Include="xunit" Version="$(XUnitVersion)" />
     <PackageVersion Include="xunit.runner.console" Version="$(XUnitVersion)" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.8" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.0" />
     <PackageVersion Include="Verify.Xunit" Version="24.1.0" />
     <PackageVersion Include="Xunit.StaFact" Version="1.1.11" />
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
