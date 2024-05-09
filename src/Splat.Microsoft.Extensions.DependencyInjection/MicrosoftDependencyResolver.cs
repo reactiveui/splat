@@ -3,9 +3,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System.Collections.Concurrent;
-using System.Data;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -284,50 +281,4 @@ public class MicrosoftDependencyResolver : IDependencyResolver
         sd.ServiceType == serviceType
         && sd is { IsKeyedService: true, ServiceKey: string serviceKey }
         && serviceKey == contract;
-
-    private class ContractDictionary
-    {
-        private readonly ConcurrentDictionary<string, List<Func<object?>>> _dictionary = new();
-
-        public bool IsEmpty => _dictionary.IsEmpty;
-
-        public bool TryRemoveContract(string contract) =>
-            _dictionary.TryRemove(contract, out var _);
-
-        public Func<object?>? GetFactory(string contract) =>
-            GetFactories(contract)
-                .LastOrDefault();
-
-        public IEnumerable<Func<object?>> GetFactories(string contract) =>
-            _dictionary.TryGetValue(contract, out var collection)
-                ? collection ?? Enumerable.Empty<Func<object?>>()
-                : Array.Empty<Func<object?>>();
-
-        public void AddFactory(string contract, Func<object?> factory) =>
-            _dictionary.AddOrUpdate(contract, _ => new() { factory }, (_, list) =>
-            {
-                (list ??= []).Add(factory);
-                return list;
-            });
-
-        public void RemoveLastFactory(string contract) =>
-            _dictionary.AddOrUpdate(contract, [], (_, list) =>
-            {
-                var lastIndex = list.Count - 1;
-                if (lastIndex > 0)
-                {
-                    list.RemoveAt(lastIndex);
-                }
-
-                // TODO if list empty remove contract entirely
-                // need to find how to atomically update or remove
-                // https://github.com/dotnet/corefx/issues/24246
-                return list;
-            });
-    }
-
-    [SuppressMessage("Design", "CA1812: Unused class.", Justification = "Used in reflection.")]
-    private sealed class ContractDictionary<T> : ContractDictionary
-    {
-    }
 }
