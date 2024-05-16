@@ -105,7 +105,7 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
         var config = Bitmap.Config.Argb8888 ?? throw new InvalidOperationException("The ARGB8888 bitmap format is unavailable");
 
 #pragma warning disable CA2000 // Dispose objects before losing scope
-        return Bitmap.CreateBitmap((int)width, (int)height, config)?.FromNative();
+        return Bitmap.CreateBitmap((int)width, (int)height, config).FromNative();
 #pragma warning restore CA2000 // Dispose objects before losing scope
     }
 
@@ -232,7 +232,7 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
         {
             this.Log().Warn("Carrying out source stream byte correction.");
             sourceStream.Position = sourceStream.Length;
-            sourceStream.Write(new byte[] { 0xFF, 0xD9 });
+            sourceStream.Write([0xFF, 0xD9]);
         }
     }
 }

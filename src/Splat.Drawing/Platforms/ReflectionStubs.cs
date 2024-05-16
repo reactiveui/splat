@@ -13,48 +13,36 @@ internal static class ReflectionStubs
     {
         var ti = value.GetTypeInfo();
         var ret = ti.GetDeclaredField(name);
-        if (ret is not null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType is null)
-        {
-            return ret;
-        }
-
-        return ti.BaseType.GetField(name, flags);
+        return ret is not null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType is null
+            ? ret
+            : ti.BaseType.GetField(name, flags);
     }
 
     public static MethodInfo? GetMethod(this Type value, string name, BindingFlags flags = default)
     {
         var ti = value.GetTypeInfo();
         var ret = ti.GetDeclaredMethod(name);
-        if (ret is not null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType is null)
-        {
-            return ret;
-        }
-
-        return ti.BaseType.GetMethod(name, flags);
+        return ret is not null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType is null
+            ? ret
+            : ti.BaseType.GetMethod(name, flags);
     }
 
     public static PropertyInfo? GetProperty(this Type value, string name, BindingFlags flags = default)
     {
         var ti = value.GetTypeInfo();
         var ret = ti.GetDeclaredProperty(name);
-        if (ret is not null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType is null)
-        {
-            return ret;
-        }
-
-        return ti.BaseType.GetProperty(name, flags);
+        return ret is not null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType is null
+            ? ret
+            : ti.BaseType.GetProperty(name, flags);
     }
 
     public static EventInfo? GetEvent(this Type value, string name, BindingFlags flags = default)
     {
         var ti = value.GetTypeInfo();
         var ret = ti.GetDeclaredEvent(name);
-        if (ret is not null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType is null)
-        {
-            return ret;
-        }
-
-        return ti.BaseType.GetEvent(name, flags);
+        return ret is not null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType is null
+            ? ret
+            : ti.BaseType.GetEvent(name, flags);
     }
 
     public static IEnumerable<PropertyInfo> GetProperties(this Type value) => value.GetTypeInfo().DeclaredProperties;
@@ -67,12 +55,9 @@ internal static class ReflectionStubs
         var ret = ti.GetDeclaredMethods(methodName)
             .FirstOrDefault(x => paramTypes.Zip(x.GetParameters().Select(y => y.ParameterType), (l, r) => l == r).All(y => y));
 
-        if (ret is not null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType is null)
-        {
-            return ret;
-        }
-
-        return ti.BaseType.GetMethod(methodName, paramTypes, flags);
+        return ret is not null || !flags.HasFlag(BindingFlags.FlattenHierarchy) || ti.BaseType is null
+            ? ret
+            : ti.BaseType.GetMethod(methodName, paramTypes, flags);
     }
 
     public static IEnumerable<MethodInfo> GetMethods(this Type value) => value.GetTypeInfo().DeclaredMethods;

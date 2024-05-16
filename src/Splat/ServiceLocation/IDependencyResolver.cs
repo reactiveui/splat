@@ -9,6 +9,4 @@ namespace Splat;
 /// Represents a dependency resolver, a service to look up global class
 /// instances or types.
 /// </summary>
-public interface IDependencyResolver : IReadonlyDependencyResolver, IMutableDependencyResolver, IDisposable
-{
-}
+public interface IDependencyResolver : IReadonlyDependencyResolver, IMutableDependencyResolver, IDisposable;

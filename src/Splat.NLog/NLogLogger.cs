@@ -16,24 +16,24 @@ namespace Splat.NLog;
 public sealed class NLogLogger : IFullLogger, IDisposable
 {
     private static readonly KeyValuePair<LogLevel, global::NLog.LogLevel>[] _mappings =
-    {
+    [
         new(LogLevel.Debug, global::NLog.LogLevel.Debug),
         new(LogLevel.Info, global::NLog.LogLevel.Info),
         new(LogLevel.Warn, global::NLog.LogLevel.Warn),
         new(LogLevel.Error, global::NLog.LogLevel.Error),
         new(LogLevel.Fatal, global::NLog.LogLevel.Fatal),
-    };
+    ];
 
     private static readonly ImmutableDictionary<LogLevel, global::NLog.LogLevel> _mappingsDictionary = _mappings.ToImmutableDictionary();
 
-    private readonly global::NLog.ILogger _inner;
+    private readonly global::NLog.Logger _inner;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NLogLogger"/> class.
     /// </summary>
     /// <param name="inner">The actual nlog logger.</param>
     /// <exception cref="ArgumentNullException">NLog logger not passed.</exception>
-    public NLogLogger(global::NLog.ILogger inner)
+    public NLogLogger(global::NLog.Logger inner)
     {
         _inner = inner ?? throw new ArgumentNullException(nameof(inner));
         SetLogLevel();

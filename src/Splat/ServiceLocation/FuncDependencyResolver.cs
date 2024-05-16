@@ -44,7 +44,7 @@ public class FuncDependencyResolver(
     {
         serviceType ??= typeof(NullServiceType);
 
-        return _innerGetServices(serviceType, contract) ?? Array.Empty<object>();
+        return _innerGetServices(serviceType, contract) ?? [];
     }
 
     /// <inheritdoc />

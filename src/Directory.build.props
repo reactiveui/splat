@@ -12,7 +12,7 @@
     <PackageIconUrl>https://github.com/reactiveui/styleguide/blob/master/logo_splat/logo.png?raw=true</PackageIconUrl>
     <PackageDescription>A library to make things cross-platform that should be.</PackageDescription>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <Owners>xanaisbettsx;ghuntley</Owners>
+    <Owners>anaisbetts;ghuntley</Owners>
     <PackageTags>drawing;colours;geometry;logging;unit test detection;service location;image handling;portable;xamarin;xamarin ios;xamarin mac;android;monodroid;uwp;net45</PackageTags>
     <PackageReleaseNotes>https://github.com/reactiveui/splat/releases</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/reactiveui/splat</RepositoryUrl>
@@ -27,7 +27,6 @@
     <ImplicitUsings>true</ImplicitUsings>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
-    <NoWarn>$(NoWarn);VSSpell001;SA1010</NoWarn>
     <!-- disable sourcelink on mono, to workaround https://github.com/dotnet/sourcelink/issues/155 -->
     <EnableSourceLink Condition=" '$(OS)' != 'Windows_NT' AND '$(MSBuildRuntimeType)' != 'Core' ">false</EnableSourceLink>
     <EnableSourceControlManagerQueries>$(EnableSourceLink)</EnableSourceControlManagerQueries>
@@ -37,15 +36,11 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <!-- Include PDB in the built .nupkg -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <SplatTargetFrameworks>netstandard2.0;net6.0;net7.0;net8.0</SplatTargetFrameworks>
-    <SplatWindowsTargetFrameworks>net6.0-windows10.0.17763.0;net7.0-windows10.0.17763.0;net8.0-windows10.0.17763.0</SplatWindowsTargetFrameworks>
+    <SplatTargetFrameworks>netstandard2.0;net6.0;net8.0</SplatTargetFrameworks>
+    <SplatWindowsTargetFrameworks>net6.0-windows10.0.17763.0;net8.0-windows10.0.17763.0</SplatWindowsTargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition="$(IsTestProject) != 'true'">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-  </PropertyGroup>
-  <!-- MonoAndroid doesn't seem to want to allow debugging for maintainers -->
-  <PropertyGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
-    <DebugType>Full</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>

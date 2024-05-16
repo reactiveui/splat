@@ -13,19 +13,15 @@ namespace Splat;
 /// Base class for a logger the provides allocation free logging.
 /// </summary>
 /// <seealso cref="IAllocationFreeLogger" />
+/// <remarks>
+/// Initializes a new instance of the <see cref="AllocationFreeLoggerBase"/> class.
+/// </remarks>
+/// <param name="inner">The <see cref="Splat.ILogger" /> to wrap in this class.</param>
 [SuppressMessage("Naming", "CA1716: Do not use built in identifiers", Justification = "Deliberate usage")]
-public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
+public abstract class AllocationFreeLoggerBase(ILogger inner) : IAllocationFreeLogger
 {
-    private readonly ILogger _inner;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AllocationFreeLoggerBase"/> class.
-    /// </summary>
-    /// <param name="inner">The <see cref="Splat.ILogger" /> to wrap in this class.</param>
-    protected AllocationFreeLoggerBase(ILogger inner) => _inner = inner;
-
     /// <inheritdoc />
-    public LogLevel Level => _inner.Level;
+    public LogLevel Level => inner.Level;
 
     /// <inheritdoc />
     public bool IsDebugEnabled => Level <= LogLevel.Debug;
@@ -47,7 +43,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsDebugEnabled)
         {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, messageFormat, argument), LogLevel.Debug);
+            inner.Write(string.Format(CultureInfo.InvariantCulture, messageFormat, argument), LogLevel.Debug);
         }
     }
 
@@ -56,7 +52,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsDebugEnabled)
         {
-            _inner.Write(exception, string.Format(CultureInfo.InvariantCulture, messageFormat, argument), LogLevel.Debug);
+            inner.Write(exception, string.Format(CultureInfo.InvariantCulture, messageFormat, argument), LogLevel.Debug);
         }
     }
 
@@ -65,7 +61,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsDebugEnabled)
         {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2), LogLevel.Debug);
+            inner.Write(string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2), LogLevel.Debug);
         }
     }
 
@@ -78,7 +74,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsDebugEnabled)
         {
-            _inner.Write(exception, string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2), LogLevel.Debug);
+            inner.Write(exception, string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2), LogLevel.Debug);
         }
     }
 
@@ -91,7 +87,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsDebugEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2, argument3),
                 LogLevel.Debug);
         }
@@ -107,7 +103,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsDebugEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2, argument3),
                 LogLevel.Debug);
@@ -124,7 +120,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsDebugEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -147,7 +143,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsDebugEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -171,7 +167,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsDebugEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -196,7 +192,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsDebugEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -222,7 +218,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsDebugEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -249,7 +245,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsDebugEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -277,7 +273,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsDebugEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -306,7 +302,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsDebugEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -336,7 +332,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsDebugEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -367,7 +363,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsDebugEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -399,7 +395,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsDebugEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -432,7 +428,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsDebugEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -466,7 +462,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsDebugEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -501,7 +497,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsDebugEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -525,7 +521,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsInfoEnabled)
         {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, messageFormat, argument), LogLevel.Info);
+            inner.Write(string.Format(CultureInfo.InvariantCulture, messageFormat, argument), LogLevel.Info);
         }
     }
 
@@ -534,7 +530,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsInfoEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(CultureInfo.InvariantCulture, messageFormat, argument),
                 LogLevel.Info);
@@ -546,7 +542,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsInfoEnabled)
         {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2), LogLevel.Info);
+            inner.Write(string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2), LogLevel.Info);
         }
     }
 
@@ -559,7 +555,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsInfoEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2),
                 LogLevel.Info);
@@ -575,7 +571,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsInfoEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2, argument3),
                 LogLevel.Info);
         }
@@ -591,7 +587,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsInfoEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2, argument3),
                 LogLevel.Info);
@@ -608,7 +604,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsInfoEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2, argument3, argument4),
                 LogLevel.Info);
         }
@@ -625,7 +621,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsInfoEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -649,7 +645,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsInfoEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -674,7 +670,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsInfoEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -700,7 +696,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsInfoEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -727,7 +723,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsInfoEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -755,7 +751,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsInfoEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -784,7 +780,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsInfoEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -814,7 +810,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsInfoEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -845,7 +841,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsInfoEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -877,7 +873,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsInfoEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -910,7 +906,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsInfoEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -945,7 +941,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsInfoEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -981,7 +977,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsInfoEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -1005,7 +1001,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsWarnEnabled)
         {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, messageFormat, argument), LogLevel.Warn);
+            inner.Write(string.Format(CultureInfo.InvariantCulture, messageFormat, argument), LogLevel.Warn);
         }
     }
 
@@ -1014,7 +1010,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsWarnEnabled)
         {
-            _inner.Write(exception, string.Format(CultureInfo.InvariantCulture, messageFormat, argument), LogLevel.Warn);
+            inner.Write(exception, string.Format(CultureInfo.InvariantCulture, messageFormat, argument), LogLevel.Warn);
         }
     }
 
@@ -1023,7 +1019,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsWarnEnabled)
         {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2), LogLevel.Warn);
+            inner.Write(string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2), LogLevel.Warn);
         }
     }
 
@@ -1036,7 +1032,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsWarnEnabled)
         {
-            _inner.Write(exception, string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2), LogLevel.Warn);
+            inner.Write(exception, string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2), LogLevel.Warn);
         }
     }
 
@@ -1049,7 +1045,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsWarnEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2, argument3),
                 LogLevel.Warn);
         }
@@ -1065,7 +1061,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsWarnEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2, argument3),
                 LogLevel.Warn);
@@ -1082,7 +1078,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsWarnEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2, argument3, argument4),
                 LogLevel.Warn);
         }
@@ -1099,7 +1095,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsWarnEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -1123,7 +1119,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsWarnEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -1148,7 +1144,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsWarnEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -1174,7 +1170,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsWarnEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -1201,7 +1197,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsWarnEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -1229,7 +1225,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsWarnEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -1258,7 +1254,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsWarnEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -1288,7 +1284,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsWarnEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -1319,7 +1315,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsWarnEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -1351,7 +1347,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsWarnEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -1384,7 +1380,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsWarnEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -1419,7 +1415,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsWarnEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -1455,7 +1451,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsWarnEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -1479,7 +1475,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsErrorEnabled)
         {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, messageFormat, argument), LogLevel.Error);
+            inner.Write(string.Format(CultureInfo.InvariantCulture, messageFormat, argument), LogLevel.Error);
         }
     }
 
@@ -1488,7 +1484,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsErrorEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(CultureInfo.InvariantCulture, messageFormat, argument),
                 LogLevel.Error);
@@ -1500,7 +1496,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsErrorEnabled)
         {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2), LogLevel.Error);
+            inner.Write(string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2), LogLevel.Error);
         }
     }
 
@@ -1513,7 +1509,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsErrorEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -1533,7 +1529,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsErrorEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2, argument3),
                 LogLevel.Error);
         }
@@ -1549,7 +1545,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsErrorEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -1571,7 +1567,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsErrorEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2, argument3, argument4),
                 LogLevel.Error);
         }
@@ -1588,7 +1584,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsErrorEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -1612,7 +1608,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsErrorEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -1637,7 +1633,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsErrorEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -1663,7 +1659,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsErrorEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -1690,7 +1686,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsErrorEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -1718,7 +1714,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsErrorEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -1747,7 +1743,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsErrorEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -1777,7 +1773,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsErrorEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -1808,7 +1804,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsErrorEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -1840,7 +1836,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsErrorEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -1873,7 +1869,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsErrorEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -1907,7 +1903,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsErrorEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -1942,7 +1938,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsErrorEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -1966,7 +1962,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsFatalEnabled)
         {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, messageFormat, argument), LogLevel.Fatal);
+            inner.Write(string.Format(CultureInfo.InvariantCulture, messageFormat, argument), LogLevel.Fatal);
         }
     }
 
@@ -1975,7 +1971,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsFatalEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(CultureInfo.InvariantCulture, messageFormat, argument),
                 LogLevel.Fatal);
@@ -1987,7 +1983,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsFatalEnabled)
         {
-            _inner.Write(string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2), LogLevel.Fatal);
+            inner.Write(string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2), LogLevel.Fatal);
         }
     }
 
@@ -2000,7 +1996,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsFatalEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -2020,7 +2016,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsFatalEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2, argument3),
                 LogLevel.Fatal);
         }
@@ -2036,7 +2032,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsFatalEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -2058,7 +2054,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsFatalEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(CultureInfo.InvariantCulture, messageFormat, argument1, argument2, argument3, argument4),
                 LogLevel.Fatal);
         }
@@ -2075,7 +2071,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsFatalEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -2099,7 +2095,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsFatalEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -2124,7 +2120,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsFatalEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -2150,7 +2146,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsFatalEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -2177,7 +2173,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsFatalEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -2205,7 +2201,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsFatalEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -2234,7 +2230,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsFatalEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -2264,7 +2260,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsFatalEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -2295,7 +2291,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsFatalEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -2327,7 +2323,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsFatalEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -2360,7 +2356,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsFatalEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -2394,7 +2390,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsFatalEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 string.Format(
                     CultureInfo.InvariantCulture,
                     messageFormat,
@@ -2430,7 +2426,7 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     {
         if (IsFatalEnabled)
         {
-            _inner.Write(
+            inner.Write(
                 exception,
                 string.Format(
                     CultureInfo.InvariantCulture,
@@ -2450,14 +2446,14 @@ public abstract class AllocationFreeLoggerBase : IAllocationFreeLogger
     }
 
     /// <inheritdoc />
-    public void Write([Localizable(false)] string message, LogLevel logLevel) => _inner.Write(message, logLevel);
+    public void Write([Localizable(false)] string message, LogLevel logLevel) => inner.Write(message, logLevel);
 
     /// <inheritdoc />
-    public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel) => _inner.Write(exception, message, logLevel);
+    public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel) => inner.Write(exception, message, logLevel);
 
     /// <inheritdoc />
-    public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel) => _inner.Write(message, type, logLevel);
+    public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel) => inner.Write(message, type, logLevel);
 
     /// <inheritdoc />
-    public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel) => _inner.Write(exception, message, type, logLevel);
+    public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel) => inner.Write(exception, message, type, logLevel);
 }
