@@ -36,9 +36,5 @@ public sealed class ApplicationInsightsViewTracking(TelemetryClient telemetryCli
         _telemetryClient.TrackPageView(telemetry);
     }
 
-    internal static PageViewTelemetry GetPageViewTelemetry()
-    {
-        var result = new PageViewTelemetry();
-        return result;
-    }
+    internal static PageViewTelemetry GetPageViewTelemetry() => new();
 }

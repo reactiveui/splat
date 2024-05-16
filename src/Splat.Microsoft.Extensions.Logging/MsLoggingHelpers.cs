@@ -10,13 +10,13 @@ namespace Splat.Microsoft.Extensions.Logging;
 internal static class MsLoggingHelpers
 {
     public static KeyValuePair<LogLevel, global::Microsoft.Extensions.Logging.LogLevel>[] Mappings { get; } =
-    {
+    [
         new(LogLevel.Debug, global::Microsoft.Extensions.Logging.LogLevel.Debug),
         new(LogLevel.Info, global::Microsoft.Extensions.Logging.LogLevel.Information),
         new(LogLevel.Warn, global::Microsoft.Extensions.Logging.LogLevel.Warning),
         new(LogLevel.Error, global::Microsoft.Extensions.Logging.LogLevel.Error),
         new(LogLevel.Fatal, global::Microsoft.Extensions.Logging.LogLevel.Critical),
-    };
+    ];
 
     public static ImmutableDictionary<LogLevel, global::Microsoft.Extensions.Logging.LogLevel> Splat2MsLogDictionary { get; } = Mappings.ToImmutableDictionary();
 

@@ -12,6 +12,4 @@ namespace Splat.ApplicationPerformanceMonitoring;
 /// </summary>
 [ComVisible(false)]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Avoid empty interfaces", Justification = "Intended through design")]
-public interface IEnableFeatureUsageTracking
-{
-}
+public interface IEnableFeatureUsageTracking;

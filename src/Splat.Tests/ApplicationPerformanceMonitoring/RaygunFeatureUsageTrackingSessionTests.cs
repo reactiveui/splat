@@ -20,11 +20,7 @@ public static class RaygunFeatureUsageTrackingSessionTests
             ApiKey = apiKey,
         };
 
-#if NETSTANDARD2_0
         var raygunClient = new RaygunClient(raygunSettings);
-#else
-        var raygunClient = new RaygunClient(apiKey);
-#endif
 
         return new(featureName, raygunClient, raygunSettings);
     }

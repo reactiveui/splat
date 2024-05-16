@@ -18,12 +18,7 @@ public static class PointMathExtensions
     /// <param name="value">The point value to use for the calculation.</param>
     /// <returns>The point that has been floored.</returns>
     public static PointF Floor(this Point value)
-#if UIKIT
-        // NB: I have no idea but Archimedes does this, soooooooo....
-        => new PointF((float)Math.Floor((double)value.X), (float)Math.Floor((double)value.Y));
-#else
         => new((float)Math.Floor((double)value.X), (float)Math.Ceiling((double)value.Y));
-#endif
 
     /// <summary>
     /// Determines whether two points are within 'epsilon' of each other.

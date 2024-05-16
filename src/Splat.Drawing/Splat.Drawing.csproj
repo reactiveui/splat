@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>$(SplatTargetFrameworks);net7.0-android;net7.0-ios;net7.0-tvos;net7.0-macos;net7.0-maccatalyst;net8.0-android;net8.0-ios;net8.0-tvos;net8.0-macos;net8.0-maccatalyst</TargetFrameworks>
+    <TargetFrameworks>$(SplatTargetFrameworks);net8.0-android;net8.0-ios;net8.0-tvos;net8.0-macos;net8.0-maccatalyst</TargetFrameworks>
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net462;net472;$(SplatWindowsTargetFrameworks)</TargetFrameworks>
     <RootNamespace>Splat</RootNamespace>
     <Authors>.NET Foundation and Contributors</Authors>

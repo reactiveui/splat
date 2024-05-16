@@ -149,7 +149,7 @@ public class ModernDependencyResolver : IDependencyResolver
     {
         if (_registry is null)
         {
-            return Array.Empty<object>();
+            return [];
         }
 
         serviceType ??= typeof(NullServiceType);

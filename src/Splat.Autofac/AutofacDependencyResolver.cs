@@ -109,7 +109,7 @@ public class AutofacDependencyResolver : IDependencyResolver
                 // no op
             }
 
-            return Array.Empty<object>();
+            return [];
         }
     }
 

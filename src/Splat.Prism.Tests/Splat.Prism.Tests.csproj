@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <NoWarn>$(NoWarn);CA1707;CS1574</NoWarn>
     <Nullable>enable</Nullable>
   </PropertyGroup>

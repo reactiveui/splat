@@ -88,7 +88,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver
         var isNull = serviceType is null;
         serviceType ??= typeof(NullServiceType);
 
-        IEnumerable<object> services = Enumerable.Empty<object>();
+        IEnumerable<object> services = [];
 
         if (contract is null || string.IsNullOrWhiteSpace(contract))
         {
@@ -207,17 +207,12 @@ public class MicrosoftDependencyResolver : IDependencyResolver
                 return;
             }
 
-            IEnumerable<ServiceDescriptor> sds = Enumerable.Empty<ServiceDescriptor>();
+            IEnumerable<ServiceDescriptor> sds = [];
 
-            if (contract is null || string.IsNullOrWhiteSpace(contract))
-            {
-                sds = _serviceCollection.Where(s => !s.IsKeyedService && s.ServiceType == serviceType);
-            }
-            else
-            {
-                sds = _serviceCollection
+            sds = contract is null || string.IsNullOrWhiteSpace(contract)
+                ? _serviceCollection.Where(s => !s.IsKeyedService && s.ServiceType == serviceType)
+                : _serviceCollection
                   .Where(sd => MatchesKeyedContract(serviceType, contract, sd));
-            }
 
             foreach (var sd in sds.ToList())
             {
@@ -239,12 +234,9 @@ public class MicrosoftDependencyResolver : IDependencyResolver
 
         if (!_isImmutable)
         {
-            if (contract is null || string.IsNullOrWhiteSpace(contract))
-            {
-                return _serviceCollection?.Any(sd => !sd.IsKeyedService && sd.ServiceType == serviceType) == true;
-            }
-
-            return _serviceCollection?.Any(sd => MatchesKeyedContract(serviceType, contract, sd)) == true;
+            return contract is null || string.IsNullOrWhiteSpace(contract)
+                ? _serviceCollection?.Any(sd => !sd.IsKeyedService && sd.ServiceType == serviceType) == true
+                : _serviceCollection?.Any(sd => MatchesKeyedContract(serviceType, contract, sd)) == true;
         }
 
         if (contract is null)
@@ -253,12 +245,8 @@ public class MicrosoftDependencyResolver : IDependencyResolver
             return service is not null;
         }
 
-        if (_serviceProvider is IKeyedServiceProvider keyedServiceProvider)
-        {
-            return keyedServiceProvider.GetKeyedService(serviceType, contract) is not null;
-        }
-
-        return false;
+        return _serviceProvider is IKeyedServiceProvider keyedServiceProvider
+                && keyedServiceProvider.GetKeyedService(serviceType, contract) is not null;
     }
 
     /// <inheritdoc />

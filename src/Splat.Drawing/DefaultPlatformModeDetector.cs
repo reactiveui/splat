@@ -43,7 +43,7 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
 
             if (mInfo is not null && dependencyObject is not null)
             {
-                _cachedInDesignModeResult = (bool)(mInfo.Invoke(null, new[] { Activator.CreateInstance(dependencyObject) }) ?? false);
+                _cachedInDesignModeResult = (bool)(mInfo.Invoke(null, [Activator.CreateInstance(dependencyObject)]) ?? false);
             }
         }
         else if ((type = Type.GetType(WpfDesignerPropertiesType, false)) is not null)
@@ -53,7 +53,7 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
             var dependencyObject = Type.GetType(WpfDependencyPropertyType, false);
             if (mInfo is not null && dependencyObject is not null)
             {
-                _cachedInDesignModeResult = (bool)(mInfo.Invoke(null, new[] { Activator.CreateInstance(dependencyObject) }) ?? false);
+                _cachedInDesignModeResult = (bool)(mInfo.Invoke(null, [Activator.CreateInstance(dependencyObject)]) ?? false);
             }
         }
         else if ((type = Type.GetType(WinFormsDesignerPropertiesType, false)) is not null)
