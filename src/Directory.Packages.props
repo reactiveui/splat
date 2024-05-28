@@ -32,7 +32,7 @@
     <PackageVersion Include="NLog" Version="5.3.2" />
     <PackageVersion Include="Prism.Core" Version="8.1.97" />
     <PackageVersion Include="Prism.Forms" Version="8.1.97" />
-    <PackageVersion Include="ReactiveUI" Version="20.0.1" />
+    <PackageVersion Include="ReactiveUI" Version="20.1.1" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.12.3" />
     <PackageVersion Include="Serilog" Version="3.1.1" />
     <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
