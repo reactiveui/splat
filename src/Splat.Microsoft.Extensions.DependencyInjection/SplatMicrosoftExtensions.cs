@@ -17,7 +17,10 @@ public static class SplatMicrosoftExtensions
     /// </summary>
     /// <param name="serviceCollection">The <see cref="IServiceCollection"/>.</param>
     public static void UseMicrosoftDependencyResolver(this IServiceCollection serviceCollection) =>
+#pragma warning disable CA2000
+        // Will be disposed with the InternalLocator
         Locator.SetLocator(new MicrosoftDependencyResolver(serviceCollection));
+#pragma warning restore CA2000
 
     /// <summary>
     /// Initializes an instance of <see cref="MicrosoftDependencyResolver"/> that overrides the default <see cref="Locator"/>
@@ -37,7 +40,10 @@ public static class SplatMicrosoftExtensions
         }
         else
         {
+#pragma warning disable CA2000
+            // Will be disposed with the InternalLocator
             Locator.SetLocator(new MicrosoftDependencyResolver(serviceProvider));
+#pragma warning restore CA2000
         }
     }
 }
