@@ -3,25 +3,19 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
-  <PropertyGroup>
-    <AppCenterVersion>5.0.3</AppCenterVersion>
-    <AvaloniaVersion>11.0.9</AvaloniaVersion>
-    <RxVersion>6.0.0</RxVersion>
-    <XUnitVersion>2.8.0</XUnitVersion>
-  </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Autofac" Version="8.0.0" />
-    <PackageVersion Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
-    <PackageVersion Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
-    <PackageVersion Include="Avalonia.Headless.XUnit" Version="$(AvaloniaVersion)" />
-    <PackageVersion Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
-    <PackageVersion Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
+    <PackageVersion Include="Avalonia.Desktop" Version="11.1.3" />
+    <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.1.3" />
+    <PackageVersion Include="Avalonia.Headless.XUnit" Version="11.1.3" />
+    <PackageVersion Include="Avalonia.ReactiveUI" Version="11.1.3" />
+    <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.1.3" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.2" />
     <PackageVersion Include="DryIoc.Dll" Version="5.4.3" />
     <PackageVersion Include="Exceptionless" Version="6.0.4" />
     <PackageVersion Include="log4net" Version="2.0.17" />
-    <PackageVersion Include="Microsoft.AppCenter.Analytics" Version="$(AppCenterVersion)" />
-    <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="$(AppCenterVersion)" />
+    <PackageVersion Include="Microsoft.AppCenter.Analytics" Version="5.0.5" />
+    <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="5.0.5" />
     <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.22.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.0" />
@@ -65,14 +59,14 @@
     <PackageVersion Include="System.Threading.Timer" Version="4.3.0" />
     <PackageVersion Include="System.Xml.ReaderWriter" Version="4.3.1" />
     <PackageVersion Include="System.Xml.XmlDocument" Version="4.3.0" />
-    <PackageVersion Include="xunit" Version="$(XUnitVersion)" />
-    <PackageVersion Include="xunit.runner.console" Version="$(XUnitVersion)" />
+    <PackageVersion Include="xunit" Version="2.9.0" />
+    <PackageVersion Include="xunit.runner.console" Version="2.9.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
     <PackageVersion Include="Verify.Xunit" Version="26.1.6" />
     <PackageVersion Include="Xunit.StaFact" Version="1.1.11" />
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
-    <PackageVersion Include="Microsoft.Reactive.Testing" Version="$(RxVersion)" />
+    <PackageVersion Include="Microsoft.Reactive.Testing" Version="6.0.1" />
     <PackageVersion Include="PublicApiGenerator" Version="11.1.0" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
