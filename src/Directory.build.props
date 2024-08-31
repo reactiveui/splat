@@ -9,7 +9,8 @@
     <Copyright>Copyright (c) .NET Foundation and Contributors</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/reactiveui/splat/</PackageProjectUrl>
-    <PackageIconUrl>https://github.com/reactiveui/styleguide/blob/master/logo_splat/logo.png?raw=true</PackageIconUrl>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageDescription>A library to make things cross-platform that should be.</PackageDescription>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <Owners>anaisbetts;ghuntley</Owners>
@@ -67,6 +68,8 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)..\LICENSE" Pack="true" PackagePath="LICENSE" />
+    <None Include="$(MSBuildThisFileDirectory)..\images\logo.png" Pack="true" PackagePath="\" />
+    <None Include="$(MSBuildThisFileDirectory)..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Nerdbank.GitVersioning" PrivateAssets="all" />
