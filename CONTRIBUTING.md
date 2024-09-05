@@ -13,7 +13,7 @@ today! Here are the guidelines we'd like you to follow:
 
 ## <a name="question"></a> Got a Question or Problem?
 
-If you have questions about how to use splat, please direct these to [StackOverflow](https://stackoverflow.com/questions/tagged/splat). The project maintainers hang out in this [Slack](https://github.com/splat/splat#slack) channel.
+If you have questions about how to use splat, please direct these to [Discussions](https://github.com/reactiveui/splat/discussions). The project maintainers hang out in this [Slack](https://github.com/splat/splat#slack) channel.
 
 ## <a name="issue"></a> Found an Issue?
 
