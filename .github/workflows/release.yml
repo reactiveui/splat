@@ -16,7 +16,4 @@ jobs:
       SIGN_CLIENT_USER_ID: ${{ secrets.SIGN_CLIENT_USER_ID }}
       SIGN_CLIENT_SECRET: ${{ secrets.SIGN_CLIENT_SECRET }}
       SIGN_CLIENT_CONFIG: ${{ secrets.SIGN_CLIENT_CONFIG }}
-      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      AZURE_CRED: ${{ secrets.AZURE_CRED }}
