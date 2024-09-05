@@ -4,9 +4,6 @@ on:
   push:
     branches: [ main ]
     
-env:
-  productNamespacePrefix: "Splat"
-
 jobs:
   release:
     uses: reactiveui/actions-common/.github/workflows/workflow-common-release.yml@main
