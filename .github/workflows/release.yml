@@ -14,6 +14,6 @@ jobs:
       productNamespacePrefix: "Splat"
     secrets:
       SIGN_ACCOUNT_NAME: ${{ secrets.SIGN_ACCOUNT_NAME }}
-      SIGN_CLIENT_SECRET: ${{ secrets.SIGN_CLIENT_SECRET }}
-      SIGN_CLIENT_CONFIG: ${{ secrets.SIGN_CLIENT_CONFIG }}
+      SIGN_PROFILE_NAME: ${{ secrets.SIGN_PROFILE_NAME }}
       AZURE_CRED: ${{ secrets.AZURE_CRED }}
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
