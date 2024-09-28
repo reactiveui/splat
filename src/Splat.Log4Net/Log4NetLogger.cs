@@ -23,6 +23,11 @@ public sealed class Log4NetLogger : ILogger, IDisposable
     public Log4NetLogger(global::log4net.ILog inner)
     {
         _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+        if (_inner.Logger.Repository == null)
+        {
+            throw new ArgumentException("Log4Net is not correctly initialized. It's not exposing a Logger repository to splat.", nameof(inner));
+        }
+
         SetLogLevel();
         _inner.Logger.Repository.ConfigurationChanged += OnInnerLoggerReconfigured;
     }
@@ -31,7 +36,7 @@ public sealed class Log4NetLogger : ILogger, IDisposable
     public LogLevel Level { get; private set; }
 
     /// <inheritdoc />
-    public void Dispose() => _inner.Logger.Repository.ConfigurationChanged -= OnInnerLoggerReconfigured;
+    public void Dispose() => _inner.Logger.Repository!.ConfigurationChanged -= OnInnerLoggerReconfigured;
 
     /// <inheritdoc />
     public void Write(string message, LogLevel logLevel)
