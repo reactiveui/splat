@@ -88,12 +88,12 @@ public class Log4NetLoggerTests : FullLoggerTestBase
                 MemoryTarget.Flush(0);
                 return MemoryTarget.GetEvents().Select(x =>
                 {
-                    var currentLevel = _log4Net2Splat[x.Level];
+                    var currentLevel = _log4Net2Splat.GetValueOrDefault(x.Level ?? Level.Debug, LogLevel.Debug);
 
                     return x.ExceptionObject switch
                     {
                         not null => (currentLevel, $"{x.MessageObject} {x.ExceptionObject}"),
-                        _ => (currentLevel, x.MessageObject.ToString()!)
+                        _ => (currentLevel, x.MessageObject?.ToString() ?? string.Empty)
                     };
                 }).ToList();
             }

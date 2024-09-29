@@ -45,11 +45,6 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     }
 
     /// <inheritdoc/>
-    public void FinalizeExtension()
-    {
-    }
-
-    /// <inheritdoc/>
     public IContainerRegistry RegisterScoped(Type type, Func<IContainerProvider, object> factoryMethod) => throw new NotSupportedException();
 
     /// <inheritdoc/>
@@ -208,28 +203,28 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     public IContainerRegistry RegisterSingleton(Type type, Func<IContainerProvider, object> factoryMethod) => throw new NotSupportedException();
 
     /// <inheritdoc/>
-    public object? Resolve(Type type) => Instance.GetService(type);
+    public object Resolve(Type type) => Instance.GetService(type) ?? throw new InvalidOperationException("Must be a valid value");
 
     /// <inheritdoc/>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Defined by outside interface not in Splat")]
-    public object? Resolve(Type type, params (Type Type, object Instance)[] parameters) =>
-        _types.TryGetValue((type, null), out var resolvedType)
+    public object Resolve(Type type, params (Type Type, object Instance)[] parameters) =>
+        (_types.TryGetValue((type, null), out var resolvedType)
             ? Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance)) ?? throw new InvalidOperationException("Could not create type")
-            : default;
+            : default) ?? throw new InvalidOperationException("Must be a valid value");
 
     /// <inheritdoc/>
-    public object? Resolve(Type type, string name) => Instance.GetService(type, name);
+    public object Resolve(Type type, string name) => Instance.GetService(type, name) ?? throw new InvalidOperationException("Must be a valid value");
 
     /// <inheritdoc/>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Defined by outside interface not in Splat")]
-    public object? Resolve(Type type, string name, params (Type Type, object Instance)[] parameters) =>
-        !_types.TryGetValue((type, name), out var resolvedType)
+    public object Resolve(Type type, string name, params (Type Type, object Instance)[] parameters) =>
+        (!_types.TryGetValue((type, name), out var resolvedType)
             ? resolvedType switch
             {
                 null => default,
                 _ => Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance))
             }
-            : default;
+            : default) ?? throw new InvalidOperationException("Must be a valid value");
 
     /// <summary>
     /// Disposes data associated with the extension.
