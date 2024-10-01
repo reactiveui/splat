@@ -255,8 +255,9 @@ public class LocatorTests
     [Fact]
     public void RegisterAndResolveANullableTypeWithValue()
     {
-        Locator.CurrentMutable.Register<DummyObjectClass1?>(() => new());
-        var doc = Locator.Current.GetService<DummyObjectClass1?>();
+        var currentMutable = new ModernDependencyResolver();
+        currentMutable.Register<DummyObjectClass1?>(() => new());
+        var doc = currentMutable.GetService<DummyObjectClass1?>();
         doc.Should().BeOfType<DummyObjectClass1>();
     }
 
@@ -266,8 +267,9 @@ public class LocatorTests
     [Fact]
     public void RegisterAndResolveANullableTypeWithNull()
     {
-        Locator.CurrentMutable.Register<DummyObjectClass1?>(() => null);
-        var doc = Locator.Current.GetService<DummyObjectClass1?>();
+        var currentMutable = new ModernDependencyResolver();
+        currentMutable.Register<DummyObjectClass1?>(() => null);
+        var doc = currentMutable.GetService<DummyObjectClass1?>();
         doc.Should().BeNull();
     }
 
@@ -290,8 +292,9 @@ public class LocatorTests
     [Fact]
     public void RegisterAndResolveANullableTypeWithDefault()
     {
-        Locator.CurrentMutable.Register<DummyObjectClass1?>(() => default);
-        var doc = Locator.Current.GetService<DummyObjectClass1?>();
+        var currentMutable = new ModernDependencyResolver();
+        currentMutable.Register<DummyObjectClass1?>(() => default);
+        var doc = currentMutable.GetService<DummyObjectClass1?>();
         doc.Should().BeNull();
     }
 
@@ -301,8 +304,9 @@ public class LocatorTests
     [Fact]
     public void RegisterAndResolveANullableTypeWithNulledInstance()
     {
+        var currentMutable = new ModernDependencyResolver();
         DummyObjectClass1? dummy = null;
-        Locator.CurrentMutable.Register<DummyObjectClass1?>(() => dummy);
+        currentMutable.Register<DummyObjectClass1?>(() => dummy);
         var doc = Locator.Current.GetService<DummyObjectClass1?>();
         doc.Should().BeNull();
     }

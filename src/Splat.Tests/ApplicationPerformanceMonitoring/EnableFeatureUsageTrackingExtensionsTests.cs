@@ -23,6 +23,7 @@ public static class EnableFeatureUsageTrackingExtensionsTests
     /// <summary>
     /// Unit tests for the FeatureUsageTrackingExtensionMethod.
     /// </summary>
+    [CollectionDefinition(nameof(FeatureUsageTrackingSessionMethod), DisableParallelization = true)]
     public sealed class FeatureUsageTrackingSessionMethod
     {
         /// <summary>
@@ -101,6 +102,7 @@ public static class EnableFeatureUsageTrackingExtensionsTests
     /// <summary>
     /// Unit tests for the WithFeatureUsageTrackingSession Method.
     /// </summary>
+    [CollectionDefinition(nameof(WithFeatureUsageTrackingSessionMethod), DisableParallelization = true)]
     public sealed class WithFeatureUsageTrackingSessionMethod
     {
         /// <summary>
@@ -123,6 +125,7 @@ public static class EnableFeatureUsageTrackingExtensionsTests
     /// <summary>
     /// Unit tests for the WithSubFeatureUsageTrackingSession Method.
     /// </summary>
+    [CollectionDefinition(nameof(WithSubFeatureUsageTrackingSessionMethod), DisableParallelization = true)]
     public sealed class WithSubFeatureUsageTrackingSessionMethod
     {
         /// <summary>
