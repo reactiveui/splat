@@ -26,7 +26,7 @@
     <PackageVersion Include="NLog" Version="5.3.4" />
     <PackageVersion Include="Prism.Core" Version="9.0.537" />
     <PackageVersion Include="Prism.Forms" Version="9.0.537" />
-    <PackageVersion Include="ReactiveUI" Version="20.1.52" />
+    <PackageVersion Include="ReactiveUI" Version="20.1.63" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.12.5" />
     <PackageVersion Include="Serilog" Version="4.0.1" />
     <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
@@ -62,7 +62,7 @@
     <PackageVersion Include="xunit" Version="2.9.0" />
     <PackageVersion Include="xunit.runner.console" Version="2.9.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
-    <PackageVersion Include="Verify.Xunit" Version="26.5.0" />
+    <PackageVersion Include="Verify.Xunit" Version="26.6.0" />
     <PackageVersion Include="Xunit.StaFact" Version="1.1.11" />
     <PackageVersion Include="FluentAssertions" Version="6.12.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
