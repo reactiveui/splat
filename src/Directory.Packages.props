@@ -28,7 +28,7 @@
     <PackageVersion Include="Prism.Forms" Version="9.0.537" />
     <PackageVersion Include="ReactiveUI" Version="20.1.63" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.12.6" />
-    <PackageVersion Include="Serilog" Version="4.0.1" />
+    <PackageVersion Include="Serilog" Version="4.0.2" />
     <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
     <PackageVersion Include="SimpleInjector" Version="5.5.0" />
     <PackageVersion Include="stylecop.analyzers" Version="1.2.0-beta.556" />
