@@ -51,6 +51,38 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     }
 
     /// <summary>
+    /// Updates this instance with a collection of configured services.
+    /// </summary>
+    /// <param name="services">An instance of <see cref="IServiceCollection"/>.</param>
+    public void UpdateContainer(IServiceCollection services)
+    {
+#if NETSTANDARD || NETFRAMEWORK
+        if (services is null)
+        {
+            throw new ArgumentNullException(nameof(services));
+        }
+#else
+        ArgumentNullException.ThrowIfNull(services);
+#endif
+
+        if (_isImmutable)
+        {
+            throw new InvalidOperationException(ImmutableExceptionMessage);
+        }
+
+        lock (_syncLock)
+        {
+            if (_serviceProvider is not null)
+            {
+                DisposeServiceProvider(_serviceProvider);
+                _serviceProvider = null;
+            }
+
+            _serviceCollection = services;
+        }
+    }
+
+    /// <summary>
     /// Updates this instance with a configured service Provider.
     /// </summary>
     /// <param name="serviceProvider">A ready to use service provider.</param>
@@ -67,9 +99,15 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
 
         lock (_syncLock)
         {
+            // can be null if constructor using IServiceCollection was used.
+            // and no fetch of a service was called.
+            if (_serviceProvider is not null)
+            {
+                DisposeServiceProvider(_serviceProvider);
+                _serviceProvider = serviceProvider;
+            }
+
             _serviceCollection = null;
-            DisposeServiceProvider(_serviceProvider);
-            _serviceProvider = serviceProvider;
             _isImmutable = true;
         }
     }
