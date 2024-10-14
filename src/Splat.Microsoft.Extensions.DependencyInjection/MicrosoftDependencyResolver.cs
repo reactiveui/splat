@@ -104,9 +104,9 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
             if (_serviceProvider is not null)
             {
                 DisposeServiceProvider(_serviceProvider);
-                _serviceProvider = serviceProvider;
             }
 
+            _serviceProvider = serviceProvider;
             _serviceCollection = null;
             _isImmutable = true;
         }
