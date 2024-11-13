@@ -37,8 +37,8 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <!-- Include PDB in the built .nupkg -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <SplatTargetFrameworks>netstandard2.0;net6.0;net8.0</SplatTargetFrameworks>
-    <SplatWindowsTargetFrameworks>net6.0-windows10.0.17763.0;net8.0-windows10.0.17763.0</SplatWindowsTargetFrameworks>
+    <SplatTargetFrameworks>netstandard2.0;net8.0;net9.0</SplatTargetFrameworks>
+    <SplatWindowsTargetFrameworks>net8.0-windows10.0.17763.0;net9.0-windows10.0.17763.0</SplatWindowsTargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition="$(IsTestProject) != 'true'">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
