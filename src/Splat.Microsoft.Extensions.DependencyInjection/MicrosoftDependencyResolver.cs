@@ -165,7 +165,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver
                 var sd = _serviceCollection?.LastOrDefault(s => !s.IsKeyedService && s.ServiceType == serviceType);
                 if (sd is not null)
                 {
-                    _serviceCollection?.Remove(sd);
+                    _ = _serviceCollection?.Remove(sd);
                 }
             }
             else
@@ -173,7 +173,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver
                 var sd = _serviceCollection?.LastOrDefault(sd => MatchesKeyedContract(serviceType, contract, sd));
                 if (sd is not null)
                 {
-                    _serviceCollection?.Remove(sd);
+                    _ = _serviceCollection?.Remove(sd);
                 }
             }
 
@@ -216,7 +216,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver
 
             foreach (var sd in sds.ToList())
             {
-                _serviceCollection.Remove(sd);
+                _ = _serviceCollection.Remove(sd);
             }
 
             // required so that it gets rebuilt if not injected externally.

@@ -109,7 +109,7 @@ public class ModernDependencyResolver : IDependencyResolver
         {
             foreach (var c in toRemove)
             {
-                _callbackRegistry[pair].Remove(c);
+                _ = _callbackRegistry[pair].Remove(c);
             }
         }
     }

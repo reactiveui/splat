@@ -67,7 +67,7 @@ public sealed class RaygunFeatureUsageTrackingSession : IFeatureUsageTrackingSes
             .SetEnvironmentDetails()
             .SetUserCustomData(userCustomData);
         var raygunMessage = messageBuilder.Build();
-        _raygunClient.SendInBackground(raygunMessage);
+        _ = _raygunClient.SendInBackground(raygunMessage);
     }
 
     /// <inheritdoc />

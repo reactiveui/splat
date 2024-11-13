@@ -15,13 +15,13 @@ internal static class SerilogHelper
     /// Gets a list of mappings of Serilog levels and equivalent Splat log levels.
     /// </summary>
     public static KeyValuePair<LogLevel, LogEventLevel>[] Mappings { get; } =
-    {
+    [
         new(LogLevel.Debug, LogEventLevel.Debug),
         new(LogLevel.Info, LogEventLevel.Information),
         new(LogLevel.Warn, LogEventLevel.Warning),
         new(LogLevel.Error, LogEventLevel.Error),
         new(LogLevel.Fatal, LogEventLevel.Fatal),
-    };
+    ];
 
     /// <summary>
     /// Gets a dictionary which maps Splat log levels to Serilogs.

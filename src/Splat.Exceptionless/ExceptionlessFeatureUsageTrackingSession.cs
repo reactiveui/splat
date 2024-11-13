@@ -40,11 +40,10 @@ public sealed class ExceptionlessFeatureUsageTrackingSession : IFeatureUsageTrac
 
         if (!parentReference.Equals(Guid.Empty))
         {
-            eventBuilder.SetEventReference(FeatureName, FeatureReference.ToString());
+            eventBuilder = eventBuilder.SetEventReference(FeatureName, FeatureReference.ToString());
         }
 
-        eventBuilder.SetReferenceId(FeatureReference.ToString());
-        eventBuilder.Submit();
+        eventBuilder.SetReferenceId(FeatureReference.ToString()).Submit();
     }
 
     /// <inheritdoc />

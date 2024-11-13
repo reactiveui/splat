@@ -28,6 +28,7 @@ public static class TargetFrameworkExtensions
     internal static string? GetTargetFrameworkName(string? frameworkName) =>
         frameworkName switch
         {
+            ".NETCoreApp,Version=v9.0" => "net9.0",
             ".NETCoreApp,Version=v8.0" => "net8.0",
             ".NETCoreApp,Version=v7.0" => "net7.0",
             ".NETCoreApp,Version=v6.0" => "net6.0",
@@ -48,6 +49,7 @@ public static class TargetFrameworkExtensions
             ".NETStandard,Version=v1.2" => "netstandard1.2",
             ".NETStandard,Version=v1.1" => "netstandard1.1",
             ".NETStandard,Version=v1.0" => "netstandard1.0",
+            ".NETFramework,Version=v4.8.1" => "net481",
             ".NETFramework,Version=v4.8" => "net48",
             ".NETFramework,Version=v4.7.2" => "net472",
             ".NETFramework,Version=v4.7.1" => "net471",

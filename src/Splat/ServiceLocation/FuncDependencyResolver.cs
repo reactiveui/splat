@@ -100,7 +100,7 @@ public class FuncDependencyResolver(
         {
             foreach (var c in toRemove)
             {
-                _callbackRegistry[pair].Remove(c);
+                _ = _callbackRegistry[pair].Remove(c);
             }
         }
     }

@@ -85,7 +85,7 @@ public class SimpleInjectorInitializer : IDependencyResolver
 
         lock (_lockObject)
         {
-            RegisteredFactories.Remove(serviceType);
+            _ = RegisteredFactories.Remove(serviceType);
         }
     }
 

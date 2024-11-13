@@ -28,6 +28,6 @@ public static class MutableDependencyResolverExtensions
     {
         var funcLogManager = new FuncLogManager(type => new NLogLogger(LogResolver.Resolve(type)));
 
-        instance.RegisterConstant(funcLogManager, typeof(ILogManager));
+        instance.RegisterConstant<ILogManager>(funcLogManager);
     }
 }
