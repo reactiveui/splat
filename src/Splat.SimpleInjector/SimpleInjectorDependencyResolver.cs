@@ -67,7 +67,7 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
             var registration = _container.GetRegistration(serviceType);
             return registration switch
             {
-                not null => new[] { registration.GetInstance() },
+                not null => [registration.GetInstance()],
                 _ => Array.Empty<object>()
             };
         }

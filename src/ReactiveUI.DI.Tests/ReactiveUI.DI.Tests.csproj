@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net472;net8.0;</TargetFrameworks>
+    <TargetFrameworks>net472;net8.0;net9.0</TargetFrameworks>
     <NoWarn>$(NoWarn);1591;CA1707;SA1633;CA2000</NoWarn>
     <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
@@ -14,7 +14,7 @@
         <ProjectReference Include="..\Splat.Autofac\Splat.Autofac.csproj" />
       </ItemGroup>
     </When>
-    <When Condition="$(TargetFramework.StartsWith('net8.0'))">
+    <When Condition="$(TargetFramework.StartsWith('net8.0')) or $(TargetFramework.StartsWith('net9.0'))">
       <ItemGroup>
         <Compile Remove="AutoFacReactiveUIDependencyTests.cs" />
         <Compile Remove="NinjectReactiveUIDependencyTests.cs" />

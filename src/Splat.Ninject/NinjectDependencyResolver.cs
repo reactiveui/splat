@@ -34,11 +34,15 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 #pragma warning disable CA1031 // Do not catch general exception types
             try
             {
+#pragma warning disable CA2263 // Prefer generic overload when type is known
                 return _kernel.GetAll(typeof(NullServiceType), contract).ToArray();
+#pragma warning restore CA2263 // Prefer generic overload when type is known
             }
             catch
             {
+#pragma warning disable IDE0301 // Simplify collection initialization
                 return Array.Empty<object>();
+#pragma warning restore IDE0301 // Simplify collection initialization
             }
 #pragma warning restore CA1031 // Do not catch general exception types
         }
@@ -66,11 +70,11 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
         if (string.IsNullOrWhiteSpace(contract))
         {
-            _kernel.Bind(serviceType).ToMethod(_ => factory());
+            _ = _kernel.Bind(serviceType).ToMethod(_ => factory());
             return;
         }
 
-        _kernel.Bind(serviceType).ToMethod(_ => factory()).Named(contract);
+        _ = _kernel.Bind(serviceType).ToMethod(_ => factory()).Named(contract);
     }
 
     /// <inheritdoc />

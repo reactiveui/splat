@@ -29,7 +29,7 @@ public static class ServiceLocationInitialization
     {
         if (!resolver.HasRegistration(typeof(IFeatureUsageTrackingManager)))
         {
-            resolver.RegisterConstant(new DefaultFeatureUsageTrackingManager(), typeof(IFeatureUsageTrackingManager));
+            resolver.RegisterConstant<IFeatureUsageTrackingManager>(new DefaultFeatureUsageTrackingManager());
         }
     }
 
@@ -45,7 +45,7 @@ public static class ServiceLocationInitialization
     {
         if (!resolver.HasRegistration(typeof(ILogger)))
         {
-            resolver.RegisterConstant(new DebugLogger(), typeof(ILogger));
+            resolver.RegisterConstant<ILogger>(new DebugLogger());
         }
     }
 }
