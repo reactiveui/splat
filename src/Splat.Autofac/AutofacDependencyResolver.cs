@@ -255,14 +255,9 @@ public class AutofacDependencyResolver : IDependencyResolver
 
         var lifeTimeScope = _lifetimeScope ?? _internalLifetimeScope;
 
-        if (contract is null || string.IsNullOrWhiteSpace(contract))
-        {
-            lifeTimeScope.TryResolve(serviceType, out serviceInstance!);
-        }
-        else
-        {
-            lifeTimeScope.TryResolveNamed(contract, serviceType, out serviceInstance!);
-        }
+        _ = contract is null || string.IsNullOrWhiteSpace(contract)
+            ? lifeTimeScope.TryResolve(serviceType, out serviceInstance!)
+            : lifeTimeScope.TryResolveNamed(contract, serviceType, out serviceInstance!);
 
         return serviceInstance;
     }

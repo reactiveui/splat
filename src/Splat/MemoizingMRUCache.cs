@@ -197,7 +197,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
             var releaseVar = toRemove.value;
 
             _cacheMRUList.Remove(toRemove.param);
-            _cacheEntries.Remove(key);
+            _ = _cacheEntries.Remove(key);
 
             // moved down to allow removal from list
             // even if the release call fails.
@@ -301,7 +301,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
             var toRemove = _cacheMRUList.Last.Value;
             _releaseFunction?.Invoke(_cacheEntries[toRemove].value);
 
-            _cacheEntries.Remove(_cacheMRUList.Last.Value);
+            _ = _cacheEntries.Remove(_cacheMRUList.Last.Value);
             _cacheMRUList.RemoveLast();
         }
     }

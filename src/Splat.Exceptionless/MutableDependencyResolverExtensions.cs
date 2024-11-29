@@ -35,6 +35,6 @@ public static class MutableDependencyResolverExtensions
             return new WrappingFullLogger(miniLoggingWrapper);
         });
 
-        instance.RegisterConstant(funcLogManager, typeof(ILogManager));
+        instance.RegisterConstant<ILogManager>(funcLogManager);
     }
 }

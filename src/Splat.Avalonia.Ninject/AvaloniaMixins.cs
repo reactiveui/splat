@@ -42,7 +42,7 @@ namespace Avalonia.ReactiveUI.Splat
 #endif
 
                     var container = new StandardKernel();
-                    Locator.CurrentMutable.RegisterConstant(container, typeof(StandardKernel));
+                    Locator.CurrentMutable.RegisterConstant(container);
                     Locator.SetLocator(new NinjectDependencyResolver(container));
                     RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
                     containerConfig(container);
@@ -98,7 +98,7 @@ namespace Avalonia.ReactiveUI.Splat
 #endif
 
                         var container = containerFactory();
-                        Locator.CurrentMutable.RegisterConstant(container, typeof(TContainer));
+                        Locator.CurrentMutable.RegisterConstant(container);
                         var dependencyResolver = dependencyResolverFactory(container);
                         Locator.SetLocator(dependencyResolver);
                         RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;

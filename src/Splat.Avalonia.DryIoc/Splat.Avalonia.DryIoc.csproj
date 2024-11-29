@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Avalonia.ReactiveUI" />
     <PackageReference Include="DryIoc.Dll" />
+    <PackageReference Include="System.Text.Json" />
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>
 </Project>

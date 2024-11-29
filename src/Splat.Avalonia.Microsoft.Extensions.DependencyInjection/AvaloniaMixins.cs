@@ -44,7 +44,7 @@ namespace ReactiveUI.Avalonia.Splat
 #endif
 
                     IServiceCollection serviceCollection = new ServiceCollection();
-                    Locator.CurrentMutable.RegisterConstant(serviceCollection, typeof(IServiceCollection));
+                    Locator.CurrentMutable.RegisterConstant(serviceCollection);
                     Locator.SetLocator(new MicrosoftDependencyResolver(serviceCollection));
                     RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
                     containerConfig(serviceCollection);
@@ -114,7 +114,7 @@ namespace ReactiveUI.Avalonia.Splat
 #endif
 
                         var container = containerFactory();
-                        Locator.CurrentMutable.RegisterConstant(container, typeof(TContainer));
+                        Locator.CurrentMutable.RegisterConstant(container);
                         var dependencyResolver = dependencyResolverFactory(container);
                         Locator.SetLocator(dependencyResolver);
                         RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;

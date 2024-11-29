@@ -25,7 +25,7 @@
   <PropertyGroup Condition="$(TargetFramework.EndsWith('0-android'))">
     <DefineConstants>$(DefineConstants);MONO;ANDROID</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="$(TargetFramework.Equals('net6.0')) or $(TargetFramework.Equals('net8.0')) or $(TargetFramework.Equals('netstandard2.1')) or $(TargetFramework.Equals('netstandard2.0'))">
+  <PropertyGroup Condition="$(TargetFramework.Equals('net8.0')) or $(TargetFramework.Equals('net9.0')) or $(TargetFramework.Equals('netstandard2.1')) or $(TargetFramework.Equals('netstandard2.0'))">
     <DefineConstants>$(DefineConstants);IS_SHARED_NET</DefineConstants>
   </PropertyGroup>
 </Project>
