@@ -69,7 +69,7 @@
     <PackageVersion Include="FluentAssertions" Version="7.0.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageVersion Include="Microsoft.Reactive.Testing" Version="6.0.1" />
-    <PackageVersion Include="PublicApiGenerator" Version="11.1.0" />
+    <PackageVersion Include="PublicApiGenerator" Version="11.2.0" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
     <PackageVersion Include="System.Drawing.Primitives" Version="4.3.0" />
