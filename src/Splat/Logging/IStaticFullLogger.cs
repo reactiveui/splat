@@ -341,7 +341,7 @@ public interface IStaticFullLogger
     void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel, [CallerMemberName]string? callerMemberName = null);
 
     /// <summary>
-    /// Writes a messge to the target.
+    /// Writes a message to the target.
     /// </summary>
     /// <param name="message">The message.</param>
     /// <param name="type">The type.</param>
@@ -350,7 +350,7 @@ public interface IStaticFullLogger
     void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel, [CallerMemberName]string? callerMemberName = null);
 
     /// <summary>
-    /// Writes a messge to the target.
+    /// Writes a message to the target.
     /// </summary>
     /// <param name="exception">The exception that occured.</param>
     /// <param name="message">The message.</param>
