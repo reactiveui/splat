@@ -14,6 +14,7 @@ namespace Splat.NLog;
 [DebuggerDisplay("Name={_inner.Name} Level={Level}")]
 public sealed class NLogLogger : IFullLogger, IDisposable
 {
+    private static readonly LogLevel[] _allLogLevels = Enum.GetValues(typeof(LogLevel)).Cast<LogLevel>().ToArray();
     private readonly global::NLog.Logger _inner;
 
     /// <summary>
@@ -564,7 +565,7 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     /// </remarks>
     private void SetLogLevel()
     {
-        foreach (LogLevel logLevel in Enum.GetValues(typeof(LogLevel)))
+        foreach (LogLevel logLevel in _allLogLevels)
         {
             if (_inner.IsEnabled(ResolveLogLevel(logLevel)))
             {
