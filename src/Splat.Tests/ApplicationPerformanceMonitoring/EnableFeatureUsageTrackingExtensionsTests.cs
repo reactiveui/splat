@@ -16,9 +16,7 @@ public static class EnableFeatureUsageTrackingExtensionsTests
     /// <summary>
     /// Dummy object for testing IEnableFeatureUsageTracking.
     /// </summary>
-    public sealed class TestObjectThatSupportsFeatureUsageTracking : IEnableFeatureUsageTracking
-    {
-    }
+    public sealed class TestObjectThatSupportsFeatureUsageTracking : IEnableFeatureUsageTracking;
 
     /// <summary>
     /// Unit tests for the FeatureUsageTrackingExtensionMethod.

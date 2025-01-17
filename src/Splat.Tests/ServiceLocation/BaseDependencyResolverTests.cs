@@ -194,7 +194,7 @@ public abstract class BaseDependencyResolverTests<T>
         Assert.Throws<ArgumentNullException>(() => resolver1.RegisterAnd<IViewModelOne>(() => new ViewModelOne()));
         Assert.Throws<ArgumentNullException>(() => resolver1.Register<IViewModelOne, ViewModelOne>());
         Assert.Throws<ArgumentNullException>(() => resolver1.RegisterConstantAnd(new ViewModelOne()));
-        Assert.Throws<ArgumentNullException>(() => resolver1.RegisterConstantAnd(new ViewModelOne(), typeof(ViewModelOne)));
+        Assert.Throws<ArgumentNullException>(() => resolver1.RegisterConstantAnd(new ViewModelOne()));
         Assert.Throws<ArgumentNullException>(() => resolver1.RegisterConstantAnd<ViewModelOne>());
 #pragma warning restore CS8604 // Possible null reference argument.
     }
@@ -212,7 +212,7 @@ public abstract class BaseDependencyResolverTests<T>
                 .RegisterAnd(() => new DefaultLogManager(), "three")
                 .RegisterAnd<IViewModelOne>(() => new ViewModelOne(), "four")
                 .RegisterConstantAnd<ViewModelOne>("five")
-                .RegisterConstantAnd(new ViewModelOne(), typeof(ViewModelOne), "six")
+                .RegisterConstantAnd(new ViewModelOne(), "six")
                 .RegisterLazySingletonAnd(() => new DefaultLogManager(), typeof(ILogManager), "seven")
                 .RegisterLazySingletonAnd<ViewModelOne>("eight")
                 .RegisterLazySingletonAnd<DefaultLogManager>(() => new(), "seven")

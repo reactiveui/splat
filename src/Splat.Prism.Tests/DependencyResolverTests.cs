@@ -258,9 +258,7 @@ public class DependencyResolverTests
     {
         using var c = new SplatContainerExtension();
         c.Register(typeof(ILogger), typeof(ConsoleLogger));
-        Locator.CurrentMutable.RegisterConstant(
-            new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())),
-            typeof(ILogManager));
+        Locator.CurrentMutable.RegisterConstant<ILogManager>(new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())));
 
         var d = Splat.Locator.Current.GetService<ILogManager>();
         Assert.IsType<FuncLogManager>(d);

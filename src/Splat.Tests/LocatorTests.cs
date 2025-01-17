@@ -403,13 +403,13 @@ public class LocatorTests
             });
 
         currentMutable.UnregisterAll<IDummyInterface>();
-        type.Should().Be(typeof(IDummyInterface));
+        type.Should().Be<IDummyInterface>();
         contract.Should().BeNull();
         unregisterAllCalled.Should().BeTrue();
 
         unregisterAllCalled = false;
         currentMutable.UnregisterAll<IEnableLogger>("test");
-        type.Should().Be(typeof(IEnableLogger));
+        type.Should().Be<IEnableLogger>();
         contract.Should().Be("test");
         unregisterAllCalled.Should().BeTrue();
     }
@@ -435,13 +435,13 @@ public class LocatorTests
             });
 
         currentMutable.UnregisterCurrent<IDummyInterface>();
-        type.Should().Be(typeof(IDummyInterface));
+        type.Should().Be<IDummyInterface>();
         contract.Should().BeNull();
         unregisterAllCalled.Should().BeTrue();
 
         unregisterAllCalled = false;
         currentMutable.UnregisterCurrent<IEnableLogger>("test");
-        type.Should().Be(typeof(IEnableLogger));
+        type.Should().Be<IEnableLogger>();
         contract.Should().Be("test");
         unregisterAllCalled.Should().BeTrue();
     }
