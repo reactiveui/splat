@@ -246,7 +246,11 @@ public partial struct SplatColor : IEquatable<SplatColor>
 #pragma warning disable CA1031 // Do not catch general exception types
         try
         {
+#if NET6_0_OR_GREATER
+            var kc = Enum.Parse<KnownColor>(name, true);
+#else
             KnownColor kc = (KnownColor)Enum.Parse(typeof(KnownColor), name, true);
+#endif
             return FromKnownColor(kc);
         }
         catch (Exception ex)
