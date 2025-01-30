@@ -71,7 +71,7 @@
     <PackageVersion Include="PublicApiGenerator" Version="11.3.0" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4')) or $(TargetFramework.StartsWith('netstandard'))">
-    <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
+    <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="9.0.1" />
     <PackageVersion Include="System.Drawing.Primitives" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net8')) or $(TargetFramework.StartsWith('net9'))">
