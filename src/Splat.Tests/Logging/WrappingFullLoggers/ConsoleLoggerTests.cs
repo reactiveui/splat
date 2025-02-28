@@ -12,7 +12,7 @@ namespace Splat.Tests.Logging;
 /// <summary>
 /// Tests that verify the <see cref="ConsoleLoggerTests"/> class.
 /// </summary>
-public class ConsoleLoggerTests : FullLoggerTestBase
+internal class ConsoleLoggerTests : FullLoggerTestBase
 {
     /// <inheritdoc/>
     protected override (IFullLogger logger, IMockLogTarget mockTarget) GetLogger(LogLevel minimumLogLevel)
@@ -33,7 +33,7 @@ public class ConsoleLoggerTests : FullLoggerTestBase
         public override void WriteLine(string? value)
         {
             var colonIndex = value!.IndexOf(':', StringComparison.InvariantCulture);
-            var level = (LogLevel)Enum.Parse(typeof(LogLevel), value.AsSpan(0, colonIndex));
+            var level = Enum.Parse<LogLevel>(value.AsSpan(0, colonIndex));
             var message = value.Substring(colonIndex + 1).Trim();
             _logs.Add((level, message));
             base.WriteLine(value);

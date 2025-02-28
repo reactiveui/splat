@@ -1,11 +1,8 @@
-﻿// Copyright (c) 2024 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-// We need to define the DEBUG symbol because we want the logger
-// to work even when this package is compiled on release. Otherwise,
-// the call to Debug.WriteLine will not be in the release binary
 #define DEBUG
 
 using System.ComponentModel;
