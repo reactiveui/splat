@@ -78,7 +78,7 @@
     <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="9.0.3" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net46'))">
-    <PackageVersion Include="System.ValueTuple" Version="4.5.0" />
+    <PackageVersion Include="System.ValueTuple" Version="4.6.1" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('netstandard'))">
     <PackageVersion Include="System.Diagnostics.Contracts" Version="4.3.0" />
