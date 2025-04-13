@@ -4,7 +4,7 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Autofac" Version="8.2.0" />
+    <PackageVersion Include="Autofac" Version="8.2.1" />
     <PackageVersion Include="Avalonia.Desktop" Version="11.2.5" />
     <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.2.5" />
     <PackageVersion Include="Avalonia.Headless.XUnit" Version="11.2.5" />
