@@ -7,6 +7,7 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     <DefineConstants>$(DefineConstants);MICROSOFT1</DefineConstants>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaXaml Include="..\Splat.Avalonia.Tests\Mocks\App.axaml" Link="Mocks\App.axaml">

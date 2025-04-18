@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -7,6 +7,7 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     <DefineConstants>$(DefineConstants);DRYIOC2</DefineConstants>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaXaml Include="..\Splat.Avalonia.Tests\Mocks\App.axaml" Link="Mocks\App.axaml">

@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
