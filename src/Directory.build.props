@@ -48,15 +48,14 @@
   </PropertyGroup>
   <ItemGroup Condition="$(IsTestProject) or $(MSBuildProjectName.Contains('TestRunner'))">
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.v3" />
     <PackageReference Include="Xunit.StaFact" />
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Microsoft.Reactive.Testing" />
     <PackageReference Include="PublicApiGenerator" />
-    <PackageReference Include="Verify.Xunit" />
+    <PackageReference Include="Verify.XunitV3" />
   </ItemGroup>
   <ItemGroup Condition="$(IsTestProject)">
-    <PackageReference Include="xunit.runner.console" />
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="coverlet.msbuild" />
   </ItemGroup>
