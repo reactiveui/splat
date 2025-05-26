@@ -1,6 +1,6 @@
-﻿// Copyright (c) 2024 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Runtime.Serialization;
@@ -13,8 +13,7 @@ namespace Splat;
 [DataContract]
 public partial struct SplatColor : IEquatable<SplatColor>
 {
-    // Private transparency (A) and R,G,B fields.
-    private uint _value;
+    //// Private transparency (A) and R,G,B fields.
 
     private short _state;
     private short _knownColor;
@@ -27,7 +26,7 @@ public partial struct SplatColor : IEquatable<SplatColor>
 
     internal SplatColor(uint value, short state, short knownColor, string name)
     {
-        _value = value;
+        Value = value;
         _state = state;
         _knownColor = knownColor;
         _name = name;
@@ -130,15 +129,15 @@ public partial struct SplatColor : IEquatable<SplatColor>
         {
             // Optimization for known colors that were deserialized
             // from an MS serialized stream.
-            if (_value == 0 && IsKnownColor)
+            if (field == 0 && IsKnownColor)
             {
-                _value = KnownColors.FromKnownColor((KnownColor)_knownColor).ToArgb() & 0xFFFFFFFF;
+                field = KnownColors.FromKnownColor((KnownColor)_knownColor).ToArgb() & 0xFFFFFFFF;
             }
 
-            return _value;
+            return field;
         }
 
-        set => _value = value;
+        set;
     }
 
     /// <summary>
@@ -225,7 +224,7 @@ public partial struct SplatColor : IEquatable<SplatColor>
         {
             c = Empty;
             c._state = (short)(ColorType.ARGB | ColorType.Known | ColorType.Named);
-            if ((n < 27) || (n > 169))
+            if (n is < 27 or > 169)
             {
                 c._state |= (short)ColorType.System;
             }
@@ -247,7 +246,11 @@ public partial struct SplatColor : IEquatable<SplatColor>
 #pragma warning disable CA1031 // Do not catch general exception types
         try
         {
+#if NET6_0_OR_GREATER
+            var kc = Enum.Parse<KnownColor>(name, true);
+#else
             KnownColor kc = (KnownColor)Enum.Parse(typeof(KnownColor), name, true);
+#endif
             return FromKnownColor(kc);
         }
         catch (Exception ex)
@@ -409,17 +412,17 @@ internal static SplatColor FromArgbSystem (int alpha, int red, int green, int bl
 
     private static void CheckRGBValues(int red, int green, int blue)
     {
-        if ((red > 255) || (red < 0))
+        if (red is > 255 or < 0)
         {
             throw CreateColorArgumentException(red, "red");
         }
 
-        if ((green > 255) || (green < 0))
+        if (green is > 255 or < 0)
         {
             throw CreateColorArgumentException(green, "green");
         }
 
-        if ((blue > 255) || (blue < 0))
+        if (blue is > 255 or < 0)
         {
             throw CreateColorArgumentException(blue, "blue");
         }
@@ -430,7 +433,7 @@ internal static SplatColor FromArgbSystem (int alpha, int red, int green, int bl
 
     private static void CheckARGBValues(int alpha, int red, int green, int blue)
     {
-        if ((alpha > 255) || (alpha < 0))
+        if (alpha is > 255 or < 0)
         {
             throw CreateColorArgumentException(alpha, "alpha");
         }

@@ -1,6 +1,6 @@
-// Copyright (c) 2024 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using FluentAssertions;
@@ -258,9 +258,7 @@ public class DependencyResolverTests
     {
         using var c = new SplatContainerExtension();
         c.Register(typeof(ILogger), typeof(ConsoleLogger));
-        Locator.CurrentMutable.RegisterConstant(
-            new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())),
-            typeof(ILogManager));
+        Locator.CurrentMutable.RegisterConstant<ILogManager>(new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())));
 
         var d = Splat.Locator.Current.GetService<ILogManager>();
         Assert.IsType<FuncLogManager>(d);

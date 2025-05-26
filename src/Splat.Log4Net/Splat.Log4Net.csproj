@@ -21,6 +21,7 @@
     <PackageReference Include="System.IO.FileSystem" />
     <PackageReference Include="System.IO.FileSystem.Watcher" />
     <PackageReference Include="System.Linq" />
+    <PackageReference Include="System.Net.Http" />
     <PackageReference Include="System.Net.NameResolution" />
     <PackageReference Include="System.Net.Requests" />
     <PackageReference Include="System.Net.Sockets" />

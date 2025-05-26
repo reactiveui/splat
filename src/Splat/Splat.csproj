@@ -8,5 +8,9 @@
     <PackageId>Splat</PackageId>
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
-  
+  <PropertyGroup Condition="$(TargetFramework.StartsWith('net8.0')) or $(TargetFramework.StartsWith('net9.0'))">
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>
+
 </Project>
+

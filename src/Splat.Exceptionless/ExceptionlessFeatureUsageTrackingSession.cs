@@ -1,6 +1,6 @@
-﻿// Copyright (c) 2024 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Exceptionless;
@@ -40,11 +40,10 @@ public sealed class ExceptionlessFeatureUsageTrackingSession : IFeatureUsageTrac
 
         if (!parentReference.Equals(Guid.Empty))
         {
-            eventBuilder.SetEventReference(FeatureName, FeatureReference.ToString());
+            eventBuilder = eventBuilder.SetEventReference(FeatureName, FeatureReference.ToString());
         }
 
-        eventBuilder.SetReferenceId(FeatureReference.ToString());
-        eventBuilder.Submit();
+        eventBuilder.SetReferenceId(FeatureReference.ToString()).Submit();
     }
 
     /// <inheritdoc />

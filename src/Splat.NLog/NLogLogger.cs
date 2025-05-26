@@ -1,9 +1,8 @@
-﻿// Copyright (c) 2024 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Globalization;
 
@@ -15,17 +14,11 @@ namespace Splat.NLog;
 [DebuggerDisplay("Name={_inner.Name} Level={Level}")]
 public sealed class NLogLogger : IFullLogger, IDisposable
 {
-    private static readonly KeyValuePair<LogLevel, global::NLog.LogLevel>[] _mappings =
-    [
-        new(LogLevel.Debug, global::NLog.LogLevel.Debug),
-        new(LogLevel.Info, global::NLog.LogLevel.Info),
-        new(LogLevel.Warn, global::NLog.LogLevel.Warn),
-        new(LogLevel.Error, global::NLog.LogLevel.Error),
-        new(LogLevel.Fatal, global::NLog.LogLevel.Fatal),
-    ];
-
-    private static readonly ImmutableDictionary<LogLevel, global::NLog.LogLevel> _mappingsDictionary = _mappings.ToImmutableDictionary();
-
+#if NET5_0_OR_GREATER
+    private static readonly LogLevel[] _allLogLevels = Enum.GetValues<LogLevel>();
+#else
+    private static readonly LogLevel[] _allLogLevels = Enum.GetValues(typeof(LogLevel)).Cast<LogLevel>().ToArray();
+#endif
     private readonly global::NLog.Logger _inner;
 
     /// <summary>
@@ -47,34 +40,34 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     }
 
     /// <inheritdoc />
-    public bool IsDebugEnabled => _inner.IsEnabled(global::NLog.LogLevel.Debug);
+    public bool IsDebugEnabled => _inner.IsDebugEnabled;
 
     /// <inheritdoc />
-    public bool IsInfoEnabled => _inner.IsEnabled(global::NLog.LogLevel.Info);
+    public bool IsInfoEnabled => _inner.IsInfoEnabled;
 
     /// <inheritdoc />
-    public bool IsWarnEnabled => _inner.IsEnabled(global::NLog.LogLevel.Warn);
+    public bool IsWarnEnabled => _inner.IsWarnEnabled;
 
     /// <inheritdoc />
-    public bool IsErrorEnabled => _inner.IsEnabled(global::NLog.LogLevel.Error);
+    public bool IsErrorEnabled => _inner.IsErrorEnabled;
 
     /// <inheritdoc />
-    public bool IsFatalEnabled => _inner.IsEnabled(global::NLog.LogLevel.Fatal);
+    public bool IsFatalEnabled => _inner.IsFatalEnabled;
 
     /// <inheritdoc />
     public void Dispose() => _inner.LoggerReconfigured -= OnInnerLoggerReconfigured;
 
     /// <inheritdoc />
-    public void Write(string message, LogLevel logLevel) => _inner.Log(_mappingsDictionary[logLevel], message);
+    public void Write(string message, LogLevel logLevel) => _inner.Log(ResolveLogLevel(logLevel), message);
 
     /// <inheritdoc />
-    public void Write(Exception exception, string message, LogLevel logLevel) => _inner.Log(_mappingsDictionary[logLevel], exception, message);
+    public void Write(Exception exception, string message, LogLevel logLevel) => _inner.Log(ResolveLogLevel(logLevel), exception, message);
 
     /// <inheritdoc />
-    public void Write(string message, Type type, LogLevel logLevel) => LogResolver.Resolve(type).Log(_mappingsDictionary[logLevel], message);
+    public void Write(string message, Type type, LogLevel logLevel) => LogResolver.Resolve(type).Log(ResolveLogLevel(logLevel), message);
 
     /// <inheritdoc />
-    public void Write(Exception exception, string message, Type type, LogLevel logLevel) => LogResolver.Resolve(type).Log(_mappingsDictionary[logLevel], exception, message);
+    public void Write(Exception exception, string message, Type type, LogLevel logLevel) => LogResolver.Resolve(type).Log(ResolveLogLevel(logLevel), exception, message);
 
     /// <inheritdoc/>
     public void Debug<TArgument>(string message, TArgument args) => _inner.Debug(CultureInfo.InvariantCulture, message, args);
@@ -556,6 +549,16 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     /// <inheritdoc/>
     public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) => _inner.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10);
 
+    private static global::NLog.LogLevel ResolveLogLevel(LogLevel logLevel) => logLevel switch
+    {
+        LogLevel.Debug => global::NLog.LogLevel.Debug,
+        LogLevel.Info => global::NLog.LogLevel.Info,
+        LogLevel.Warn => global::NLog.LogLevel.Warn,
+        LogLevel.Error => global::NLog.LogLevel.Error,
+        LogLevel.Fatal => global::NLog.LogLevel.Fatal,
+        _ => throw new ArgumentException($"Unknown LogLevel {logLevel}", nameof(logLevel)),
+    };
+
     private void OnInnerLoggerReconfigured(object? sender, EventArgs e) => SetLogLevel();
 
     /// <summary>
@@ -566,11 +569,11 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     /// </remarks>
     private void SetLogLevel()
     {
-        foreach (var mapping in _mappings)
+        foreach (LogLevel logLevel in _allLogLevels)
         {
-            if (_inner.IsEnabled(mapping.Value))
+            if (_inner.IsEnabled(ResolveLogLevel(logLevel)))
             {
-                Level = mapping.Key;
+                Level = logLevel;
                 return;
             }
         }

@@ -163,9 +163,7 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
 
         var autofacResolver = builder.UseAutofacDependencyResolver();
 
-        Locator.CurrentMutable.RegisterConstant(
-            new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())),
-            typeof(ILogManager));
+        Locator.CurrentMutable.RegisterConstant<ILogManager>(new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())));
 
         autofacResolver.SetLifetimeScope(builder.Build());
 

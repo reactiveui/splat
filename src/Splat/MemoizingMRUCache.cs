@@ -1,6 +1,6 @@
-﻿// Copyright (c) 2024 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics.Contracts;
@@ -197,7 +197,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
             var releaseVar = toRemove.value;
 
             _cacheMRUList.Remove(toRemove.param);
-            _cacheEntries.Remove(key);
+            _ = _cacheEntries.Remove(key);
 
             // moved down to allow removal from list
             // even if the release call fails.
@@ -301,7 +301,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
             var toRemove = _cacheMRUList.Last.Value;
             _releaseFunction?.Invoke(_cacheEntries[toRemove].value);
 
-            _cacheEntries.Remove(_cacheMRUList.Last.Value);
+            _ = _cacheEntries.Remove(_cacheMRUList.Last.Value);
             _cacheMRUList.RemoveLast();
         }
     }

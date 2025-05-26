@@ -1,6 +1,6 @@
-﻿// Copyright (c) 2024 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Runtime.CompilerServices;
@@ -167,7 +167,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
                 var sd = _serviceCollection?.LastOrDefault(s => !s.IsKeyedService && s.ServiceType == serviceType);
                 if (sd is not null)
                 {
-                    _serviceCollection?.Remove(sd);
+                    _ = _serviceCollection?.Remove(sd);
                 }
             }
             else
@@ -175,7 +175,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
                 var sd = _serviceCollection?.LastOrDefault(sd => MatchesKeyedContract(serviceType, contract, sd));
                 if (sd is not null)
                 {
-                    _serviceCollection?.Remove(sd);
+                    _ = _serviceCollection?.Remove(sd);
                 }
             }
 
@@ -220,7 +220,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
 
             foreach (var sd in sds.ToList())
             {
-                _serviceCollection.Remove(sd);
+                _ = _serviceCollection.Remove(sd);
             }
 
             // required so that it gets rebuilt if not injected externally.

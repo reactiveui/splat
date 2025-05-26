@@ -66,7 +66,7 @@ public class AutoFacReactiveUIDependencyTests
         var builder = new ContainerBuilder();
 
         var autofacResolver = builder.UseAutofacDependencyResolver();
-        Locator.CurrentMutable.RegisterConstant(new ActivatingViewFetcher(), typeof(IActivationForViewFetcher));
+        Locator.CurrentMutable.RegisterConstant<IActivationForViewFetcher>(new ActivatingViewFetcher());
         autofacResolver.InitializeSplat();
         autofacResolver.InitializeReactiveUI();
         _ = builder.Build();

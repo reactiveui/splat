@@ -1,6 +1,6 @@
-// Copyright (c) 2024 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Drawing;
@@ -31,28 +31,28 @@ public static class RectangleMathExtensions
         float delta;
         switch (fromEdge)
         {
-        case RectEdge.Left:
-            delta = Math.Max(value.Width, amount);
-            return Tuple.Create(
-                value.Copy(width: delta),
-                value.Copy(x: value.Left + delta, width: value.Width - delta));
-        case RectEdge.Top:
-            delta = Math.Max(value.Height, amount);
-            return Tuple.Create(
-                value.Copy(height: amount),
-                value.Copy(y: value.Top + delta, height: value.Height - delta));
-        case RectEdge.Right:
-            delta = Math.Max(value.Width, amount);
-            return Tuple.Create(
-                value.Copy(x: value.Right - delta, width: delta),
-                value.Copy(width: value.Width - delta));
-        case RectEdge.Bottom:
-            delta = Math.Max(value.Height, amount);
-            return Tuple.Create(
-                value.Copy(y: value.Bottom - delta, height: delta),
-                value.Copy(height: value.Height - delta));
-        default:
-            throw new ArgumentException("edge");
+            case RectEdge.Left:
+                delta = Math.Max(value.Width, amount);
+                return Tuple.Create(
+                    value.Copy(width: delta),
+                    value.Copy(x: value.Left + delta, width: value.Width - delta));
+            case RectEdge.Top:
+                delta = Math.Max(value.Height, amount);
+                return Tuple.Create(
+                    value.Copy(height: amount),
+                    value.Copy(y: value.Top + delta, height: value.Height - delta));
+            case RectEdge.Right:
+                delta = Math.Max(value.Width, amount);
+                return Tuple.Create(
+                    value.Copy(x: value.Right - delta, width: delta),
+                    value.Copy(width: value.Width - delta));
+            case RectEdge.Bottom:
+                delta = Math.Max(value.Height, amount);
+                return Tuple.Create(
+                    value.Copy(y: value.Bottom - delta, height: delta),
+                    value.Copy(height: value.Height - delta));
+            default:
+                throw new ArgumentException("edge");
         }
     }
 
