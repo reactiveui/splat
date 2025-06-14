@@ -12,7 +12,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection;
 /// Microsoft DI implementation for <see cref="IDependencyResolver"/>.
 /// </summary>
 /// <seealso cref="IDependencyResolver" />
-public class MicrosoftDependencyResolver : IDependencyResolver
+public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
 {
     private const string ImmutableExceptionMessage = "This container has already been built and cannot be modified.";
     private readonly object _syncLock = new();
@@ -51,6 +51,38 @@ public class MicrosoftDependencyResolver : IDependencyResolver
     }
 
     /// <summary>
+    /// Updates this instance with a collection of configured services.
+    /// </summary>
+    /// <param name="services">An instance of <see cref="IServiceCollection"/>.</param>
+    public void UpdateContainer(IServiceCollection services)
+    {
+#if NETSTANDARD || NETFRAMEWORK
+        if (services is null)
+        {
+            throw new ArgumentNullException(nameof(services));
+        }
+#else
+        ArgumentNullException.ThrowIfNull(services);
+#endif
+
+        if (_isImmutable)
+        {
+            throw new InvalidOperationException(ImmutableExceptionMessage);
+        }
+
+        lock (_syncLock)
+        {
+            if (_serviceProvider is not null)
+            {
+                DisposeServiceProvider(_serviceProvider);
+                _serviceProvider = null;
+            }
+
+            _serviceCollection = services;
+        }
+    }
+
+    /// <summary>
     /// Updates this instance with a configured service Provider.
     /// </summary>
     /// <param name="serviceProvider">A ready to use service provider.</param>
@@ -67,8 +99,15 @@ public class MicrosoftDependencyResolver : IDependencyResolver
 
         lock (_syncLock)
         {
-            _serviceCollection = null;
+            // can be null if constructor using IServiceCollection was used.
+            // and no fetch of a service was called.
+            if (_serviceProvider is not null)
+            {
+                DisposeServiceProvider(_serviceProvider);
+            }
+
             _serviceProvider = serviceProvider;
+            _serviceCollection = null;
             _isImmutable = true;
         }
     }
@@ -144,6 +183,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver
             }
 
             // required so that it gets rebuilt if not injected externally.
+            DisposeServiceProvider(_serviceProvider);
             _serviceProvider = null;
         }
     }
@@ -178,6 +218,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver
             }
 
             // required so that it gets rebuilt if not injected externally.
+            DisposeServiceProvider(_serviceProvider);
             _serviceProvider = null;
         }
     }
@@ -203,6 +244,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver
             if (_serviceCollection is null)
             {
                 // required so that it gets rebuilt if not injected externally.
+                DisposeServiceProvider(_serviceProvider);
                 _serviceProvider = null;
                 return;
             }
@@ -220,6 +262,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver
             }
 
             // required so that it gets rebuilt if not injected externally.
+            DisposeServiceProvider(_serviceProvider);
             _serviceProvider = null;
         }
     }
@@ -249,6 +292,16 @@ public class MicrosoftDependencyResolver : IDependencyResolver
                 && keyedServiceProvider.GetKeyedService(serviceType, contract) is not null;
     }
 
+    /// <inheritdoc/>
+    public async ValueTask DisposeAsync()
+    {
+        if (_serviceProvider is IAsyncDisposable d)
+        {
+            await d.DisposeAsync();
+            GC.SuppressFinalize(this);
+        }
+    }
+
     /// <inheritdoc />
     public void Dispose()
     {
@@ -262,6 +315,18 @@ public class MicrosoftDependencyResolver : IDependencyResolver
     /// <param name="disposing">Whether or not the instance is disposing.</param>
     protected virtual void Dispose(bool disposing)
     {
+        if (disposing)
+        {
+            DisposeServiceProvider(_serviceProvider);
+        }
+    }
+
+    private static void DisposeServiceProvider(IServiceProvider? sp)
+    {
+        if (sp is IDisposable d)
+        {
+            d.Dispose();
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
