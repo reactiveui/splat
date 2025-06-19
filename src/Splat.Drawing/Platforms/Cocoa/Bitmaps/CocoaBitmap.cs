@@ -68,6 +68,11 @@ internal sealed class CocoaBitmap(UIImage inner) : IBitmap
             var type = format == CompressedBitmapFormat.Png ? NSBitmapImageFileType.Png : NSBitmapImageFileType.Jpeg;
 
             var outData = imageRep.RepresentationUsingTypeProperties(type, props);
+            if (outData is null)
+            {
+                throw new InvalidOperationException("Failed to create bitmap representation");
+            }
+
             outData.AsStream().CopyTo(target);
 #endif
         });
