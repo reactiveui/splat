@@ -65,7 +65,7 @@
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.1" />
     <PackageVersion Include="Verify.Xunit" Version="30.4.0" />
     <PackageVersion Include="Xunit.StaFact" Version="1.2.69" />
-    <PackageVersion Include="FluentAssertions" Version="8.4.0" />
+    <PackageVersion Include="FluentAssertions" Version="8.5.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageVersion Include="Microsoft.Reactive.Testing" Version="6.0.1" />
     <PackageVersion Include="PublicApiGenerator" Version="11.4.6" />
