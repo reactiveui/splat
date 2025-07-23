@@ -23,8 +23,6 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
     /// <summary>
     /// Initializes a new instance of the <see cref="PlatformBitmapLoader"/> class.
     /// </summary>
-    [RequiresUnreferencedCode("Calls Splat.PlatformBitmapLoader.GetDrawableList()")]
-    [RequiresDynamicCode("Calls Splat.PlatformBitmapLoader.GetDrawableList()")]
     public PlatformBitmapLoader() => _drawableList = GetDrawableList();
 
     /// <inheritdoc />
@@ -113,16 +111,12 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
 #pragma warning restore CA2000 // Dispose objects before losing scope
     }
 
-    [RequiresDynamicCode("Calls Splat.PlatformBitmapLoader.GetDrawableList(IFullLogger, Assembly[])")]
-    [RequiresUnreferencedCode("Calls Splat.PlatformBitmapLoader.GetDrawableList(IFullLogger, Assembly[])")]
     internal static Dictionary<string, int> GetDrawableList(IFullLogger? log)
     {
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
         return GetDrawableList(log, assemblies);
     }
 
-    [RequiresDynamicCode("Reflection is required to get drawable resources.")]
-    [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetTypes()")]
     private static Type[] GetTypesFromAssembly(
         Assembly assembly,
         IFullLogger? log)
@@ -160,8 +154,6 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
         }
     }
 
-    [RequiresDynamicCode("Reflection is required to get drawable resources.")]
-    [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetTypes()")]
     private static Dictionary<string, int> GetDrawableList(
         IFullLogger? log,
         Assembly[] assemblies)
@@ -229,8 +221,6 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
                && sourceStream.ReadByte() == 0xD9;
     }
 
-    [RequiresDynamicCode("Calls Splat.PlatformBitmapLoader.GetDrawableList(IFullLogger)")]
-    [RequiresUnreferencedCode("Calls Splat.PlatformBitmapLoader.GetDrawableList(IFullLogger)")]
     private static Dictionary<string, int> GetDrawableList() => GetDrawableList(Locator.Current.GetService<ILogManager>()?.GetLogger(typeof(PlatformBitmapLoader)));
 
     private void AttemptStreamByteCorrection(Stream sourceStream)

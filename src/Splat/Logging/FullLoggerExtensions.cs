@@ -110,9 +110,7 @@ public static class FullLoggerExtensions
 
         if (logger.IsInfoEnabled)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
-            logger.InfoException(function.Invoke(), exception);
-#pragma warning restore CS0618 // Type or member is obsolete
+            logger.Info(exception, function.Invoke());
         }
     }
 
@@ -162,9 +160,7 @@ public static class FullLoggerExtensions
 
         if (logger.IsWarnEnabled)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
-            logger.WarnException(function.Invoke(), exception);
-#pragma warning restore CS0618 // Type or member is obsolete
+            logger.Warn(exception, function.Invoke());
         }
     }
 
@@ -214,9 +210,7 @@ public static class FullLoggerExtensions
 
         if (logger.IsErrorEnabled)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
-            logger.ErrorException(function.Invoke(), exception);
-#pragma warning restore CS0618 // Type or member is obsolete
+            logger.Error(exception, function.Invoke());
         }
     }
 
@@ -266,9 +260,7 @@ public static class FullLoggerExtensions
 
         if (logger.IsFatalEnabled)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
-            logger.ErrorException(function.Invoke(), exception);
-#pragma warning restore CS0618 // Type or member is obsolete
+            logger.Error(exception, function.Invoke());
         }
     }
 }

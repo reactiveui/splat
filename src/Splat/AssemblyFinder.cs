@@ -3,7 +3,6 @@
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace Splat;
@@ -16,11 +15,7 @@ internal static class AssemblyFinder
     /// <typeparam name="T">The type to cast the value to if we find it.</typeparam>
     /// <param name="fullTypeName">The name of the full type.</param>
     /// <returns>The created object or the default value.</returns>
-#if NET6_0_OR_GREATER
-    [RequiresUnreferencedCode("Calls AssemblyFinder.AttemptToLoadType<T>(string)")]
-    [RequiresDynamicCode("Calls AssemblyFinder.AttemptToLoadType<T>(string)")]
-#endif
-    public static T? AttemptToLoadType<T>(string fullTypeName)
+public static T? AttemptToLoadType<T>(string fullTypeName)
     {
         var thisType = typeof(AssemblyFinder);
 
