@@ -8,9 +8,20 @@ namespace Splat;
 /// <summary>
 /// A disposable which will call the specified action.
 /// </summary>
-internal sealed class ActionDisposable(Action block) : IDisposable
+internal sealed class ActionDisposable : IDisposable
 {
-    private Action _block = block;
+    private Action _block;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ActionDisposable"/> class.
+    /// </summary>
+    /// <param name="block">The action to execute when disposed.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="block"/> is null.</exception>
+    public ActionDisposable(Action block)
+    {
+        block.ThrowArgumentNullExceptionIfNull(nameof(block));
+        _block = block;
+    }
 
     /// <summary>
     /// Gets a action disposable which does nothing.

@@ -31,7 +31,10 @@ internal sealed class CompositeDisposable : IDisposable
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> is less than zero.</exception>
     public CompositeDisposable(int capacity)
     {
-        capacity.ThrowArgumentNullExceptionIfNull(nameof(capacity));
+        if (capacity < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(capacity), "Capacity cannot be negative.");
+        }
 
         _disposables = new(capacity);
     }
