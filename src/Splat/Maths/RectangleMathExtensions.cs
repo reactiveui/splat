@@ -25,32 +25,27 @@ public static class RectangleMathExtensions
     /// <param name="value">The rectangle to perform the calculation against.</param>
     /// <param name="amount">Amount to move away from the given edge.</param>
     /// <param name="fromEdge">The edge to create the slice from.</param>
-    /// <returns>The set of rectnagles that are generated.</returns>
+    /// <returns>The set of rectangles that are generated.</returns>
     public static Tuple<RectangleF, RectangleF> Divide(this RectangleF value, float amount, RectEdge fromEdge)
     {
-        float delta;
         switch (fromEdge)
         {
             case RectEdge.Left:
-                delta = Math.Max(value.Width, amount);
                 return Tuple.Create(
-                    value.Copy(width: delta),
-                    value.Copy(x: value.Left + delta, width: value.Width - delta));
+                    value.Copy(width: amount),
+                    value.Copy(x: value.Left + amount, width: value.Width - amount));
             case RectEdge.Top:
-                delta = Math.Max(value.Height, amount);
                 return Tuple.Create(
                     value.Copy(height: amount),
-                    value.Copy(y: value.Top + delta, height: value.Height - delta));
+                    value.Copy(y: value.Top + amount, height: value.Height - amount));
             case RectEdge.Right:
-                delta = Math.Max(value.Width, amount);
                 return Tuple.Create(
-                    value.Copy(x: value.Right - delta, width: delta),
-                    value.Copy(width: value.Width - delta));
+                    value.Copy(x: value.Right - amount, width: amount),
+                    value.Copy(width: value.Width - amount));
             case RectEdge.Bottom:
-                delta = Math.Max(value.Height, amount);
                 return Tuple.Create(
-                    value.Copy(y: value.Bottom - delta, height: delta),
-                    value.Copy(height: value.Height - delta));
+                    value.Copy(y: value.Bottom - amount, height: amount),
+                    value.Copy(height: value.Height - amount));
             default:
                 throw new ArgumentException("edge");
         }
@@ -68,8 +63,8 @@ public static class RectangleMathExtensions
     public static Tuple<RectangleF, RectangleF> DivideWithPadding(this RectangleF value, float sliceAmount, float padding, RectEdge fromEdge)
     {
         var slice = value.Divide(sliceAmount, fromEdge);
-        var pad = value.Divide(padding, fromEdge);
-        return Tuple.Create(slice.Item1, pad.Item2);
+        var paddingRect = value.Divide(padding, fromEdge);
+        return Tuple.Create(slice.Item1, paddingRect.Item2);
     }
 
     /// <summary>
