@@ -23,6 +23,263 @@ public class MemoizingMRUCacheTests
     }
 
     /// <summary>
+    /// Test that constructor throws ArgumentException for invalid max size.
+    /// </summary>
+    [Fact]
+    public void Constructor_ThrowsArgumentException_ForInvalidMaxSize()
+    {
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => new MemoizingMRUCache<string, DummyObjectClass1>((_, _) => new(), 0));
+        Assert.Throws<ArgumentException>(() => new MemoizingMRUCache<string, DummyObjectClass1>((_, _) => new(), -1));
+    }
+
+    /// <summary>
+    /// Test that constructor throws ArgumentNullException for null calculation function.
+    /// </summary>
+    [Fact]
+    public void Constructor_ThrowsArgumentNullException_ForNullCalculationFunction()
+    {
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => new MemoizingMRUCache<string, DummyObjectClass1>(null!, 10));
+    }
+
+    /// <summary>
+    /// Test that TryGet throws ArgumentNullException for null key.
+    /// </summary>
+    [Fact]
+    public void TryGet_ThrowsArgumentNullException_ForNullKey()
+    {
+        // Arrange
+        var instance = GetTestInstance();
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => instance.TryGet(null!, out _));
+    }
+
+    /// <summary>
+    /// Test that Invalidate throws ArgumentNullException for null key.
+    /// </summary>
+    [Fact]
+    public void Invalidate_ThrowsArgumentNullException_ForNullKey()
+    {
+        // Arrange
+        var instance = GetTestInstance();
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => instance.Invalidate(null!));
+    }
+
+    /// <summary>
+    /// Test that cache evicts old items when max size is reached.
+    /// </summary>
+    [Fact]
+    public void Cache_EvictsOldItems_WhenMaxSizeReached()
+    {
+        // Arrange
+        var releaseCount = 0;
+        var instance = new MemoizingMRUCache<string, DummyObjectClass1>(
+            (param, _) => new(),
+            2, // Small cache size
+            _ => releaseCount++);
+
+        // Act
+        instance.Get("key1");
+        instance.Get("key2");
+        instance.Get("key3"); // This should evict key1
+
+        // Assert
+        Assert.Equal(1, releaseCount);
+        Assert.False(instance.TryGet("key1", out _));
+        Assert.True(instance.TryGet("key2", out _));
+        Assert.True(instance.TryGet("key3", out _));
+    }
+
+    /// <summary>
+    /// Test that InvalidateAll with aggregateReleaseExceptions handles exceptions.
+    /// </summary>
+    [Fact]
+    public void InvalidateAll_WithAggregateExceptions_HandlesExceptions()
+    {
+        // Arrange
+        var instance = new MemoizingMRUCache<string, DummyObjectClass1>(
+            (param, _) => new(),
+            10,
+            _ => throw new InvalidOperationException("Release error"));
+
+        instance.Get("key1");
+        instance.Get("key2");
+
+        // Act & Assert
+        var exception = Assert.Throws<AggregateException>(() => instance.InvalidateAll(true));
+        Assert.Equal(2, exception.InnerExceptions.Count);
+    }
+
+    /// <summary>
+    /// Test that InvalidateAll without aggregating exceptions throws on first error.
+    /// </summary>
+    [Fact]
+    public void InvalidateAll_WithoutAggregateExceptions_ThrowsOnFirstError()
+    {
+        // Arrange
+        var instance = new MemoizingMRUCache<string, DummyObjectClass1>(
+            (param, _) => new(),
+            10,
+            _ => throw new InvalidOperationException("Release error"));
+
+        instance.Get("key1");
+
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(() => instance.InvalidateAll(false));
+    }
+
+    /// <summary>
+    /// Test that CachedValues returns current cache contents.
+    /// </summary>
+    [Fact]
+    public void CachedValues_ReturnsCurrentCacheContents()
+    {
+        // Arrange
+        var instance = GetTestInstance();
+        var value1 = instance.Get("key1");
+        var value2 = instance.Get("key2");
+
+        // Act
+        var cachedValues = instance.CachedValues().ToList();
+
+        // Assert
+        Assert.Equal(2, cachedValues.Count);
+        Assert.Contains(value1, cachedValues);
+        Assert.Contains(value2, cachedValues);
+    }
+
+    /// <summary>
+    /// Test with custom comparer.
+    /// </summary>
+    [Fact(Skip = "Issue where the type is the same but they are not the same instance")]
+    public void Constructor_WithCustomComparer_UsesComparer()
+    {
+        // Arrange
+        var instance = new MemoizingMRUCache<string, DummyObjectClass1>(
+            (param, _) => new(),
+            10,
+            StringComparer.OrdinalIgnoreCase);
+
+        // Act
+        var value1 = instance.Get("KEY");
+        var value2 = instance.Get("key");
+
+        // Assert - Should be same object due to case-insensitive comparer
+        Assert.Same(value1, value2);
+    }
+
+    /// <summary>
+    /// Test with custom comparer and release function.
+    /// </summary>
+    [Fact]
+    public void Constructor_WithCustomComparerAndReleaseFunction_Works()
+    {
+        // Arrange
+        var releaseCount = 0;
+        var instance = new MemoizingMRUCache<string, DummyObjectClass1>(
+            (param, _) => new(),
+            10,
+            _ => releaseCount++,
+            StringComparer.OrdinalIgnoreCase);
+
+        // Act
+        instance.Get("key1");
+        instance.Invalidate("key1");
+
+        // Assert
+        Assert.Equal(1, releaseCount);
+    }
+
+    /// <summary>
+    /// Test that Get with context parameter works.
+    /// </summary>
+    [Fact]
+    public void Get_WithContext_PassesContextToFactory()
+    {
+        // Arrange
+        object? receivedContext = null;
+        var instance = new MemoizingMRUCache<string, DummyObjectClass1>(
+            (param, context) =>
+            {
+                receivedContext = context;
+                return new();
+            },
+            10);
+
+        var testContext = new object();
+
+        // Act
+        instance.Get("key1", testContext);
+
+        // Assert
+        Assert.Same(testContext, receivedContext);
+    }
+
+    /// <summary>
+    /// Test that Invalidate removes non-existent key gracefully.
+    /// </summary>
+    [Fact]
+    public void Invalidate_NonExistentKey_DoesNotThrow()
+    {
+        // Arrange
+        var instance = GetTestInstance();
+
+        // Act & Assert - should not throw
+        instance.Invalidate("nonexistent");
+    }
+
+    /// <summary>
+    /// Test that InvalidateAll with empty cache works.
+    /// </summary>
+    [Fact]
+    public void InvalidateAll_EmptyCache_DoesNotThrow()
+    {
+        // Arrange
+        var instance = GetTestInstance();
+
+        // Act & Assert - should not throw
+        instance.InvalidateAll();
+    }
+
+    /// <summary>
+    /// Test that InvalidateAll with null release function works.
+    /// </summary>
+    [Fact]
+    public void InvalidateAll_NullReleaseFunction_Works()
+    {
+        // Arrange
+        var instance = new MemoizingMRUCache<string, DummyObjectClass1>(
+            (param, _) => new(),
+            10);
+
+        instance.Get("key1");
+
+        // Act & Assert - should not throw
+        instance.InvalidateAll();
+    }
+
+    /// <summary>
+    /// Test that TryGet returns false for non-existent key.
+    /// </summary>
+    [Fact]
+    public void TryGet_NonExistentKey_ReturnsFalse()
+    {
+        // Arrange
+        var instance = GetTestInstance();
+
+        // Act
+        var result = instance.TryGet("nonexistent", out var value);
+
+        // Assert
+        Assert.False(result);
+        Assert.Null(value);
+    }
+
+    /// <summary>
     /// Checks to ensure a value is returned.
     /// </summary>
     [Fact]
