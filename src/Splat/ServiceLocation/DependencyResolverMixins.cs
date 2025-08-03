@@ -23,7 +23,6 @@ public static class DependencyResolverMixins
     public static T? GetService<T>(this IReadonlyDependencyResolver resolver, string? contract = null)
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
-
         return (T?)resolver.GetService(typeof(T), contract);
     }
 
@@ -39,7 +38,6 @@ public static class DependencyResolverMixins
     public static IEnumerable<T> GetServices<T>(this IReadonlyDependencyResolver resolver, string? contract = null)
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
-
         return resolver.GetServices(typeof(T), contract).Cast<T>();
     }
 
@@ -53,7 +51,6 @@ public static class DependencyResolverMixins
     public static IDisposable ServiceRegistrationCallback(this IMutableDependencyResolver resolver, Type serviceType, Action<IDisposable> callback)
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
-
         return resolver.ServiceRegistrationCallback(serviceType, null, callback);
     }
 
@@ -68,9 +65,12 @@ public static class DependencyResolverMixins
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
 
+        var origResolver = Locator.GetLocator();
+
+        // Start suppression BEFORE changing the locator if requested
         var notificationDisposable = suppressResolverCallback ? Locator.SuppressResolverCallbackChangedNotifications() : ActionDisposable.Empty;
 
-        var origResolver = Locator.GetLocator();
+        // Now change the locator while suppression is active
         Locator.SetLocator(resolver);
 
         return new CompositeDisposable(new ActionDisposable(() => Locator.SetLocator(origResolver)), notificationDisposable);
@@ -87,7 +87,6 @@ public static class DependencyResolverMixins
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
         factory.ThrowArgumentNullExceptionIfNull(nameof(factory));
-
         resolver.Register(() => factory(), typeof(T), contract);
     }
 
@@ -106,7 +105,6 @@ public static class DependencyResolverMixins
         where T : new()
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
-
         resolver.Register(() => new T(), typeof(TAs), contract);
     }
 
@@ -124,7 +122,6 @@ public static class DependencyResolverMixins
 #endif
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
-
         resolver.Register(() => value, serviceType, contract);
     }
 
@@ -142,8 +139,7 @@ public static class DependencyResolverMixins
 #endif
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
-
-        RegisterConstant(resolver, value, typeof(T), contract);
+        resolver.Register(() => value, typeof(T), contract);
     }
 
     /// <summary>
@@ -161,7 +157,6 @@ public static class DependencyResolverMixins
 #endif
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
-
         var val = new Lazy<object?>(valueFactory, LazyThreadSafetyMode.ExecutionAndPublication);
         resolver.Register(() => val.Value, serviceType, contract);
     }
@@ -175,11 +170,15 @@ public static class DependencyResolverMixins
     /// <param name="valueFactory">A factory method for generating a object of the specified type.</param>
     /// <param name="contract">A optional contract value which will indicates to only return the value if this contract is specified.</param>
 #if NET6_0_OR_GREATER
-    public static void RegisterLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(this IMutableDependencyResolver resolver, Func<T?> valueFactory, string? contract = null) =>
+    public static void RegisterLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(this IMutableDependencyResolver resolver, Func<T?> valueFactory, string? contract = null)
 #else
-    public static void RegisterLazySingleton<T>(this IMutableDependencyResolver resolver, Func<T?> valueFactory, string? contract = null) =>
+    public static void RegisterLazySingleton<T>(this IMutableDependencyResolver resolver, Func<T?> valueFactory, string? contract = null)
 #endif
-        RegisterLazySingleton(resolver, () => valueFactory(), typeof(T), contract);
+    {
+        resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
+        var val = new Lazy<object?>(() => valueFactory(), LazyThreadSafetyMode.ExecutionAndPublication);
+        resolver.Register(() => val.Value, typeof(T), contract);
+    }
 
     /// <summary>
     /// Unregisters the current the value for the specified type and the optional contract.
@@ -190,7 +189,6 @@ public static class DependencyResolverMixins
     public static void UnregisterCurrent<T>(this IMutableDependencyResolver resolver, string? contract = null)
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
-
         resolver.UnregisterCurrent(typeof(T), contract);
     }
 
@@ -203,7 +201,6 @@ public static class DependencyResolverMixins
     public static void UnregisterAll<T>(this IMutableDependencyResolver resolver, string? contract = null)
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
-
         resolver.UnregisterAll(typeof(T), contract);
     }
 }
