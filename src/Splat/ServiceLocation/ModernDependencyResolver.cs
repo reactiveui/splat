@@ -262,6 +262,34 @@ public class ModernDependencyResolver : IDependencyResolver
 
         if (isDisposing)
         {
+            // Dispose of all IDisposable callbacks
+            foreach (var pair in _callbackRegistry)
+            {
+                foreach (var callback in pair.Value)
+                {
+                    using var disp = new BooleanDisposable();
+                    callback(disp);
+                }
+            }
+
+            _callbackRegistry.Clear();
+
+            // Clear the registry and dispose of all factory registrations
+            if (_registry is not null)
+            {
+                foreach (var pair in _registry.Values)
+                {
+                    foreach (var factory in pair)
+                    {
+                        var item = factory();
+                        if (item is IDisposable disposable)
+                        {
+                            disposable.Dispose();
+                        }
+                    }
+                }
+            }
+
             _registry = null;
         }
 

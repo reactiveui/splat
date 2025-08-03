@@ -38,7 +38,7 @@ public class CoreAotCompatibilityTests
 
         // Act - Register services using factory methods (AOT-safe)
         resolver.RegisterConstant<ILogger>(new DebugLogger());
-        resolver.RegisterConstant<ILogManager>(new DefaultLogManager());
+        resolver.RegisterConstant<ILogManager>(new DefaultLogManager(resolver));
         resolver.Register<IEnableLogger>(() => new TestService());
 
         // Assert - Verify services can be resolved
@@ -66,7 +66,7 @@ public class CoreAotCompatibilityTests
         // Act - Test all registration methods
         resolver.Register<ITestInterface>(() => new TestImplementation());
         resolver.RegisterConstant<ILogger>(new DebugLogger());
-        resolver.RegisterLazySingleton<ILogManager>(() => new DefaultLogManager());
+        resolver.RegisterLazySingleton<ILogManager>(() => new DefaultLogManager(resolver));
 
         // Test fluent registration
         resolver.RegisterAnd<IEnableLogger>(() => new TestService())
@@ -115,6 +115,7 @@ public class CoreAotCompatibilityTests
     {
         // Arrange
         using var resolver = new ModernDependencyResolver();
+        resolver.RegisterConstant<ILogger>(new DebugLogger());
         resolver.RegisterConstant<ILogManager>(new DefaultLogManager(resolver));
         using var locatorScope = resolver.WithResolver();
 
@@ -316,8 +317,10 @@ public class CoreAotCompatibilityTests
         using var resolver = new ModernDependencyResolver();
 
         // Act
+#pragma warning disable CA2263 // Prefer generic overload when type is known
         resolver.RegisterConstant(new DebugLogger(), typeof(ILogger));
-        resolver.RegisterConstant(new DefaultLogManager(), typeof(ILogManager));
+        resolver.RegisterConstant(new DefaultLogManager(resolver), typeof(ILogManager));
+#pragma warning restore CA2263 // Prefer generic overload when type is known
 
         // Assert - Test non-generic methods
         var logger = resolver.GetService(typeof(ILogger));
@@ -361,6 +364,7 @@ public class CoreAotCompatibilityTests
     {
         // Arrange
         using var resolver = new ModernDependencyResolver();
+        resolver.RegisterConstant<ILogger>(new DebugLogger());
         resolver.RegisterConstant<ILogManager>(new DefaultLogManager(resolver));
         using var locatorScope = resolver.WithResolver();
         var logger = resolver.GetService<ILogManager>()?.GetLogger<CoreAotCompatibilityTests>();
@@ -398,6 +402,7 @@ public class CoreAotCompatibilityTests
     {
         // Arrange
         using var resolver = new ModernDependencyResolver();
+        resolver.RegisterConstant<ILogger>(new DebugLogger());
         resolver.RegisterConstant<ILogManager>(new DefaultLogManager(resolver));
         using var locatorScope = resolver.WithResolver();
         var logger = resolver.GetService<ILogManager>()?.GetLogger<CoreAotCompatibilityTests>();
@@ -434,6 +439,7 @@ public class CoreAotCompatibilityTests
     {
         // Arrange
         using var resolver = new ModernDependencyResolver();
+        resolver.RegisterConstant<ILogger>(new DebugLogger());
         resolver.RegisterConstant<ILogManager>(new DefaultLogManager(resolver));
         using var locatorScope = resolver.WithResolver();
 
@@ -495,7 +501,11 @@ public class CoreAotCompatibilityTests
 
         // Assert - Should not throw in AOT
         var inUnitTest1 = defaultDetector.InUnitTestRunner();
+#pragma warning disable IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
+#pragma warning disable IL3050 // Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.
         var inDesignMode = platformDetector.InDesignMode();
+#pragma warning restore IL3050 // Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.
+#pragma warning restore IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
 
         Assert.NotNull(inUnitTest1);
         Assert.True(inUnitTest1.Value);
@@ -589,7 +599,7 @@ public class CoreAotCompatibilityTests
         // Act - Test fluent registration chains
         resolver.RegisterAnd<ITestInterface>(() => new TestImplementation())
                 .RegisterConstantAnd<ILogger>(new DebugLogger())
-                .RegisterLazySingletonAnd<ILogManager>(() => new DefaultLogManager())
+                .RegisterLazySingletonAnd<ILogManager>(() => new DefaultLogManager(resolver))
                 .Register<IEnableLogger>(() => new TestService());
 
         // Assert
@@ -645,29 +655,46 @@ public class CoreAotCompatibilityTests
     {
         // Arrange
         using var resolver = new ModernDependencyResolver();
-        var callbackTriggered = false;
+        var resolverCallbackTriggered = false;
+        var serviceCallbackTriggered = false;
 
-        using var subscription = resolver.ServiceRegistrationCallback(
+        // Register a callback for resolver changes (this should be suppressed)
+        using var resolverSubscription = Locator.RegisterResolverCallbackChanged(() => resolverCallbackTriggered = true);
+
+        // Clear the flag after registration since the callback is called immediately upon registration
+        resolverCallbackTriggered = false;
+
+        // Register a callback for service registration (this should NOT be suppressed)
+        using var serviceSubscription = resolver.ServiceRegistrationCallback(
             typeof(ILogger),
             null,
-            _ => callbackTriggered = true);
+            _ => serviceCallbackTriggered = true);
 
-        // Act - Test with callback suppression
+        // Act - Test with callback suppression (should only suppress resolver change callbacks)
         using (var scope = resolver.WithResolver(suppressResolverCallback: true))
         {
+            // This should not trigger resolver change callbacks due to suppression
+            // but service registration callbacks within the resolver should still work
             resolver.RegisterConstant<ILogger>(new DebugLogger());
         }
 
-        // Assert - Callback should not have been triggered due to suppression
-        Assert.False(callbackTriggered);
+        // Assert - Service registration callback should be triggered, resolver callback should not
+        Assert.True(serviceCallbackTriggered, "Service registration callbacks should not be affected by resolver callback suppression");
+        Assert.False(resolverCallbackTriggered, "Resolver change callbacks should be suppressed");
 
-        // Test without suppression
+        // Reset for next test
+        resolverCallbackTriggered = false;
+        serviceCallbackTriggered = false;
+
+        // Test without suppression - both callbacks should trigger
         using (var scope = resolver.WithResolver(suppressResolverCallback: false))
         {
             resolver.RegisterConstant<ILogger>(new ConsoleLogger());
         }
 
-        Assert.True(callbackTriggered);
+        // Both should be triggered now since resolver callback suppression is disabled
+        Assert.True(serviceCallbackTriggered, "Service registration callbacks should always work");
+        Assert.True(resolverCallbackTriggered, "Resolver change callbacks should work when not suppressed");
     }
 
     /// <summary>
@@ -732,8 +759,9 @@ public class CoreAotCompatibilityTests
     /// Test that concurrent access scenarios work with AOT.
     /// This tests thread safety in AOT compilation scenarios.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Fact]
-    public void ConcurrentAccess_WorksWithAot()
+    public async Task ConcurrentAccess_WorksWithAot()
     {
         // Arrange
         using var resolver = new ModernDependencyResolver();
@@ -744,13 +772,14 @@ public class CoreAotCompatibilityTests
         var tasks = new Task[taskCount];
 
         // Act - Test concurrent access
-        for (int i = 0; i < taskCount; i++)
+        for (var i = 0; i < taskCount; i++)
         {
             tasks[i] = Task.Run(() =>
             {
+#pragma warning disable CA1031 // Do not catch general exception types
                 try
                 {
-                    for (int j = 0; j < 100; j++)
+                    for (var j = 0; j < 100; j++)
                     {
                         var logger = resolver.GetService<ILogger>();
                         Assert.NotNull(logger);
@@ -769,10 +798,11 @@ public class CoreAotCompatibilityTests
                         exceptions.Add(ex);
                     }
                 }
+#pragma warning restore CA1031 // Do not catch general exception types
             });
         }
 
-        Task.WaitAll(tasks);
+        await Task.WhenAll(tasks);
 
         // Assert - No exceptions should occur
         Assert.Empty(exceptions);
@@ -890,21 +920,16 @@ public class CoreAotCompatibilityTests
     /// <summary>
     /// Test implementation with dependency injection.
     /// </summary>
-    private sealed class TestImplementationWithDependency : ITestInterface
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="TestImplementationWithDependency"/> class.
+    /// </remarks>
+    /// <param name="logger">The logger dependency.</param>
+    private sealed class TestImplementationWithDependency(ILogger logger) : ITestInterface
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TestImplementationWithDependency"/> class.
-        /// </summary>
-        /// <param name="logger">The logger dependency.</param>
-        public TestImplementationWithDependency(ILogger logger)
-        {
-            Logger = logger;
-        }
-
         /// <summary>
         /// Gets the injected logger.
         /// </summary>
-        public ILogger Logger { get; }
+        public ILogger Logger { get; } = logger;
 
         /// <inheritdoc/>
         public string GetValue() => "Test Implementation With Dependency";
@@ -924,10 +949,7 @@ public class CoreAotCompatibilityTests
         public string GetValue() => "Disposable Test Service";
 
         /// <inheritdoc/>
-        public void Dispose()
-        {
-            IsDisposed = true;
-        }
+        public void Dispose() => IsDisposed = true;
     }
 
     /// <summary>
