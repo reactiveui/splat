@@ -67,7 +67,9 @@ public class DefaultModeDetectorTests
         var result = detector.InUnitTestRunner();
 
         // Should return a value (either true or false) or null if exception occurred
+#pragma warning disable CS8794 // The input always matches the provided pattern, this is expected.
         Assert.True(result is true or false or null);
+#pragma warning restore CS8794 // The input always matches the provided pattern, this is expected.
     }
 
     /// <summary>

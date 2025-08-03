@@ -3,6 +3,8 @@
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Splat;
 
 /// <summary>
@@ -36,6 +38,10 @@ public static class PlatformModeDetector
     /// Gets a value indicating whether we are currently running from within a GUI design editor.
     /// </summary>
     /// <returns>If we are currently running from design mode.</returns>
+#if NET6_0_OR_GREATER
+    [RequiresDynamicCode("Uses Activator.CreateInstance and reflection which require dynamic code generation")]
+    [RequiresUnreferencedCode("Uses Type.GetType and Activator.CreateInstance which may be trimmed")]
+#endif
     public static bool InDesignMode()
     {
         if (_cachedInDesignModeResult.HasValue)

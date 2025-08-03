@@ -53,7 +53,7 @@ public class ExceptionMixinsTests
         // Act & Assert
         var exception = Assert.Throws<ArgumentNullException>(() => value.ThrowArgumentNullExceptionIfNull(paramName, message));
         Assert.Equal(paramName, exception.ParamName);
-        Assert.Contains(message, exception.Message);
+        Assert.Contains(message, exception.Message, StringComparison.InvariantCulture);
     }
 
     /// <summary>

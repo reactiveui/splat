@@ -4,6 +4,9 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
+#if NET6_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
+#endif
 using System.Linq.Expressions;
 using DryIoc;
 
@@ -209,6 +212,10 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
         return instance != null ? Cast(serviceType, instance) : null;
     }
 
+#if NET6_0_OR_GREATER
+    [RequiresUnreferencedCode("Uses Expression compilation and DynamicInvoke which may be trimmed")]
+    [RequiresDynamicCode("Uses Expression compilation and DynamicInvoke which require dynamic code generation")]
+#endif
     private static object? Cast(Type type, object data)
     {
         // based upon https://stackoverflow.com/a/27584212
