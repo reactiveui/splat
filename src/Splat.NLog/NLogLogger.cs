@@ -226,19 +226,19 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     public void Debug<T>(IFormatProvider formatProvider, T value) => _inner.Debug(formatProvider, value);
 
     /// <inheritdoc/>
-    public void DebugException(string? message, Exception exception) => _inner.Debug(exception, message);
+    public void DebugException(string? message, Exception exception) => _inner.Debug(exception, message ?? string.Empty);
 
     /// <inheritdoc/>
-    public void Debug(Exception exception, string? message) => _inner.Debug(exception, message);
+    public void Debug(Exception exception, string? message) => _inner.Debug(exception, message ?? string.Empty);
 
     /// <inheritdoc/>
     public void Debug(IFormatProvider formatProvider, string message, params object[] args) => _inner.Debug(formatProvider, message, args);
 
     /// <inheritdoc/>
-    public void Debug(string? message) => _inner.Debug(message);
+    public void Debug(string? message) => _inner.Debug(message ?? string.Empty);
 
     /// <inheritdoc/>
-    public void Debug<T>(string? message) => LogResolver.Resolve(typeof(T)).Debug(message);
+    public void Debug<T>(string? message) => LogResolver.Resolve(typeof(T)).Debug(message ?? string.Empty);
 
     /// <inheritdoc/>
     public void Debug(string message, params object[] args) => _inner.Debug(CultureInfo.InvariantCulture, message, args);
@@ -262,19 +262,19 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     public void Info<T>(IFormatProvider formatProvider, T value) => _inner.Info(formatProvider, value);
 
     /// <inheritdoc/>
-    public void InfoException(string? message, Exception exception) => _inner.Info(exception, message);
+    public void InfoException(string? message, Exception exception) => _inner.Info(exception, message ?? string.Empty);
 
     /// <inheritdoc/>
-    public void Info(Exception exception, string? message) => _inner.Info(exception, message);
+    public void Info(Exception exception, string? message) => _inner.Info(exception, message ?? string.Empty);
 
     /// <inheritdoc/>
     public void Info(IFormatProvider formatProvider, string message, params object[] args) => _inner.Info(formatProvider, message, args);
 
     /// <inheritdoc/>
-    public void Info(string? message) => _inner.Info(message);
+    public void Info(string? message) => _inner.Info(message ?? string.Empty);
 
     /// <inheritdoc/>
-    public void Info<T>(string? message) => LogResolver.Resolve(typeof(T)).Info(message);
+    public void Info<T>(string? message) => LogResolver.Resolve(typeof(T)).Info(message ?? string.Empty);
 
     /// <inheritdoc/>
     public void Info(string message, params object[] args) => _inner.Info(CultureInfo.InvariantCulture, message, args);
@@ -298,19 +298,19 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     public void Warn<T>(IFormatProvider formatProvider, T value) => _inner.Warn(formatProvider, value);
 
     /// <inheritdoc/>
-    public void WarnException(string? message, Exception exception) => _inner.Warn(exception, message);
+    public void WarnException(string? message, Exception exception) => _inner.Warn(exception, message ?? string.Empty);
 
     /// <inheritdoc/>
-    public void Warn(Exception exception, string? message) => _inner.Warn(exception, message);
+    public void Warn(Exception exception, string? message) => _inner.Warn(exception, message ?? string.Empty);
 
     /// <inheritdoc/>
     public void Warn(IFormatProvider formatProvider, string message, params object[] args) => _inner.Warn(formatProvider, message, args);
 
     /// <inheritdoc/>
-    public void Warn(string? message) => _inner.Warn(message);
+    public void Warn(string? message) => _inner.Warn(message ?? string.Empty);
 
     /// <inheritdoc/>
-    public void Warn<T>(string? message) => LogResolver.Resolve(typeof(T)).Warn(message);
+    public void Warn<T>(string? message) => LogResolver.Resolve(typeof(T)).Warn(message ?? string.Empty);
 
     /// <inheritdoc/>
     public void Warn(string message, params object[] args) => _inner.Warn(CultureInfo.InvariantCulture, message, args);
@@ -334,19 +334,19 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     public void Error<T>(IFormatProvider formatProvider, T value) => _inner.Error(formatProvider, value);
 
     /// <inheritdoc/>
-    public void ErrorException(string? message, Exception exception) => _inner.Error(exception, message);
+    public void ErrorException(string? message, Exception exception) => _inner.Error(exception, message ?? string.Empty);
 
     /// <inheritdoc/>
-    public void Error(Exception exception, string? message) => _inner.Error(exception, message);
+    public void Error(Exception exception, string? message) => _inner.Error(exception, message ?? string.Empty);
 
     /// <inheritdoc/>
     public void Error(IFormatProvider formatProvider, string message, params object[] args) => _inner.Error(formatProvider, message, args);
 
     /// <inheritdoc/>
-    public void Error(string? message) => _inner.Error(message);
+    public void Error(string? message) => _inner.Error(message ?? string.Empty);
 
     /// <inheritdoc/>
-    public void Error<T>(string? message) => LogResolver.Resolve(typeof(T)).Error(message);
+    public void Error<T>(string? message) => LogResolver.Resolve(typeof(T)).Error(message ?? string.Empty);
 
     /// <inheritdoc/>
     public void Error(string message, params object[] args) => _inner.Error(CultureInfo.InvariantCulture, message, args);
@@ -370,19 +370,19 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     public void Fatal<T>(IFormatProvider formatProvider, T value) => _inner.Fatal(formatProvider, value);
 
     /// <inheritdoc/>
-    public void FatalException(string? message, Exception exception) => _inner.Fatal(exception, message);
+    public void FatalException(string? message, Exception exception) => _inner.Fatal(exception, message ?? string.Empty);
 
     /// <inheritdoc/>
-    public void Fatal(Exception exception, string? message) => _inner.Fatal(exception, message);
+    public void Fatal(Exception exception, string? message) => _inner.Fatal(exception, message ?? string.Empty);
 
     /// <inheritdoc/>
     public void Fatal(IFormatProvider formatProvider, string message, params object[] args) => _inner.Fatal(formatProvider, message, args);
 
     /// <inheritdoc/>
-    public void Fatal(string? message) => _inner.Fatal(message);
+    public void Fatal(string? message) => _inner.Fatal(message ?? string.Empty);
 
     /// <inheritdoc/>
-    public void Fatal<T>(string? message) => LogResolver.Resolve(typeof(T)).Fatal(message);
+    public void Fatal<T>(string? message) => LogResolver.Resolve(typeof(T)).Fatal(message ?? string.Empty);
 
     /// <inheritdoc/>
     public void Fatal(string message, params object[] args) => _inner.Fatal(CultureInfo.InvariantCulture, message, args);
