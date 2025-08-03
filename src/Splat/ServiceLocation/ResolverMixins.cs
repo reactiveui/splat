@@ -3,6 +3,10 @@
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+#if NET6_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
+#endif
+
 namespace Splat;
 
 /// <summary>
@@ -17,7 +21,11 @@ public static class ResolverMixins
     /// <param name="resolver">The resolver to register the service type with.</param>
     /// <param name="contract">A optional contract value which will indicates to only generate the value if this contract is specified.</param>
     /// <returns>The resolver.</returns>
+#if NET6_0_OR_GREATER
+    public static IMutableDependencyResolver RegisterAnd<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(this IMutableDependencyResolver resolver, string? contract = null)
+#else
     public static IMutableDependencyResolver RegisterAnd<T>(this IMutableDependencyResolver resolver, string? contract = null)
+#endif
         where T : new()
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
@@ -51,7 +59,11 @@ public static class ResolverMixins
     /// <param name="resolver">The resolver to register the service type with.</param>
     /// <param name="contract">A optional contract value which will indicates to only generate the value if this contract is specified.</param>
     /// <returns>The resolver.</returns>
+#if NET6_0_OR_GREATER
+    public static IMutableDependencyResolver RegisterAnd<TAs, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(this IMutableDependencyResolver resolver, string? contract = null)
+#else
     public static IMutableDependencyResolver RegisterAnd<TAs, T>(this IMutableDependencyResolver resolver, string? contract = null)
+#endif
         where T : new()
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
@@ -86,7 +98,11 @@ public static class ResolverMixins
     /// <param name="serviceType">The type of service to register.</param>
     /// <param name="contract">A optional contract value which will indicates to only return the value if this contract is specified.</param>
     /// <returns>The resolver.</returns>
+#if NET6_0_OR_GREATER
+    public static IMutableDependencyResolver RegisterConstantAnd(this IMutableDependencyResolver resolver, object value, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type serviceType, string? contract = null)
+#else
     public static IMutableDependencyResolver RegisterConstantAnd(this IMutableDependencyResolver resolver, object value, Type serviceType, string? contract = null)
+#endif
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
 
@@ -101,7 +117,11 @@ public static class ResolverMixins
     /// <param name="resolver">The resolver to register the service type with.</param>
     /// <param name="contract">A optional contract value which will indicates to only return the value if this contract is specified.</param>
     /// <returns>The resolver.</returns>
+#if NET6_0_OR_GREATER
+    public static IMutableDependencyResolver RegisterConstantAnd<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(this IMutableDependencyResolver resolver, string? contract = null)
+#else
     public static IMutableDependencyResolver RegisterConstantAnd<T>(this IMutableDependencyResolver resolver, string? contract = null)
+#endif
         where T : new()
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
@@ -134,7 +154,11 @@ public static class ResolverMixins
     /// <param name="serviceType">The type of service to register.</param>
     /// <param name="contract">A optional contract value which will indicates to only return the value if this contract is specified.</param>
     /// <returns>The resolver.</returns>
+#if NET6_0_OR_GREATER
+    public static IMutableDependencyResolver RegisterLazySingletonAnd(this IMutableDependencyResolver resolver, Func<object> valueFactory, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type serviceType, string? contract = null)
+#else
     public static IMutableDependencyResolver RegisterLazySingletonAnd(this IMutableDependencyResolver resolver, Func<object> valueFactory, Type serviceType, string? contract = null)
+#endif
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
 
@@ -151,7 +175,11 @@ public static class ResolverMixins
     /// <param name="resolver">The resolver to register the service type with.</param>
     /// <param name="contract">A optional contract value which will indicates to only return the value if this contract is specified.</param>
     /// <returns>The resolver.</returns>
+#if NET6_0_OR_GREATER
+    public static IMutableDependencyResolver RegisterLazySingletonAnd<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(this IMutableDependencyResolver resolver, string? contract = null)
+#else
     public static IMutableDependencyResolver RegisterLazySingletonAnd<T>(this IMutableDependencyResolver resolver, string? contract = null)
+#endif
         where T : new()
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));

@@ -55,7 +55,7 @@ public class RectEdgeTests
     {
         // Arrange
         var expectedNames = new[] { "Left", "Top", "Right", "Bottom" };
-        var actualNames = Enum.GetNames(typeof(RectEdge));
+        var actualNames = Enum.GetNames<RectEdge>();
 
         // Assert
         Assert.Equal(expectedNames.Length, actualNames.Length);

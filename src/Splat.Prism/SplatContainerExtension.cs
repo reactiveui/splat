@@ -4,6 +4,9 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
+#if NET6_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
+#endif
 
 namespace Splat.Prism;
 
@@ -56,6 +59,10 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     public IContainerRegistry RegisterManySingleton(Type type, params Type[] serviceTypes) => throw new NotSupportedException();
 
     /// <inheritdoc/>
+#if NET6_0_OR_GREATER
+    [RequiresUnreferencedCode("Uses Activator.CreateInstance which may be trimmed")]
+    [RequiresDynamicCode("Uses Activator.CreateInstance which requires dynamic code generation")]
+#endif
     public IContainerRegistry Register(Type from, Type to)
     {
         _types[(from, null)] = to;
@@ -205,7 +212,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     public object Resolve(Type type) => Instance.GetService(type) ?? throw new InvalidOperationException("Must be a valid value");
 
     /// <inheritdoc/>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Defined by outside interface not in Splat")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.Csharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Defined by outside interface not in Splat")]
     public object Resolve(Type type, params (Type Type, object Instance)[] parameters) =>
         (_types.TryGetValue((type, null), out var resolvedType)
             ? Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance)) ?? throw new InvalidOperationException("Could not create type")
@@ -215,7 +222,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     public object Resolve(Type type, string name) => Instance.GetService(type, name) ?? throw new InvalidOperationException("Must be a valid value");
 
     /// <inheritdoc/>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Defined by outside interface not in Splat")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.Csharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Defined by outside interface not in Splat")]
     public object Resolve(Type type, string name, params (Type Type, object Instance)[] parameters) =>
         (!_types.TryGetValue((type, name), out var resolvedType)
             ? resolvedType switch

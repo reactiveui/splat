@@ -4,6 +4,9 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.Collections;
+#if NET6_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
+#endif
 
 using Autofac;
 
@@ -84,6 +87,10 @@ public class AutofacDependencyResolver : IDependencyResolver
     }
 
     /// <inheritdoc />
+#if NET6_0_OR_GREATER
+    [RequiresUnreferencedCode("Uses MakeGenericType which may be trimmed")]
+    [RequiresDynamicCode("Uses MakeGenericType which requires dynamic code generation")]
+#endif
     public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
     {
         var isNull = serviceType is null;
