@@ -10,7 +10,9 @@ namespace Splat.Common.Test;
 /// It's intended to ensure that view registration by different DI\IoC implementations
 /// does not create an instance at the point of registration.
 /// </summary>
+#pragma warning disable CA1515 // Consider making public types internal
 public sealed class ViewThatShouldNotLoad : IViewFor<ViewModelOne>
+#pragma warning restore CA1515 // Consider making public types internal
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ViewThatShouldNotLoad"/> class.

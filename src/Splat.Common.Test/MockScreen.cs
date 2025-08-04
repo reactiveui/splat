@@ -12,6 +12,6 @@ namespace Splat.Common.Test;
 /// </summary>
 /// <seealso cref="IScreen" />
 [ExcludeFromCodeCoverage]
-public class MockScreen : IScreen
-{
-}
+#pragma warning disable CA1515 // Consider making public types internal
+public class MockScreen : IScreen;
+#pragma warning restore CA1515 // Consider making public types internal

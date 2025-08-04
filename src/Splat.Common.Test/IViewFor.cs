@@ -12,7 +12,9 @@ namespace Splat.Common.Test;
 /// </summary>
 /// <typeparam name="T">The view model type.</typeparam>
 /// <seealso cref="Splat.Common.Test.IViewFor" />
+#pragma warning disable CA1515 // Consider making public types internal
 public interface IViewFor<T> : IViewFor
+#pragma warning restore CA1515 // Consider making public types internal
     where T : class
 {
     /// <summary>
@@ -25,7 +27,9 @@ public interface IViewFor<T> : IViewFor
 /// Represents a view bound to a view model.
 /// </summary>
 /// <seealso cref="Splat.Common.Test.IViewFor" />
+#pragma warning disable CA1515 // Consider making public types internal
 public interface IViewFor
+#pragma warning restore CA1515 // Consider making public types internal
 {
     /// <summary>
     /// Gets or sets the view model.

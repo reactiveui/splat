@@ -9,6 +9,6 @@ namespace Splat.Common.Test;
 /// Represents a screen.
 /// </summary>
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Avoid empty interfaces", Justification = "By Design")]
-public interface IScreen
-{
-}
+#pragma warning disable CA1515 // Consider making public types internal
+public interface IScreen;
+#pragma warning restore CA1515 // Consider making public types internal

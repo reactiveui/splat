@@ -9,6 +9,6 @@ namespace Splat.Tests.Mocks;
 /// A dummy interface used during Locator testing.
 /// </summary>
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Avoid empty interfaces", Justification = "By Design")]
-public interface IDummyInterface
-{
-}
+#pragma warning disable CA1515 // Consider making public types internal
+public interface IDummyInterface;
+#pragma warning restore CA1515 // Consider making public types internal
