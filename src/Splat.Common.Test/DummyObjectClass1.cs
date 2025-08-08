@@ -11,6 +11,6 @@ namespace Splat.Tests.Mocks;
 /// A dummy class used during Locator testing.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class DummyObjectClass1 : IDummyInterface
-{
-}
+#pragma warning disable CA1515 // Consider making public types internal
+public class DummyObjectClass1 : IDummyInterface;
+#pragma warning restore CA1515 // Consider making public types internal

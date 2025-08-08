@@ -9,6 +9,6 @@ namespace Splat.Common.Test;
 /// Interface for ViewModelOne.
 /// </summary>
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Avoid empty interfaces", Justification = "By Design")]
-public interface IViewModelOne
-{
-}
+#pragma warning disable CA1515 // Consider making public types internal
+public interface IViewModelOne;
+#pragma warning restore CA1515 // Consider making public types internal

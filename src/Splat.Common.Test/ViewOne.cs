@@ -12,7 +12,9 @@ namespace Splat.Common.Test;
 /// </summary>
 /// <seealso cref="ViewModelOne" />
 [ExcludeFromCodeCoverage]
+#pragma warning disable CA1515 // Consider making public types internal
 public class ViewOne : IViewFor<ViewModelOne>
+#pragma warning restore CA1515 // Consider making public types internal
 {
     /// <inheritdoc />
     object? IViewFor.ViewModel

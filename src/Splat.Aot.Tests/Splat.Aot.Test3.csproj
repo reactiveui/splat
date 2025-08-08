@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
@@ -19,6 +19,9 @@
     
     <!-- Suppress trim warnings for test-specific scenarios -->
     <SuppressTrimAnalysisWarnings>false</SuppressTrimAnalysisWarnings>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(IsV3UnitProject)">
+    <OutputType>exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>

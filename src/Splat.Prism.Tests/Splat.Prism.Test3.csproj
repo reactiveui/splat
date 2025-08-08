@@ -4,6 +4,10 @@
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <NoWarn>$(NoWarn);CA1707;CS1574</NoWarn>
     <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(IsV3UnitProject)">
+    <OutputType>exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>

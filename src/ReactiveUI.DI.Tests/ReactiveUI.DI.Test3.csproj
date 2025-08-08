@@ -5,6 +5,9 @@
     <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  <PropertyGroup Condition="$(IsV3UnitProject)">
+    <OutputType>exe</OutputType>
+  </PropertyGroup>
   <Choose>
     <When Condition="$(TargetFramework.StartsWith('net472'))">
       <ItemGroup>

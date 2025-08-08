@@ -6,6 +6,9 @@
     <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  <PropertyGroup Condition="$(IsV3UnitProject)">
+    <OutputType>exe</OutputType>
+  </PropertyGroup>
 
   <ItemGroup>
     <Compile Include="..\Splat.NLog\LogResolver.cs" Link="LogResolver.cs" />
@@ -17,7 +20,5 @@
     <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />
     <ProjectReference Include="..\Splat.Microsoft.Extensions.DependencyInjection\Splat.Microsoft.Extensions.DependencyInjection.csproj" />
   </ItemGroup>
-
-
 
 </Project>
