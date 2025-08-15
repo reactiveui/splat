@@ -4,9 +4,8 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using Splat;
 
-namespace ReactiveUI.Builder;
+namespace Splat.Builder;
 
 /// <summary>
 /// Common extension helpers for registering Splat modules.

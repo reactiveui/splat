@@ -4,10 +4,9 @@
 // See the LICENSE file in the project root for full license information.
 
 using SimpleInjector;
-using Splat;
 using Splat.SimpleInjector;
 
-namespace ReactiveUI.Builder;
+namespace Splat.Builder;
 
 /// <summary>
 /// Splat module for configuring the SimpleInjector dependency resolver.

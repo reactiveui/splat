@@ -7,7 +7,7 @@ using Exceptionless;
 using Splat;
 using Splat.Exceptionless;
 
-namespace ReactiveUI.Builder;
+namespace Splat.Builder;
 
 /// <summary>
 /// Splat module for configuring the Exceptionless dependency resolver.

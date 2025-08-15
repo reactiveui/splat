@@ -773,6 +773,17 @@ namespace Splat.ApplicationPerformanceMonitoring
         void OnViewNavigation(string name);
     }
 }
+namespace Splat.Builder
+{
+    public interface IReactiveUIModule
+    {
+        void Configure(Splat.IMutableDependencyResolver resolver);
+    }
+    public static class SplatBuilderExtensions
+    {
+        public static void Apply(this Splat.Builder.IReactiveUIModule module) { }
+    }
+}
 namespace Splat.ModeDetection
 {
     public sealed class Mode : Splat.IModeDetector

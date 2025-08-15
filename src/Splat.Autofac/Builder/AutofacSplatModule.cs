@@ -4,10 +4,9 @@
 // See the LICENSE file in the project root for full license information.
 
 using Autofac;
-using Splat;
 using Splat.Autofac;
 
-namespace ReactiveUI.Builder;
+namespace Splat.Builder;
 
 /// <summary>
 /// Splat module for configuring the Autofac dependency resolver.

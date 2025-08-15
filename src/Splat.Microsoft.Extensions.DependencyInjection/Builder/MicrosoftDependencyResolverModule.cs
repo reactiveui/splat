@@ -4,10 +4,9 @@
 // See the LICENSE file in the project root for full license information.
 
 using Microsoft.Extensions.DependencyInjection;
-using Splat;
 using Splat.Microsoft.Extensions.DependencyInjection;
 
-namespace ReactiveUI.Builder;
+namespace Splat.Builder;
 
 /// <summary>
 /// Splat module for configuring the Microsoft dependency resolver.

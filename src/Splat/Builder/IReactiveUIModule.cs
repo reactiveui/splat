@@ -5,7 +5,7 @@
 
 using Splat;
 
-namespace ReactiveUI.Builder;
+namespace Splat.Builder;
 
 /// <summary>
 /// Defines a contract for ReactiveUI modules that can configure dependency injection.

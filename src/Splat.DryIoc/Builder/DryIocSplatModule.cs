@@ -4,10 +4,9 @@
 // See the LICENSE file in the project root for full license information.
 
 using DryIoc;
-using Splat;
 using Splat.DryIoc;
 
-namespace ReactiveUI.Builder;
+namespace Splat.Builder;
 
 /// <summary>
 /// Splat module for configuring the DryIoc dependency resolver.

@@ -4,10 +4,9 @@
 // See the LICENSE file in the project root for full license information.
 
 using Ninject;
-using Splat;
 using Splat.Ninject;
 
-namespace ReactiveUI.Builder;
+namespace Splat.Builder;
 
 /// <summary>
 /// Splat module for configuring the Ninject dependency resolver.
