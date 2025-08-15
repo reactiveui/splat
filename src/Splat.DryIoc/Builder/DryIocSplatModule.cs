@@ -15,7 +15,7 @@ namespace Splat.Builder;
 /// Initializes a new instance of the <see cref="DryIocSplatModule"/> class.
 /// </remarks>
 /// <param name="container">The DryIoc container.</param>
-public sealed class DryIocSplatModule(IContainer container) : IReactiveUIModule
+public sealed class DryIocSplatModule(IContainer container) : IModule
 {
     private readonly IContainer _container = container ?? throw new ArgumentNullException(nameof(container));
 

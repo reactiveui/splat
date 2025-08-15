@@ -16,7 +16,7 @@ public static class SplatBuilderExtensions
     /// Runs the provided configuration action imediately against the current Splat Locator.
     /// </summary>
     /// <param name="module">The module to configure.</param>
-    public static void Apply(this IReactiveUIModule module)
+    public static void Apply(this IModule module)
     {
         if (module is null)
         {

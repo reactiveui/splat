@@ -11,8 +11,8 @@ namespace Splat.Builder;
 /// <summary>
 /// Splat module for configuring the Microsoft dependency resolver.
 /// </summary>
-/// <seealso cref="IReactiveUIModule" />
-public sealed class MicrosoftDependencyResolverModule(IServiceCollection serviceCollection) : IReactiveUIModule
+/// <seealso cref="IModule" />
+public sealed class MicrosoftDependencyResolverModule(IServiceCollection serviceCollection) : IModule
 {
     private readonly IServiceCollection _container = serviceCollection ?? throw new ArgumentNullException(nameof(serviceCollection));
 

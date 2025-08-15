@@ -11,13 +11,13 @@ namespace Splat.Builder;
 /// <summary>
 /// Splat module for configuring the SimpleInjector dependency resolver.
 /// </summary>
-/// <seealso cref="IReactiveUIModule" />
+/// <seealso cref="IModule" />
 /// <remarks>
 /// Initializes a new instance of the <see cref="SimpleInjectorSplatModule" /> class.
 /// </remarks>
 /// <param name="container">The SimpleInjector container.</param>
 /// <param name="initializer">The SimpleInjector Initializer.</param>
-public sealed class SimpleInjectorSplatModule(Container container, SimpleInjectorInitializer initializer) : IReactiveUIModule
+public sealed class SimpleInjectorSplatModule(Container container, SimpleInjectorInitializer initializer) : IModule
 {
     private readonly Container _container = container ?? throw new ArgumentNullException(nameof(container));
 

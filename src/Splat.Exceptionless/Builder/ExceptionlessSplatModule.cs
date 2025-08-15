@@ -16,7 +16,7 @@ namespace Splat.Builder;
 /// Initializes a new instance of the <see cref="ExceptionlessSplatModule"/> class.
 /// </remarks>
 /// <param name="exceptionlessClient">The Exceptionless container.</param>
-public sealed class ExceptionlessSplatModule(ExceptionlessClient exceptionlessClient) : IReactiveUIModule
+public sealed class ExceptionlessSplatModule(ExceptionlessClient exceptionlessClient) : IModule
 {
     private readonly ExceptionlessClient _container = exceptionlessClient ?? throw new ArgumentNullException(nameof(exceptionlessClient));
 

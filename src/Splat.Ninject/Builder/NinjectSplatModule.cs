@@ -15,7 +15,7 @@ namespace Splat.Builder;
 /// Initializes a new instance of the <see cref="NinjectSplatModule"/> class.
 /// </remarks>
 /// <param name="kernel">The Ninject container.</param>
-public sealed class NinjectSplatModule(IKernel kernel) : IReactiveUIModule
+public sealed class NinjectSplatModule(IKernel kernel) : IModule
 {
     private readonly IKernel _container = kernel ?? throw new ArgumentNullException(nameof(kernel));
 

@@ -11,7 +11,7 @@ namespace Splat.Builder;
 /// Defines a contract for ReactiveUI modules that can configure dependency injection.
 /// This provides an AOT-compatible way to register services.
 /// </summary>
-public interface IReactiveUIModule
+public interface IModule
 {
     /// <summary>
     /// Configures the dependency resolver with the module's services.

@@ -15,7 +15,7 @@ namespace Splat.Builder;
 /// Initializes a new instance of the <see cref="AutofacSplatModule"/> class.
 /// </remarks>
 /// <param name="builder">The Autofac container builder.</param>
-public sealed class AutofacSplatModule(ContainerBuilder builder) : IReactiveUIModule
+public sealed class AutofacSplatModule(ContainerBuilder builder) : IModule
 {
     private readonly ContainerBuilder _builder = builder ?? throw new ArgumentNullException(nameof(builder));
 
