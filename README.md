@@ -161,6 +161,144 @@ being used.
 [SplatSimpleInjectorBadge]: https://img.shields.io/nuget/v/Splat.SimpleInjector.svg
 [SplatSimpleInjectorReadme]: ./src/Splat.SimpleInjector/README.md
 
+## AppBuilder and IModule (AOT-friendly configuration)
+
+When targeting AOT or trimming scenarios, you can configure Splat (and consumers such as ReactiveUI) without reflection using the AppBuilder and IModule pattern.
+
+- IModule defines a single Configure(IMutableDependencyResolver) method where you register services.
+- AppBuilder gathers modules and custom registrations, then applies them to a chosen resolver when Build() is called.
+- You can target the current Locator.CurrentMutable or an external container that implements IMutableDependencyResolver via UseCurrentSplatLocator().
+
+### Define modules
+
+```cs
+using Splat;
+using Splat.Builder;
+
+// App services
+public sealed class CoreModule : IModule
+{
+    public void Configure(IMutableDependencyResolver resolver)
+    {
+        // register your services here
+        resolver.RegisterLazySingleton(() => new ApiClient(), typeof(IApiClient));
+        resolver.Register(() => new MainViewModel(resolver.GetService<IApiClient>()!), typeof(IMainViewModel));
+    }
+}
+
+// Logging (Serilog adapter) - requires Splat.Serilog package
+using Splat.Serilog;
+public sealed class SerilogModule : IModule
+{
+    public void Configure(IMutableDependencyResolver resolver)
+    {
+        // assumes Serilog.Log has been configured elsewhere
+        resolver.UseSerilogFullLogger();
+    }
+}
+
+// Cross-platform drawing (IBitmapLoader) - requires Splat.Drawing package
+public sealed class DrawingModule : IModule
+{
+    public void Configure(IMutableDependencyResolver resolver)
+    {
+        resolver.RegisterPlatformBitmapLoader();
+    }
+}
+```
+
+Tip: You can also apply a module immediately to the current locator without a builder:
+
+```cs
+new CoreModule().Apply(); // calls module.Configure(Locator.CurrentMutable)
+```
+
+### Build your application registrations
+
+```cs
+using Splat;
+using Splat.Builder;
+
+// choose the resolver to configure (Locator.CurrentMutable by default)
+new AppBuilder(Locator.CurrentMutable)
+    .UsingModule(new CoreModule())
+    .UsingModule(new SerilogModule())
+    .UsingModule(new DrawingModule())
+    // ad-hoc registrations can be added too
+    .WithCustomRegistration(r => r.RegisterConstant(new AppConfig("Prod"), typeof(AppConfig)))
+    .Build();
+```
+
+### Using an external container as the Splat resolver
+
+If you adapt an external container to Splat first, UseCurrentSplatLocator() ensures later module registrations are applied to that container instance.
+
+Microsoft.Extensions.DependencyInjection example:
+
+```cs
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Splat;
+using Splat.Builder;
+using Splat.Microsoft.Extensions.DependencyInjection;
+using Splat.Microsoft.Extensions.Logging;
+
+var services = new ServiceCollection();
+services.UseMicrosoftDependencyResolver(); // set Locator.Current to MS.DI resolver backed by IServiceCollection
+
+// register framework logging provider that forwards to Splat
+services.AddLogging(b => b.AddSplat());
+
+// build container and rebind Locator.Current to the built provider
+var provider = services.BuildServiceProvider();
+provider.UseMicrosoftDependencyResolver();
+
+new AppBuilder(Locator.CurrentMutable)
+    .UseCurrentSplatLocator() // target whatever Locator.CurrentMutable points to (MS.DI in this case)
+    .UsingModule(new CoreModule())
+    .WithCustomRegistration(r =>
+    {
+        // forward Microsoft.Extensions.Logging to Splat
+        var factory = provider.GetRequiredService<ILoggerFactory>();
+        r.UseMicrosoftExtensionsLoggingWithWrappingFullLogger(factory);
+    })
+    .Build();
+```
+
+The same pattern works with other adapters (Autofac, DryIoc, SimpleInjector, Ninject) after setting Locator.Current to the adapter’s resolver.
+
+### Extending AppBuilder
+
+AppBuilder is extensible. Override WithCoreServices() to ensure common registrations are always applied before modules:
+
+```cs
+using Splat;
+using Splat.Builder;
+
+public sealed class MyAppBuilder : AppBuilder
+{
+    public MyAppBuilder(IMutableDependencyResolver resolver) : base(resolver) { }
+
+    public override AppBuilder WithCoreServices()
+    {
+        // register core bits once for your app
+        // e.g., default logger, scheduler, or platform services
+        // resolver is obtained per registration in Build(),
+        // so prefer idempotent registrations guarded by HasRegistration
+        return this;
+    }
+}
+
+// usage
+new MyAppBuilder(Locator.CurrentMutable)
+    .UsingModule(new CoreModule())
+    .Build();
+```
+
+Notes:
+- Build() is idempotent per process: subsequent calls no-op after the first successful build.
+- Prefer RegisterLazySingleton for singletons and check HasRegistration when composing multiple modules.
+
 ## Logging
 
 Splat provides a simple logging proxy for libraries and applications to set up.
