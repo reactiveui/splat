@@ -11,7 +11,9 @@ namespace Splat.Common.Test;
 /// View Model One.
 /// </summary>
 [ExcludeFromCodeCoverage]
+#pragma warning disable CA1515 // Consider making public types internal
 public class ViewModelOne : IViewModelOne
+#pragma warning restore CA1515 // Consider making public types internal
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ViewModelOne"/> class.

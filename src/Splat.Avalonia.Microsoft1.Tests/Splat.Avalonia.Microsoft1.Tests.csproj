@@ -8,6 +8,9 @@
     <IsTestProject>true</IsTestProject>
     <DefineConstants>$(DefineConstants);MICROSOFT1</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="$(IsV3UnitProject)">
+    <OutputType>exe</OutputType>
+  </PropertyGroup>
   <ItemGroup>
     <AvaloniaXaml Include="..\Splat.Avalonia.Tests\Mocks\App.axaml" Link="Mocks\App.axaml">
       <SubType>Designer</SubType>

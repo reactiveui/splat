@@ -6,6 +6,9 @@
     <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  <PropertyGroup Condition="$(IsV3UnitProject)">
+    <OutputType>exe</OutputType>
+  </PropertyGroup>
 
   <ItemGroup>
     <Compile Include="..\Splat.Tests\ServiceLocation\BaseDependencyResolverTests.cs" Link="BaseDependencyResolverTests.cs" />

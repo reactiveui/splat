@@ -26,13 +26,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Autofac.Tests", "Spla
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.SimpleInjector", "Splat.SimpleInjector\Splat.SimpleInjector.csproj", "{5A21B576-374D-439E-9303-02A5B0256B26}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.SimpleInjector.Tests", "Splat.SimpleInjector.Tests\Splat.SimpleInjector.Tests.csproj", "{E85B3A4E-6ECA-4171-8605-55792187FAB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.SimpleInjector.Test3", "Splat.SimpleInjector.Tests\Splat.SimpleInjector.Test3.csproj", "{E85B3A4E-6ECA-4171-8605-55792187FAB4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.NLog", "Splat.NLog\Splat.NLog.csproj", "{24BCC71A-0998-4B81-9A55-BC00C2A3F8CE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.DryIoc", "Splat.DryIoc\Splat.DryIoc.csproj", "{941DAAE2-EDCA-41A8-93FF-0C4178639A47}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.DryIoc.Tests", "Splat.DryIoc.Tests\Splat.DryIoc.Tests.csproj", "{E1777877-6F56-46D0-8747-4BB921ED4C8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.DryIoc.Test3", "Splat.DryIoc.Tests\Splat.DryIoc.Test3.csproj", "{E1777877-6F56-46D0-8747-4BB921ED4C8E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Log4Net", "Splat.Log4Net\Splat.Log4Net.csproj", "{D65C61D8-C073-4761-9BA3-C595A079C42E}"
 EndProject
@@ -60,19 +60,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Raygun", "Splat.Raygu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Microsoft.Extensions.DependencyInjection", "Splat.Microsoft.Extensions.DependencyInjection\Splat.Microsoft.Extensions.DependencyInjection.csproj", "{168CC48D-C28C-48BA-B6F1-234A0C16597E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Microsoft.Extensions.DependencyInjection.Tests", "Splat.Microsoft.Extensions.DependencyInjection.Tests\Splat.Microsoft.Extensions.DependencyInjection.Tests.csproj", "{85E5821D-CCC3-44DC-96A0-DFC02953943F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Drawing", "Splat.Drawing\Splat.Drawing.csproj", "{694D2813-14FF-456A-B1E7-C5BB82AEE400}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Prism", "Splat.Prism\Splat.Prism.csproj", "{1D1FE7E6-10FF-4A7F-90D6-6E3696EC7D0D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Prism.Forms", "Splat.Prism.Forms\Splat.Prism.Forms.csproj", "{39195824-8E56-4240-A5A0-7FA4E12099D4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Prism.Tests", "Splat.Prism.Tests\Splat.Prism.Tests.csproj", "{905A96B2-03C9-4D08-8E8B-E5B0F7F9F33A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Prism.Test3", "Splat.Prism.Tests\Splat.Prism.Test3.csproj", "{905A96B2-03C9-4D08-8E8B-E5B0F7F9F33A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Drawing.Tests", "Splat.Drawing.Tests\Splat.Drawing.Tests.csproj", "{7E350DE5-B8C4-4EF1-9211-7B35643B1971}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.DI.Tests", "ReactiveUI.DI.Tests\ReactiveUI.DI.Tests.csproj", "{FEA4E637-0409-40BC-8518-860509FEEA64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.DI.Test3", "ReactiveUI.DI.Tests\ReactiveUI.DI.Test3.csproj", "{FEA4E637-0409-40BC-8518-860509FEEA64}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Avalonia", "Avalonia", "{45E17593-668F-4369-B281-801119B81725}"
 EndProject
@@ -94,7 +92,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.DryIoc1.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Avalonia.DryIoc2.Tests", "Splat.Avalonia.DryIoc2.Tests\Splat.Avalonia.DryIoc2.Tests.csproj", "{E47B2228-4EA0-47FF-964B-92EA8E1F0E9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Aot.Tests", "Splat.Aot.Tests\Splat.Aot.Tests.csproj", "{FCE421B3-BEBA-19C5-97E9-D4FBC919EA34}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Aot.Test3", "Splat.Aot.Tests\Splat.Aot.Test3.csproj", "{FCE421B3-BEBA-19C5-97E9-D4FBC919EA34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Microsoft.Extensions.DependencyInjection.Test3", "Splat.Microsoft.Extensions.DependencyInjection.Tests\Splat.Microsoft.Extensions.DependencyInjection.Test3.csproj", "{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -510,26 +510,6 @@ Global
 		{168CC48D-C28C-48BA-B6F1-234A0C16597E}.Release|x64.Build.0 = Release|Any CPU
 		{168CC48D-C28C-48BA-B6F1-234A0C16597E}.Release|x86.ActiveCfg = Release|Any CPU
 		{168CC48D-C28C-48BA-B6F1-234A0C16597E}.Release|x86.Build.0 = Release|Any CPU
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Debug|ARM.Build.0 = Debug|Any CPU
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Debug|ARM64.ActiveCfg = Debug|Any CPU
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Debug|ARM64.Build.0 = Debug|Any CPU
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Debug|x64.Build.0 = Debug|Any CPU
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Debug|x86.Build.0 = Debug|Any CPU
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Release|ARM.ActiveCfg = Release|Any CPU
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Release|ARM.Build.0 = Release|Any CPU
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Release|ARM64.ActiveCfg = Release|Any CPU
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Release|ARM64.Build.0 = Release|Any CPU
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Release|x64.ActiveCfg = Release|Any CPU
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Release|x64.Build.0 = Release|Any CPU
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Release|x86.ActiveCfg = Release|Any CPU
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F}.Release|x86.Build.0 = Release|Any CPU
 		{694D2813-14FF-456A-B1E7-C5BB82AEE400}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{694D2813-14FF-456A-B1E7-C5BB82AEE400}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{694D2813-14FF-456A-B1E7-C5BB82AEE400}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -850,6 +830,26 @@ Global
 		{FCE421B3-BEBA-19C5-97E9-D4FBC919EA34}.Release|x64.Build.0 = Release|Any CPU
 		{FCE421B3-BEBA-19C5-97E9-D4FBC919EA34}.Release|x86.ActiveCfg = Release|Any CPU
 		{FCE421B3-BEBA-19C5-97E9-D4FBC919EA34}.Release|x86.Build.0 = Release|Any CPU
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}.Debug|ARM.Build.0 = Debug|Any CPU
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}.Debug|x64.Build.0 = Debug|Any CPU
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}.Debug|x86.Build.0 = Debug|Any CPU
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}.Release|ARM.ActiveCfg = Release|Any CPU
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}.Release|ARM.Build.0 = Release|Any CPU
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}.Release|ARM64.Build.0 = Release|Any CPU
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}.Release|x64.ActiveCfg = Release|Any CPU
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}.Release|x64.Build.0 = Release|Any CPU
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}.Release|x86.ActiveCfg = Release|Any CPU
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -875,7 +875,6 @@ Global
 		{DCA3C3B2-DBD1-4C92-AC3B-4DE6FAD598A3} = {651320D6-1048-4F87-9D8E-75134FAFABDA}
 		{A587EF52-4A3F-4375-A335-9ED7C6D410CB} = {651320D6-1048-4F87-9D8E-75134FAFABDA}
 		{168CC48D-C28C-48BA-B6F1-234A0C16597E} = {651320D6-1048-4F87-9D8E-75134FAFABDA}
-		{85E5821D-CCC3-44DC-96A0-DFC02953943F} = {3F8EA9C2-D6D1-4B18-8670-DFC24B96972E}
 		{694D2813-14FF-456A-B1E7-C5BB82AEE400} = {651320D6-1048-4F87-9D8E-75134FAFABDA}
 		{1D1FE7E6-10FF-4A7F-90D6-6E3696EC7D0D} = {651320D6-1048-4F87-9D8E-75134FAFABDA}
 		{39195824-8E56-4240-A5A0-7FA4E12099D4} = {651320D6-1048-4F87-9D8E-75134FAFABDA}
@@ -893,6 +892,7 @@ Global
 		{9CD61101-82AB-4C3E-B559-7323AFF779B4} = {3F8EA9C2-D6D1-4B18-8670-DFC24B96972E}
 		{E47B2228-4EA0-47FF-964B-92EA8E1F0E9A} = {3F8EA9C2-D6D1-4B18-8670-DFC24B96972E}
 		{FCE421B3-BEBA-19C5-97E9-D4FBC919EA34} = {3F8EA9C2-D6D1-4B18-8670-DFC24B96972E}
+		{F7BCB5CA-9AF5-0D1E-9AA7-7ECD6DA6A06B} = {3F8EA9C2-D6D1-4B18-8670-DFC24B96972E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E833ED14-B971-4E09-B27E-76E99BC0FC10}

@@ -11,6 +11,6 @@ namespace Splat.Common.Test;
 /// View Model Two.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class ViewModelTwo
-{
-}
+#pragma warning disable CA1515 // Consider making public types internal
+public class ViewModelTwo;
+#pragma warning restore CA1515 // Consider making public types internal
