@@ -5,11 +5,11 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Autofac" Version="8.4.0" />
-    <PackageVersion Include="Avalonia.Desktop" Version="11.3.2" />
-    <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.3.2" />
-    <PackageVersion Include="Avalonia.Headless.XUnit" Version="11.3.2" />
-    <PackageVersion Include="Avalonia.ReactiveUI" Version="11.3.2" />
-    <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.3.2" />
+    <PackageVersion Include="Avalonia.Desktop" Version="11.3.3" />
+    <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.3.3" />
+    <PackageVersion Include="Avalonia.Headless.XUnit" Version="11.3.3" />
+    <PackageVersion Include="Avalonia.ReactiveUI" Version="11.3.3" />
+    <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.3.3" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
     <PackageVersion Include="DryIoc.Dll" Version="5.4.3" />
     <PackageVersion Include="Exceptionless" Version="6.1.0" />
@@ -17,8 +17,8 @@
     <PackageVersion Include="Microsoft.AppCenter.Analytics" Version="5.0.7" />
     <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="5.0.7" />
     <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.23.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.7" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.7" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.8" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="11.2.4" />
     <PackageVersion Include="Nerdbank.GitVersioning" Version="3.7.115" />
@@ -33,7 +33,7 @@
     <PackageVersion Include="SimpleInjector" Version="5.5.0" />
     <PackageVersion Include="stylecop.analyzers" Version="1.2.0-beta.556" />
     <PackageVersion Include="System.AppContext" Version="4.3.0" />
-    <PackageVersion Include="System.Collections.Immutable" Version="9.0.7" />
+    <PackageVersion Include="System.Collections.Immutable" Version="9.0.8" />
     <PackageVersion Include="System.Collections.NonGeneric" Version="4.3.0" />
     <PackageVersion Include="System.Console" Version="4.3.1" />
     <PackageVersion Include="System.Diagnostics.Debug" Version="4.3.0" />
@@ -53,7 +53,7 @@
     <PackageVersion Include="System.Runtime.Extensions" Version="4.3.1" />
     <PackageVersion Include="System.Runtime.InteropServices" Version="4.3.0" />
     <PackageVersion Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
-    <PackageVersion Include="System.Text.Json" Version="9.0.7" />
+    <PackageVersion Include="System.Text.Json" Version="9.0.8" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageVersion Include="System.Threading" Version="4.3.0" />
     <PackageVersion Include="System.Threading.Thread" Version="4.3.0" />
@@ -71,7 +71,7 @@
     <PackageVersion Include="System.Drawing.Primitives" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net8')) or $(TargetFramework.StartsWith('net9'))">
-    <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="9.0.7" />
+    <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="9.0.8" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net46'))">
     <PackageVersion Include="System.ValueTuple" Version="4.6.1" />

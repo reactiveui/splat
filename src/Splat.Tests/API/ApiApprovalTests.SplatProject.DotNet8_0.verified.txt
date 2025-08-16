@@ -773,6 +773,30 @@ namespace Splat.ApplicationPerformanceMonitoring
         void OnViewNavigation(string name);
     }
 }
+namespace Splat.Builder
+{
+    public class AppBuilder
+    {
+        public AppBuilder(Splat.IMutableDependencyResolver resolver) { }
+        public static bool HasBeenBuilt { get; }
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("The Build may use reflection and will not work in AOT environments.")]
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("The method may use reflection and will not work in AOT environments.")]
+        public void Build() { }
+        public Splat.Builder.AppBuilder UseCurrentSplatLocator() { }
+        public Splat.Builder.AppBuilder UsingModule<T>(T registrationModule)
+            where T : Splat.Builder.IModule { }
+        public virtual Splat.Builder.AppBuilder WithCoreServices() { }
+        public Splat.Builder.AppBuilder WithCustomRegistration(System.Action<Splat.IMutableDependencyResolver> configureAction) { }
+    }
+    public interface IModule
+    {
+        void Configure(Splat.IMutableDependencyResolver resolver);
+    }
+    public static class SplatBuilderExtensions
+    {
+        public static void Apply(this Splat.Builder.IModule module) { }
+    }
+}
 namespace Splat.ModeDetection
 {
     public sealed class Mode : Splat.IModeDetector
