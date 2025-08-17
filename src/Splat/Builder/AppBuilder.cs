@@ -23,6 +23,7 @@ public class AppBuilder
     /// <param name="resolver">The dependency resolver to configure.</param>
     public AppBuilder(IMutableDependencyResolver resolver)
     {
+        UsingBuilder = true;
         _resolver = resolver ?? throw new ArgumentNullException(nameof(resolver));
         _resolverProvider = () => _resolver;
     }
@@ -34,6 +35,27 @@ public class AppBuilder
     ///   <c>true</c> if this instance has been built; otherwise, <c>false</c>.
     /// </value>
     public static bool HasBeenBuilt { get; private set; }
+
+    /// <summary>
+    /// Gets a value indicating whether [using builder].
+    /// </summary>
+    /// <value>
+    ///   <c>true</c> if [using builder]; otherwise, <c>false</c>.
+    /// </value>
+    public static bool UsingBuilder { get; private set; }
+
+    /// <summary>
+    /// Resets the builder state for tests, ONLY if the builder is being used in a unit test environment.
+    /// </summary>
+    public static void ResetBuilderStateForTests()
+    {
+        // Reset the static state of the builder if in unit tests or similar scenarios
+        if (ModeDetector.InUnitTestRunner())
+        {
+            HasBeenBuilt = false;
+            UsingBuilder = false;
+        }
+    }
 
     /// <summary>
     /// Direct the builder to use the current Splat Locator (Locator.CurrentMutable)
@@ -81,6 +103,10 @@ public class AppBuilder
     /// Registers the core ReactiveUI services.
     /// </summary>
     /// <returns>The builder instance for method chaining.</returns>
+#if NET6_0_OR_GREATER
+    [RequiresDynamicCode("WithCoreServices may use reflection and will not work in AOT environments.")]
+    [RequiresUnreferencedCode("WithCoreServices may use reflection and will not work in AOT environments.")]
+#endif
     public virtual AppBuilder WithCoreServices() => this;
 
     /// <summary>
