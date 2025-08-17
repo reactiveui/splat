@@ -779,14 +779,18 @@ namespace Splat.Builder
     {
         public AppBuilder(Splat.IMutableDependencyResolver resolver) { }
         public static bool HasBeenBuilt { get; }
+        public static bool UsingBuilder { get; }
         [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("The Build may use reflection and will not work in AOT environments.")]
         [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("The method may use reflection and will not work in AOT environments.")]
         public void Build() { }
         public Splat.Builder.AppBuilder UseCurrentSplatLocator() { }
         public Splat.Builder.AppBuilder UsingModule<T>(T registrationModule)
             where T : Splat.Builder.IModule { }
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WithCoreServices may use reflection and will not work in AOT environments.")]
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WithCoreServices may use reflection and will not work in AOT environments.")]
         public virtual Splat.Builder.AppBuilder WithCoreServices() { }
         public Splat.Builder.AppBuilder WithCustomRegistration(System.Action<Splat.IMutableDependencyResolver> configureAction) { }
+        public static void ResetBuilderStateForTests() { }
     }
     public interface IModule
     {
