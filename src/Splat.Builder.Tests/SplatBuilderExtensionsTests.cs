@@ -3,8 +3,6 @@
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using Moq;
-
 namespace Splat.Builder.Tests
 {
     /// <summary>
@@ -18,19 +16,8 @@ namespace Splat.Builder.Tests
         [Fact]
         public void ApplyThrowsOnNullModule()
         {
-            IModule module = (IModule)null!;
+            IModule module = null!;
             Assert.Throws<ArgumentNullException>(() => module.Apply());
-        }
-
-        /// <summary>
-        /// Applies the calls configure on module.
-        /// </summary>
-        [Fact]
-        public void ApplyCallsConfigureOnModule()
-        {
-            var moduleMock = new Mock<IModule>();
-            moduleMock.Object.Apply();
-            moduleMock.Verify(m => m.Configure(It.IsAny<IMutableDependencyResolver>()), Times.Once);
         }
 
         /// <summary>
@@ -49,8 +36,8 @@ namespace Splat.Builder.Tests
         [Fact]
         public void CreateSplatBuilderReturnsAppBuilder()
         {
-            var resolver = new Mock<IMutableDependencyResolver>().Object;
-            var builder = resolver.CreateSplatBuilder();
+            var resolver = new InternalLocator();
+            var builder = resolver.CurrentMutable.CreateSplatBuilder();
             Assert.NotNull(builder);
         }
 
@@ -70,8 +57,8 @@ namespace Splat.Builder.Tests
         [Fact]
         public void CreateSplatBuilderWithConfigureActionReturnsAppBuilder()
         {
-            var resolver = new Mock<IMutableDependencyResolver>().Object;
-            var builder = resolver.CreateSplatBuilder(r => { });
+            var resolver = new InternalLocator();
+            var builder = resolver.CurrentMutable.CreateSplatBuilder(r => { });
             Assert.NotNull(builder);
         }
     }

@@ -3,8 +3,6 @@
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using Moq;
-
 namespace Splat.Builder.Tests
 {
     /// <summary>
@@ -27,9 +25,10 @@ namespace Splat.Builder.Tests
         [Fact]
         public void ConstructorSetsUsingBuilderTrue()
         {
-            var resolver = new Mock<IMutableDependencyResolver>().Object;
-            var builder = new AppBuilder(resolver);
+            var resolver = new InternalLocator();
+            var builder = new AppBuilder(resolver.CurrentMutable);
             Assert.True(AppBuilder.UsingBuilder);
+            resolver.Dispose();
         }
 
         /// <summary>
@@ -59,10 +58,11 @@ namespace Splat.Builder.Tests
         [Fact]
         public void UseCurrentSplatLocatorChangesResolverProvider()
         {
-            var resolver = new Mock<IMutableDependencyResolver>().Object;
-            var builder = new AppBuilder(resolver);
+            var resolver = new InternalLocator();
+            var builder = new AppBuilder(resolver.CurrentMutable);
             var result = builder.UseCurrentSplatLocator();
             Assert.Same(builder, result);
+            resolver.Dispose();
         }
 
         /// <summary>
@@ -71,9 +71,10 @@ namespace Splat.Builder.Tests
         [Fact]
         public void UsingModuleThrowsOnNullModule()
         {
-            var resolver = new Mock<IMutableDependencyResolver>().Object;
-            var builder = new AppBuilder(resolver);
+            var resolver = new InternalLocator();
+            var builder = new AppBuilder(resolver.CurrentMutable);
             Assert.Throws<ArgumentNullException>(() => builder.UsingModule<IModule>((IModule)null!));
+            resolver.Dispose();
         }
 
         /// <summary>
@@ -82,11 +83,11 @@ namespace Splat.Builder.Tests
         [Fact]
         public void UsingModuleAddsModule()
         {
-            var resolver = new Mock<IMutableDependencyResolver>().Object;
-            var module = new Mock<IModule>().Object;
-            var builder = new AppBuilder(resolver);
-            var result = builder.UsingModule(module);
+            var resolver = new InternalLocator();
+            var builder = new AppBuilder(resolver.CurrentMutable);
+            var result = builder.UsingModule(new MokModule());
             Assert.Same(builder, result);
+            resolver.Dispose();
         }
 
         /// <summary>
@@ -95,9 +96,10 @@ namespace Splat.Builder.Tests
         [Fact]
         public void WithCustomRegistrationThrowsOnNullAction()
         {
-            var resolver = new Mock<IMutableDependencyResolver>().Object;
-            var builder = new AppBuilder(resolver);
+            var resolver = new InternalLocator();
+            var builder = new AppBuilder(resolver.CurrentMutable);
             Assert.Throws<ArgumentNullException>(() => builder.WithCustomRegistration((Action<IMutableDependencyResolver>)null!));
+            resolver.Dispose();
         }
 
         /// <summary>
@@ -106,10 +108,11 @@ namespace Splat.Builder.Tests
         [Fact]
         public void WithCustomRegistrationAddsAction()
         {
-            var resolver = new Mock<IMutableDependencyResolver>().Object;
-            var builder = new AppBuilder(resolver);
+            var resolver = new InternalLocator();
+            var builder = new AppBuilder(resolver.CurrentMutable);
             var result = builder.WithCustomRegistration(r => { });
             Assert.Same(builder, result);
+            resolver.Dispose();
         }
 
         /// <summary>
@@ -118,10 +121,11 @@ namespace Splat.Builder.Tests
         [Fact]
         public void WithCoreServicesReturnsSelf()
         {
-            var resolver = new Mock<IMutableDependencyResolver>().Object;
-            var builder = new AppBuilder(resolver);
+            var resolver = new InternalLocator();
+            var builder = new AppBuilder(resolver.CurrentMutable);
             var result = builder.WithCoreServices();
             Assert.Same(builder, result);
+            resolver.Dispose();
         }
 
         /// <summary>
@@ -130,12 +134,13 @@ namespace Splat.Builder.Tests
         [Fact]
         public void BuildAppliesRegistrations()
         {
-            var resolverMock = new Mock<IMutableDependencyResolver>();
-            var builder = new AppBuilder(resolverMock.Object);
+            var resolver = new InternalLocator();
+            var builder = new AppBuilder(resolver.CurrentMutable);
             bool called = false;
             builder.WithCustomRegistration(r => called = true);
             builder.Build();
             Assert.True(called);
+            resolver.Dispose();
         }
 
         /// <summary>
@@ -144,13 +149,24 @@ namespace Splat.Builder.Tests
         [Fact]
         public void BuildDoesNothingIfAlreadyBuilt()
         {
-            var resolverMock = new Mock<IMutableDependencyResolver>();
-            var builder = new AppBuilder(resolverMock.Object);
+            var resolver = new InternalLocator();
+            var builder = new AppBuilder(resolver.CurrentMutable);
             builder.Build(); // sets HasBeenBuilt
             bool called = false;
             builder.WithCustomRegistration(r => called = true);
             builder.Build(); // should not call registration again
             Assert.False(called);
+            resolver.Dispose();
+        }
+    }
+
+    internal class MokModule : IModule
+    {
+        public void Configure(IMutableDependencyResolver resolver)
+        {
+            // This is a mock module for testing purposes.
+            // It does not need to do anything specific.
+            // In a real scenario, you would register services here.}
         }
     }
 }
