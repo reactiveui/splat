@@ -158,7 +158,7 @@ public static class DependencyResolverMixins
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
         var val = new Lazy<object?>(valueFactory, LazyThreadSafetyMode.ExecutionAndPublication);
-        resolver.Register(() => val.Value, serviceType, contract);
+        resolver.Register(() => val, serviceType, contract);
     }
 
     /// <summary>
@@ -177,7 +177,7 @@ public static class DependencyResolverMixins
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
         var val = new Lazy<object?>(() => valueFactory(), LazyThreadSafetyMode.ExecutionAndPublication);
-        resolver.Register(() => val.Value, typeof(T), contract);
+        resolver.Register(() => val, typeof(T), contract);
     }
 
     /// <summary>
