@@ -23,7 +23,7 @@
     <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="11.2.4" />
     <PackageVersion Include="Nerdbank.GitVersioning" Version="3.7.115" />
     <PackageVersion Include="Ninject" Version="3.3.6" />
-    <PackageVersion Include="NLog" Version="6.0.2" />
+    <PackageVersion Include="NLog" Version="6.0.3" />
     <PackageVersion Include="Prism.Core" Version="9.0.537" />
     <PackageVersion Include="Prism.Forms" Version="9.0.537" />
     <PackageVersion Include="ReactiveUI" Version="20.4.1" />
