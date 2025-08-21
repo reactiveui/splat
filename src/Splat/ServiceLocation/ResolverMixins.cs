@@ -163,7 +163,7 @@ public static class ResolverMixins
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
 
         var val = new Lazy<object>(valueFactory, LazyThreadSafetyMode.ExecutionAndPublication);
-        resolver.Register(() => val.Value, serviceType, contract);
+        resolver.Register(() => val, serviceType, contract);
         return resolver;
     }
 
@@ -185,7 +185,7 @@ public static class ResolverMixins
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
 
         var val = new Lazy<object>(() => new T(), LazyThreadSafetyMode.ExecutionAndPublication);
-        resolver.Register(() => val.Value, typeof(T), contract);
+        resolver.Register(() => val, typeof(T), contract);
         return resolver;
     }
 
@@ -203,7 +203,7 @@ public static class ResolverMixins
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
 
         var val = new Lazy<object>(() => valueFactory()!, LazyThreadSafetyMode.ExecutionAndPublication);
-        resolver.Register(() => val.Value, typeof(T), contract);
+        resolver.Register(() => val, typeof(T), contract);
         return resolver;
     }
 }
