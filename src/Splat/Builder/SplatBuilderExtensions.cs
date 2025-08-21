@@ -23,4 +23,39 @@ public static class SplatBuilderExtensions
 
         module.Configure(Locator.CurrentMutable);
     }
+
+    /// <summary>
+    /// Creates the default.
+    /// </summary>
+    /// <param name="resolver">The resolver.</param>
+    /// <returns>The builder instance for chaining.</returns>
+    /// <exception cref="System.ArgumentNullException">resolver.</exception>
+    public static AppBuilder CreateSplatBuilder(this IMutableDependencyResolver resolver)
+    {
+        if (resolver is null)
+        {
+            throw new ArgumentNullException(nameof(resolver));
+        }
+
+        // Create a new AppBuilder instance with the provided resolver
+        return new AppBuilder(resolver);
+    }
+
+    /// <summary>
+    /// Creates the default.
+    /// </summary>
+    /// <param name="resolver">The resolver.</param>
+    /// <param name="configureAction">The configuration action to apply.</param>
+    /// <returns>The builder instance for chaining.</returns>
+    /// <exception cref="System.ArgumentNullException">resolver.</exception>
+    public static AppBuilder CreateSplatBuilder(this IMutableDependencyResolver resolver, Action<IMutableDependencyResolver> configureAction)
+    {
+        if (resolver is null)
+        {
+            throw new ArgumentNullException(nameof(resolver));
+        }
+
+        // Create a new AppBuilder instance with the provided resolver
+        return new AppBuilder(resolver).WithCustomRegistration(configureAction);
+    }
 }

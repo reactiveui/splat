@@ -21,6 +21,7 @@
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.8" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="11.2.4" />
+    <PackageVersion Include="Moq" Version="4.20.72" />
     <PackageVersion Include="Nerdbank.GitVersioning" Version="3.7.115" />
     <PackageVersion Include="Ninject" Version="3.3.6" />
     <PackageVersion Include="NLog" Version="6.0.3" />

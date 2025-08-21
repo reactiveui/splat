@@ -790,6 +790,7 @@ namespace Splat.Builder
         [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WithCoreServices may use reflection and will not work in AOT environments.")]
         public virtual Splat.Builder.AppBuilder WithCoreServices() { }
         public Splat.Builder.AppBuilder WithCustomRegistration(System.Action<Splat.IMutableDependencyResolver> configureAction) { }
+        public static Splat.Builder.AppBuilder CreateSplatBuilder() { }
         public static void ResetBuilderStateForTests() { }
     }
     public interface IModule
@@ -799,6 +800,8 @@ namespace Splat.Builder
     public static class SplatBuilderExtensions
     {
         public static void Apply(this Splat.Builder.IModule module) { }
+        public static Splat.Builder.AppBuilder CreateSplatBuilder(this Splat.IMutableDependencyResolver resolver) { }
+        public static Splat.Builder.AppBuilder CreateSplatBuilder(this Splat.IMutableDependencyResolver resolver, System.Action<Splat.IMutableDependencyResolver> configureAction) { }
     }
 }
 namespace Splat.ModeDetection
