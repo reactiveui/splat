@@ -135,6 +135,11 @@ public class ModernDependencyResolver : IDependencyResolver
         if (ret != null)
         {
             returnValue = ret();
+            if (returnValue is Lazy<object?> lazy)
+            {
+                return lazy.Value;
+            }
+
             if (returnValue is NullServiceType nullServiceType)
             {
                 return nullServiceType.Factory()!;
@@ -155,7 +160,11 @@ public class ModernDependencyResolver : IDependencyResolver
         serviceType ??= typeof(NullServiceType);
 
         var pair = GetKey(serviceType, contract);
-        return !_registry.TryGetValue(pair, out var value) ? Array.Empty<object>() : value.ConvertAll(x => x()!);
+        return !_registry.TryGetValue(pair, out var value) ? Array.Empty<object>() : value.ConvertAll(x =>
+        {
+            var v = x()!;
+            return v is Lazy<object?> lazy ? lazy.Value! : v;
+        });
     }
 
     /// <inheritdoc />
@@ -282,6 +291,19 @@ public class ModernDependencyResolver : IDependencyResolver
                     foreach (var factory in pair)
                     {
                         var item = factory();
+                        if (item is Lazy<object?> lazy)
+                        {
+                            if (lazy.IsValueCreated)
+                            {
+                                item = lazy.Value;
+                            }
+                            else
+                            {
+                                // Skip if the lazy value is not created yet, don't create it just for disposal :)
+                                continue;
+                            }
+                        }
+
                         if (item is IDisposable disposable)
                         {
                             disposable.Dispose();
