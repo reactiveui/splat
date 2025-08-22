@@ -159,22 +159,6 @@ namespace Splat
         public DefaultModeDetector() { }
         public bool? InUnitTestRunner() { }
     }
-    public static class DependencyResolverMixins
-    {
-        public static T? GetService<T>(this Splat.IReadonlyDependencyResolver resolver, string? contract = null) { }
-        public static System.Collections.Generic.IEnumerable<T> GetServices<T>(this Splat.IReadonlyDependencyResolver resolver, string? contract = null) { }
-        public static void Register<T>(this Splat.IMutableDependencyResolver resolver, System.Func<T?> factory, string? contract = null) { }
-        public static void Register<TAs, [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]  T>(this Splat.IMutableDependencyResolver resolver, string? contract = null)
-            where T : new() { }
-        public static void RegisterConstant(this Splat.IMutableDependencyResolver resolver, object? value, [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)] System.Type? serviceType, string? contract = null) { }
-        public static void RegisterConstant<[System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]  T>(this Splat.IMutableDependencyResolver resolver, T? value, string? contract = null) { }
-        public static void RegisterLazySingleton(this Splat.IMutableDependencyResolver resolver, System.Func<object?> valueFactory, [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)] System.Type? serviceType, string? contract = null) { }
-        public static void RegisterLazySingleton<[System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)]  T>(this Splat.IMutableDependencyResolver resolver, System.Func<T?> valueFactory, string? contract = null) { }
-        public static System.IDisposable ServiceRegistrationCallback(this Splat.IMutableDependencyResolver resolver, System.Type serviceType, System.Action<System.IDisposable> callback) { }
-        public static void UnregisterAll<T>(this Splat.IMutableDependencyResolver resolver, string? contract = null) { }
-        public static void UnregisterCurrent<T>(this Splat.IMutableDependencyResolver resolver, string? contract = null) { }
-        public static System.IDisposable WithResolver(this Splat.IDependencyResolver resolver, bool suppressResolverCallback = true) { }
-    }
     public static class FullLoggerExtensions
     {
         public static void Debug(this Splat.IFullLogger logger, System.Func<string> function) { }
@@ -322,7 +306,6 @@ namespace Splat
         void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>([System.ComponentModel.Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9);
         void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>([System.ComponentModel.Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10);
     }
-    public interface IDependencyResolver : Splat.IMutableDependencyResolver, Splat.IReadonlyDependencyResolver, System.IDisposable { }
     [System.Runtime.InteropServices.ComVisible(false)]
     public interface IEnableLogger { }
     public interface IFullLogger : Splat.IAllocationFreeErrorLogger, Splat.IAllocationFreeLogger, Splat.ILogger
@@ -408,19 +391,6 @@ namespace Splat
     public interface IModeDetector
     {
         bool? InUnitTestRunner();
-    }
-    public interface IMutableDependencyResolver
-    {
-        bool HasRegistration(System.Type? serviceType, string? contract = null);
-        void Register(System.Func<object?> factory, System.Type? serviceType, string? contract = null);
-        System.IDisposable ServiceRegistrationCallback(System.Type serviceType, string? contract, System.Action<System.IDisposable> callback);
-        void UnregisterAll(System.Type? serviceType, string? contract = null);
-        void UnregisterCurrent(System.Type? serviceType, string? contract = null);
-    }
-    public interface IReadonlyDependencyResolver
-    {
-        object? GetService(System.Type? serviceType, string? contract = null);
-        System.Collections.Generic.IEnumerable<object> GetServices(System.Type? serviceType, string? contract = null);
     }
     public interface IStaticFullLogger
     {
@@ -514,23 +484,6 @@ namespace Splat
         public static bool InUnitTestRunner() { }
         public static void OverrideModeDetector(Splat.IModeDetector modeDetector) { }
     }
-    public class ModernDependencyResolver : Splat.IDependencyResolver, Splat.IMutableDependencyResolver, Splat.IReadonlyDependencyResolver, System.IDisposable
-    {
-        public ModernDependencyResolver() { }
-        protected ModernDependencyResolver([System.Runtime.CompilerServices.TupleElementNames(new string?[]?[] {
-                "serviceType",
-                "contract"})] System.Collections.Generic.Dictionary<System.ValueTuple<System.Type, string?>, System.Collections.Generic.List<System.Func<object?>>>? registry) { }
-        public void Dispose() { }
-        protected virtual void Dispose(bool isDisposing) { }
-        public Splat.ModernDependencyResolver Duplicate() { }
-        public object? GetService(System.Type? serviceType, string? contract = null) { }
-        public System.Collections.Generic.IEnumerable<object> GetServices(System.Type? serviceType, string? contract = null) { }
-        public bool HasRegistration(System.Type? serviceType, string? contract = null) { }
-        public void Register(System.Func<object?> factory, System.Type? serviceType, string? contract = null) { }
-        public System.IDisposable ServiceRegistrationCallback(System.Type serviceType, string? contract, System.Action<System.IDisposable> callback) { }
-        public void UnregisterAll(System.Type? serviceType, string? contract = null) { }
-        public void UnregisterCurrent(System.Type? serviceType, string? contract = null) { }
-    }
     public class NullLogger : Splat.ILogger
     {
         public NullLogger() { }
@@ -539,11 +492,6 @@ namespace Splat
         public void Write(System.Exception exception, [System.ComponentModel.Localizable(false)] string message, Splat.LogLevel logLevel) { }
         public void Write([System.ComponentModel.Localizable(false)] string message, [System.ComponentModel.Localizable(false)] System.Type type, Splat.LogLevel logLevel) { }
         public void Write(System.Exception exception, [System.ComponentModel.Localizable(false)] string message, [System.ComponentModel.Localizable(false)] System.Type type, Splat.LogLevel logLevel) { }
-    }
-    public class NullServiceType
-    {
-        public NullServiceType(System.Func<object?> factory) { }
-        public System.Func<object?> Factory { get; }
     }
     public static class PointMathExtensions
     {
@@ -572,23 +520,6 @@ namespace Splat
         public static System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF> Divide(this System.Drawing.RectangleF value, float amount, Splat.RectEdge fromEdge) { }
         public static System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF> DivideWithPadding(this System.Drawing.RectangleF value, float sliceAmount, float padding, Splat.RectEdge fromEdge) { }
         public static System.Drawing.RectangleF InvertWithin(this System.Drawing.RectangleF value, System.Drawing.RectangleF containingRect) { }
-    }
-    public static class ResolverMixins
-    {
-        public static Splat.IMutableDependencyResolver RegisterAnd<[System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]  T>(this Splat.IMutableDependencyResolver resolver, string? contract = null)
-            where T : new() { }
-        public static Splat.IMutableDependencyResolver RegisterAnd<T>(this Splat.IMutableDependencyResolver resolver, System.Func<T> factory, string? contract = null) { }
-        public static Splat.IMutableDependencyResolver RegisterAnd<TAs, [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]  T>(this Splat.IMutableDependencyResolver resolver, string? contract = null)
-            where T : new() { }
-        public static Splat.IMutableDependencyResolver RegisterAnd<TAs, T>(this Splat.IMutableDependencyResolver resolver, System.Func<T> factory, string? contract = null) { }
-        public static Splat.IMutableDependencyResolver RegisterConstantAnd(this Splat.IMutableDependencyResolver resolver, object value, [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)] System.Type serviceType, string? contract = null) { }
-        public static Splat.IMutableDependencyResolver RegisterConstantAnd<[System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]  T>(this Splat.IMutableDependencyResolver resolver, string? contract = null)
-            where T : new() { }
-        public static Splat.IMutableDependencyResolver RegisterConstantAnd<T>(this Splat.IMutableDependencyResolver resolver, T value, string? contract = null) { }
-        public static Splat.IMutableDependencyResolver RegisterLazySingletonAnd(this Splat.IMutableDependencyResolver resolver, System.Func<object> valueFactory, [System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.All)] System.Type serviceType, string? contract = null) { }
-        public static Splat.IMutableDependencyResolver RegisterLazySingletonAnd<[System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]  T>(this Splat.IMutableDependencyResolver resolver, string? contract = null)
-            where T : new() { }
-        public static Splat.IMutableDependencyResolver RegisterLazySingletonAnd<T>(this Splat.IMutableDependencyResolver resolver, System.Func<T> valueFactory, string? contract = null) { }
     }
     public static class ServiceLocationInitialization
     {
@@ -772,37 +703,6 @@ namespace Splat.ApplicationPerformanceMonitoring
     public interface IViewTracking
     {
         void OnViewNavigation(string name);
-    }
-}
-namespace Splat.Builder
-{
-    public class AppBuilder
-    {
-        public AppBuilder(Splat.IMutableDependencyResolver resolver) { }
-        public static bool HasBeenBuilt { get; }
-        public static bool UsingBuilder { get; }
-        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("The Build may use reflection and will not work in AOT environments.")]
-        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("The method may use reflection and will not work in AOT environments.")]
-        public void Build() { }
-        public Splat.Builder.AppBuilder UseCurrentSplatLocator() { }
-        public Splat.Builder.AppBuilder UsingModule<T>(T registrationModule)
-            where T : Splat.Builder.IModule { }
-        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WithCoreServices may use reflection and will not work in AOT environments.")]
-        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WithCoreServices may use reflection and will not work in AOT environments.")]
-        public virtual Splat.Builder.AppBuilder WithCoreServices() { }
-        public Splat.Builder.AppBuilder WithCustomRegistration(System.Action<Splat.IMutableDependencyResolver> configureAction) { }
-        public static Splat.Builder.AppBuilder CreateSplatBuilder() { }
-        public static void ResetBuilderStateForTests() { }
-    }
-    public interface IModule
-    {
-        void Configure(Splat.IMutableDependencyResolver resolver);
-    }
-    public static class SplatBuilderExtensions
-    {
-        public static void Apply(this Splat.Builder.IModule module) { }
-        public static Splat.Builder.AppBuilder CreateSplatBuilder(this Splat.IMutableDependencyResolver resolver) { }
-        public static Splat.Builder.AppBuilder CreateSplatBuilder(this Splat.IMutableDependencyResolver resolver, System.Action<Splat.IMutableDependencyResolver> configureAction) { }
     }
 }
 namespace Splat.ModeDetection
