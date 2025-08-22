@@ -10,3 +10,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Splat.Drawing.Tests")]
 [assembly: InternalsVisibleTo("Splat.TestRunner.Android")]
 [assembly: InternalsVisibleTo("Splat.TestRunner.Uwp")]
+[assembly: InternalsVisibleTo("Splat.Builder.Tests")]
