@@ -51,10 +51,10 @@ public class SerilogLoggerTests : FullLoggerTestBase
     [Fact]
     public void Configuring_With_Static_Log_Should_Write_Message()
     {
-        var originalLocator = Locator.InternalLocator;
+        var originalLocator = AppLocator.InternalLocator;
         try
         {
-            Locator.InternalLocator = new();
+            AppLocator.InternalLocator = new();
             var (seriLogger, target) = CreateSerilogger(LogLevel.Debug);
             Log.Logger = seriLogger;
 
@@ -70,7 +70,7 @@ public class SerilogLoggerTests : FullLoggerTestBase
         }
         finally
         {
-            Locator.InternalLocator = originalLocator;
+            AppLocator.InternalLocator = originalLocator;
         }
     }
 
@@ -80,10 +80,10 @@ public class SerilogLoggerTests : FullLoggerTestBase
     [Fact]
     public void Configuring_With_PreConfigured_Log_Should_Write_Message()
     {
-        var originalLocator = Locator.InternalLocator;
+        var originalLocator = AppLocator.InternalLocator;
         try
         {
-            Locator.InternalLocator = new();
+            AppLocator.InternalLocator = new();
             var (seriLogger, target) = CreateSerilogger(LogLevel.Debug);
             Locator.CurrentMutable.UseSerilogFullLogger(seriLogger);
 
@@ -98,7 +98,7 @@ public class SerilogLoggerTests : FullLoggerTestBase
         }
         finally
         {
-            Locator.InternalLocator = originalLocator;
+            AppLocator.InternalLocator = originalLocator;
         }
     }
 

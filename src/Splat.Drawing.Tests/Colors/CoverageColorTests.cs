@@ -6,6 +6,11 @@
 public class CoverageColorTests
 {
     /// <summary>
+    /// Initializes a new instance of the <see cref="CoverageColorTests"/> class.
+    /// </summary>
+    public CoverageColorTests() => Locator.CurrentMutable.InitializeSplat();
+
+    /// <summary>
     /// Colors the is empty.
     /// </summary>
     [Fact]

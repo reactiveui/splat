@@ -21,6 +21,6 @@ public static class SplatBuilderExtensions
             throw new ArgumentNullException(nameof(module));
         }
 
-        module.Configure(Locator.CurrentMutable);
+        module.Configure(AppLocator.CurrentMutable);
     }
 }

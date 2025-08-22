@@ -3,6 +3,7 @@
     <TargetFrameworks>$(SplatTargetFrameworks)</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\Splat.Microsoft.Extensions.DependencyInjection\MicrosoftDependencyResolver.cs" Link="MicrosoftDependencyResolver.cs" />

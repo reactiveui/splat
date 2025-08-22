@@ -45,16 +45,18 @@ public class AppBuilder
     public static bool UsingBuilder { get; private set; }
 
     /// <summary>
+    /// Creates a splat builder with the Splat Locator instance with the current mutable resolver.
+    /// </summary>
+    /// <returns>The builder instance for chaining.</returns>
+    public static AppBuilder CreateSplatBuilder() => new(AppLocator.CurrentMutable);
+
+    /// <summary>
     /// Resets the builder state for tests, ONLY if the builder is being used in a unit test environment.
     /// </summary>
     public static void ResetBuilderStateForTests()
     {
-        // Reset the static state of the builder if in unit tests or similar scenarios
-        if (ModeDetector.InUnitTestRunner())
-        {
-            HasBeenBuilt = false;
-            UsingBuilder = false;
-        }
+        HasBeenBuilt = false;
+        UsingBuilder = false;
     }
 
     /// <summary>
@@ -66,7 +68,7 @@ public class AppBuilder
     /// <returns>The builder instance for chaining.</returns>
     public AppBuilder UseCurrentSplatLocator()
     {
-        _resolverProvider = () => Locator.CurrentMutable;
+        _resolverProvider = () => AppLocator.CurrentMutable;
         return this;
     }
 

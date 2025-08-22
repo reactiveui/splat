@@ -24,7 +24,7 @@ internal class InternalLocator : IDisposable
                 return;
             }
 
-            CurrentMutable.InitializeSplat();
+            AppLocator.ReInit(CurrentMutable);
         });
     }
 

@@ -65,15 +65,15 @@ public static class DependencyResolverMixins
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
 
-        var origResolver = Locator.GetLocator();
+        var origResolver = AppLocator.GetLocator();
 
         // Start suppression BEFORE changing the locator if requested
-        var notificationDisposable = suppressResolverCallback ? Locator.SuppressResolverCallbackChangedNotifications() : ActionDisposable.Empty;
+        var notificationDisposable = suppressResolverCallback ? AppLocator.SuppressResolverCallbackChangedNotifications() : ActionDisposable.Empty;
 
         // Now change the locator while suppression is active
-        Locator.SetLocator(resolver);
+        AppLocator.SetLocator(resolver);
 
-        return new CompositeDisposable(new ActionDisposable(() => Locator.SetLocator(origResolver)), notificationDisposable);
+        return new CompositeDisposable(new ActionDisposable(() => AppLocator.SetLocator(origResolver)), notificationDisposable);
     }
 
     /// <summary>
