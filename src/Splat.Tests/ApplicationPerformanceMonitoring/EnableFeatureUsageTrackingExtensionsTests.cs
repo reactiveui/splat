@@ -131,6 +131,7 @@ public static class EnableFeatureUsageTrackingExtensionsTests
         [Fact]
         public void HandlesAction()
         {
+            Locator.CurrentMutable.InitializeSplat();
             var instance = new TestObjectThatSupportsFeatureUsageTracking();
             var handled = false;
 
