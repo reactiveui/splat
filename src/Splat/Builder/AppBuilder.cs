@@ -45,6 +45,12 @@ public class AppBuilder
     public static bool UsingBuilder { get; private set; }
 
     /// <summary>
+    /// Creates a splat builder with the Splat Locator instance with the current mutable resolver.
+    /// </summary>
+    /// <returns>The builder instance for chaining.</returns>
+    public static AppBuilder CreateSplatBuilder() => new(Locator.CurrentMutable);
+
+    /// <summary>
     /// Resets the builder state for tests, ONLY if the builder is being used in a unit test environment.
     /// </summary>
     public static void ResetBuilderStateForTests()
