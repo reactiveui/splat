@@ -16,7 +16,7 @@ namespace Splat.DryIoc;
 /// DryIoc implementation for <see cref="IMutableDependencyResolver"/>.
 /// https://bitbucket.org/dadhi/dryioc/wiki/Home.
 /// </summary>
-/// <seealso cref="Splat.IDependencyResolver" />
+/// <seealso cref="IDependencyResolver" />
 /// <remarks>
 /// Initializes a new instance of the <see cref="DryIocDependencyResolver" /> class.
 /// </remarks>

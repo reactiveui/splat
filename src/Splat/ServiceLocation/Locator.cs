@@ -7,6 +7,8 @@ namespace Splat
 {
     /// <summary>
     /// A Locator which will host the container for dependency injection based operations.
+    /// This is now a wrapper around <see cref="AppLocator"/> which is the actual implementation.
+    /// The static constructor also ensures that Splat registrations are done which is the key addition compared with AppLocator.
     /// </summary>
     public static class Locator
     {

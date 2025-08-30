@@ -11,6 +11,4 @@ namespace Splat.Common.Test;
 /// View Model Two.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class ViewModelTwo
-{
-}
+public class ViewModelTwo;

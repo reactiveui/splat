@@ -11,6 +11,4 @@ namespace Splat.Tests.Mocks;
 /// A dummy class used during Locator testing.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class DummyObjectClass1 : IDummyInterface
-{
-}
+public class DummyObjectClass1 : IDummyInterface;

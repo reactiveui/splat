@@ -4,16 +4,14 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
-#if NET6_0_OR_GREATER
 using System.Diagnostics.CodeAnalysis;
-#endif
 
 namespace Splat.Prism;
 
 /// <summary>
 /// A container for the Prism application.
 /// </summary>
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Analyzers", "CA1065: Don't throw exceptions from properties", Justification = "Deliberate usage")]
+[SuppressMessage("Analyzers", "CA1065: Don't throw exceptions from properties", Justification = "Deliberate usage")]
 public class SplatContainerExtension : IContainerExtension<IDependencyResolver>, IDisposable
 {
     private readonly ConcurrentDictionary<(Type type, string? contract), Type> _types = new();
@@ -24,8 +22,8 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     /// </summary>
     public SplatContainerExtension()
     {
-        Locator.SetLocator(Instance);
-        _disposeAction = () => Locator.SetLocator(new ModernDependencyResolver());
+        AppLocator.SetLocator(Instance);
+        _disposeAction = () => AppLocator.SetLocator(new ModernDependencyResolver());
     }
 
     /// <summary>
@@ -212,7 +210,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     public object Resolve(Type type) => Instance.GetService(type) ?? throw new InvalidOperationException("Must be a valid value");
 
     /// <inheritdoc/>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.Csharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Defined by outside interface not in Splat")]
+    [SuppressMessage("StyleCop.Csharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Defined by outside interface not in Splat")]
     public object Resolve(Type type, params (Type Type, object Instance)[] parameters) =>
         (_types.TryGetValue((type, null), out var resolvedType)
             ? Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance)) ?? throw new InvalidOperationException("Could not create type")
@@ -222,7 +220,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     public object Resolve(Type type, string name) => Instance.GetService(type, name) ?? throw new InvalidOperationException("Must be a valid value");
 
     /// <inheritdoc/>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.Csharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Defined by outside interface not in Splat")]
+    [SuppressMessage("StyleCop.Csharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Defined by outside interface not in Splat")]
     public object Resolve(Type type, string name, params (Type Type, object Instance)[] parameters) =>
         (!_types.TryGetValue((type, name), out var resolvedType)
             ? resolvedType switch

@@ -29,8 +29,8 @@ public static class SplatBuilderExtensions
     /// </summary>
     /// <param name="resolver">The resolver.</param>
     /// <returns>The builder instance for chaining.</returns>
-    /// <exception cref="System.ArgumentNullException">resolver.</exception>
-    public static AppBuilder CreateSplatBuilder(this IMutableDependencyResolver resolver)
+    /// <exception cref="ArgumentNullException">resolver.</exception>
+    public static IAppBuilder CreateSplatBuilder(this IMutableDependencyResolver resolver)
     {
         if (resolver is null)
         {
@@ -47,8 +47,8 @@ public static class SplatBuilderExtensions
     /// <param name="resolver">The resolver.</param>
     /// <param name="configureAction">The configuration action to apply.</param>
     /// <returns>The builder instance for chaining.</returns>
-    /// <exception cref="System.ArgumentNullException">resolver.</exception>
-    public static AppBuilder CreateSplatBuilder(this IMutableDependencyResolver resolver, Action<IMutableDependencyResolver> configureAction)
+    /// <exception cref="ArgumentNullException">resolver.</exception>
+    public static IAppBuilder CreateSplatBuilder(this IMutableDependencyResolver resolver, Action<IMutableDependencyResolver> configureAction)
     {
         if (resolver is null)
         {

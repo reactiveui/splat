@@ -9,6 +9,4 @@ namespace Splat.Common.Test;
 /// Represents a screen.
 /// </summary>
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Avoid empty interfaces", Justification = "By Design")]
-public interface IScreen
-{
-}
+public interface IScreen;

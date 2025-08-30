@@ -39,6 +39,7 @@ namespace Splat.Builder.Tests
             var resolver = new InternalLocator();
             var builder = resolver.CurrentMutable.CreateSplatBuilder();
             Assert.NotNull(builder);
+            resolver.Dispose();
         }
 
         /// <summary>
@@ -58,8 +59,12 @@ namespace Splat.Builder.Tests
         public void CreateSplatBuilderWithConfigureActionReturnsAppBuilder()
         {
             var resolver = new InternalLocator();
-            var builder = resolver.CurrentMutable.CreateSplatBuilder(r => { });
+            var builder = resolver.CurrentMutable.CreateSplatBuilder(r => r.Register(() => "Hello", typeof(string))).Build();
             Assert.NotNull(builder);
+            var hello = resolver.Current.GetService<string>();
+            Assert.Equal("Hello", hello);
+            resolver.Dispose();
+            AppBuilder.ResetBuilderStateForTests();
         }
     }
 }

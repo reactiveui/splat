@@ -302,7 +302,7 @@ public class LocatorTests
     public void RegisterAndResolveANullableTypeWithNulledInstance()
     {
         DummyObjectClass1? dummy = null;
-        Locator.CurrentMutable.Register<DummyObjectClass1?>(() => dummy);
+        Locator.CurrentMutable.Register(() => dummy);
         var doc = Locator.Current.GetService<DummyObjectClass1?>();
         doc.Should().BeNull();
     }

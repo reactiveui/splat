@@ -13,9 +13,9 @@ namespace Splat.Ninject;
 public static class SplatNinjectExtensions
 {
     /// <summary>
-    /// Initializes an instance of <see cref="NinjectDependencyResolver"/> that overrides the default <see cref="Locator"/>.
+    /// Initializes an instance of <see cref="NinjectDependencyResolver"/> that overrides the default <see cref="AppLocator"/>.
     /// </summary>
     /// <param name="kernel">The kernel.</param>
     public static void UseNinjectDependencyResolver(this IKernel kernel) =>
-        Locator.SetLocator(new NinjectDependencyResolver(kernel));
+        AppLocator.SetLocator(new NinjectDependencyResolver(kernel));
 }

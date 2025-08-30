@@ -3,29 +3,31 @@
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Splat.Builder;
 
 /// <summary>
 /// A builder class for configuring ReactiveUI without using reflection.
 /// This provides an AOT-compatible alternative to the reflection-based InitializeReactiveUI method.
 /// </summary>
-public class AppBuilder
+public class AppBuilder : IAppBuilder, IAppInstance
 {
-    private readonly IMutableDependencyResolver _resolver;
     private readonly List<Action<IMutableDependencyResolver>> _registrations = [];
     private Func<IMutableDependencyResolver> _resolverProvider;
+    private Func<IReadonlyDependencyResolver?> _serviceProvider;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AppBuilder"/> class.
+    /// Initializes a new instance of the <see cref="AppBuilder" /> class.
     /// </summary>
     /// <param name="resolver">The dependency resolver to configure.</param>
-    public AppBuilder(IMutableDependencyResolver resolver)
+    /// <param name="current">The configured services.</param>
+    /// <exception cref="ArgumentNullException">resolver.</exception>
+    public AppBuilder(IMutableDependencyResolver resolver, IReadonlyDependencyResolver? current = null)
     {
         UsingBuilder = true;
-        _resolver = resolver ?? throw new ArgumentNullException(nameof(resolver));
-        _resolverProvider = () => _resolver;
+        CurrentMutable = resolver ?? throw new ArgumentNullException(nameof(resolver));
+        Current = current;
+        _resolverProvider = () => CurrentMutable;
+        _serviceProvider = () => Current;
     }
 
     /// <summary>
@@ -45,10 +47,26 @@ public class AppBuilder
     public static bool UsingBuilder { get; private set; }
 
     /// <summary>
+    /// Gets the current services.
+    /// </summary>
+    /// <value>
+    /// The services.
+    /// </value>
+    public IReadonlyDependencyResolver? Current { get; private set; }
+
+    /// <summary>
+    /// Gets the mutable service registrar.
+    /// </summary>
+    /// <value>
+    /// The current mutable.
+    /// </value>
+    public IMutableDependencyResolver CurrentMutable { get; }
+
+    /// <summary>
     /// Creates a splat builder with the Splat Locator instance with the current mutable resolver.
     /// </summary>
     /// <returns>The builder instance for chaining.</returns>
-    public static AppBuilder CreateSplatBuilder() => new(AppLocator.CurrentMutable);
+    public static AppBuilder CreateSplatBuilder() => new(AppLocator.CurrentMutable, AppLocator.Current);
 
     /// <summary>
     /// Resets the builder state for tests, ONLY if the builder is being used in a unit test environment.
@@ -66,9 +84,10 @@ public class AppBuilder
     /// as the Splat dependency resolver prior to applying ReactiveUI registrations.
     /// </summary>
     /// <returns>The builder instance for chaining.</returns>
-    public AppBuilder UseCurrentSplatLocator()
+    public IAppBuilder UseCurrentSplatLocator()
     {
         _resolverProvider = () => AppLocator.CurrentMutable;
+        _serviceProvider = () => AppLocator.Current;
         return this;
     }
 
@@ -80,7 +99,7 @@ public class AppBuilder
     /// <returns>
     /// The builder instance for method chaining.
     /// </returns>
-    public AppBuilder UsingModule<T>(T registrationModule)
+    public IAppBuilder UsingModule<T>(T registrationModule)
         where T : IModule
     {
         registrationModule.ThrowArgumentNullExceptionIfNull(nameof(registrationModule));
@@ -93,7 +112,7 @@ public class AppBuilder
     /// </summary>
     /// <param name="configureAction">The configuration action to add.</param>
     /// <returns>The builder instance for method chaining.</returns>
-    public AppBuilder WithCustomRegistration(Action<IMutableDependencyResolver> configureAction)
+    public IAppBuilder WithCustomRegistration(Action<IMutableDependencyResolver> configureAction)
     {
         configureAction.ThrowArgumentNullExceptionIfNull(nameof(configureAction));
 
@@ -105,25 +124,21 @@ public class AppBuilder
     /// Registers the core ReactiveUI services.
     /// </summary>
     /// <returns>The builder instance for method chaining.</returns>
-#if NET6_0_OR_GREATER
-    [RequiresDynamicCode("WithCoreServices may use reflection and will not work in AOT environments.")]
-    [RequiresUnreferencedCode("WithCoreServices may use reflection and will not work in AOT environments.")]
-#endif
-    public virtual AppBuilder WithCoreServices() => this;
+    public virtual IAppBuilder WithCoreServices() => this;
 
     /// <summary>
     /// Builds and applies all registrations to the dependency resolver.
     /// </summary>
-#if NET6_0_OR_GREATER
-    [RequiresDynamicCode("The Build may use reflection and will not work in AOT environments.")]
-    [RequiresUnreferencedCode("The method may use reflection and will not work in AOT environments.")]
-#endif
-    public void Build()
+    /// <typeparam name="T">The type of Builder to return.</typeparam>
+    /// <returns>
+    /// An App Instance.
+    /// </returns>
+    public IAppInstance Build()
     {
         // If the builder has already been built, do nothing.
         if (HasBeenBuilt)
         {
-            return;
+            return this;
         }
 
         // Mark as initialized using the builder so reflection-based initialization is disabled.
@@ -138,5 +153,8 @@ public class AppBuilder
             var targetResolver = _resolverProvider();
             registration(targetResolver);
         }
+
+        Current = _serviceProvider();
+        return this;
     }
 }

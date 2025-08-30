@@ -13,28 +13,28 @@ namespace Splat.Microsoft.Extensions.DependencyInjection;
 public static class SplatMicrosoftExtensions
 {
     /// <summary>
-    /// Initializes an instance of <see cref="MicrosoftDependencyResolver"/> that overrides the default <see cref="Locator"/>.
+    /// Initializes an instance of <see cref="MicrosoftDependencyResolver"/> that overrides the default <see cref="AppLocator"/>.
     /// </summary>
     /// <param name="serviceCollection">The <see cref="IServiceCollection"/>.</param>
     public static void UseMicrosoftDependencyResolver(this IServiceCollection serviceCollection) =>
 #pragma warning disable CA2000
         // Will be disposed with the InternalLocator
-        Locator.SetLocator(new MicrosoftDependencyResolver(serviceCollection));
+        AppLocator.SetLocator(new MicrosoftDependencyResolver(serviceCollection));
 #pragma warning restore CA2000
 
     /// <summary>
-    /// Initializes an instance of <see cref="MicrosoftDependencyResolver"/> that overrides the default <see cref="Locator"/>
+    /// Initializes an instance of <see cref="MicrosoftDependencyResolver"/> that overrides the default <see cref="AppLocator"/>
     /// with a built <see cref="IServiceProvider"/>.
     /// </summary>
     /// <remarks>
     /// If there is already a <see cref="MicrosoftDependencyResolver"/> serving as the
-    /// <see cref="Locator.Current"/>, it'll instead update it to use the specified
+    /// <see cref="AppLocator.Current"/>, it'll instead update it to use the specified
     /// <paramref name="serviceProvider"/>.
     /// </remarks>
     /// <param name="serviceProvider">The <see cref="IServiceProvider"/>.</param>
     public static void UseMicrosoftDependencyResolver(this IServiceProvider serviceProvider)
     {
-        if (Locator.Current is MicrosoftDependencyResolver resolver)
+        if (AppLocator.Current is MicrosoftDependencyResolver resolver)
         {
             resolver.UpdateContainer(serviceProvider);
         }
@@ -42,7 +42,7 @@ public static class SplatMicrosoftExtensions
         {
 #pragma warning disable CA2000
             // Will be disposed with the InternalLocator
-            Locator.SetLocator(new MicrosoftDependencyResolver(serviceProvider));
+            AppLocator.SetLocator(new MicrosoftDependencyResolver(serviceProvider));
 #pragma warning restore CA2000
         }
     }

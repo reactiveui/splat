@@ -8,7 +8,7 @@ namespace Splat.Tests.Mocks;
 /// <summary>
 /// A <see cref="TextWriter"/> implementation of <see cref="ILogger"/> for testing.
 /// </summary>
-/// <seealso cref="Splat.ILogger" />
+/// <seealso cref="ILogger" />
 public class TextLogger : ILogger, IMockLogTarget
 {
     private readonly List<Type> _types = [];

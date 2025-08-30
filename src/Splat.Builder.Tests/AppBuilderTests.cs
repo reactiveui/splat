@@ -73,7 +73,7 @@ namespace Splat.Builder.Tests
         {
             var resolver = new InternalLocator();
             var builder = new AppBuilder(resolver.CurrentMutable);
-            Assert.Throws<ArgumentNullException>(() => builder.UsingModule<IModule>((IModule)null!));
+            Assert.Throws<ArgumentNullException>(() => builder.UsingModule((IModule)null!));
             resolver.Dispose();
         }
 
@@ -134,6 +134,7 @@ namespace Splat.Builder.Tests
         [Fact]
         public void BuildAppliesRegistrations()
         {
+            AppBuilder.ResetBuilderStateForTests();
             var resolver = new InternalLocator();
             var builder = new AppBuilder(resolver.CurrentMutable);
             bool called = false;
@@ -149,6 +150,7 @@ namespace Splat.Builder.Tests
         [Fact]
         public void BuildDoesNothingIfAlreadyBuilt()
         {
+            AppBuilder.ResetBuilderStateForTests();
             var resolver = new InternalLocator();
             var builder = new AppBuilder(resolver.CurrentMutable);
             builder.Build(); // sets HasBeenBuilt
@@ -160,7 +162,7 @@ namespace Splat.Builder.Tests
         }
     }
 
-    internal class MokModule : IModule
+    internal sealed class MokModule : IModule
     {
         public void Configure(IMutableDependencyResolver resolver)
         {

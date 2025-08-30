@@ -13,11 +13,11 @@ namespace Splat.DryIoc;
 public static class SplatDryIocExtensions
 {
     /// <summary>
-    /// Initializes an instance of <see cref="DryIocDependencyResolver"/> that overrides the default <see cref="Locator"/>.
+    /// Initializes an instance of <see cref="DryIocDependencyResolver"/> that overrides the default <see cref="AppLocator"/>.
     /// </summary>
     /// <param name="container">The container.</param>
 #pragma warning disable CA2000 // Dispose objects before losing scope
     public static void UseDryIocDependencyResolver(this IContainer container) =>
-        Locator.SetLocator(new DryIocDependencyResolver(container));
+        AppLocator.SetLocator(new DryIocDependencyResolver(container));
 #pragma warning restore CA2000 // Dispose objects before losing scope
 }

@@ -15,7 +15,7 @@ public static class BitmapLoader
 {
     // TODO: This needs to be improved once we move the "Detect in Unit Test
     // Runner" code into Splat
-    private static IBitmapLoader? _current = Locator.Current.GetService<IBitmapLoader>();
+    private static IBitmapLoader? _current = AppLocator.Current.GetService<IBitmapLoader>();
 
     /// <summary>
     /// Gets or sets the current bitmap loader.

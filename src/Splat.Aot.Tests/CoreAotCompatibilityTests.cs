@@ -738,7 +738,7 @@ public class CoreAotCompatibilityTests
         });
 
         resolver.Register<Func<ITestInterface>>(() => () => new TestImplementation());
-        resolver.Register<Lazy<ILogger>>(() => new Lazy<ILogger>(() => new DebugLogger()));
+        resolver.Register(() => new Lazy<ILogger>(() => new DebugLogger()));
 
         // Assert
         var enumerable = resolver.GetService<IEnumerable<ITestInterface>>();

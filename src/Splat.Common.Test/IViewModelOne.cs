@@ -9,6 +9,4 @@ namespace Splat.Common.Test;
 /// Interface for ViewModelOne.
 /// </summary>
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Avoid empty interfaces", Justification = "By Design")]
-public interface IViewModelOne
-{
-}
+public interface IViewModelOne;
