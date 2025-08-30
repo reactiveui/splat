@@ -13,14 +13,14 @@ namespace Splat.Autofac;
 public static class SplatAutofacExtensions
 {
     /// <summary>
-    /// Initializes an instance of <see cref="AutofacDependencyResolver"/> that overrides the default <see cref="Locator"/>.
+    /// Initializes an instance of <see cref="AutofacDependencyResolver"/> that overrides the default <see cref="AppLocator"/>.
     /// </summary>
     /// <param name="builder">Autofac container builder.</param>
     /// <returns>The Autofac dependency resolver.</returns>
     public static AutofacDependencyResolver UseAutofacDependencyResolver(this ContainerBuilder builder)
     {
         var autofacResolver = new AutofacDependencyResolver(builder);
-        Locator.SetLocator(autofacResolver);
+        AppLocator.SetLocator(autofacResolver);
         return autofacResolver;
     }
 }

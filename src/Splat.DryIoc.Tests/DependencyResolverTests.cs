@@ -25,38 +25,38 @@ public class DependencyResolverTests
         builder.UseDryIocDependencyResolver();
 
         var foo = 5;
-        Assert.Throws<ArgumentNullException>(() => Locator.CurrentMutable.Register(() => foo, null));
+        Assert.Throws<ArgumentNullException>(() => AppLocator.CurrentMutable.Register(() => foo, null));
 
         // Tests skipped as functionality removed.
 #if SKIP_TEST
         var bar = 4;
         var contract = "foo";
-        Locator.CurrentMutable.Register(() => bar, null, contract);
+        AppLocator.CurrentMutable.Register(() => bar, null, contract);
 
-        Assert.True(Locator.CurrentMutable.HasRegistration(null));
-        var value = Locator.Current.GetService(null);
+        Assert.True(AppLocator.CurrentMutable.HasRegistration(null));
+        var value = AppLocator.Current.GetService(null);
         Assert.Equal(foo, value);
 
         Assert.True(Locator.CurrentMutable.HasRegistration(null, contract));
-        value = Locator.Current.GetService(null, contract);
+        value = AppLocator.Current.GetService(null, contract);
         Assert.Equal(bar, value);
 
-        var values = Locator.Current.GetServices(null);
+        var values = AppLocator.Current.GetServices(null);
         Assert.Equal(foo, (int)values.First());
         Assert.Equal(1, values.Count());
 
-        Locator.CurrentMutable.UnregisterCurrent(null);
-        var valuesNC = Locator.Current.GetServices(null);
+        AppLocator.CurrentMutable.UnregisterCurrent(null);
+        var valuesNC = AppLocator.Current.GetServices(null);
         Assert.Equal(0, valuesNC.Count());
-        var valuesC = Locator.Current.GetServices(null, contract);
+        var valuesC = AppLocator.Current.GetServices(null, contract);
         Assert.Equal(1, valuesC.Count());
 
-        Locator.CurrentMutable.UnregisterAll(null);
-        valuesNC = Locator.Current.GetServices(null);
+        AppLocator.CurrentMutable.UnregisterAll(null);
+        valuesNC = AppLocator.Current.GetServices(null);
         Assert.Equal(0, valuesNC.Count());
 
-        Locator.CurrentMutable.UnregisterAll(null, contract);
-        valuesC = Locator.Current.GetServices(null, contract);
+        AppLocator.CurrentMutable.UnregisterAll(null, contract);
+        valuesC = AppLocator.Current.GetServices(null, contract);
         Assert.Equal(0, valuesC.Count());
 #endif
     }
@@ -70,8 +70,8 @@ public class DependencyResolverTests
         var container = new Container();
         container.UseDryIocDependencyResolver();
 
-        Splat.Locator.CurrentMutable.Register(() => new ViewThatShouldNotLoad(), typeof(IViewFor<ViewModelOne>));
-        Assert.Throws<InvalidOperationException>(() => Locator.Current.GetService<IViewFor<ViewModelOne>>());
+        AppLocator.CurrentMutable.Register(() => new ViewThatShouldNotLoad(), typeof(IViewFor<ViewModelOne>));
+        Assert.Throws<InvalidOperationException>(() => AppLocator.Current.GetService<IViewFor<ViewModelOne>>());
     }
 
     /// <summary>
@@ -83,8 +83,8 @@ public class DependencyResolverTests
         var container = new Container();
         container.UseDryIocDependencyResolver();
 
-        Splat.Locator.CurrentMutable.Register(() => new ViewThatShouldNotLoad(), typeof(IViewFor<ViewModelOne>), "name");
-        Assert.Throws<InvalidOperationException>(() => Locator.Current.GetService<IViewFor<ViewModelOne>>("name"));
+        AppLocator.CurrentMutable.Register(() => new ViewThatShouldNotLoad(), typeof(IViewFor<ViewModelOne>), "name");
+        Assert.Throws<InvalidOperationException>(() => AppLocator.Current.GetService<IViewFor<ViewModelOne>>("name"));
     }
 
     /// <summary>
@@ -98,8 +98,8 @@ public class DependencyResolverTests
         container.Register<IViewFor<ViewModelTwo>, ViewTwo>();
         container.UseDryIocDependencyResolver();
 
-        var viewOne = Locator.Current.GetService(typeof(IViewFor<ViewModelOne>));
-        var viewTwo = Locator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
+        var viewOne = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
+        var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
         viewOne.Should().NotBeNull();
         viewOne.Should().BeOfType<ViewOne>();
@@ -117,7 +117,7 @@ public class DependencyResolverTests
         container.Register<IViewFor<ViewModelTwo>, ViewTwo>(serviceKey: "Other");
         container.UseDryIocDependencyResolver();
 
-        var viewTwo = Locator.Current.GetService(typeof(IViewFor<ViewModelTwo>), "Other");
+        var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>), "Other");
 
         viewTwo.Should().NotBeNull();
         viewTwo.Should().BeOfType<ViewTwo>();
@@ -134,10 +134,10 @@ public class DependencyResolverTests
         container.Register<ViewModelTwo>();
         container.UseDryIocDependencyResolver();
 
-        Splat.Locator.CurrentMutable.Register(() => new ViewThatShouldNotLoad(), typeof(IViewFor<ViewModelOne>), "name");
+        AppLocator.CurrentMutable.Register(() => new ViewThatShouldNotLoad(), typeof(IViewFor<ViewModelOne>), "name");
 
-        var vmOne = Locator.Current.GetService<ViewModelOne>();
-        var vmTwo = Locator.Current.GetService<ViewModelTwo>();
+        var vmOne = AppLocator.Current.GetService<ViewModelOne>();
+        var vmTwo = AppLocator.Current.GetService<ViewModelTwo>();
 
         vmOne.Should().NotBeNull();
         vmTwo.Should().NotBeNull();
@@ -153,7 +153,7 @@ public class DependencyResolverTests
         builder.Register<IScreen, MockScreen>(Reuse.Singleton);
         builder.UseDryIocDependencyResolver();
 
-        var screen = Locator.Current.GetService<IScreen>();
+        var screen = AppLocator.Current.GetService<IScreen>();
 
         screen.Should().NotBeNull();
         screen.Should().BeOfType<MockScreen>();
@@ -169,11 +169,11 @@ public class DependencyResolverTests
         builder.Register<IScreen, MockScreen>(Reuse.Singleton);
         builder.UseDryIocDependencyResolver();
 
-        Locator.Current.GetService<IScreen>().Should().NotBeNull();
+        AppLocator.Current.GetService<IScreen>().Should().NotBeNull();
 
-        Locator.CurrentMutable.UnregisterCurrent(typeof(IScreen));
+        AppLocator.CurrentMutable.UnregisterCurrent(typeof(IScreen));
 
-        Locator.Current.GetService<IScreen>().Should().BeNull();
+        AppLocator.Current.GetService<IScreen>().Should().BeNull();
     }
 
     /// <summary>
@@ -186,11 +186,11 @@ public class DependencyResolverTests
         builder.Register<IScreen, MockScreen>(Reuse.Singleton, serviceKey: nameof(MockScreen));
         builder.UseDryIocDependencyResolver();
 
-        Locator.Current.GetService<IScreen>(nameof(MockScreen)).Should().NotBeNull();
+        AppLocator.Current.GetService<IScreen>(nameof(MockScreen)).Should().NotBeNull();
 
-        Locator.CurrentMutable.UnregisterCurrent(typeof(IScreen), nameof(MockScreen));
+        AppLocator.CurrentMutable.UnregisterCurrent(typeof(IScreen), nameof(MockScreen));
 
-        Locator.Current.GetService<IScreen>(nameof(MockScreen)).Should().BeNull();
+        AppLocator.Current.GetService<IScreen>(nameof(MockScreen)).Should().BeNull();
     }
 
     /// <summary>
@@ -203,11 +203,11 @@ public class DependencyResolverTests
         builder.Register<IScreen, MockScreen>(Reuse.Singleton);
         builder.UseDryIocDependencyResolver();
 
-        Locator.Current.GetService<IScreen>().Should().NotBeNull();
+        AppLocator.Current.GetService<IScreen>().Should().NotBeNull();
 
-        Locator.CurrentMutable.UnregisterAll(typeof(IScreen));
+        AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen));
 
-        Locator.Current.GetService<IScreen>().Should().BeNull();
+        AppLocator.Current.GetService<IScreen>().Should().BeNull();
     }
 
     /// <summary>
@@ -220,11 +220,11 @@ public class DependencyResolverTests
         builder.Register<IScreen, MockScreen>(Reuse.Singleton, serviceKey: nameof(MockScreen));
         builder.UseDryIocDependencyResolver();
 
-        Locator.Current.GetService<IScreen>(nameof(MockScreen)).Should().NotBeNull();
+        AppLocator.Current.GetService<IScreen>(nameof(MockScreen)).Should().NotBeNull();
 
-        Locator.CurrentMutable.UnregisterAll(typeof(IScreen), nameof(MockScreen));
+        AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen), nameof(MockScreen));
 
-        Locator.Current.GetService<IScreen>(nameof(MockScreen)).Should().BeNull();
+        AppLocator.Current.GetService<IScreen>(nameof(MockScreen)).Should().BeNull();
     }
 
     /// <summary>
@@ -237,7 +237,7 @@ public class DependencyResolverTests
         container.UseDryIocDependencyResolver();
 
         var result = Record.Exception(() =>
-            Locator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
+            AppLocator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
 
         result.Should().BeOfType<NotImplementedException>();
     }
@@ -254,9 +254,9 @@ public class DependencyResolverTests
         var c = new Container();
         c.UseDryIocDependencyResolver();
         c.Register<ILogger, ConsoleLogger>(ifAlreadyRegistered: IfAlreadyRegistered.Replace);
-        Locator.CurrentMutable.RegisterConstant<ILogManager>(new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())));
+        AppLocator.CurrentMutable.RegisterConstant<ILogManager>(new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())));
 
-        var d = Splat.Locator.Current.GetService<ILogManager>();
+        var d = AppLocator.Current.GetService<ILogManager>();
         Assert.IsType<FuncLogManager>(d);
     }
 
@@ -273,7 +273,7 @@ public class DependencyResolverTests
         c.RegisterInstance<ILogManager>(new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())));
         c.UseDryIocDependencyResolver();
 
-        var d = Splat.Locator.Current.GetService<ILogManager>();
+        var d = AppLocator.Current.GetService<ILogManager>();
         Assert.IsType<FuncLogManager>(d);
     }
 
@@ -285,10 +285,10 @@ public class DependencyResolverTests
     {
         var container = new Container();
         container.UseDryIocDependencyResolver();
-        Locator.CurrentMutable.Register(() => new ViewModelOne(), typeof(ViewModelOne), "ViewModelOne");
-        Locator.CurrentMutable.Register(() => new ViewModelOne(), typeof(ViewModelOne), "ViewModelOne");
+        AppLocator.CurrentMutable.Register(() => new ViewModelOne(), typeof(ViewModelOne), "ViewModelOne");
+        AppLocator.CurrentMutable.Register(() => new ViewModelOne(), typeof(ViewModelOne), "ViewModelOne");
 
-        var vmOne = Locator.Current.GetService<ViewModelOne>("ViewModelOne");
+        var vmOne = AppLocator.Current.GetService<ViewModelOne>("ViewModelOne");
 
         vmOne.Should().NotBeNull();
     }

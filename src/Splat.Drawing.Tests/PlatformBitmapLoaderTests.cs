@@ -17,7 +17,7 @@ public sealed class PlatformBitmapLoaderTests
     [Fact]
     public void Constructor_ReturnsInstance()
     {
-        var instance = new Splat.PlatformBitmapLoader();
+        var instance = new PlatformBitmapLoader();
         Assert.NotNull(instance);
     }
 #endif

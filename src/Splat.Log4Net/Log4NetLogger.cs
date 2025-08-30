@@ -13,14 +13,14 @@ namespace Splat.Log4Net;
 [DebuggerDisplay("Name={_inner.Logger.Name} Level={Level}")]
 public sealed class Log4NetLogger : ILogger, IDisposable
 {
-    private readonly global::log4net.ILog _inner;
+    private readonly log4net.ILog _inner;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Log4NetLogger"/> class.
     /// </summary>
     /// <param name="inner">The actual log4net logger.</param>
     /// <exception cref="ArgumentNullException">Log4Net logger not passed.</exception>
-    public Log4NetLogger(global::log4net.ILog inner)
+    public Log4NetLogger(log4net.ILog inner)
     {
         _inner = inner ?? throw new ArgumentNullException(nameof(inner));
         if (_inner.Logger.Repository == null)

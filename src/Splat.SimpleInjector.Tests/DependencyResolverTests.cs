@@ -27,7 +27,7 @@ public class DependencyResolverTests
         container.Register<ViewModelOne>();
         container.UseSimpleInjectorDependencyResolver(new());
 
-        var viewModel = Locator.Current.GetService(typeof(ViewModelOne));
+        var viewModel = AppLocator.Current.GetService(typeof(ViewModelOne));
 
         viewModel.Should().NotBeNull();
         viewModel.Should().BeOfType<ViewModelOne>();
@@ -58,7 +58,7 @@ public class DependencyResolverTests
         container.Register<IViewFor<ViewModelOne>, ViewOne>();
         container.UseSimpleInjectorDependencyResolver(new());
 
-        var view = Locator.Current.GetService(typeof(IViewFor<ViewModelOne>));
+        var view = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
 
         view.Should().NotBeNull();
         view.Should().BeOfType<ViewOne>();
@@ -74,7 +74,7 @@ public class DependencyResolverTests
         container.RegisterSingleton<IScreen, MockScreen>();
         container.UseSimpleInjectorDependencyResolver(new());
 
-        var screen = Locator.Current.GetService(typeof(IScreen));
+        var screen = AppLocator.Current.GetService(typeof(IScreen));
 
         screen.Should().NotBeNull();
         screen.Should().BeOfType<MockScreen>();
@@ -90,7 +90,7 @@ public class DependencyResolverTests
         SimpleInjectorInitializer initializer = new();
 
         Locator.SetLocator(initializer);
-        Locator.CurrentMutable.InitializeSplat();
+        AppLocator.CurrentMutable.InitializeSplat();
         container.UseSimpleInjectorDependencyResolver(initializer);
     }
 
@@ -103,11 +103,11 @@ public class DependencyResolverTests
         Container container = new();
         SimpleInjectorInitializer initializer = new();
 
-        Locator.SetLocator(initializer);
-        Locator.CurrentMutable.InitializeSplat();
+        AppLocator.SetLocator(initializer);
+        AppLocator.CurrentMutable.InitializeSplat();
         container.UseSimpleInjectorDependencyResolver(initializer);
 
-        var dependency = Locator.Current.GetService(typeof(ILogger)) as ILogger;
+        var dependency = AppLocator.Current.GetService(typeof(ILogger)) as ILogger;
         Assert.NotNull(dependency);
     }
 
@@ -120,7 +120,7 @@ public class DependencyResolverTests
         var container = new Container();
         container.UseSimpleInjectorDependencyResolver(new());
 
-        var views = Locator.Current.GetServices(typeof(ViewOne));
+        var views = AppLocator.Current.GetServices(typeof(ViewOne));
         Assert.NotNull(views);
     }
 }

@@ -31,7 +31,7 @@ public sealed class BitmapLoaderTests
     [Fact]
     public void ReturnsInstance()
     {
-        var instance = new Splat.PlatformBitmapLoader();
+        var instance = new PlatformBitmapLoader();
         Assert.NotNull(instance);
     }
 
@@ -41,7 +41,7 @@ public sealed class BitmapLoaderTests
     [Fact]
     public void Create_Succeeds()
     {
-        var instance = new Splat.PlatformBitmapLoader();
+        var instance = new PlatformBitmapLoader();
         var result = instance.Create(1, 1);
 
         Assert.NotNull(result);
@@ -57,7 +57,7 @@ public sealed class BitmapLoaderTests
     {
         ArgumentNullException.ThrowIfNull(getStream);
 
-        var instance = new Splat.PlatformBitmapLoader();
+        var instance = new PlatformBitmapLoader();
 
         using (var sourceStream = getStream())
         {

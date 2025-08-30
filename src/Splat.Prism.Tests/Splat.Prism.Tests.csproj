@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />
     <ProjectReference Include="..\Splat.Prism\Splat.Prism.csproj" />
+    <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>
 
 </Project>

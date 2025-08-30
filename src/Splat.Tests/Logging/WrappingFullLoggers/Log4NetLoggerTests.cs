@@ -41,7 +41,7 @@ public class Log4NetLoggerTests : FullLoggerTestBase
     {
         var logger = LogManager.GetLogger(Guid.NewGuid().ToString());
 
-        var hierarchyLogger = (log4net.Repository.Hierarchy.Logger)logger.Logger;
+        var hierarchyLogger = (Logger)logger.Logger;
         hierarchyLogger.Level = _splat2log4net[minimumLogLevel];
 
         return (new WrappingFullLogger(new Log4NetLogger(logger)), CreateRepository(minimumLogLevel));
@@ -57,7 +57,7 @@ public class Log4NetLoggerTests : FullLoggerTestBase
         };
         patternLayout.ActivateOptions();
 
-        var memoryAppender = new global::log4net.Appender.MemoryAppender
+        var memoryAppender = new log4net.Appender.MemoryAppender
         {
             Threshold = _splat2log4net[minimumLogLevel],
             Layout = new PatternLayout
@@ -77,9 +77,9 @@ public class Log4NetLoggerTests : FullLoggerTestBase
         return memoryWrapper;
     }
 
-    private sealed class MemoryTargetWrapper(global::log4net.Appender.MemoryAppender memoryTarget) : IMockLogTarget
+    private sealed class MemoryTargetWrapper(log4net.Appender.MemoryAppender memoryTarget) : IMockLogTarget
     {
-        public global::log4net.Appender.MemoryAppender MemoryTarget { get; } = memoryTarget;
+        public log4net.Appender.MemoryAppender MemoryTarget { get; } = memoryTarget;
 
         public ICollection<(LogLevel logLevel, string message)> Logs
         {

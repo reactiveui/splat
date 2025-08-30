@@ -206,7 +206,7 @@ public class AutofacDependencyResolver : IDependencyResolver
     /// </summary>
     /// <param name="serviceType">The service type to unregister.</param>
     /// <param name="contract">The optional contract value, which will only remove the value associated with the contract.</param>
-    /// <exception cref="System.NotImplementedException">This is not implemented by default.</exception>
+    /// <exception cref="NotImplementedException">This is not implemented by default.</exception>
     /// <inheritdoc />
     [Obsolete("Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore. " +
               "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.")]
@@ -221,7 +221,7 @@ public class AutofacDependencyResolver : IDependencyResolver
     /// </summary>
     /// <param name="serviceType">The service type to unregister.</param>
     /// <param name="contract">The optional contract value, which will only remove the value associated with the contract.</param>
-    /// <exception cref="System.NotImplementedException">This is not implemented by default.</exception>
+    /// <exception cref="NotImplementedException">This is not implemented by default.</exception>
     /// <inheritdoc />
     [Obsolete("Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore. " +
               "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.")]

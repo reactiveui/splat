@@ -13,10 +13,10 @@ namespace Splat.SimpleInjector;
 public static class SplatSimpleInjectorExtensions
 {
     /// <summary>
-    /// Initializes an instance of <see cref="SimpleInjectorDependencyResolver"/> that overrides the default <see cref="Locator"/>.
+    /// Initializes an instance of <see cref="SimpleInjectorDependencyResolver"/> that overrides the default <see cref="AppLocator"/>.
     /// </summary>
     /// <param name="container">Simple Injector container.</param>
     /// <param name="initializer">Initializer.</param>
     public static void UseSimpleInjectorDependencyResolver(this Container container, SimpleInjectorInitializer initializer) =>
-        Locator.SetLocator(new SimpleInjectorDependencyResolver(container, initializer));
+        AppLocator.SetLocator(new SimpleInjectorDependencyResolver(container, initializer));
 }

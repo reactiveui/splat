@@ -174,7 +174,7 @@ internal sealed class StaticLoggerTests
         /// Gets the log level boundary for the test.
         /// </summary>
         /// <returns>Log Level.</returns>
-        protected abstract Splat.LogLevel GetLogLevel();
+        protected abstract LogLevel GetLogLevel();
 
         private static StaticFullLogger GetLogger(TextLogger textLogger) => new(new WrappingFullLogger(textLogger));
 

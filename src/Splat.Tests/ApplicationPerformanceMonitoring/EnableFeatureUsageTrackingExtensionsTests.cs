@@ -31,6 +31,7 @@ public static class EnableFeatureUsageTrackingExtensionsTests
         [Fact]
         public void ReturnsInstance()
         {
+            Locator.CurrentMutable.InitializeSplat();
             var instance = new TestObjectThatSupportsFeatureUsageTracking();
             const string expected = "featureName";
             using (var result = instance.FeatureUsageTrackingSession(expected))
@@ -47,6 +48,7 @@ public static class EnableFeatureUsageTrackingExtensionsTests
         [Fact]
         public void HandleOnException()
         {
+            Locator.CurrentMutable.InitializeSplat();
             var instance = new TestObjectThatSupportsFeatureUsageTracking();
             using (var result = instance.FeatureUsageTrackingSession("featureName"))
             {
@@ -62,6 +64,7 @@ public static class EnableFeatureUsageTrackingExtensionsTests
         [Fact]
         public void ReturnsSubFeatureInstance()
         {
+            Locator.CurrentMutable.InitializeSplat();
             var instance = new TestObjectThatSupportsFeatureUsageTracking();
             using (var result = instance.FeatureUsageTrackingSession("featureName"))
             {
@@ -83,6 +86,7 @@ public static class EnableFeatureUsageTrackingExtensionsTests
         [Fact]
         public void SubFeatureHandlesOnException()
         {
+            Locator.CurrentMutable.InitializeSplat();
             var instance = new TestObjectThatSupportsFeatureUsageTracking();
             using (var result = instance.FeatureUsageTrackingSession("featureName"))
             {
@@ -109,6 +113,7 @@ public static class EnableFeatureUsageTrackingExtensionsTests
         [Fact]
         public void HandlesAction()
         {
+            Locator.CurrentMutable.InitializeSplat();
             var instance = new TestObjectThatSupportsFeatureUsageTracking();
             var handled = false;
 

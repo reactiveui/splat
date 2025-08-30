@@ -54,7 +54,7 @@ public static class MicrosoftExtensionsLoggingExtensions
 #if NETSTANDARD || NETFRAMEWORK
         if (builder is null)
         {
-            throw new System.ArgumentNullException(nameof(builder));
+            throw new ArgumentNullException(nameof(builder));
         }
 #else
         ArgumentNullException.ThrowIfNull(builder);
@@ -75,7 +75,7 @@ public static class MicrosoftExtensionsLoggingExtensions
 #if NETSTANDARD || NETFRAMEWORK
         if (loggerFactory is null)
         {
-            throw new System.ArgumentNullException(nameof(loggerFactory));
+            throw new ArgumentNullException(nameof(loggerFactory));
         }
 #else
         ArgumentNullException.ThrowIfNull(loggerFactory);

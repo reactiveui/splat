@@ -12,6 +12,4 @@ namespace Splat.Common.Test;
 /// </summary>
 /// <seealso cref="IScreen" />
 [ExcludeFromCodeCoverage]
-public class MockScreen : IScreen
-{
-}
+public class MockScreen : IScreen;
