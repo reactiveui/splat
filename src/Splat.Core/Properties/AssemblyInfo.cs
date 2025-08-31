@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Splat")]
 [assembly: InternalsVisibleTo("Splat.Builder")]
-[assembly: InternalsVisibleTo("Splat.logging")]
+[assembly: InternalsVisibleTo("Splat.Logging")]
 [assembly: InternalsVisibleTo("Splat.Drawing")]
 [assembly: InternalsVisibleTo("Splat.Tests")]
 [assembly: InternalsVisibleTo("Splat.Drawing.Tests")]
