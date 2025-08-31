@@ -8,6 +8,6 @@
     <PackageReference Include="Prism.Core" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Splat.Builder\Splat.Builder.csproj" />
+    <ProjectReference Include="..\Splat.Core\Splat.Core.csproj" />
   </ItemGroup>
 </Project>

@@ -30,7 +30,7 @@ public static class MutableDependencyResolverExtensions
             return new SerilogFullLogger(actualLogger);
         });
 
-        instance.RegisterConstant<ILogManager>(funcLogManager);
+        instance.Register<ILogManager>(() => funcLogManager);
     }
 
     /// <summary>
@@ -50,6 +50,6 @@ public static class MutableDependencyResolverExtensions
     {
         var funcLogManager = new FuncLogManager(type => new SerilogFullLogger(actualLogger.ForContext(type)));
 
-        instance.RegisterConstant<ILogManager>(funcLogManager);
+        instance.Register<ILogManager>(() => funcLogManager);
     }
 }

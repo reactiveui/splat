@@ -13,6 +13,6 @@
     <PackageReference Include="System.Collections.Immutable" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Splat\Splat.csproj" />
+    <ProjectReference Include="..\Splat.Logging\Splat.Logging.csproj" />
   </ItemGroup>
 </Project>

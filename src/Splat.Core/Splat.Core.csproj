@@ -12,7 +12,6 @@
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Splat.Core\Splat.Core.csproj" />
+    <PackageReference Include="System.Reactive" />
   </ItemGroup>
-
 </Project>

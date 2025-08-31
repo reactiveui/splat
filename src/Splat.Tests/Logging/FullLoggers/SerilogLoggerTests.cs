@@ -85,7 +85,7 @@ public class SerilogLoggerTests : FullLoggerTestBase
         {
             AppLocator.InternalLocator = new();
             var (seriLogger, target) = CreateSerilogger(LogLevel.Debug);
-            Locator.CurrentMutable.UseSerilogFullLogger(seriLogger);
+            AppLocator.CurrentMutable.UseSerilogFullLogger(seriLogger);
 
             Assert.Equal(0, target.Logs.Count);
 

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>$(SplatTargetFrameworks)</TargetFrameworks>
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net462</TargetFrameworks>
@@ -40,6 +40,6 @@
     <PackageReference Include="System.Xml.XmlDocument" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Splat\Splat.csproj" />
+    <ProjectReference Include="..\Splat.Logging\Splat.Logging.csproj" />
   </ItemGroup>
 </Project>

@@ -27,8 +27,8 @@ public class DependencyResolverTests
         container.Bind<IViewFor<ViewModelTwo>>().To<ViewTwo>();
         container.UseNinjectDependencyResolver();
 
-        var viewOne = Locator.Current.GetService(typeof(IViewFor<ViewModelOne>));
-        var viewTwo = Locator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
+        var viewOne = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
+        var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
         viewOne.Should().NotBeNull();
         viewOne.Should().BeOfType<ViewOne>();
@@ -45,7 +45,7 @@ public class DependencyResolverTests
         var container = new StandardKernel();
         container.UseNinjectDependencyResolver();
 
-        var viewOne = Locator.Current.GetService(typeof(IViewFor<ViewModelOne>));
+        var viewOne = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
 
         viewOne.Should().BeNull();
     }
@@ -59,7 +59,7 @@ public class DependencyResolverTests
         var container = new StandardKernel();
         container.UseNinjectDependencyResolver();
 
-        var viewOne = Locator.Current.GetServices(typeof(IViewFor<ViewModelOne>));
+        var viewOne = AppLocator.Current.GetServices(typeof(IViewFor<ViewModelOne>));
 
         viewOne.Should().BeEmpty();
     }
@@ -74,7 +74,7 @@ public class DependencyResolverTests
         container.Bind<IViewFor<ViewModelTwo>>().To<ViewTwo>();
         container.UseNinjectDependencyResolver();
 
-        var viewTwo = Locator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
+        var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
         viewTwo.Should().NotBeNull();
         viewTwo.Should().BeOfType<ViewTwo>();
@@ -91,8 +91,8 @@ public class DependencyResolverTests
         container.Bind<ViewModelTwo>().ToSelf();
         container.UseNinjectDependencyResolver();
 
-        var vmOne = Locator.Current.GetService<ViewModelOne>();
-        var vmTwo = Locator.Current.GetService<ViewModelTwo>();
+        var vmOne = AppLocator.Current.GetService<ViewModelOne>();
+        var vmTwo = AppLocator.Current.GetService<ViewModelTwo>();
 
         vmOne.Should().NotBeNull();
         vmTwo.Should().NotBeNull();
@@ -108,7 +108,7 @@ public class DependencyResolverTests
         container.Bind<IScreen>().ToConstant(new MockScreen());
         container.UseNinjectDependencyResolver();
 
-        var screen = Locator.Current.GetService<IScreen>();
+        var screen = AppLocator.Current.GetService<IScreen>();
 
         screen.Should().NotBeNull();
         screen.Should().BeOfType<MockScreen>();
@@ -124,7 +124,7 @@ public class DependencyResolverTests
         container.UseNinjectDependencyResolver();
 
         Action result = () =>
-            Locator.CurrentMutable.UnregisterCurrent(typeof(IScreen));
+            AppLocator.CurrentMutable.UnregisterCurrent(typeof(IScreen));
 
         result.Should().Throw<NotImplementedException>();
     }
@@ -139,14 +139,14 @@ public class DependencyResolverTests
         container.Bind<IScreen>().ToConstant(new MockScreen());
         container.UseNinjectDependencyResolver();
 
-        var screen = Locator.Current.GetService<IScreen>();
+        var screen = AppLocator.Current.GetService<IScreen>();
 
         screen.Should().NotBeNull();
         screen.Should().BeOfType<MockScreen>();
 
-        Locator.CurrentMutable.UnregisterAll(typeof(IScreen));
+        AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen));
 
-        var result = Locator.Current.GetService<IScreen>();
+        var result = AppLocator.Current.GetService<IScreen>();
         result.Should().BeNull();
     }
 
@@ -160,7 +160,7 @@ public class DependencyResolverTests
         container.UseNinjectDependencyResolver();
 
         var result = Record.Exception(() =>
-            Locator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
+            AppLocator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
 
         result.Should().BeOfType<NotImplementedException>();
     }
