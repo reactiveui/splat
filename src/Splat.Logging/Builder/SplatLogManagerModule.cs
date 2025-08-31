@@ -18,7 +18,7 @@ public sealed class SplatLogManagerModule(IReadonlyDependencyResolver current) :
     {
         if (!resolver.HasRegistration(typeof(ILogManager)))
         {
-            resolver.Register(() => new DefaultLogManager(current), typeof(ILogManager));
+            resolver.Register<ILogManager>(() => new DefaultLogManager(current));
         }
     }
 }

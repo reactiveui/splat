@@ -20,7 +20,7 @@ public sealed class SplatLoggerModule() : IModule
         if (!resolver.HasRegistration(typeof(ILogger)))
         {
             var debugLogger = new DebugLogger();
-            resolver.Register(() => debugLogger, typeof(ILogger));
+            resolver.Register<ILogger>(() => debugLogger);
         }
     }
 }
