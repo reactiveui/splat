@@ -29,7 +29,7 @@ public sealed class DefaultLogManager : ILogManager
         _loggerCache = new(
             (type, _) =>
             {
-                var ret = (ILogger?)dependencyResolver.GetService(typeof(ILogger));
+                var ret = dependencyResolver.GetService<ILogger>();
                 return ret switch
                 {
                     null => throw new LoggingException("Couldn't find an ILogger. This should never happen, your dependency resolver is probably broken."),
