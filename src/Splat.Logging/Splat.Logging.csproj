@@ -11,6 +11,7 @@
   <PropertyGroup Condition="$(TargetFramework.StartsWith('net8.0')) or $(TargetFramework.StartsWith('net9.0'))">
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Splat.Core\Splat.Core.csproj" />
   </ItemGroup>

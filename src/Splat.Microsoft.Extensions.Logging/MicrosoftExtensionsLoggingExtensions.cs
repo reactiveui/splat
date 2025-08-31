@@ -41,7 +41,7 @@ public static class MicrosoftExtensionsLoggingExtensions
             return new WrappingFullLogger(miniLoggingWrapper);
         });
 
-        instance.RegisterConstant<ILogManager>(funcLogManager);
+        instance.Register(() => funcLogManager, typeof(ILogManager));
     }
 
     /// <summary>

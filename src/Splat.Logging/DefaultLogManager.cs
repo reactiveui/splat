@@ -8,7 +8,7 @@ namespace Splat;
 /// <summary>
 /// The default log manager provided by splat.
 /// This log manager will cache the loggers for each type,
-/// This will use the default registered <see cref="ILogger"/> inside the <see cref="Locator"/>.
+/// This will use the default registered <see cref="ILogger"/> inside the <see cref="IReadonlyDependencyResolver"/>.
 /// </summary>
 public sealed class DefaultLogManager : ILogManager
 {
@@ -19,14 +19,17 @@ public sealed class DefaultLogManager : ILogManager
     /// Initializes a new instance of the <see cref="DefaultLogManager"/> class.
     /// </summary>
     /// <param name="dependencyResolver">A dependency resolver for testing purposes, will use the default Locator if null.</param>
-    public DefaultLogManager(IReadonlyDependencyResolver? dependencyResolver = null)
+    public DefaultLogManager(IReadonlyDependencyResolver dependencyResolver)
     {
-        dependencyResolver ??= Locator.Current;
+        if (dependencyResolver == null)
+        {
+            throw new ArgumentNullException(nameof(dependencyResolver));
+        }
 
         _loggerCache = new(
             (type, _) =>
             {
-                var ret = dependencyResolver.GetService<ILogger>();
+                var ret = (ILogger?)dependencyResolver.GetService(typeof(ILogger));
                 return ret switch
                 {
                     null => throw new LoggingException("Couldn't find an ILogger. This should never happen, your dependency resolver is probably broken."),

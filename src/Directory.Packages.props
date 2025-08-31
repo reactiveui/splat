@@ -47,6 +47,7 @@
     <PackageVersion Include="System.Net.NameResolution" Version="4.3.0" />
     <PackageVersion Include="System.Net.Requests" Version="4.3.0" />
     <PackageVersion Include="System.Net.Sockets" Version="4.3.0" />
+    <PackageVersion Include="System.Reactive" Version="6.0.2" />
     <PackageVersion Include="System.Reflection" Version="4.3.0" />
     <PackageVersion Include="System.Reflection.Extensions" Version="4.3.0" />
     <PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0" />

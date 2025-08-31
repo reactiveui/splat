@@ -10,7 +10,12 @@ namespace Splat;
 /// </summary>
 public static class AppLocator
 {
-    static AppLocator() => InternalLocator = new();
+    static AppLocator()
+    {
+        InternalLocator = new();
+        AppLocatorCore.Current = InternalLocator.Current;
+        AppLocatorCore.CurrentMutable = InternalLocator.CurrentMutable;
+    }
 
     /// <summary>
     /// Gets the read only dependency resolver. This class is used throughout
@@ -20,20 +25,34 @@ public static class AppLocator
     /// to simply use the default implementation.
     /// </summary>
     /// <value>The dependency resolver.</value>
-    public static IReadonlyDependencyResolver Current => InternalLocator.Current;
+    public static IReadonlyDependencyResolver Current
+    {
+        get
+        {
+            AppLocatorCore.Current = InternalLocator.Current;
+            return AppLocatorCore.Current;
+        }
+    }
 
     /// <summary>
     /// Gets the mutable dependency resolver.
     /// The default resolver is also a mutable resolver, so this will be non-null.
     /// Use this to register new types on startup if you are using the default resolver.
     /// </summary>
-    public static IMutableDependencyResolver CurrentMutable => InternalLocator.CurrentMutable;
+    public static IMutableDependencyResolver CurrentMutable
+    {
+        get
+        {
+            AppLocatorCore.CurrentMutable = InternalLocator.CurrentMutable;
+            return AppLocatorCore.CurrentMutable;
+        }
+    }
 
     /// <summary>
-    /// Gets or sets the current locator instance.
+    /// Gets the current locator instance.
     /// Used mostly for testing purposes.
     /// </summary>
-    internal static InternalLocator InternalLocator { get; set; }
+    internal static InternalLocator InternalLocator { get; private set; }
 
     internal static Action<IMutableDependencyResolver> ReInit { get; set; } = _ => { };
 
@@ -41,7 +60,13 @@ public static class AppLocator
     /// Allows setting the dependency resolver.
     /// </summary>
     /// <param name="dependencyResolver">The dependency resolver to set.</param>
-    public static void SetLocator(IDependencyResolver dependencyResolver) => InternalLocator.SetLocator(dependencyResolver);
+    public static void SetLocator(IDependencyResolver dependencyResolver)
+    {
+        InternalLocator.SetLocator(dependencyResolver);
+
+        AppLocatorCore.Current = InternalLocator.Current;
+        AppLocatorCore.CurrentMutable = InternalLocator.CurrentMutable;
+    }
 
     /// <summary>
     /// Gets the full locator.
@@ -83,4 +108,19 @@ public static class AppLocator
     /// </summary>
     /// <returns>A value indicating whether the notifications are happening.</returns>
     public static bool AreResolverCallbackChangedNotificationsEnabled() => InternalLocator.AreResolverCallbackChangedNotificationsEnabled();
+
+    internal static InternalLocator CreateNewInternalLocator()
+    {
+        InternalLocator = new();
+        AppLocatorCore.Current = InternalLocator.Current;
+        AppLocatorCore.CurrentMutable = InternalLocator.CurrentMutable;
+        return InternalLocator;
+    }
+
+    internal static void ReplaceInternalLocator(InternalLocator newLocator)
+    {
+        InternalLocator = newLocator ?? throw new ArgumentNullException(nameof(newLocator));
+        AppLocatorCore.Current = InternalLocator.Current;
+        AppLocatorCore.CurrentMutable = InternalLocator.CurrentMutable;
+    }
 }

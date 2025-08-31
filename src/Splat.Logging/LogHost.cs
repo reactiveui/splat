@@ -13,7 +13,7 @@ namespace Splat;
 public static class LogHost
 {
     /// <summary>
-    /// Gets the default <see cref="IFullLogger"/> registered within the <see cref="Locator"/>.
+    /// Gets the default <see cref="IFullLogger"/> registered within the <see cref="IReadonlyDependencyResolver"/>.
     /// </summary>
     [SuppressMessage("Design", "CA1065: Do not raise exceptions in properties", Justification = "Very rare scenario")]
     public static IStaticFullLogger Default
@@ -28,7 +28,7 @@ public static class LogHost
              * return Locator.Current.GetService<IStaticFullLogger>();
              */
 
-            var factory = Locator.Current.GetService<ILogManager>() ?? throw new LoggingException("ILogManager is null. This should never happen, your dependency resolver is broken");
+            var factory = (ILogManager?)AppLocatorCore.Current?.GetService(typeof(ILogManager)) ?? throw new LoggingException("ILogManager is null. This should never happen, your dependency resolver is broken");
             var fullLogger = factory.GetLogger(typeof(LogHost));
 
             return new StaticFullLogger(fullLogger);
@@ -42,11 +42,12 @@ public static class LogHost
     /// <param name="logClassInstance">The class we are getting the logger for.</param>
     /// <returns>The <see cref="IFullLogger"/> for the class type.</returns>
 #pragma warning disable RCS1175 // Unused 'this' parameter.
+    [SuppressMessage("Design", "CA1065: Do not raise exceptions in properties", Justification = "Very rare scenario")]
     public static IFullLogger Log<T>(this T logClassInstance)
 #pragma warning restore RCS1175 // Unused 'this' parameter.
         where T : IEnableLogger
     {
-        var factory = Locator.Current.GetService<ILogManager>();
+        var factory = (ILogManager?)AppLocatorCore.Current?.GetService(typeof(ILogManager));
         return factory switch
         {
             null => throw new InvalidOperationException("ILogManager is null. This should never happen, your dependency resolver is broken"),

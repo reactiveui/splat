@@ -129,7 +129,6 @@ public class AppBuilder : IAppBuilder, IAppInstance
     /// <summary>
     /// Builds and applies all registrations to the dependency resolver.
     /// </summary>
-    /// <typeparam name="T">The type of Builder to return.</typeparam>
     /// <returns>
     /// An App Instance.
     /// </returns>

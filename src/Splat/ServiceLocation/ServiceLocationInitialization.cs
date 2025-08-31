@@ -37,7 +37,7 @@ public static class ServiceLocationInitialization
     {
         if (!resolver.HasRegistration(typeof(ILogManager)))
         {
-            resolver.Register(() => new DefaultLogManager(), typeof(ILogManager));
+            resolver.Register(() => new DefaultLogManager(AppLocator.Current), typeof(ILogManager));
         }
     }
 

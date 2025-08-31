@@ -247,7 +247,7 @@ public class CoreAotCompatibilityTests
 
         // Act
         using var locatorScope = resolver.WithResolver();
-        var logger = Locator.Current.GetService<ILogger>();
+        var logger = AppLocator.Current.GetService<ILogger>();
 
         // Assert
         Assert.NotNull(logger);

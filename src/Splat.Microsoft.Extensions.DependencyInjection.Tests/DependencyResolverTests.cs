@@ -30,8 +30,8 @@ public class DependencyResolverTests
 
         wrapper.BuildAndUse();
 
-        var viewOne = Locator.Current.GetService(typeof(IViewFor<ViewModelOne>));
-        var viewTwo = Locator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
+        var viewOne = AppLocator.Current?.GetService(typeof(IViewFor<ViewModelOne>));
+        var viewTwo = AppLocator.Current?.GetService(typeof(IViewFor<ViewModelTwo>));
 
         viewOne.Should().NotBeNull();
         viewOne.Should().BeOfType<ViewOne>();
@@ -51,7 +51,7 @@ public class DependencyResolverTests
 
         wrapper.BuildAndUse();
 
-        var viewTwo = Locator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
+        var viewTwo = AppLocator.Current?.GetService(typeof(IViewFor<ViewModelTwo>));
 
         viewTwo.Should().NotBeNull();
         viewTwo.Should().BeOfType<ViewTwo>();
@@ -70,8 +70,8 @@ public class DependencyResolverTests
 
         wrapper.BuildAndUse();
 
-        var vmOne = Locator.Current.GetService<ViewModelOne>();
-        var vmTwo = Locator.Current.GetService<ViewModelTwo>();
+        var vmOne = AppLocator.Current?.GetService<ViewModelOne>();
+        var vmTwo = AppLocator.Current?.GetService<ViewModelTwo>();
 
         vmOne.Should().NotBeNull();
         vmTwo.Should().NotBeNull();
@@ -89,7 +89,7 @@ public class DependencyResolverTests
 
         wrapper.BuildAndUse();
 
-        var screen = Locator.Current.GetService<IScreen>();
+        var screen = AppLocator.Current?.GetService<IScreen>();
 
         screen.Should().NotBeNull();
         screen.Should().BeOfType<MockScreen>();
@@ -106,12 +106,12 @@ public class DependencyResolverTests
 
         services.AddSingleton<IScreen>(new MockScreen());
 
-        Locator.CurrentMutable.HasRegistration(typeof(IScreen))
+        AppLocator.CurrentMutable?.HasRegistration(typeof(IScreen))
             .Should().BeTrue();
 
-        Locator.CurrentMutable.UnregisterAll(typeof(IScreen));
+        AppLocator.CurrentMutable?.UnregisterAll(typeof(IScreen));
 
-        var result = Locator.Current.GetService<IScreen>();
+        var result = AppLocator.Current?.GetService<IScreen>();
         result.Should().BeNull();
     }
 
@@ -125,7 +125,7 @@ public class DependencyResolverTests
         wrapper.BuildAndUse();
 
         var result = Record.Exception(() =>
-            Locator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
+            AppLocator.CurrentMutable?.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
 
         result.Should().BeOfType<NotImplementedException>();
     }
@@ -140,7 +140,7 @@ public class DependencyResolverTests
 
         wrapper.BuildAndUse();
 
-        var result = Record.Exception(() => Locator.CurrentMutable.Register(() => new ViewOne()));
+        var result = Record.Exception(() => AppLocator.CurrentMutable?.Register(() => new ViewOne()));
 
         result.Should().BeOfType<InvalidOperationException>();
     }
@@ -162,7 +162,7 @@ public class DependencyResolverTests
         wrapper.BuildAndUse();
 
         // Get the ILogManager instance.
-        var lm = Locator.Current.GetService<ILogManager>();
+        var lm = AppLocator.Current?.GetService<ILogManager>();
         Assert.NotNull(lm);
         var mgr = lm.GetLogger<NLogLogger>();
         Assert.NotNull(mgr);
