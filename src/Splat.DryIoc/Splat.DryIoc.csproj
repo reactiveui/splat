@@ -9,6 +9,6 @@
     <PackageReference Include="DryIoc.Dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Splat.Builder\Splat.Builder.csproj" />
+    <ProjectReference Include="..\Splat.Core\Splat.Core.csproj" />
   </ItemGroup>
 </Project>

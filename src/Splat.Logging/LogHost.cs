@@ -28,7 +28,7 @@ public static class LogHost
              * return Locator.Current.GetService<IStaticFullLogger>();
              */
 
-            var factory = (ILogManager?)AppLocatorCore.Current?.GetService(typeof(ILogManager)) ?? throw new LoggingException("ILogManager is null. This should never happen, your dependency resolver is broken");
+            var factory = AppLocator.Current.GetService<ILogManager>() ?? throw new LoggingException("ILogManager is null. This should never happen, your dependency resolver is broken");
             var fullLogger = factory.GetLogger(typeof(LogHost));
 
             return new StaticFullLogger(fullLogger);
@@ -47,7 +47,7 @@ public static class LogHost
 #pragma warning restore RCS1175 // Unused 'this' parameter.
         where T : IEnableLogger
     {
-        var factory = (ILogManager?)AppLocatorCore.Current?.GetService(typeof(ILogManager));
+        var factory = AppLocator.Current.GetService<ILogManager>();
         return factory switch
         {
             null => throw new InvalidOperationException("ILogManager is null. This should never happen, your dependency resolver is broken"),
