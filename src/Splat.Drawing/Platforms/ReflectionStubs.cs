@@ -14,7 +14,7 @@ internal static class ReflectionStubs
     [RequiresUnreferencedCode("Type.GetField() may be trimmed.")]
     [RequiresDynamicCode("Type.GetField() may be trimmed.")]
 #endif
-    public static FieldInfo? GetField(this Type value, string name, BindingFlags flags = default)
+    public static FieldInfo? GetField(this [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)] Type value, string name, BindingFlags flags = default)
     {
         var ti = value.GetTypeInfo();
         var ret = ti.GetDeclaredField(name);
@@ -27,7 +27,7 @@ internal static class ReflectionStubs
     [RequiresUnreferencedCode("Type.GetMethod() may be trimmed.")]
     [RequiresDynamicCode("Type.GetMethod() may be trimmed.")]
 #endif
-    public static MethodInfo? GetMethod(this Type value, string name, BindingFlags flags = default)
+    public static MethodInfo? GetMethod(this [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type value, string name, BindingFlags flags = default)
     {
         var ti = value.GetTypeInfo();
         var ret = ti.GetDeclaredMethod(name);
@@ -40,7 +40,7 @@ internal static class ReflectionStubs
     [RequiresUnreferencedCode("Type.GetProperty() may be trimmed.")]
     [RequiresDynamicCode("Type.GetProperty() may be trimmed.")]
 #endif
-    public static PropertyInfo? GetProperty(this Type value, string name, BindingFlags flags = default)
+    public static PropertyInfo? GetProperty(this [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)] Type value, string name, BindingFlags flags = default)
     {
         var ti = value.GetTypeInfo();
         var ret = ti.GetDeclaredProperty(name);
@@ -53,7 +53,7 @@ internal static class ReflectionStubs
     [RequiresUnreferencedCode("Type.GetEvent() may be trimmed.")]
     [RequiresDynamicCode("Type.GetEvent() may be trimmed.")]
 #endif
-    public static EventInfo? GetEvent(this Type value, string name, BindingFlags flags = default)
+    public static EventInfo? GetEvent(this [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicEvents | DynamicallyAccessedMemberTypes.NonPublicEvents)] Type value, string name, BindingFlags flags = default)
     {
         var ti = value.GetTypeInfo();
         var ret = ti.GetDeclaredEvent(name);
@@ -66,19 +66,19 @@ internal static class ReflectionStubs
     [RequiresUnreferencedCode("Type.GetProperties() may be trimmed.")]
     [RequiresDynamicCode("Type.GetProperties() may be trimmed.")]
 #endif
-    public static IEnumerable<PropertyInfo> GetProperties(this Type value) => value.GetTypeInfo().DeclaredProperties;
+    public static IEnumerable<PropertyInfo> GetProperties(this [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)] Type value) => value.GetTypeInfo().DeclaredProperties;
 
 #if NET6_0_OR_GREATER
     [RequiresUnreferencedCode("Type.GetFields() may be trimmed.")]
     [RequiresDynamicCode("Type.GetFields() may be trimmed.")]
 #endif
-    public static IEnumerable<FieldInfo> GetFields(this Type value) => value.GetTypeInfo().DeclaredFields;
+    public static IEnumerable<FieldInfo> GetFields(this [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)] Type value) => value.GetTypeInfo().DeclaredFields;
 
 #if NET6_0_OR_GREATER
     [RequiresUnreferencedCode("Type.GetMethod() may be trimmed.")]
     [RequiresDynamicCode("Type.GetMethod() may be trimmed.")]
 #endif
-    public static MethodInfo? GetMethod(this Type value, string methodName, Type[] paramTypes, BindingFlags flags = default)
+    public static MethodInfo? GetMethod(this [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type value, string methodName, Type[] paramTypes, BindingFlags flags = default)
     {
         var ti = value.GetTypeInfo();
         var ret = ti.GetDeclaredMethods(methodName)
@@ -93,7 +93,7 @@ internal static class ReflectionStubs
     [RequiresUnreferencedCode("Type.GetMethods() may be trimmed.")]
     [RequiresDynamicCode("Type.GetMethods() may be trimmed.")]
 #endif
-    public static IEnumerable<MethodInfo> GetMethods(this Type value) => value.GetTypeInfo().DeclaredMethods;
+    public static IEnumerable<MethodInfo> GetMethods(this [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type value) => value.GetTypeInfo().DeclaredMethods;
 
     public static IEnumerable<object> GetCustomAttributes(this Type value, Type attributeType, bool inherit) => value.GetTypeInfo().GetCustomAttributes(attributeType, inherit);
 

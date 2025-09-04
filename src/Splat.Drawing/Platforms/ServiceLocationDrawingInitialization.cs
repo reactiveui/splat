@@ -16,10 +16,6 @@ public static class ServiceLocationDrawingInitialization
     /// Registers the platform bitmap loader for the current platform.
     /// </summary>
     /// <param name="resolver">The resolver to register against.</param>
-#if NET6_0_OR_GREATER
-    [RequiresUnreferencedCode("Calls IMutableDependencyResolver.RegisterLazySingleton<TService>(Func<TService>)")]
-    [RequiresDynamicCode("Calls IMutableDependencyResolver.RegisterLazySingleton<TService>(Func<TService>)")]
-#endif
     public static void RegisterPlatformBitmapLoader(this IMutableDependencyResolver resolver)
     {
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));

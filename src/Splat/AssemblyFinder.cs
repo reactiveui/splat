@@ -17,10 +17,11 @@ internal static class AssemblyFinder
     /// <param name="fullTypeName">The name of the full type.</param>
     /// <returns>The created object or the default value.</returns>
 #if NET6_0_OR_GREATER
-    [RequiresUnreferencedCode("Calls AssemblyFinder.AttemptToLoadType<T>(string)")]
-    [RequiresDynamicCode("Calls AssemblyFinder.AttemptToLoadType<T>(string)")]
-#endif
+    [RequiresUnreferencedCode("Uses Type.GetType and Activator.CreateInstance which may be trimmed")]
+    public static T? AttemptToLoadType<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(string fullTypeName)
+#else
     public static T? AttemptToLoadType<T>(string fullTypeName)
+#endif
     {
         var thisType = typeof(AssemblyFinder);
 
