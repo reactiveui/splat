@@ -269,7 +269,6 @@ namespace Splat
     }
     public static class ServiceLocationDrawingInitialization
     {
-        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("Calls IMutableDependencyResolver.RegisterLazySingleton<TService>(Func<TService>)")]
         public static void RegisterPlatformBitmapLoader(this Splat.IMutableDependencyResolver resolver) { }
     }
     public static class SizeExtensions
