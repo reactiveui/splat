@@ -8,7 +8,7 @@ using System.ComponentModel;
 namespace Splat;
 
 /// <summary>
-/// a logger which will never emit any value.
+/// A logger which will never emit any value.
 /// </summary>
 public class NullLogger : ILogger
 {

@@ -13,7 +13,7 @@ public enum LogLevel
 #pragma warning restore CA1008 // Enums should have zero value
 {
     /// <summary>
-    /// The log message is for debuging purposes.
+    /// The log message is for debugging purposes.
     /// </summary>
     Debug = 1,
 

@@ -27,7 +27,7 @@ public interface ILogger
     /// <summary>
     /// Writes a message to the target.
     /// </summary>
-    /// <param name="exception">The exception that occured.</param>
+    /// <param name="exception">The exception that occurred.</param>
     /// <param name="message">The message to write.</param>
     /// <param name="logLevel">The severity level of the log message.</param>
     void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel);
@@ -43,7 +43,7 @@ public interface ILogger
     /// <summary>
     /// Writes a message to the target.
     /// </summary>
-    /// <param name="exception">The exception that occured.</param>
+    /// <param name="exception">The exception that occurred.</param>
     /// <param name="message">The message.</param>
     /// <param name="type">The type.</param>
     /// <param name="logLevel">The log level.</param>
