@@ -8,7 +8,7 @@ namespace Splat.Builder.Tests
     /// <summary>
     /// Unit tests for AppBuilder.
     /// </summary>
-[TestFixture]
+    [TestFixture]
     public class AppBuilderTests
     {
         /// <summary>
@@ -99,7 +99,8 @@ namespace Splat.Builder.Tests
         {
             var resolver = new InternalLocator();
             var builder = new AppBuilder(resolver.CurrentMutable);
-            Assert.Throws<ArgumentNullException>(() => builder.WithCustomRegistration((Action<IMutableDependencyResolver>)null!));
+            Assert.Throws<ArgumentNullException>(() =>
+                builder.WithCustomRegistration((Action<IMutableDependencyResolver>)null!));
             resolver.Dispose();
         }
 

@@ -8,7 +8,7 @@ namespace Splat.Builder.Tests
     /// <summary>
     /// Unit tests for SplatBuilderExtensions.
     /// </summary>
-[TestFixture]
+    [TestFixture]
     public class SplatBuilderExtensionsTests
     {
         /// <summary>
@@ -60,7 +60,8 @@ namespace Splat.Builder.Tests
         public void CreateSplatBuilderWithConfigureActionReturnsAppBuilder()
         {
             var resolver = new InternalLocator();
-            var builder = resolver.CurrentMutable.CreateSplatBuilder(r => r.Register(() => "Hello", typeof(string))).Build();
+            var builder = resolver.CurrentMutable.CreateSplatBuilder(r => r.Register(() => "Hello", typeof(string)))
+                .Build();
             Assert.That(builder, Is.Not.Null);
             var hello = resolver.Current.GetService<string>();
             Assert.That(hello, Is.EqualTo("Hello"));
