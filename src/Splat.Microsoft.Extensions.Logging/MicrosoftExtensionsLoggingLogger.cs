@@ -10,13 +10,13 @@ using Microsoft.Extensions.Logging;
 namespace Splat.Microsoft.Extensions.Logging;
 
 /// <summary>
-/// Microsoft.Extensions.Logging Logger integration into Splat.
+/// Splat logger implementation that wraps Microsoft.Extensions.Logging functionality.
 /// </summary>
 /// <remarks>
 /// Initializes a new instance of the <see cref="MicrosoftExtensionsLoggingLogger"/> class.
 /// </remarks>
-/// <param name="inner">The actual Microsoft.Extensions.Logging logger.</param>
-/// <exception cref="ArgumentNullException">Microsoft.Extensions.Logging logger not passed.</exception>
+/// <param name="inner">The Microsoft.Extensions.Logging logger instance to wrap.</param>
+/// <exception cref="ArgumentNullException">Thrown when the Microsoft.Extensions.Logging logger is null.</exception>
 [DebuggerDisplay("Name={_inner.GetType()} Level={Level}")]
 public sealed class MicrosoftExtensionsLoggingLogger(global::Microsoft.Extensions.Logging.ILogger inner) : ILogger
 {

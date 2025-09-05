@@ -14,16 +14,16 @@ namespace Splat.Microsoft.Extensions.Logging;
 public static class MicrosoftExtensionsLoggingExtensions
 {
     /// <summary>
-    /// Simple helper to initialize Microsoft.Extensions.Logging within Splat with the Wrapping Full Logger.
+    /// Initializes Microsoft.Extensions.Logging integration with Splat using the wrapping full logger pattern.
     /// </summary>
     /// <remarks>
-    /// You should configure Microsoft.Extensions.Logging prior to calling this method.
+    /// Configure the logger factory providers before calling this method.
     /// </remarks>
     /// <param name="instance">
-    /// An instance of Mutable Dependency Resolver.
+    /// The mutable dependency resolver to register Microsoft.Extensions.Logging with.
     /// </param>
     /// <param name="loggerFactory">
-    /// An instance of the Microsoft.Extensions.Logging Logger Factory.
+    /// The configured Microsoft.Extensions.Logging logger factory.
     /// </param>
     /// <example>
     /// <code>
@@ -45,10 +45,10 @@ public static class MicrosoftExtensionsLoggingExtensions
     }
 
     /// <summary>
-    /// Registers a <see cref="MicrosoftExtensionsLogProvider"/> with the service collection.
+    /// Registers Splat as a logging provider with Microsoft.Extensions.Logging.
     /// </summary>
-    /// <param name="builder">The logging builder to register.</param>
-    /// <returns>The logging builder.</returns>
+    /// <param name="builder">The logging builder to configure.</param>
+    /// <returns>The logging builder for chaining.</returns>
     public static ILoggingBuilder AddSplat(this ILoggingBuilder builder)
     {
 #if NETSTANDARD || NETFRAMEWORK
@@ -66,10 +66,10 @@ public static class MicrosoftExtensionsLoggingExtensions
     }
 
     /// <summary>
-    /// Adds a <see cref="MicrosoftExtensionsLogProvider"/> to the logger factory.
+    /// Adds Splat as a logging provider to the logger factory.
     /// </summary>
-    /// <param name="loggerFactory">Our logger provider.</param>
-    /// <returns>The factory.</returns>
+    /// <param name="loggerFactory">The logger factory to configure.</param>
+    /// <returns>The logger factory for chaining.</returns>
     public static ILoggerFactory AddSplat(this ILoggerFactory loggerFactory)
     {
 #if NETSTANDARD || NETFRAMEWORK

@@ -13,15 +13,15 @@ namespace Splat.Exceptionless;
 public static class MutableDependencyResolverExtensions
 {
     /// <summary>
-    /// Simple helper to initialize Exceptionless within Splat with the Wrapping Full Logger.
+    /// Initializes Exceptionless integration with Splat using the wrapping full logger pattern.
     /// </summary>
     /// <remarks>
-    /// You should configure Exceptionless prior to calling this method.
+    /// Configure Exceptionless client before calling this method.
     /// </remarks>
     /// <param name="instance">
-    /// An instance of Mutable Dependency Resolver.
+    /// The mutable dependency resolver to register Exceptionless with.
     /// </param>
-    /// <param name="exceptionlessClient">The exceptionless client instance to use.</param>
+    /// <param name="exceptionlessClient">The configured Exceptionless client instance.</param>
     /// <example>
     /// <code>
     /// Locator.CurrentMutable.UseExceptionlessWithWrappingFullLogger(exception);

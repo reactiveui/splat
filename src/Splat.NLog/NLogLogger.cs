@@ -9,7 +9,7 @@ using System.Globalization;
 namespace Splat.NLog;
 
 /// <summary>
-/// NLog Logger taken from ReactiveUI 5.
+/// Splat logger implementation that wraps NLog functionality.
 /// </summary>
 [DebuggerDisplay("Name={_inner.Name} Level={Level}")]
 public sealed class NLogLogger : IFullLogger, IDisposable
@@ -24,8 +24,8 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     /// <summary>
     /// Initializes a new instance of the <see cref="NLogLogger"/> class.
     /// </summary>
-    /// <param name="inner">The actual nlog logger.</param>
-    /// <exception cref="ArgumentNullException">NLog logger not passed.</exception>
+    /// <param name="inner">The NLog logger instance to wrap.</param>
+    /// <exception cref="ArgumentNullException">Thrown when the NLog logger is null.</exception>
     public NLogLogger(global::NLog.Logger inner)
     {
         _inner = inner ?? throw new ArgumentNullException(nameof(inner));
@@ -541,7 +541,7 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) => _inner.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7);
 
     /// <inheritdoc/>
-    public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) => _inner.Error(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8);
+    public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) => _inner.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8);
 
     /// <inheritdoc/>
     public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) => _inner.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9);
@@ -562,10 +562,10 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     private void OnInnerLoggerReconfigured(object? sender, EventArgs e) => SetLogLevel();
 
     /// <summary>
-    /// Works out the log level.
+    /// Determines the current effective log level based on NLog configuration.
     /// </summary>
     /// <remarks>
-    /// This was done so the Level property doesn't keep getting re-evaluated each time a Write method is called.
+    /// This optimization avoids re-evaluating the log level on each Write method call.
     /// </remarks>
     private void SetLogLevel()
     {

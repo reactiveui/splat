@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace Splat.Microsoft.Extensions.Logging;
 
 /// <summary>
-/// A logging provider which talks to Splat.
+/// Provider that bridges Microsoft.Extensions.Logging to Splat's logging system.
 /// </summary>
 public sealed class MicrosoftExtensionsLogProvider : ILoggerProvider
 {

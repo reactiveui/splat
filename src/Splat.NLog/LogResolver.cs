@@ -6,7 +6,7 @@
 namespace Splat.NLog;
 
 /// <summary>
-/// Resolves a type to a NLog instance.
+/// Caching resolver that creates NLog logger instances for types.
 /// </summary>
 internal static class LogResolver
 {
