@@ -6,7 +6,7 @@
 namespace Splat.Builder;
 
 /// <summary>
-/// IAppInstance.
+/// Application instance interface providing access to dependency injection services.
 /// </summary>
 public interface IAppInstance
 {

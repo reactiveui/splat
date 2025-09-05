@@ -18,7 +18,7 @@ public static class PointMathExtensions
     /// <param name="value">The point value to use for the calculation.</param>
     /// <returns>The point that has been floored.</returns>
     public static PointF Floor(this Point value)
-        => new((float)Math.Floor((double)value.X), (float)Math.Ceiling((double)value.Y));
+        => new((float)Math.Floor((double)value.X), (float)Math.Floor((double)value.Y));
 
     /// <summary>
     /// Determines whether two points are within 'epsilon' of each other.
@@ -102,7 +102,7 @@ public static class PointMathExtensions
     /// Calculates the distance between two points.
     /// </summary>
     /// <param name="value">The point value to use for the calculation.</param>
-    /// <param name="other">The other point to generate for.</param>
+    /// <param name="other">The other point to calculate distance to.</param>
     /// <returns>The distance to the other point.</returns>
     public static float DistanceTo(this PointF value, PointF other)
     {

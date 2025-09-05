@@ -6,7 +6,7 @@
 namespace Splat.Builder;
 
 /// <summary>
-/// IAppBuilder.
+/// Application builder interface for configuring dependency injection and services.
 /// </summary>
 public interface IAppBuilder
 {
@@ -23,7 +23,7 @@ public interface IAppBuilder
     IAppBuilder UseCurrentSplatLocator();
 
     /// <summary>
-    /// Usings the module.
+    /// Uses the module.
     /// </summary>
     /// <typeparam name="T">The Splat Module Type.</typeparam>
     /// <param name="registrationModule">The registration module.</param>
@@ -32,13 +32,13 @@ public interface IAppBuilder
         where T : IModule;
 
     /// <summary>
-    /// Withes the core services.
+    /// Configures the core services.
     /// </summary>
     /// <returns>The builder instance for chaining.</returns>
     IAppBuilder WithCoreServices();
 
     /// <summary>
-    /// Withes the custom registration.
+    /// Configures with custom registration.
     /// </summary>
     /// <param name="configureAction">The configure action.</param>
     /// <returns>The builder instance for chaining.</returns>

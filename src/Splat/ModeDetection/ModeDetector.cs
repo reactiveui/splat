@@ -6,7 +6,7 @@
 namespace Splat;
 
 /// <summary>
-/// A helper class which detect if we are currently running via a unit test or design mode.
+/// A helper class which detects if we are currently running via a unit test or design mode.
 /// </summary>
 public static class ModeDetector
 {

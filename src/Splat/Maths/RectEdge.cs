@@ -6,7 +6,7 @@
 namespace Splat;
 
 /// <summary>
-/// Specified which edge of a rectangle to use.
+/// Specifies which edge of a rectangle to use.
 /// </summary>
 public enum RectEdge
 {

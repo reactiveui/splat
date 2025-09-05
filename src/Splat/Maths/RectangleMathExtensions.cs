@@ -47,7 +47,7 @@ public static class RectangleMathExtensions
                     value.Copy(y: value.Bottom - amount, height: amount),
                     value.Copy(height: value.Height - amount));
             default:
-                throw new ArgumentException("edge");
+                throw new ArgumentException($"Invalid edge: {fromEdge}", nameof(fromEdge));
         }
     }
 
@@ -70,7 +70,7 @@ public static class RectangleMathExtensions
     /// <summary>
     /// <para>Vertically inverts the coordinates of the rectangle within containingRect.</para>
     /// <para>
-    /// value can effectively be used to change the coordinate system of a rectangle.
+    /// This can effectively be used to change the coordinate system of a rectangle.
     /// For example, if `rect` is defined for a coordinate system starting at the
     /// top-left, the result will be a rectangle relative to the bottom-left.
     /// </para>
@@ -82,9 +82,9 @@ public static class RectangleMathExtensions
         value with { Y = containingRect.Height - value.Bottom };
 
     /// <summary>
-    /// <para>Creates a new RectangleF as a Copy of an existing one .</para>
+    /// <para>Creates a new RectangleF as a Copy of an existing one.</para>
     /// <para>
-    /// value is useful when you have a rectangle that is almost what you
+    /// This is useful when you have a rectangle that is almost what you
     /// want, but you just want to change a couple properties.
     /// </para>
     /// </summary>

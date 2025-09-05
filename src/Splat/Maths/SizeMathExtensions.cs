@@ -15,8 +15,8 @@ public static class SizeMathExtensions
     /// <summary>
     /// Determines whether two sizes are within epsilon of each other.
     /// </summary>
-    /// <param name="value">The size we doing the operation against.</param>
-    /// <param name="other">The size to compare if we are equal to.</param>
+    /// <param name="value">The size we are doing the operation against.</param>
+    /// <param name="other">The size to compare for equality.</param>
     /// <param name="epsilon">The tolerated epsilon value.</param>
     /// <returns>If the value is equal based on the epsilon.</returns>
     public static bool WithinEpsilonOf(this SizeF value, SizeF other, float epsilon)
@@ -29,7 +29,7 @@ public static class SizeMathExtensions
     /// <summary>
     /// Scales a size by a scalar value.
     /// </summary>
-    /// <param name="value">The size we doing the operation against.</param>
+    /// <param name="value">The size we are doing the operation against.</param>
     /// <param name="factor">The amount to scale by.</param>
     /// <returns>The scaled size.</returns>
     public static SizeF ScaledBy(this SizeF value, float factor) => new(value.Width * factor, value.Height * factor);
