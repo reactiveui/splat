@@ -18,7 +18,7 @@ public class ExceptionMixinsTests
     public void ThrowArgumentNullExceptionIfNull_ThrowsWhenValueIsNull()
     {
         // Arrange
-        string? value = null;
+        const string? value = null;
         const string paramName = "testParam";
 
         // Act
@@ -49,7 +49,7 @@ public class ExceptionMixinsTests
     public void ThrowArgumentNullExceptionIfNullWithMessage_ThrowsWhenValueIsNull()
     {
         // Arrange
-        string? value = null;
+        const string? value = null;
         const string paramName = "testParam";
         const string message = "Test error message";
 

@@ -14,6 +14,7 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring;
 [SuppressMessage("Usage", "CA2201:Do not raise reserved exception types", Justification = "Deliberate Usage")]
 [SuppressMessage("StyleCop", "CA1034: Nested types should not be visible", Justification = "Test Class")]
 [TestFixture]
+[NonParallelizable] // ensure this logical group doesn't run alongside others
 public static class EnableFeatureUsageTrackingExtensionsTests
 {
     static EnableFeatureUsageTrackingExtensionsTests() => Locator.CurrentMutable.InitializeSplat();

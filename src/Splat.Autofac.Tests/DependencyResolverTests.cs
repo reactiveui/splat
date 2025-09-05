@@ -25,11 +25,11 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
         var builder = new ContainerBuilder();
         var autofacResolver = builder.UseAutofacDependencyResolver();
 
-        var foo = 5;
+        const int foo = 5;
         Locator.CurrentMutable.Register(() => foo, null);
 
-        var bar = 4;
-        var contract = "foo";
+        const int bar = 4;
+        const string contract = "foo";
         Locator.CurrentMutable.Register(() => bar, null, contract);
 
         autofacResolver.SetLifetimeScope(builder.Build());

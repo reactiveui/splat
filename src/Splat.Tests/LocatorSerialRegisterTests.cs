@@ -339,7 +339,8 @@ public class LocatorSerialRegisterTests
         currentMutable.UnregisterAll<IDummyInterface>();
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(type, Is.TypeOf<IDummyInterface>());
+            // 'type' is a System.Type; compare to typeof(...)
+            Assert.That(type, Is.EqualTo(typeof(IDummyInterface)));
             Assert.That(contract, Is.Null);
             Assert.That(unregisterAllCalled, Is.True);
         }
@@ -348,7 +349,7 @@ public class LocatorSerialRegisterTests
         currentMutable.UnregisterAll<IEnableLogger>("test");
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(type, Is.TypeOf<IEnableLogger>());
+            Assert.That(type, Is.EqualTo(typeof(IEnableLogger)));
             Assert.That(contract, Is.EqualTo("test"));
             Assert.That(unregisterAllCalled, Is.True);
         }
@@ -377,7 +378,8 @@ public class LocatorSerialRegisterTests
         currentMutable.UnregisterCurrent<IDummyInterface>();
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(type, Is.TypeOf<IDummyInterface>());
+            // 'type' is a System.Type; compare to typeof(...)
+            Assert.That(type, Is.EqualTo(typeof(IDummyInterface)));
             Assert.That(contract, Is.Null);
             Assert.That(unregisterAllCalled, Is.True);
         }
@@ -386,7 +388,7 @@ public class LocatorSerialRegisterTests
         currentMutable.UnregisterCurrent<IEnableLogger>("test");
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(type, Is.TypeOf<IEnableLogger>());
+            Assert.That(type, Is.EqualTo(typeof(IEnableLogger)));
             Assert.That(contract, Is.EqualTo("test"));
             Assert.That(unregisterAllCalled, Is.True);
         }

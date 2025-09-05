@@ -23,7 +23,7 @@ public class DependencyResolverTests
         var builder = new Container();
         builder.UseDryIocDependencyResolver();
 
-        var foo = 5;
+        const int foo = 5;
         Assert.Throws<ArgumentNullException>(() => AppLocator.CurrentMutable.Register(() => foo, null));
 
         // Tests skipped as functionality removed.

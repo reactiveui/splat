@@ -24,11 +24,11 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
     {
         var resolver = GetDependencyResolver();
 
-        var foo = 5;
+        const int foo = 5;
         resolver.Register(() => foo, null);
 
-        var bar = 4;
-        var contract = "foo";
+        const int bar = 4;
+        const string contract = "foo";
         resolver.Register(() => bar, null, contract);
 
         Assert.That(resolver.HasRegistration(null), Is.True);
