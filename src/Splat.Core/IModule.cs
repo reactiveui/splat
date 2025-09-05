@@ -6,10 +6,8 @@
 namespace Splat.Builder;
 
 /// <summary>
-/// <summary>
 /// Defines a contract for ReactiveUI modules that can configure dependency injection.
 /// This provides an AOT-compatible way to register services.
-/// </summary>
 /// </summary>
 public interface IModule
 {

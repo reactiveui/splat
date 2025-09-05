@@ -10,9 +10,7 @@ using Exceptionless;
 namespace Splat.Exceptionless;
 
 /// <summary>
-/// <summary>
 /// Exceptionless Logger into Splat.
-/// </summary>
 /// </summary>
 [DebuggerDisplay("Name={_sourceType} Level={Level}")]
 public sealed class ExceptionlessSplatLogger : ILogger

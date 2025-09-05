@@ -8,9 +8,7 @@ using Splat.ApplicationPerformanceMonitoring;
 namespace Splat;
 
 /// <summary>
-/// <summary>
 /// Feature Usage Tracking Client for AppCenter.
-/// </summary>
 /// </summary>
 public sealed class AppCenterFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
 {
