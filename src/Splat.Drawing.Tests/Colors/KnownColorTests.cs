@@ -1,6 +1,6 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.Tests.Colors;
@@ -8,30 +8,35 @@ namespace Splat.Tests.Colors;
 /// <summary>
 /// Unit Tests for Known Color logic.
 /// </summary>
+[TestFixture]
 public class KnownColorTests
 {
     /// <summary>
-    /// Gets the test data for FromKnownColor.
+    /// Gets all KnownColor enum values for parameterized testing.
     /// </summary>
-    public static IEnumerable<object[]> KnownColorEnums { get; } = XUnitHelpers.GetEnumAsTestTheory<KnownColor>();
+    public static IEnumerable<KnownColor> KnownColorValues => Enum.GetValues<KnownColor>();
 
     /// <summary>
     /// Tests to ensure a name is returned from a number akin to a KnownColor.
     /// </summary>
     /// <param name="knownColor">Known Color Enum to check.</param>
-    [Test]
-    [TestCaseSource(nameof(KnownColorEnums))]
+    [TestCaseSource(nameof(KnownColorValues))]
     public void GetNameReturnsName(KnownColor knownColor)
     {
 #if !NET_2_0
         if ((short)knownColor > 167)
         {
-            // can't assess these.
+            // Can't assess these legacy values in this target — match original behavior.
             return;
         }
 #endif
 
         var name = KnownColors.GetName(knownColor);
-        Assert.That(string.IsNullOrWhiteSpace(name, Is.False));
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(name, Is.Not.Null.And.Not.Empty);
+            Assert.That(name!.Trim(), Is.Not.Empty); // no whitespace-only names
+        }
     }
 }

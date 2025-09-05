@@ -1,8 +1,9 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using Splat.ApplicationPerformanceMonitoring;
 
 namespace Splat.Tests.ApplicationPerformanceMonitoring;
@@ -11,13 +12,14 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring;
 /// Common Unit Tests for Feature Usage Tracking.
 /// </summary>
 [TestFixture]
+[SuppressMessage("StyleCop", "CA1034: Nested types should not be visible", Justification = "Test Class")]
 public static class BaseFeatureUsageTrackingTests
 {
     /// <summary>
     /// Unit Tests for the constructor.
     /// </summary>
     /// <typeparam name="TFeatureUsageTracking">Type of Feature Usage Tracking Session Class to test.</typeparam>
-[TestFixture]
+    [TestFixture]
     public abstract class BaseConstructorTests<TFeatureUsageTracking>
         where TFeatureUsageTracking : IFeatureUsageTrackingSession<Guid>
     {
@@ -30,9 +32,12 @@ public static class BaseFeatureUsageTrackingTests
             var featureName = Guid.NewGuid().ToString();
             var instance = GetFeatureUsageTrackingSession(featureName);
             Assert.That(instance, Is.Not.Null);
-            Assert.That(instance.FeatureName, Is.EqualTo(featureName));
-            Assert.That(instance.FeatureReference, Is.Not.EqualTo(Guid.Empty));
-            Assert.That(instance.ParentReference, Is.EqualTo(Guid.Empty));
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(instance.FeatureName, Is.EqualTo(featureName));
+                Assert.That(instance.FeatureReference, Is.Not.EqualTo(Guid.Empty));
+                Assert.That(instance.ParentReference, Is.EqualTo(Guid.Empty));
+            }
         }
 
         /// <summary>
@@ -47,7 +52,7 @@ public static class BaseFeatureUsageTrackingTests
     /// Unit Tests for the sub-feature method.
     /// </summary>
     /// <typeparam name="TFeatureUsageTracking">Type of Feature Usage Tracking Session Class to test.</typeparam>
-[TestFixture]
+    [TestFixture]
     public abstract class BaseSubFeatureMethodTests<TFeatureUsageTracking>
         where TFeatureUsageTracking : IFeatureUsageTrackingSession<Guid>
     {
@@ -60,9 +65,12 @@ public static class BaseFeatureUsageTrackingTests
             var featureName = Guid.NewGuid().ToString();
             var instance = GetFeatureUsageTrackingSession(featureName);
             Assert.That(instance, Is.Not.Null);
-            Assert.That(instance.FeatureName, Is.EqualTo(featureName));
-            Assert.That(instance.FeatureReference, Is.Not.EqualTo(Guid.Empty));
-            Assert.That(instance.ParentReference, Is.EqualTo(Guid.Empty));
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(instance.FeatureName, Is.EqualTo(featureName));
+                Assert.That(instance.FeatureReference, Is.Not.EqualTo(Guid.Empty));
+                Assert.That(instance.ParentReference, Is.EqualTo(Guid.Empty));
+            }
 
             var subfeatureName = Guid.NewGuid().ToString();
             var subfeature = instance.SubFeature(subfeatureName);
@@ -70,9 +78,12 @@ public static class BaseFeatureUsageTrackingTests
 
             var genericSubfeature = subfeature as IFeatureUsageTrackingSession<Guid>;
             Assert.That(genericSubfeature, Is.Not.Null);
-            Assert.That(genericSubfeature?.FeatureName, Is.EqualTo(subfeatureName));
-            Assert.That(genericSubfeature?.FeatureReference, Is.Not.EqualTo(Guid.Empty));
-            Assert.That(genericSubfeature?.ParentReference, Is.EqualTo(instance.FeatureReference));
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(genericSubfeature?.FeatureName, Is.EqualTo(subfeatureName));
+                Assert.That(genericSubfeature?.FeatureReference, Is.Not.EqualTo(Guid.Empty));
+                Assert.That(genericSubfeature?.ParentReference, Is.EqualTo(instance.FeatureReference));
+            }
         }
 
         /// <summary>

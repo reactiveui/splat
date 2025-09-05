@@ -1,6 +1,6 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Tests.Mocks;
@@ -36,8 +36,11 @@ public class ActionLoggerTests
 
         fullLogger.Write("This is a test.", LogLevel.Debug);
 
-        Assert.That(passedMessage, Is.EqualTo("This is a test."));
-        Assert.That(passedLevel, Is.EqualTo(LogLevel.Debug));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(passedMessage, Is.EqualTo("This is a test."));
+            Assert.That(passedLevel, Is.EqualTo(LogLevel.Debug));
+        }
     }
 
     /// <summary>
@@ -65,9 +68,12 @@ public class ActionLoggerTests
 
         fullLogger.Debug<DummyObjectClass1>("This is a test.");
 
-        Assert.That(passedMessage, Is.EqualTo("This is a test."));
-        Assert.That(passedLevel, Is.EqualTo(LogLevel.Debug));
-        Assert.That(passedType, Is.EqualTo(typeof(DummyObjectClass1)));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(passedMessage, Is.EqualTo("This is a test."));
+            Assert.That(passedLevel, Is.EqualTo(LogLevel.Debug));
+            Assert.That(passedType, Is.EqualTo(typeof(DummyObjectClass1)));
+        }
     }
 
     /// <summary>
@@ -95,9 +101,12 @@ public class ActionLoggerTests
 
         fullLogger.Debug<DummyObjectClass2>("This is a test.");
 
-        Assert.That(passedMessage, Is.EqualTo("This is a test."));
-        Assert.That(passedLevel, Is.EqualTo(LogLevel.Debug));
-        Assert.That(passedType, Is.EqualTo(typeof(DummyObjectClass2)));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(passedMessage, Is.EqualTo("This is a test."));
+            Assert.That(passedLevel, Is.EqualTo(LogLevel.Debug));
+            Assert.That(passedType, Is.EqualTo(typeof(DummyObjectClass2)));
+        }
     }
 
     /// <summary>
@@ -125,9 +134,12 @@ public class ActionLoggerTests
 
         fullLogger.Info<DummyObjectClass1>("This is a test.");
 
-        Assert.That(passedMessage, Is.EqualTo("This is a test."));
-        Assert.That(passedLevel, Is.EqualTo(LogLevel.Info));
-        Assert.That(passedType, Is.EqualTo(typeof(DummyObjectClass1)));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(passedMessage, Is.EqualTo("This is a test."));
+            Assert.That(passedLevel, Is.EqualTo(LogLevel.Info));
+            Assert.That(passedType, Is.EqualTo(typeof(DummyObjectClass1)));
+        }
     }
 
     /// <summary>
@@ -155,9 +167,12 @@ public class ActionLoggerTests
 
         fullLogger.Info<DummyObjectClass2>("This is a test.");
 
-        Assert.That(passedMessage, Is.EqualTo("This is a test."));
-        Assert.That(passedLevel, Is.EqualTo(LogLevel.Info));
-        Assert.That(passedType, Is.EqualTo(typeof(DummyObjectClass2)));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(passedMessage, Is.EqualTo("This is a test."));
+            Assert.That(passedLevel, Is.EqualTo(LogLevel.Info));
+            Assert.That(passedType, Is.EqualTo(typeof(DummyObjectClass2)));
+        }
     }
 
     /// <summary>
@@ -185,9 +200,12 @@ public class ActionLoggerTests
 
         fullLogger.Warn<DummyObjectClass1>("This is a test.");
 
-        Assert.That(passedMessage, Is.EqualTo("This is a test."));
-        Assert.That(passedLevel, Is.EqualTo(LogLevel.Warn));
-        Assert.That(passedType, Is.EqualTo(typeof(DummyObjectClass1)));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(passedMessage, Is.EqualTo("This is a test."));
+            Assert.That(passedLevel, Is.EqualTo(LogLevel.Warn));
+            Assert.That(passedType, Is.EqualTo(typeof(DummyObjectClass1)));
+        }
     }
 
     /// <summary>
@@ -215,9 +233,12 @@ public class ActionLoggerTests
 
         fullLogger.Warn<DummyObjectClass2>("This is a test.");
 
-        Assert.That(passedMessage, Is.EqualTo("This is a test."));
-        Assert.That(passedLevel, Is.EqualTo(LogLevel.Warn));
-        Assert.That(passedType, Is.EqualTo(typeof(DummyObjectClass2)));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(passedMessage, Is.EqualTo("This is a test."));
+            Assert.That(passedLevel, Is.EqualTo(LogLevel.Warn));
+            Assert.That(passedType, Is.EqualTo(typeof(DummyObjectClass2)));
+        }
     }
 
     /// <summary>
@@ -245,9 +266,12 @@ public class ActionLoggerTests
 
         fullLogger.Error<DummyObjectClass1>("This is a test.");
 
-        Assert.That(passedMessage, Is.EqualTo("This is a test."));
-        Assert.That(passedLevel, Is.EqualTo(LogLevel.Error));
-        Assert.That(passedType, Is.EqualTo(typeof(DummyObjectClass1)));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(passedMessage, Is.EqualTo("This is a test."));
+            Assert.That(passedLevel, Is.EqualTo(LogLevel.Error));
+            Assert.That(passedType, Is.EqualTo(typeof(DummyObjectClass1)));
+        }
     }
 
     /// <summary>
@@ -275,9 +299,12 @@ public class ActionLoggerTests
 
         fullLogger.Error<DummyObjectClass2>("This is a test.");
 
-        Assert.That(passedMessage, Is.EqualTo("This is a test."));
-        Assert.That(passedLevel, Is.EqualTo(LogLevel.Error));
-        Assert.That(passedType, Is.EqualTo(typeof(DummyObjectClass2)));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(passedMessage, Is.EqualTo("This is a test."));
+            Assert.That(passedLevel, Is.EqualTo(LogLevel.Error));
+            Assert.That(passedType, Is.EqualTo(typeof(DummyObjectClass2)));
+        }
     }
 
     /// <summary>
@@ -305,9 +332,12 @@ public class ActionLoggerTests
 
         fullLogger.Fatal<DummyObjectClass1>("This is a test.");
 
-        Assert.That(passedMessage, Is.EqualTo("This is a test."));
-        Assert.That(passedLevel, Is.EqualTo(LogLevel.Fatal));
-        Assert.That(passedType, Is.EqualTo(typeof(DummyObjectClass1)));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(passedMessage, Is.EqualTo("This is a test."));
+            Assert.That(passedLevel, Is.EqualTo(LogLevel.Fatal));
+            Assert.That(passedType, Is.EqualTo(typeof(DummyObjectClass1)));
+        }
     }
 
     /// <summary>
@@ -335,8 +365,11 @@ public class ActionLoggerTests
 
         fullLogger.Fatal<DummyObjectClass2>("This is a test.");
 
-        Assert.That(passedMessage, Is.EqualTo("This is a test."));
-        Assert.That(passedLevel, Is.EqualTo(LogLevel.Fatal));
-        Assert.That(passedType, Is.EqualTo(typeof(DummyObjectClass2)));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(passedMessage, Is.EqualTo("This is a test."));
+            Assert.That(passedLevel, Is.EqualTo(LogLevel.Fatal));
+            Assert.That(passedType, Is.EqualTo(typeof(DummyObjectClass2)));
+        }
     }
 }

@@ -1,8 +1,9 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using Splat.ApplicationPerformanceMonitoring;
 
 namespace Splat.Tests.ApplicationPerformanceMonitoring;
@@ -11,13 +12,14 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring;
 /// Common unit tests for APM View Tracking.
 /// </summary>
 [TestFixture]
+[SuppressMessage("StyleCop", "CA1034: Nested types should not be visible", Justification = "Test Class")]
 public static class BaseViewTrackingTests
 {
     /// <summary>
     /// Unit Tests for the View Tracking Constructor.
     /// </summary>
     /// <typeparam name="TViewTracking">The type for the view tracking class to construcst.</typeparam>
-[TestFixture]
+    [TestFixture]
     public abstract class ConstructorMethod<TViewTracking>
         where TViewTracking : IViewTracking
     {

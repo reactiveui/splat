@@ -60,7 +60,7 @@ public class AssemblyFinderTests
         var result = AssemblyFinder.AttemptToLoadType<int>("NonExistent.ValueType");
 
         // Assert
-        Assert.That(result, Is.EqualTo(0)); // Default for int
+        Assert.That(result, Is.Zero); // Default for int
     }
 
     /// <summary>

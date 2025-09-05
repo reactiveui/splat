@@ -1,6 +1,6 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Tests.Mocks;
@@ -11,7 +11,6 @@ namespace Splat.Tests.Logging;
 /// Contains common tests associated with all loggers.
 /// </summary>
 /// <typeparam name="T">The type of logger.</typeparam>
-[TestFixture]
 public abstract class LoggerBase<T>
     where T : ILogger
 {
@@ -80,7 +79,7 @@ public abstract class LoggerBase<T>
 
         logger.Write("This is a test.", LogLevel.Debug);
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -93,7 +92,7 @@ public abstract class LoggerBase<T>
 
         logger.Write("This is a test.", LogLevel.Info);
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -106,7 +105,7 @@ public abstract class LoggerBase<T>
 
         logger.Write("This is a test.", LogLevel.Warn);
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -119,7 +118,7 @@ public abstract class LoggerBase<T>
 
         logger.Write("This is a test.", LogLevel.Error);
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -132,7 +131,7 @@ public abstract class LoggerBase<T>
 
         logger.Write("This is a test.", LogLevel.Fatal);
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -143,7 +142,7 @@ public abstract class LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Write(FormatHelper.Exception, "1", LogLevel.Debug);
-        Assert.That(target.Logs.Last(, Is.EqualTo($"1 {FormatHelper.Exception}")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo($"1 {FormatHelper.Exception}"));
     }
 
     /// <summary>
@@ -165,7 +164,7 @@ public abstract class LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Write(FormatHelper.Exception, "1", LogLevel.Info);
-        Assert.That(target.Logs.Last(, Is.EqualTo($"1 {FormatHelper.Exception}")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo($"1 {FormatHelper.Exception}"));
     }
 
     /// <summary>
@@ -187,7 +186,7 @@ public abstract class LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Write(FormatHelper.Exception, "1", LogLevel.Warn);
-        Assert.That(target.Logs.Last(, Is.EqualTo($"1 {FormatHelper.Exception}")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo($"1 {FormatHelper.Exception}"));
     }
 
     /// <summary>
@@ -209,7 +208,7 @@ public abstract class LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Error);
         logger.Write(FormatHelper.Exception, "1", LogLevel.Error);
-        Assert.That(target.Logs.Last(, Is.EqualTo($"1 {FormatHelper.Exception}")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo($"1 {FormatHelper.Exception}"));
     }
 
     /// <summary>
@@ -231,7 +230,7 @@ public abstract class LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Write(FormatHelper.Exception, "1", LogLevel.Fatal);
-        Assert.That(target.Logs.Last(, Is.EqualTo($"1 {FormatHelper.Exception}")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo($"1 {FormatHelper.Exception}"));
     }
 
     /// <summary>
@@ -242,7 +241,7 @@ public abstract class LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Write("1", typeof(DummyObjectClass1), LogLevel.Debug);
-        Assert.That(target.Logs.Last(, Is.EqualTo("1")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1"));
     }
 
     /// <summary>
@@ -264,7 +263,7 @@ public abstract class LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Write("1", typeof(DummyObjectClass1), LogLevel.Info);
-        Assert.That(target.Logs.Last(, Is.EqualTo("1")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1"));
     }
 
     /// <summary>
@@ -286,7 +285,7 @@ public abstract class LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Write("1", typeof(DummyObjectClass1), LogLevel.Warn);
-        Assert.That(target.Logs.Last(, Is.EqualTo("1")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1"));
     }
 
     /// <summary>
@@ -308,7 +307,7 @@ public abstract class LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Error);
         logger.Write("1", typeof(DummyObjectClass1), LogLevel.Error);
-        Assert.That(target.Logs.Last(, Is.EqualTo("1")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1"));
     }
 
     /// <summary>
@@ -330,7 +329,7 @@ public abstract class LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Write("1", typeof(DummyObjectClass1), LogLevel.Fatal);
-        Assert.That(target.Logs.Last(, Is.EqualTo("1")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1"));
     }
 
     /// <summary>
@@ -341,7 +340,7 @@ public abstract class LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Write(FormatHelper.Exception, "1", typeof(DummyObjectClass1), LogLevel.Debug);
-        Assert.That(target.Logs.Last(, Is.EqualTo($"1 {FormatHelper.Exception}")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo($"1 {FormatHelper.Exception}"));
     }
 
     /// <summary>
@@ -363,7 +362,7 @@ public abstract class LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Write(FormatHelper.Exception, "1", typeof(DummyObjectClass1), LogLevel.Info);
-        Assert.That(target.Logs.Last(, Is.EqualTo($"1 {FormatHelper.Exception}")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo($"1 {FormatHelper.Exception}"));
     }
 
     /// <summary>
@@ -385,7 +384,7 @@ public abstract class LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Write(FormatHelper.Exception, "1", typeof(DummyObjectClass1), LogLevel.Warn);
-        Assert.That(target.Logs.Last(, Is.EqualTo($"1 {FormatHelper.Exception}")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo($"1 {FormatHelper.Exception}"));
     }
 
     /// <summary>
@@ -407,7 +406,7 @@ public abstract class LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Error);
         logger.Write(FormatHelper.Exception, "1", typeof(DummyObjectClass1), LogLevel.Error);
-        Assert.That(target.Logs.Last(, Is.EqualTo($"1 {FormatHelper.Exception}")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo($"1 {FormatHelper.Exception}"));
     }
 
     /// <summary>
@@ -429,7 +428,7 @@ public abstract class LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Write(FormatHelper.Exception, "1", typeof(DummyObjectClass1), LogLevel.Fatal);
-        Assert.That(target.Logs.Last(, Is.EqualTo($"1 {FormatHelper.Exception}")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo($"1 {FormatHelper.Exception}"));
     }
 
     /// <summary>

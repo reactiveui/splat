@@ -17,7 +17,4 @@
     <ProjectReference Include="..\Splat.Microsoft.Extensions.DependencyInjection\Splat.Microsoft.Extensions.DependencyInjection.csproj" />
     <ProjectReference Include="..\Splat\Splat.csproj" />
   </ItemGroup>
-
-
-
 </Project>

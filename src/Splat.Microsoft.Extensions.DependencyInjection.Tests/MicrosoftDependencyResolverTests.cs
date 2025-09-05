@@ -1,4 +1,9 @@
-﻿using Splat.Microsoft.Extensions.DependencyInjection;
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using Splat.Microsoft.Extensions.DependencyInjection;
 
 namespace Splat.Tests.ServiceLocation;
 
@@ -28,9 +33,12 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
         Assert.That(resolver.HasRegistration(null), Is.True);
 
         var value = resolver.GetService(null);
-        Assert.That(value, Is.EqualTo(foo));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(value, Is.EqualTo(foo));
 
-        Assert.That(resolver.HasRegistration(null, contract), Is.True);
+            Assert.That(resolver.HasRegistration(null, contract), Is.True);
+        }
 
         value = resolver.GetService(null, contract);
         Assert.That(value, Is.EqualTo(bar));
@@ -41,7 +49,7 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
         resolver.UnregisterCurrent(null);
 
         var valuesNC = resolver.GetServices(null);
-        Assert.That(valuesNC.Count(), Is.EqualTo(0));
+        Assert.That(valuesNC.Count(), Is.Zero);
 
         var valuesC = resolver.GetServices(null, contract);
         Assert.That(valuesC.Count(), Is.EqualTo(1));
@@ -49,12 +57,12 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
         resolver.UnregisterAll(null);
 
         valuesNC = resolver.GetServices(null);
-        Assert.That(valuesNC.Count(), Is.EqualTo(0));
+        Assert.That(valuesNC.Count(), Is.Zero);
 
         resolver.UnregisterAll(null, contract);
 
         valuesC = resolver.GetServices(null, contract);
-        Assert.That(valuesC.Count(), Is.EqualTo(0));
+        Assert.That(valuesC.Count(), Is.Zero);
     }
 
     /// <inheritdoc />

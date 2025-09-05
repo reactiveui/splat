@@ -50,7 +50,7 @@ namespace Splat.Builder.Tests
         public void CreateSplatBuilderWithConfigureActionThrowsOnNullResolver()
         {
             IMutableDependencyResolver resolver = (IMutableDependencyResolver)null!;
-            Assert.Throws<ArgumentNullException>(() => resolver.CreateSplatBuilder(r => { }));
+            Assert.Throws<ArgumentNullException>(() => resolver.CreateSplatBuilder(_ => { }));
         }
 
         /// <summary>

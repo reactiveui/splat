@@ -21,9 +21,11 @@ public class ExceptionMixinsTests
         string? value = null;
         const string paramName = "testParam";
 
-        // Act & Assert
+        // Act
         var exception = Assert.Throws<ArgumentNullException>(() => value.ThrowArgumentNullExceptionIfNull(paramName));
-        Assert.That(exception.ParamName, Is.EqualTo(paramName));
+
+        // Assert
+        Assert.That(exception!.ParamName, Is.EqualTo(paramName));
     }
 
     /// <summary>
@@ -37,7 +39,7 @@ public class ExceptionMixinsTests
         const string paramName = "testParam";
 
         // Act & Assert - should not throw
-        value.ThrowArgumentNullExceptionIfNull(paramName);
+        Assert.DoesNotThrow(() => value.ThrowArgumentNullExceptionIfNull(paramName));
     }
 
     /// <summary>
@@ -51,10 +53,15 @@ public class ExceptionMixinsTests
         const string paramName = "testParam";
         const string message = "Test error message";
 
-        // Act & Assert
+        // Act
         var exception = Assert.Throws<ArgumentNullException>(() => value.ThrowArgumentNullExceptionIfNull(paramName, message));
-        Assert.That(exception.ParamName, Is.EqualTo(paramName));
-        Assert.That(exception.Message, StringComparison.InvariantCulture, Does.Contain(message));
+
+        // Assert
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(exception!.ParamName, Is.EqualTo(paramName));
+            Assert.That(exception.Message, Does.Contain(message));
+        }
     }
 
     /// <summary>
@@ -69,7 +76,7 @@ public class ExceptionMixinsTests
         const string message = "Test error message";
 
         // Act & Assert - should not throw
-        value.ThrowArgumentNullExceptionIfNull(paramName, message);
+        Assert.DoesNotThrow(() => value.ThrowArgumentNullExceptionIfNull(paramName, message));
     }
 
     /// <summary>
@@ -82,9 +89,11 @@ public class ExceptionMixinsTests
         object? value = null;
         const string paramName = "objectParam";
 
-        // Act & Assert
+        // Act
         var exception = Assert.Throws<ArgumentNullException>(() => value.ThrowArgumentNullExceptionIfNull(paramName));
-        Assert.That(exception.ParamName, Is.EqualTo(paramName));
+
+        // Assert
+        Assert.That(exception!.ParamName, Is.EqualTo(paramName));
     }
 
     /// <summary>
@@ -97,9 +106,11 @@ public class ExceptionMixinsTests
         int? value = null;
         const string paramName = "intParam";
 
-        // Act & Assert
+        // Act
         var exception = Assert.Throws<ArgumentNullException>(() => value.ThrowArgumentNullExceptionIfNull(paramName));
-        Assert.That(exception.ParamName, Is.EqualTo(paramName));
+
+        // Assert
+        Assert.That(exception!.ParamName, Is.EqualTo(paramName));
     }
 
     /// <summary>
@@ -113,6 +124,6 @@ public class ExceptionMixinsTests
         const string paramName = "intParam";
 
         // Act & Assert - should not throw
-        value.ThrowArgumentNullExceptionIfNull(paramName);
+        Assert.DoesNotThrow(() => value.ThrowArgumentNullExceptionIfNull(paramName));
     }
 }

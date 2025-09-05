@@ -133,9 +133,12 @@ public class SizeMathExtensionsTests
         // Act
         var result = size.ScaledBy(factor);
 
-        // Assert
-        Assert.That(result.Width, Is.EqualTo(10.0f));
-        Assert.That(result.Height, Is.EqualTo(15.0f));
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(result.Width, Is.EqualTo(10.0f));
+            Assert.That(result.Height, Is.EqualTo(15.0f));
+        }
     }
 
     /// <summary>
@@ -151,9 +154,12 @@ public class SizeMathExtensionsTests
         // Act
         var result = size.ScaledBy(factor);
 
-        // Assert
-        Assert.That(result.Width, Is.EqualTo(0.0f));
-        Assert.That(result.Height, Is.EqualTo(0.0f));
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(result.Width, Is.Zero);
+            Assert.That(result.Height, Is.Zero);
+        }
     }
 
     /// <summary>
@@ -169,9 +175,12 @@ public class SizeMathExtensionsTests
         // Act
         var result = size.ScaledBy(factor);
 
-        // Assert
-        Assert.That(result.Width, Is.EqualTo(-8.0f));
-        Assert.That(result.Height, Is.EqualTo(-12.0f));
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(result.Width, Is.EqualTo(-8.0f));
+            Assert.That(result.Height, Is.EqualTo(-12.0f));
+        }
     }
 
     /// <summary>
@@ -187,9 +196,12 @@ public class SizeMathExtensionsTests
         // Act
         var result = size.ScaledBy(factor);
 
-        // Assert
-        Assert.That(result.Width, Is.EqualTo(5.0f));
-        Assert.That(result.Height, Is.EqualTo(10.0f));
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(result.Width, Is.EqualTo(5.0f));
+            Assert.That(result.Height, Is.EqualTo(10.0f));
+        }
     }
 
     /// <summary>
@@ -205,9 +217,12 @@ public class SizeMathExtensionsTests
         // Act
         var result = size.ScaledBy(factor);
 
-        // Assert
-        Assert.That(result.Width, Is.EqualTo(1000.0f));
-        Assert.That(result.Height, Is.EqualTo(2000.0f));
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(result.Width, Is.EqualTo(1000.0f));
+            Assert.That(result.Height, Is.EqualTo(2000.0f));
+        }
     }
 
     /// <summary>
@@ -223,8 +238,11 @@ public class SizeMathExtensionsTests
         // Act
         var result = size.ScaledBy(factor);
 
-        // Assert
-        Assert.That(result.Width, Is.EqualTo(0.1f));
-        Assert.That(result.Height, Is.EqualTo(0.2f));
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(result.Width, Is.EqualTo(0.1f));
+            Assert.That(result.Height, Is.EqualTo(0.2f));
+        }
     }
 }

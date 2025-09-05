@@ -138,11 +138,10 @@ public class DisposableTests
     /// Test CompositeDisposable with negative capacity throws ArgumentOutOfRangeException.
     /// </summary>
     [Test]
-    public void CompositeDisposable_NegativeCapacity_ThrowsArgumentOutOfRangeException()
-    {
+    public void CompositeDisposable_NegativeCapacity_ThrowsArgumentOutOfRangeException() =>
+
         // Act & Assert
         Assert.Throws<ArgumentOutOfRangeException>(() => new CompositeDisposable(-1));
-    }
 
     /// <summary>
     /// Test CompositeDisposable with array constructor.
@@ -161,9 +160,12 @@ public class DisposableTests
         // Act
         disposable.Dispose();
 
-        // Assert
-        Assert.That(disposed1, Is.True);
-        Assert.That(disposed2, Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(disposed1, Is.True);
+            Assert.That(disposed2, Is.True);
+        }
     }
 
     /// <summary>
@@ -188,41 +190,41 @@ public class DisposableTests
         // Act
         compositeDisposable.Dispose();
 
-        // Assert
-        Assert.That(disposed1, Is.True);
-        Assert.That(disposed2, Is.True);
-        Assert.That(disposed3, Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(disposed1, Is.True);
+            Assert.That(disposed2, Is.True);
+            Assert.That(disposed3, Is.True);
+        }
     }
 
     /// <summary>
     /// Test CompositeDisposable throws for null array.
     /// </summary>
     [Test]
-    public void CompositeDisposable_NullArray_ThrowsArgumentNullException()
-    {
+    public void CompositeDisposable_NullArray_ThrowsArgumentNullException() =>
+
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => new CompositeDisposable((IDisposable[])null!));
-    }
 
     /// <summary>
     /// Test CompositeDisposable throws for null enumerable.
     /// </summary>
     [Test]
-    public void CompositeDisposable_NullEnumerable_ThrowsArgumentNullException()
-    {
+    public void CompositeDisposable_NullEnumerable_ThrowsArgumentNullException() =>
+
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => new CompositeDisposable((IEnumerable<IDisposable>)null!));
-    }
 
     /// <summary>
     /// Test CompositeDisposable throws for null item in array.
     /// </summary>
     [Test]
-    public void CompositeDisposable_NullItemInArray_ThrowsArgumentException()
-    {
+    public void CompositeDisposable_NullItemInArray_ThrowsArgumentException() =>
+
         // Act & Assert
         Assert.Throws<ArgumentException>(() => new CompositeDisposable(new ActionDisposable(() => { }), null!));
-    }
 
     /// <summary>
     /// Test CompositeDisposable throws for null item in enumerable.

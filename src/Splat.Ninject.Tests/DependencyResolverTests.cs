@@ -1,6 +1,6 @@
-// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Ninject;
@@ -29,8 +29,12 @@ public class DependencyResolverTests
         var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
         Assert.That(viewOne, Is.Not.Null);
-        Assert.That(viewOne, Is.TypeOf<ViewOne>());
-        Assert.That(viewTwo, Is.Not.Null);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(viewOne, Is.TypeOf<ViewOne>());
+            Assert.That(viewTwo, Is.Not.Null);
+        }
+
         Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
     }
 
@@ -92,8 +96,11 @@ public class DependencyResolverTests
         var vmOne = AppLocator.Current.GetService<ViewModelOne>();
         var vmTwo = AppLocator.Current.GetService<ViewModelTwo>();
 
-        Assert.That(vmOne, Is.Not.Null);
-        Assert.That(vmTwo, Is.Not.Null);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(vmOne, Is.Not.Null);
+            Assert.That(vmTwo, Is.Not.Null);
+        }
     }
 
     /// <summary>

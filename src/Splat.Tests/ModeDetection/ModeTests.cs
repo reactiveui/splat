@@ -1,4 +1,9 @@
-﻿using Splat.ModeDetection;
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using Splat.ModeDetection;
 
 namespace Splat.Tests.ModeDetection;
 
@@ -54,10 +59,13 @@ public class ModeTests
         var result2 = ModeDetector.InUnitTestRunner();
         var result3 = ModeDetector.InUnitTestRunner();
 
-        // Assert - Should all be the same (cached)
-        Assert.That(result1, Is.True);
-        Assert.That(result2, Is.True);
-        Assert.That(result3, Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert - Should all be the same (cached)
+            Assert.That(result1, Is.True);
+            Assert.That(result2, Is.True);
+            Assert.That(result3, Is.True);
+        }
     }
 
     /// <summary>

@@ -1,6 +1,6 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Common.Test;
@@ -123,8 +123,11 @@ public abstract class BaseDependencyResolverTests<T>
     {
         var resolver = GetDependencyResolver();
 
-        Assert.That(resolver.GetServices<string>(), Is.Not.Null);
-        Assert.That(resolver.GetServices<string>("Landscape"), Is.Not.Null);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(resolver.GetServices<string>(), Is.Not.Null);
+            Assert.That(resolver.GetServices<string>("Landscape"), Is.Not.Null);
+        }
     }
 
     /// <summary>
@@ -138,26 +141,40 @@ public abstract class BaseDependencyResolverTests<T>
         const string contractTwo = "ContractTwo";
         var resolver = GetDependencyResolver();
 
-        Assert.That(resolver.HasRegistration(type), Is.False);
-        Assert.That(resolver.HasRegistration(type, contractOne), Is.False);
-        Assert.That(resolver.HasRegistration(type, contractTwo), Is.False);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(resolver.HasRegistration(type), Is.False);
+            Assert.That(resolver.HasRegistration(type, contractOne), Is.False);
+            Assert.That(resolver.HasRegistration(type, contractTwo), Is.False);
+        }
 
         resolver.Register(() => "unnamed", type);
-        Assert.That(resolver.HasRegistration(type), Is.True);
-        Assert.That(resolver.HasRegistration(type, contractOne), Is.False);
-        Assert.That(resolver.HasRegistration(type, contractTwo), Is.False);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(resolver.HasRegistration(type), Is.True);
+            Assert.That(resolver.HasRegistration(type, contractOne), Is.False);
+            Assert.That(resolver.HasRegistration(type, contractTwo), Is.False);
+        }
+
         resolver.UnregisterAll(type);
 
         resolver.Register(() => contractOne, type, contractOne);
-        Assert.That(resolver.HasRegistration(type), Is.False);
-        Assert.That(resolver.HasRegistration(type, contractOne), Is.True);
-        Assert.That(resolver.HasRegistration(type, contractTwo), Is.False);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(resolver.HasRegistration(type), Is.False);
+            Assert.That(resolver.HasRegistration(type, contractOne), Is.True);
+            Assert.That(resolver.HasRegistration(type, contractTwo), Is.False);
+        }
+
         resolver.UnregisterAll(type, contractOne);
 
         resolver.Register(() => contractTwo, type, contractTwo);
-        Assert.That(resolver.HasRegistration(type), Is.False);
-        Assert.That(resolver.HasRegistration(type, contractOne), Is.False);
-        Assert.That(resolver.HasRegistration(type, contractTwo), Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(resolver.HasRegistration(type), Is.False);
+            Assert.That(resolver.HasRegistration(type, contractOne), Is.False);
+            Assert.That(resolver.HasRegistration(type, contractTwo), Is.True);
+        }
     }
 
     /// <summary>

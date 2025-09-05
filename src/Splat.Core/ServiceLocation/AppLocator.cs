@@ -10,10 +10,7 @@ namespace Splat;
 /// </summary>
 public static class AppLocator
 {
-    static AppLocator()
-    {
-        InternalLocator = new();
-    }
+    static AppLocator() => InternalLocator = new();
 
     /// <summary>
     /// Gets the read only dependency resolver. This class is used throughout

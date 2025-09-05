@@ -1,6 +1,6 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Globalization;
@@ -12,7 +12,6 @@ namespace Splat.Tests.Logging;
 /// <summary>
 /// A base class for testing full loggers that are available.
 /// </summary>
-[TestFixture]
 public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFullLogger>
 {
     /// <summary>
@@ -31,8 +30,11 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
                 return "This is a test.";
             });
 
-        Assert.That(target.Logs, Is.Empty);
-        Assert.That(invoked, Is.False);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs, Is.Empty);
+            Assert.That(invoked, Is.False);
+        }
     }
 
     /// <summary>
@@ -51,8 +53,11 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
                 return "This is a test.";
             });
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
-        Assert.That(invoked, Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+            Assert.That(invoked, Is.True);
+        }
     }
 
     /// <summary>
@@ -71,8 +76,11 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
                 return "This is a test.";
             });
 
-        Assert.That(target.Logs, Is.Empty);
-        Assert.That(invoked, Is.False);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs, Is.Empty);
+            Assert.That(invoked, Is.False);
+        }
     }
 
     /// <summary>
@@ -91,8 +99,11 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
                 return "This is a test.";
             });
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
-        Assert.That(invoked, Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+            Assert.That(invoked, Is.True);
+        }
     }
 
     /// <summary>
@@ -111,8 +122,11 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
                 return "This is a test.";
             });
 
-        Assert.That(target.Logs, Is.Empty);
-        Assert.That(invoked, Is.False);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs, Is.Empty);
+            Assert.That(invoked, Is.False);
+        }
     }
 
     /// <summary>
@@ -131,8 +145,11 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
                 return "This is a test.";
             });
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
-        Assert.That(invoked, Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+            Assert.That(invoked, Is.True);
+        }
     }
 
     /// <summary>
@@ -151,8 +168,11 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
                 return "This is a test.";
             });
 
-        Assert.That(target.Logs, Is.Empty);
-        Assert.That(invoked, Is.False);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs, Is.Empty);
+            Assert.That(invoked, Is.False);
+        }
     }
 
     /// <summary>
@@ -171,8 +191,11 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
                 return "This is a test.";
             });
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
-        Assert.That(invoked, Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+            Assert.That(invoked, Is.True);
+        }
     }
 
     /// <summary>
@@ -191,8 +214,11 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
                 return "This is a test.";
             });
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
-        Assert.That(invoked, Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+            Assert.That(invoked, Is.True);
+        }
     }
 
     /// <summary>
@@ -205,7 +231,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Debug<DummyObjectClass1>("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -218,7 +244,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Debug<DummyObjectClass2>("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -231,7 +257,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Info<DummyObjectClass1>("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -244,7 +270,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Info<DummyObjectClass2>("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -257,7 +283,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Warn<DummyObjectClass1>("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -270,7 +296,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Warn<DummyObjectClass2>("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -283,7 +309,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Error<DummyObjectClass1>("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -296,7 +322,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Error<DummyObjectClass2>("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -309,7 +335,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Fatal<DummyObjectClass1>("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -322,7 +348,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Fatal<DummyObjectClass2>("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -335,7 +361,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Debug(CultureInfo.InvariantCulture, "This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -348,7 +374,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Debug("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -361,7 +387,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Debug(new DummyObjectClass1());
 
-        Assert.That(target.Logs.Last(, Is.EqualTo(typeof(DummyObjectClass1).ToString())).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo(typeof(DummyObjectClass1).ToString()));
     }
 
     /// <summary>
@@ -374,7 +400,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Info(CultureInfo.InvariantCulture, "This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -387,7 +413,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Info(new DummyObjectClass1());
 
-        Assert.That(target.Logs.Last(, Is.EqualTo(typeof(DummyObjectClass1).ToString())).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo(typeof(DummyObjectClass1).ToString()));
     }
 
     /// <summary>
@@ -400,7 +426,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Info("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -413,7 +439,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Warn(CultureInfo.InvariantCulture, "This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -426,7 +452,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Warn("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -439,7 +465,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Warn(new DummyObjectClass1());
 
-        Assert.That(target.Logs.Last(, Is.EqualTo(typeof(DummyObjectClass1).ToString())).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo(typeof(DummyObjectClass1).ToString()));
     }
 
     /// <summary>
@@ -452,7 +478,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Error(CultureInfo.InvariantCulture, "This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -465,7 +491,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Error("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -478,7 +504,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Error(new DummyObjectClass1());
 
-        Assert.That(target.Logs.Last(, Is.EqualTo(typeof(DummyObjectClass1).ToString())).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo(typeof(DummyObjectClass1).ToString()));
     }
 
     /// <summary>
@@ -491,7 +517,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Fatal(CultureInfo.InvariantCulture, "This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -504,7 +530,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Fatal(new DummyObjectClass1());
 
-        Assert.That(target.Logs.Last(, Is.EqualTo(typeof(DummyObjectClass1).ToString())).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo(typeof(DummyObjectClass1).ToString()));
     }
 
     /// <summary>
@@ -517,6 +543,6 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         logger.Fatal("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 }

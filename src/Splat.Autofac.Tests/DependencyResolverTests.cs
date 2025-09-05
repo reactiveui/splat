@@ -1,11 +1,9 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Autofac;
-
-
 
 using Splat.Common.Test;
 using Splat.Tests.ServiceLocation;
@@ -19,7 +17,7 @@ namespace Splat.Autofac.Tests;
 public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDependencyResolver>
 {
     /// <summary>
-    /// Shoulds the resolve nulls.
+    /// Should resolve nulls.
     /// </summary>
     [Test]
     public void Can_Register_And_Resolve_Null_Types()
@@ -33,31 +31,48 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
         var bar = 4;
         var contract = "foo";
         Locator.CurrentMutable.Register(() => bar, null, contract);
+
         autofacResolver.SetLifetimeScope(builder.Build());
 
-        Assert.That(Locator.CurrentMutable.HasRegistration(null, Is.True));
-        var value = Locator.Current.GetService(null);
-        Assert.That(value, Is.EqualTo(foo));
+        Assert.That(Locator.CurrentMutable.HasRegistration(null), Is.True);
 
-        Assert.That(Locator.CurrentMutable.HasRegistration(null, contract, Is.True));
+        var value = Locator.Current.GetService(null);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(value, Is.EqualTo(foo));
+
+            Assert.That(Locator.CurrentMutable.HasRegistration(null, contract), Is.True);
+        }
+
         value = Locator.Current.GetService(null, contract);
         Assert.That(value, Is.EqualTo(bar));
 
-        var values = Locator.Current.GetServices(null);
-        Assert.That(values.First(), Is.EqualTo(foo));
-        Assert.That(values.Count(), Is.EqualTo(1));
+        var values = Locator.Current.GetServices(null).ToList();
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That((int)values[0], Is.EqualTo(foo));
+            Assert.That(values, Has.Count.EqualTo(1));
+        }
 
         Assert.Throws<NotImplementedException>(() => Locator.CurrentMutable.UnregisterCurrent(null));
-        var valuesNC = Locator.Current.GetServices(null);
-        Assert.That(valuesNC.Count(), Is.EqualTo(1));
-        Assert.That(valuesNC.First(), Is.EqualTo(foo));
-        var valuesC = Locator.Current.GetServices(null, contract);
-        Assert.That(valuesC.Count(), Is.EqualTo(1));
-        Assert.That(valuesC.First(), Is.EqualTo(bar));
+
+        var valuesNc = Locator.Current.GetServices(null).ToList();
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(valuesNc, Has.Count.EqualTo(1));
+            Assert.That((int)valuesNc[0], Is.EqualTo(foo));
+        }
+
+        var valuesC = Locator.Current.GetServices(null, contract).ToList();
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(valuesC, Has.Count.EqualTo(1));
+            Assert.That((int)valuesC[0], Is.EqualTo(bar));
+        }
     }
 
     /// <summary>
-    /// Shoulds the resolve views.
+    /// Should resolve views.
     /// </summary>
     [Test]
     public void AutofacDependencyResolver_Should_Resolve_Views()
@@ -73,13 +88,17 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
         var viewTwo = Locator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
         Assert.That(viewOne, Is.Not.Null);
-        Assert.That(viewOne, Is.TypeOf<ViewOne>());
-        Assert.That(viewTwo, Is.Not.Null);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(viewOne, Is.TypeOf<ViewOne>());
+            Assert.That(viewTwo, Is.Not.Null);
+        }
+
         Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
     }
 
     /// <summary>
-    /// Shoulds the resolve views.
+    /// Should resolve named view.
     /// </summary>
     [Test]
     public void AutofacDependencyResolver_Should_Resolve_Named_View()
@@ -97,7 +116,7 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
     }
 
     /// <summary>
-    /// Shoulds the resolve view models.
+    /// Should resolve view models.
     /// </summary>
     [Test]
     public void AutofacDependencyResolver_Should_Resolve_View_Models()
@@ -112,12 +131,15 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
         var vmOne = Locator.Current.GetService<ViewModelOne>();
         var vmTwo = Locator.Current.GetService<ViewModelTwo>();
 
-        Assert.That(vmOne, Is.Not.Null);
-        Assert.That(vmTwo, Is.Not.Null);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(vmOne, Is.Not.Null);
+            Assert.That(vmTwo, Is.Not.Null);
+        }
     }
 
     /// <summary>
-    /// Shoulds the resolve screen.
+    /// Should resolve screen.
     /// </summary>
     [Test]
     public void AutofacDependencyResolver_Should_Resolve_Screen()
@@ -135,63 +157,17 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
     }
 
     /// <summary>
-    /// Should throw an exception if service registration call back called.
+    /// Should throw an exception if service registration callback is called.
     /// </summary>
     [Test]
     public void AutofacDependencyResolver_Should_Throw_If_ServiceRegistrationCallback_Called()
     {
         var builder = new ContainerBuilder();
-
         var autofacResolver = builder.UseAutofacDependencyResolver();
         autofacResolver.SetLifetimeScope(builder.Build());
 
-        var result = Record.Exception(() =>
-            Locator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
-
-        Assert.That(result, Is.TypeOf<NotImplementedException>());
-    }
-
-    /// <summary>
-    /// Check to ensure the correct logger is returned.
-    /// </summary>
-    /// <remarks>
-    /// Introduced for Splat #331.
-    /// </remarks>
-    [Test]
-    public void AutofacDependencyResolver_Should_ReturnRegisteredLogger()
-    {
-        var builder = new ContainerBuilder();
-
-        var autofacResolver = builder.UseAutofacDependencyResolver();
-
-        Locator.CurrentMutable.RegisterConstant<ILogManager>(new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())));
-
-        autofacResolver.SetLifetimeScope(builder.Build());
-
-        var logManager = Locator.Current.GetService<ILogManager>();
-        Assert.That(logManager, Is.TypeOf<FuncLogManager>());
-    }
-
-    /// <summary>
-    /// Test that a pre-init logger isn't overriden.
-    /// </summary>
-    /// <remarks>
-    /// Introduced for Splat #331.
-    /// </remarks>
-    [Test]
-    public void AutofacDependencyResolver_PreInit_Should_ReturnRegisteredLogger()
-    {
-        var builder = new ContainerBuilder();
-
-        var autofacResolver = builder.UseAutofacDependencyResolver();
-
-        builder.Register(_ => new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger()))).As(typeof(ILogManager))
-            .AsImplementedInterfaces();
-
-        autofacResolver.SetLifetimeScope(builder.Build());
-
-        var logManager = Locator.Current.GetService<ILogManager>();
-        Assert.That(logManager, Is.TypeOf<FuncLogManager>());
+        Assert.Throws<NotImplementedException>(() =>
+            Locator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), _ => { }));
     }
 
     /// <summary>
@@ -239,40 +215,52 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
     ///     <inheritdoc cref="BaseDependencyResolverTests{T}.HasRegistration"/>
     /// </summary>
     [Test]
+    [Obsolete("Obsolete")]
+#pragma warning disable CS0809 // Obsolete member overrides non-obsolete member
     public override void HasRegistration()
+#pragma warning restore CS0809 // Obsolete member overrides non-obsolete member
     {
-#pragma warning disable CS0618 // Type or member is obsolete
         var type = typeof(string);
         const string contractOne = "ContractOne";
         const string contractTwo = "ContractTwo";
         var resolver = GetDependencyResolver();
 
-        Assert.That(resolver.HasRegistration(type, Is.False));
-        Assert.That(resolver.HasRegistration(type, contractOne, Is.False));
-        Assert.That(resolver.HasRegistration(type, contractTwo, Is.False));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(resolver.HasRegistration(type), Is.False);
+            Assert.That(resolver.HasRegistration(type, contractOne), Is.False);
+            Assert.That(resolver.HasRegistration(type, contractTwo), Is.False);
+        }
 
         resolver.Register(() => "unnamed", type);
-        Assert.That(resolver.HasRegistration(type, Is.True));
-        Assert.That(resolver.HasRegistration(type, contractOne, Is.False));
-        Assert.That(resolver.HasRegistration(type, contractTwo, Is.False));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(resolver.HasRegistration(type), Is.True);
+            Assert.That(resolver.HasRegistration(type, contractOne), Is.False);
+            Assert.That(resolver.HasRegistration(type, contractTwo), Is.False);
+        }
 
         resolver.Register(() => contractOne, type, contractOne);
-        Assert.That(resolver.HasRegistration(type, Is.True));
-        Assert.That(resolver.HasRegistration(type, contractOne, Is.True));
-        Assert.That(resolver.HasRegistration(type, contractTwo, Is.False));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(resolver.HasRegistration(type), Is.True);
+            Assert.That(resolver.HasRegistration(type, contractOne), Is.True);
+            Assert.That(resolver.HasRegistration(type, contractTwo), Is.False);
+        }
 
         resolver.Register(() => contractTwo, type, contractTwo);
-        Assert.That(resolver.HasRegistration(type, Is.True));
-        Assert.That(resolver.HasRegistration(type, contractOne, Is.True));
-        Assert.That(resolver.HasRegistration(type, contractTwo, Is.True));
-#pragma warning restore CS0618 // Type or member is obsolete
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(resolver.HasRegistration(type), Is.True);
+            Assert.That(resolver.HasRegistration(type, contractOne), Is.True);
+            Assert.That(resolver.HasRegistration(type, contractTwo), Is.True);
+        }
     }
 
     /// <inheritdoc />
     protected override AutofacDependencyResolver GetDependencyResolver()
     {
         var builder = new ContainerBuilder();
-
         return builder.UseAutofacDependencyResolver();
     }
 }

@@ -134,8 +134,12 @@ public class DependencyResolverTests
         var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
         Assert.That(viewOne, Is.Not.Null);
-        Assert.That(viewOne, Is.TypeOf<ViewOne>());
-        Assert.That(viewTwo, Is.Not.Null);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(viewOne, Is.TypeOf<ViewOne>());
+            Assert.That(viewTwo, Is.Not.Null);
+        }
+
         Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
     }
 
@@ -168,8 +172,11 @@ public class DependencyResolverTests
         var vmOne = AppLocator.Current.GetService<ViewModelOne>();
         var vmTwo = AppLocator.Current.GetService<ViewModelTwo>();
 
-        Assert.That(vmOne, Is.Not.Null);
-        Assert.That(vmTwo, Is.Not.Null);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(vmOne, Is.Not.Null);
+            Assert.That(vmTwo, Is.Not.Null);
+        }
     }
 
     /// <summary>

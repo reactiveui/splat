@@ -1,6 +1,6 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Tests.Mocks;
@@ -10,7 +10,6 @@ namespace Splat.Tests.Logging;
 /// <summary>
 /// Tests for the wrapping full logger.
 /// </summary>
-[TestFixture]
 public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFullLogger>
 {
     /// <summary>
@@ -29,8 +28,11 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
                 return "This is a test.";
             });
 
-        Assert.That(target.Logs, Is.Empty);
-        Assert.That(invoked, Is.False);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs, Is.Empty);
+            Assert.That(invoked, Is.False);
+        }
     }
 
     /// <summary>
@@ -49,8 +51,11 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
                 return "This is a test.";
             });
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
-        Assert.That(invoked, Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+            Assert.That(invoked, Is.True);
+        }
     }
 
     /// <summary>
@@ -69,8 +74,11 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
                 return "This is a test.";
             });
 
-        Assert.That(target.Logs, Is.Empty);
-        Assert.That(invoked, Is.False);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs, Is.Empty);
+            Assert.That(invoked, Is.False);
+        }
     }
 
     /// <summary>
@@ -89,8 +97,11 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
                 return "This is a test.";
             });
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
-        Assert.That(invoked, Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+            Assert.That(invoked, Is.True);
+        }
     }
 
     /// <summary>
@@ -109,8 +120,11 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
                 return "This is a test.";
             });
 
-        Assert.That(target.Logs, Is.Empty);
-        Assert.That(invoked, Is.False);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs, Is.Empty);
+            Assert.That(invoked, Is.False);
+        }
     }
 
     /// <summary>
@@ -129,8 +143,11 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
                 return "This is a test.";
             });
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
-        Assert.That(invoked, Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+            Assert.That(invoked, Is.True);
+        }
     }
 
     /// <summary>
@@ -149,8 +166,11 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
                 return "This is a test.";
             });
 
-        Assert.That(target.Logs, Is.Empty);
-        Assert.That(invoked, Is.False);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs, Is.Empty);
+            Assert.That(invoked, Is.False);
+        }
     }
 
     /// <summary>
@@ -169,8 +189,11 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
                 return "This is a test.";
             });
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
-        Assert.That(invoked, Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+            Assert.That(invoked, Is.True);
+        }
     }
 
     /// <summary>
@@ -189,8 +212,11 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
                 return "This is a test.";
             });
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
-        Assert.That(invoked, Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+            Assert.That(invoked, Is.True);
+        }
     }
 
     /// <summary>
@@ -203,7 +229,7 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
 
         logger.Debug<DummyObjectClass1>("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -216,7 +242,7 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
 
         logger.Write("This is a test.", LogLevel.Debug);
 
-        Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
@@ -229,7 +255,9 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
 
         logger.Debug<DummyObjectClass2>("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo($"{nameof(DummyObjectClass2)}: This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(
+            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
+            Is.EqualTo($"{nameof(DummyObjectClass2)}: This is a test."));
     }
 
     /// <summary>
@@ -242,7 +270,9 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
 
         logger.Info<DummyObjectClass1>("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo($"{nameof(DummyObjectClass1)}: This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(
+            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
+            Is.EqualTo($"{nameof(DummyObjectClass1)}: This is a test."));
     }
 
     /// <summary>
@@ -255,7 +285,9 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
 
         logger.Info<DummyObjectClass2>("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo($"{nameof(DummyObjectClass2)}: This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(
+            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
+            Is.EqualTo($"{nameof(DummyObjectClass2)}: This is a test."));
     }
 
     /// <summary>
@@ -268,7 +300,9 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
 
         logger.Warn<DummyObjectClass1>("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo($"{nameof(DummyObjectClass1)}: This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(
+            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
+            Is.EqualTo($"{nameof(DummyObjectClass1)}: This is a test."));
     }
 
     /// <summary>
@@ -281,7 +315,9 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
 
         logger.Warn<DummyObjectClass2>("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo($"{nameof(DummyObjectClass2)}: This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(
+            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
+            Is.EqualTo($"{nameof(DummyObjectClass2)}: This is a test."));
     }
 
     /// <summary>
@@ -294,7 +330,9 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
 
         logger.Error<DummyObjectClass1>("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo($"{nameof(DummyObjectClass1)}: This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(
+            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
+            Is.EqualTo($"{nameof(DummyObjectClass1)}: This is a test."));
     }
 
     /// <summary>
@@ -307,7 +345,9 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
 
         logger.Error<DummyObjectClass2>("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo($"{nameof(DummyObjectClass2)}: This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(
+            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
+            Is.EqualTo($"{nameof(DummyObjectClass2)}: This is a test."));
     }
 
     /// <summary>
@@ -320,7 +360,9 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
 
         logger.Fatal<DummyObjectClass1>("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo($"{nameof(DummyObjectClass1)}: This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(
+            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
+            Is.EqualTo($"{nameof(DummyObjectClass1)}: This is a test."));
     }
 
     /// <summary>
@@ -333,6 +375,8 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
 
         logger.Fatal<DummyObjectClass2>("This is a test.");
 
-        Assert.That(target.Logs.Last(, Is.EqualTo($"{nameof(DummyObjectClass2)}: This is a test.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(
+            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
+            Is.EqualTo($"{nameof(DummyObjectClass2)}: This is a test."));
     }
 }

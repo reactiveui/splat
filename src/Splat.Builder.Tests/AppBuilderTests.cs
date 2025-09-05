@@ -15,10 +15,7 @@ namespace Splat.Builder.Tests
         /// Constructors the throws on null resolver.
         /// </summary>
         [Test]
-        public void ConstructorThrowsOnNullResolver()
-        {
-            Assert.Throws<ArgumentNullException>(() => new AppBuilder((IMutableDependencyResolver)null!));
-        }
+        public void ConstructorThrowsOnNullResolver() => Assert.Throws<ArgumentNullException>(() => new AppBuilder((IMutableDependencyResolver)null!));
 
         /// <summary>
         /// Constructors the sets using builder true.
@@ -49,8 +46,11 @@ namespace Splat.Builder.Tests
         public void ResetBuilderStateForTestsResetsStaticState()
         {
             AppBuilder.ResetBuilderStateForTests();
-            Assert.That(AppBuilder.HasBeenBuilt, Is.False);
-            Assert.That(AppBuilder.UsingBuilder, Is.False);
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(AppBuilder.HasBeenBuilt, Is.False);
+                Assert.That(AppBuilder.UsingBuilder, Is.False);
+            }
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace Splat.Builder.Tests
         {
             var resolver = new InternalLocator();
             var builder = new AppBuilder(resolver.CurrentMutable);
-            var result = builder.WithCustomRegistration(r => { });
+            var result = builder.WithCustomRegistration(_ => { });
             Assert.That(result, Is.SameAs(builder));
             resolver.Dispose();
         }
@@ -140,7 +140,7 @@ namespace Splat.Builder.Tests
             var resolver = new InternalLocator();
             var builder = new AppBuilder(resolver.CurrentMutable);
             bool called = false;
-            builder.WithCustomRegistration(r => called = true);
+            builder.WithCustomRegistration(_ => called = true);
             builder.Build();
             Assert.That(called, Is.True);
             resolver.Dispose();
@@ -157,7 +157,7 @@ namespace Splat.Builder.Tests
             var builder = new AppBuilder(resolver.CurrentMutable);
             builder.Build(); // sets HasBeenBuilt
             bool called = false;
-            builder.WithCustomRegistration(r => called = true);
+            builder.WithCustomRegistration(_ => called = true);
             builder.Build(); // should not call registration again
             Assert.That(called, Is.False);
             resolver.Dispose();

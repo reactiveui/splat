@@ -25,9 +25,12 @@ public class RectangleMathExtensionsTests
         // Act
         var center = rect.Center();
 
-        // Assert
-        Assert.That(center.X, Is.EqualTo(25.0f)); // 10 + 30/2 = 25
-        Assert.That(center.Y, Is.EqualTo(40.0f)); // 20 + 40/2 = 40
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(center.X, Is.EqualTo(25.0f)); // 10 + 30/2 = 25
+            Assert.That(center.Y, Is.EqualTo(40.0f)); // 20 + 40/2 = 40
+        }
     }
 
     /// <summary>
@@ -42,11 +45,14 @@ public class RectangleMathExtensionsTests
         // Act
         var (slice, remainder) = rect.Divide(30.0f, RectEdge.Left);
 
-        // Assert
-        Assert.That(slice.Width, Is.EqualTo(30.0f));
-        Assert.That(slice.X, Is.EqualTo(0.0f));
-        Assert.That(remainder.Width, Is.EqualTo(70.0f));
-        Assert.That(remainder.X, Is.EqualTo(30.0f));
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(slice.Width, Is.EqualTo(30.0f));
+            Assert.That(slice.X, Is.Zero);
+            Assert.That(remainder.Width, Is.EqualTo(70.0f));
+            Assert.That(remainder.X, Is.EqualTo(30.0f));
+        }
     }
 
     /// <summary>
@@ -61,11 +67,14 @@ public class RectangleMathExtensionsTests
         // Act
         var (slice, remainder) = rect.Divide(30.0f, RectEdge.Right);
 
-        // Assert
-        Assert.That(slice.Width, Is.EqualTo(30.0f));
-        Assert.That(slice.X, Is.EqualTo(70.0f));
-        Assert.That(remainder.Width, Is.EqualTo(70.0f));
-        Assert.That(remainder.X, Is.EqualTo(0.0f));
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(slice.Width, Is.EqualTo(30.0f));
+            Assert.That(slice.X, Is.EqualTo(70.0f));
+            Assert.That(remainder.Width, Is.EqualTo(70.0f));
+            Assert.That(remainder.X, Is.Zero);
+        }
     }
 
     /// <summary>
@@ -80,11 +89,14 @@ public class RectangleMathExtensionsTests
         // Act
         var (slice, remainder) = rect.Divide(20.0f, RectEdge.Top);
 
-        // Assert
-        Assert.That(slice.Height, Is.EqualTo(20.0f));
-        Assert.That(slice.Y, Is.EqualTo(0.0f));
-        Assert.That(remainder.Height, Is.EqualTo(30.0f));
-        Assert.That(remainder.Y, Is.EqualTo(20.0f));
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(slice.Height, Is.EqualTo(20.0f));
+            Assert.That(slice.Y, Is.Zero);
+            Assert.That(remainder.Height, Is.EqualTo(30.0f));
+            Assert.That(remainder.Y, Is.EqualTo(20.0f));
+        }
     }
 
     /// <summary>
@@ -99,11 +111,14 @@ public class RectangleMathExtensionsTests
         // Act
         var (slice, remainder) = rect.Divide(20.0f, RectEdge.Bottom);
 
-        // Assert
-        Assert.That(slice.Height, Is.EqualTo(20.0f));
-        Assert.That(slice.Y, Is.EqualTo(30.0f));
-        Assert.That(remainder.Height, Is.EqualTo(30.0f));
-        Assert.That(remainder.Y, Is.EqualTo(0.0f));
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(slice.Height, Is.EqualTo(20.0f));
+            Assert.That(slice.Y, Is.EqualTo(30.0f));
+            Assert.That(remainder.Height, Is.EqualTo(30.0f));
+            Assert.That(remainder.Y, Is.Zero);
+        }
     }
 
     /// <summary>
@@ -118,11 +133,14 @@ public class RectangleMathExtensionsTests
         // Act
         var (slice, remainder) = rect.DivideWithPadding(30.0f, 10.0f, RectEdge.Left);
 
-        // Assert
-        Assert.That(slice.Width, Is.EqualTo(30.0f));
-        Assert.That(slice.X, Is.EqualTo(0.0f));
-        Assert.That(remainder.Width, Is.EqualTo(90.0f)); // 100 - 10 = 90 (after padding)
-        Assert.That(remainder.X, Is.EqualTo(10.0f)); // starts after padding
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(slice.Width, Is.EqualTo(30.0f));
+            Assert.That(slice.X, Is.Zero);
+            Assert.That(remainder.Width, Is.EqualTo(90.0f)); // 100 - 10 = 90 (after padding)
+            Assert.That(remainder.X, Is.EqualTo(10.0f)); // starts after padding
+        }
     }
 
     /// <summary>
@@ -138,11 +156,14 @@ public class RectangleMathExtensionsTests
         // Act
         var inverted = rect.InvertWithin(container);
 
-        // Assert
-        Assert.That(inverted.X, Is.EqualTo(10.0f)); // X unchanged
-        Assert.That(inverted.Y, Is.EqualTo(40.0f)); // 100 - (20 + 40) = 40
-        Assert.That(inverted.Width, Is.EqualTo(30.0f)); // Width unchanged
-        Assert.That(inverted.Height, Is.EqualTo(40.0f)); // Height unchanged
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(inverted.X, Is.EqualTo(10.0f)); // X unchanged
+            Assert.That(inverted.Y, Is.EqualTo(40.0f)); // 100 - (20 + 40) = 40
+            Assert.That(inverted.Width, Is.EqualTo(30.0f)); // Width unchanged
+            Assert.That(inverted.Height, Is.EqualTo(40.0f)); // Height unchanged
+        }
     }
 
     /// <summary>
@@ -157,11 +178,14 @@ public class RectangleMathExtensionsTests
         // Act
         var copy = rect.Copy(x: 15.0f, y: 25.0f, width: 35.0f, height: 45.0f);
 
-        // Assert
-        Assert.That(copy.X, Is.EqualTo(15.0f));
-        Assert.That(copy.Y, Is.EqualTo(25.0f));
-        Assert.That(copy.Width, Is.EqualTo(35.0f));
-        Assert.That(copy.Height, Is.EqualTo(45.0f));
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(copy.X, Is.EqualTo(15.0f));
+            Assert.That(copy.Y, Is.EqualTo(25.0f));
+            Assert.That(copy.Width, Is.EqualTo(35.0f));
+            Assert.That(copy.Height, Is.EqualTo(45.0f));
+        }
     }
 
     /// <summary>
@@ -176,11 +200,14 @@ public class RectangleMathExtensionsTests
         // Act
         var copy = rect.Copy(x: 15.0f, height: 50.0f);
 
-        // Assert
-        Assert.That(copy.X, Is.EqualTo(15.0f));
-        Assert.That(copy.Y, Is.EqualTo(20.0f)); // unchanged
-        Assert.That(copy.Width, Is.EqualTo(30.0f)); // unchanged
-        Assert.That(copy.Height, Is.EqualTo(50.0f));
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(copy.X, Is.EqualTo(15.0f));
+            Assert.That(copy.Y, Is.EqualTo(20.0f)); // unchanged
+            Assert.That(copy.Width, Is.EqualTo(30.0f)); // unchanged
+            Assert.That(copy.Height, Is.EqualTo(50.0f));
+        }
     }
 
     /// <summary>
@@ -195,11 +222,14 @@ public class RectangleMathExtensionsTests
         // Act
         var copy = rect.Copy(top: 5.0f);
 
-        // Assert
-        Assert.That(copy.X, Is.EqualTo(10.0f)); // unchanged
-        Assert.That(copy.Y, Is.EqualTo(5.0f)); // set to top value
-        Assert.That(copy.Width, Is.EqualTo(30.0f)); // unchanged
-        Assert.That(copy.Height, Is.EqualTo(40.0f)); // unchanged
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(copy.X, Is.EqualTo(10.0f)); // unchanged
+            Assert.That(copy.Y, Is.EqualTo(5.0f)); // set to top value
+            Assert.That(copy.Width, Is.EqualTo(30.0f)); // unchanged
+            Assert.That(copy.Height, Is.EqualTo(40.0f)); // unchanged
+        }
     }
 
     /// <summary>
@@ -214,11 +244,14 @@ public class RectangleMathExtensionsTests
         // Act
         var copy = rect.Copy(bottom: 80.0f);
 
-        // Assert
-        Assert.That(copy.X, Is.EqualTo(10.0f)); // unchanged
-        Assert.That(copy.Y, Is.EqualTo(20.0f)); // unchanged
-        Assert.That(copy.Width, Is.EqualTo(30.0f)); // unchanged
-        Assert.That(copy.Height, Is.EqualTo(100.0f)); // 20 + 80 = 100
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(copy.X, Is.EqualTo(10.0f)); // unchanged
+            Assert.That(copy.Y, Is.EqualTo(20.0f)); // unchanged
+            Assert.That(copy.Width, Is.EqualTo(30.0f)); // unchanged
+            Assert.That(copy.Height, Is.EqualTo(100.0f)); // 20 + 80 = 100
+        }
     }
 
     /// <summary>
