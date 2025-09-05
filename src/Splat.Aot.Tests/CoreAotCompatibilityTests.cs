@@ -4,7 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.Globalization;
-using Xunit;
+using NUnit.Framework;
 
 namespace Splat.Tests.Aot;
 
@@ -13,6 +13,7 @@ namespace Splat.Tests.Aot;
 /// These tests ensure that the library works correctly when used with Native AOT
 /// and when assemblies are trimmed by the linker.
 /// </summary>
+[TestFixture]
 public class CoreAotCompatibilityTests
 {
     /// <summary>
@@ -30,7 +31,7 @@ public class CoreAotCompatibilityTests
     /// <summary>
     /// Test that basic service registration and resolution works in AOT scenarios.
     /// </summary>
-    [Fact]
+    [Test]
     public void BasicServiceRegistration_WorksWithAot()
     {
         // Arrange
@@ -46,18 +47,21 @@ public class CoreAotCompatibilityTests
         var logManager = resolver.GetService<ILogManager>();
         var enableLogger = resolver.GetService<IEnableLogger>();
 
-        Assert.NotNull(logger);
-        Assert.NotNull(logManager);
-        Assert.NotNull(enableLogger);
-        Assert.IsType<DebugLogger>(logger);
-        Assert.IsType<DefaultLogManager>(logManager);
-        Assert.IsType<TestService>(enableLogger);
+        Assert.Multiple(() =>
+        {
+            Assert.That(logger, Is.Not.Null);
+            Assert.That(logManager, Is.Not.Null);
+            Assert.That(enableLogger, Is.Not.Null);
+            Assert.That(logger, Is.TypeOf<DebugLogger>());
+            Assert.That(logManager, Is.TypeOf<DefaultLogManager>());
+            Assert.That(enableLogger, Is.TypeOf<TestService>());
+        });
     }
 
     /// <summary>
     /// Test that all registration mixins work with AOT.
     /// </summary>
-    [Fact]
+    [Test]
     public void RegistrationMixins_WorksWithAot()
     {
         // Arrange
@@ -79,16 +83,16 @@ public class CoreAotCompatibilityTests
         var logManager = resolver.GetService<ILogManager>();
         var enableLogger = resolver.GetService<IEnableLogger>();
 
-        Assert.NotNull(testInterface);
-        Assert.NotNull(logger);
-        Assert.NotNull(logManager);
-        Assert.NotNull(enableLogger);
+        Assert.That(testInterface, Is.Not.Null);
+        Assert.That(logger, Is.Not.Null);
+        Assert.That(logManager, Is.Not.Null);
+        Assert.That(enableLogger, Is.Not.Null);
     }
 
     /// <summary>
     /// Test that service callbacks work with AOT.
     /// </summary>
-    [Fact]
+    [Test]
     public void ServiceRegistrationCallbacks_WorksWithAot()
     {
         // Arrange
@@ -104,13 +108,13 @@ public class CoreAotCompatibilityTests
         resolver.RegisterConstant<ILogger>(new DebugLogger());
 
         // Assert
-        Assert.True(callbackTriggered);
+        Assert.That(callbackTriggered, Is.True);
     }
 
     /// <summary>
     /// Test that logging functionality works with AOT.
     /// </summary>
-    [Fact]
+    [Test]
     public void Logging_WorksWithAot()
     {
         // Arrange
@@ -123,7 +127,7 @@ public class CoreAotCompatibilityTests
         var logger = resolver.GetService<ILogManager>()?.GetLogger<CoreAotCompatibilityTests>();
 
         // Assert
-        Assert.NotNull(logger);
+        Assert.That(logger, Is.Not.Null);
 
         // Test logging methods don't throw in AOT
         logger.Debug("Test debug message");
@@ -136,7 +140,7 @@ public class CoreAotCompatibilityTests
     /// <summary>
     /// Test that mode detection works with AOT.
     /// </summary>
-    [Fact]
+    [Test]
     public void ModeDetection_WorksWithAot()
     {
         // Arrange
@@ -144,14 +148,14 @@ public class CoreAotCompatibilityTests
 
         // Act & Assert - Should not throw in AOT
         var inUnitTest = modeDetector.InUnitTestRunner();
-        Assert.NotNull(inUnitTest);
-        Assert.True(inUnitTest.Value); // We're running in a unit test
+        Assert.That(inUnitTest, Is.Not.Null);
+        Assert.That(inUnitTest.Value, Is.True); // We're running in a unit test
     }
 
     /// <summary>
     /// Test that lazy singleton registration works with AOT.
     /// </summary>
-    [Fact]
+    [Test]
     public void LazySingleton_WorksWithAot()
     {
         // Arrange
@@ -169,16 +173,16 @@ public class CoreAotCompatibilityTests
         var service1 = resolver.GetService<IEnableLogger>();
         var service2 = resolver.GetService<IEnableLogger>();
 
-        Assert.NotNull(service1);
-        Assert.NotNull(service2);
-        Assert.Same(service1, service2); // Should be the same instance
-        Assert.Equal(1, creationCount); // Should only be created once
+        Assert.That(service1, Is.Not.Null);
+        Assert.That(service2, Is.Not.Null);
+        Assert.That(service2, Is.SameAs(service1)); // Should be the same instance
+        Assert.That(creationCount, Is.EqualTo(1)); // Should only be created once
     }
 
     /// <summary>
     /// Test that unregistering services works with AOT.
     /// </summary>
-    [Fact]
+    [Test]
     public void ServiceUnregistration_WorksWithAot()
     {
         // Arrange
@@ -187,19 +191,19 @@ public class CoreAotCompatibilityTests
 
         // Act
         var logger1 = resolver.GetService<ILogger>();
-        Assert.NotNull(logger1);
+        Assert.That(logger1, Is.Not.Null);
 
         resolver.UnregisterCurrent<ILogger>();
         var logger2 = resolver.GetService<ILogger>();
 
         // Assert
-        Assert.Null(logger2);
+        Assert.That(logger2, Is.Null);
     }
 
     /// <summary>
     /// Test that target framework extensions work with AOT.
     /// </summary>
-    [Fact]
+    [Test]
     public void TargetFrameworkExtensions_WorksWithAot()
     {
         // Arrange
@@ -211,14 +215,14 @@ public class CoreAotCompatibilityTests
         // Assert - Should return a valid framework name or null
         if (targetFramework != null)
         {
-            Assert.Contains("net", targetFramework, StringComparison.InvariantCulture);
+            Assert.That(targetFramework, Does.Contain("net"));
         }
     }
 
     /// <summary>
     /// Test that multiple service registration works with AOT.
     /// </summary>
-    [Fact]
+    [Test]
     public void MultipleServiceRegistration_WorksWithAot()
     {
         // Arrange
@@ -230,15 +234,15 @@ public class CoreAotCompatibilityTests
 
         // Assert
         var services = resolver.GetServices<ITestInterface>().ToList();
-        Assert.Equal(2, services.Count);
-        Assert.Contains(services, s => s is TestImplementation);
-        Assert.Contains(services, s => s is AlternateTestImplementation);
+        Assert.That(services.Count, Is.EqualTo(2));
+        Assert.That(s => s is TestImplementation, Does.Contain(services));
+        Assert.That(s => s is AlternateTestImplementation, Does.Contain(services));
     }
 
     /// <summary>
     /// Test that locator static methods work with AOT.
     /// </summary>
-    [Fact]
+    [Test]
     public void LocatorStatic_WorksWithAot()
     {
         // Arrange
@@ -250,15 +254,15 @@ public class CoreAotCompatibilityTests
         var logger = AppLocator.Current.GetService<ILogger>();
 
         // Assert
-        Assert.NotNull(logger);
-        Assert.IsType<DebugLogger>(logger);
+        Assert.That(logger, Is.Not.Null);
+        Assert.That(logger, Is.TypeOf<DebugLogger>());
     }
 
     /// <summary>
     /// Test that generic type registration with constraints works with AOT.
     /// This tests DynamicallyAccessedMembers annotations on generic type parameters.
     /// </summary>
-    [Fact]
+    [Test]
     public void GenericTypeRegistrationWithConstraints_WorksWithAot()
     {
         // Arrange
@@ -272,16 +276,16 @@ public class CoreAotCompatibilityTests
         var testInterface = resolver.GetService<ITestInterface>();
         var enableLogger = resolver.GetService<IEnableLogger>();
 
-        Assert.NotNull(testInterface);
-        Assert.NotNull(enableLogger);
-        Assert.IsType<TestImplementation>(testInterface);
-        Assert.IsType<TestService>(enableLogger);
+        Assert.That(testInterface, Is.Not.Null);
+        Assert.That(enableLogger, Is.Not.Null);
+        Assert.That(testInterface, Is.TypeOf<TestImplementation>());
+        Assert.That(enableLogger, Is.TypeOf<TestService>());
     }
 
     /// <summary>
     /// Test that service registrations with contracts work with AOT.
     /// </summary>
-    [Fact]
+    [Test]
     public void ContractBasedRegistration_WorksWithAot()
     {
         // Arrange
@@ -299,18 +303,18 @@ public class CoreAotCompatibilityTests
         var service2 = resolver.GetService<ITestInterface>(contract2);
         var defaultService = resolver.GetService<ITestInterface>();
 
-        Assert.NotNull(service1);
-        Assert.NotNull(service2);
-        Assert.NotNull(defaultService);
-        Assert.IsType<TestImplementation>(service1);
-        Assert.IsType<AlternateTestImplementation>(service2);
-        Assert.IsType<TestImplementation>(defaultService);
+        Assert.That(service1, Is.Not.Null);
+        Assert.That(service2, Is.Not.Null);
+        Assert.That(defaultService, Is.Not.Null);
+        Assert.That(service1, Is.TypeOf<TestImplementation>());
+        Assert.That(service2, Is.TypeOf<AlternateTestImplementation>());
+        Assert.That(defaultService, Is.TypeOf<TestImplementation>());
     }
 
     /// <summary>
     /// Test that type-based service queries work with AOT.
     /// </summary>
-    [Fact]
+    [Test]
     public void TypeBasedServiceQueries_WorksWithAot()
     {
         // Arrange
@@ -327,39 +331,39 @@ public class CoreAotCompatibilityTests
         var logManager = resolver.GetService(typeof(ILogManager));
         var services = resolver.GetServices(typeof(ILogger)).ToList();
 
-        Assert.NotNull(logger);
-        Assert.NotNull(logManager);
-        Assert.Single(services);
-        Assert.IsType<DebugLogger>(logger);
-        Assert.IsType<DefaultLogManager>(logManager);
+        Assert.That(logger, Is.Not.Null);
+        Assert.That(logManager, Is.Not.Null);
+        Assert.That(services, Has.Exactly(1).Items);
+        Assert.That(logger, Is.TypeOf<DebugLogger>());
+        Assert.That(logManager, Is.TypeOf<DefaultLogManager>());
     }
 
     /// <summary>
     /// Test that HasRegistration queries work with AOT.
     /// </summary>
-    [Fact]
+    [Test]
     public void HasRegistrationQueries_WorksWithAot()
     {
         // Arrange
         using var resolver = new ModernDependencyResolver();
 
         // Act & Assert - Test before registration
-        Assert.False(resolver.HasRegistration(typeof(ITestInterface)));
-        Assert.False(resolver.HasRegistration(typeof(ITestInterface), "contract"));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.False)));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.False), "contract"));
 
         // Register and test again
         resolver.RegisterConstant<ITestInterface>(new TestImplementation());
         resolver.RegisterConstant<ITestInterface>(new AlternateTestImplementation(), "contract");
 
-        Assert.True(resolver.HasRegistration(typeof(ITestInterface)));
-        Assert.True(resolver.HasRegistration(typeof(ITestInterface), "contract"));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True)));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True), "contract"));
     }
 
     /// <summary>
     /// Test that comprehensive logging functionality works with AOT.
     /// This tests generic logging methods with type parameters.
     /// </summary>
-    [Fact]
+    [Test]
     public void ComprehensiveLogging_WorksWithAot()
     {
         // Arrange
@@ -368,7 +372,7 @@ public class CoreAotCompatibilityTests
         resolver.RegisterConstant<ILogManager>(new DefaultLogManager(resolver));
         using var locatorScope = resolver.WithResolver();
         var logger = resolver.GetService<ILogManager>()?.GetLogger<CoreAotCompatibilityTests>();
-        Assert.NotNull(logger);
+        Assert.That(logger, Is.Not.Null);
 
         // Act & Assert - Test generic logging methods that use type parameters
         logger.Debug<string>("Debug with generic type");
@@ -397,7 +401,7 @@ public class CoreAotCompatibilityTests
     /// Test that allocation-free logging methods work with AOT.
     /// This ensures that high-performance logging scenarios are AOT-compatible.
     /// </summary>
-    [Fact]
+    [Test]
     public void AllocationFreeLogging_WorksWithAot()
     {
         // Arrange
@@ -406,7 +410,7 @@ public class CoreAotCompatibilityTests
         resolver.RegisterConstant<ILogManager>(new DefaultLogManager(resolver));
         using var locatorScope = resolver.WithResolver();
         var logger = resolver.GetService<ILogManager>()?.GetLogger<CoreAotCompatibilityTests>();
-        Assert.NotNull(logger);
+        Assert.That(logger, Is.Not.Null);
 
         // Act & Assert - Test allocation-free logging methods
         logger.Debug("Simple message {0}", "arg1");
@@ -434,7 +438,7 @@ public class CoreAotCompatibilityTests
     /// Test that static logging host works with AOT.
     /// This tests the static logger functionality that doesn't rely on instance types.
     /// </summary>
-    [Fact]
+    [Test]
     public void StaticLoggingHost_WorksWithAot()
     {
         // Arrange
@@ -458,7 +462,7 @@ public class CoreAotCompatibilityTests
     /// Test that WrappingFullLogger works correctly with AOT.
     /// This tests the logger that wraps ILogger to IFullLogger.
     /// </summary>
-    [Fact]
+    [Test]
     public void WrappingFullLogger_WorksWithAot()
     {
         // Arrange
@@ -492,7 +496,7 @@ public class CoreAotCompatibilityTests
     /// Test that platform mode detector works with AOT including design mode detection.
     /// This tests platform-specific mode detection functionality that uses reflection.
     /// </summary>
-    [Fact]
+    [Test]
     public void PlatformModeDetector_WorksWithAot()
     {
         // Arrange & Act - Test different mode detectors
@@ -507,18 +511,18 @@ public class CoreAotCompatibilityTests
 #pragma warning restore IL3050 // Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.
 #pragma warning restore IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
 
-        Assert.NotNull(inUnitTest1);
-        Assert.True(inUnitTest1.Value);
+        Assert.That(inUnitTest1, Is.Not.Null);
+        Assert.That(inUnitTest1.Value, Is.True);
 
         // Test design mode detection (should not throw even though it uses reflection)
-        Assert.NotNull(inDesignMode);
-        Assert.False(inDesignMode.Value); // We're not in design mode during tests
+        Assert.That(inDesignMode, Is.Not.Null);
+        Assert.That(inDesignMode.Value, Is.False); // We're not in design mode during tests
     }
 
     /// <summary>
     /// Test that service registration callbacks with different parameters work with AOT.
     /// </summary>
-    [Fact]
+    [Test]
     public void ServiceRegistrationCallbacksWithContracts_WorksWithAot()
     {
         // Arrange
@@ -542,14 +546,14 @@ public class CoreAotCompatibilityTests
         resolver.RegisterConstant<ITestInterface>(new AlternateTestImplementation(), contract);
 
         // Assert
-        Assert.True(defaultCallbackTriggered);
-        Assert.True(contractCallbackTriggered);
+        Assert.That(defaultCallbackTriggered, Is.True);
+        Assert.That(contractCallbackTriggered, Is.True);
     }
 
     /// <summary>
     /// Test that service unregistration scenarios work with AOT.
     /// </summary>
-    [Fact]
+    [Test]
     public void ComprehensiveServiceUnregistration_WorksWithAot()
     {
         // Arrange
@@ -562,35 +566,35 @@ public class CoreAotCompatibilityTests
         resolver.Register<ITestInterface>(() => new TestImplementation(), "factory");
 
         // Verify initial registrations
-        Assert.True(resolver.HasRegistration(typeof(ITestInterface)));
-        Assert.True(resolver.HasRegistration(typeof(ITestInterface), contract));
-        Assert.True(resolver.HasRegistration(typeof(ITestInterface), "factory"));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True)));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True), contract));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True), "factory"));
 
         // Act & Assert - Test UnregisterCurrent
         resolver.UnregisterCurrent<ITestInterface>();
-        Assert.False(resolver.HasRegistration(typeof(ITestInterface)));
-        Assert.True(resolver.HasRegistration(typeof(ITestInterface), contract)); // Should still exist
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.False)));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True), contract)); // Should still exist
 
         // Test UnregisterCurrent with contract
         resolver.UnregisterCurrent<ITestInterface>(contract);
-        Assert.False(resolver.HasRegistration(typeof(ITestInterface), contract));
-        Assert.True(resolver.HasRegistration(typeof(ITestInterface), "factory")); // Should still exist
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.False), contract));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True), "factory")); // Should still exist
 
         // Test UnregisterAll
         resolver.RegisterConstant<ITestInterface>(new TestImplementation());
         resolver.Register<ITestInterface>(() => new AlternateTestImplementation());
-        Assert.True(resolver.HasRegistration(typeof(ITestInterface)));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True)));
 
         resolver.UnregisterAll<ITestInterface>();
-        Assert.False(resolver.HasRegistration(typeof(ITestInterface)));
-        Assert.True(resolver.HasRegistration(typeof(ITestInterface), "factory")); // Different contract should still exist
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.False)));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True), "factory")); // Different contract should still exist
     }
 
     /// <summary>
     /// Test that fluent registration APIs work with AOT.
     /// This tests method chaining and ensures all fluent methods are AOT-compatible.
     /// </summary>
-    [Fact]
+    [Test]
     public void FluentRegistrationApis_WorksWithAot()
     {
         // Arrange
@@ -603,26 +607,26 @@ public class CoreAotCompatibilityTests
                 .Register<IEnableLogger>(() => new TestService());
 
         // Assert
-        Assert.True(resolver.HasRegistration(typeof(ITestInterface)));
-        Assert.True(resolver.HasRegistration(typeof(ILogger)));
-        Assert.True(resolver.HasRegistration(typeof(ILogManager)));
-        Assert.True(resolver.HasRegistration(typeof(IEnableLogger)));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True)));
+        Assert.That(resolver.HasRegistration(typeof(ILogger, Is.True)));
+        Assert.That(resolver.HasRegistration(typeof(ILogManager, Is.True)));
+        Assert.That(resolver.HasRegistration(typeof(IEnableLogger, Is.True)));
 
         var testInterface = resolver.GetService<ITestInterface>();
         var logger = resolver.GetService<ILogger>();
         var logManager = resolver.GetService<ILogManager>();
         var enableLogger = resolver.GetService<IEnableLogger>();
 
-        Assert.NotNull(testInterface);
-        Assert.NotNull(logger);
-        Assert.NotNull(logManager);
-        Assert.NotNull(enableLogger);
+        Assert.That(testInterface, Is.Not.Null);
+        Assert.That(logger, Is.Not.Null);
+        Assert.That(logManager, Is.Not.Null);
+        Assert.That(enableLogger, Is.Not.Null);
     }
 
     /// <summary>
     /// Test that resolver scoping and isolation work with AOT.
     /// </summary>
-    [Fact]
+    [Test]
     public void ResolverScoping_WorksWithAot()
     {
         // Arrange
@@ -636,21 +640,21 @@ public class CoreAotCompatibilityTests
         using (var scope = scopedResolver.WithResolver())
         {
             var logger = Locator.Current.GetService<ILogger>();
-            Assert.NotNull(logger);
-            Assert.IsType<ConsoleLogger>(logger);
+            Assert.That(logger, Is.Not.Null);
+            Assert.That(logger, Is.TypeOf<ConsoleLogger>());
         }
 
         // Test that resolver reverts correctly (this may be DebugLogger from the default resolver or null)
         var revertedLogger = Locator.Current.GetService<ILogger>();
 
         // Don't assert specific type as it depends on the global state, just ensure it's different
-        Assert.True(revertedLogger == null || revertedLogger is not ConsoleLogger);
+        Assert.That(revertedLogger == null || revertedLogger is not ConsoleLogger, Is.True);
     }
 
     /// <summary>
     /// Test that callback suppression works with AOT.
     /// </summary>
-    [Fact]
+    [Test]
     public void CallbackSuppression_WorksWithAot()
     {
         // Arrange
@@ -679,8 +683,8 @@ public class CoreAotCompatibilityTests
         }
 
         // Assert - Service registration callback should be triggered, resolver callback should not
-        Assert.True(serviceCallbackTriggered, "Service registration callbacks should not be affected by resolver callback suppression");
-        Assert.False(resolverCallbackTriggered, "Resolver change callbacks should be suppressed");
+        Assert.That(serviceCallbackTriggered, "Service registration callbacks should not be affected by resolver callback suppression", Is.True);
+        Assert.That(resolverCallbackTriggered, "Resolver change callbacks should be suppressed", Is.False);
 
         // Reset for next test
         resolverCallbackTriggered = false;
@@ -693,14 +697,14 @@ public class CoreAotCompatibilityTests
         }
 
         // Both should be triggered now since resolver callback suppression is disabled
-        Assert.True(serviceCallbackTriggered, "Service registration callbacks should always work");
-        Assert.True(resolverCallbackTriggered, "Resolver change callbacks should work when not suppressed");
+        Assert.That(serviceCallbackTriggered, "Service registration callbacks should always work", Is.True);
+        Assert.That(resolverCallbackTriggered, "Resolver change callbacks should work when not suppressed", Is.True);
     }
 
     /// <summary>
     /// Test that cross-casting and type conversions work with AOT.
     /// </summary>
-    [Fact]
+    [Test]
     public void TypeConversions_WorksWithAot()
     {
         // Arrange
@@ -715,16 +719,16 @@ public class CoreAotCompatibilityTests
         var testInterface = resolver.GetService<ITestInterface>();
         var enableLogger = resolver.GetService<IEnableLogger>();
 
-        Assert.NotNull(testInterface);
-        Assert.NotNull(enableLogger);
-        Assert.Same(service, testInterface);
-        Assert.Same(service, enableLogger);
+        Assert.That(testInterface, Is.Not.Null);
+        Assert.That(enableLogger, Is.Not.Null);
+        Assert.That(testInterface, Is.SameAs(service));
+        Assert.That(enableLogger, Is.SameAs(service));
     }
 
     /// <summary>
     /// Test that complex nested generic scenarios work with AOT.
     /// </summary>
-    [Fact]
+    [Test]
     public void NestedGenericScenarios_WorksWithAot()
     {
         // Arrange
@@ -745,14 +749,14 @@ public class CoreAotCompatibilityTests
         var factory = resolver.GetService<Func<ITestInterface>>();
         var lazy = resolver.GetService<Lazy<ILogger>>();
 
-        Assert.NotNull(enumerable);
-        Assert.NotNull(factory);
-        Assert.NotNull(lazy);
+        Assert.That(enumerable, Is.Not.Null);
+        Assert.That(factory, Is.Not.Null);
+        Assert.That(lazy, Is.Not.Null);
 
-        Assert.Equal(2, enumerable.Count());
-        Assert.NotNull(factory());
-        Assert.NotNull(lazy.Value);
-        Assert.IsType<DebugLogger>(lazy.Value);
+        Assert.That(enumerable.Count(, Is.EqualTo(2)));
+        Assert.That(factory(, Is.Not.Null));
+        Assert.That(lazy.Value, Is.Not.Null);
+        Assert.That(lazy.Value, Is.TypeOf<DebugLogger>());
     }
 
     /// <summary>
@@ -760,7 +764,7 @@ public class CoreAotCompatibilityTests
     /// This tests thread safety in AOT compilation scenarios.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-    [Fact]
+    [Test]
     public async Task ConcurrentAccess_WorksWithAot()
     {
         // Arrange
@@ -782,13 +786,13 @@ public class CoreAotCompatibilityTests
                     for (var j = 0; j < 100; j++)
                     {
                         var logger = resolver.GetService<ILogger>();
-                        Assert.NotNull(logger);
+                        Assert.That(logger, Is.Not.Null);
 
                         var services = resolver.GetServices<ILogger>();
-                        Assert.NotNull(services);
+                        Assert.That(services, Is.Not.Null);
 
                         var hasRegistration = resolver.HasRegistration(typeof(ILogger));
-                        Assert.True(hasRegistration);
+                        Assert.That(hasRegistration, Is.True);
                     }
                 }
                 catch (Exception ex)
@@ -805,14 +809,14 @@ public class CoreAotCompatibilityTests
         await Task.WhenAll(tasks);
 
         // Assert - No exceptions should occur
-        Assert.Empty(exceptions);
+        Assert.That(exceptions, Is.Empty);
     }
 
     /// <summary>
     /// Test that null service type handling works with AOT.
     /// This tests edge cases with null type parameters.
     /// </summary>
-    [Fact]
+    [Test]
     public void NullServiceTypeHandling_WorksWithAot()
     {
         // Arrange
@@ -823,44 +827,44 @@ public class CoreAotCompatibilityTests
         var nullServices = resolver.GetServices(null);
 
         // These should handle null gracefully
-        Assert.Null(nullService);
-        Assert.NotNull(nullServices);
+        Assert.That(nullService, Is.Null);
+        Assert.That(nullServices, Is.Not.Null);
 
         // Test HasRegistration with null
         var hasNullRegistration = resolver.HasRegistration(null);
-        Assert.False(hasNullRegistration);
+        Assert.That(hasNullRegistration, Is.False);
     }
 
     /// <summary>
     /// Test that dependency resolver extension methods work with AOT.
     /// This tests various extension methods that use generic type parameters.
     /// </summary>
-    [Fact]
+    [Test]
     public void DependencyResolverExtensions_WorksWithAot()
     {
         // Arrange
         using var resolver = new ModernDependencyResolver();
 
         // Act & Assert - Test extension methods with generic parameters
-        Assert.False(resolver.HasRegistration(typeof(ITestInterface)));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.False)));
 
         resolver.RegisterConstant<ITestInterface>(new TestImplementation());
-        Assert.True(resolver.HasRegistration(typeof(ITestInterface)));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True)));
 
         var service = resolver.GetService<ITestInterface>();
-        Assert.NotNull(service);
-        Assert.IsType<TestImplementation>(service);
+        Assert.That(service, Is.Not.Null);
+        Assert.That(service, Is.TypeOf<TestImplementation>());
 
         var services = resolver.GetServices<ITestInterface>();
-        Assert.NotNull(services);
-        Assert.Single(services);
+        Assert.That(services, Is.Not.Null);
+        Assert.That(services, Has.Exactly(1).Items);
     }
 
     /// <summary>
     /// Test that dependency injection with parameterized constructors works with AOT.
     /// This tests that AOT trimming doesn't remove necessary constructor metadata.
     /// </summary>
-    [Fact]
+    [Test]
     public void ParameterizedConstructors_WorkWithAot()
     {
         // Arrange
@@ -872,19 +876,19 @@ public class CoreAotCompatibilityTests
 
         // Assert
         var service = resolver.GetService<ITestInterface>();
-        Assert.NotNull(service);
-        Assert.IsType<TestImplementationWithDependency>(service);
+        Assert.That(service, Is.Not.Null);
+        Assert.That(service, Is.TypeOf<TestImplementationWithDependency>());
 
         var typedService = (TestImplementationWithDependency)service;
-        Assert.NotNull(typedService.Logger);
-        Assert.IsType<DebugLogger>(typedService.Logger);
+        Assert.That(typedService.Logger, Is.Not.Null);
+        Assert.That(typedService.Logger, Is.TypeOf<DebugLogger>());
     }
 
     /// <summary>
     /// Test that service disposal works correctly with AOT.
     /// This tests that the ModernDependencyResolver properly disposes registered services.
     /// </summary>
-    [Fact]
+    [Test]
     public void ServiceDisposal_WorksWithAot()
     {
         // Arrange
@@ -896,7 +900,7 @@ public class CoreAotCompatibilityTests
         resolver.Dispose();
 
         // Assert - Service should have been disposed
-        Assert.True(disposableService.IsDisposed);
+        Assert.That(disposableService.IsDisposed, Is.True);
     }
 
     /// <summary>

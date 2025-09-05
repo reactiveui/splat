@@ -3,7 +3,7 @@
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using FluentAssertions;
+using NUnit.Framework;
 
 using Splat.Common.Test;
 
@@ -12,12 +12,13 @@ namespace Splat.Prism.Tests;
 /// <summary>
 /// Tests to show the <see cref="PrismDependencyResolver"/> works correctly.
 /// </summary>
+[TestFixture]
 public class DependencyResolverTests
 {
     /// <summary>
     /// Tracks CreateScope not being implemented in case it's changed in future.
     /// </summary>
-    [Fact]
+    [Test]
     public void CreateScope_Throws_NotImplementedException()
     {
         using var container = new SplatContainerExtension();
@@ -27,7 +28,7 @@ public class DependencyResolverTests
     /// <summary>
     /// Tracks RegisterScoped not being implemented in case it's changed in future.
     /// </summary>
-    [Fact]
+    [Test]
     public void RegisterScoped_Throws_NotImplementedException()
     {
         using var container = new SplatContainerExtension();
@@ -39,7 +40,7 @@ public class DependencyResolverTests
     /// <summary>
     /// Tracks RegisterManySingleton not being implemented in case it's changed in future.
     /// </summary>
-    [Fact]
+    [Test]
     public void RegisterManySingleton_Throws_NotImplementedException()
     {
         using var container = new SplatContainerExtension();
@@ -51,7 +52,7 @@ public class DependencyResolverTests
     /// <summary>
     /// Test to ensure register many succeeds.
     /// </summary>
-    [Fact]
+    [Test]
     public void RegisterMany_Succeeds()
     {
         using var container = new SplatContainerExtension();
@@ -63,7 +64,7 @@ public class DependencyResolverTests
     /// <summary>
     /// Test to ensure a simple resolve succeeds.
     /// </summary>
-    [Fact]
+    [Test]
     public void Resolve_Succeeds()
     {
         using var container = new SplatContainerExtension();
@@ -71,13 +72,13 @@ public class DependencyResolverTests
 
         var instance = container.Resolve(typeof(IViewFor<ViewModelOne>));
 
-        Assert.NotNull(instance);
+        Assert.That(instance, Is.Not.Null);
     }
 
     /// <summary>
     /// Test to ensure a resolve with name succeeds.
     /// </summary>
-    [Fact]
+    [Test]
     public void Resolve_With_Name_Succeeds()
     {
         using var container = new SplatContainerExtension();
@@ -85,13 +86,13 @@ public class DependencyResolverTests
 
         var instance = container.Resolve(typeof(IViewFor<ViewModelOne>), "name");
 
-        Assert.NotNull(instance);
+        Assert.That(instance, Is.Not.Null);
     }
 
     /// <summary>
     /// Test to ensure a simple is registered check succeeds.
     /// </summary>
-    [Fact]
+    [Test]
     public void IsRegistered_Returns_True()
     {
         using var container = new SplatContainerExtension();
@@ -99,13 +100,13 @@ public class DependencyResolverTests
 
         var instance = container.IsRegistered(typeof(IViewFor<ViewModelOne>));
 
-        Assert.True(instance);
+        Assert.That(instance, Is.True);
     }
 
     /// <summary>
     /// Test to ensure a simple is registered check succeeds.
     /// </summary>
-    [Fact]
+    [Test]
     public void IsRegistered_With_Name_Returns_True()
     {
         using var container = new SplatContainerExtension();
@@ -113,13 +114,13 @@ public class DependencyResolverTests
 
         var instance = container.IsRegistered(typeof(IViewFor<ViewModelOne>), "name");
 
-        Assert.True(instance);
+        Assert.That(instance, Is.True);
     }
 
     /// <summary>
     /// Should resolve the views.
     /// </summary>
-    [Fact]
+    [Test]
     public void PrismDependencyResolver_Should_Resolve_Views()
     {
         using var container = new SplatContainerExtension();
@@ -129,16 +130,19 @@ public class DependencyResolverTests
         var viewOne = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
         var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
-        viewOne.Should().NotBeNull();
-        viewOne.Should().BeOfType<ViewOne>();
-        viewTwo.Should().NotBeNull();
-        viewTwo.Should().BeOfType<ViewTwo>();
+        Assert.Multiple(() =>
+        {
+            Assert.That(viewOne, Is.Not.Null);
+            Assert.That(viewOne, Is.TypeOf<ViewOne>());
+            Assert.That(viewTwo, Is.Not.Null);
+            Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
+        });
     }
 
     /// <summary>
     /// Should resolve the views.
     /// </summary>
-    [Fact]
+    [Test]
     public void PrismDependencyResolver_Should_Resolve_Named_View()
     {
         using var container = new SplatContainerExtension();
@@ -146,14 +150,17 @@ public class DependencyResolverTests
 
         var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>), "Other");
 
-        viewTwo.Should().NotBeNull();
-        viewTwo.Should().BeOfType<ViewTwo>();
+        Assert.Multiple(() =>
+        {
+            Assert.That(viewTwo, Is.Not.Null);
+            Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
+        });
     }
 
     /// <summary>
     /// Should resolve the view models.
     /// </summary>
-    [Fact]
+    [Test]
     public void PrismDependencyResolver_Should_Resolve_View_Models()
     {
         using var container = new SplatContainerExtension();
@@ -164,14 +171,17 @@ public class DependencyResolverTests
         var vmOne = AppLocator.Current.GetService<ViewModelOne>();
         var vmTwo = AppLocator.Current.GetService<ViewModelTwo>();
 
-        vmOne.Should().NotBeNull();
-        vmTwo.Should().NotBeNull();
+        Assert.Multiple(() =>
+        {
+            Assert.That(vmOne, Is.Not.Null);
+            Assert.That(vmTwo, Is.Not.Null);
+        });
     }
 
     /// <summary>
     /// Should resolve the screen.
     /// </summary>
-    [Fact]
+    [Test]
     public void PrismDependencyResolver_Should_Resolve_Screen()
     {
         using var builder = new SplatContainerExtension();
@@ -179,72 +189,75 @@ public class DependencyResolverTests
 
         var screen = AppLocator.Current.GetService<IScreen>();
 
-        screen.Should().NotBeNull();
-        screen.Should().BeOfType<MockScreen>();
+        Assert.Multiple(() =>
+        {
+            Assert.That(screen, Is.Not.Null);
+            Assert.That(screen, Is.TypeOf<MockScreen>());
+        });
     }
 
     /// <summary>
     /// Should unregister the screen.
     /// </summary>
-    [Fact]
+    [Test]
     public void PrismDependencyResolver_Should_UnregisterCurrent_Screen()
     {
         using var builder = new SplatContainerExtension();
         builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen));
 
-        AppLocator.Current.GetService<IScreen>().Should().NotBeNull();
+        AppLocator.Current.Assert.That(GetService<IScreen>(), Is.Not.Null);
 
         AppLocator.CurrentMutable.UnregisterCurrent(typeof(IScreen));
 
-        AppLocator.Current.GetService<IScreen>().Should().BeNull();
+        AppLocator.Current.Assert.That(GetService<IScreen>(), Is.Null);
     }
 
     /// <summary>
     /// Should unregister the screen.
     /// </summary>
-    [Fact]
+    [Test]
     public void PrismDependencyResolver_Should_UnregisterCurrent_Screen_With_Contract()
     {
         using var builder = new SplatContainerExtension();
         builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen), nameof(MockScreen));
 
-        AppLocator.Current.GetService<IScreen>(nameof(MockScreen)).Should().NotBeNull();
+        AppLocator.Current.Assert.That(GetService<IScreen>(nameof(MockScreen)), Is.Not.Null);
 
         AppLocator.CurrentMutable.UnregisterCurrent(typeof(IScreen), nameof(MockScreen));
 
-        AppLocator.Current.GetService<IScreen>(nameof(MockScreen)).Should().BeNull();
+        AppLocator.Current.Assert.That(GetService<IScreen>(nameof(MockScreen)), Is.Null);
     }
 
     /// <summary>
     /// Should unregister the screen.
     /// </summary>
-    [Fact]
+    [Test]
     public void PrismDependencyResolver_Should_UnregisterAll_Screen()
     {
         using var builder = new SplatContainerExtension();
         builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen));
 
-        AppLocator.Current.GetService<IScreen>().Should().NotBeNull();
+        AppLocator.Current.Assert.That(GetService<IScreen>(), Is.Not.Null);
 
         AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen));
 
-        AppLocator.Current.GetService<IScreen>().Should().BeNull();
+        AppLocator.Current.Assert.That(GetService<IScreen>(), Is.Null);
     }
 
     /// <summary>
     /// Should unregister the screen.
     /// </summary>
-    [Fact]
+    [Test]
     public void PrismDependencyResolver_Should_UnregisterAll_Screen_With_Contract()
     {
         using var builder = new SplatContainerExtension();
         builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen), nameof(MockScreen));
 
-        AppLocator.Current.GetService<IScreen>(nameof(MockScreen)).Should().NotBeNull();
+        AppLocator.Current.Assert.That(GetService<IScreen>(nameof(MockScreen)), Is.Not.Null);
 
         AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen), nameof(MockScreen));
 
-        AppLocator.Current.GetService<IScreen>(nameof(MockScreen)).Should().BeNull();
+        AppLocator.Current.Assert.That(GetService<IScreen>(nameof(MockScreen)), Is.Null);
     }
 
     /// <summary>
@@ -253,7 +266,7 @@ public class DependencyResolverTests
     /// <remarks>
     /// Introduced for Splat #331.
     /// </remarks>
-    [Fact]
+    [Test]
     public void PrismDependencyResolver_Should_ReturnRegisteredLogger()
     {
         using var c = new SplatContainerExtension();
@@ -261,7 +274,7 @@ public class DependencyResolverTests
         AppLocator.CurrentMutable.RegisterConstant<ILogManager>(new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())));
 
         var d = Splat.AppLocator.Current.GetService<ILogManager>();
-        Assert.IsType<FuncLogManager>(d);
+        Assert.That(d, Is.TypeOf<FuncLogManager>());
     }
 
     /// <summary>
@@ -270,13 +283,13 @@ public class DependencyResolverTests
     /// <remarks>
     /// Introduced for Splat #331.
     /// </remarks>
-    [Fact]
+    [Test]
     public void PrismDependencyResolver_PreInit_Should_ReturnRegisteredLogger()
     {
         using var c = new SplatContainerExtension();
         c.RegisterInstance(typeof(ILogManager), new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())));
 
         var d = Splat.AppLocator.Current.GetService<ILogManager>();
-        Assert.IsType<FuncLogManager>(d);
+        Assert.That(d, Is.TypeOf<FuncLogManager>());
     }
 }
