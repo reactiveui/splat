@@ -44,16 +44,16 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
         Assert.That(value, Is.EqualTo(bar));
 
         var values = Locator.Current.GetServices(null);
-        Assert.That((int, Is.EqualTo(foo))values.First());
-        Assert.That(values.Count(, Is.EqualTo(1)));
+        Assert.That(values.First(), Is.EqualTo(foo));
+        Assert.That(values.Count(), Is.EqualTo(1));
 
         Assert.Throws<NotImplementedException>(() => Locator.CurrentMutable.UnregisterCurrent(null));
         var valuesNC = Locator.Current.GetServices(null);
-        Assert.That(valuesNC.Count(, Is.EqualTo(1)));
-        Assert.That((int, Is.EqualTo(foo))valuesNC.First());
+        Assert.That(valuesNC.Count(), Is.EqualTo(1));
+        Assert.That(valuesNC.First(), Is.EqualTo(foo));
         var valuesC = Locator.Current.GetServices(null, contract);
-        Assert.That(valuesC.Count(, Is.EqualTo(1)));
-        Assert.That((int, Is.EqualTo(bar))valuesC.First());
+        Assert.That(valuesC.Count(), Is.EqualTo(1));
+        Assert.That(valuesC.First(), Is.EqualTo(bar));
     }
 
     /// <summary>

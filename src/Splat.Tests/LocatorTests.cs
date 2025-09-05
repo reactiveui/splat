@@ -40,17 +40,17 @@ public class LocatorTests
         Assert.That(value, Is.EqualTo(bar));
 
         var values = container.Current.GetServices(null);
-        Assert.That(values.Count(, Is.EqualTo(1)));
+        Assert.That(values.Count(), Is.EqualTo(1));
 
         container.CurrentMutable.UnregisterCurrent(null);
         var valuesNC = container.Current.GetServices(null);
-        Assert.That(valuesNC.Count(, Is.EqualTo(0)));
+        Assert.That(valuesNC.Count(), Is.EqualTo(0));
         var valuesC = container.Current.GetServices(null, contract);
-        Assert.That(valuesC.Count(, Is.EqualTo(1)));
+        Assert.That(valuesC.Count(), Is.EqualTo(1));
 
         container.CurrentMutable.UnregisterAll(null);
         valuesNC = container.Current.GetServices(null);
-        Assert.That(valuesNC.Count(, Is.EqualTo(0)));
+        Assert.That(valuesNC.Count(), Is.EqualTo(0));
 
         container.CurrentMutable.UnregisterAll(null, contract);
         valuesC = container.Current.GetServices(null, contract);

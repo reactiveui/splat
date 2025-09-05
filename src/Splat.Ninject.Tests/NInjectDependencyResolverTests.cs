@@ -36,21 +36,21 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
         Assert.That(value, Is.EqualTo(bar));
 
         var values = resolver.GetServices(null);
-        Assert.That(values.Count(, Is.EqualTo(1)));
+        Assert.That(values.Count(), Is.EqualTo(1));
 
         resolver.UnregisterCurrent(null);
         var valuesNC = resolver.GetServices(null);
-        Assert.That(valuesNC.Count(, Is.EqualTo(0)));
+        Assert.That(valuesNC.Count(), Is.EqualTo(0));
         var valuesC = resolver.GetServices(null, contract);
-        Assert.That(valuesC.Count(, Is.EqualTo(1)));
+        Assert.That(valuesC.Count(), Is.EqualTo(1));
 
         resolver.UnregisterAll(null);
         valuesNC = resolver.GetServices(null);
-        Assert.That(valuesNC.Count(, Is.EqualTo(0)));
+        Assert.That(valuesNC.Count(), Is.EqualTo(0));
 
         resolver.UnregisterAll(null, contract);
         valuesC = resolver.GetServices(null, contract);
-        Assert.That(valuesC.Count(, Is.EqualTo(0)));
+        Assert.That(valuesC.Count(), Is.EqualTo(0));
     }
 
     /// <inheritdoc />

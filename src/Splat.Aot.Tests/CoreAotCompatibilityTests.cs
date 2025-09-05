@@ -4,6 +4,9 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.Globalization;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace Splat.Tests.Aot;
@@ -236,8 +239,8 @@ public class CoreAotCompatibilityTests
         // Assert
         var services = resolver.GetServices<ITestInterface>().ToList();
         Assert.That(services.Count, Is.EqualTo(2));
-        Assert.That(s => s is TestImplementation, Does.Contain(services));
-        Assert.That(s => s is AlternateTestImplementation, Does.Contain(services));
+        Assert.That(services, Does.Contain.Matches<ITestInterface>(s => s is TestImplementation));
+        Assert.That(services, Does.Contain.Matches<ITestInterface>(s => s is AlternateTestImplementation));
     }
 
     /// <summary>
@@ -349,15 +352,15 @@ public class CoreAotCompatibilityTests
         using var resolver = new ModernDependencyResolver();
 
         // Act & Assert - Test before registration
-        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.False)));
-        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.False), "contract"));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface)), Is.False);
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface), "contract"), Is.False);
 
         // Register and test again
         resolver.RegisterConstant<ITestInterface>(new TestImplementation());
         resolver.RegisterConstant<ITestInterface>(new AlternateTestImplementation(), "contract");
 
-        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True)));
-        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True), "contract"));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface)), Is.True);
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface), "contract"), Is.True);
     }
 
     /// <summary>
@@ -567,28 +570,28 @@ public class CoreAotCompatibilityTests
         resolver.Register<ITestInterface>(() => new TestImplementation(), "factory");
 
         // Verify initial registrations
-        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True)));
-        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True), contract));
-        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True), "factory"));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface)), Is.True);
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface), contract), Is.True);
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface), "factory"), Is.True);
 
         // Act & Assert - Test UnregisterCurrent
         resolver.UnregisterCurrent<ITestInterface>();
-        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.False)));
-        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True), contract)); // Should still exist
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface)), Is.False);
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface), contract), Is.True); // Should still exist
 
         // Test UnregisterCurrent with contract
         resolver.UnregisterCurrent<ITestInterface>(contract);
-        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.False), contract));
-        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True), "factory")); // Should still exist
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface), contract), Is.False);
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface), "factory"), Is.True); // Should still exist
 
         // Test UnregisterAll
         resolver.RegisterConstant<ITestInterface>(new TestImplementation());
         resolver.Register<ITestInterface>(() => new AlternateTestImplementation());
-        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True)));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface)), Is.True);
 
         resolver.UnregisterAll<ITestInterface>();
-        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.False)));
-        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True), "factory")); // Different contract should still exist
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface)), Is.False);
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface), "factory"), Is.True); // Different contract should still exist
     }
 
     /// <summary>
@@ -608,10 +611,10 @@ public class CoreAotCompatibilityTests
                 .Register<IEnableLogger>(() => new TestService());
 
         // Assert
-        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True)));
-        Assert.That(resolver.HasRegistration(typeof(ILogger, Is.True)));
-        Assert.That(resolver.HasRegistration(typeof(ILogManager, Is.True)));
-        Assert.That(resolver.HasRegistration(typeof(IEnableLogger, Is.True)));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface)), Is.True);
+        Assert.That(resolver.HasRegistration(typeof(ILogger)), Is.True);
+        Assert.That(resolver.HasRegistration(typeof(ILogManager)), Is.True);
+        Assert.That(resolver.HasRegistration(typeof(IEnableLogger)), Is.True);
 
         var testInterface = resolver.GetService<ITestInterface>();
         var logger = resolver.GetService<ILogger>();
@@ -754,8 +757,8 @@ public class CoreAotCompatibilityTests
         Assert.That(factory, Is.Not.Null);
         Assert.That(lazy, Is.Not.Null);
 
-        Assert.That(enumerable.Count(, Is.EqualTo(2)));
-        Assert.That(factory(, Is.Not.Null));
+        Assert.That(enumerable.Count(), Is.EqualTo(2));
+        Assert.That(factory(), Is.Not.Null);
         Assert.That(lazy.Value, Is.Not.Null);
         Assert.That(lazy.Value, Is.TypeOf<DebugLogger>());
     }
@@ -847,10 +850,10 @@ public class CoreAotCompatibilityTests
         using var resolver = new ModernDependencyResolver();
 
         // Act & Assert - Test extension methods with generic parameters
-        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.False)));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface)), Is.False);
 
         resolver.RegisterConstant<ITestInterface>(new TestImplementation());
-        Assert.That(resolver.HasRegistration(typeof(ITestInterface, Is.True)));
+        Assert.That(resolver.HasRegistration(typeof(ITestInterface)), Is.True);
 
         var service = resolver.GetService<ITestInterface>();
         Assert.That(service, Is.Not.Null);

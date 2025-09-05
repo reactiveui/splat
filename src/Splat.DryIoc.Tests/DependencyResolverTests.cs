@@ -44,18 +44,18 @@ public class DependencyResolverTests
         Assert.That(value, Is.EqualTo(bar));
 
         var values = AppLocator.Current.GetServices(null);
-        Assert.That((int, Is.EqualTo(foo))values.First());
-        Assert.That(values.Count(, Is.EqualTo(1)));
+        Assert.That(values.First(), Is.EqualTo(foo));
+        Assert.That(values.Count(), Is.EqualTo(1));
 
         AppLocator.CurrentMutable.UnregisterCurrent(null);
         var valuesNC = AppLocator.Current.GetServices(null);
-        Assert.That(valuesNC.Count(, Is.EqualTo(0)));
+        Assert.That(valuesNC.Count(), Is.EqualTo(0));
         var valuesC = AppLocator.Current.GetServices(null, contract);
-        Assert.That(valuesC.Count(, Is.EqualTo(1)));
+        Assert.That(valuesC.Count(), Is.EqualTo(1));
 
         AppLocator.CurrentMutable.UnregisterAll(null);
         valuesNC = AppLocator.Current.GetServices(null);
-        Assert.That(valuesNC.Count(, Is.EqualTo(0)));
+        Assert.That(valuesNC.Count(), Is.EqualTo(0));
 
         AppLocator.CurrentMutable.UnregisterAll(null, contract);
         valuesC = AppLocator.Current.GetServices(null, contract);
