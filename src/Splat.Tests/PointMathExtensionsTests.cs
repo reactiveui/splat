@@ -10,419 +10,383 @@ namespace Splat.Tests;
 /// <summary>
 /// Unit Tests for the PointMathExtensions class.
 /// </summary>
+[TestFixture]
 public class PointMathExtensionsTests
 {
+    private const float Eps = 1e-5f;
+
     /// <summary>
     /// Test that Floor method correctly floors point values.
     /// </summary>
-    [Fact]
+    [Test]
     public void Floor_CorrectlyFloorsPoint()
     {
-        // Arrange
         var point = new Point(3, 4);
 
-        // Act
         var result = point.Floor();
 
-        // Assert
-        Assert.Equal(3.0f, result.X);
-        Assert.Equal(4.0f, result.Y);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.X, Is.EqualTo(3.0f));
+            Assert.That(result.Y, Is.EqualTo(4.0f));
+        }
     }
 
     /// <summary>
     /// Test that Floor method handles negative values.
     /// </summary>
-    [Fact]
+    [Test]
     public void Floor_HandlesNegativeValues()
     {
-        // Arrange
         var point = new Point(-3, -4);
 
-        // Act
         var result = point.Floor();
 
-        // Assert
-        Assert.Equal(-3.0f, result.X);
-        Assert.Equal(-4.0f, result.Y);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.X, Is.EqualTo(-3.0f));
+            Assert.That(result.Y, Is.EqualTo(-4.0f));
+        }
     }
 
     /// <summary>
     /// Test that WithinEpsilonOf returns true when points are within epsilon.
     /// </summary>
-    [Fact]
+    [Test]
     public void WithinEpsilonOf_ReturnsTrue_WhenPointsAreWithinEpsilon()
     {
-        // Arrange
         var point1 = new PointF(1.0f, 2.0f);
         var point2 = new PointF(1.1f, 2.1f);
         const float epsilon = 0.2f;
 
-        // Act
         var result = point1.WithinEpsilonOf(point2, epsilon);
 
-        // Assert
-        Assert.True(result);
+        Assert.That(result, Is.True);
     }
 
     /// <summary>
     /// Test that WithinEpsilonOf returns false when points are not within epsilon.
     /// </summary>
-    [Fact]
+    [Test]
     public void WithinEpsilonOf_ReturnsFalse_WhenPointsAreNotWithinEpsilon()
     {
-        // Arrange
         var point1 = new PointF(1.0f, 2.0f);
         var point2 = new PointF(5.0f, 6.0f);
         const float epsilon = 0.5f;
 
-        // Act
         var result = point1.WithinEpsilonOf(point2, epsilon);
 
-        // Assert
-        Assert.False(result);
+        Assert.That(result, Is.False);
     }
 
     /// <summary>
     /// Test that WithinEpsilonOf handles identical points.
     /// </summary>
-    [Fact]
+    [Test]
     public void WithinEpsilonOf_HandlesIdenticalPoints()
     {
-        // Arrange
         var point = new PointF(1.0f, 2.0f);
         const float epsilon = 0.1f;
 
-        // Act
         var result = point.WithinEpsilonOf(point, epsilon);
 
-        // Assert
-        Assert.True(result);
+        Assert.That(result, Is.True);
     }
 
     /// <summary>
     /// Test that DotProduct calculates correctly.
     /// </summary>
-    [Fact]
+    [Test]
     public void DotProduct_CalculatesCorrectly()
     {
-        // Arrange
         var point1 = new PointF(3.0f, 4.0f);
         var point2 = new PointF(2.0f, 1.0f);
 
-        // Act
         var result = point1.DotProduct(point2);
 
-        // Assert
-        Assert.Equal(10.0f, result); // (3*2) + (4*1) = 6 + 4 = 10
+        Assert.That(result, Is.EqualTo(10.0f).Within(Eps)); // (3*2) + (4*1) = 10
     }
 
     /// <summary>
     /// Test that DotProduct handles zero vectors.
     /// </summary>
-    [Fact]
+    [Test]
     public void DotProduct_HandlesZeroVectors()
     {
-        // Arrange
         var point1 = new PointF(3.0f, 4.0f);
         var point2 = new PointF(0.0f, 0.0f);
 
-        // Act
         var result = point1.DotProduct(point2);
 
-        // Assert
-        Assert.Equal(0.0f, result);
+        Assert.That(result, Is.Zero);
     }
 
     /// <summary>
     /// Test that ScaledBy scales point correctly.
     /// </summary>
-    [Fact]
+    [Test]
     public void ScaledBy_ScalesPointCorrectly()
     {
-        // Arrange
         var point = new PointF(2.0f, 3.0f);
         const float factor = 2.5f;
 
-        // Act
         var result = point.ScaledBy(factor);
 
-        // Assert
-        Assert.Equal(5.0f, result.X);
-        Assert.Equal(7.5f, result.Y);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.X, Is.EqualTo(5.0f).Within(Eps));
+            Assert.That(result.Y, Is.EqualTo(7.5f).Within(Eps));
+        }
     }
 
     /// <summary>
     /// Test that ScaledBy handles zero factor.
     /// </summary>
-    [Fact]
+    [Test]
     public void ScaledBy_HandlesZeroFactor()
     {
-        // Arrange
         var point = new PointF(2.0f, 3.0f);
         const float factor = 0.0f;
 
-        // Act
         var result = point.ScaledBy(factor);
 
-        // Assert
-        Assert.Equal(0.0f, result.X);
-        Assert.Equal(0.0f, result.Y);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.X, Is.Zero);
+            Assert.That(result.Y, Is.Zero);
+        }
     }
 
     /// <summary>
     /// Test that ScaledBy handles negative factor.
     /// </summary>
-    [Fact]
+    [Test]
     public void ScaledBy_HandlesNegativeFactor()
     {
-        // Arrange
         var point = new PointF(2.0f, 3.0f);
         const float factor = -2.0f;
 
-        // Act
         var result = point.ScaledBy(factor);
 
-        // Assert
-        Assert.Equal(-4.0f, result.X);
-        Assert.Equal(-6.0f, result.Y);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.X, Is.EqualTo(-4.0f));
+            Assert.That(result.Y, Is.EqualTo(-6.0f));
+        }
     }
 
     /// <summary>
     /// Test that Length calculates magnitude correctly.
     /// </summary>
-    [Fact]
+    [Test]
     public void Length_CalculatesMagnitudeCorrectly()
     {
-        // Arrange
         var point = new PointF(3.0f, 4.0f);
 
-        // Act
         var result = point.Length();
 
-        // Assert
-        Assert.Equal(5.0f, result, 5); // sqrt(3^2 + 4^2) = sqrt(9 + 16) = sqrt(25) = 5
+        Assert.That(result, Is.EqualTo(5.0f).Within(Eps));
     }
 
     /// <summary>
     /// Test that Length handles zero vector.
     /// </summary>
-    [Fact]
+    [Test]
     public void Length_HandlesZeroVector()
     {
-        // Arrange
         var point = new PointF(0.0f, 0.0f);
 
-        // Act
         var result = point.Length();
 
-        // Assert
-        Assert.Equal(0.0f, result);
+        Assert.That(result, Is.Zero);
     }
 
     /// <summary>
     /// Test that Normalize creates unit vector correctly.
     /// </summary>
-    [Fact]
+    [Test]
     public void Normalize_CreatesUnitVectorCorrectly()
     {
-        // Arrange
         var point = new PointF(3.0f, 4.0f);
 
-        // Act
         var result = point.Normalize();
 
-        // Assert
-        Assert.Equal(0.6f, result.X, 5);
-        Assert.Equal(0.8f, result.Y, 5);
-        Assert.Equal(1.0f, result.Length(), 5);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.X, Is.EqualTo(0.6f).Within(Eps));
+            Assert.That(result.Y, Is.EqualTo(0.8f).Within(Eps));
+            Assert.That(result.Length(), Is.EqualTo(1.0f).Within(Eps));
+        }
     }
 
     /// <summary>
     /// Test that Normalize handles zero vector correctly.
     /// </summary>
-    [Fact]
+    [Test]
     public void Normalize_HandlesZeroVectorCorrectly()
     {
-        // Arrange
         var point = new PointF(0.0f, 0.0f);
 
-        // Act
         var result = point.Normalize();
 
-        // Assert
-        Assert.Equal(0.0f, result.X);
-        Assert.Equal(0.0f, result.Y);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.X, Is.Zero);
+            Assert.That(result.Y, Is.Zero);
+        }
     }
 
     /// <summary>
     /// Test that AngleInDegrees calculates angle correctly.
     /// </summary>
-    [Fact]
+    [Test]
     public void AngleInDegrees_CalculatesAngleCorrectly()
     {
-        // Arrange
         var point = new PointF(1.0f, 1.0f);
 
-        // Act
         var result = point.AngleInDegrees();
 
-        // Assert
-        Assert.Equal(45.0f, result, 1);
+        Assert.That(result, Is.EqualTo(45.0f).Within(1.0f));
     }
 
     /// <summary>
     /// Test that AngleInDegrees handles negative coordinates.
     /// </summary>
-    [Fact]
+    [Test]
     public void AngleInDegrees_HandlesNegativeCoordinates()
     {
-        // Arrange
         var point = new PointF(-1.0f, 1.0f);
 
-        // Act
         var result = point.AngleInDegrees();
 
-        // Assert
-        Assert.Equal(135.0f, result, 1);
+        Assert.That(result, Is.EqualTo(135.0f).Within(1.0f));
     }
 
     /// <summary>
     /// Test that AngleInDegrees handles zero vector.
     /// </summary>
-    [Fact]
+    [Test]
     public void AngleInDegrees_HandlesZeroVector()
     {
-        // Arrange
         var point = new PointF(0.0f, 0.0f);
 
-        // Act
         var result = point.AngleInDegrees();
 
-        // Assert
-        Assert.Equal(0.0f, result);
+        Assert.That(result, Is.Zero);
     }
 
     /// <summary>
     /// Test that ProjectAlong projects correctly.
     /// </summary>
-    [Fact]
+    [Test]
     public void ProjectAlong_ProjectsCorrectly()
     {
-        // Arrange
         var point = new PointF(3.0f, 4.0f);
         var direction = new PointF(1.0f, 0.0f); // Unit vector along X-axis
 
-        // Act
         var result = point.ProjectAlong(direction);
 
-        // Assert
-        Assert.Equal(3.0f, result.X);
-        Assert.Equal(0.0f, result.Y);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.X, Is.EqualTo(3.0f).Within(Eps));
+            Assert.That(result.Y, Is.Zero.Within(Eps));
+        }
     }
 
     /// <summary>
     /// Test that ProjectAlong handles zero direction vector.
     /// </summary>
-    [Fact]
+    [Test]
     public void ProjectAlong_HandlesZeroDirection()
     {
-        // Arrange
         var point = new PointF(3.0f, 4.0f);
         var direction = new PointF(0.0f, 0.0f);
 
-        // Act
         var result = point.ProjectAlong(direction);
 
-        // Assert
         // When direction is zero, normalized direction is also zero, result should be zero
-        Assert.Equal(0.0f, result.X);
-        Assert.Equal(0.0f, result.Y);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.X, Is.Zero);
+            Assert.That(result.Y, Is.Zero);
+        }
     }
 
     /// <summary>
     /// Test that ProjectAlongAngle projects correctly.
     /// </summary>
-    [Fact]
+    [Test]
     public void ProjectAlongAngle_ProjectsCorrectly()
     {
-        // Arrange
         var point = new PointF(3.0f, 4.0f);
         const float angle = 0.0f; // Along X-axis
 
-        // Act
         var result = point.ProjectAlongAngle(angle);
 
-        // Assert
-        Assert.Equal(3.0f, result.X, 5);
-        Assert.Equal(0.0f, result.Y, 5);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.X, Is.EqualTo(3.0f).Within(Eps));
+            Assert.That(result.Y, Is.Zero.Within(Eps));
+        }
     }
 
     /// <summary>
     /// Test that ProjectAlongAngle works with different angles.
     /// </summary>
-    [Fact]
+    [Test]
     public void ProjectAlongAngle_WorksWithDifferentAngles()
     {
-        // Arrange
         var point = new PointF(3.0f, 4.0f);
         const float angle = 90.0f; // Along Y-axis
 
-        // Act
         var result = point.ProjectAlongAngle(angle);
 
-        // Assert
-        Assert.Equal(0.0f, result.X, 5);
-        Assert.Equal(4.0f, result.Y, 5);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.X, Is.Zero.Within(Eps));
+            Assert.That(result.Y, Is.EqualTo(4.0f).Within(Eps));
+        }
     }
 
     /// <summary>
     /// Test that DistanceTo calculates distance correctly.
     /// </summary>
-    [Fact]
+    [Test]
     public void DistanceTo_CalculatesDistanceCorrectly()
     {
-        // Arrange
         var point1 = new PointF(0.0f, 0.0f);
         var point2 = new PointF(3.0f, 4.0f);
 
-        // Act
         var result = point1.DistanceTo(point2);
 
-        // Assert
-        Assert.Equal(5.0f, result, 5); // sqrt(3^2 + 4^2) = 5
+        Assert.That(result, Is.EqualTo(5.0f).Within(Eps));
     }
 
     /// <summary>
     /// Test that DistanceTo handles same points.
     /// </summary>
-    [Fact]
+    [Test]
     public void DistanceTo_HandlesSamePoints()
     {
-        // Arrange
         var point = new PointF(1.0f, 2.0f);
 
-        // Act
         var result = point.DistanceTo(point);
 
-        // Assert
-        Assert.Equal(0.0f, result);
+        Assert.That(result, Is.Zero);
     }
 
     /// <summary>
     /// Test that DistanceTo is symmetric.
     /// </summary>
-    [Fact]
+    [Test]
     public void DistanceTo_IsSymmetric()
     {
-        // Arrange
         var point1 = new PointF(1.0f, 2.0f);
         var point2 = new PointF(4.0f, 6.0f);
 
-        // Act
         var distance1 = point1.DistanceTo(point2);
         var distance2 = point2.DistanceTo(point1);
 
-        // Assert
-        Assert.Equal(distance1, distance2, 5);
+        Assert.That(distance1, Is.EqualTo(distance2).Within(Eps));
     }
 }

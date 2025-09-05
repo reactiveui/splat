@@ -1,9 +1,7 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
-
-using FluentAssertions;
 
 using Splat.Tests.Mocks;
 
@@ -12,53 +10,59 @@ namespace Splat.Tests;
 /// <summary>
 /// Tests to confirm that the locator is working.
 /// </summary>
+[TestFixture]
+[NonParallelizable]
 public class LocatorTests
 {
     /// <summary>
-    /// Shoulds the resolve nulls.
+    /// Should the resolve nulls.
     /// </summary>
-    [Fact]
+    [Test]
     public void Can_Register_And_Resolve_Null_Types()
     {
         var container = new InternalLocator();
 
-        var foo = 5;
+        const int foo = 5;
         container.CurrentMutable.Register(() => foo, null);
 
-        var bar = 4;
-        var contract = "foo";
+        const int bar = 4;
+        const string contract = "foo";
         container.CurrentMutable.Register(() => bar, null, contract);
 
-        Assert.True(container.CurrentMutable.HasRegistration(null));
+        Assert.That(container.CurrentMutable.HasRegistration(null), Is.True);
         var value = container.Current.GetService(null);
-        Assert.Equal(foo, value);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(value, Is.EqualTo(foo));
 
-        Assert.True(container.CurrentMutable.HasRegistration(null, contract));
+            Assert.That(container.CurrentMutable.HasRegistration(null, contract), Is.True);
+        }
+
         value = container.Current.GetService(null, contract);
-        Assert.Equal(bar, value);
+        Assert.That(value, Is.EqualTo(bar));
 
         var values = container.Current.GetServices(null);
-        Assert.Equal(1, values.Count());
+        Assert.That(values.Count(), Is.EqualTo(1));
 
         container.CurrentMutable.UnregisterCurrent(null);
-        var valuesNC = container.Current.GetServices(null);
-        Assert.Equal(0, valuesNC.Count());
+        var valuesNC = container.Current.GetServices(null).ToList();
+        Assert.That(valuesNC, Is.Empty);
         var valuesC = container.Current.GetServices(null, contract);
-        Assert.Equal(1, valuesC.Count());
+        Assert.That(valuesC.Count(), Is.EqualTo(1));
 
         container.CurrentMutable.UnregisterAll(null);
-        valuesNC = container.Current.GetServices(null);
-        Assert.Equal(0, valuesNC.Count());
+        valuesNC = container.Current.GetServices(null).ToList();
+        Assert.That(valuesNC, Is.Empty);
 
         container.CurrentMutable.UnregisterAll(null, contract);
         valuesC = container.Current.GetServices(null, contract);
-        Assert.Equal(0, valuesC.Count());
+        Assert.That(valuesC.Count(), Is.Zero);
     }
 
     /// <summary>
     /// Tests if the registrations are not empty on no external registrations.
     /// </summary>
-    [Fact]
+    [Test]
     public void InitializeSplat_RegistrationsNotEmptyNoRegistrations()
     {
         // this is using the internal constructor
@@ -66,62 +70,80 @@ public class LocatorTests
         var logManager = testLocator.Current.GetService(typeof(ILogManager));
         var logger = testLocator.Current.GetService(typeof(ILogger));
 
-        Assert.NotNull(logManager);
-        Assert.NotNull(logger);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(logManager, Is.Not.Null);
+            Assert.That(logger, Is.Not.Null);
+        }
 
-        Assert.IsType<DebugLogger>(logger);
-        Assert.IsType<DefaultLogManager>(logManager);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(logger, Is.TypeOf<DebugLogger>());
+            Assert.That(logManager, Is.TypeOf<DefaultLogManager>());
+        }
     }
 
     /// <summary>
     /// Tests that if we use a contract it returns null entries for that type.
     /// </summary>
-    [Fact]
+    [Test]
     public void InitializeSplat_ContractRegistrationsNullNoRegistration()
     {
         var testLocator = new InternalLocator();
         var logManager = testLocator.Current.GetService(typeof(ILogManager), "test");
         var logger = testLocator.Current.GetService(typeof(ILogger), "test");
 
-        Assert.Null(logManager);
-        Assert.Null(logger);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(logManager, Is.Null);
+            Assert.That(logger, Is.Null);
+        }
     }
 
     /// <summary>
     /// Tests that if we use a contract it returns null entries for that type.
     /// </summary>
-    [Fact]
+    [Test]
     public void InitializeSplat_ContractRegistrationsExtensionMethodsNullNoRegistration()
     {
         var testLocator = new InternalLocator();
         var logManager = testLocator.Current.GetService<ILogManager>("test");
         var logger = testLocator.Current.GetService<ILogger>("test");
 
-        Assert.Null(logManager);
-        Assert.Null(logger);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(logManager, Is.Null);
+            Assert.That(logger, Is.Null);
+        }
     }
 
     /// <summary>
     /// Tests using the extension methods that the retrieving of the default InitializeSplat() still work.
     /// </summary>
-    [Fact]
+    [Test]
     public void InitializeSplat_ExtensionMethodsNotNull()
     {
         var testLocator = new InternalLocator();
         var logManager = testLocator.Current.GetService<ILogManager>();
         var logger = testLocator.Current.GetService<ILogger>();
 
-        Assert.NotNull(logManager);
-        Assert.NotNull(logger);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(logManager, Is.Not.Null);
+            Assert.That(logger, Is.Not.Null);
+        }
 
-        Assert.IsType<DebugLogger>(logger);
-        Assert.IsType<DefaultLogManager>(logManager);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(logger, Is.TypeOf<DebugLogger>());
+            Assert.That(logManager, Is.TypeOf<DefaultLogManager>());
+        }
     }
 
     /// <summary>
     /// Tests to make sure that the locator's fire the resolver changed notifications.
     /// </summary>
-    [Fact]
+    [Test]
     public void WithoutSuppress_NotificationsHappen()
     {
         var testLocator = new InternalLocator();
@@ -136,7 +158,7 @@ public class LocatorTests
         testLocator.SetLocator(new ModernDependencyResolver());
 
         // 2 for the changes, 1 for the callback being immediately called.
-        Assert.Equal(3, numberNotifications);
+        Assert.That(numberNotifications, Is.EqualTo(3));
 
         testLocator.SetLocator(originalLocator);
     }
@@ -144,7 +166,7 @@ public class LocatorTests
     /// <summary>
     /// Tests to make sure that the locator's don't fire the resolver changed notifications if they are suppressed.
     /// </summary>
-    [Fact]
+    [Test]
     public void WithSuppression_NotificationsDontHappen()
     {
         var testLocator = new InternalLocator();
@@ -160,7 +182,7 @@ public class LocatorTests
             testLocator.SetLocator(new ModernDependencyResolver());
             testLocator.SetLocator(new ModernDependencyResolver());
 
-            Assert.Equal(0, numberNotifications);
+            Assert.That(numberNotifications, Is.Zero);
 
             testLocator.SetLocator(originalLocator);
         }
@@ -169,7 +191,7 @@ public class LocatorTests
     /// <summary>
     /// Tests to make sure that the locator's don't fire the resolver changed notifications if we use WithResolver().
     /// </summary>
-    [Fact]
+    [Test]
     public void WithResolver_NotificationsDontHappen()
     {
         var numberNotifications = 0;
@@ -186,13 +208,13 @@ public class LocatorTests
         }
 
         // 1 due to the fact the callback is called when we register.
-        Assert.Equal(1, numberNotifications);
+        Assert.That(numberNotifications, Is.EqualTo(1));
     }
 
     /// <summary>
     /// Tests to make sure that the locator's don't fire the resolver changed notifications if we use WithResolver().
     /// </summary>
-    [Fact]
+    [Test]
     public void WithResolver_NotificationsNotSuppressedHappen()
     {
         var numberNotifications = 0;
@@ -210,14 +232,14 @@ public class LocatorTests
         // 1 due to the fact the callback is called when we register.
         // 2 for, 1 for change to resolver, 1 for change back
         // 2 for, 1 for change to resolver, 1 for change back
-        Assert.Equal(5, numberNotifications);
+        Assert.That(numberNotifications, Is.EqualTo(5));
     }
 
     /// <summary>
     /// Tests to make sure that the unregister all functions correctly.
     /// This is a test when there are values registered.
     /// </summary>
-    [Fact]
+    [Test]
     public void ModernDependencyResolver_UnregisterAll_WithValuesWorks()
     {
         var currentMutable = new ModernDependencyResolver();
@@ -239,99 +261,99 @@ public class LocatorTests
         {
             var items = currentMutable.GetServices<IDummyInterface>(testContract);
 
-            items.Should().BeEquivalentTo(new IDummyInterface[] { dummy1, dummy2, dummy3 });
+            Assert.That(items, Is.EquivalentTo(new IDummyInterface[] { dummy1, dummy2, dummy3 }));
 
             currentMutable.UnregisterAll<IDummyInterface>(testContract);
 
             items = currentMutable.GetServices<IDummyInterface>(testContract);
 
-            items.Should().BeEmpty();
+            Assert.That(items, Is.Empty);
         }
     }
 
     /// <summary>
     /// Nullables the type.
     /// </summary>
-    [Fact]
+    [Test]
     public void RegisterAndResolveANullableTypeWithValue()
     {
         Locator.CurrentMutable.Register<DummyObjectClass1?>(() => new());
         var doc = Locator.Current.GetService<DummyObjectClass1?>();
-        doc.Should().BeOfType<DummyObjectClass1>();
+        Assert.That(doc, Is.TypeOf<DummyObjectClass1>());
     }
 
     /// <summary>
     /// Nullables the type.
     /// </summary>
-    [Fact]
+    [Test]
     public void RegisterAndResolveANullableTypeWithNull()
     {
         Locator.CurrentMutable.Register<DummyObjectClass1?>(() => null);
         var doc = Locator.Current.GetService<DummyObjectClass1?>();
-        doc.Should().BeNull();
+        Assert.That(doc, Is.Null);
     }
 
     /// <summary>
     /// Nullables the type.
     /// </summary>
-    [Fact]
+    [Test]
     public void RegisterAndResolveANullableTypeWithValueLocatorDisposed()
     {
         var currentMutable = new ModernDependencyResolver();
         currentMutable.Register<DummyObjectClass1?>(() => new());
         currentMutable.Dispose();
         var doc = currentMutable.GetService<DummyObjectClass1?>();
-        doc.Should().BeNull();
+        Assert.That(doc, Is.Null);
     }
 
     /// <summary>
     /// Nullables the type.
     /// </summary>
-    [Fact]
+    [Test]
     public void RegisterAndResolveANullableTypeWithDefault()
     {
-        Locator.CurrentMutable.Register<DummyObjectClass1?>(() => default);
+        Locator.CurrentMutable.Register<DummyObjectClass1?>(() => null);
         var doc = Locator.Current.GetService<DummyObjectClass1?>();
-        doc.Should().BeNull();
+        Assert.That(doc, Is.Null);
     }
 
     /// <summary>
     /// Nullables the type.
     /// </summary>
-    [Fact]
+    [Test]
     public void RegisterAndResolveANullableTypeWithNulledInstance()
     {
         DummyObjectClass1? dummy = null;
         Locator.CurrentMutable.Register(() => dummy);
         var doc = Locator.Current.GetService<DummyObjectClass1?>();
-        doc.Should().BeNull();
+        Assert.That(doc, Is.Null);
     }
 
     /// <summary>
     /// Tests to make sure that the unregister all functions correctly.
     /// This is a test when there are values not registered.
     /// </summary>
-    [Fact]
+    [Test]
     public void ModernDependencyResolver_UnregisterAll_NoValuesWorks()
     {
         var currentMutable = new ModernDependencyResolver();
 
         var items = currentMutable.GetServices<IDummyInterface>();
 
-        items.Should().BeEmpty();
+        Assert.That(items, Is.Empty);
 
         currentMutable.UnregisterAll<IDummyInterface>();
 
         items = currentMutable.GetServices<IDummyInterface>();
 
-        items.Should().BeEmpty();
+        Assert.That(items, Is.Empty);
     }
 
     /// <summary>
     /// Tests tomake sure that the unregister current functions correctly.
     /// This is a test when there are values registered.
     /// </summary>
-    [Fact]
+    [Test]
     public void ModernDependencyResolver_UnregisterCurrent_WithValuesWorks()
     {
         var dummy1 = new DummyObjectClass1();
@@ -353,13 +375,13 @@ public class LocatorTests
         {
             var items = currentMutable.GetServices<IDummyInterface>(testContract);
 
-            items.Should().BeEquivalentTo(new IDummyInterface[] { dummy1, dummy2, dummy3 });
+            Assert.That(items, Is.EquivalentTo(new IDummyInterface[] { dummy1, dummy2, dummy3 }));
 
             currentMutable.UnregisterCurrent<IDummyInterface>(testContract);
 
             items = currentMutable.GetServices<IDummyInterface>(testContract);
 
-            items.Should().BeEquivalentTo(new IDummyInterface[] { dummy1, dummy2 });
+            Assert.That(items, Is.EquivalentTo(new IDummyInterface[] { dummy1, dummy2 }));
         }
     }
 
@@ -367,26 +389,26 @@ public class LocatorTests
     /// Tests to make sure that the unregister all functions correctly.
     /// This is a test when there are values not registered.
     /// </summary>
-    [Fact]
+    [Test]
     public void ModernDependencyResolver_UnregisterCurrent_NoValuesWorks()
     {
         var currentMutable = new ModernDependencyResolver();
         var items = currentMutable.GetServices<IDummyInterface>();
 
-        items.Should().BeEmpty();
+        Assert.That(items, Is.Empty);
 
         currentMutable.UnregisterCurrent<IDummyInterface>();
 
         items = currentMutable.GetServices<IDummyInterface>();
 
-        items.Should().BeEmpty();
+        Assert.That(items, Is.Empty);
     }
 
     /// <summary>
     /// Tests to make sure that the unregister all functions correctly.
     /// This is a test when there are values not registered.
     /// </summary>
-    [Fact]
+    [Test]
     public void FuncDependencyResolver_UnregisterAll()
     {
         var unregisterAllCalled = false;
@@ -394,7 +416,7 @@ public class LocatorTests
         string? contract = null;
 
         var currentMutable = new FuncDependencyResolver(
-            (funcType, funcContract) => Array.Empty<object>(),
+            (_, _) => [],
             unregisterAll: (passedType, passedContract) =>
             {
                 unregisterAllCalled = true;
@@ -403,22 +425,29 @@ public class LocatorTests
             });
 
         currentMutable.UnregisterAll<IDummyInterface>();
-        type.Should().Be<IDummyInterface>();
-        contract.Should().BeNull();
-        unregisterAllCalled.Should().BeTrue();
+        using (Assert.EnterMultipleScope())
+        {
+            // 'type' is a System.Type; compare to typeof(...)
+            Assert.That(type, Is.EqualTo(typeof(IDummyInterface)));
+            Assert.That(contract, Is.Null);
+            Assert.That(unregisterAllCalled, Is.True);
+        }
 
         unregisterAllCalled = false;
         currentMutable.UnregisterAll<IEnableLogger>("test");
-        type.Should().Be<IEnableLogger>();
-        contract.Should().Be("test");
-        unregisterAllCalled.Should().BeTrue();
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(type, Is.EqualTo(typeof(IEnableLogger)));
+            Assert.That(contract, Is.EqualTo("test"));
+            Assert.That(unregisterAllCalled, Is.True);
+        }
     }
 
     /// <summary>
     /// Tests tomake sure that the unregister current functions correctly.
     /// This is a test when there are values registered.
     /// </summary>
-    [Fact]
+    [Test]
     public void FuncDependencyResolver_UnregisterCurrent()
     {
         var unregisterAllCalled = false;
@@ -426,7 +455,7 @@ public class LocatorTests
         string? contract = null;
 
         var currentMutable = new FuncDependencyResolver(
-            (funcType, funcContract) => Array.Empty<object>(),
+            (_, _) => [],
             unregisterCurrent: (passedType, passedContract) =>
             {
                 unregisterAllCalled = true;
@@ -435,14 +464,21 @@ public class LocatorTests
             });
 
         currentMutable.UnregisterCurrent<IDummyInterface>();
-        type.Should().Be<IDummyInterface>();
-        contract.Should().BeNull();
-        unregisterAllCalled.Should().BeTrue();
+        using (Assert.EnterMultipleScope())
+        {
+            // 'type' is a System.Type; compare to typeof(...)
+            Assert.That(type, Is.EqualTo(typeof(IDummyInterface)));
+            Assert.That(contract, Is.Null);
+            Assert.That(unregisterAllCalled, Is.True);
+        }
 
         unregisterAllCalled = false;
         currentMutable.UnregisterCurrent<IEnableLogger>("test");
-        type.Should().Be<IEnableLogger>();
-        contract.Should().Be("test");
-        unregisterAllCalled.Should().BeTrue();
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(type, Is.EqualTo(typeof(IEnableLogger)));
+            Assert.That(contract, Is.EqualTo("test"));
+            Assert.That(unregisterAllCalled, Is.True);
+        }
     }
 }

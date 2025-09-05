@@ -176,7 +176,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
             }
             else
             {
-                _serviceCollection?.AddKeyedTransient(serviceType, contract, (_, __) =>
+                _serviceCollection?.AddKeyedTransient(serviceType, contract, (_, _) =>
                 isNull
                 ? new NullServiceType(factory)
                 : factory()!);

@@ -1,10 +1,16 @@
-﻿using Splat.Microsoft.Extensions.DependencyInjection;
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using Splat.Microsoft.Extensions.DependencyInjection;
 
 namespace Splat.Tests.ServiceLocation;
 
 /// <summary>
 /// Unit Tests for the Modern Dependency Resolver.
 /// </summary>
+[TestFixture]
 public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTests<MicrosoftDependencyResolver>
 {
     /// <summary>
@@ -12,10 +18,11 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     /// Should really be brought down to the <see cref="BaseDependencyResolverTests{T}"/>,
     /// it fails for some of the DIs.
     /// </summary>
-    [Fact]
+    [Test]
     public void Can_Register_And_Resolve_Null_Types()
     {
         var resolver = GetDependencyResolver();
+
         const int foo = 5;
         resolver.Register(() => foo, null);
 
@@ -23,30 +30,39 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
         const string contract = "foo";
         resolver.Register(() => bar, null, contract);
 
-        Assert.True(resolver.HasRegistration(null));
-        var value = resolver.GetService(null);
-        Assert.Equal(foo, value);
+        Assert.That(resolver.HasRegistration(null), Is.True);
 
-        Assert.True(resolver.HasRegistration(null, contract));
+        var value = resolver.GetService(null);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(value, Is.EqualTo(foo));
+
+            Assert.That(resolver.HasRegistration(null, contract), Is.True);
+        }
+
         value = resolver.GetService(null, contract);
-        Assert.Equal(bar, value);
+        Assert.That(value, Is.EqualTo(bar));
 
         var values = resolver.GetServices(null);
-        Assert.Equal(1, values.Count());
+        Assert.That(values.Count(), Is.EqualTo(1));
 
         resolver.UnregisterCurrent(null);
+
         var valuesNC = resolver.GetServices(null);
-        Assert.Equal(0, valuesNC.Count());
+        Assert.That(valuesNC.Count(), Is.Zero);
+
         var valuesC = resolver.GetServices(null, contract);
-        Assert.Equal(1, valuesC.Count());
+        Assert.That(valuesC.Count(), Is.EqualTo(1));
 
         resolver.UnregisterAll(null);
+
         valuesNC = resolver.GetServices(null);
-        Assert.Equal(0, valuesNC.Count());
+        Assert.That(valuesNC.Count(), Is.Zero);
 
         resolver.UnregisterAll(null, contract);
+
         valuesC = resolver.GetServices(null, contract);
-        Assert.Equal(0, valuesC.Count());
+        Assert.That(valuesC.Count(), Is.Zero);
     }
 
     /// <inheritdoc />

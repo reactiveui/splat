@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solutio
 		..\.github\workflows\release.yml = ..\.github\workflows\release.yml
 		stylecop.json = stylecop.json
 		..\version.json = ..\version.json
+		..\.github\COPILOT_INSTRUCTIONS.md = ..\.github\COPILOT_INSTRUCTIONS.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Splat.Tests", "Splat.Tests\Splat.Tests.csproj", "{6CAD2584-AA69-4A36-8AD4-A90D040003CA}"

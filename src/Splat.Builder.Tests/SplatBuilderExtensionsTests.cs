@@ -8,12 +8,13 @@ namespace Splat.Builder.Tests
     /// <summary>
     /// Unit tests for SplatBuilderExtensions.
     /// </summary>
+    [TestFixture]
     public class SplatBuilderExtensionsTests
     {
         /// <summary>
         /// Applies the throws on null module.
         /// </summary>
-        [Fact]
+        [Test]
         public void ApplyThrowsOnNullModule()
         {
             IModule module = null!;
@@ -23,7 +24,7 @@ namespace Splat.Builder.Tests
         /// <summary>
         /// Creates the splat builder throws on null resolver.
         /// </summary>
-        [Fact]
+        [Test]
         public void CreateSplatBuilderThrowsOnNullResolver()
         {
             IMutableDependencyResolver resolver = (IMutableDependencyResolver)null!;
@@ -33,36 +34,37 @@ namespace Splat.Builder.Tests
         /// <summary>
         /// Creates the splat builder returns application builder.
         /// </summary>
-        [Fact]
+        [Test]
         public void CreateSplatBuilderReturnsAppBuilder()
         {
             var resolver = new InternalLocator();
             var builder = resolver.CurrentMutable.CreateSplatBuilder();
-            Assert.NotNull(builder);
+            Assert.That(builder, Is.Not.Null);
             resolver.Dispose();
         }
 
         /// <summary>
         /// Creates the splat builder with configure action throws on null resolver.
         /// </summary>
-        [Fact]
+        [Test]
         public void CreateSplatBuilderWithConfigureActionThrowsOnNullResolver()
         {
             IMutableDependencyResolver resolver = (IMutableDependencyResolver)null!;
-            Assert.Throws<ArgumentNullException>(() => resolver.CreateSplatBuilder(r => { }));
+            Assert.Throws<ArgumentNullException>(() => resolver.CreateSplatBuilder(_ => { }));
         }
 
         /// <summary>
         /// Creates the splat builder with configure action returns application builder.
         /// </summary>
-        [Fact]
+        [Test]
         public void CreateSplatBuilderWithConfigureActionReturnsAppBuilder()
         {
             var resolver = new InternalLocator();
-            var builder = resolver.CurrentMutable.CreateSplatBuilder(r => r.Register(() => "Hello", typeof(string))).Build();
-            Assert.NotNull(builder);
+            var builder = resolver.CurrentMutable.CreateSplatBuilder(r => r.Register(() => "Hello", typeof(string)))
+                .Build();
+            Assert.That(builder, Is.Not.Null);
             var hello = resolver.Current.GetService<string>();
-            Assert.Equal("Hello", hello);
+            Assert.That(hello, Is.EqualTo("Hello"));
             resolver.Dispose();
             AppBuilder.ResetBuilderStateForTests();
         }

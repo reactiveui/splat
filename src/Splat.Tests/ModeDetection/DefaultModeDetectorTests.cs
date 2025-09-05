@@ -8,12 +8,13 @@ namespace Splat.Tests.ModeDetection;
 /// <summary>
 /// Unit Tests for the DefaultModeDetector class.
 /// </summary>
+[TestFixture]
 public class DefaultModeDetectorTests
 {
     /// <summary>
     /// Test that DefaultModeDetector can detect unit test runner.
     /// </summary>
-    [Fact]
+    [Test]
     public void DefaultModeDetector_CanDetectUnitTestRunner()
     {
         // Arrange
@@ -23,59 +24,62 @@ public class DefaultModeDetectorTests
         var result = detector.InUnitTestRunner();
 
         // Assert
-        // Since we're running in XUnit, this should return true
-        Assert.True(result.HasValue);
-        Assert.True(result.Value);
+        // Since we're running under NUnit, this should return true
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.HasValue, Is.True);
+            Assert.That(result!.Value, Is.True);
+        }
     }
 
     /// <summary>
     /// Test that DefaultModeDetector implements IModeDetector.
     /// </summary>
-    [Fact]
+    [Test]
     public void DefaultModeDetector_ImplementsIModeDetector()
     {
         // Arrange & Act
         var detector = new DefaultModeDetector();
 
         // Assert
-        Assert.IsAssignableFrom<IModeDetector>(detector);
+        Assert.That(detector, Is.AssignableTo<IModeDetector>());
     }
 
     /// <summary>
     /// Test that DefaultModeDetector implements IEnableLogger.
     /// </summary>
-    [Fact]
+    [Test]
     public void DefaultModeDetector_ImplementsIEnableLogger()
     {
         // Arrange & Act
         var detector = new DefaultModeDetector();
 
         // Assert
-        Assert.IsAssignableFrom<IEnableLogger>(detector);
+        Assert.That(detector, Is.AssignableTo<IEnableLogger>());
     }
 
     /// <summary>
     /// Test that DefaultModeDetector handles exceptions gracefully.
     /// </summary>
-    [Fact]
+    [Test]
     public void DefaultModeDetector_HandlesExceptionsGracefully()
     {
         // Arrange
         var detector = new DefaultModeDetector();
 
         // Act & Assert - should not throw
+        Assert.DoesNotThrow(() => detector.InUnitTestRunner());
+
         var result = detector.InUnitTestRunner();
 
         // Should return a value (either true or false) or null if exception occurred
-#pragma warning disable CS8794 // The input always matches the provided pattern, this is expected.
-        Assert.True(result is true or false or null);
-#pragma warning restore CS8794 // The input always matches the provided pattern, this is expected.
+        Assert.That(result, Is.Null.Or.True.Or.False);
     }
 
     /// <summary>
     /// Test that DefaultModeDetector returns consistent results.
     /// </summary>
-    [Fact]
+    [Test]
     public void DefaultModeDetector_ReturnsConsistentResults()
     {
         // Arrange
@@ -87,7 +91,10 @@ public class DefaultModeDetectorTests
         var result3 = detector.InUnitTestRunner();
 
         // Assert - Should return consistent results
-        Assert.Equal(result1, result2);
-        Assert.Equal(result2, result3);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result2, Is.EqualTo(result1));
+            Assert.That(result3, Is.EqualTo(result2));
+        }
     }
 }

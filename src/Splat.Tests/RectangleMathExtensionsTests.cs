@@ -10,12 +10,13 @@ namespace Splat.Tests;
 /// <summary>
 /// Unit Tests for the RectangleMathExtensions class.
 /// </summary>
+[TestFixture]
 public class RectangleMathExtensionsTests
 {
     /// <summary>
     /// Test that Center method calculates correctly.
     /// </summary>
-    [Fact]
+    [Test]
     public void Center_CalculatesCorrectly()
     {
         // Arrange
@@ -24,15 +25,18 @@ public class RectangleMathExtensionsTests
         // Act
         var center = rect.Center();
 
-        // Assert
-        Assert.Equal(25.0f, center.X); // 10 + 30/2 = 25
-        Assert.Equal(40.0f, center.Y); // 20 + 40/2 = 40
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(center.X, Is.EqualTo(25.0f)); // 10 + 30/2 = 25
+            Assert.That(center.Y, Is.EqualTo(40.0f)); // 20 + 40/2 = 40
+        }
     }
 
     /// <summary>
     /// Test Divide method from left edge.
     /// </summary>
-    [Fact]
+    [Test]
     public void Divide_FromLeftEdge_WorksCorrectly()
     {
         // Arrange
@@ -41,17 +45,20 @@ public class RectangleMathExtensionsTests
         // Act
         var (slice, remainder) = rect.Divide(30.0f, RectEdge.Left);
 
-        // Assert
-        Assert.Equal(30.0f, slice.Width);
-        Assert.Equal(0.0f, slice.X);
-        Assert.Equal(70.0f, remainder.Width);
-        Assert.Equal(30.0f, remainder.X);
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(slice.Width, Is.EqualTo(30.0f));
+            Assert.That(slice.X, Is.Zero);
+            Assert.That(remainder.Width, Is.EqualTo(70.0f));
+            Assert.That(remainder.X, Is.EqualTo(30.0f));
+        }
     }
 
     /// <summary>
     /// Test Divide method from right edge.
     /// </summary>
-    [Fact]
+    [Test]
     public void Divide_FromRightEdge_WorksCorrectly()
     {
         // Arrange
@@ -60,17 +67,20 @@ public class RectangleMathExtensionsTests
         // Act
         var (slice, remainder) = rect.Divide(30.0f, RectEdge.Right);
 
-        // Assert
-        Assert.Equal(30.0f, slice.Width);
-        Assert.Equal(70.0f, slice.X);
-        Assert.Equal(70.0f, remainder.Width);
-        Assert.Equal(0.0f, remainder.X);
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(slice.Width, Is.EqualTo(30.0f));
+            Assert.That(slice.X, Is.EqualTo(70.0f));
+            Assert.That(remainder.Width, Is.EqualTo(70.0f));
+            Assert.That(remainder.X, Is.Zero);
+        }
     }
 
     /// <summary>
     /// Test Divide method from top edge.
     /// </summary>
-    [Fact]
+    [Test]
     public void Divide_FromTopEdge_WorksCorrectly()
     {
         // Arrange
@@ -79,17 +89,20 @@ public class RectangleMathExtensionsTests
         // Act
         var (slice, remainder) = rect.Divide(20.0f, RectEdge.Top);
 
-        // Assert
-        Assert.Equal(20.0f, slice.Height);
-        Assert.Equal(0.0f, slice.Y);
-        Assert.Equal(30.0f, remainder.Height);
-        Assert.Equal(20.0f, remainder.Y);
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(slice.Height, Is.EqualTo(20.0f));
+            Assert.That(slice.Y, Is.Zero);
+            Assert.That(remainder.Height, Is.EqualTo(30.0f));
+            Assert.That(remainder.Y, Is.EqualTo(20.0f));
+        }
     }
 
     /// <summary>
     /// Test Divide method from bottom edge.
     /// </summary>
-    [Fact]
+    [Test]
     public void Divide_FromBottomEdge_WorksCorrectly()
     {
         // Arrange
@@ -98,17 +111,20 @@ public class RectangleMathExtensionsTests
         // Act
         var (slice, remainder) = rect.Divide(20.0f, RectEdge.Bottom);
 
-        // Assert
-        Assert.Equal(20.0f, slice.Height);
-        Assert.Equal(30.0f, slice.Y);
-        Assert.Equal(30.0f, remainder.Height);
-        Assert.Equal(0.0f, remainder.Y);
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(slice.Height, Is.EqualTo(20.0f));
+            Assert.That(slice.Y, Is.EqualTo(30.0f));
+            Assert.That(remainder.Height, Is.EqualTo(30.0f));
+            Assert.That(remainder.Y, Is.Zero);
+        }
     }
 
     /// <summary>
     /// Test DivideWithPadding method.
     /// </summary>
-    [Fact]
+    [Test]
     public void DivideWithPadding_WorksCorrectly()
     {
         // Arrange
@@ -117,17 +133,20 @@ public class RectangleMathExtensionsTests
         // Act
         var (slice, remainder) = rect.DivideWithPadding(30.0f, 10.0f, RectEdge.Left);
 
-        // Assert
-        Assert.Equal(30.0f, slice.Width);
-        Assert.Equal(0.0f, slice.X);
-        Assert.Equal(90.0f, remainder.Width); // 100 - 10 = 90 (after padding)
-        Assert.Equal(10.0f, remainder.X); // starts after padding
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(slice.Width, Is.EqualTo(30.0f));
+            Assert.That(slice.X, Is.Zero);
+            Assert.That(remainder.Width, Is.EqualTo(90.0f)); // 100 - 10 = 90 (after padding)
+            Assert.That(remainder.X, Is.EqualTo(10.0f)); // starts after padding
+        }
     }
 
     /// <summary>
     /// Test InvertWithin method.
     /// </summary>
-    [Fact]
+    [Test]
     public void InvertWithin_WorksCorrectly()
     {
         // Arrange
@@ -137,17 +156,20 @@ public class RectangleMathExtensionsTests
         // Act
         var inverted = rect.InvertWithin(container);
 
-        // Assert
-        Assert.Equal(10.0f, inverted.X); // X unchanged
-        Assert.Equal(40.0f, inverted.Y); // 100 - (20 + 40) = 40
-        Assert.Equal(30.0f, inverted.Width); // Width unchanged
-        Assert.Equal(40.0f, inverted.Height); // Height unchanged
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(inverted.X, Is.EqualTo(10.0f)); // X unchanged
+            Assert.That(inverted.Y, Is.EqualTo(40.0f)); // 100 - (20 + 40) = 40
+            Assert.That(inverted.Width, Is.EqualTo(30.0f)); // Width unchanged
+            Assert.That(inverted.Height, Is.EqualTo(40.0f)); // Height unchanged
+        }
     }
 
     /// <summary>
     /// Test Copy method with all parameters.
     /// </summary>
-    [Fact]
+    [Test]
     public void Copy_WithAllParameters_WorksCorrectly()
     {
         // Arrange
@@ -156,17 +178,20 @@ public class RectangleMathExtensionsTests
         // Act
         var copy = rect.Copy(x: 15.0f, y: 25.0f, width: 35.0f, height: 45.0f);
 
-        // Assert
-        Assert.Equal(15.0f, copy.X);
-        Assert.Equal(25.0f, copy.Y);
-        Assert.Equal(35.0f, copy.Width);
-        Assert.Equal(45.0f, copy.Height);
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(copy.X, Is.EqualTo(15.0f));
+            Assert.That(copy.Y, Is.EqualTo(25.0f));
+            Assert.That(copy.Width, Is.EqualTo(35.0f));
+            Assert.That(copy.Height, Is.EqualTo(45.0f));
+        }
     }
 
     /// <summary>
     /// Test Copy method with partial parameters.
     /// </summary>
-    [Fact]
+    [Test]
     public void Copy_WithPartialParameters_WorksCorrectly()
     {
         // Arrange
@@ -175,17 +200,20 @@ public class RectangleMathExtensionsTests
         // Act
         var copy = rect.Copy(x: 15.0f, height: 50.0f);
 
-        // Assert
-        Assert.Equal(15.0f, copy.X);
-        Assert.Equal(20.0f, copy.Y); // unchanged
-        Assert.Equal(30.0f, copy.Width); // unchanged
-        Assert.Equal(50.0f, copy.Height);
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(copy.X, Is.EqualTo(15.0f));
+            Assert.That(copy.Y, Is.EqualTo(20.0f)); // unchanged
+            Assert.That(copy.Width, Is.EqualTo(30.0f)); // unchanged
+            Assert.That(copy.Height, Is.EqualTo(50.0f));
+        }
     }
 
     /// <summary>
     /// Test Copy method with top parameter.
     /// </summary>
-    [Fact]
+    [Test]
     public void Copy_WithTopParameter_WorksCorrectly()
     {
         // Arrange
@@ -194,17 +222,20 @@ public class RectangleMathExtensionsTests
         // Act
         var copy = rect.Copy(top: 5.0f);
 
-        // Assert
-        Assert.Equal(10.0f, copy.X); // unchanged
-        Assert.Equal(5.0f, copy.Y); // set to top value
-        Assert.Equal(30.0f, copy.Width); // unchanged
-        Assert.Equal(40.0f, copy.Height); // unchanged
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(copy.X, Is.EqualTo(10.0f)); // unchanged
+            Assert.That(copy.Y, Is.EqualTo(5.0f)); // set to top value
+            Assert.That(copy.Width, Is.EqualTo(30.0f)); // unchanged
+            Assert.That(copy.Height, Is.EqualTo(40.0f)); // unchanged
+        }
     }
 
     /// <summary>
     /// Test Copy method with bottom parameter.
     /// </summary>
-    [Fact]
+    [Test]
     public void Copy_WithBottomParameter_WorksCorrectly()
     {
         // Arrange
@@ -213,17 +244,20 @@ public class RectangleMathExtensionsTests
         // Act
         var copy = rect.Copy(bottom: 80.0f);
 
-        // Assert
-        Assert.Equal(10.0f, copy.X); // unchanged
-        Assert.Equal(20.0f, copy.Y); // unchanged
-        Assert.Equal(30.0f, copy.Width); // unchanged
-        Assert.Equal(100.0f, copy.Height); // 20 + 80 = 100
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(copy.X, Is.EqualTo(10.0f)); // unchanged
+            Assert.That(copy.Y, Is.EqualTo(20.0f)); // unchanged
+            Assert.That(copy.Width, Is.EqualTo(30.0f)); // unchanged
+            Assert.That(copy.Height, Is.EqualTo(100.0f)); // 20 + 80 = 100
+        }
     }
 
     /// <summary>
     /// Test Copy method throws when Y and Top are both specified.
     /// </summary>
-    [Fact]
+    [Test]
     public void Copy_WithYAndTop_ThrowsArgumentException()
     {
         // Arrange
@@ -236,7 +270,7 @@ public class RectangleMathExtensionsTests
     /// <summary>
     /// Test Copy method throws when Height and Bottom are both specified.
     /// </summary>
-    [Fact]
+    [Test]
     public void Copy_WithHeightAndBottom_ThrowsArgumentException()
     {
         // Arrange
@@ -249,7 +283,7 @@ public class RectangleMathExtensionsTests
     /// <summary>
     /// Test Divide with invalid edge throws ArgumentException.
     /// </summary>
-    [Fact]
+    [Test]
     public void Divide_WithInvalidEdge_ThrowsArgumentException()
     {
         // Arrange

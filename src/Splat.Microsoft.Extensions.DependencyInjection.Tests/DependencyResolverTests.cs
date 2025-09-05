@@ -1,9 +1,7 @@
-// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
-
-using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,12 +13,13 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests;
 /// <summary>
 /// Tests to show the <see cref="MicrosoftDependencyResolver"/> works correctly.
 /// </summary>
+[TestFixture]
 public class DependencyResolverTests
 {
     /// <summary>
     /// Should resolve views.
     /// </summary>
-    [Fact]
+    [Test]
     public void MicrosoftDependencyResolver_Should_Resolve_Views()
     {
         var wrapper = new ContainerWrapper();
@@ -30,19 +29,23 @@ public class DependencyResolverTests
 
         wrapper.BuildAndUse();
 
-        var viewOne = AppLocator.Current?.GetService(typeof(IViewFor<ViewModelOne>));
-        var viewTwo = AppLocator.Current?.GetService(typeof(IViewFor<ViewModelTwo>));
+        var viewOne = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
+        var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
-        viewOne.Should().NotBeNull();
-        viewOne.Should().BeOfType<ViewOne>();
-        viewTwo.Should().NotBeNull();
-        viewTwo.Should().BeOfType<ViewTwo>();
+        Assert.That(viewOne, Is.Not.Null);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(viewOne, Is.TypeOf<ViewOne>());
+            Assert.That(viewTwo, Is.Not.Null);
+        }
+
+        Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
     }
 
     /// <summary>
     /// Should resolve views.
     /// </summary>
-    [Fact]
+    [Test]
     public void MicrosoftDependencyResolver_Should_Resolve_Named_View()
     {
         var wrapper = new ContainerWrapper();
@@ -51,16 +54,16 @@ public class DependencyResolverTests
 
         wrapper.BuildAndUse();
 
-        var viewTwo = AppLocator.Current?.GetService(typeof(IViewFor<ViewModelTwo>));
+        var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
-        viewTwo.Should().NotBeNull();
-        viewTwo.Should().BeOfType<ViewTwo>();
+        Assert.That(viewTwo, Is.Not.Null);
+        Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
     }
 
     /// <summary>
     /// Should resolve view models.
     /// </summary>
-    [Fact]
+    [Test]
     public void MicrosoftDependencyResolver_Should_Resolve_View_Models()
     {
         var wrapper = new ContainerWrapper();
@@ -70,17 +73,20 @@ public class DependencyResolverTests
 
         wrapper.BuildAndUse();
 
-        var vmOne = AppLocator.Current?.GetService<ViewModelOne>();
-        var vmTwo = AppLocator.Current?.GetService<ViewModelTwo>();
+        var vmOne = AppLocator.Current.GetService<ViewModelOne>();
+        var vmTwo = AppLocator.Current.GetService<ViewModelTwo>();
 
-        vmOne.Should().NotBeNull();
-        vmTwo.Should().NotBeNull();
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(vmOne, Is.Not.Null);
+            Assert.That(vmTwo, Is.Not.Null);
+        }
     }
 
     /// <summary>
     /// Should resolve screen.
     /// </summary>
-    [Fact]
+    [Test]
     public void MicrosoftDependencyResolver_Should_Resolve_Screen()
     {
         var wrapper = new ContainerWrapper();
@@ -89,16 +95,16 @@ public class DependencyResolverTests
 
         wrapper.BuildAndUse();
 
-        var screen = AppLocator.Current?.GetService<IScreen>();
+        var screen = AppLocator.Current.GetService<IScreen>();
 
-        screen.Should().NotBeNull();
-        screen.Should().BeOfType<MockScreen>();
+        Assert.That(screen, Is.Not.Null);
+        Assert.That(screen, Is.TypeOf<MockScreen>());
     }
 
     /// <summary>
     /// Should unregister all.
     /// </summary>
-    [Fact]
+    [Test]
     public void MicrosoftDependencyResolver_Should_UnregisterAll()
     {
         var wrapper = new ContainerWrapper();
@@ -106,50 +112,45 @@ public class DependencyResolverTests
 
         services.AddSingleton<IScreen>(new MockScreen());
 
-        AppLocator.CurrentMutable?.HasRegistration(typeof(IScreen))
-            .Should().BeTrue();
+        Assert.That(AppLocator.CurrentMutable.HasRegistration(typeof(IScreen)), Is.True);
 
-        AppLocator.CurrentMutable?.UnregisterAll(typeof(IScreen));
+        AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen));
 
-        var result = AppLocator.Current?.GetService<IScreen>();
-        result.Should().BeNull();
+        var result = AppLocator.Current.GetService<IScreen>();
+        Assert.That(result, Is.Null);
     }
 
     /// <summary>
-    /// Should throw an exception if service registration call back called.
+    /// Should throw an exception if service registration callback is called.
     /// </summary>
-    [Fact]
-    public void MicrosoftDependencyResolver_Should_Throw_If_ServiceRegistionCallback_Called()
+    [Test]
+    public void MicrosoftDependencyResolver_Should_Throw_If_ServiceRegistrationCallback_Called()
     {
         var wrapper = new ContainerWrapper();
         wrapper.BuildAndUse();
 
-        var result = Record.Exception(() =>
-            AppLocator.CurrentMutable?.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
-
-        result.Should().BeOfType<NotImplementedException>();
+        Assert.Throws<NotImplementedException>(() =>
+            AppLocator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), _ => { }));
     }
 
     /// <summary>
     /// Should throw an exception if trying to register services when the container is registered as immutable.
     /// </summary>
-    [Fact]
+    [Test]
     public void MicrosoftDependencyResolver_Should_Throw_If_Attempt_Registration_After_Build()
     {
         var wrapper = new ContainerWrapper();
-
         wrapper.BuildAndUse();
 
-        var result = Record.Exception(() => AppLocator.CurrentMutable?.Register(() => new ViewOne()));
-
-        result.Should().BeOfType<InvalidOperationException>();
+        Assert.Throws<InvalidOperationException>(() =>
+            AppLocator.CurrentMutable.Register(() => new ViewOne()));
     }
 
     /// <summary>
     /// Tests to ensure NLog registers correctly with different service locators.
     /// Based on issue reported in #553.
     /// </summary>
-    [Fact]
+    [Test]
     public void ILogManager_Resolvable()
     {
         var wrapper = new ContainerWrapper();
@@ -162,9 +163,10 @@ public class DependencyResolverTests
         wrapper.BuildAndUse();
 
         // Get the ILogManager instance.
-        var lm = AppLocator.Current?.GetService<ILogManager>();
-        Assert.NotNull(lm);
-        var mgr = lm.GetLogger<NLogLogger>();
-        Assert.NotNull(mgr);
+        var lm = AppLocator.Current.GetService<ILogManager>();
+        Assert.That(lm, Is.Not.Null);
+
+        var mgr = lm!.GetLogger<NLogLogger>();
+        Assert.That(mgr, Is.Not.Null);
     }
 }

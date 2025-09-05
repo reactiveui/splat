@@ -41,7 +41,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
             }
             catch
             {
-                return Array.Empty<object>();
+                return [];
             }
         }
 

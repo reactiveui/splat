@@ -11,7 +11,7 @@ namespace Splat.Builder;
 public static class SplatBuilderExtensions
 {
     /// <summary>
-    /// Runs the provided configuration action imediately against the current Splat Locator.
+    /// Runs the provided configuration action immediately against the current Splat Locator.
     /// </summary>
     /// <param name="module">The module to configure.</param>
     public static void Apply(this IModule module)

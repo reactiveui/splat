@@ -10,12 +10,13 @@ namespace Splat.Tests;
 /// <summary>
 /// Unit Tests for the SizeMathExtensions class.
 /// </summary>
+[TestFixture]
 public class SizeMathExtensionsTests
 {
     /// <summary>
     /// Test that WithinEpsilonOf returns true when sizes are within epsilon.
     /// </summary>
-    [Fact]
+    [Test]
     public void WithinEpsilonOf_ReturnsTrue_WhenSizesAreWithinEpsilon()
     {
         // Arrange
@@ -27,13 +28,13 @@ public class SizeMathExtensionsTests
         var result = size1.WithinEpsilonOf(size2, epsilon);
 
         // Assert
-        Assert.True(result);
+        Assert.That(result, Is.True);
     }
 
     /// <summary>
     /// Test that WithinEpsilonOf returns false when sizes are not within epsilon.
     /// </summary>
-    [Fact]
+    [Test]
     public void WithinEpsilonOf_ReturnsFalse_WhenSizesAreNotWithinEpsilon()
     {
         // Arrange
@@ -45,13 +46,13 @@ public class SizeMathExtensionsTests
         var result = size1.WithinEpsilonOf(size2, epsilon);
 
         // Assert
-        Assert.False(result);
+        Assert.That(result, Is.False);
     }
 
     /// <summary>
     /// Test that WithinEpsilonOf handles identical sizes.
     /// </summary>
-    [Fact]
+    [Test]
     public void WithinEpsilonOf_HandlesIdenticalSizes()
     {
         // Arrange
@@ -62,13 +63,13 @@ public class SizeMathExtensionsTests
         var result = size.WithinEpsilonOf(size, epsilon);
 
         // Assert
-        Assert.True(result);
+        Assert.That(result, Is.True);
     }
 
     /// <summary>
     /// Test that WithinEpsilonOf calculates distance correctly.
     /// </summary>
-    [Fact]
+    [Test]
     public void WithinEpsilonOf_CalculatesDistanceCorrectly()
     {
         // Arrange
@@ -80,13 +81,13 @@ public class SizeMathExtensionsTests
         var result = size1.WithinEpsilonOf(size2, epsilon);
 
         // Assert
-        Assert.True(result);
+        Assert.That(result, Is.True);
     }
 
     /// <summary>
     /// Test that WithinEpsilonOf returns false when distance exceeds epsilon.
     /// </summary>
-    [Fact]
+    [Test]
     public void WithinEpsilonOf_ReturnsFalse_WhenDistanceExceedsEpsilon()
     {
         // Arrange
@@ -98,13 +99,13 @@ public class SizeMathExtensionsTests
         var result = size1.WithinEpsilonOf(size2, epsilon);
 
         // Assert
-        Assert.False(result);
+        Assert.That(result, Is.False);
     }
 
     /// <summary>
     /// Test that WithinEpsilonOf handles negative sizes.
     /// </summary>
-    [Fact]
+    [Test]
     public void WithinEpsilonOf_HandlesNegativeSizes()
     {
         // Arrange
@@ -116,13 +117,13 @@ public class SizeMathExtensionsTests
         var result = size1.WithinEpsilonOf(size2, epsilon);
 
         // Assert
-        Assert.True(result);
+        Assert.That(result, Is.True);
     }
 
     /// <summary>
     /// Test that ScaledBy scales size correctly.
     /// </summary>
-    [Fact]
+    [Test]
     public void ScaledBy_ScalesSizeCorrectly()
     {
         // Arrange
@@ -132,15 +133,18 @@ public class SizeMathExtensionsTests
         // Act
         var result = size.ScaledBy(factor);
 
-        // Assert
-        Assert.Equal(10.0f, result.Width);
-        Assert.Equal(15.0f, result.Height);
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(result.Width, Is.EqualTo(10.0f));
+            Assert.That(result.Height, Is.EqualTo(15.0f));
+        }
     }
 
     /// <summary>
     /// Test that ScaledBy handles zero factor.
     /// </summary>
-    [Fact]
+    [Test]
     public void ScaledBy_HandlesZeroFactor()
     {
         // Arrange
@@ -150,15 +154,18 @@ public class SizeMathExtensionsTests
         // Act
         var result = size.ScaledBy(factor);
 
-        // Assert
-        Assert.Equal(0.0f, result.Width);
-        Assert.Equal(0.0f, result.Height);
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(result.Width, Is.Zero);
+            Assert.That(result.Height, Is.Zero);
+        }
     }
 
     /// <summary>
     /// Test that ScaledBy handles negative factor.
     /// </summary>
-    [Fact]
+    [Test]
     public void ScaledBy_HandlesNegativeFactor()
     {
         // Arrange
@@ -168,15 +175,18 @@ public class SizeMathExtensionsTests
         // Act
         var result = size.ScaledBy(factor);
 
-        // Assert
-        Assert.Equal(-8.0f, result.Width);
-        Assert.Equal(-12.0f, result.Height);
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(result.Width, Is.EqualTo(-8.0f));
+            Assert.That(result.Height, Is.EqualTo(-12.0f));
+        }
     }
 
     /// <summary>
     /// Test that ScaledBy handles fractional factor.
     /// </summary>
-    [Fact]
+    [Test]
     public void ScaledBy_HandlesFractionalFactor()
     {
         // Arrange
@@ -186,15 +196,18 @@ public class SizeMathExtensionsTests
         // Act
         var result = size.ScaledBy(factor);
 
-        // Assert
-        Assert.Equal(5.0f, result.Width);
-        Assert.Equal(10.0f, result.Height);
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(result.Width, Is.EqualTo(5.0f));
+            Assert.That(result.Height, Is.EqualTo(10.0f));
+        }
     }
 
     /// <summary>
     /// Test that ScaledBy handles very large factor.
     /// </summary>
-    [Fact]
+    [Test]
     public void ScaledBy_HandlesVeryLargeFactor()
     {
         // Arrange
@@ -204,15 +217,18 @@ public class SizeMathExtensionsTests
         // Act
         var result = size.ScaledBy(factor);
 
-        // Assert
-        Assert.Equal(1000.0f, result.Width);
-        Assert.Equal(2000.0f, result.Height);
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(result.Width, Is.EqualTo(1000.0f));
+            Assert.That(result.Height, Is.EqualTo(2000.0f));
+        }
     }
 
     /// <summary>
     /// Test that ScaledBy handles very small factor.
     /// </summary>
-    [Fact]
+    [Test]
     public void ScaledBy_HandlesVerySmallFactor()
     {
         // Arrange
@@ -222,8 +238,11 @@ public class SizeMathExtensionsTests
         // Act
         var result = size.ScaledBy(factor);
 
-        // Assert
-        Assert.Equal(0.1f, result.Width);
-        Assert.Equal(0.2f, result.Height);
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(result.Width, Is.EqualTo(0.1f));
+            Assert.That(result.Height, Is.EqualTo(0.2f));
+        }
     }
 }

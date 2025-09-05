@@ -1,9 +1,9 @@
-// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using FluentAssertions;
+using NUnit.Framework;
 
 using SimpleInjector;
 
@@ -15,12 +15,14 @@ namespace Splat.Simplnjector;
 /// <summary>
 /// Tests to show the <see cref="SimpleInjectorDependencyResolver"/> works correctly.
 /// </summary>
+[TestFixture]
+[NonParallelizable]
 public class DependencyResolverTests
 {
     /// <summary>
     /// Simples the injector dependency resolver should resolve a view model.
     /// </summary>
-    [Fact]
+    [Test]
     public void SimpleInjectorDependencyResolver_Should_Resolve_View_Model()
     {
         var container = new Container();
@@ -29,14 +31,14 @@ public class DependencyResolverTests
 
         var viewModel = AppLocator.Current.GetService(typeof(ViewModelOne));
 
-        viewModel.Should().NotBeNull();
-        viewModel.Should().BeOfType<ViewModelOne>();
+        Assert.That(viewModel, Is.Not.Null);
+        Assert.That(viewModel, Is.TypeOf<ViewModelOne>());
     }
 
     /// <summary>
     /// Simples the injector dependency resolver should resolve a view model.
     /// </summary>
-    [Fact]
+    [Test]
     public void SimpleInjectorDependencyResolver_Should_Resolve_View_Model_Directly()
     {
         var container = new SimpleInjectorInitializer();
@@ -44,14 +46,14 @@ public class DependencyResolverTests
 
         var viewModel = container.GetService<ViewModelOne>();
 
-        viewModel.Should().NotBeNull();
-        viewModel.Should().BeOfType<ViewModelOne>();
+        Assert.That(viewModel, Is.Not.Null);
+        Assert.That(viewModel, Is.TypeOf<ViewModelOne>());
     }
 
     /// <summary>
     /// Simples the injector dependency resolver should resolve a view.
     /// </summary>
-    [Fact]
+    [Test]
     public void SimpleInjectorDependencyResolver_Should_Resolve_View()
     {
         var container = new Container();
@@ -60,14 +62,14 @@ public class DependencyResolverTests
 
         var view = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
 
-        view.Should().NotBeNull();
-        view.Should().BeOfType<ViewOne>();
+        Assert.That(view, Is.Not.Null);
+        Assert.That(view, Is.TypeOf<ViewOne>());
     }
 
     /// <summary>
     /// Simples the injector dependency resolver should resolve the screen.
     /// </summary>
-    [Fact]
+    [Test]
     public void SimpleInjectorDependencyResolver_Should_Resolve_Screen()
     {
         var container = new Container();
@@ -76,14 +78,14 @@ public class DependencyResolverTests
 
         var screen = AppLocator.Current.GetService(typeof(IScreen));
 
-        screen.Should().NotBeNull();
-        screen.Should().BeOfType<MockScreen>();
+        Assert.That(screen, Is.Not.Null);
+        Assert.That(screen, Is.TypeOf<MockScreen>());
     }
 
     /// <summary>
     /// Should not throw during initialization of ReactiveUI.
     /// </summary>
-    [Fact]
+    [Test]
     public void SimpleInjectorDependencyResolver_Splat_Initialization_ShouldNotThrow()
     {
         Container container = new();
@@ -97,7 +99,7 @@ public class DependencyResolverTests
     /// <summary>
     /// Should resolve dependency registered during Splat initialization.
     /// </summary>
-    [Fact]
+    [Test]
     public void SimpleInjectorDependencyResolver_ShouldResolveSplatRegisteredDependency()
     {
         Container container = new();
@@ -108,19 +110,19 @@ public class DependencyResolverTests
         container.UseSimpleInjectorDependencyResolver(initializer);
 
         var dependency = AppLocator.Current.GetService(typeof(ILogger)) as ILogger;
-        Assert.NotNull(dependency);
+        Assert.That(dependency, Is.Not.Null);
     }
 
     /// <summary>
     /// Should resolve dependency registered during Splat initialization.
     /// </summary>
-    [Fact]
+    [Test]
     public void SimpleInjectorDependencyResolver_CollectionShouldNeverReturnNull()
     {
         var container = new Container();
         container.UseSimpleInjectorDependencyResolver(new());
 
         var views = AppLocator.Current.GetServices(typeof(ViewOne));
-        Assert.NotNull(views);
+        Assert.That(views, Is.Not.Null);
     }
 }

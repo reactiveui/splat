@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-    <NoWarn>$(NoWarn);1591;CA1707;SA1633;CA2000</NoWarn>
-    <Nullable>enable</Nullable>
+        <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,5 +16,5 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  
+
 </Project>

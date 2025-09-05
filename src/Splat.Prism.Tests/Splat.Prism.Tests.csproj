@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-    <NoWarn>$(NoWarn);CA1707;CS1574</NoWarn>
-    <Nullable>enable</Nullable>
+        <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

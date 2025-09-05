@@ -1,4 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Splat.Tests.Mocks;
 
@@ -20,7 +25,7 @@ internal sealed class StaticLoggerTests
         /// <summary>
         /// Test to make sure the generic type parameter is passed to the logger.
         /// </summary>
-        [Fact]
+        [Test]
         public void Method_With_Generic_Type_Should_Write_Message_And_Type()
         {
             var textLogger = new TextLogger { Level = GetLogLevel() };
@@ -28,13 +33,15 @@ internal sealed class StaticLoggerTests
 
             GetMethodWithGenericTypeShouldWriteMessageAndType<DummyObjectClass1>()(logger, "This is a test.");
 
-            Assert.Equal($"This is a test. ({nameof(GetMethodWithGenericTypeShouldWriteMessageAndType)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+            Assert.That(
+                textLogger.Logs.Last().message.Trim(NewLine).Trim(),
+                Is.EqualTo($"This is a test. ({nameof(GetMethodWithGenericTypeShouldWriteMessageAndType)})"));
         }
 
         /// <summary>
         /// Test to make sure the generic type parameter is passed to the logger.
         /// </summary>
-        [Fact]
+        [Test]
         public void Method_With_Generic_Type_Should_Write_Message_And_Type_Provided()
         {
             var textLogger = new TextLogger { Level = GetLogLevel() };
@@ -42,37 +49,43 @@ internal sealed class StaticLoggerTests
 
             GetMethodWithGenericTypeShouldWriteMessageAndType<DummyObjectClass2>()(logger, "This is a test.");
 
-            Assert.Equal($"This is a test. ({nameof(GetMethodWithGenericTypeShouldWriteMessageAndType)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+            Assert.That(
+                textLogger.Logs.Last().message.Trim(NewLine).Trim(),
+                Is.EqualTo($"This is a test. ({nameof(GetMethodWithGenericTypeShouldWriteMessageAndType)})"));
         }
 
         /// <summary>
         /// Test to ensure debug writes.
         /// </summary>
-        [Fact]
-        public void Method_Writes_Message() => Test_Write_Message(logger => GetMethodToWriteMessage()(logger, "Message"));
+        [Test]
+        public void Method_Writes_Message() =>
+            Test_Write_Message(logger => GetMethodToWriteMessage()(logger, "Message"));
 
         /// <summary>
         /// Test to ensure invariant culture formatted string writes.
         /// </summary>
-        [Fact]
-        public void Method_Writes_Message_InvariantCulture() => Test_Write_Message(logger => GetMethodToWriteMessageWithInvariantCulture()(logger, CultureInfo.InvariantCulture, "{0}", "Message"));
+        [Test]
+        public void Method_Writes_Message_InvariantCulture() =>
+            Test_Write_Message(logger => GetMethodToWriteMessageWithInvariantCulture()(logger, CultureInfo.InvariantCulture, "{0}", "Message"));
 
         /// <summary>
         /// Test to ensure invariant culture formatted string writes.
         /// </summary>
-        [Fact]
-        public void Method_Writes_Message_InvariantCulture_With_Generic_Two_Args() => Test_Write_Message(logger => GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs()(logger, CultureInfo.InvariantCulture, "{0}", "Message", 1));
+        [Test]
+        public void Method_Writes_Message_InvariantCulture_With_Generic_Two_Args() =>
+            Test_Write_Message(logger => GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs()(logger, CultureInfo.InvariantCulture, "{0}", "Message", 1));
 
         /// <summary>
         /// Test to ensure invariant culture formatted string writes.
         /// </summary>
-        [Fact]
-        public void Method_Writes_Message_InvariantCulture_With_Generic_Three_Args() => Test_Write_Message(logger => GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs()(logger, CultureInfo.InvariantCulture, "{0}", "Message", 1, 2.3f));
+        [Test]
+        public void Method_Writes_Message_InvariantCulture_With_Generic_Three_Args() =>
+            Test_Write_Message(logger => GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs()(logger, CultureInfo.InvariantCulture, "{0}", "Message", 1, 2.3f));
 
         /// <summary>
         /// Test to ensure debug writes.
         /// </summary>
-        [Fact]
+        [Test]
         public void Method_Writes_Exception_And_Message()
         {
             var staticLogger = GetLogger(GetLogLevel());
@@ -82,7 +95,7 @@ internal sealed class StaticLoggerTests
         /// <summary>
         /// Test to ensure writes method works.
         /// </summary>
-        [Fact]
+        [Test]
         public void Direct_Write_At_Level_Message()
         {
             var staticLogger = GetLogger(GetLogLevel());
@@ -92,7 +105,7 @@ internal sealed class StaticLoggerTests
         /// <summary>
         /// Test to ensure writes method works.
         /// </summary>
-        [Fact]
+        [Test]
         public void Direct_Write_At_Level_Message_And_Type()
         {
             var staticLogger = GetLogger(GetLogLevel());
@@ -102,7 +115,7 @@ internal sealed class StaticLoggerTests
         /// <summary>
         /// Test to ensure writes method works.
         /// </summary>
-        [Fact]
+        [Test]
         public void Direct_Write_At_Level_Message_And_Exception()
         {
             var staticLogger = GetLogger(GetLogLevel());
@@ -113,7 +126,7 @@ internal sealed class StaticLoggerTests
         /// <summary>
         /// Test to ensure writes method works.
         /// </summary>
-        [Fact]
+        [Test]
         public void Direct_Write_At_Level_Message_Exception_And_Type()
         {
             var staticLogger = GetLogger(GetLogLevel());
@@ -124,13 +137,13 @@ internal sealed class StaticLoggerTests
         /// <summary>
         /// Test to make sure the message writes.
         /// </summary>
-        [Fact]
+        [Test]
         public void Logger_Level_AtBoundary_Should_Be_correct()
         {
             var level = GetLogLevel();
             var logger = GetLogger(level);
 
-            Assert.Equal(level, logger.Level);
+            Assert.That(logger.Level, Is.EqualTo(level));
         }
 
         /// <summary>
@@ -192,25 +205,35 @@ internal sealed class StaticLoggerTests
         private static void Test_Write_Message(Action<StaticFullLogger> testMethodFunc)
         {
             var textLogger = new TextLogger();
-            Assert.Equal(0, textLogger.Logs.Count);
             var staticLogger = GetLogger(textLogger);
 
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(textLogger.Logs, Has.Count.EqualTo(0));
+            }
+
             testMethodFunc(staticLogger);
-            Assert.Equal(1, textLogger.Logs.Count);
-            var line = textLogger.Logs.First();
 
-            var startOfCallerMemberSuffix = line.message.IndexOf('(', StringComparison.Ordinal);
-            Assert.True(startOfCallerMemberSuffix > 0);
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(textLogger.Logs, Has.Count.EqualTo(1));
 
-            var endOfCallerMemberSuffix = line.message.IndexOf(')', startOfCallerMemberSuffix);
-            Assert.True(endOfCallerMemberSuffix > startOfCallerMemberSuffix + 1);
+                var line = textLogger.Logs.First();
+
+                var startOfCallerMemberSuffix = line.message.IndexOf('(', StringComparison.Ordinal);
+                Assert.That(startOfCallerMemberSuffix, Is.GreaterThan(0));
+
+                var endOfCallerMemberSuffix = line.message.IndexOf(')', startOfCallerMemberSuffix);
+                Assert.That(endOfCallerMemberSuffix, Is.GreaterThan(startOfCallerMemberSuffix + 1));
+            }
         }
     }
 
     /// <summary>
     /// Unit tests focusing on the debug logging in the static logger.
     /// </summary>
-    internal class DebugStaticLoggerTests : BaseStaticLoggerTests
+    [TestFixture]
+    public class DebugStaticLoggerTests : BaseStaticLoggerTests
     {
         /// <inheritdoc/>
         protected override LogLevel GetLogLevel() => LogLevel.Debug;
@@ -237,7 +260,8 @@ internal sealed class StaticLoggerTests
     /// <summary>
     /// Unit tests focusing on the info logging in the static logger.
     /// </summary>
-    internal class InfoStaticLoggerTests : BaseStaticLoggerTests
+    [TestFixture]
+    public class InfoStaticLoggerTests : BaseStaticLoggerTests
     {
         /// <inheritdoc/>
         protected override LogLevel GetLogLevel() => LogLevel.Info;
@@ -264,7 +288,8 @@ internal sealed class StaticLoggerTests
     /// <summary>
     /// Unit tests focusing on the warning logging in the static logger.
     /// </summary>
-    internal class WarningStaticLoggerTests : BaseStaticLoggerTests
+    [TestFixture]
+    public class WarningStaticLoggerTests : BaseStaticLoggerTests
     {
         /// <inheritdoc/>
         protected override LogLevel GetLogLevel() => LogLevel.Warn;
@@ -291,7 +316,8 @@ internal sealed class StaticLoggerTests
     /// <summary>
     /// Unit tests focusing on the error logging in the static logger.
     /// </summary>
-    internal class ErrorStaticLoggerTests : BaseStaticLoggerTests
+    [TestFixture]
+    public class ErrorStaticLoggerTests : BaseStaticLoggerTests
     {
         /// <inheritdoc/>
         protected override LogLevel GetLogLevel() => LogLevel.Error;
@@ -318,7 +344,8 @@ internal sealed class StaticLoggerTests
     /// <summary>
     /// Unit tests focusing on the fatal logging in the static logger.
     /// </summary>
-    internal class FatalStaticLoggerTests : BaseStaticLoggerTests
+    [TestFixture]
+    public class FatalStaticLoggerTests : BaseStaticLoggerTests
     {
         /// <inheritdoc/>
         protected override LogLevel GetLogLevel() => LogLevel.Fatal;

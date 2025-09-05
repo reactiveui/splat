@@ -1,6 +1,6 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 [module: System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldShouldBePrivate", Justification = "XUnit Theories.")]
@@ -21,26 +21,26 @@ public class SplatColorTests
     /// Tests to check you can get a SplatColor from a KnownColor.
     /// </summary>
     /// <param name="knownColor">The Known Colour to convert.</param>
-    [Theory]
-    [MemberData(nameof(KnownColorEnums))]
+    [Test]
+    [TestCaseSource(nameof(KnownColorEnums))]
     public void FromKnownColorTests(KnownColor knownColor)
     {
         var splatColor = SplatColor.FromKnownColor(knownColor);
 
-        Assert.NotNull(splatColor.Name);
+        Assert.That(splatColor.Name, Is.Not.Null);
     }
 
     /// <summary>
     /// Tests to check you can get a SplatColor from a name.
     /// </summary>
     /// <param name="knownColor">The Known Colour to convert.</param>
-    [Theory]
-    [MemberData(nameof(KnownColorEnums))]
+    [Test]
+    [TestCaseSource(nameof(KnownColorEnums))]
     public void FromNameTests(KnownColor knownColor)
     {
         var splatColor = SplatColor.FromName(knownColor.ToString());
 
-        Assert.NotNull(splatColor.Name);
+        Assert.That(splatColor.Name, Is.Not.Null);
     }
 
     ////private static IEnumerable<object[]> GetEnumAsTestTheory()

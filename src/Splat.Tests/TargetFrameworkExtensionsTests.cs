@@ -1,6 +1,6 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.Tests;
@@ -8,6 +8,7 @@ namespace Splat.Tests;
 /// <summary>
 /// Unit Tests for Target Framework Extensions.
 /// </summary>
+[TestFixture]
 public class TargetFrameworkExtensionsTests
 {
     /// <summary>
@@ -15,141 +16,33 @@ public class TargetFrameworkExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> FrameworkNamesTestSource { get; } = new[]
     {
-        new object[]
-        {
-            ".NETCoreApp,Version=v2.2",
-            "netcoreapp2.2",
-        },
-        new object[]
-        {
-            ".NETCoreApp,Version=v2.1",
-            "netcoreapp2.1",
-        },
-        new object[]
-        {
-            ".NETCoreApp,Version=v2.0",
-            "netcoreapp2.0",
-        },
-        new object[]
-        {
-            ".NETCoreApp,Version=v1.1",
-            "netcoreapp1.1",
-        },
-        new object[]
-        {
-            ".NETCoreApp,Version=v1.0",
-            "netcoreapp1.0",
-        },
-        new object[]
-        {
-            ".NETStandard,Version=v2.0",
-            "netstandard2.0",
-        },
-        new object[]
-        {
-            ".NETStandard,Version=v1.6",
-            "netstandard1.6",
-        },
-        new object[]
-        {
-            ".NETStandard,Version=v1.5",
-            "netstandard1.5",
-        },
-        new object[]
-        {
-            ".NETStandard,Version=v1.4",
-            "netstandard1.4",
-        },
-        new object[]
-        {
-            ".NETStandard,Version=v1.3",
-            "netstandard1.3",
-        },
-        new object[]
-        {
-            ".NETStandard,Version=v1.2",
-            "netstandard1.2",
-        },
-        new object[]
-        {
-            ".NETStandard,Version=v1.1",
-            "netstandard1.1",
-        },
-        new object[]
-        {
-            ".NETStandard,Version=v1.0",
-            "netstandard1.0",
-        },
-        new object[]
-        {
-            ".NETFramework,Version=v4.7.2",
-            "net472",
-        },
-        new object[]
-        {
-            ".NETFramework,Version=v4.7.1",
-            "net471",
-        },
-        new object[]
-        {
-            ".NETFramework,Version=v4.7",
-            "net47",
-        },
-        new object[]
-        {
-            ".NETFramework,Version=v4.6.2",
-            "net462",
-        },
-        new object[]
-        {
-            ".NETFramework,Version=v4.6.1",
-            "net461",
-        },
-        new object[]
-        {
-            ".NETFramework,Version=v4.6",
-            "net46",
-        },
-        new object[]
-        {
-            ".NETFramework,Version=v4.5.2",
-            "net452",
-        },
-        new object[]
-        {
-            ".NETFramework,Version=v4.5.1",
-            "net451",
-        },
-        new object[]
-        {
-            ".NETFramework,Version=v4.5",
-            "net45",
-        },
-        new object[]
-        {
-            ".NETFramework,Version=v4.0.3",
-            "net403",
-        },
-        new object[]
-        {
-            ".NETFramework,Version=v4.0",
-            "net40",
-        },
-        new object[]
-        {
-            ".NETFramework,Version=v3.5",
-            "net35",
-        },
-        new object[]
-        {
-            ".NETFramework,Version=v2.0",
-            "net20",
-        },
-        new object[]
-        {
-            ".NETFramework,Version=v1.1",
-            "net11",
-        },
+        new object[] { ".NETCoreApp,Version=v2.2", "netcoreapp2.2" },
+        new object[] { ".NETCoreApp,Version=v2.1", "netcoreapp2.1" },
+        new object[] { ".NETCoreApp,Version=v2.0", "netcoreapp2.0" },
+        new object[] { ".NETCoreApp,Version=v1.1", "netcoreapp1.1" },
+        new object[] { ".NETCoreApp,Version=v1.0", "netcoreapp1.0" },
+        new object[] { ".NETStandard,Version=v2.0", "netstandard2.0" },
+        new object[] { ".NETStandard,Version=v1.6", "netstandard1.6" },
+        new object[] { ".NETStandard,Version=v1.5", "netstandard1.5" },
+        new object[] { ".NETStandard,Version=v1.4", "netstandard1.4" },
+        new object[] { ".NETStandard,Version=v1.3", "netstandard1.3" },
+        new object[] { ".NETStandard,Version=v1.2", "netstandard1.2" },
+        new object[] { ".NETStandard,Version=v1.1", "netstandard1.1" },
+        new object[] { ".NETStandard,Version=v1.0", "netstandard1.0" },
+        new object[] { ".NETFramework,Version=v4.7.2", "net472" },
+        new object[] { ".NETFramework,Version=v4.7.1", "net471" },
+        new object[] { ".NETFramework,Version=v4.7", "net47" },
+        new object[] { ".NETFramework,Version=v4.6.2", "net462" },
+        new object[] { ".NETFramework,Version=v4.6.1", "net461" },
+        new object[] { ".NETFramework,Version=v4.6", "net46" },
+        new object[] { ".NETFramework,Version=v4.5.2", "net452" },
+        new object[] { ".NETFramework,Version=v4.5.1", "net451" },
+        new object[] { ".NETFramework,Version=v4.5", "net45" },
+        new object[] { ".NETFramework,Version=v4.0.3", "net403" },
+        new object[] { ".NETFramework,Version=v4.0", "net40" },
+        new object[] { ".NETFramework,Version=v3.5", "net35" },
+        new object[] { ".NETFramework,Version=v2.0", "net20" },
+        new object[] { ".NETFramework,Version=v1.1", "net11" },
     };
 
     /// <summary>
@@ -157,7 +50,10 @@ public class TargetFrameworkExtensionsTests
     /// </summary>
     /// <param name="frameworkName">The framework name.</param>
     /// <param name="expected">The expected result.</param>
-    [Theory]
-    [MemberData(nameof(FrameworkNamesTestSource))]
-    public void ReturnsName(string frameworkName, string expected) => Assert.Equal(expected, TargetFrameworkExtensions.GetTargetFrameworkName(frameworkName));
+    [TestCaseSource(nameof(FrameworkNamesTestSource))]
+    public void ReturnsName(string frameworkName, string expected)
+    {
+        var actual = TargetFrameworkExtensions.GetTargetFrameworkName(frameworkName);
+        Assert.That(actual, Is.EqualTo(expected));
+    }
 }

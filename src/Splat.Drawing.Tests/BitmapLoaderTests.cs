@@ -1,6 +1,6 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.IO;
@@ -13,68 +13,60 @@ namespace Splat.Tests;
 /// <summary>
 /// Unit Tests for the Bitmap Loader.
 /// </summary>
+[TestFixture]
 public sealed class BitmapLoaderTests
 {
-    /// <summary>
-    /// Gets the test data for the Load Suceeds Unit Test.
-    /// </summary>
-#pragma warning disable IDE0028 // Simplify collection initialization
-    public static TheoryData<Func<Stream>> LoadSucceedsTestData { get; } = new() { GetPngStream, GetJpegStream, GetBitmapStream };
-#pragma warning restore IDE0028 // Simplify collection initialization
-
     /// <summary>
     /// Test to ensure the bitmap loader initializes properly.
     /// </summary>
     /// <remarks>
     /// Looks crude and pointless, but was produced to track an issue on Android between VS2017 and VS2019.
     /// </remarks>
-    [Fact]
+    [Test]
     public void ReturnsInstance()
     {
         var instance = new PlatformBitmapLoader();
-        Assert.NotNull(instance);
+        Assert.That(instance, Is.Not.Null);
     }
 
     /// <summary>
     /// Test to ensure creating a default bitmap succeeds on all platforms.
     /// </summary>
-    [Fact]
+    [Test]
     public void Create_Succeeds()
     {
         var instance = new PlatformBitmapLoader();
-        var result = instance.Create(1, 1);
 
-        Assert.NotNull(result);
+        object? result = null;
+        Assert.DoesNotThrow(() => result = instance.Create(1, 1));
+
+        Assert.That(result, Is.Not.Null);
     }
 
     /// <summary>
     /// Test to ensure loading a bitmap succeeds on all platforms.
     /// </summary>
-    /// <param name="getStream">Function to load a file stream.</param>
-    [Theory]
-    [MemberData(nameof(LoadSucceedsTestData))]
-    public void Load_Succeeds(Func<Stream> getStream)
+    /// <param name="imageName">The resource name of the image to load.</param>
+    [TestCase("splatlogo.bmp")]
+    [TestCase("splatlogo.jpg")]
+    [TestCase("splatlogo.png")]
+    public void Load_Succeeds(string imageName)
     {
-        ArgumentNullException.ThrowIfNull(getStream);
-
         var instance = new PlatformBitmapLoader();
 
-        using (var sourceStream = getStream())
+        using var sourceStream = GetStream(imageName);
+
+        object? result = null;
+        Assert.DoesNotThrow(() =>
         {
-            var result = instance.Load(
+            result = instance.Load(
                 sourceStream,
                 640,
                 480);
+        });
 
-            Assert.NotNull(result);
-        }
+        Assert.That(result, Is.Not.Null);
     }
-
-    private static Stream GetBitmapStream() => GetStream("splatlogo.bmp");
-
-    private static Stream GetJpegStream() => GetStream("splatlogo.jpg");
-
-    private static Stream GetPngStream() => GetStream("splatlogo.png");
 
     private static Stream GetStream(string imageName)
     {

@@ -1,6 +1,6 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Tests.Mocks;
@@ -15,7 +15,7 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
     /// <summary>
     /// Test to make sure the debug emits nothing when not enabled.
     /// </summary>
-    [Fact]
+    [Test]
     public void Debug_Disabled_Should_Not_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
@@ -28,14 +28,17 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
                 return "This is a test.";
             });
 
-        Assert.Empty(target.Logs);
-        Assert.False(invoked);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs, Is.Empty);
+            Assert.That(invoked, Is.False);
+        }
     }
 
     /// <summary>
     /// Test to make sure the debug emits something when enabled.
     /// </summary>
-    [Fact]
+    [Test]
     public void Debug_Enabled_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
@@ -48,14 +51,17 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
                 return "This is a test.";
             });
 
-        Assert.Equal("This is a test.", target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim());
-        Assert.True(invoked);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+            Assert.That(invoked, Is.True);
+        }
     }
 
     /// <summary>
     /// Test to make sure the Info emits nothing when not enabled.
     /// </summary>
-    [Fact]
+    [Test]
     public void Info_Disabled_Should_Not_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
@@ -68,14 +74,17 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
                 return "This is a test.";
             });
 
-        Assert.Empty(target.Logs);
-        Assert.False(invoked);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs, Is.Empty);
+            Assert.That(invoked, Is.False);
+        }
     }
 
     /// <summary>
     /// Test to make sure the Info emits something when enabled.
     /// </summary>
-    [Fact]
+    [Test]
     public void Info_Enabled_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
@@ -88,14 +97,17 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
                 return "This is a test.";
             });
 
-        Assert.Equal("This is a test.", target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim());
-        Assert.True(invoked);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+            Assert.That(invoked, Is.True);
+        }
     }
 
     /// <summary>
     /// Test to make sure the Warn emits nothing when not enabled.
     /// </summary>
-    [Fact]
+    [Test]
     public void Warn_Disabled_Should_Not_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
@@ -108,14 +120,17 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
                 return "This is a test.";
             });
 
-        Assert.Empty(target.Logs);
-        Assert.False(invoked);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs, Is.Empty);
+            Assert.That(invoked, Is.False);
+        }
     }
 
     /// <summary>
     /// Test to make sure the Warn emits something when enabled.
     /// </summary>
-    [Fact]
+    [Test]
     public void Warn_Enabled_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
@@ -128,14 +143,17 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
                 return "This is a test.";
             });
 
-        Assert.Equal("This is a test.", target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim());
-        Assert.True(invoked);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+            Assert.That(invoked, Is.True);
+        }
     }
 
     /// <summary>
     /// Test to make sure the Error emits nothing when not enabled.
     /// </summary>
-    [Fact]
+    [Test]
     public void Error_Disabled_Should_Not_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
@@ -148,14 +166,17 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
                 return "This is a test.";
             });
 
-        Assert.Empty(target.Logs);
-        Assert.False(invoked);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs, Is.Empty);
+            Assert.That(invoked, Is.False);
+        }
     }
 
     /// <summary>
     /// Test to make sure the Error emits something when enabled.
     /// </summary>
-    [Fact]
+    [Test]
     public void Error_Enabled_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
@@ -168,14 +189,17 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
                 return "This is a test.";
             });
 
-        Assert.Equal("This is a test.", target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim());
-        Assert.True(invoked);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+            Assert.That(invoked, Is.True);
+        }
     }
 
     /// <summary>
     /// Test to make sure the Fatal emits something when enabled.
     /// </summary>
-    [Fact]
+    [Test]
     public void Fatal_Enabled_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
@@ -188,150 +212,171 @@ public abstract class WrappingFullLoggerTestBase : AllocationFreeLoggerBaseTestB
                 return "This is a test.";
             });
 
-        Assert.Equal("This is a test.", target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim());
-        Assert.True(invoked);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+            Assert.That(invoked, Is.True);
+        }
     }
 
     /// <summary>
     /// Test to make sure the generic type parameter is passed to the logger.
     /// </summary>
-    [Fact]
+    [Test]
     public void Debug_With_Generic_Type_Should_Write_Message_And_Type()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Debug<DummyObjectClass1>("This is a test.");
 
-        Assert.Equal("This is a test.", target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
     /// Test to make sure the type parameter is passed to the logger.
     /// </summary>
-    [Fact]
+    [Test]
     public void Write_Should_Write_Message_And_Type()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Write("This is a test.", LogLevel.Debug);
 
-        Assert.Equal("This is a test.", target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
     }
 
     /// <summary>
     /// Test to make sure the generic type parameter is passed to the logger.
     /// </summary>
-    [Fact]
+    [Test]
     public void Debug_With_Generic_Type_Should_Write_Message_And_Type_Provided()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Debug<DummyObjectClass2>("This is a test.");
 
-        Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(
+            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
+            Is.EqualTo($"{nameof(DummyObjectClass2)}: This is a test."));
     }
 
     /// <summary>
     /// Test to make sure the generic type parameter is passed to the logger.
     /// </summary>
-    [Fact]
+    [Test]
     public void Info_With_Generic_Type_Should_Write_Message_And_Type()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Info<DummyObjectClass1>("This is a test.");
 
-        Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(
+            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
+            Is.EqualTo($"{nameof(DummyObjectClass1)}: This is a test."));
     }
 
     /// <summary>
     /// Test to make sure the generic type parameter is passed to the logger.
     /// </summary>
-    [Fact]
+    [Test]
     public void Info_With_Generic_Type_Should_Write_Message_And_Type_Provided()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Info<DummyObjectClass2>("This is a test.");
 
-        Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(
+            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
+            Is.EqualTo($"{nameof(DummyObjectClass2)}: This is a test."));
     }
 
     /// <summary>
     /// Test to make sure the generic type parameter is passed to the logger.
     /// </summary>
-    [Fact]
+    [Test]
     public void Warn_With_Generic_Type_Should_Write_Message_And_Type()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Warn<DummyObjectClass1>("This is a test.");
 
-        Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(
+            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
+            Is.EqualTo($"{nameof(DummyObjectClass1)}: This is a test."));
     }
 
     /// <summary>
     /// Test to make sure the generic type parameter is passed to the logger.
     /// </summary>
-    [Fact]
+    [Test]
     public void Warn_With_Generic_Type_Should_Write_Message_And_Type_Provided()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Warn<DummyObjectClass2>("This is a test.");
 
-        Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(
+            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
+            Is.EqualTo($"{nameof(DummyObjectClass2)}: This is a test."));
     }
 
     /// <summary>
     /// Test to make sure the generic type parameter is passed to the logger.
     /// </summary>
-    [Fact]
+    [Test]
     public void Error_With_Generic_Type_Should_Write_Message_And_Type()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Error<DummyObjectClass1>("This is a test.");
 
-        Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(
+            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
+            Is.EqualTo($"{nameof(DummyObjectClass1)}: This is a test."));
     }
 
     /// <summary>
     /// Test to make sure the generic type parameter is passed to the logger.
     /// </summary>
-    [Fact]
+    [Test]
     public void Error_With_Generic_Type_Should_Write_Message_And_Type_Provided()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Error<DummyObjectClass2>("This is a test.");
 
-        Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(
+            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
+            Is.EqualTo($"{nameof(DummyObjectClass2)}: This is a test."));
     }
 
     /// <summary>
     /// Test to make sure the generic type parameter is passed to the logger.
     /// </summary>
-    [Fact]
+    [Test]
     public void Fatal_With_Generic_Type_Should_Write_Message_And_Type()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Fatal<DummyObjectClass1>("This is a test.");
 
-        Assert.Equal($"{nameof(DummyObjectClass1)}: This is a test.", target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(
+            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
+            Is.EqualTo($"{nameof(DummyObjectClass1)}: This is a test."));
     }
 
     /// <summary>
     /// Test to make sure the generic type parameter is passed to the logger.
     /// </summary>
-    [Fact]
+    [Test]
     public void Fatal_With_Generic_Type_Should_Write_Message_And_Type_Provided()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Fatal<DummyObjectClass2>("This is a test.");
 
-        Assert.Equal($"{nameof(DummyObjectClass2)}: This is a test.", target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(
+            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
+            Is.EqualTo($"{nameof(DummyObjectClass2)}: This is a test."));
     }
 }

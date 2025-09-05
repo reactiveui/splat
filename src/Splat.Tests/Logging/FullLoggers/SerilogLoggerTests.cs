@@ -1,6 +1,6 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Globalization;
@@ -17,6 +17,8 @@ namespace Splat.Tests.Logging;
 /// <summary>
 /// Tests that verify the <see cref="Logger"/> class.
 /// </summary>
+[TestFixture]
+[NonParallelizable] // touches global static state (AppLocator, Serilog.Log.Logger)
 public class SerilogLoggerTests : FullLoggerTestBase
 {
     private static readonly char[] _newLine = Environment.NewLine.ToCharArray();
@@ -48,7 +50,7 @@ public class SerilogLoggerTests : FullLoggerTestBase
     /// <summary>
     /// Test to make sure the calling `UseSerilogWithWrappingFullLogger` logs.
     /// </summary>
-    [Fact]
+    [Test]
     public void Configuring_With_Static_Log_Should_Write_Message()
     {
         var originalLocator = AppLocator.InternalLocator;
@@ -60,13 +62,16 @@ public class SerilogLoggerTests : FullLoggerTestBase
 
             Locator.CurrentMutable.UseSerilogFullLogger();
 
-            Assert.Equal(0, target.Logs.Count);
+            Assert.That(target.Logs, Is.Empty);
 
             IEnableLogger logger = null!;
             logger.Log().Debug<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal(1, target.Logs.Count);
-            Assert.Equal("This is a test.", target.Logs.Last().message!.Trim(_newLine).Trim());
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(target.Logs, Has.Count.EqualTo(1));
+                Assert.That(target.Logs.Last().message.Trim(_newLine).Trim(), Is.EqualTo("This is a test."));
+            }
         }
         finally
         {
@@ -77,7 +82,7 @@ public class SerilogLoggerTests : FullLoggerTestBase
     /// <summary>
     /// Test to make calling `UseSerilogWithWrappingFullLogger(Serilog.ILogger)` logs.
     /// </summary>
-    [Fact]
+    [Test]
     public void Configuring_With_PreConfigured_Log_Should_Write_Message()
     {
         var originalLocator = AppLocator.InternalLocator;
@@ -87,14 +92,16 @@ public class SerilogLoggerTests : FullLoggerTestBase
             var (seriLogger, target) = CreateSerilogger(LogLevel.Debug);
             AppLocator.CurrentMutable.UseSerilogFullLogger(seriLogger);
 
-            Assert.Equal(0, target.Logs.Count);
+            Assert.That(target.Logs, Is.Empty);
 
             IEnableLogger logger = null!;
-
             logger.Log().Debug<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal(1, target.Logs.Count);
-            Assert.Equal("This is a test.", target.Logs.Last().message!.Trim(_newLine).Trim());
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(target.Logs, Has.Count.EqualTo(1));
+                Assert.That(target.Logs.Last().message.Trim(_newLine).Trim(), Is.EqualTo("This is a test."));
+            }
         }
         finally
         {
@@ -134,14 +141,12 @@ public class SerilogLoggerTests : FullLoggerTestBase
 
         public void Emit(LogEvent logEvent)
         {
-            using (var buffer = new StringWriter())
-            {
-                var logLevel = _mappingsToSplat[logEvent.Level];
-                _formatter.Format(logEvent, buffer);
-                var message = buffer.ToString();
+            using var buffer = new StringWriter();
+            var logLevel = _mappingsToSplat[logEvent.Level];
+            _formatter.Format(logEvent, buffer);
+            var message = buffer.ToString();
 
-                _logs.Add((logLevel, message));
-            }
+            _logs.Add((logLevel, message));
         }
     }
 }
