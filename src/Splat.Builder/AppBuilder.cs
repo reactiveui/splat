@@ -39,10 +39,10 @@ public class AppBuilder : IAppBuilder, IAppInstance
     public static bool HasBeenBuilt { get; private set; }
 
     /// <summary>
-    /// Gets a value indicating whether [using builder].
+    /// Gets a value indicating whether the application builder is being used.
     /// </summary>
     /// <value>
-    ///   <c>true</c> if [using builder]; otherwise, <c>false</c>.
+    ///   <c>true</c> if using the application builder; otherwise, <c>false</c>.
     /// </value>
     public static bool UsingBuilder { get; private set; }
 
@@ -63,7 +63,7 @@ public class AppBuilder : IAppBuilder, IAppInstance
     public IMutableDependencyResolver CurrentMutable { get; }
 
     /// <summary>
-    /// Creates a splat builder with the Splat Locator instance with the current mutable resolver.
+    /// Creates a Splat builder with the Splat Locator instance using the current mutable resolver.
     /// </summary>
     /// <returns>The builder instance for chaining.</returns>
     public static AppBuilder CreateSplatBuilder() => new(AppLocator.CurrentMutable, AppLocator.Current);

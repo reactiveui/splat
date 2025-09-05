@@ -6,7 +6,7 @@
 namespace Splat;
 
 /// <summary>
-/// Null Service Type.
+/// Represents a placeholder service type for null service registrations.
 /// </summary>
 /// <remarks>
 /// Initializes a new instance of the <see cref="NullServiceType"/> class.
