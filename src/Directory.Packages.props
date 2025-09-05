@@ -63,7 +63,7 @@
     <PackageVersion Include="System.Xml.XmlDocument" Version="4.3.0" />
     <PackageVersion Include="NUnit" Version="4.4.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="5.1.0" />
-    <PackageVersion Include="NUnit.Analyzers" Version="5.0.0" />
+    <PackageVersion Include="NUnit.Analyzers" Version="4.10.0" />
     <PackageVersion Include="Verify.NUnit" Version="30.7.3" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageVersion Include="Microsoft.Reactive.Testing" Version="6.0.1" />
