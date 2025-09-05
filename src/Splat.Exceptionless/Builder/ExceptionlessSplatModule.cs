@@ -10,12 +10,12 @@ using Splat.Exceptionless;
 namespace Splat.Builder;
 
 /// <summary>
-/// Splat module for configuring the Exceptionless dependency resolver.
+/// Splat module for configuring the Exceptionless integration.
 /// </summary>
 /// <remarks>
 /// Initializes a new instance of the <see cref="ExceptionlessSplatModule"/> class.
 /// </remarks>
-/// <param name="exceptionlessClient">The Exceptionless container.</param>
+/// <param name="exceptionlessClient">The Exceptionless client.</param>
 public sealed class ExceptionlessSplatModule(ExceptionlessClient exceptionlessClient) : IModule
 {
     private readonly ExceptionlessClient _container = exceptionlessClient ?? throw new ArgumentNullException(nameof(exceptionlessClient));
