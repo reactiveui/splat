@@ -8,7 +8,9 @@ using Exceptionless;
 namespace Splat.Exceptionless;
 
 /// <summary>
+/// <summary>
 /// Exceptionless specific extensions for the Mutable Dependency Resolver.
+/// </summary>
 /// </summary>
 public static class MutableDependencyResolverExtensions
 {

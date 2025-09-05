@@ -9,7 +9,9 @@ using Splat.ApplicationPerformanceMonitoring;
 namespace Splat;
 
 /// <summary>
+/// <summary>
 /// Feature Usage Tracking integration for Exceptionless.
+/// </summary>
 /// </summary>
 public sealed class ExceptionlessFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
 {

@@ -8,7 +8,9 @@ using Splat.ApplicationPerformanceMonitoring;
 namespace Splat;
 
 /// <summary>
+/// <summary>
 /// View Tracking integration for AppCenter.
+/// </summary>
 /// </summary>
 public sealed class AppCenterViewTracking : IViewTracking
 {

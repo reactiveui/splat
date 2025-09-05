@@ -10,7 +10,9 @@ using System.Diagnostics.CodeAnalysis;
 namespace Splat;
 
 /// <summary>
+/// <summary>
 /// A set of extension methods that assist with the <see cref="IDependencyResolver"/> and <see cref="IMutableDependencyResolver"/> interfaces.
+/// </summary>
 /// </summary>
 public static class DependencyResolverMixins
 {
