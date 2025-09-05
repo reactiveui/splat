@@ -14,6 +14,7 @@ namespace Splat.Tests.Aot;
 /// and when assemblies are trimmed by the linker.
 /// </summary>
 [TestFixture]
+[NonParallelizable]
 public class CoreAotCompatibilityTests
 {
     /// <summary>

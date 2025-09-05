@@ -16,6 +16,7 @@ namespace Splat.Simplnjector;
 /// Tests to show the <see cref="SimpleInjectorDependencyResolver"/> works correctly.
 /// </summary>
 [TestFixture]
+[NonParallelizable]
 public class DependencyResolverTests
 {
     /// <summary>

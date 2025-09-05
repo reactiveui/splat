@@ -14,6 +14,7 @@ namespace Splat.DryIoc.Tests;
 /// Tests to show the <see cref="DryIocDependencyResolver"/> works correctly.
 /// </summary>
 [TestFixture]
+[NonParallelizable]
 public class DependencyResolverTests
 {
     /// <summary>

@@ -18,6 +18,7 @@ namespace Splat.Tests.Logging;
 /// Tests that verify the <see cref="Logger"/> class.
 /// </summary>
 [TestFixture]
+[NonParallelizable]
 public class SerilogLoggerTests : FullLoggerTestBase
 {
     private static readonly char[] _newLine = Environment.NewLine.ToCharArray();

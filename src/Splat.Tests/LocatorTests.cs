@@ -13,6 +13,7 @@ namespace Splat.Tests;
 /// Tests to confirm that the locator is working.
 /// </summary>
 [TestFixture]
+[NonParallelizable]
 public class LocatorTests
 {
     /// <summary>
@@ -240,13 +241,13 @@ public class LocatorTests
         {
             var items = currentMutable.GetServices<IDummyInterface>(testContract);
 
-            items.Should().BeEquivalentTo(new IDummyInterface[] { dummy1, dummy2, dummy3 });
+Assert.That(            items, Is.EquivalentTo(new IDummyInterface[] { dummy1, dummy2, dummy3 }));
 
             currentMutable.UnregisterAll<IDummyInterface>(testContract);
 
             items = currentMutable.GetServices<IDummyInterface>(testContract);
 
-            items.Should().BeEmpty();
+Assert.That(            items, Is.Empty);
         }
     }
 
@@ -319,13 +320,13 @@ public class LocatorTests
 
         var items = currentMutable.GetServices<IDummyInterface>();
 
-        items.Should().BeEmpty();
+Assert.That(        items, Is.Empty);
 
         currentMutable.UnregisterAll<IDummyInterface>();
 
         items = currentMutable.GetServices<IDummyInterface>();
 
-        items.Should().BeEmpty();
+Assert.That(        items, Is.Empty);
     }
 
     /// <summary>
@@ -354,13 +355,13 @@ public class LocatorTests
         {
             var items = currentMutable.GetServices<IDummyInterface>(testContract);
 
-            items.Should().BeEquivalentTo(new IDummyInterface[] { dummy1, dummy2, dummy3 });
+Assert.That(            items, Is.EquivalentTo(new IDummyInterface[] { dummy1, dummy2, dummy3 }));
 
             currentMutable.UnregisterCurrent<IDummyInterface>(testContract);
 
             items = currentMutable.GetServices<IDummyInterface>(testContract);
 
-            items.Should().BeEquivalentTo(new IDummyInterface[] { dummy1, dummy2 });
+Assert.That(            items, Is.EquivalentTo(new IDummyInterface[] { dummy1, dummy2 }));
         }
     }
 
@@ -374,13 +375,13 @@ public class LocatorTests
         var currentMutable = new ModernDependencyResolver();
         var items = currentMutable.GetServices<IDummyInterface>();
 
-        items.Should().BeEmpty();
+Assert.That(        items, Is.Empty);
 
         currentMutable.UnregisterCurrent<IDummyInterface>();
 
         items = currentMutable.GetServices<IDummyInterface>();
 
-        items.Should().BeEmpty();
+Assert.That(        items, Is.Empty);
     }
 
     /// <summary>
@@ -404,13 +405,13 @@ public class LocatorTests
             });
 
         currentMutable.UnregisterAll<IDummyInterface>();
-        type.Should().Be<IDummyInterface>();
+Assert.That(        type, Is.TypeOf<IDummyInterface>());
         Assert.That(contract, Is.Null);
         Assert.That(unregisterAllCalled, Is.True);
 
         unregisterAllCalled = false;
         currentMutable.UnregisterAll<IEnableLogger>("test");
-        type.Should().Be<IEnableLogger>();
+Assert.That(        type, Is.TypeOf<IEnableLogger>());
         Assert.That(contract, Is.EqualTo("test"));
         Assert.That(unregisterAllCalled, Is.True);
     }
@@ -436,13 +437,13 @@ public class LocatorTests
             });
 
         currentMutable.UnregisterCurrent<IDummyInterface>();
-        type.Should().Be<IDummyInterface>();
+Assert.That(        type, Is.TypeOf<IDummyInterface>());
         Assert.That(contract, Is.Null);
         Assert.That(unregisterAllCalled, Is.True);
 
         unregisterAllCalled = false;
         currentMutable.UnregisterCurrent<IEnableLogger>("test");
-        type.Should().Be<IEnableLogger>();
+Assert.That(        type, Is.TypeOf<IEnableLogger>());
         Assert.That(contract, Is.EqualTo("test"));
         Assert.That(unregisterAllCalled, Is.True);
     }

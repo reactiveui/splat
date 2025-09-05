@@ -13,6 +13,7 @@ namespace Splat.Prism.Tests;
 /// Tests to show the <see cref="PrismDependencyResolver"/> works correctly.
 /// </summary>
 [TestFixture]
+[NonParallelizable]
 public class DependencyResolverTests
 {
     /// <summary>

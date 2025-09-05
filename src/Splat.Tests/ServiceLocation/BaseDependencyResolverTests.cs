@@ -13,6 +13,7 @@ namespace Splat.Tests.ServiceLocation;
 /// </summary>
 /// <typeparam name="T">The dependency resolver to test.</typeparam>
 [TestFixture]
+[NonParallelizable]
 public abstract class BaseDependencyResolverTests<T>
     where T : IDependencyResolver
 {

@@ -15,6 +15,7 @@ namespace Splat.Ninject.Tests;
 /// Tests to show the <see cref="NinjectDependencyResolver"/> works correctly.
 /// </summary>
 [TestFixture]
+[NonParallelizable]
 public class DependencyResolverTests
 {
     /// <summary>
@@ -62,7 +63,7 @@ public class DependencyResolverTests
 
         var viewOne = AppLocator.Current.GetServices(typeof(IViewFor<ViewModelOne>));
 
-        viewOne.Should().BeEmpty();
+Assert.That(        viewOne, Is.Empty);
     }
 
     /// <summary>
@@ -127,7 +128,7 @@ public class DependencyResolverTests
         Action result = () =>
             AppLocator.CurrentMutable.UnregisterCurrent(typeof(IScreen));
 
-        result.Should().Throw<NotImplementedException>();
+Assert.That(        result, Throws.TypeOf<NotImplementedException>());
     }
 
     /// <summary>

@@ -16,6 +16,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests;
 /// Tests to show the <see cref="MicrosoftDependencyResolver"/> works correctly.
 /// </summary>
 [TestFixture]
+[NonParallelizable]
 public class DependencyResolverTests
 {
     /// <summary>
