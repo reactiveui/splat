@@ -21,8 +21,7 @@
     <CopyNuGetImplementations>true</CopyNuGetImplementations>
     <NoStdLib>false</NoStdLib>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
-    <NoWarn>$(NoWarn);1591;CA1707;SA1633;CA2000;CA1034</NoWarn>
-    <LangVersion>latest</LangVersion>
+        <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>

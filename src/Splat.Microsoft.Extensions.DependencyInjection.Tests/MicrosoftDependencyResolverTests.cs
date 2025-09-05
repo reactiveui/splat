@@ -17,6 +17,7 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     public void Can_Register_And_Resolve_Null_Types()
     {
         var resolver = GetDependencyResolver();
+
         const int foo = 5;
         resolver.Register(() => foo, null);
 
@@ -24,11 +25,13 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
         const string contract = "foo";
         resolver.Register(() => bar, null, contract);
 
-        Assert.That(resolver.HasRegistration(null, Is.True));
+        Assert.That(resolver.HasRegistration(null), Is.True);
+
         var value = resolver.GetService(null);
         Assert.That(value, Is.EqualTo(foo));
 
-        Assert.That(resolver.HasRegistration(null, contract, Is.True));
+        Assert.That(resolver.HasRegistration(null, contract), Is.True);
+
         value = resolver.GetService(null, contract);
         Assert.That(value, Is.EqualTo(bar));
 
@@ -36,16 +39,20 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
         Assert.That(values.Count(), Is.EqualTo(1));
 
         resolver.UnregisterCurrent(null);
+
         var valuesNC = resolver.GetServices(null);
         Assert.That(valuesNC.Count(), Is.EqualTo(0));
+
         var valuesC = resolver.GetServices(null, contract);
         Assert.That(valuesC.Count(), Is.EqualTo(1));
 
         resolver.UnregisterAll(null);
+
         valuesNC = resolver.GetServices(null);
         Assert.That(valuesNC.Count(), Is.EqualTo(0));
 
         resolver.UnregisterAll(null, contract);
+
         valuesC = resolver.GetServices(null, contract);
         Assert.That(valuesC.Count(), Is.EqualTo(0));
     }

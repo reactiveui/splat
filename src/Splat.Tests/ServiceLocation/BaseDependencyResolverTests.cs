@@ -12,8 +12,6 @@ namespace Splat.Tests.ServiceLocation;
 /// Common tests for Dependency Resolver interaction with Splat.
 /// </summary>
 /// <typeparam name="T">The dependency resolver to test.</typeparam>
-[TestFixture]
-[NonParallelizable]
 public abstract class BaseDependencyResolverTests<T>
     where T : IDependencyResolver
 {
@@ -25,10 +23,15 @@ public abstract class BaseDependencyResolverTests<T>
     {
         var resolver = GetDependencyResolver();
         var type = typeof(ILogManager);
+
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type);
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, "named");
-        resolver.UnregisterCurrent(type);
-        resolver.UnregisterCurrent(type);
+
+        Assert.DoesNotThrow(() =>
+        {
+            resolver.UnregisterCurrent(type);
+            resolver.UnregisterCurrent(type);
+        });
     }
 
     /// <summary>
@@ -39,6 +42,7 @@ public abstract class BaseDependencyResolverTests<T>
     {
         var resolver = GetDependencyResolver();
         var type = typeof(ILogManager);
+
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type);
         resolver.Register(() => new FuncLogManager(_ => new WrappingFullLogger(new DebugLogger())), type);
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, "named");
@@ -61,10 +65,15 @@ public abstract class BaseDependencyResolverTests<T>
         var resolver = GetDependencyResolver();
         var type = typeof(ILogManager);
         const string contract = "named";
+
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type);
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, contract);
-        resolver.UnregisterCurrent(type, contract);
-        resolver.UnregisterCurrent(type, contract);
+
+        Assert.DoesNotThrow(() =>
+        {
+            resolver.UnregisterCurrent(type, contract);
+            resolver.UnregisterCurrent(type, contract);
+        });
     }
 
     /// <summary>
@@ -75,10 +84,15 @@ public abstract class BaseDependencyResolverTests<T>
     {
         var resolver = GetDependencyResolver();
         var type = typeof(ILogManager);
+
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type);
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, "named");
-        resolver.UnregisterAll(type);
-        resolver.UnregisterCurrent(type);
+
+        Assert.DoesNotThrow(() =>
+        {
+            resolver.UnregisterAll(type);
+            resolver.UnregisterCurrent(type);
+        });
     }
 
     /// <summary>
@@ -89,11 +103,16 @@ public abstract class BaseDependencyResolverTests<T>
     {
         var resolver = GetDependencyResolver();
         var type = typeof(ILogManager);
-        var contract = "named";
+        const string contract = "named";
+
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type);
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, contract);
-        resolver.UnregisterAll(type, contract);
-        resolver.UnregisterCurrent(type, contract);
+
+        Assert.DoesNotThrow(() =>
+        {
+            resolver.UnregisterAll(type, contract);
+            resolver.UnregisterCurrent(type, contract);
+        });
     }
 
     /// <summary>
@@ -104,8 +123,8 @@ public abstract class BaseDependencyResolverTests<T>
     {
         var resolver = GetDependencyResolver();
 
-        Assert.That(resolver.GetServices<string>(, Is.Not.Null));
-        Assert.That(resolver.GetServices<string>("Landscape", Is.Not.Null));
+        Assert.That(resolver.GetServices<string>(), Is.Not.Null);
+        Assert.That(resolver.GetServices<string>("Landscape"), Is.Not.Null);
     }
 
     /// <summary>
@@ -119,26 +138,26 @@ public abstract class BaseDependencyResolverTests<T>
         const string contractTwo = "ContractTwo";
         var resolver = GetDependencyResolver();
 
-        Assert.That(resolver.HasRegistration(type, Is.False));
-        Assert.That(resolver.HasRegistration(type, contractOne, Is.False));
-        Assert.That(resolver.HasRegistration(type, contractTwo, Is.False));
+        Assert.That(resolver.HasRegistration(type), Is.False);
+        Assert.That(resolver.HasRegistration(type, contractOne), Is.False);
+        Assert.That(resolver.HasRegistration(type, contractTwo), Is.False);
 
         resolver.Register(() => "unnamed", type);
-        Assert.That(resolver.HasRegistration(type, Is.True));
-        Assert.That(resolver.HasRegistration(type, contractOne, Is.False));
-        Assert.That(resolver.HasRegistration(type, contractTwo, Is.False));
+        Assert.That(resolver.HasRegistration(type), Is.True);
+        Assert.That(resolver.HasRegistration(type, contractOne), Is.False);
+        Assert.That(resolver.HasRegistration(type, contractTwo), Is.False);
         resolver.UnregisterAll(type);
 
         resolver.Register(() => contractOne, type, contractOne);
-        Assert.That(resolver.HasRegistration(type, Is.False));
-        Assert.That(resolver.HasRegistration(type, contractOne, Is.True));
-        Assert.That(resolver.HasRegistration(type, contractTwo, Is.False));
+        Assert.That(resolver.HasRegistration(type), Is.False);
+        Assert.That(resolver.HasRegistration(type, contractOne), Is.True);
+        Assert.That(resolver.HasRegistration(type, contractTwo), Is.False);
         resolver.UnregisterAll(type, contractOne);
 
         resolver.Register(() => contractTwo, type, contractTwo);
-        Assert.That(resolver.HasRegistration(type, Is.False));
-        Assert.That(resolver.HasRegistration(type, contractOne, Is.False));
-        Assert.That(resolver.HasRegistration(type, contractTwo, Is.True));
+        Assert.That(resolver.HasRegistration(type), Is.False);
+        Assert.That(resolver.HasRegistration(type, contractOne), Is.False);
+        Assert.That(resolver.HasRegistration(type, contractTwo), Is.True);
     }
 
     /// <summary>
@@ -151,22 +170,19 @@ public abstract class BaseDependencyResolverTests<T>
     {
         var resolver = GetDependencyResolver();
 
-        // NOTE:MicrosoftDependencyResolver test for this funtionality is in DependencyResolverTests
+        // NOTE: MicrosoftDependencyResolver test for this functionality is in DependencyResolverTests
         if (resolver.GetType().Name != "MicrosoftDependencyResolver")
         {
-            // Setup NLog for Logging (doesn't matter if I actually configure NLog or not)
             resolver.UseNLogWithWrappingFullLogger();
             AppLocator.SetLocator(resolver);
             await Task.Delay(10);
             AppLocator.CurrentMutable.InitializeSplat();
             await Task.Delay(10);
 
-            // Get the ILogManager instance
             var lm = AppLocator.Current.GetService<ILogManager>();
             Assert.That(lm, Is.Not.Null);
 
-            // now suceeds for AutoFac, Ninject and Splat
-            var mgr = lm.GetLogger<NLogLogger>();
+            var mgr = lm!.GetLogger<NLogLogger>();
             Assert.That(mgr, Is.Not.Null);
         }
     }
@@ -177,31 +193,30 @@ public abstract class BaseDependencyResolverTests<T>
     [Test]
     public void NullResolverTests()
     {
-        IReadonlyDependencyResolver? resolver = default;
-        IMutableDependencyResolver? resolver1 = default;
-        IDependencyResolver? resolver2 = default;
-#pragma warning disable CS8604 // Possible null reference argument.
-        Assert.Throws<ArgumentNullException>(() => resolver.GetService<ILogManager>());
-        Assert.Throws<ArgumentNullException>(() => resolver.GetServices<ILogManager>());
-        Assert.Throws<ArgumentNullException>(() => resolver1.ServiceRegistrationCallback(typeof(ILogManager), d => d.Dispose()));
-        Assert.Throws<ArgumentNullException>(() => resolver2.WithResolver().Dispose());
-        Assert.Throws<ArgumentNullException>(() => resolver1.Register<ILogManager>(() => new DefaultLogManager(AppLocator.Current)));
-        Assert.Throws<ArgumentNullException>(() => resolver1.RegisterConstant<ILogManager>(new DefaultLogManager(AppLocator.Current)));
-        Assert.Throws<ArgumentNullException>(() => resolver1.RegisterLazySingleton(() => new DefaultLogManager(AppLocator.Current), typeof(ILogManager)));
-        Assert.Throws<ArgumentNullException>(() => resolver1.RegisterLazySingletonAnd(() => new DefaultLogManager(AppLocator.Current), typeof(ILogManager)));
-        Assert.Throws<ArgumentNullException>(() => resolver1.RegisterLazySingleton(() => new DefaultLogManager(AppLocator.Current)));
-        Assert.Throws<ArgumentNullException>(() => resolver1.RegisterLazySingletonAnd<ViewModelOne>("eight"));
-        Assert.Throws<ArgumentNullException>(() => resolver1.RegisterLazySingletonAnd<DefaultLogManager>(() => new(AppLocator.Current), "seven"));
-        Assert.Throws<ArgumentNullException>(() => resolver1.UnregisterCurrent<ILogManager>());
-        Assert.Throws<ArgumentNullException>(() => resolver1.UnregisterAll<ILogManager>());
-        Assert.Throws<ArgumentNullException>(() => resolver1.RegisterAnd<ViewModelOne>());
-        Assert.Throws<ArgumentNullException>(() => resolver1.RegisterAnd(() => new DefaultLogManager(AppLocator.Current)));
-        Assert.Throws<ArgumentNullException>(() => resolver1.RegisterAnd<IViewModelOne>(() => new ViewModelOne()));
-        Assert.Throws<ArgumentNullException>(() => resolver1.Register<IViewModelOne, ViewModelOne>());
-        Assert.Throws<ArgumentNullException>(() => resolver1.RegisterConstantAnd(new ViewModelOne()));
-        Assert.Throws<ArgumentNullException>(() => resolver1.RegisterConstantAnd(new ViewModelOne()));
-        Assert.Throws<ArgumentNullException>(() => resolver1.RegisterConstantAnd<ViewModelOne>());
-#pragma warning restore CS8604 // Possible null reference argument.
+        IReadonlyDependencyResolver? resolver = null;
+        IMutableDependencyResolver? resolver1 = null;
+        IDependencyResolver? resolver2 = null;
+
+        Assert.Throws<ArgumentNullException>(() => resolver!.GetService<ILogManager>());
+        Assert.Throws<ArgumentNullException>(() => resolver!.GetServices<ILogManager>());
+        Assert.Throws<ArgumentNullException>(() => resolver1!.ServiceRegistrationCallback(typeof(ILogManager), d => d.Dispose()));
+        Assert.Throws<ArgumentNullException>(() => resolver2!.WithResolver().Dispose());
+        Assert.Throws<ArgumentNullException>(() => resolver1!.Register<ILogManager>(() => new DefaultLogManager(AppLocator.Current)));
+        Assert.Throws<ArgumentNullException>(() => resolver1!.RegisterConstant<ILogManager>(new DefaultLogManager(AppLocator.Current)));
+        Assert.Throws<ArgumentNullException>(() => resolver1!.RegisterLazySingleton(() => new DefaultLogManager(AppLocator.Current), typeof(ILogManager)));
+        Assert.Throws<ArgumentNullException>(() => resolver1!.RegisterLazySingletonAnd(() => new DefaultLogManager(AppLocator.Current), typeof(ILogManager)));
+        Assert.Throws<ArgumentNullException>(() => resolver1!.RegisterLazySingleton(() => new DefaultLogManager(AppLocator.Current)));
+        Assert.Throws<ArgumentNullException>(() => resolver1!.RegisterLazySingletonAnd<ViewModelOne>("eight"));
+        Assert.Throws<ArgumentNullException>(() => resolver1!.RegisterLazySingletonAnd<DefaultLogManager>(() => new(AppLocator.Current), "seven"));
+        Assert.Throws<ArgumentNullException>(() => resolver1!.UnregisterCurrent<ILogManager>());
+        Assert.Throws<ArgumentNullException>(() => resolver1!.UnregisterAll<ILogManager>());
+        Assert.Throws<ArgumentNullException>(() => resolver1!.RegisterAnd<ViewModelOne>());
+        Assert.Throws<ArgumentNullException>(() => resolver1!.RegisterAnd(() => new DefaultLogManager(AppLocator.Current)));
+        Assert.Throws<ArgumentNullException>(() => resolver1!.RegisterAnd<IViewModelOne>(() => new ViewModelOne()));
+        Assert.Throws<ArgumentNullException>(() => resolver1!.Register<IViewModelOne, ViewModelOne>());
+        Assert.Throws<ArgumentNullException>(() => resolver1!.RegisterConstantAnd(new ViewModelOne()));
+        Assert.Throws<ArgumentNullException>(() => resolver1!.RegisterConstantAnd(new ViewModelOne()));
+        Assert.Throws<ArgumentNullException>(() => resolver1!.RegisterConstantAnd<ViewModelOne>());
     }
 
     /// <summary>
@@ -211,7 +226,9 @@ public abstract class BaseDependencyResolverTests<T>
     public void RegisterAndTests()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<ArgumentNullException>(() => resolver.RegisterAnd<IViewModelOne>(default!));
+
+        Assert.Throws<ArgumentNullException>(() => resolver.RegisterAnd<IViewModelOne>(null!));
+
         resolver.RegisterAnd<ViewModelOne>("one")
                 .RegisterAnd<IViewModelOne, ViewModelOne>("two")
                 .RegisterAnd(() => new DefaultLogManager(AppLocator.Current), "three")
@@ -220,7 +237,7 @@ public abstract class BaseDependencyResolverTests<T>
                 .RegisterConstantAnd(new ViewModelOne(), "six")
                 .RegisterLazySingletonAnd(() => new DefaultLogManager(AppLocator.Current), typeof(ILogManager), "seven")
                 .RegisterLazySingletonAnd<ViewModelOne>("eight")
-                .RegisterLazySingletonAnd<DefaultLogManager>(() => new(AppLocator.Current), "seven")
+                .RegisterLazySingletonAnd(() => new DefaultLogManager(AppLocator.Current), "seven")
                 .Register<IViewModelOne, ViewModelOne>();
     }
 

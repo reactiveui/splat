@@ -6,8 +6,7 @@
     <Nullable>enable</Nullable>
     <Authors>.NET Foundation and Contributors</Authors>
     <Description>A library to make things cross-platform that should be, providing Builder and Dependency Injection abstractions and implementations. AOT compatible for .NET 8+</Description>
-    <NoWarn>$(NoWarn);1591;CA1510;</NoWarn>
-  </PropertyGroup>
+      </PropertyGroup>
   <PropertyGroup Condition="$(TargetFramework.StartsWith('net8.0')) or $(TargetFramework.StartsWith('net9.0'))">
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>

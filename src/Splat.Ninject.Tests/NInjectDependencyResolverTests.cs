@@ -1,6 +1,9 @@
-﻿using NUnit.Framework;
-using Ninject;
+﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
 
+using Ninject;
 using Splat.Tests.ServiceLocation;
 
 namespace Splat.Ninject.Tests;
@@ -20,6 +23,7 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
     public void Can_Register_And_Resolve_Null_Types()
     {
         var resolver = GetDependencyResolver();
+
         var foo = 5;
         resolver.Register(() => foo, null);
 
@@ -27,11 +31,13 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
         var contract = "foo";
         resolver.Register(() => bar, null, contract);
 
-        Assert.That(resolver.HasRegistration(null, Is.True));
+        Assert.That(resolver.HasRegistration(null), Is.True);
+
         var value = resolver.GetService(null);
         Assert.That(value, Is.EqualTo(foo));
 
-        Assert.That(resolver.HasRegistration(null, contract, Is.True));
+        Assert.That(resolver.HasRegistration(null, contract), Is.True);
+
         value = resolver.GetService(null, contract);
         Assert.That(value, Is.EqualTo(bar));
 
@@ -39,16 +45,20 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
         Assert.That(values.Count(), Is.EqualTo(1));
 
         resolver.UnregisterCurrent(null);
+
         var valuesNC = resolver.GetServices(null);
         Assert.That(valuesNC.Count(), Is.EqualTo(0));
+
         var valuesC = resolver.GetServices(null, contract);
         Assert.That(valuesC.Count(), Is.EqualTo(1));
 
         resolver.UnregisterAll(null);
+
         valuesNC = resolver.GetServices(null);
         Assert.That(valuesNC.Count(), Is.EqualTo(0));
 
         resolver.UnregisterAll(null, contract);
+
         valuesC = resolver.GetServices(null, contract);
         Assert.That(valuesC.Count(), Is.EqualTo(0));
     }

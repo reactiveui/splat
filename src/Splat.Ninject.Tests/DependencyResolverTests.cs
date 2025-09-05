@@ -3,19 +3,15 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using NUnit.Framework;
-
 using Ninject;
-
 using Splat.Common.Test;
 
 namespace Splat.Ninject.Tests;
 
 /// <summary>
-/// Tests to show the <see cref="NinjectDependencyResolver"/> works correctly.
+/// Contains unit tests for the dependency resolver functionality using Ninject.
 /// </summary>
 [TestFixture]
-[NonParallelizable]
 public class DependencyResolverTests
 {
     /// <summary>
@@ -39,7 +35,7 @@ public class DependencyResolverTests
     }
 
     /// <summary>
-    /// Should resolve views.
+    /// Should return null when no binding exists.
     /// </summary>
     [Test]
     public void NinjectDependencyResolver_Should_Return_Null()
@@ -53,7 +49,7 @@ public class DependencyResolverTests
     }
 
     /// <summary>
-    /// Should resolve views.
+    /// GetServices should return an empty collection when no bindings exist.
     /// </summary>
     [Test]
     public void NinjectDependencyResolver_GetServices_Should_Return_Empty_Collection()
@@ -63,7 +59,7 @@ public class DependencyResolverTests
 
         var viewOne = AppLocator.Current.GetServices(typeof(IViewFor<ViewModelOne>));
 
-Assert.That(        viewOne, Is.Empty);
+        Assert.That(viewOne, Is.Empty);
     }
 
     /// <summary>
@@ -117,18 +113,17 @@ Assert.That(        viewOne, Is.Empty);
     }
 
     /// <summary>
-    /// Should throw an exception if service registration call back called.
+    /// Should throw an exception if UnregisterCurrent is called. (Pending verification).
     /// </summary>
-    [Fact(Skip = "Further testing required")]
+    [Test]
+    [Ignore("Further testing required")]
     public void NinjectDependencyResolver_Should_Throw_If_UnregisterCurrent_Called()
     {
         var container = new StandardKernel();
         container.UseNinjectDependencyResolver();
 
-        Action result = () =>
-            AppLocator.CurrentMutable.UnregisterCurrent(typeof(IScreen));
-
-Assert.That(        result, Throws.TypeOf<NotImplementedException>());
+        Assert.Throws<NotImplementedException>(() =>
+            AppLocator.CurrentMutable.UnregisterCurrent(typeof(IScreen)));
     }
 
     /// <summary>
@@ -153,7 +148,7 @@ Assert.That(        result, Throws.TypeOf<NotImplementedException>());
     }
 
     /// <summary>
-    /// Should throw an exception if service registration call back called.
+    /// Should throw an exception if service registration callback is called.
     /// </summary>
     [Test]
     public void NinjectDependencyResolver_Should_Throw_If_ServiceRegistionCallback_Called()
@@ -161,9 +156,7 @@ Assert.That(        result, Throws.TypeOf<NotImplementedException>());
         var container = new StandardKernel();
         container.UseNinjectDependencyResolver();
 
-        var result = Record.Exception(() =>
-            AppLocator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
-
-        Assert.That(result, Is.TypeOf<NotImplementedException>());
+        Assert.Throws<NotImplementedException>(() =>
+            AppLocator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), _ => { }));
     }
 }

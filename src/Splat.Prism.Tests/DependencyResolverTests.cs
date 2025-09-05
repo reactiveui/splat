@@ -3,26 +3,25 @@
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using NUnit.Framework;
-
 using Splat.Common.Test;
 
 namespace Splat.Prism.Tests;
 
 /// <summary>
-/// Tests to show the <see cref="PrismDependencyResolver"/> works correctly.
+/// Represents a test suite for verifying the behavior and functionality of the
+/// dependency resolver implementation in Splat with Prism integration.
 /// </summary>
 [TestFixture]
-[NonParallelizable]
 public class DependencyResolverTests
 {
     /// <summary>
     /// Tracks CreateScope not being implemented in case it's changed in future.
     /// </summary>
     [Test]
-    public void CreateScope_Throws_NotImplementedException()
+    public void CreateScope_Throws_NotSupportedException()
     {
         using var container = new SplatContainerExtension();
+
         Assert.Throws<NotSupportedException>(() => container.CreateScope());
     }
 
@@ -30,9 +29,10 @@ public class DependencyResolverTests
     /// Tracks RegisterScoped not being implemented in case it's changed in future.
     /// </summary>
     [Test]
-    public void RegisterScoped_Throws_NotImplementedException()
+    public void RegisterScoped_Throws_NotSupportedException()
     {
         using var container = new SplatContainerExtension();
+
         Assert.Throws<NotSupportedException>(() => container.RegisterScoped(
             typeof(IViewFor<ViewModelOne>),
             () => new ViewOne()));
@@ -42,9 +42,10 @@ public class DependencyResolverTests
     /// Tracks RegisterManySingleton not being implemented in case it's changed in future.
     /// </summary>
     [Test]
-    public void RegisterManySingleton_Throws_NotImplementedException()
+    public void RegisterManySingleton_Throws_NotSupportedException()
     {
         using var container = new SplatContainerExtension();
+
         Assert.Throws<NotSupportedException>(() => container.RegisterManySingleton(
             typeof(IViewFor<ViewModelOne>),
             typeof(ViewOne)));
@@ -57,6 +58,7 @@ public class DependencyResolverTests
     public void RegisterMany_Succeeds()
     {
         using var container = new SplatContainerExtension();
+
         container.RegisterMany(
             typeof(IViewFor<ViewModelOne>),
             typeof(ViewOne));
@@ -99,9 +101,9 @@ public class DependencyResolverTests
         using var container = new SplatContainerExtension();
         container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne));
 
-        var instance = container.IsRegistered(typeof(IViewFor<ViewModelOne>));
+        var isRegistered = container.IsRegistered(typeof(IViewFor<ViewModelOne>));
 
-        Assert.That(instance, Is.True);
+        Assert.That(isRegistered, Is.True);
     }
 
     /// <summary>
@@ -113,9 +115,9 @@ public class DependencyResolverTests
         using var container = new SplatContainerExtension();
         container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne), "name");
 
-        var instance = container.IsRegistered(typeof(IViewFor<ViewModelOne>), "name");
+        var isRegistered = container.IsRegistered(typeof(IViewFor<ViewModelOne>), "name");
 
-        Assert.That(instance, Is.True);
+        Assert.That(isRegistered, Is.True);
     }
 
     /// <summary>
@@ -131,13 +133,10 @@ public class DependencyResolverTests
         var viewOne = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
         var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(viewOne, Is.Not.Null);
-            Assert.That(viewOne, Is.TypeOf<ViewOne>());
-            Assert.That(viewTwo, Is.Not.Null);
-            Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
-        });
+        Assert.That(viewOne, Is.Not.Null);
+        Assert.That(viewOne, Is.TypeOf<ViewOne>());
+        Assert.That(viewTwo, Is.Not.Null);
+        Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
     }
 
     /// <summary>
@@ -151,11 +150,8 @@ public class DependencyResolverTests
 
         var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>), "Other");
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(viewTwo, Is.Not.Null);
-            Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
-        });
+        Assert.That(viewTwo, Is.Not.Null);
+        Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
     }
 
     /// <summary>
@@ -172,11 +168,8 @@ public class DependencyResolverTests
         var vmOne = AppLocator.Current.GetService<ViewModelOne>();
         var vmTwo = AppLocator.Current.GetService<ViewModelTwo>();
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(vmOne, Is.Not.Null);
-            Assert.That(vmTwo, Is.Not.Null);
-        });
+        Assert.That(vmOne, Is.Not.Null);
+        Assert.That(vmTwo, Is.Not.Null);
     }
 
     /// <summary>
@@ -190,11 +183,8 @@ public class DependencyResolverTests
 
         var screen = AppLocator.Current.GetService<IScreen>();
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(screen, Is.Not.Null);
-            Assert.That(screen, Is.TypeOf<MockScreen>());
-        });
+        Assert.That(screen, Is.Not.Null);
+        Assert.That(screen, Is.TypeOf<MockScreen>());
     }
 
     /// <summary>
@@ -206,11 +196,11 @@ public class DependencyResolverTests
         using var builder = new SplatContainerExtension();
         builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen));
 
-        AppLocator.Current.Assert.That(GetService<IScreen>(), Is.Not.Null);
+        Assert.That(AppLocator.Current.GetService<IScreen>(), Is.Not.Null);
 
         AppLocator.CurrentMutable.UnregisterCurrent(typeof(IScreen));
 
-        AppLocator.Current.Assert.That(GetService<IScreen>(), Is.Null);
+        Assert.That(AppLocator.Current.GetService<IScreen>(), Is.Null);
     }
 
     /// <summary>
@@ -222,11 +212,11 @@ public class DependencyResolverTests
         using var builder = new SplatContainerExtension();
         builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen), nameof(MockScreen));
 
-        AppLocator.Current.Assert.That(GetService<IScreen>(nameof(MockScreen)), Is.Not.Null);
+        Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen)), Is.Not.Null);
 
         AppLocator.CurrentMutable.UnregisterCurrent(typeof(IScreen), nameof(MockScreen));
 
-        AppLocator.Current.Assert.That(GetService<IScreen>(nameof(MockScreen)), Is.Null);
+        Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen)), Is.Null);
     }
 
     /// <summary>
@@ -238,11 +228,11 @@ public class DependencyResolverTests
         using var builder = new SplatContainerExtension();
         builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen));
 
-        AppLocator.Current.Assert.That(GetService<IScreen>(), Is.Not.Null);
+        Assert.That(AppLocator.Current.GetService<IScreen>(), Is.Not.Null);
 
         AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen));
 
-        AppLocator.Current.Assert.That(GetService<IScreen>(), Is.Null);
+        Assert.That(AppLocator.Current.GetService<IScreen>(), Is.Null);
     }
 
     /// <summary>
@@ -254,11 +244,11 @@ public class DependencyResolverTests
         using var builder = new SplatContainerExtension();
         builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen), nameof(MockScreen));
 
-        AppLocator.Current.Assert.That(GetService<IScreen>(nameof(MockScreen)), Is.Not.Null);
+        Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen)), Is.Not.Null);
 
         AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen), nameof(MockScreen));
 
-        AppLocator.Current.Assert.That(GetService<IScreen>(nameof(MockScreen)), Is.Null);
+        Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen)), Is.Null);
     }
 
     /// <summary>
@@ -272,14 +262,16 @@ public class DependencyResolverTests
     {
         using var c = new SplatContainerExtension();
         c.Register(typeof(ILogger), typeof(ConsoleLogger));
-        AppLocator.CurrentMutable.RegisterConstant<ILogManager>(new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())));
+        AppLocator.CurrentMutable.RegisterConstant<ILogManager>(
+            new FuncLogManager(_ => new WrappingFullLogger(new ConsoleLogger())));
 
-        var d = Splat.AppLocator.Current.GetService<ILogManager>();
+        var d = AppLocator.Current.GetService<ILogManager>();
+
         Assert.That(d, Is.TypeOf<FuncLogManager>());
     }
 
     /// <summary>
-    /// Test that a pre-init logger isn't overriden.
+    /// Test that a pre-init logger isn't overridden.
     /// </summary>
     /// <remarks>
     /// Introduced for Splat #331.
@@ -288,9 +280,12 @@ public class DependencyResolverTests
     public void PrismDependencyResolver_PreInit_Should_ReturnRegisteredLogger()
     {
         using var c = new SplatContainerExtension();
-        c.RegisterInstance(typeof(ILogManager), new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())));
+        c.RegisterInstance(
+            typeof(ILogManager),
+            new FuncLogManager(_ => new WrappingFullLogger(new ConsoleLogger())));
 
-        var d = Splat.AppLocator.Current.GetService<ILogManager>();
+        var d = AppLocator.Current.GetService<ILogManager>();
+
         Assert.That(d, Is.TypeOf<FuncLogManager>());
     }
 }

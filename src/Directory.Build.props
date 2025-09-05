@@ -43,6 +43,9 @@
   <PropertyGroup Condition="$(IsTestProject) != 'true'">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
+  <PropertyGroup Condition="$(IsTestProject) or $(MSBuildProjectName.Contains('TestRunner'))">
+    <NoWarn>$(NoWarn);CA1515</NoWarn>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>

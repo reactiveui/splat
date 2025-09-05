@@ -110,7 +110,7 @@ public class DependencyResolverTests
         container.UseSimpleInjectorDependencyResolver(initializer);
 
         var dependency = AppLocator.Current.GetService(typeof(ILogger)) as ILogger;
-        Assert.NotNull(dependency);
+        Assert.That(dependency, Is.Not.Null);
     }
 
     /// <summary>
@@ -123,6 +123,6 @@ public class DependencyResolverTests
         container.UseSimpleInjectorDependencyResolver(new());
 
         var views = AppLocator.Current.GetServices(typeof(ViewOne));
-        Assert.NotNull(views);
+        Assert.That(views, Is.Not.Null);
     }
 }

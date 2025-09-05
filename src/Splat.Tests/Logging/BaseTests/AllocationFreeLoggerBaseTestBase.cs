@@ -21,7 +21,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug("{0}", 1);
-        Assert.That(target.Logs.Last(, Is.EqualTo("1")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1"));
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug("{0}, {1}", 1, 2);
-        Assert.That(2", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2"));
     }
 
     /// <summary>
@@ -65,7 +65,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug("{0}, {1}, {2}", 1, 2, 3);
-        Assert.That(2, 3", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3"));
     }
 
     /// <summary>
@@ -87,7 +87,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug("{0}, {1}, {2}, {3}", 1, 2, 3, 4);
-        Assert.That(2, 3, 4", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4"));
     }
 
     /// <summary>
@@ -109,7 +109,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug("{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
-        Assert.That(2, 3, 4, 5", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5"));
     }
 
     /// <summary>
@@ -131,7 +131,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug("{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
-        Assert.That(2, 3, 4, 5, 6", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6"));
     }
 
     /// <summary>
@@ -153,7 +153,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug("{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
-        Assert.That(2, 3, 4, 5, 6, 7", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6, 7"));
     }
 
     /// <summary>
@@ -175,7 +175,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
-        Assert.That(2, 3, 4, 5, 6, 7, 8", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8"));
     }
 
     /// <summary>
@@ -197,7 +197,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
-        Assert.That(2, 3, 4, 5, 6, 7, 8, 9", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9"));
     }
 
     /// <summary>
@@ -219,7 +219,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        Assert.That(2, 3, 4, 5, 6, 7, 8, 9, 10", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9, 10"));
     }
 
     /// <summary>
@@ -241,7 +241,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Info("{0}", 1);
-        Assert.That(target.Logs.Last(, Is.EqualTo("1")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1"));
     }
 
     /// <summary>
@@ -263,7 +263,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Info("{0}, {1}", 1, 2);
-        Assert.That(2", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2"));
     }
 
     /// <summary>
@@ -285,7 +285,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Info("{0}, {1}, {2}", 1, 2, 3);
-        Assert.That(2, 3", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3"));
     }
 
     /// <summary>
@@ -307,7 +307,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Info("{0}, {1}, {2}, {3}", 1, 2, 3, 4);
-        Assert.That(2, 3, 4", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4"));
     }
 
     /// <summary>
@@ -329,7 +329,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Info("{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
-        Assert.That(2, 3, 4, 5", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5"));
     }
 
     /// <summary>
@@ -351,7 +351,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Info("{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
-        Assert.That(2, 3, 4, 5, 6", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6"));
     }
 
     /// <summary>
@@ -373,7 +373,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Info("{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
-        Assert.That(2, 3, 4, 5, 6, 7", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6, 7"));
     }
 
     /// <summary>
@@ -395,7 +395,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Info("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
-        Assert.That(2, 3, 4, 5, 6, 7, 8", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8"));
     }
 
     /// <summary>
@@ -417,7 +417,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Info("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
-        Assert.That(2, 3, 4, 5, 6, 7, 8, 9", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9"));
     }
 
     /// <summary>
@@ -439,7 +439,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Info("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        Assert.That(2, 3, 4, 5, 6, 7, 8, 9, 10", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9, 10"));
     }
 
     /// <summary>
@@ -461,7 +461,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Warn("{0}", 1);
-        Assert.That(target.Logs.Last(, Is.EqualTo("1")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1"));
     }
 
     /// <summary>
@@ -483,7 +483,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Warn("{0}, {1}", 1, 2);
-        Assert.That(2", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2"));
     }
 
     /// <summary>
@@ -505,7 +505,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Warn("{0}, {1}, {2}", 1, 2, 3);
-        Assert.That(2, 3", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3"));
     }
 
     /// <summary>
@@ -527,7 +527,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Warn("{0}, {1}, {2}, {3}", 1, 2, 3, 4);
-        Assert.That(2, 3, 4", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4"));
     }
 
     /// <summary>
@@ -549,7 +549,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Warn("{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
-        Assert.That(2, 3, 4, 5", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5"));
     }
 
     /// <summary>
@@ -571,7 +571,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Warn("{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
-        Assert.That(2, 3, 4, 5, 6", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6"));
     }
 
     /// <summary>
@@ -593,7 +593,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Warn("{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
-        Assert.That(2, 3, 4, 5, 6, 7", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6, 7"));
     }
 
     /// <summary>
@@ -615,7 +615,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Warn("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
-        Assert.That(2, 3, 4, 5, 6, 7, 8", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8"));
     }
 
     /// <summary>
@@ -637,7 +637,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Warn("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
-        Assert.That(2, 3, 4, 5, 6, 7, 8, 9", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9"));
     }
 
     /// <summary>
@@ -659,7 +659,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Warn("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        Assert.That(2, 3, 4, 5, 6, 7, 8, 9, 10", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9, 10"));
     }
 
     /// <summary>
@@ -681,7 +681,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Error("{0}", 1);
-        Assert.That(target.Logs.Last(, Is.EqualTo("1")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1"));
     }
 
     /// <summary>
@@ -703,7 +703,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Error("{0}, {1}", 1, 2);
-        Assert.That(2", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2"));
     }
 
     /// <summary>
@@ -725,7 +725,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Error("{0}, {1}, {2}", 1, 2, 3);
-        Assert.That(2, 3", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3"));
     }
 
     /// <summary>
@@ -747,7 +747,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Error("{0}, {1}, {2}, {3}", 1, 2, 3, 4);
-        Assert.That(2, 3, 4", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4"));
     }
 
     /// <summary>
@@ -769,7 +769,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Error("{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
-        Assert.That(2, 3, 4, 5", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5"));
     }
 
     /// <summary>
@@ -791,7 +791,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Error("{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
-        Assert.That(2, 3, 4, 5, 6", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6"));
     }
 
     /// <summary>
@@ -813,7 +813,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Error("{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
-        Assert.That(2, 3, 4, 5, 6, 7", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6, 7"));
     }
 
     /// <summary>
@@ -835,7 +835,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Error("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
-        Assert.That(2, 3, 4, 5, 6, 7, 8", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8"));
     }
 
     /// <summary>
@@ -857,7 +857,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Error("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
-        Assert.That(2, 3, 4, 5, 6, 7, 8, 9", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9"));
     }
 
     /// <summary>
@@ -879,7 +879,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Error("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        Assert.That(2, 3, 4, 5, 6, 7, 8, 9, 10", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9, 10"));
     }
 
     /// <summary>
@@ -901,7 +901,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Fatal("{0}", 1);
-        Assert.That(target.Logs.Last(, Is.EqualTo("1")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1"));
     }
 
     /// <summary>
@@ -912,7 +912,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Fatal("{0}, {1}", 1, 2);
-        Assert.That(2", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2"));
     }
 
     /// <summary>
@@ -923,7 +923,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Fatal("{0}, {1}, {2}", 1, 2, 3);
-        Assert.That(2, 3", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3"));
     }
 
     /// <summary>
@@ -934,7 +934,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Fatal("{0}, {1}, {2}, {3}", 1, 2, 3, 4);
-        Assert.That(2, 3, 4", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4"));
     }
 
     /// <summary>
@@ -945,7 +945,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Fatal("{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
-        Assert.That(2, 3, 4, 5", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5"));
     }
 
     /// <summary>
@@ -956,7 +956,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
-        Assert.That(2, 3, 4, 5, 6", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6"));
     }
 
     /// <summary>
@@ -967,7 +967,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
-        Assert.That(2, 3, 4, 5, 6, 7", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6, 7"));
     }
 
     /// <summary>
@@ -978,7 +978,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
-        Assert.That(2, 3, 4, 5, 6, 7, 8", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8"));
     }
 
     /// <summary>
@@ -989,7 +989,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
-        Assert.That(2, 3, 4, 5, 6, 7, 8, 9", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9"));
     }
 
     /// <summary>
@@ -1000,6 +1000,6 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
         logger.Fatal("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        Assert.That(2, 3, 4, 5, 6, 7, 8, 9, 10", target.Logs.Last(, Is.EqualTo("1)).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9, 10"));
     }
 }

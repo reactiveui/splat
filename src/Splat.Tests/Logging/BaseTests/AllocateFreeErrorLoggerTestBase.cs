@@ -21,7 +21,7 @@ public abstract class AllocateFreeErrorLoggerTestBase<T> : LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug(FormatHelper.Exception, "{0}", 1);
-        Assert.That(target.Logs.Last(, Is.EqualTo("1 System.Exception: Exception of type 'System.Exception' was thrown.")).message.Trim(FormatHelper.NewLine).Trim());
+        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("1 System.Exception: Exception of type 'System.Exception' was thrown."));
     }
 
     /// <summary>

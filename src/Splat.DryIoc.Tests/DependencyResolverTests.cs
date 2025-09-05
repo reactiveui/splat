@@ -4,8 +4,6 @@
 // See the LICENSE file in the project root for full license information.
 
 using DryIoc;
-
-
 using Splat.Common.Test;
 
 namespace Splat.DryIoc.Tests;
@@ -14,13 +12,12 @@ namespace Splat.DryIoc.Tests;
 /// Tests to show the <see cref="DryIocDependencyResolver"/> works correctly.
 /// </summary>
 [TestFixture]
-[NonParallelizable]
 public class DependencyResolverTests
 {
     /// <summary>
     /// Shoulds the resolve nulls.
     /// </summary>
-    [Test] //// (Skip = "Further investigation required")]
+    [Test] //// (Ignore("Further investigation required"))]
     public void Can_Register_And_Resolve_Null_Types()
     {
         var builder = new Container();
@@ -35,16 +32,16 @@ public class DependencyResolverTests
         var contract = "foo";
         AppLocator.CurrentMutable.Register(() => bar, null, contract);
 
-        Assert.That(AppLocator.CurrentMutable.HasRegistration(null, Is.True));
+        Assert.That(AppLocator.CurrentMutable.HasRegistration(null), Is.True);
         var value = AppLocator.Current.GetService(null);
         Assert.That(value, Is.EqualTo(foo));
 
-        Assert.That(Locator.CurrentMutable.HasRegistration(null, contract, Is.True));
+        Assert.That(Locator.CurrentMutable.HasRegistration(null, contract), Is.True);
         value = AppLocator.Current.GetService(null, contract);
         Assert.That(value, Is.EqualTo(bar));
 
         var values = AppLocator.Current.GetServices(null);
-        Assert.That(values.First(), Is.EqualTo(foo));
+        Assert.That((int)values.First(), Is.EqualTo(foo));
         Assert.That(values.Count(), Is.EqualTo(1));
 
         AppLocator.CurrentMutable.UnregisterCurrent(null);
@@ -59,7 +56,7 @@ public class DependencyResolverTests
 
         AppLocator.CurrentMutable.UnregisterAll(null, contract);
         valuesC = AppLocator.Current.GetServices(null, contract);
-        Assert.That(valuesC.Count(, Is.EqualTo(0)));
+        Assert.That(valuesC.Count(), Is.EqualTo(0));
 #endif
     }
 
@@ -171,11 +168,11 @@ public class DependencyResolverTests
         builder.Register<IScreen, MockScreen>(Reuse.Singleton);
         builder.UseDryIocDependencyResolver();
 
-        AppLocator.Current.Assert.That(GetService<IScreen>(), Is.Not.Null);
+        Assert.That(AppLocator.Current.GetService<IScreen>(), Is.Not.Null);
 
         AppLocator.CurrentMutable.UnregisterCurrent(typeof(IScreen));
 
-        AppLocator.Current.Assert.That(GetService<IScreen>(), Is.Null);
+        Assert.That(AppLocator.Current.GetService<IScreen>(), Is.Null);
     }
 
     /// <summary>
@@ -188,11 +185,11 @@ public class DependencyResolverTests
         builder.Register<IScreen, MockScreen>(Reuse.Singleton, serviceKey: nameof(MockScreen));
         builder.UseDryIocDependencyResolver();
 
-        AppLocator.Current.Assert.That(GetService<IScreen>(nameof(MockScreen)), Is.Not.Null);
+        Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen)), Is.Not.Null);
 
         AppLocator.CurrentMutable.UnregisterCurrent(typeof(IScreen), nameof(MockScreen));
 
-        AppLocator.Current.Assert.That(GetService<IScreen>(nameof(MockScreen)), Is.Null);
+        Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen)), Is.Null);
     }
 
     /// <summary>
@@ -205,11 +202,11 @@ public class DependencyResolverTests
         builder.Register<IScreen, MockScreen>(Reuse.Singleton);
         builder.UseDryIocDependencyResolver();
 
-        AppLocator.Current.Assert.That(GetService<IScreen>(), Is.Not.Null);
+        Assert.That(AppLocator.Current.GetService<IScreen>(), Is.Not.Null);
 
         AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen));
 
-        AppLocator.Current.Assert.That(GetService<IScreen>(), Is.Null);
+        Assert.That(AppLocator.Current.GetService<IScreen>(), Is.Null);
     }
 
     /// <summary>
@@ -222,11 +219,11 @@ public class DependencyResolverTests
         builder.Register<IScreen, MockScreen>(Reuse.Singleton, serviceKey: nameof(MockScreen));
         builder.UseDryIocDependencyResolver();
 
-        AppLocator.Current.Assert.That(GetService<IScreen>(nameof(MockScreen)), Is.Not.Null);
+        Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen)), Is.Not.Null);
 
         AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen), nameof(MockScreen));
 
-        AppLocator.Current.Assert.That(GetService<IScreen>(nameof(MockScreen)), Is.Null);
+        Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen)), Is.Null);
     }
 
     /// <summary>
@@ -238,10 +235,8 @@ public class DependencyResolverTests
         var container = new Container();
         container.UseDryIocDependencyResolver();
 
-        var result = Record.Exception(() =>
-            AppLocator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
-
-        Assert.That(result, Is.TypeOf<NotImplementedException>());
+        Assert.Throws<NotImplementedException>(() =>
+            AppLocator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), _ => { }));
     }
 
     /// <summary>
@@ -256,9 +251,11 @@ public class DependencyResolverTests
         var c = new Container();
         c.UseDryIocDependencyResolver();
         c.Register<ILogger, ConsoleLogger>(ifAlreadyRegistered: IfAlreadyRegistered.Replace);
-        AppLocator.CurrentMutable.RegisterConstant<ILogManager>(new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())));
+        AppLocator.CurrentMutable.RegisterConstant<ILogManager>(
+            new FuncLogManager(_ => new WrappingFullLogger(new ConsoleLogger())));
 
         var d = AppLocator.Current.GetService<ILogManager>();
+
         Assert.That(d, Is.TypeOf<FuncLogManager>());
     }
 
@@ -272,10 +269,12 @@ public class DependencyResolverTests
     public void DryIocDependencyResolver_PreInit_Should_ReturnRegisteredLogger()
     {
         var c = new Container();
-        c.RegisterInstance<ILogManager>(new FuncLogManager(type => new WrappingFullLogger(new ConsoleLogger())));
+        c.RegisterInstance<ILogManager>(
+            new FuncLogManager(_ => new WrappingFullLogger(new ConsoleLogger())));
         c.UseDryIocDependencyResolver();
 
         var d = AppLocator.Current.GetService<ILogManager>();
+
         Assert.That(d, Is.TypeOf<FuncLogManager>());
     }
 
@@ -314,6 +313,7 @@ public class DependencyResolverTests
         // Imitate a call to Locator.Current.GetService<ViewModelOne>()
         var vms = resolver.GetServices(typeof(ViewModelOne));
         Assert.That(count, Is.EqualTo(1));
+
         var vmOne = vms.LastOrDefault();
         Assert.That(vmOne, Is.Not.Null);
         Assert.That(count, Is.EqualTo(1));

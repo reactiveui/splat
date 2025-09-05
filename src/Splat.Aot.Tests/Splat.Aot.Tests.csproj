@@ -7,8 +7,7 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     <RootNamespace>Splat.Tests.Aot</RootNamespace>
-    <NoWarn>$(NoWarn);1591;CA1707;SA1633;CA2000</NoWarn>
-    
+
     <!-- AOT and Trimming Configuration -->
     <PublishAot>true</PublishAot>
     <PublishTrimmed>true</PublishTrimmed>
@@ -16,7 +15,7 @@
     <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
     <IsAotCompatible>true</IsAotCompatible>
     <OptimizationPreference>Size</OptimizationPreference>
-    
+
     <!-- Suppress trim warnings for test-specific scenarios -->
     <SuppressTrimAnalysisWarnings>false</SuppressTrimAnalysisWarnings>
   </PropertyGroup>
