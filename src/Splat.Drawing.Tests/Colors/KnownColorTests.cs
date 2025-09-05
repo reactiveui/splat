@@ -19,8 +19,8 @@ public class KnownColorTests
     /// Tests to ensure a name is returned from a number akin to a KnownColor.
     /// </summary>
     /// <param name="knownColor">Known Color Enum to check.</param>
-    [Theory]
-    [MemberData(nameof(KnownColorEnums))]
+    [Test]
+    [TestCaseSource(nameof(KnownColorEnums))]
     public void GetNameReturnsName(KnownColor knownColor)
     {
 #if !NET_2_0
@@ -32,6 +32,6 @@ public class KnownColorTests
 #endif
 
         var name = KnownColors.GetName(knownColor);
-        Assert.False(string.IsNullOrWhiteSpace(name));
+        Assert.That(string.IsNullOrWhiteSpace(name, Is.False));
     }
 }

@@ -3,7 +3,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using FluentAssertions;
+using NUnit.Framework;
 
 using Ninject;
 
@@ -14,12 +14,13 @@ namespace Splat.Ninject.Tests;
 /// <summary>
 /// Tests to show the <see cref="NinjectDependencyResolver"/> works correctly.
 /// </summary>
+[TestFixture]
 public class DependencyResolverTests
 {
     /// <summary>
     /// Should resolve views.
     /// </summary>
-    [Fact]
+    [Test]
     public void NinjectDependencyResolver_Should_Resolve_Views()
     {
         var container = new StandardKernel();
@@ -30,16 +31,16 @@ public class DependencyResolverTests
         var viewOne = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
         var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
-        viewOne.Should().NotBeNull();
-        viewOne.Should().BeOfType<ViewOne>();
-        viewTwo.Should().NotBeNull();
-        viewTwo.Should().BeOfType<ViewTwo>();
+        Assert.That(viewOne, Is.Not.Null);
+        Assert.That(viewOne, Is.TypeOf<ViewOne>());
+        Assert.That(viewTwo, Is.Not.Null);
+        Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
     }
 
     /// <summary>
     /// Should resolve views.
     /// </summary>
-    [Fact]
+    [Test]
     public void NinjectDependencyResolver_Should_Return_Null()
     {
         var container = new StandardKernel();
@@ -47,13 +48,13 @@ public class DependencyResolverTests
 
         var viewOne = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
 
-        viewOne.Should().BeNull();
+        Assert.That(viewOne, Is.Null);
     }
 
     /// <summary>
     /// Should resolve views.
     /// </summary>
-    [Fact]
+    [Test]
     public void NinjectDependencyResolver_GetServices_Should_Return_Empty_Collection()
     {
         var container = new StandardKernel();
@@ -67,7 +68,7 @@ public class DependencyResolverTests
     /// <summary>
     /// Should resolve views.
     /// </summary>
-    [Fact]
+    [Test]
     public void NinjectDependencyResolver_Should_Resolve_Named_View()
     {
         var container = new StandardKernel();
@@ -76,14 +77,14 @@ public class DependencyResolverTests
 
         var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
-        viewTwo.Should().NotBeNull();
-        viewTwo.Should().BeOfType<ViewTwo>();
+        Assert.That(viewTwo, Is.Not.Null);
+        Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
     }
 
     /// <summary>
     /// Should resolve view models.
     /// </summary>
-    [Fact]
+    [Test]
     public void NinjectDependencyResolver_Should_Resolve_View_Models()
     {
         var container = new StandardKernel();
@@ -94,14 +95,14 @@ public class DependencyResolverTests
         var vmOne = AppLocator.Current.GetService<ViewModelOne>();
         var vmTwo = AppLocator.Current.GetService<ViewModelTwo>();
 
-        vmOne.Should().NotBeNull();
-        vmTwo.Should().NotBeNull();
+        Assert.That(vmOne, Is.Not.Null);
+        Assert.That(vmTwo, Is.Not.Null);
     }
 
     /// <summary>
     /// Should resolve screen.
     /// </summary>
-    [Fact]
+    [Test]
     public void NinjectDependencyResolver_Should_Resolve_Screen()
     {
         var container = new StandardKernel();
@@ -110,8 +111,8 @@ public class DependencyResolverTests
 
         var screen = AppLocator.Current.GetService<IScreen>();
 
-        screen.Should().NotBeNull();
-        screen.Should().BeOfType<MockScreen>();
+        Assert.That(screen, Is.Not.Null);
+        Assert.That(screen, Is.TypeOf<MockScreen>());
     }
 
     /// <summary>
@@ -132,7 +133,7 @@ public class DependencyResolverTests
     /// <summary>
     /// Should unregister all.
     /// </summary>
-    [Fact]
+    [Test]
     public void NinjectDependencyResolver_Should_UnregisterAll()
     {
         var container = new StandardKernel();
@@ -141,19 +142,19 @@ public class DependencyResolverTests
 
         var screen = AppLocator.Current.GetService<IScreen>();
 
-        screen.Should().NotBeNull();
-        screen.Should().BeOfType<MockScreen>();
+        Assert.That(screen, Is.Not.Null);
+        Assert.That(screen, Is.TypeOf<MockScreen>());
 
         AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen));
 
         var result = AppLocator.Current.GetService<IScreen>();
-        result.Should().BeNull();
+        Assert.That(result, Is.Null);
     }
 
     /// <summary>
     /// Should throw an exception if service registration call back called.
     /// </summary>
-    [Fact]
+    [Test]
     public void NinjectDependencyResolver_Should_Throw_If_ServiceRegistionCallback_Called()
     {
         var container = new StandardKernel();
@@ -162,6 +163,6 @@ public class DependencyResolverTests
         var result = Record.Exception(() =>
             AppLocator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), disposable => { }));
 
-        result.Should().BeOfType<NotImplementedException>();
+        Assert.That(result, Is.TypeOf<NotImplementedException>());
     }
 }

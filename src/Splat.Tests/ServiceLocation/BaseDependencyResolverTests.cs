@@ -12,13 +12,14 @@ namespace Splat.Tests.ServiceLocation;
 /// Common tests for Dependency Resolver interaction with Splat.
 /// </summary>
 /// <typeparam name="T">The dependency resolver to test.</typeparam>
+[TestFixture]
 public abstract class BaseDependencyResolverTests<T>
     where T : IDependencyResolver
 {
     /// <summary>
     /// Test to ensure Unregister doesn't cause an IndexOutOfRangeException.
     /// </summary>
-    [Fact]
+    [Test]
     public virtual void UnregisterCurrent_Doesnt_Throw_When_List_Empty()
     {
         var resolver = GetDependencyResolver();
@@ -32,7 +33,7 @@ public abstract class BaseDependencyResolverTests<T>
     /// <summary>
     /// Test to ensure UnregisterCurrent removes last entry.
     /// </summary>
-    [Fact]
+    [Test]
     public virtual void UnregisterCurrent_Remove_Last()
     {
         var resolver = GetDependencyResolver();
@@ -42,18 +43,18 @@ public abstract class BaseDependencyResolverTests<T>
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, "named");
 
         var service = resolver.GetService(type);
-        Assert.IsType<FuncLogManager>(service);
+        Assert.That(service, Is.TypeOf<FuncLogManager>());
 
         resolver.UnregisterCurrent(type);
 
         service = resolver.GetService(type);
-        Assert.IsType<DefaultLogManager>(service);
+        Assert.That(service, Is.TypeOf<DefaultLogManager>());
     }
 
     /// <summary>
     /// Test to ensure Unregister doesn't cause an IndexOutOfRangeException.
     /// </summary>
-    [Fact]
+    [Test]
     public virtual void UnregisterCurrentByName_Doesnt_Throw_When_List_Empty()
     {
         var resolver = GetDependencyResolver();
@@ -68,7 +69,7 @@ public abstract class BaseDependencyResolverTests<T>
     /// <summary>
     /// Test to ensure Unregister doesn't cause an IndexOutOfRangeException.
     /// </summary>
-    [Fact]
+    [Test]
     public virtual void UnregisterAll_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
     {
         var resolver = GetDependencyResolver();
@@ -82,7 +83,7 @@ public abstract class BaseDependencyResolverTests<T>
     /// <summary>
     /// Test to ensure Unregister doesn't cause an IndexOutOfRangeException.
     /// </summary>
-    [Fact]
+    [Test]
     public virtual void UnregisterAllByContract_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
     {
         var resolver = GetDependencyResolver();
@@ -97,19 +98,19 @@ public abstract class BaseDependencyResolverTests<T>
     /// <summary>
     /// Ensures <see cref="IReadonlyDependencyResolver.GetServices(Type, string)"/> never returns null.
     /// </summary>
-    [Fact]
+    [Test]
     public void GetServices_Should_Never_Return_Null()
     {
         var resolver = GetDependencyResolver();
 
-        Assert.NotNull(resolver.GetServices<string>());
-        Assert.NotNull(resolver.GetServices<string>("Landscape"));
+        Assert.That(resolver.GetServices<string>(, Is.Not.Null));
+        Assert.That(resolver.GetServices<string>("Landscape", Is.Not.Null));
     }
 
     /// <summary>
     /// Tests for ensuring hasregistration behaves when using contracts.
     /// </summary>
-    [Fact]
+    [Test]
     public virtual void HasRegistration()
     {
         var type = typeof(string);
@@ -117,26 +118,26 @@ public abstract class BaseDependencyResolverTests<T>
         const string contractTwo = "ContractTwo";
         var resolver = GetDependencyResolver();
 
-        Assert.False(resolver.HasRegistration(type));
-        Assert.False(resolver.HasRegistration(type, contractOne));
-        Assert.False(resolver.HasRegistration(type, contractTwo));
+        Assert.That(resolver.HasRegistration(type, Is.False));
+        Assert.That(resolver.HasRegistration(type, contractOne, Is.False));
+        Assert.That(resolver.HasRegistration(type, contractTwo, Is.False));
 
         resolver.Register(() => "unnamed", type);
-        Assert.True(resolver.HasRegistration(type));
-        Assert.False(resolver.HasRegistration(type, contractOne));
-        Assert.False(resolver.HasRegistration(type, contractTwo));
+        Assert.That(resolver.HasRegistration(type, Is.True));
+        Assert.That(resolver.HasRegistration(type, contractOne, Is.False));
+        Assert.That(resolver.HasRegistration(type, contractTwo, Is.False));
         resolver.UnregisterAll(type);
 
         resolver.Register(() => contractOne, type, contractOne);
-        Assert.False(resolver.HasRegistration(type));
-        Assert.True(resolver.HasRegistration(type, contractOne));
-        Assert.False(resolver.HasRegistration(type, contractTwo));
+        Assert.That(resolver.HasRegistration(type, Is.False));
+        Assert.That(resolver.HasRegistration(type, contractOne, Is.True));
+        Assert.That(resolver.HasRegistration(type, contractTwo, Is.False));
         resolver.UnregisterAll(type, contractOne);
 
         resolver.Register(() => contractTwo, type, contractTwo);
-        Assert.False(resolver.HasRegistration(type));
-        Assert.False(resolver.HasRegistration(type, contractOne));
-        Assert.True(resolver.HasRegistration(type, contractTwo));
+        Assert.That(resolver.HasRegistration(type, Is.False));
+        Assert.That(resolver.HasRegistration(type, contractOne, Is.False));
+        Assert.That(resolver.HasRegistration(type, contractTwo, Is.True));
     }
 
     /// <summary>
@@ -144,7 +145,7 @@ public abstract class BaseDependencyResolverTests<T>
     /// Based on issue reported in #553.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-    [Fact]
+    [Test]
     public async Task ILogManager_Resolvable()
     {
         var resolver = GetDependencyResolver();
@@ -161,18 +162,18 @@ public abstract class BaseDependencyResolverTests<T>
 
             // Get the ILogManager instance
             var lm = AppLocator.Current.GetService<ILogManager>();
-            Assert.NotNull(lm);
+            Assert.That(lm, Is.Not.Null);
 
             // now suceeds for AutoFac, Ninject and Splat
             var mgr = lm.GetLogger<NLogLogger>();
-            Assert.NotNull(mgr);
+            Assert.That(mgr, Is.Not.Null);
         }
     }
 
     /// <summary>
     /// Nulls the resolver tests.
     /// </summary>
-    [Fact]
+    [Test]
     public void NullResolverTests()
     {
         IReadonlyDependencyResolver? resolver = default;
@@ -205,7 +206,7 @@ public abstract class BaseDependencyResolverTests<T>
     /// <summary>
     /// Registers the and tests.
     /// </summary>
-    [Fact]
+    [Test]
     public void RegisterAndTests()
     {
         var resolver = GetDependencyResolver();

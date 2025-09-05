@@ -3,6 +3,7 @@
 /// <summary>
 /// Coverage Color Tests.
 /// </summary>
+[TestFixture]
 public class CoverageColorTests
 {
     /// <summary>
@@ -13,201 +14,201 @@ public class CoverageColorTests
     /// <summary>
     /// Colors the is empty.
     /// </summary>
-    [Fact]
+    [Test]
     public void ColorIsEmpty()
     {
         var fixture = SplatColor.Empty;
-        Assert.True(fixture.IsEmpty);
-        Assert.Equal((byte)0, fixture.A);
-        Assert.Equal((byte)0, fixture.R);
-        Assert.Equal((byte)0, fixture.G);
-        Assert.Equal((byte)0, fixture.B);
+        Assert.That(fixture.IsEmpty, Is.True);
+        Assert.That(fixture.A, Is.EqualTo((byte)0));
+        Assert.That(fixture.R, Is.EqualTo((byte)0));
+        Assert.That(fixture.G, Is.EqualTo((byte)0));
+        Assert.That(fixture.B, Is.EqualTo((byte)0));
     }
 
     /// <summary>
     /// Colors the is equal.
     /// </summary>
-    [Fact]
+    [Test]
     public void ColorIsEqual()
     {
         var fixture1 = SplatColor.FromArgb(255, 0, 0, 139);
         var fixture2 = SplatColor.FromKnownColor(KnownColor.DarkBlue);
-        Assert.True(fixture1 == fixture2);
+        Assert.That(fixture1 == fixture2, Is.True);
     }
 
     /// <summary>
     /// ARGBs the color is equal.
     /// </summary>
-    [Fact]
+    [Test]
     public void ARGBColorIsEqual()
     {
         var fixture1 = SplatColor.FromArgb(255, 0, 0, 139);
         var fixture2 = SplatColor.FromArgb(0, 0, 139);
-        Assert.True(fixture1 == fixture2);
+        Assert.That(fixture1 == fixture2, Is.True);
     }
 
     /// <summary>
     /// ARGBs the hexadecimal color is equal.
     /// </summary>
-    [Fact]
+    [Test]
     public void ARGBHexColorIsEqual()
     {
         var fixture1 = SplatColor.FromArgb(0xFF00008B);
         var fixture2 = SplatColor.FromArgb(0, 0, 139);
-        Assert.True(fixture1 == fixture2);
+        Assert.That(fixture1 == fixture2, Is.True);
     }
 
     /// <summary>
     /// ARGBs the and named color is equal.
     /// </summary>
-    [Fact]
+    [Test]
     public void ARGBAndNamedColorIsEqual()
     {
         var fixture1 = SplatColor.FromName("DarkBlue");
         var fixture2 = SplatColor.FromArgb(0, 0, 139);
-        Assert.True(fixture1 == fixture2);
+        Assert.That(fixture1 == fixture2, Is.True);
     }
 
     /// <summary>
     /// ARGBs the based on named color is equal.
     /// </summary>
-    [Fact]
+    [Test]
     public void ARGBBasedOnNamedColorIsEqual()
     {
         var fixture1 = SplatColor.FromName("DarkBlue");
         var fixture2 = SplatColor.FromArgb(255, fixture1);
-        Assert.True(fixture1 == fixture2);
+        Assert.That(fixture1 == fixture2, Is.True);
     }
 
     /// <summary>
     /// Incorrect named color is equal to empty.
     /// </summary>
-    [Fact]
+    [Test]
     public void IncorrectNamedColorIsEqualToEmpty()
     {
         var fixture1 = SplatColor.FromName("TheBestColor");
         var fixture2 = SplatColor.Empty;
-        Assert.True(fixture1 == fixture2);
-        Assert.Equal("TheBestColor", fixture1.Name);
+        Assert.That(fixture1 == fixture2, Is.True);
+        Assert.That(fixture1.Name, Is.EqualTo("TheBestColor"));
     }
 
     /// <summary>
     /// Colors the is not equal.
     /// </summary>
-    [Fact]
+    [Test]
     public void ColorIsNotEqual()
     {
         var fixture1 = SplatColor.FromArgb(255, 0, 0, 138);
         var fixture2 = SplatColor.FromKnownColor(KnownColor.DarkBlue);
-        Assert.True(fixture1 != fixture2);
+        Assert.That(fixture1 != fixture2, Is.True);
     }
 
     /// <summary>
     /// Colors the brightness.
     /// </summary>
-    [Fact]
+    [Test]
     public void ColorBrightnessHasCorrectValue()
     {
         var fixture = SplatColor.FromKnownColor(KnownColor.DarkBlue);
         var brightness = fixture.GetBrightness();
-        Assert.Equal(0.272549033f, brightness);
+        Assert.That(brightness, Is.EqualTo(0.272549033f));
     }
 
     /// <summary>
     /// Colors the saturation has correct value.
     /// </summary>
-    [Fact]
+    [Test]
     public void ColorSaturationHasCorrectValue()
     {
         var fixture = SplatColor.FromKnownColor(KnownColor.DarkBlue);
         var saturation = fixture.GetSaturation();
-        Assert.Equal(1, saturation);
+        Assert.That(saturation, Is.EqualTo(1));
     }
 
     /// <summary>
     /// Colors the hue has correct value.
     /// </summary>
-    [Fact]
+    [Test]
     public void ColorHueHasCorrectValue()
     {
         var fixture = SplatColor.FromKnownColor(KnownColor.DarkBlue);
         var hue = fixture.GetHue();
-        Assert.Equal(240f, hue);
+        Assert.That(hue, Is.EqualTo(240f));
     }
 
     /// <summary>
     /// Colors to known color has correct value.
     /// </summary>
-    [Fact]
+    [Test]
     public void ColorToKnownColorHasCorrectValue()
     {
         var fixture = SplatColor.FromKnownColor(KnownColor.DarkBlue);
         var color = fixture.ToKnownColor();
-        Assert.Equal(KnownColor.DarkBlue, color);
+        Assert.That(color, Is.EqualTo(KnownColor.DarkBlue));
     }
 
     /// <summary>
     /// Colors the is equals.
     /// </summary>
-    [Fact]
+    [Test]
     public void ColorIsEquals()
     {
         object fixture1 = SplatColor.FromArgb(0xFF00008B);
         object fixture2 = SplatColor.FromArgb(0, 0, 139);
-        Assert.True(fixture1.Equals(fixture2));
+        Assert.That(fixture1.Equals(fixture2, Is.True));
     }
 
     /// <summary>
     /// Incorrects the named color to string gives value.
     /// </summary>
-    [Fact]
+    [Test]
     public void IncorrectNamedColorToStringGivesValue()
     {
         var fixture1 = SplatColor.FromName("TheBestColor");
-        Assert.Equal("SplatColor [TheBestColor]", fixture1.ToString());
+        Assert.That(fixture1.ToString(, Is.EqualTo("SplatColor [TheBestColor]")));
     }
 
     /// <summary>
     /// Nameds the color to string gives value.
     /// </summary>
-    [Fact]
+    [Test]
     public void NamedColorToStringGivesValue()
     {
         var fixture1 = SplatColor.FromKnownColor(KnownColor.DarkBlue);
-        Assert.Equal("SplatColor [DarkBlue]", fixture1.ToString());
+        Assert.That(fixture1.ToString(, Is.EqualTo("SplatColor [DarkBlue]")));
     }
 
     /// <summary>
     /// ARGBs the color to string gives value.
     /// </summary>
-    [Fact]
+    [Test]
     public void ARGBColorToStringGivesValue()
     {
         var fixture1 = SplatColor.FromArgb(255, 0, 0, 138);
-        Assert.Equal("SplatColor [A=255, R=0, G=0, B=138]", fixture1.ToString());
+        Assert.That(R=0, G=0, B=138]", fixture1.ToString(, Is.EqualTo("SplatColor [A=255)));
     }
 
     /// <summary>
     /// Invalids the ARGB color A throws.
     /// </summary>
-    [Fact]
+    [Test]
     public void InvalidARGBColorAThrows() => Assert.Throws<ArgumentException>(() => SplatColor.FromArgb(256, 0, 0, 0));
 
     /// <summary>
     /// Invalids the ARGB color r throws.
     /// </summary>
-    [Fact]
+    [Test]
     public void InvalidARGBColorRThrows() => Assert.Throws<ArgumentException>(() => SplatColor.FromArgb(0, 256, 0, 0));
 
     /// <summary>
     /// Invalids the ARGB color g throws.
     /// </summary>
-    [Fact]
+    [Test]
     public void InvalidARGBColorGThrows() => Assert.Throws<ArgumentException>(() => SplatColor.FromArgb(0, 0, 256, 0));
 
     /// <summary>
     /// Invalids the ARGB color b throws.
     /// </summary>
-    [Fact]
+    [Test]
     public void InvalidARGBColorBThrows() => Assert.Throws<ArgumentException>(() => SplatColor.FromArgb(0, 0, 0, 256));
 }

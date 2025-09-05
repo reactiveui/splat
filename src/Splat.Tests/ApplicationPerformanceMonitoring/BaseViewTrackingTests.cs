@@ -10,23 +10,25 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring;
 /// <summary>
 /// Common unit tests for APM View Tracking.
 /// </summary>
+[TestFixture]
 public static class BaseViewTrackingTests
 {
     /// <summary>
     /// Unit Tests for the View Tracking Constructor.
     /// </summary>
     /// <typeparam name="TViewTracking">The type for the view tracking class to construcst.</typeparam>
+[TestFixture]
     public abstract class ConstructorMethod<TViewTracking>
         where TViewTracking : IViewTracking
     {
         /// <summary>
         /// Test to make sure a view tracking session is set up correctly.
         /// </summary>
-        [Fact]
+        [Test]
         public void ReturnsInstance()
         {
             var instance = GetViewTracking();
-            Assert.NotNull(instance);
+            Assert.That(instance, Is.Not.Null);
         }
 
         /// <summary>

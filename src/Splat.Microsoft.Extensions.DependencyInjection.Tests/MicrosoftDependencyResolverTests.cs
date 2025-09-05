@@ -5,6 +5,7 @@ namespace Splat.Tests.ServiceLocation;
 /// <summary>
 /// Unit Tests for the Modern Dependency Resolver.
 /// </summary>
+[TestFixture]
 public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTests<MicrosoftDependencyResolver>
 {
     /// <summary>
@@ -12,7 +13,7 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     /// Should really be brought down to the <see cref="BaseDependencyResolverTests{T}"/>,
     /// it fails for some of the DIs.
     /// </summary>
-    [Fact]
+    [Test]
     public void Can_Register_And_Resolve_Null_Types()
     {
         var resolver = GetDependencyResolver();
@@ -23,30 +24,30 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
         const string contract = "foo";
         resolver.Register(() => bar, null, contract);
 
-        Assert.True(resolver.HasRegistration(null));
+        Assert.That(resolver.HasRegistration(null, Is.True));
         var value = resolver.GetService(null);
-        Assert.Equal(foo, value);
+        Assert.That(value, Is.EqualTo(foo));
 
-        Assert.True(resolver.HasRegistration(null, contract));
+        Assert.That(resolver.HasRegistration(null, contract, Is.True));
         value = resolver.GetService(null, contract);
-        Assert.Equal(bar, value);
+        Assert.That(value, Is.EqualTo(bar));
 
         var values = resolver.GetServices(null);
-        Assert.Equal(1, values.Count());
+        Assert.That(values.Count(, Is.EqualTo(1)));
 
         resolver.UnregisterCurrent(null);
         var valuesNC = resolver.GetServices(null);
-        Assert.Equal(0, valuesNC.Count());
+        Assert.That(valuesNC.Count(, Is.EqualTo(0)));
         var valuesC = resolver.GetServices(null, contract);
-        Assert.Equal(1, valuesC.Count());
+        Assert.That(valuesC.Count(, Is.EqualTo(1)));
 
         resolver.UnregisterAll(null);
         valuesNC = resolver.GetServices(null);
-        Assert.Equal(0, valuesNC.Count());
+        Assert.That(valuesNC.Count(, Is.EqualTo(0)));
 
         resolver.UnregisterAll(null, contract);
         valuesC = resolver.GetServices(null, contract);
-        Assert.Equal(0, valuesC.Count());
+        Assert.That(valuesC.Count(, Is.EqualTo(0)));
     }
 
     /// <inheritdoc />

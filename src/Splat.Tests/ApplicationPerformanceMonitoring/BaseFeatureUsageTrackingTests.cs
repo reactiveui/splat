@@ -10,27 +10,29 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring;
 /// <summary>
 /// Common Unit Tests for Feature Usage Tracking.
 /// </summary>
+[TestFixture]
 public static class BaseFeatureUsageTrackingTests
 {
     /// <summary>
     /// Unit Tests for the constructor.
     /// </summary>
     /// <typeparam name="TFeatureUsageTracking">Type of Feature Usage Tracking Session Class to test.</typeparam>
+[TestFixture]
     public abstract class BaseConstructorTests<TFeatureUsageTracking>
         where TFeatureUsageTracking : IFeatureUsageTrackingSession<Guid>
     {
         /// <summary>
         /// Test to make sure a root tracking session is set up correctly.
         /// </summary>
-        [Fact]
+        [Test]
         public void ReturnsInstance()
         {
             var featureName = Guid.NewGuid().ToString();
             var instance = GetFeatureUsageTrackingSession(featureName);
-            Assert.NotNull(instance);
-            Assert.Equal(featureName, instance.FeatureName);
-            Assert.NotEqual(Guid.Empty, instance.FeatureReference);
-            Assert.Equal(Guid.Empty, instance.ParentReference);
+            Assert.That(instance, Is.Not.Null);
+            Assert.That(instance.FeatureName, Is.EqualTo(featureName));
+            Assert.That(instance.FeatureReference, Is.Not.EqualTo(Guid.Empty));
+            Assert.That(instance.ParentReference, Is.EqualTo(Guid.Empty));
         }
 
         /// <summary>
@@ -45,31 +47,32 @@ public static class BaseFeatureUsageTrackingTests
     /// Unit Tests for the sub-feature method.
     /// </summary>
     /// <typeparam name="TFeatureUsageTracking">Type of Feature Usage Tracking Session Class to test.</typeparam>
+[TestFixture]
     public abstract class BaseSubFeatureMethodTests<TFeatureUsageTracking>
         where TFeatureUsageTracking : IFeatureUsageTrackingSession<Guid>
     {
         /// <summary>
         /// Test to make sure a sub-feature tracking session is set up correctly.
         /// </summary>
-        [Fact]
+        [Test]
         public void ReturnsInstance()
         {
             var featureName = Guid.NewGuid().ToString();
             var instance = GetFeatureUsageTrackingSession(featureName);
-            Assert.NotNull(instance);
-            Assert.Equal(featureName, instance.FeatureName);
-            Assert.NotEqual(Guid.Empty, instance.FeatureReference);
-            Assert.Equal(Guid.Empty, instance.ParentReference);
+            Assert.That(instance, Is.Not.Null);
+            Assert.That(instance.FeatureName, Is.EqualTo(featureName));
+            Assert.That(instance.FeatureReference, Is.Not.EqualTo(Guid.Empty));
+            Assert.That(instance.ParentReference, Is.EqualTo(Guid.Empty));
 
             var subfeatureName = Guid.NewGuid().ToString();
             var subfeature = instance.SubFeature(subfeatureName);
-            Assert.NotNull(instance);
+            Assert.That(instance, Is.Not.Null);
 
             var genericSubfeature = subfeature as IFeatureUsageTrackingSession<Guid>;
-            Assert.NotNull(genericSubfeature);
-            Assert.Equal(subfeatureName, genericSubfeature?.FeatureName);
-            Assert.NotEqual(Guid.Empty, genericSubfeature?.FeatureReference);
-            Assert.Equal(instance.FeatureReference, genericSubfeature?.ParentReference);
+            Assert.That(genericSubfeature, Is.Not.Null);
+            Assert.That(genericSubfeature?.FeatureName, Is.EqualTo(subfeatureName));
+            Assert.That(genericSubfeature?.FeatureReference, Is.Not.EqualTo(Guid.Empty));
+            Assert.That(genericSubfeature?.ParentReference, Is.EqualTo(instance.FeatureReference));
         }
 
         /// <summary>

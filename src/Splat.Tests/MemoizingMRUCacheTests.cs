@@ -10,12 +10,13 @@ namespace Splat.Tests;
 /// <summary>
 /// Unit Tests for the Memoizing MRU Cache.
 /// </summary>
+[TestFixture]
 public class MemoizingMRUCacheTests
 {
     /// <summary>
     /// Checks to ensure an Argument Null Exception is thrown.
     /// </summary>
-    [Fact]
+    [Test]
     public void ThrowsArgumentNullException()
     {
         var instance = GetTestInstance();
@@ -25,7 +26,7 @@ public class MemoizingMRUCacheTests
     /// <summary>
     /// Test that constructor throws ArgumentException for invalid max size.
     /// </summary>
-    [Fact]
+    [Test]
     public void Constructor_ThrowsArgumentException_ForInvalidMaxSize()
     {
         // Act & Assert
@@ -36,7 +37,7 @@ public class MemoizingMRUCacheTests
     /// <summary>
     /// Test that constructor throws ArgumentNullException for null calculation function.
     /// </summary>
-    [Fact]
+    [Test]
     public void Constructor_ThrowsArgumentNullException_ForNullCalculationFunction()
     {
         // Act & Assert
@@ -46,7 +47,7 @@ public class MemoizingMRUCacheTests
     /// <summary>
     /// Test that TryGet throws ArgumentNullException for null key.
     /// </summary>
-    [Fact]
+    [Test]
     public void TryGet_ThrowsArgumentNullException_ForNullKey()
     {
         // Arrange
@@ -59,7 +60,7 @@ public class MemoizingMRUCacheTests
     /// <summary>
     /// Test that Invalidate throws ArgumentNullException for null key.
     /// </summary>
-    [Fact]
+    [Test]
     public void Invalidate_ThrowsArgumentNullException_ForNullKey()
     {
         // Arrange
@@ -72,7 +73,7 @@ public class MemoizingMRUCacheTests
     /// <summary>
     /// Test that cache evicts old items when max size is reached.
     /// </summary>
-    [Fact]
+    [Test]
     public void Cache_EvictsOldItems_WhenMaxSizeReached()
     {
         // Arrange
@@ -88,16 +89,16 @@ public class MemoizingMRUCacheTests
         instance.Get("key3"); // This should evict key1
 
         // Assert
-        Assert.Equal(1, releaseCount);
-        Assert.False(instance.TryGet("key1", out _));
-        Assert.True(instance.TryGet("key2", out _));
-        Assert.True(instance.TryGet("key3", out _));
+        Assert.That(releaseCount, Is.EqualTo(1));
+        Assert.That(instance.TryGet("key1", out _, Is.False));
+        Assert.That(instance.TryGet("key2", out _, Is.True));
+        Assert.That(instance.TryGet("key3", out _, Is.True));
     }
 
     /// <summary>
     /// Test that InvalidateAll with aggregateReleaseExceptions handles exceptions.
     /// </summary>
-    [Fact]
+    [Test]
     public void InvalidateAll_WithAggregateExceptions_HandlesExceptions()
     {
         // Arrange
@@ -111,13 +112,13 @@ public class MemoizingMRUCacheTests
 
         // Act & Assert
         var exception = Assert.Throws<AggregateException>(() => instance.InvalidateAll(true));
-        Assert.Equal(2, exception.InnerExceptions.Count);
+        Assert.That(exception.InnerExceptions.Count, Is.EqualTo(2));
     }
 
     /// <summary>
     /// Test that InvalidateAll without aggregating exceptions throws on first error.
     /// </summary>
-    [Fact]
+    [Test]
     public void InvalidateAll_WithoutAggregateExceptions_ThrowsOnFirstError()
     {
         // Arrange
@@ -135,7 +136,7 @@ public class MemoizingMRUCacheTests
     /// <summary>
     /// Test that CachedValues returns current cache contents.
     /// </summary>
-    [Fact]
+    [Test]
     public void CachedValues_ReturnsCurrentCacheContents()
     {
         // Arrange
@@ -147,9 +148,9 @@ public class MemoizingMRUCacheTests
         var cachedValues = instance.CachedValues().ToList();
 
         // Assert
-        Assert.Equal(2, cachedValues.Count);
-        Assert.Contains(value1, cachedValues);
-        Assert.Contains(value2, cachedValues);
+        Assert.That(cachedValues.Count, Is.EqualTo(2));
+        Assert.That(cachedValues, Does.Contain(value1));
+        Assert.That(cachedValues, Does.Contain(value2));
     }
 
     /// <summary>
@@ -169,13 +170,13 @@ public class MemoizingMRUCacheTests
         var value2 = instance.Get("key");
 
         // Assert - Should be same object due to case-insensitive comparer
-        Assert.Same(value1, value2);
+        Assert.That(value2, Is.SameAs(value1));
     }
 
     /// <summary>
     /// Test with custom comparer and release function.
     /// </summary>
-    [Fact]
+    [Test]
     public void Constructor_WithCustomComparerAndReleaseFunction_Works()
     {
         // Arrange
@@ -191,13 +192,13 @@ public class MemoizingMRUCacheTests
         instance.Invalidate("key1");
 
         // Assert
-        Assert.Equal(1, releaseCount);
+        Assert.That(releaseCount, Is.EqualTo(1));
     }
 
     /// <summary>
     /// Test that Get with context parameter works.
     /// </summary>
-    [Fact]
+    [Test]
     public void Get_WithContext_PassesContextToFactory()
     {
         // Arrange
@@ -216,13 +217,13 @@ public class MemoizingMRUCacheTests
         instance.Get("key1", testContext);
 
         // Assert
-        Assert.Same(testContext, receivedContext);
+        Assert.That(receivedContext, Is.SameAs(testContext));
     }
 
     /// <summary>
     /// Test that Invalidate removes non-existent key gracefully.
     /// </summary>
-    [Fact]
+    [Test]
     public void Invalidate_NonExistentKey_DoesNotThrow()
     {
         // Arrange
@@ -235,7 +236,7 @@ public class MemoizingMRUCacheTests
     /// <summary>
     /// Test that InvalidateAll with empty cache works.
     /// </summary>
-    [Fact]
+    [Test]
     public void InvalidateAll_EmptyCache_DoesNotThrow()
     {
         // Arrange
@@ -248,7 +249,7 @@ public class MemoizingMRUCacheTests
     /// <summary>
     /// Test that InvalidateAll with null release function works.
     /// </summary>
-    [Fact]
+    [Test]
     public void InvalidateAll_NullReleaseFunction_Works()
     {
         // Arrange
@@ -265,7 +266,7 @@ public class MemoizingMRUCacheTests
     /// <summary>
     /// Test that TryGet returns false for non-existent key.
     /// </summary>
-    [Fact]
+    [Test]
     public void TryGet_NonExistentKey_ReturnsFalse()
     {
         // Arrange
@@ -275,67 +276,67 @@ public class MemoizingMRUCacheTests
         var result = instance.TryGet("nonexistent", out var value);
 
         // Assert
-        Assert.False(result);
-        Assert.Null(value);
+        Assert.That(result, Is.False);
+        Assert.That(value, Is.Null);
     }
 
     /// <summary>
     /// Checks to ensure a value is returned.
     /// </summary>
-    [Fact]
+    [Test]
     public void ReturnsValue()
     {
         var instance = GetTestInstance();
         var result = instance.Get("Test1");
-        Assert.NotNull(result);
+        Assert.That(result, Is.Not.Null);
     }
 
     /// <summary>
     /// Checks to ensure a value is returned for 2 duplicate calls.
     /// </summary>
-    [Fact]
+    [Test]
     public void GetReturnsSameValue()
     {
         var instance = GetTestInstance();
         var result1 = instance.Get("Test1");
-        Assert.NotNull(result1);
+        Assert.That(result1, Is.Not.Null);
         var result2 = instance.Get("Test1");
-        Assert.NotNull(result2);
-        Assert.Same(result1, result2);
+        Assert.That(result2, Is.Not.Null);
+        Assert.That(result2, Is.SameAs(result1));
     }
 
     /// <summary>
     /// Checks to ensure 2 different values are returned for 2 different calls.
     /// </summary>
-    [Fact]
+    [Test]
     public void GetReturnsDifferentValues()
     {
         var instance = GetTestInstance();
         var result1 = instance.Get("Test1");
-        Assert.NotNull(result1);
+        Assert.That(result1, Is.Not.Null);
         var result2 = instance.Get("Test2");
-        Assert.NotNull(result2);
+        Assert.That(result2, Is.Not.Null);
         Assert.NotSame(result1, result2);
     }
 
     /// <summary>
     /// Checks to ensure a value is returned for 2 duplicate calls.
     /// </summary>
-    [Fact]
+    [Test]
     public void TryGetReturnsSameValue()
     {
         var instance = GetTestInstance();
         var result1 = instance.Get("Test1");
-        Assert.NotNull(result1);
+        Assert.That(result1, Is.Not.Null);
         instance.TryGet("Test1", out var result2);
-        Assert.NotNull(result2);
-        Assert.Same(result1, result2);
+        Assert.That(result2, Is.Not.Null);
+        Assert.That(result2, Is.SameAs(result1));
     }
 
     /// <summary>
     /// Checks to ensure 2 different values are returned for 2 different calls.
     /// </summary>
-    [Fact]
+    [Test]
     public void TryGetReturnsDifferentValues()
     {
         var instance = GetTestInstance();
@@ -343,20 +344,20 @@ public class MemoizingMRUCacheTests
         var p2 = instance.Get("Test2");
 
         var result1 = instance.Get("Test1");
-        Assert.NotNull(result1);
+        Assert.That(result1, Is.Not.Null);
 
         var result2 = instance.Get("Test2");
-        Assert.NotNull(result2);
+        Assert.That(result2, Is.Not.Null);
 
         Assert.NotSame(result1, result2);
-        Assert.Same(p1, result1);
-        Assert.Same(p2, result2);
+        Assert.That(result1, Is.SameAs(p1));
+        Assert.That(result2, Is.SameAs(p2));
     }
 
     /// <summary>
     /// Crude test for checking thread safety when using Get.
     /// </summary>
-    [Fact]
+    [Test]
     public void ThreadSafeRetrievalTest()
     {
         var instance = GetTestInstance();
@@ -369,14 +370,14 @@ public class MemoizingMRUCacheTests
 
         foreach (var dummyObjectClass1 in results)
         {
-            Assert.Same(first, dummyObjectClass1);
+            Assert.That(dummyObjectClass1, Is.SameAs(first));
         }
     }
 
     /// <summary>
     /// Crude test for checking thread safety when using Get and TryGet.
     /// </summary>
-    [Fact]
+    [Test]
     public void ThreadSafeRetrievalTestWithGetAndTryGet()
     {
         var instance = GetTestInstance();
@@ -400,7 +401,7 @@ public class MemoizingMRUCacheTests
         {
             if (dummyObjectClass1 is not null)
             {
-                Assert.Same(first, dummyObjectClass1);
+                Assert.That(dummyObjectClass1, Is.SameAs(first));
             }
         }
     }
@@ -408,7 +409,7 @@ public class MemoizingMRUCacheTests
     /// <summary>
     /// Check that invalidate plays nicely.
     /// </summary>
-    [Fact]
+    [Test]
     public void GetsResultsFromCacheValuesWhenInvalidateAndGetAreUsed()
     {
         var instance = GetTestInstance();
@@ -426,13 +427,13 @@ public class MemoizingMRUCacheTests
         // This is actually a crude test of a misuse case.
         // There's no guarantee what comes out is entirely different for every task\thread.
         // Just make sure it doesn't throw an exception.
-        Assert.NotNull(results);
+        Assert.That(results, Is.Not.Null);
     }
 
     /// <summary>
     /// Check that invalidate plays nicely.
     /// </summary>
-    [Fact]
+    [Test]
     public void GetsResultsWhenInvalidateAndGetAreUsed()
     {
         var instance = GetTestInstance();
@@ -452,13 +453,13 @@ public class MemoizingMRUCacheTests
         // This is actually a crude test of a misuse case.
         // There's no guarantee what comes out is entirely different for every task\thread.
         // Just make sure it doesn't throw an exception.
-        Assert.NotNull(results);
+        Assert.That(results, Is.Not.Null);
     }
 
     /// <summary>
     /// Check that invalidate all plays nicely.
     /// </summary>
-    [Fact]
+    [Test]
     public void GetsResultsWhenInvalidateAllAndGetAreUsed()
     {
         var instance = GetTestInstance();
@@ -474,7 +475,7 @@ public class MemoizingMRUCacheTests
         // This is actually a crude test of a misuse case.
         // There's no guarantee what comes out is entirely different for every task\thread.
         // Just make sure it doesn't throw an exception.
-        Assert.NotNull(results);
+        Assert.That(results, Is.Not.Null);
     }
 
     private static MemoizingMRUCache<string, DummyObjectClass1> GetTestInstance() =>

@@ -15,12 +15,13 @@ internal sealed class StaticLoggerTests
     /// <summary>
     /// Base tests for the static logger.
     /// </summary>
+[TestFixture]
     public abstract class BaseStaticLoggerTests
     {
         /// <summary>
         /// Test to make sure the generic type parameter is passed to the logger.
         /// </summary>
-        [Fact]
+        [Test]
         public void Method_With_Generic_Type_Should_Write_Message_And_Type()
         {
             var textLogger = new TextLogger { Level = GetLogLevel() };
@@ -28,13 +29,13 @@ internal sealed class StaticLoggerTests
 
             GetMethodWithGenericTypeShouldWriteMessageAndType<DummyObjectClass1>()(logger, "This is a test.");
 
-            Assert.Equal($"This is a test. ({nameof(GetMethodWithGenericTypeShouldWriteMessageAndType)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+            Assert.That(textLogger.Logs.Last(, Is.EqualTo($"This is a test. ({nameof(GetMethodWithGenericTypeShouldWriteMessageAndType)})")).message.Trim(NewLine).Trim());
         }
 
         /// <summary>
         /// Test to make sure the generic type parameter is passed to the logger.
         /// </summary>
-        [Fact]
+        [Test]
         public void Method_With_Generic_Type_Should_Write_Message_And_Type_Provided()
         {
             var textLogger = new TextLogger { Level = GetLogLevel() };
@@ -42,37 +43,37 @@ internal sealed class StaticLoggerTests
 
             GetMethodWithGenericTypeShouldWriteMessageAndType<DummyObjectClass2>()(logger, "This is a test.");
 
-            Assert.Equal($"This is a test. ({nameof(GetMethodWithGenericTypeShouldWriteMessageAndType)})", textLogger.Logs.Last().message.Trim(NewLine).Trim());
+            Assert.That(textLogger.Logs.Last(, Is.EqualTo($"This is a test. ({nameof(GetMethodWithGenericTypeShouldWriteMessageAndType)})")).message.Trim(NewLine).Trim());
         }
 
         /// <summary>
         /// Test to ensure debug writes.
         /// </summary>
-        [Fact]
+        [Test]
         public void Method_Writes_Message() => Test_Write_Message(logger => GetMethodToWriteMessage()(logger, "Message"));
 
         /// <summary>
         /// Test to ensure invariant culture formatted string writes.
         /// </summary>
-        [Fact]
+        [Test]
         public void Method_Writes_Message_InvariantCulture() => Test_Write_Message(logger => GetMethodToWriteMessageWithInvariantCulture()(logger, CultureInfo.InvariantCulture, "{0}", "Message"));
 
         /// <summary>
         /// Test to ensure invariant culture formatted string writes.
         /// </summary>
-        [Fact]
+        [Test]
         public void Method_Writes_Message_InvariantCulture_With_Generic_Two_Args() => Test_Write_Message(logger => GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs()(logger, CultureInfo.InvariantCulture, "{0}", "Message", 1));
 
         /// <summary>
         /// Test to ensure invariant culture formatted string writes.
         /// </summary>
-        [Fact]
+        [Test]
         public void Method_Writes_Message_InvariantCulture_With_Generic_Three_Args() => Test_Write_Message(logger => GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs()(logger, CultureInfo.InvariantCulture, "{0}", "Message", 1, 2.3f));
 
         /// <summary>
         /// Test to ensure debug writes.
         /// </summary>
-        [Fact]
+        [Test]
         public void Method_Writes_Exception_And_Message()
         {
             var staticLogger = GetLogger(GetLogLevel());
@@ -82,7 +83,7 @@ internal sealed class StaticLoggerTests
         /// <summary>
         /// Test to ensure writes method works.
         /// </summary>
-        [Fact]
+        [Test]
         public void Direct_Write_At_Level_Message()
         {
             var staticLogger = GetLogger(GetLogLevel());
@@ -92,7 +93,7 @@ internal sealed class StaticLoggerTests
         /// <summary>
         /// Test to ensure writes method works.
         /// </summary>
-        [Fact]
+        [Test]
         public void Direct_Write_At_Level_Message_And_Type()
         {
             var staticLogger = GetLogger(GetLogLevel());
@@ -102,7 +103,7 @@ internal sealed class StaticLoggerTests
         /// <summary>
         /// Test to ensure writes method works.
         /// </summary>
-        [Fact]
+        [Test]
         public void Direct_Write_At_Level_Message_And_Exception()
         {
             var staticLogger = GetLogger(GetLogLevel());
@@ -113,7 +114,7 @@ internal sealed class StaticLoggerTests
         /// <summary>
         /// Test to ensure writes method works.
         /// </summary>
-        [Fact]
+        [Test]
         public void Direct_Write_At_Level_Message_Exception_And_Type()
         {
             var staticLogger = GetLogger(GetLogLevel());
@@ -124,13 +125,13 @@ internal sealed class StaticLoggerTests
         /// <summary>
         /// Test to make sure the message writes.
         /// </summary>
-        [Fact]
+        [Test]
         public void Logger_Level_AtBoundary_Should_Be_correct()
         {
             var level = GetLogLevel();
             var logger = GetLogger(level);
 
-            Assert.Equal(level, logger.Level);
+            Assert.That(logger.Level, Is.EqualTo(level));
         }
 
         /// <summary>
@@ -192,18 +193,18 @@ internal sealed class StaticLoggerTests
         private static void Test_Write_Message(Action<StaticFullLogger> testMethodFunc)
         {
             var textLogger = new TextLogger();
-            Assert.Equal(0, textLogger.Logs.Count);
+            Assert.That(textLogger.Logs.Count, Is.EqualTo(0));
             var staticLogger = GetLogger(textLogger);
 
             testMethodFunc(staticLogger);
-            Assert.Equal(1, textLogger.Logs.Count);
+            Assert.That(textLogger.Logs.Count, Is.EqualTo(1));
             var line = textLogger.Logs.First();
 
             var startOfCallerMemberSuffix = line.message.IndexOf('(', StringComparison.Ordinal);
-            Assert.True(startOfCallerMemberSuffix > 0);
+            Assert.That(startOfCallerMemberSuffix > 0, Is.True);
 
             var endOfCallerMemberSuffix = line.message.IndexOf(')', startOfCallerMemberSuffix);
-            Assert.True(endOfCallerMemberSuffix > startOfCallerMemberSuffix + 1);
+            Assert.That(endOfCallerMemberSuffix > startOfCallerMemberSuffix + 1, Is.True);
         }
     }
 

@@ -10,17 +10,18 @@ namespace Splat.Tests;
 /// <summary>
 /// Unit Tests for the RectEdge enum and its usage.
 /// </summary>
+[TestFixture]
 public class RectEdgeTests
 {
     /// <summary>
     /// Test that all RectEdge values work with Divide method.
     /// </summary>
     /// <param name="edge">The edge to test.</param>
-    [Theory]
-    [InlineData(RectEdge.Left)]
-    [InlineData(RectEdge.Top)]
-    [InlineData(RectEdge.Right)]
-    [InlineData(RectEdge.Bottom)]
+    [Test]
+    [TestCase(RectEdge.Left)]
+    [TestCase(RectEdge.Top)]
+    [TestCase(RectEdge.Right)]
+    [TestCase(RectEdge.Bottom)]
     public void RectEdge_AllValues_WorkWithDivide(RectEdge edge)
     {
         // Arrange
@@ -30,27 +31,27 @@ public class RectEdgeTests
         var (slice, remainder) = rect.Divide(25.0f, edge);
 
         // Basic validation
-        Assert.True(slice.Width > 0 || slice.Height > 0);
-        Assert.True(remainder.Width >= 0 && remainder.Height >= 0);
+        Assert.That(slice.Width > 0 || slice.Height > 0, Is.True);
+        Assert.That(remainder.Width >= 0 && remainder.Height >= 0, Is.True);
     }
 
     /// <summary>
     /// Test that RectEdge enum has expected values.
     /// </summary>
-    [Fact]
+    [Test]
     public void RectEdge_HasExpectedValues()
     {
         // Assert
-        Assert.Equal(0, (int)RectEdge.Left);
-        Assert.Equal(1, (int)RectEdge.Top);
-        Assert.Equal(2, (int)RectEdge.Right);
-        Assert.Equal(3, (int)RectEdge.Bottom);
+        Assert.That((int, Is.EqualTo(0))RectEdge.Left);
+        Assert.That((int, Is.EqualTo(1))RectEdge.Top);
+        Assert.That((int, Is.EqualTo(2))RectEdge.Right);
+        Assert.That((int, Is.EqualTo(3))RectEdge.Bottom);
     }
 
     /// <summary>
     /// Test that RectEdge enum has all expected names.
     /// </summary>
-    [Fact]
+    [Test]
     public void RectEdge_HasAllExpectedNames()
     {
         // Arrange
@@ -58,10 +59,10 @@ public class RectEdgeTests
         var actualNames = Enum.GetNames<RectEdge>();
 
         // Assert
-        Assert.Equal(expectedNames.Length, actualNames.Length);
+        Assert.That(actualNames.Length, Is.EqualTo(expectedNames.Length));
         foreach (var expectedName in expectedNames)
         {
-            Assert.Contains(expectedName, actualNames);
+            Assert.That(actualNames, Does.Contain(expectedName));
         }
     }
 
@@ -70,24 +71,24 @@ public class RectEdgeTests
     /// </summary>
     /// <param name="edgeName">The name of the edge to parse.</param>
     /// <param name="expectedEdge">The expected edge value.</param>
-    [Theory]
-    [InlineData("Left", RectEdge.Left)]
-    [InlineData("Top", RectEdge.Top)]
-    [InlineData("Right", RectEdge.Right)]
-    [InlineData("Bottom", RectEdge.Bottom)]
+    [Test]
+    [TestCase("Left", RectEdge.Left)]
+    [TestCase("Top", RectEdge.Top)]
+    [TestCase("Right", RectEdge.Right)]
+    [TestCase("Bottom", RectEdge.Bottom)]
     public void RectEdge_CanBeParsedFromString(string edgeName, RectEdge expectedEdge)
     {
         // Act
         var parsed = Enum.Parse<RectEdge>(edgeName);
 
         // Assert
-        Assert.Equal(expectedEdge, parsed);
+        Assert.That(parsed, Is.EqualTo(expectedEdge));
     }
 
     /// <summary>
     /// Test that each RectEdge value produces different results with Divide.
     /// </summary>
-    [Fact]
+    [Test]
     public void RectEdge_ProducesDifferentResultsWithDivide()
     {
         // Arrange
@@ -101,15 +102,15 @@ public class RectEdgeTests
         var bottomResult = rect.Divide(amount, RectEdge.Bottom);
 
         // Assert - Each should produce different slice positions
-        Assert.NotEqual(leftResult.Item1.X, rightResult.Item1.X);
-        Assert.NotEqual(topResult.Item1.Y, bottomResult.Item1.Y);
+        Assert.That(rightResult.Item1.X, Is.Not.EqualTo(leftResult.Item1.X));
+        Assert.That(bottomResult.Item1.Y, Is.Not.EqualTo(topResult.Item1.Y));
 
         // Left and Right should affect X coordinates differently
-        Assert.Equal(rect.X, leftResult.Item1.X);
-        Assert.NotEqual(rect.X, rightResult.Item1.X);
+        Assert.That(leftResult.Item1.X, Is.EqualTo(rect.X));
+        Assert.That(rightResult.Item1.X, Is.Not.EqualTo(rect.X));
 
         // Top and Bottom should affect Y coordinates differently
-        Assert.Equal(rect.Y, topResult.Item1.Y);
-        Assert.NotEqual(rect.Y, bottomResult.Item1.Y);
+        Assert.That(topResult.Item1.Y, Is.EqualTo(rect.Y));
+        Assert.That(bottomResult.Item1.Y, Is.Not.EqualTo(rect.Y));
     }
 }

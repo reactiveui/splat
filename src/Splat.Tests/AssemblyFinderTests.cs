@@ -8,83 +8,84 @@ namespace Splat.Tests;
 /// <summary>
 /// Unit Tests for the AssemblyFinder class.
 /// </summary>
+[TestFixture]
 public class AssemblyFinderTests
 {
     /// <summary>
     /// Test that AttemptToLoadType returns default for non-existent type.
     /// </summary>
-    [Fact]
+    [Test]
     public void AttemptToLoadType_ReturnsDefault_ForNonExistentType()
     {
         // Act
         var result = AssemblyFinder.AttemptToLoadType<string>("NonExistent.Type");
 
         // Assert
-        Assert.Null(result);
+        Assert.That(result, Is.Null);
     }
 
     /// <summary>
     /// Test that AttemptToLoadType returns default for invalid type name.
     /// </summary>
-    [Fact]
+    [Test]
     public void AttemptToLoadType_ReturnsDefault_ForInvalidTypeName()
     {
         // Act
         var result = AssemblyFinder.AttemptToLoadType<object>("Invalid..Type..Name");
 
         // Assert
-        Assert.Null(result);
+        Assert.That(result, Is.Null);
     }
 
     /// <summary>
     /// Test that AttemptToLoadType works with well-known types.
     /// </summary>
-    [Fact]
+    [Test]
     public void AttemptToLoadType_Works_WithWellKnownTypes()
     {
         // Act - Try to load a well-known system type
         var result = AssemblyFinder.AttemptToLoadType<object>("System.String");
 
         // Assert - Should return default for reference types when type can't be instantiated with parameterless constructor
-        Assert.Null(result);
+        Assert.That(result, Is.Null);
     }
 
     /// <summary>
     /// Test that AttemptToLoadType returns default for value types when type doesn't exist.
     /// </summary>
-    [Fact]
+    [Test]
     public void AttemptToLoadType_ReturnsDefault_ForValueTypes()
     {
         // Act
         var result = AssemblyFinder.AttemptToLoadType<int>("NonExistent.ValueType");
 
         // Assert
-        Assert.Equal(0, result); // Default for int
+        Assert.That(result, Is.EqualTo(0)); // Default for int
     }
 
     /// <summary>
     /// Test that AttemptToLoadType handles empty string gracefully.
     /// </summary>
-    [Fact]
+    [Test]
     public void AttemptToLoadType_HandlesEmptyString()
     {
         // Act
         var result = AssemblyFinder.AttemptToLoadType<string>(string.Empty);
 
         // Assert
-        Assert.Null(result);
+        Assert.That(result, Is.Null);
     }
 
     /// <summary>
     /// Test that AttemptToLoadType handles null string gracefully.
     /// </summary>
-    [Fact]
+    [Test]
     public void AttemptToLoadType_HandlesNull()
     {
         // Act
         var result = AssemblyFinder.AttemptToLoadType<string>(null!);
 
         // Assert
-        Assert.Null(result);
+        Assert.That(result, Is.Null);
     }
 }

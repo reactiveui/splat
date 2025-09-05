@@ -8,12 +8,13 @@ namespace Splat.Tests;
 /// <summary>
 /// Unit Tests for the ExceptionMixins class.
 /// </summary>
+[TestFixture]
 public class ExceptionMixinsTests
 {
     /// <summary>
     /// Test that ThrowArgumentNullExceptionIfNull throws when value is null.
     /// </summary>
-    [Fact]
+    [Test]
     public void ThrowArgumentNullExceptionIfNull_ThrowsWhenValueIsNull()
     {
         // Arrange
@@ -22,13 +23,13 @@ public class ExceptionMixinsTests
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentNullException>(() => value.ThrowArgumentNullExceptionIfNull(paramName));
-        Assert.Equal(paramName, exception.ParamName);
+        Assert.That(exception.ParamName, Is.EqualTo(paramName));
     }
 
     /// <summary>
     /// Test that ThrowArgumentNullExceptionIfNull does not throw when value is not null.
     /// </summary>
-    [Fact]
+    [Test]
     public void ThrowArgumentNullExceptionIfNull_DoesNotThrowWhenValueIsNotNull()
     {
         // Arrange
@@ -42,7 +43,7 @@ public class ExceptionMixinsTests
     /// <summary>
     /// Test that ThrowArgumentNullExceptionIfNull with message throws when value is null.
     /// </summary>
-    [Fact]
+    [Test]
     public void ThrowArgumentNullExceptionIfNullWithMessage_ThrowsWhenValueIsNull()
     {
         // Arrange
@@ -52,14 +53,14 @@ public class ExceptionMixinsTests
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentNullException>(() => value.ThrowArgumentNullExceptionIfNull(paramName, message));
-        Assert.Equal(paramName, exception.ParamName);
-        Assert.Contains(message, exception.Message, StringComparison.InvariantCulture);
+        Assert.That(exception.ParamName, Is.EqualTo(paramName));
+        Assert.That(exception.Message, StringComparison.InvariantCulture, Does.Contain(message));
     }
 
     /// <summary>
     /// Test that ThrowArgumentNullExceptionIfNull with message does not throw when value is not null.
     /// </summary>
-    [Fact]
+    [Test]
     public void ThrowArgumentNullExceptionIfNullWithMessage_DoesNotThrowWhenValueIsNotNull()
     {
         // Arrange
@@ -74,7 +75,7 @@ public class ExceptionMixinsTests
     /// <summary>
     /// Test that ThrowArgumentNullExceptionIfNull works with reference types.
     /// </summary>
-    [Fact]
+    [Test]
     public void ThrowArgumentNullExceptionIfNull_WorksWithReferenceTypes()
     {
         // Arrange
@@ -83,13 +84,13 @@ public class ExceptionMixinsTests
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentNullException>(() => value.ThrowArgumentNullExceptionIfNull(paramName));
-        Assert.Equal(paramName, exception.ParamName);
+        Assert.That(exception.ParamName, Is.EqualTo(paramName));
     }
 
     /// <summary>
     /// Test that ThrowArgumentNullExceptionIfNull works with nullable value types.
     /// </summary>
-    [Fact]
+    [Test]
     public void ThrowArgumentNullExceptionIfNull_WorksWithNullableValueTypes()
     {
         // Arrange
@@ -98,13 +99,13 @@ public class ExceptionMixinsTests
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentNullException>(() => value.ThrowArgumentNullExceptionIfNull(paramName));
-        Assert.Equal(paramName, exception.ParamName);
+        Assert.That(exception.ParamName, Is.EqualTo(paramName));
     }
 
     /// <summary>
     /// Test that ThrowArgumentNullExceptionIfNull does not throw with non-null nullable value types.
     /// </summary>
-    [Fact]
+    [Test]
     public void ThrowArgumentNullExceptionIfNull_DoesNotThrowWithNonNullNullableValueTypes()
     {
         // Arrange

@@ -8,12 +8,13 @@ namespace Splat.Builder.Tests
     /// <summary>
     /// Unit tests for AppBuilder.
     /// </summary>
+[TestFixture]
     public class AppBuilderTests
     {
         /// <summary>
         /// Constructors the throws on null resolver.
         /// </summary>
-        [Fact]
+        [Test]
         public void ConstructorThrowsOnNullResolver()
         {
             Assert.Throws<ArgumentNullException>(() => new AppBuilder((IMutableDependencyResolver)null!));
@@ -22,53 +23,53 @@ namespace Splat.Builder.Tests
         /// <summary>
         /// Constructors the sets using builder true.
         /// </summary>
-        [Fact]
+        [Test]
         public void ConstructorSetsUsingBuilderTrue()
         {
             var resolver = new InternalLocator();
             var builder = new AppBuilder(resolver.CurrentMutable);
-            Assert.True(AppBuilder.UsingBuilder);
+            Assert.That(AppBuilder.UsingBuilder, Is.True);
             resolver.Dispose();
         }
 
         /// <summary>
         /// Creates the splat builder returns builder.
         /// </summary>
-        [Fact]
+        [Test]
         public void CreateSplatBuilderReturnsBuilder()
         {
             var builder = AppBuilder.CreateSplatBuilder();
-            Assert.NotNull(builder);
+            Assert.That(builder, Is.Not.Null);
         }
 
         /// <summary>
         /// Resets the state of the builder state for tests resets static.
         /// </summary>
-        [Fact]
+        [Test]
         public void ResetBuilderStateForTestsResetsStaticState()
         {
             AppBuilder.ResetBuilderStateForTests();
-            Assert.False(AppBuilder.HasBeenBuilt);
-            Assert.False(AppBuilder.UsingBuilder);
+            Assert.That(AppBuilder.HasBeenBuilt, Is.False);
+            Assert.That(AppBuilder.UsingBuilder, Is.False);
         }
 
         /// <summary>
         /// Uses the current splat locator changes resolver provider.
         /// </summary>
-        [Fact]
+        [Test]
         public void UseCurrentSplatLocatorChangesResolverProvider()
         {
             var resolver = new InternalLocator();
             var builder = new AppBuilder(resolver.CurrentMutable);
             var result = builder.UseCurrentSplatLocator();
-            Assert.Same(builder, result);
+            Assert.That(result, Is.SameAs(builder));
             resolver.Dispose();
         }
 
         /// <summary>
         /// Usings the module throws on null module.
         /// </summary>
-        [Fact]
+        [Test]
         public void UsingModuleThrowsOnNullModule()
         {
             var resolver = new InternalLocator();
@@ -80,20 +81,20 @@ namespace Splat.Builder.Tests
         /// <summary>
         /// Usings the module adds module.
         /// </summary>
-        [Fact]
+        [Test]
         public void UsingModuleAddsModule()
         {
             var resolver = new InternalLocator();
             var builder = new AppBuilder(resolver.CurrentMutable);
             var result = builder.UsingModule(new MokModule());
-            Assert.Same(builder, result);
+            Assert.That(result, Is.SameAs(builder));
             resolver.Dispose();
         }
 
         /// <summary>
         /// Withes the custom registration throws on null action.
         /// </summary>
-        [Fact]
+        [Test]
         public void WithCustomRegistrationThrowsOnNullAction()
         {
             var resolver = new InternalLocator();
@@ -105,33 +106,33 @@ namespace Splat.Builder.Tests
         /// <summary>
         /// Withes the custom registration adds action.
         /// </summary>
-        [Fact]
+        [Test]
         public void WithCustomRegistrationAddsAction()
         {
             var resolver = new InternalLocator();
             var builder = new AppBuilder(resolver.CurrentMutable);
             var result = builder.WithCustomRegistration(r => { });
-            Assert.Same(builder, result);
+            Assert.That(result, Is.SameAs(builder));
             resolver.Dispose();
         }
 
         /// <summary>
         /// Withes the core services returns self.
         /// </summary>
-        [Fact]
+        [Test]
         public void WithCoreServicesReturnsSelf()
         {
             var resolver = new InternalLocator();
             var builder = new AppBuilder(resolver.CurrentMutable);
             var result = builder.WithCoreServices();
-            Assert.Same(builder, result);
+            Assert.That(result, Is.SameAs(builder));
             resolver.Dispose();
         }
 
         /// <summary>
         /// Builds the applies registrations.
         /// </summary>
-        [Fact]
+        [Test]
         public void BuildAppliesRegistrations()
         {
             AppBuilder.ResetBuilderStateForTests();
@@ -140,14 +141,14 @@ namespace Splat.Builder.Tests
             bool called = false;
             builder.WithCustomRegistration(r => called = true);
             builder.Build();
-            Assert.True(called);
+            Assert.That(called, Is.True);
             resolver.Dispose();
         }
 
         /// <summary>
         /// Builds the does nothing if already built.
         /// </summary>
-        [Fact]
+        [Test]
         public void BuildDoesNothingIfAlreadyBuilt()
         {
             AppBuilder.ResetBuilderStateForTests();
@@ -157,7 +158,7 @@ namespace Splat.Builder.Tests
             bool called = false;
             builder.WithCustomRegistration(r => called = true);
             builder.Build(); // should not call registration again
-            Assert.False(called);
+            Assert.That(called, Is.False);
             resolver.Dispose();
         }
     }

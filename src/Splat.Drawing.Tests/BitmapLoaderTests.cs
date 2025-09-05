@@ -13,6 +13,7 @@ namespace Splat.Tests;
 /// <summary>
 /// Unit Tests for the Bitmap Loader.
 /// </summary>
+[TestFixture]
 public sealed class BitmapLoaderTests
 {
     /// <summary>
@@ -28,31 +29,31 @@ public sealed class BitmapLoaderTests
     /// <remarks>
     /// Looks crude and pointless, but was produced to track an issue on Android between VS2017 and VS2019.
     /// </remarks>
-    [Fact]
+    [Test]
     public void ReturnsInstance()
     {
         var instance = new PlatformBitmapLoader();
-        Assert.NotNull(instance);
+        Assert.That(instance, Is.Not.Null);
     }
 
     /// <summary>
     /// Test to ensure creating a default bitmap succeeds on all platforms.
     /// </summary>
-    [Fact]
+    [Test]
     public void Create_Succeeds()
     {
         var instance = new PlatformBitmapLoader();
         var result = instance.Create(1, 1);
 
-        Assert.NotNull(result);
+        Assert.That(result, Is.Not.Null);
     }
 
     /// <summary>
     /// Test to ensure loading a bitmap succeeds on all platforms.
     /// </summary>
     /// <param name="getStream">Function to load a file stream.</param>
-    [Theory]
-    [MemberData(nameof(LoadSucceedsTestData))]
+    [Test]
+    [TestCaseSource(nameof(LoadSucceedsTestData))]
     public void Load_Succeeds(Func<Stream> getStream)
     {
         ArgumentNullException.ThrowIfNull(getStream);
@@ -66,7 +67,7 @@ public sealed class BitmapLoaderTests
                 640,
                 480);
 
-            Assert.NotNull(result);
+            Assert.That(result, Is.Not.Null);
         }
     }
 

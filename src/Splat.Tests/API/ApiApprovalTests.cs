@@ -12,13 +12,14 @@ namespace Splat.Tests;
 /// Tests to make sure that the API matches the approved ones.
 /// </summary>
 [ExcludeFromCodeCoverage]
+[TestFixture]
 public class ApiApprovalTests
 {
     /// <summary>
     /// Tests to make sure the splat project is approved.
     /// </summary>
     /// <returns>A task to monitor the usage.</returns>
-    [Fact]
+    [Test]
     public Task SplatProject() => typeof(AssemblyFinder).Assembly.CheckApproval(["Splat"]);
 }
 #endif

@@ -8,25 +8,26 @@ namespace Splat.Tests;
 /// <summary>
 /// Unit Tests for the disposable classes.
 /// </summary>
+[TestFixture]
 public class DisposableTests
 {
     /// <summary>
     /// Test BooleanDisposable initial state.
     /// </summary>
-    [Fact]
+    [Test]
     public void BooleanDisposable_InitialState_IsNotDisposed()
     {
         // Arrange & Act
         var disposable = new BooleanDisposable();
 
         // Assert
-        Assert.False(disposable.IsDisposed);
+        Assert.That(disposable.IsDisposed, Is.False);
     }
 
     /// <summary>
     /// Test BooleanDisposable dispose sets IsDisposed to true.
     /// </summary>
-    [Fact]
+    [Test]
     public void BooleanDisposable_Dispose_SetsIsDisposedToTrue()
     {
         // Arrange
@@ -36,13 +37,13 @@ public class DisposableTests
         disposable.Dispose();
 
         // Assert
-        Assert.True(disposable.IsDisposed);
+        Assert.That(disposable.IsDisposed, Is.True);
     }
 
     /// <summary>
     /// Test BooleanDisposable multiple dispose calls.
     /// </summary>
-    [Fact]
+    [Test]
     public void BooleanDisposable_MultipleDisposeCallsAreSafe()
     {
         // Arrange
@@ -54,13 +55,13 @@ public class DisposableTests
         disposable.Dispose();
 
         // Assert
-        Assert.True(disposable.IsDisposed);
+        Assert.That(disposable.IsDisposed, Is.True);
     }
 
     /// <summary>
     /// Test ActionDisposable executes action on dispose.
     /// </summary>
-    [Fact]
+    [Test]
     public void ActionDisposable_Dispose_ExecutesAction()
     {
         // Arrange
@@ -71,13 +72,13 @@ public class DisposableTests
         disposable.Dispose();
 
         // Assert
-        Assert.True(actionExecuted);
+        Assert.That(actionExecuted, Is.True);
     }
 
     /// <summary>
     /// Test ActionDisposable executes action only once.
     /// </summary>
-    [Fact]
+    [Test]
     public void ActionDisposable_MultipleDispose_ExecutesActionOnlyOnce()
     {
         // Arrange
@@ -90,13 +91,13 @@ public class DisposableTests
         disposable.Dispose();
 
         // Assert
-        Assert.Equal(1, executionCount);
+        Assert.That(executionCount, Is.EqualTo(1));
     }
 
     /// <summary>
     /// Test ActionDisposable.Empty does nothing.
     /// </summary>
-    [Fact]
+    [Test]
     public void ActionDisposable_Empty_DoesNothing()
     {
         // Arrange & Act
@@ -110,7 +111,7 @@ public class DisposableTests
     /// <summary>
     /// Test CompositeDisposable default constructor.
     /// </summary>
-    [Fact]
+    [Test]
     public void CompositeDisposable_DefaultConstructor_Works()
     {
         // Arrange & Act
@@ -123,7 +124,7 @@ public class DisposableTests
     /// <summary>
     /// Test CompositeDisposable with capacity constructor.
     /// </summary>
-    [Fact]
+    [Test]
     public void CompositeDisposable_CapacityConstructor_Works()
     {
         // Arrange & Act
@@ -136,7 +137,7 @@ public class DisposableTests
     /// <summary>
     /// Test CompositeDisposable with negative capacity throws ArgumentOutOfRangeException.
     /// </summary>
-    [Fact]
+    [Test]
     public void CompositeDisposable_NegativeCapacity_ThrowsArgumentOutOfRangeException()
     {
         // Act & Assert
@@ -146,7 +147,7 @@ public class DisposableTests
     /// <summary>
     /// Test CompositeDisposable with array constructor.
     /// </summary>
-    [Fact]
+    [Test]
     public void CompositeDisposable_ArrayConstructor_DisposesAllItems()
     {
         // Arrange
@@ -161,14 +162,14 @@ public class DisposableTests
         disposable.Dispose();
 
         // Assert
-        Assert.True(disposed1);
-        Assert.True(disposed2);
+        Assert.That(disposed1, Is.True);
+        Assert.That(disposed2, Is.True);
     }
 
     /// <summary>
     /// Test CompositeDisposable with enumerable constructor.
     /// </summary>
-    [Fact]
+    [Test]
     public void CompositeDisposable_EnumerableConstructor_DisposesAllItems()
     {
         // Arrange
@@ -188,15 +189,15 @@ public class DisposableTests
         compositeDisposable.Dispose();
 
         // Assert
-        Assert.True(disposed1);
-        Assert.True(disposed2);
-        Assert.True(disposed3);
+        Assert.That(disposed1, Is.True);
+        Assert.That(disposed2, Is.True);
+        Assert.That(disposed3, Is.True);
     }
 
     /// <summary>
     /// Test CompositeDisposable throws for null array.
     /// </summary>
-    [Fact]
+    [Test]
     public void CompositeDisposable_NullArray_ThrowsArgumentNullException()
     {
         // Act & Assert
@@ -206,7 +207,7 @@ public class DisposableTests
     /// <summary>
     /// Test CompositeDisposable throws for null enumerable.
     /// </summary>
-    [Fact]
+    [Test]
     public void CompositeDisposable_NullEnumerable_ThrowsArgumentNullException()
     {
         // Act & Assert
@@ -216,7 +217,7 @@ public class DisposableTests
     /// <summary>
     /// Test CompositeDisposable throws for null item in array.
     /// </summary>
-    [Fact]
+    [Test]
     public void CompositeDisposable_NullItemInArray_ThrowsArgumentException()
     {
         // Act & Assert
@@ -226,7 +227,7 @@ public class DisposableTests
     /// <summary>
     /// Test CompositeDisposable throws for null item in enumerable.
     /// </summary>
-    [Fact]
+    [Test]
     public void CompositeDisposable_NullItemInEnumerable_ThrowsArgumentException()
     {
         // Arrange
@@ -239,7 +240,7 @@ public class DisposableTests
     /// <summary>
     /// Test CompositeDisposable multiple dispose calls are safe.
     /// </summary>
-    [Fact]
+    [Test]
     public void CompositeDisposable_MultipleDisposeCallsAreSafe()
     {
         // Arrange
@@ -253,13 +254,13 @@ public class DisposableTests
         disposable.Dispose();
 
         // Assert
-        Assert.Equal(1, executionCount);
+        Assert.That(executionCount, Is.EqualTo(1));
     }
 
     /// <summary>
     /// Test CompositeDisposable with empty enumerable.
     /// </summary>
-    [Fact]
+    [Test]
     public void CompositeDisposable_EmptyEnumerable_Works()
     {
         // Arrange & Act

@@ -17,6 +17,7 @@ namespace Splat.Tests.Logging;
 /// <summary>
 /// Tests that verify the <see cref="Logger"/> class.
 /// </summary>
+[TestFixture]
 public class SerilogLoggerTests : FullLoggerTestBase
 {
     private static readonly char[] _newLine = Environment.NewLine.ToCharArray();
@@ -48,7 +49,7 @@ public class SerilogLoggerTests : FullLoggerTestBase
     /// <summary>
     /// Test to make sure the calling `UseSerilogWithWrappingFullLogger` logs.
     /// </summary>
-    [Fact]
+    [Test]
     public void Configuring_With_Static_Log_Should_Write_Message()
     {
         var originalLocator = AppLocator.InternalLocator;
@@ -60,13 +61,13 @@ public class SerilogLoggerTests : FullLoggerTestBase
 
             Locator.CurrentMutable.UseSerilogFullLogger();
 
-            Assert.Equal(0, target.Logs.Count);
+            Assert.That(target.Logs.Count, Is.EqualTo(0));
 
             IEnableLogger logger = null!;
             logger.Log().Debug<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal(1, target.Logs.Count);
-            Assert.Equal("This is a test.", target.Logs.Last().message!.Trim(_newLine).Trim());
+            Assert.That(target.Logs.Count, Is.EqualTo(1));
+            Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message!.Trim(_newLine).Trim());
         }
         finally
         {
@@ -77,7 +78,7 @@ public class SerilogLoggerTests : FullLoggerTestBase
     /// <summary>
     /// Test to make calling `UseSerilogWithWrappingFullLogger(Serilog.ILogger)` logs.
     /// </summary>
-    [Fact]
+    [Test]
     public void Configuring_With_PreConfigured_Log_Should_Write_Message()
     {
         var originalLocator = AppLocator.InternalLocator;
@@ -87,14 +88,14 @@ public class SerilogLoggerTests : FullLoggerTestBase
             var (seriLogger, target) = CreateSerilogger(LogLevel.Debug);
             AppLocator.CurrentMutable.UseSerilogFullLogger(seriLogger);
 
-            Assert.Equal(0, target.Logs.Count);
+            Assert.That(target.Logs.Count, Is.EqualTo(0));
 
             IEnableLogger logger = null!;
 
             logger.Log().Debug<DummyObjectClass2>("This is a test.");
 
-            Assert.Equal(1, target.Logs.Count);
-            Assert.Equal("This is a test.", target.Logs.Last().message!.Trim(_newLine).Trim());
+            Assert.That(target.Logs.Count, Is.EqualTo(1));
+            Assert.That(target.Logs.Last(, Is.EqualTo("This is a test.")).message!.Trim(_newLine).Trim());
         }
         finally
         {
