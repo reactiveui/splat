@@ -6,7 +6,7 @@
 namespace Splat.SimpleInjector;
 
 /// <summary>
-/// sad.
+/// Initializer for SimpleInjector dependency resolver.
 /// </summary>
 public class SimpleInjectorInitializer : IDependencyResolver
 {

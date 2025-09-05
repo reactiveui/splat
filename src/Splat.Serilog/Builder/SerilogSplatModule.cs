@@ -8,7 +8,7 @@ using Splat.Serilog;
 namespace Splat.Builder;
 
 /// <summary>
-/// Splat module for configuring the NLog logger.
+/// Splat module for configuring the Serilog logger.
 /// </summary>
 /// <seealso cref="IModule" />
 /// <remarks>

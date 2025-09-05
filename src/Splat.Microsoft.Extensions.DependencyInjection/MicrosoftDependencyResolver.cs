@@ -34,8 +34,8 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
         UpdateContainer(serviceProvider);
 
     /// <summary>
-    /// Gets the internal Microsoft conainer,
-    /// or build new if this instance was not initialized with one.
+    /// Gets the internal Microsoft container,
+    /// or builds a new one if this instance was not initialized with one.
     /// </summary>
     protected virtual IServiceProvider? ServiceProvider
     {
@@ -229,7 +229,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     /// ignoring the <paramref name="serviceType"/> argument.
     /// </summary>
     /// <param name="serviceType">The service type to unregister.</param>
-    /// <param name="contract">A optional value which will remove only an object registered with the same contract.</param>
+    /// <param name="contract">An optional value which will remove only an object registered with the same contract.</param>
     public virtual void UnregisterAll(Type? serviceType, string? contract = null)
     {
         if (_isImmutable)
