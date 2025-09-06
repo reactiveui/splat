@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;$(SplatWindowsTargetFrameworks)</TargetFrameworks>
+    <TargetFrameworks>$(SplatUiFinalTargetFrameworks)</TargetFrameworks>
     <AssemblyName>Splat.AppCenter</AssemblyName>
     <RootNamespace>Splat</RootNamespace>
     <Authors>.NET Foundation and Contributors</Authors>
