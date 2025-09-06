@@ -56,8 +56,7 @@ public sealed class DefaultFeatureUsageTrackingSession : IFeatureUsageTrackingSe
 
     private string GetSessionStartLogMessage()
     {
-        var message =
-            $"Feature Start. Reference={FeatureReference}{(ParentReference != Guid.Empty ? $", Parent Reference={ParentReference}" : null)}";
+        var message = $"Feature Start. Reference={FeatureReference}";
         if (ParentReference != Guid.Empty)
         {
             message += $", Parent Reference={ParentReference}";

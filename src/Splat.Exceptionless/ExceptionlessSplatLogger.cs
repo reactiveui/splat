@@ -10,7 +10,7 @@ using Exceptionless;
 namespace Splat.Exceptionless;
 
 /// <summary>
-/// Exceptionless Logger into Splat.
+/// Splat logger implementation that wraps Exceptionless functionality.
 /// </summary>
 [DebuggerDisplay("Name={_sourceType} Level={Level}")]
 public sealed class ExceptionlessSplatLogger : ILogger
@@ -32,8 +32,8 @@ public sealed class ExceptionlessSplatLogger : ILogger
     /// <summary>
     /// Initializes a new instance of the <see cref="ExceptionlessSplatLogger"/> class.
     /// </summary>
-    /// <param name="sourceType">The type being tracked.</param>
-    /// <param name="exceptionlessClient">The exceptionless client instance to use.</param>
+    /// <param name="sourceType">The type that this logger will represent.</param>
+    /// <param name="exceptionlessClient">The Exceptionless client instance to use.</param>
     public ExceptionlessSplatLogger(
         Type sourceType,
         ExceptionlessClient exceptionlessClient)
@@ -50,12 +50,7 @@ public sealed class ExceptionlessSplatLogger : ILogger
         _sourceType = sourceType.FullName ?? throw new ArgumentException("Cannot find the source type name", nameof(sourceType));
         _exceptionlessClient = exceptionlessClient ?? throw new ArgumentNullException(nameof(exceptionlessClient));
         _exceptionlessClient.Configuration.Changed += OnInnerLoggerReconfigured;
-
-        if (_exceptionlessClient.Configuration.Settings.TryGetValue("@@log:*", out var logLevel))
-        {
-            var l = global::Exceptionless.Logging.LogLevel.FromString(logLevel);
-            Level = _mappingsDictionary.First(x => x.Value == l).Key;
-        }
+        SetLogLevel();
     }
 
     /// <inheritdoc />
@@ -139,38 +134,24 @@ public sealed class ExceptionlessSplatLogger : ILogger
             .Submit();
 
     /// <summary>
-    /// Works out the log level.
+    /// Determines the current effective log level based on Exceptionless configuration.
     /// </summary>
     /// <remarks>
-    /// This was done so the Level property doesn't keep getting re-evaluated each time a Write method is called.
+    /// This optimization avoids re-evaluating the log level on each Write method call.
     /// </remarks>
-    private void SetLogLevel() =>
-        /*
-        if (_inner.IsDebugEnabled)
+    private void SetLogLevel()
+    {
+        if (_exceptionlessClient.Configuration.Settings.TryGetValue("@@log:*", out var logLevel))
         {
+            var l = global::Exceptionless.Logging.LogLevel.FromString(logLevel);
+            Level = _mappingsDictionary.First(x => x.Value == l).Key;
+        }
+        else
+        {
+            // Default to Debug if no configuration is found
             Level = LogLevel.Debug;
-            return;
         }
-
-        if (_inner.IsInfoEnabled)
-        {
-            Level = LogLevel.Info;
-            return;
-        }
-
-        if (_inner.IsWarnEnabled)
-        {
-            Level = LogLevel.Warn;
-            return;
-        }
-
-        if (_inner.IsErrorEnabled)
-        {
-            Level = LogLevel.Error;
-            return;
-        }
-        */
-        Level = LogLevel.Fatal;
+    }
 
     private void OnInnerLoggerReconfigured(object? sender, EventArgs e) => SetLogLevel();
 }

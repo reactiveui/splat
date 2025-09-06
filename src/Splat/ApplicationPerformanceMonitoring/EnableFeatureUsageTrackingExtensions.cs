@@ -12,7 +12,7 @@ namespace Splat.ApplicationPerformanceMonitoring;
 public static class EnableFeatureUsageTrackingExtensions
 {
     /// <summary>
-    /// Gets a Feature Usage Tracking Sessions.
+    /// Gets a Feature Usage Tracking Session.
     /// </summary>
     /// <param name="instance">instance of class that uses IEnableFeatureUsageTracking.</param>
     /// <param name="featureName">Name of the feature.</param>
@@ -57,7 +57,7 @@ public static class EnableFeatureUsageTrackingExtensions
     }
 
     /// <summary>
-    /// Helper for wrapping an action with a SubFeature Usage Tracking Session.
+    /// Helper for wrapping an action with a sub-feature Usage Tracking Session.
     /// </summary>
     /// <param name="instance">instance of class that uses IEnableFeatureUsageTracking.</param>
     /// <param name="featureName">Name of the feature.</param>

@@ -20,7 +20,7 @@ public static class DependencyResolverMixins
     /// </summary>
     /// <typeparam name="T">The type for the object we want to retrieve.</typeparam>
     /// <param name="resolver">The resolver we are getting the service from.</param>
-    /// <param name="contract">A optional value which will retrieve only a object registered with the same contract.</param>
+    /// <param name="contract">An optional value which will retrieve only a object registered with the same contract.</param>
     /// <returns>The requested object, if found; <c>null</c> otherwise.</returns>
     public static T? GetService<T>(this IReadonlyDependencyResolver resolver, string? contract = null)
     {
@@ -34,7 +34,7 @@ public static class DependencyResolverMixins
     /// </summary>
     /// <typeparam name="T">The type for the object we want to retrieve.</typeparam>
     /// <param name="resolver">The resolver we are getting the service from.</param>
-    /// <param name="contract">A optional value which will retrieve only a object registered with the same contract.</param>
+    /// <param name="contract">An optional value which will retrieve only a object registered with the same contract.</param>
     /// <returns>A sequence of instances of the requested <typeparamref name="T"/>. The sequence
     /// should be empty (not <c>null</c>) if no objects of the given type are available.</returns>
     public static IEnumerable<T> GetServices<T>(this IReadonlyDependencyResolver resolver, string? contract = null)

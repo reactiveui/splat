@@ -23,7 +23,7 @@ public interface IFeatureUsageTrackingSession : IDisposable
     IFeatureUsageTrackingSession SubFeature(string description);
 
     /// <summary>
-    /// Notify the APM toolset an exception has occured in the current tracking session.
+    /// Notify the APM toolset an exception has occurred in the current tracking session.
     /// </summary>
     /// <param name="exception">The exception that occurred.</param>
     void OnException(Exception exception);

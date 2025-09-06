@@ -24,7 +24,7 @@ internal sealed class ActionDisposable : IDisposable
     }
 
     /// <summary>
-    /// Gets a action disposable which does nothing.
+    /// Gets an action disposable which does nothing.
     /// </summary>
     public static IDisposable Empty => new ActionDisposable(() => { });
 

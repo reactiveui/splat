@@ -9,7 +9,7 @@ using System.Runtime.Versioning;
 namespace Splat;
 
 /// <summary>
-/// Extension methods that help to get the target framework for a assembly.
+/// Extension methods that help to get the target framework for an assembly.
 /// </summary>
 public static class TargetFrameworkExtensions
 {

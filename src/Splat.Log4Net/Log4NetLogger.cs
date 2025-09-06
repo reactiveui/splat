@@ -8,7 +8,7 @@ using System.Diagnostics;
 namespace Splat.Log4Net;
 
 /// <summary>
-/// Log4Net Logger integration into Splat.
+/// Splat logger implementation that wraps Log4Net functionality.
 /// </summary>
 [DebuggerDisplay("Name={_inner.Logger.Name} Level={Level}")]
 public sealed class Log4NetLogger : ILogger, IDisposable
@@ -18,14 +18,14 @@ public sealed class Log4NetLogger : ILogger, IDisposable
     /// <summary>
     /// Initializes a new instance of the <see cref="Log4NetLogger"/> class.
     /// </summary>
-    /// <param name="inner">The actual log4net logger.</param>
-    /// <exception cref="ArgumentNullException">Log4Net logger not passed.</exception>
+    /// <param name="inner">The Log4Net logger instance to wrap.</param>
+    /// <exception cref="ArgumentNullException">Thrown when the Log4Net logger is null.</exception>
     public Log4NetLogger(log4net.ILog inner)
     {
         _inner = inner ?? throw new ArgumentNullException(nameof(inner));
         if (_inner.Logger.Repository == null)
         {
-            throw new ArgumentException("Log4Net is not correctly initialized. It's not exposing a Logger repository to splat.", nameof(inner));
+            throw new ArgumentException("Log4Net repository is not initialized. Configure Log4Net before using with Splat.", nameof(inner));
         }
 
         SetLogLevel();
@@ -166,10 +166,10 @@ public sealed class Log4NetLogger : ILogger, IDisposable
     }
 
     /// <summary>
-    /// Works out the log level.
+    /// Determines the current effective log level based on Log4Net configuration.
     /// </summary>
     /// <remarks>
-    /// This was done so the Level property doesn't keep getting re-evaluated each time a Write method is called.
+    /// This optimization avoids re-evaluating the log level on each Write method call.
     /// </remarks>
     private void SetLogLevel()
     {

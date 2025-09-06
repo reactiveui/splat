@@ -126,7 +126,7 @@ internal sealed class CompositeDisposable : IDisposable
         {
             if (d is null)
             {
-                throw new ArgumentException("disposables for some reason are null", nameof(disposables));
+                throw new ArgumentException("The disposables collection contains null items", nameof(disposables));
             }
 
             _disposables.Add(d);

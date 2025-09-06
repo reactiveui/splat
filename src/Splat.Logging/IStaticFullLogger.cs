@@ -334,7 +334,7 @@ public interface IStaticFullLogger
     /// <summary>
     /// Writes a message to the target.
     /// </summary>
-    /// <param name="exception">The exception that occured.</param>
+    /// <param name="exception">The exception that occurred.</param>
     /// <param name="message">The message to write.</param>
     /// <param name="logLevel">The severity level of the log message.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
@@ -352,7 +352,7 @@ public interface IStaticFullLogger
     /// <summary>
     /// Writes a message to the target.
     /// </summary>
-    /// <param name="exception">The exception that occured.</param>
+    /// <param name="exception">The exception that occurred.</param>
     /// <param name="message">The message.</param>
     /// <param name="type">The type.</param>
     /// <param name="logLevel">The log level.</param>

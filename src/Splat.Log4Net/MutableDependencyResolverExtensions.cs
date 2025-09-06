@@ -11,13 +11,13 @@ namespace Splat.Log4Net;
 public static class MutableDependencyResolverExtensions
 {
     /// <summary>
-    /// Simple helper to initialize Log4Net within Splat with the Wrapping Full Logger.
+    /// Initializes Log4Net integration with Splat using the wrapping full logger pattern.
     /// </summary>
     /// <remarks>
-    /// You should configure Log4Net prior to calling this method.
+    /// Configure Log4Net appenders and configuration before calling this method.
     /// </remarks>
     /// <param name="instance">
-    /// An instance of Mutable Dependency Resolver.
+    /// The mutable dependency resolver to register Log4Net with.
     /// </param>
     /// <example>
     /// <code>

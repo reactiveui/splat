@@ -19,7 +19,7 @@ internal sealed class BooleanDisposable() : IDisposable
     public bool IsDisposed => _isDisposed;
 
     /// <summary>
-    /// Sets the status to disposed, which can be observer through the <see cref="IsDisposed"/> property.
+    /// Sets the status to disposed, which can be observed through the <see cref="IsDisposed"/> property.
     /// </summary>
     public void Dispose() => _isDisposed = true;
 }

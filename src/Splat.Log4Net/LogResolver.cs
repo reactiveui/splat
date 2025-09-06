@@ -6,7 +6,7 @@
 namespace Splat.Log4Net;
 
 /// <summary>
-/// Resolves a logger to the specified type.
+/// Caching resolver that creates Log4Net logger instances for types.
 /// </summary>
 internal static class LogResolver
 {

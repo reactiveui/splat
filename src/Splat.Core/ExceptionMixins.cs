@@ -8,11 +8,11 @@ namespace Splat;
 internal static class ExceptionMixins
 {
     /// <summary>
-    /// Throws the argument null exception if null.
+    /// Throws an ArgumentNullException if the value is null.
     /// </summary>
-    /// <typeparam name="T">Source Type.</typeparam>
-    /// <param name="value">The value.</param>
-    /// <param name="name">The name.</param>
+    /// <typeparam name="T">The type of the value to check.</typeparam>
+    /// <param name="value">The value to check for null.</param>
+    /// <param name="name">The parameter name to include in the exception.</param>
     public static void ThrowArgumentNullExceptionIfNull<T>(this T? value, string name)
     {
         if (value is null)
@@ -22,12 +22,12 @@ internal static class ExceptionMixins
     }
 
     /// <summary>
-    /// Throws the argument null exception if null.
+    /// Throws an ArgumentNullException if the value is null.
     /// </summary>
-    /// <typeparam name="T">Source Type.</typeparam>
-    /// <param name="value">The value.</param>
-    /// <param name="name">The name.</param>
-    /// <param name="message">The message.</param>
+    /// <typeparam name="T">The type of the value to check.</typeparam>
+    /// <param name="value">The value to check for null.</param>
+    /// <param name="name">The parameter name to include in the exception.</param>
+    /// <param name="message">The message to include in the exception.</param>
     public static void ThrowArgumentNullExceptionIfNull<T>(this T? value, string name, string message)
     {
         if (value is null)

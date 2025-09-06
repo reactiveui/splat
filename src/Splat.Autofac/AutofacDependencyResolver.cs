@@ -147,7 +147,7 @@ public class AutofacDependencyResolver : IDependencyResolver
     /// </summary>
     /// <param name="factory">The factory function which generates our object.</param>
     /// <param name="serviceType">The type which is used for the registration.</param>
-    /// <param name="contract">A optional contract value which will indicates to only generate the value if this contract is specified.</param>
+    /// <param name="contract">An optional contract value which indicates to only generate the value if this contract is specified.</param>
     [Obsolete("Because Autofac 5+ containers are immutable, this method should not be used by the end-user.")]
     public virtual void Register(Func<object?> factory, Type? serviceType, string? contract = null)
     {

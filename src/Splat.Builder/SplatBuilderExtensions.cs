@@ -25,11 +25,11 @@ public static class SplatBuilderExtensions
     }
 
     /// <summary>
-    /// Creates the default.
+    /// Creates a Splat application builder using the specified dependency resolver.
     /// </summary>
-    /// <param name="resolver">The resolver.</param>
+    /// <param name="resolver">The mutable dependency resolver to use.</param>
     /// <returns>The builder instance for chaining.</returns>
-    /// <exception cref="ArgumentNullException">resolver.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when resolver is null.</exception>
     public static IAppBuilder CreateSplatBuilder(this IMutableDependencyResolver resolver)
     {
         if (resolver is null)
@@ -42,12 +42,12 @@ public static class SplatBuilderExtensions
     }
 
     /// <summary>
-    /// Creates the default.
+    /// Creates a Splat application builder using the specified dependency resolver and applies a configuration action.
     /// </summary>
-    /// <param name="resolver">The resolver.</param>
+    /// <param name="resolver">The mutable dependency resolver to use.</param>
     /// <param name="configureAction">The configuration action to apply.</param>
     /// <returns>The builder instance for chaining.</returns>
-    /// <exception cref="ArgumentNullException">resolver.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when resolver is null.</exception>
     public static IAppBuilder CreateSplatBuilder(this IMutableDependencyResolver resolver, Action<IMutableDependencyResolver> configureAction)
     {
         if (resolver is null)
