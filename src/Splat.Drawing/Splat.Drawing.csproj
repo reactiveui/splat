@@ -7,6 +7,9 @@
     <PackageId>Splat.Drawing</PackageId>
         <Nullable>enable</Nullable>
   </PropertyGroup>
+  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+  </PropertyGroup>
   <PropertyGroup Condition="$(TargetFramework.StartsWith('net8.0')) or $(TargetFramework.StartsWith('net9.0'))">
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>

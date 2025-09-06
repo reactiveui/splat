@@ -57,12 +57,18 @@
 
   <PropertyGroup>
     <SplatUiFinalTargetFrameworks>$(SplatCoreTargets)</SplatUiFinalTargetFrameworks>
+  </PropertyGroup>
 
+  <PropertyGroup Condition="!$([MSBuild]::IsOsPlatform('Windows')) and !$([MSBuild]::IsOsPlatform('OSX'))">
     <SplatUiFinalTargetFrameworks>$(SplatUiFinalTargetFrameworks);$(SplatAndroidTargets)</SplatUiFinalTargetFrameworks>
+  </PropertyGroup>
 
-    <SplatUiFinalTargetFrameworks Condition="$([MSBuild]::IsOsPlatform('Windows'))">$(SplatUiFinalTargetFrameworks);$(SplatWindowsTargets)</SplatUiFinalTargetFrameworks>
+  <PropertyGroup Condition="$([MSBuild]::IsOsPlatform('OSX'))">
+    <SplatUiFinalTargetFrameworks>$(SplatUiFinalTargetFrameworks);$(SplatAndroidTargets);$(SplatAppleTargets)</SplatUiFinalTargetFrameworks>
+  </PropertyGroup>
 
-    <SplatUiFinalTargetFrameworks Condition="$([MSBuild]::IsOsPlatform('OSX')) Or $([MSBuild]::IsOsPlatform('Windows'))">$(SplatUiFinalTargetFrameworks);$(SplatAppleTargets)</SplatUiFinalTargetFrameworks>
+  <PropertyGroup Condition="$([MSBuild]::IsOsPlatform('Windows'))">
+    <SplatUiFinalTargetFrameworks>$(SplatUiFinalTargetFrameworks);$(SplatAndroidTargets);$(SplatWindowsTargets);$(SplatAppleTargets)</SplatUiFinalTargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition="$(IsTestProject) != 'true'">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
