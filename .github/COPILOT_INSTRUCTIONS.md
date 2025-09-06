@@ -12,7 +12,7 @@ Always reference these instructions first and fallback to search or bash command
   ```
 - **Platform Support**: This project builds on Windows, Linux, and macOS with cross-platform support.
 - **Development Tools**: Visual Studio 2022, VS Code with C# extension, or JetBrains Rider.
-- **Note on Cloning the Repository**: 
+- **Note on Cloning the Repository**:
   When cloning the Splat repository, use a full clone instead of a shallow one (e.g., avoid --depth=1). This project uses Nerdbank.GitVersioning for automatic version calculation based on Git history. Shallow clones lack the necessary commit history, which can cause build errors or force the tool to perform an extra fetch step to deepen the repository. To ensure smooth builds:
    ```bash
    git clone https://github.com/reactiveui/splat.git
@@ -32,12 +32,19 @@ Always reference these instructions first and fallback to search or bash command
   ```
   Build time: **2-5 minutes**. Set timeout to 10+ minutes for full solution builds.
 
+  **Note**: The build system automatically selects appropriate target frameworks based on your OS. No manual TFM editing is needed.
+
 - Individual project builds (faster for development):
   ```bash
   cd src
   dotnet build Splat/Splat.csproj --configuration Release
   dotnet build Splat.Tests/Splat.Tests.csproj --configuration Release
   ```
+
+- **Cross-platform considerations**:
+  - **Linux**: Builds `netstandard2.0`, `.NET 8/9`, and `Android` targets.
+  - **Windows**: Builds all targets including `.NET Framework`, `Windows`, and `Apple` (via Pair-to-Mac).
+  - **macOS**: Builds `netstandard2.0`, `.NET 8/9`, `Android`, and `Apple` targets.
 
 ### Testing
 - **Full test suite**:
@@ -228,9 +235,9 @@ public partial class ObservableLinkedList<T> : INotifyCollectionChanged, INotify
   dotnet build --configuration Release --verbosity normal
   ```
   This runs all analyzers (StyleCop SA*, Roslynator RCS*, .NET CA*) and treats warnings as errors.
-- **Analyzer Configuration**: 
+- **Analyzer Configuration**:
   - StyleCop settings in `src/stylecop.json`
-  - EditorConfig rules in `.editorconfig` (root level) 
+  - EditorConfig rules in `.editorconfig` (root level)
   - Analyzer packages in `src/Directory.Build.props`
   - All code must follow the **ReactiveUI C# Style Guide** detailed above
 
@@ -320,6 +327,31 @@ public partial class ObservableLinkedList<T> : INotifyCollectionChanged, INotify
 - **Test different log levels** and filtering scenarios
 
 ## Target Framework Support
+
+### Centralized Multi-TFM Build System
+Splat uses a centralized, OS-aware build system defined in `src/Directory.Build.props` that automatically selects appropriate target frameworks.
+
+#### TFM Property Groups
+- **`SplatModernTargets`**: `net8.0;net9.0` - Used by tests and benchmarks.
+- **`SplatLegacyTargets`**: `net462;net472` - Used by core libraries, only on Windows.
+- **`SplatCoreTargets`**: `netstandard2.0;net8.0;net9.0;net462;net472` - Used by core libraries for broad compatibility (legacy targets are conditional).
+- **`SplatUiFinalTargetFrameworks`**: An OS-aware composition for UI projects that includes platform-specific targets (Android, Apple, Windows, Tizen).
+
+#### OS-Aware Target Selection
+- **Linux builds**: Core targets + Android.
+- **Windows builds**: All targets including .NET Framework, Core, Android, Windows, Apple, and Tizen.
+- **macOS builds**: Core targets + Android + Apple + Tizen.
+
+#### Project TFM Usage
+- **Core libraries** (Splat): Use `$(SplatCoreTargets)`.
+- **UI libraries** (Splat.Drawing): Use `$(SplatUiFinalTargetFrameworks)`.
+- **Tests/Benchmarks**: Use `$(SplatModernTargets)`.
+
+#### Benefits
+- **Cross-platform builds**: No manual TFM editing is needed.
+- **Consistent targeting**: Centralized TFM management reduces errors.
+- **Build optimization**: Only compiles relevant targets for each OS.
+- **Maintainability**: TFMs can be updated in a single location.
 
 ### Supported Frameworks
 - **netstandard2.0** - Broad compatibility with .NET Framework and .NET Core
