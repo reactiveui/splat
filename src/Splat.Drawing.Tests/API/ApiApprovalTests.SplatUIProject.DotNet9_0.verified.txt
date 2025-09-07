@@ -269,6 +269,8 @@ namespace Splat
     }
     public static class ServiceLocationDrawingInitialization
     {
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("Needs to use reflection")]
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("Needs to use reflection")]
         public static void RegisterPlatformBitmapLoader(this Splat.IMutableDependencyResolver resolver) { }
     }
     public static class SizeExtensions

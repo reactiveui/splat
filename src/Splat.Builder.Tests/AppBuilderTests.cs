@@ -9,6 +9,7 @@ namespace Splat.Builder.Tests
     /// Unit tests for AppBuilder.
     /// </summary>
     [TestFixture]
+    [NonParallelizable]
     public class AppBuilderTests
     {
         /// <summary>

@@ -241,8 +241,13 @@ internal static class KnownColors
     /// Gets a user-friendly name for a <see cref="KnownColor"/> given as a numeric value.
     /// </summary>
     /// <remarks>Returns <see cref="string.Empty"/> if the value does not map to a defined enum member.</remarks>
-    public static string GetName(short kc) =>
-        Enum.IsDefined(typeof(KnownColor), (int)kc) ? ((KnownColor)kc).ToString() : string.Empty;
+    public static string GetName(short kc)
+    {
+        // Valid if value is within the defined enum range.
+        // Update the upper bound if you add new enum members.
+        const short MaxKnown = (short)KnownColor.MenuHighlight; // 174
+        return (kc >= 0 && kc <= MaxKnown) ? ((KnownColor)kc).ToString() : string.Empty;
+    }
 
     /// <summary>
     /// Gets a user-friendly name for a <see cref="KnownColor"/>.

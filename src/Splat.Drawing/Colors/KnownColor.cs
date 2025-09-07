@@ -17,8 +17,7 @@ namespace Splat
     /// <para>Copyright (C) 2004,2006 Novell, Inc (http://www.novell.com).</para>
     /// <para>Licensed under the MIT license as part of the ReactiveUI repository.</para>
     /// </remarks>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1028:Enum Storage should be Int32", Justification = "Existing API")]
-    public enum KnownColor : short
+    public enum KnownColor
     {
         /// <summary>Empty (0x00000000). Represents no color.</summary>
         Empty = 0,
