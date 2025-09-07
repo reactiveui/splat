@@ -17,7 +17,7 @@ namespace Splat;
 /// Initializes a new instance of the <see cref="AllocationFreeLoggerBase"/> class.
 /// </remarks>
 /// <param name="inner">The <see cref="ILogger" /> to wrap in this class.</param>
-[SuppressMessage("Naming", "CA1716: Do not use built in identifiers", Justification = "Deliberate usage")]
+[SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Existing API")]
 public abstract class AllocationFreeLoggerBase(ILogger inner) : IAllocationFreeLogger
 {
     /// <inheritdoc />

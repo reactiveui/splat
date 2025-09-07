@@ -29,11 +29,10 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     }
 
     /// <inheritdoc />
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We provide a different registration instead")]
     public object? GetService(Type? serviceType, string? contract = null)
     {
         serviceType ??= typeof(NullServiceType);
-
-#pragma warning disable CA1031 // Do not catch general exception types
         try
         {
             var registration = _container.GetRegistration(serviceType);
@@ -49,15 +48,13 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
         {
             return default;
         }
-#pragma warning restore CA1031 // Do not catch general exception types
     }
 
     /// <inheritdoc />
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We provide a different registration instead")]
     public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
     {
         serviceType ??= typeof(NullServiceType);
-
-#pragma warning disable CA1031 // Do not catch general exception types
         try
         {
             return _container.GetAllInstances(serviceType);
@@ -71,7 +68,6 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
                 _ => Array.Empty<object>()
             };
         }
-#pragma warning restore CA1031 // Do not catch general exception types
     }
 
     /// <inheritdoc />

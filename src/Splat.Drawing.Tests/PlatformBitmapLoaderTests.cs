@@ -11,7 +11,7 @@ namespace Splat.Tests.Platform;
 [TestFixture]
 public sealed class PlatformBitmapLoaderTests
 {
-#if !NETSTANDARD && !NETCOREAPP2
+#if !IS_SHARED_NET
     /// <summary>
     /// Check to ensure an instance is returned.
     /// </summary>

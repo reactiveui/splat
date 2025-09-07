@@ -11,5 +11,4 @@ namespace Splat.ApplicationPerformanceMonitoring;
 /// Interface for exposing Feature Usage Tracking as an extension to a class.
 /// </summary>
 [ComVisible(false)]
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Avoid empty interfaces", Justification = "Intended through design")]
 public interface IEnableFeatureUsageTracking;

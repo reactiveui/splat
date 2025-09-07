@@ -13,5 +13,5 @@ namespace Splat;
 /// log.
 /// </summary>
 [ComVisible(false)]
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Avoid empty interfaces", Justification = "By Design")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Avoid empty interfaces", Justification = "Used as a marker")]
 public interface IEnableLogger;

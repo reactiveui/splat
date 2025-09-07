@@ -13,7 +13,7 @@ namespace Splat;
 /// Often not needed for your own loggers.
 /// A <see cref="WrappingFullLogger"/> will wrap simple loggers into a full logger.
 /// </summary>
-[SuppressMessage("Naming", "CA1716: Do not use built in identifiers", Justification = "Deliberate usage")]
+[SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Existing API")]
 public interface IFullLogger : IAllocationFreeLogger
 {
     /// <summary>

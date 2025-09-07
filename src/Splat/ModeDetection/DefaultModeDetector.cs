@@ -11,6 +11,7 @@ namespace Splat;
 public class DefaultModeDetector : IModeDetector, IEnableLogger
 {
     /// <inheritdoc />
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Records to the log")]
     public bool? InUnitTestRunner()
     {
         var testAssemblies = new[]
@@ -25,8 +26,6 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
             "FIXIE",
             "NCRUNCH",
         };
-
-#pragma warning disable CA1031 // Do not catch general exception types
         try
         {
             return SearchForAssembly(testAssemblies);
@@ -36,7 +35,6 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
             this.Log().Debug(e, "Unable to find unit test runner value");
             return null;
         }
-#pragma warning restore CA1031 // Do not catch general exception types
     }
 
     private static bool SearchForAssembly(IEnumerable<string> assemblyList) =>
@@ -44,7 +42,7 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
             .Select(x => x.FullName?.ToUpperInvariant())
             .Where(x => x is not null)
             .Select(x => x!)
-#if NETSTANDARD
+#if NETSTANDARD || NET_45
             .Any(x => assemblyList.Any(name => x.IndexOf(name, StringComparison.InvariantCultureIgnoreCase) != -1));
 #else
             .Any(x => assemblyList.Any(name => x.Contains(name, StringComparison.InvariantCultureIgnoreCase)));

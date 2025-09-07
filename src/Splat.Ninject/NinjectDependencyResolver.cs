@@ -24,11 +24,10 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
         GetServices(serviceType, contract).LastOrDefault()!;
 
     /// <inheritdoc />
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2263:Prefer generic overload when type is known", Justification = "TODO: evaluate if we can go to the generic overload in future")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We provide a different registration instead")]
     public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
     {
-#pragma warning disable CA1031 // Do not catch general exception types
-#pragma warning disable IDE0301 // Simplify collection initialization
-#pragma warning disable CA2263 // Prefer generic overload when type is known
 #pragma warning disable IDE0305 // Simplify collection initialization
         var isNull = serviceType is null;
         serviceType ??= typeof(NullServiceType);
@@ -47,9 +46,6 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
         return _kernel.GetAll(serviceType, contract).ToArray();
 #pragma warning restore IDE0305 // Simplify collection initialization
-#pragma warning restore CA2263 // Prefer generic overload when type is known
-#pragma warning restore IDE0301 // Simplify collection initialization
-#pragma warning restore CA1031 // Do not catch general exception types
     }
 
     /// <inheritdoc />

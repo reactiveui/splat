@@ -14,6 +14,9 @@ namespace Splat.Tests.Aot;
 /// </summary>
 [TestFixture]
 [NonParallelizable] // Uses Locator/AppLocator and resolver scopes; keep serialized to avoid cross-fixture interference.
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Testing Purposes")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2263:Prefer generic overload when type is known", Justification = "Testing purposes")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.", Justification = "Testing Purposes")]
 public class CoreAotCompatibilityTests
 {
     /// <summary>
@@ -308,12 +311,8 @@ public class CoreAotCompatibilityTests
     public void TypeBasedServiceQueries_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
-
-#pragma warning disable CA2263 // Prefer generic overload when type is known
         resolver.RegisterConstant(new DebugLogger(), typeof(ILogger));
         resolver.RegisterConstant(new DefaultLogManager(resolver), typeof(ILogManager));
-#pragma warning restore CA2263 // Prefer generic overload when type is known
-
         var logger = resolver.GetService(typeof(ILogger));
         var logManager = resolver.GetService(typeof(ILogManager));
         var services = resolver.GetServices(typeof(ILogger)).ToList();
@@ -494,12 +493,7 @@ public class CoreAotCompatibilityTests
         var platformDetector = new DefaultPlatformModeDetector();
 
         var inUnitTest1 = defaultDetector.InUnitTestRunner();
-#pragma warning disable IL2026 // RequiresUnreferencedCode
-#pragma warning disable IL3050 // RequiresDynamicCode
         var inDesignMode = platformDetector.InDesignMode();
-#pragma warning restore IL3050
-#pragma warning restore IL2026
-
         using (Assert.EnterMultipleScope())
         {
             Assert.That(inUnitTest1, Is.Not.Null);
@@ -778,7 +772,6 @@ public class CoreAotCompatibilityTests
         {
             tasks[i] = Task.Run(() =>
             {
-#pragma warning disable CA1031 // Do not catch general exception types
                 try
                 {
                     for (var j = 0; j < 100; j++)
@@ -800,7 +793,6 @@ public class CoreAotCompatibilityTests
                         exceptions.Add(ex);
                     }
                 }
-#pragma warning restore CA1031
             });
         }
 

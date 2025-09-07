@@ -19,10 +19,10 @@ namespace Splat;
 /// <summary>
 /// A <see cref="IBitmapLoader"/> which will load Cocoa based bitmaps.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Existing API")]
 public class PlatformBitmapLoader : IBitmapLoader
 {
     /// <inheritdoc />
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "By Design")]
     public Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
     {
         var data = NSData.FromStream(sourceStream);
@@ -31,7 +31,6 @@ public class PlatformBitmapLoader : IBitmapLoader
 #if UIKIT
         NSRunLoop.InvokeInBackground(() =>
         {
-#pragma warning disable CA1031 // Do not catch general exception types
             try
             {
                 if (data is null)
@@ -47,7 +46,6 @@ public class PlatformBitmapLoader : IBitmapLoader
                 LogHost.Default.Debug(ex.ToString(), "Unable to parse bitmap from byte stream.");
                 tcs.TrySetException(ex);
             }
-#pragma warning restore CA1031 // Do not catch general exception types
         });
 #else
 
@@ -71,7 +69,6 @@ public class PlatformBitmapLoader : IBitmapLoader
     }
 
     /// <inheritdoc />
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "By Design")]
     public Task<IBitmap?> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
     {
         var tcs = new TaskCompletionSource<IBitmap?>();
@@ -79,7 +76,6 @@ public class PlatformBitmapLoader : IBitmapLoader
 #if UIKIT
         NSRunLoop.InvokeInBackground(() =>
         {
-#pragma warning disable CA1031 // Do not catch general exception types
             try
             {
                 var bitmap = UIImage.FromBundle(source) ?? throw new InvalidOperationException("Failed to load image from resource: " + source);
@@ -90,7 +86,6 @@ public class PlatformBitmapLoader : IBitmapLoader
                 LogHost.Default.Debug(ex.ToString(), "Unable to parse bitmap from resource.");
                 tcs.TrySetException(ex);
             }
-#pragma warning restore CA1031 // Do not catch general exception types
         });
 #else
         NSRunLoop.Main.BeginInvokeOnMainThread(() =>

@@ -12,7 +12,6 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring;
 /// Common unit tests for APM View Tracking.
 /// </summary>
 [TestFixture]
-[SuppressMessage("StyleCop", "CA1034: Nested types should not be visible", Justification = "Test Class")]
 public static class BaseViewTrackingTests
 {
     /// <summary>

@@ -5,8 +5,6 @@
 
 namespace Splat.Common.Test;
 
-#pragma warning disable SA1402 // File may only contain a single type
-
 /// <summary>
 /// Represents a view bound to a view model.
 /// </summary>
@@ -32,6 +30,3 @@ public interface IViewFor
     /// </summary>
     object? ViewModel { get; set; }
 }
-
-#pragma warning restore SA1402 // File may only contain a single type
-

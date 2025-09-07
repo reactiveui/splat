@@ -22,13 +22,10 @@ public sealed class MicrosoftExtensionsLogProvider : ILoggerProvider
 
     private sealed class SplatLoggingAdapter(string categoryName) : global::Microsoft.Extensions.Logging.ILogger
     {
-#pragma warning disable CA1823 // Avoid unused private fields
-#pragma warning disable IDE0052 // Remove unread private members
-#pragma warning disable RCS1213 // Remove unused member declaration.
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1823:Avoid unused private fields", Justification = "Deliberate")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1213:Remove unused member declaration", Justification = "Deliberate")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop", "IDE0052:Remove unused member declaration", Justification = "Deliberate")]
         private readonly string _categoryName = categoryName;
-#pragma warning restore RCS1213 // Remove unused member declaration.
-#pragma warning restore IDE0052 // Remove unread private members
-#pragma warning restore CA1823 // Avoid unused private fields
 
         /// <inheritdoc />
         public void Log<TState>(global::Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)

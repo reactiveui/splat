@@ -1,16 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0-windows10.0.17763.0</TargetFramework>
+    <TargetFrameworks>$(SplatModernTargets)</TargetFrameworks>
     <IsPackable>false</IsPackable>
-        <Nullable>enable</Nullable>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$([MSBuild]::IsOsPlatform('Windows'))">
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <TargetFrameworks>$(SplatWindowsTargets)</TargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="($(TargetFramework.EndsWith('-windows10.0.17763.0')) or $(TargetFramework.StartsWith('net4'))) and $([MSBuild]::IsOsPlatform('Windows'))">
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.Net.Http" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Splat.Drawing\Splat.Drawing.csproj" />
