@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>$(SplatUiFinalTargetFrameworks)</TargetFrameworks>
     <RootNamespace>Splat</RootNamespace>
@@ -28,13 +28,6 @@
     <None Include="Colors\**\*.cs"/>
     <None Include="Resources\**\*.*"/>
   </ItemGroup>
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.Mac')) ">
-    <Compile Include="Platforms\apple-common\**\*.cs"/>
-    <Compile Include="Platforms\mac\**\*.cs"/>
-    <Compile Include="Platforms\xamarin-common\**\*.cs"/>
-    <Reference Include="System.Runtime.Serialization"/>
-    <Reference Include="netstandard"/>
-  </ItemGroup>
   <ItemGroup Condition=" $(TargetFramework.StartsWith('netstandard')) ">
     <PackageReference Include="System.Diagnostics.Contracts"/>
     <PackageReference Include="System.Runtime.Serialization.Primitives"/>
@@ -57,11 +50,6 @@
     <Compile Include="Platforms\net6\**\*.cs"/>
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs"/>
     <Compile Include="Platforms\ReflectionStubs.cs"/>
-  </ItemGroup>
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS')) or $(TargetFramework.StartsWith('Xamarin.TVOS')) or $(TargetFramework.StartsWith('Xamarin.WatchOS')) ">
-    <Compile Include="Platforms\Cocoa\**\*.cs"/>
-    <Compile Include="Platforms\TypeForwardedSystemDrawing.cs"/>
-    <Reference Include="System.Runtime.Serialization"/>
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.EndsWith('0-ios')) or $(TargetFramework.EndsWith('0-tvos')) or $(TargetFramework.EndsWith('0-maccatalyst'))">
     <Compile Include="Platforms\Cocoa\**\*.cs"/>

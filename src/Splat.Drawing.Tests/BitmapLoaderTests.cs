@@ -6,7 +6,7 @@
 using System.IO;
 using System.Reflection;
 
-#if !NETSTANDARD2_0
+#if !IS_SHARED_NET
 
 namespace Splat.Tests;
 
