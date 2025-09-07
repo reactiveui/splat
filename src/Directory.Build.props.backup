@@ -5,7 +5,7 @@
        ======================= -->
   <PropertyGroup>
     <!-- Modern-only (for tests/benchmarks/apps) -->
-    <SplatModernTargets>net8.0</SplatModernTargets>
+    <SplatModernTargets>net8.0;net9.0</SplatModernTargets>
 
     <!-- Core libraries (keep netstandard for broad consumption) -->
     <SplatCoreTargets>netstandard2.0;$(SplatModernTargets)</SplatCoreTargets>
@@ -14,10 +14,10 @@
     <SplatNetFxTargets>net462;net472</SplatNetFxTargets>
 
     <!-- (Optional) Platform TFMs—only matter for projects that opt in -->
-    <SplatAndroidTargets>net8.0-android</SplatAndroidTargets>
-    <SplatAppleTargets>net8.0-ios;net8.0-macos;net8.0-maccatalyst;net8.0-tvos</SplatAppleTargets>
-    <SplatWindowsTargets>net8.0-windows10.0.19041.0</SplatWindowsTargets>
-    <SplatTizenTargets>net8.0-tizen</SplatTizenTargets>
+    <SplatAndroidTargets>net9.0-android</SplatAndroidTargets>
+    <SplatAppleTargets>net9.0-ios;net9.0-macos;net9.0-maccatalyst;net9.0-tvos</SplatAppleTargets>
+    <SplatWindowsTargets>net9.0-windows10.0.19041.0</SplatWindowsTargets>
+    <SplatTizenTargets>net9.0-tizen</SplatTizenTargets>
   </PropertyGroup>
 
   <!-- =====================================
