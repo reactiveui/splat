@@ -5,10 +5,9 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-#pragma warning disable SA1615 // Element return value should be documented
-
 namespace Splat.Tests;
 
+#if WINDOWS
 /// <summary>
 /// Tests to make sure that the API matches the approved ones.
 /// </summary>
@@ -19,6 +18,8 @@ public class ApiApprovalTests
     /// <summary>
     /// Tests to make sure the splat project is approved.
     /// </summary>
+    /// <returns>The task.</returns>
     [Test]
     public Task SplatUIProject() => typeof(IPlatformModeDetector).Assembly.CheckApproval(["Splat"]);
 }
+#endif

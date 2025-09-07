@@ -241,9 +241,9 @@ public partial struct SplatColor : IEquatable<SplatColor>
     /// </summary>
     /// <param name="name">The name of the color to generate.</param>
     /// <returns>The generated SplatValue.</returns>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Attempt to find best match.")]
     public static SplatColor FromName(string name)
     {
-#pragma warning disable CA1031 // Do not catch general exception types
         try
         {
 #if NET6_0_OR_GREATER
@@ -263,7 +263,6 @@ public partial struct SplatColor : IEquatable<SplatColor>
             d._state |= (short)ColorType.Named;
             return d;
         }
-#pragma warning restore CA1031 // Do not catch general exception types
     }
 
     /// <summary>
@@ -441,9 +440,9 @@ internal static SplatColor FromArgbSystem (int alpha, int red, int green, int bl
         CheckRGBValues(red, green, blue);
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We don't want to do anything if caught and just return the Splat color.")]
     private static SplatColor CheckIfIsKnownColor(SplatColor splatColor)
     {
-#pragma warning disable CA1031 // Do not catch general exception types
         try
         {
             var index = Array.IndexOf(KnownColors.ArgbValues, splatColor.Value);
@@ -456,7 +455,6 @@ internal static SplatColor FromArgbSystem (int alpha, int red, int green, int bl
         catch
         {
         }
-#pragma warning restore CA1031 // Do not catch general exception types
 
         return splatColor;
     }

@@ -41,10 +41,7 @@ public static class LogHost
     /// <typeparam name="T">The type to get the <see cref="IFullLogger"/> for.</typeparam>
     /// <param name="logClassInstance">The class we are getting the logger for.</param>
     /// <returns>The <see cref="IFullLogger"/> for the class type.</returns>
-#pragma warning disable RCS1175 // Unused 'this' parameter.
-    [SuppressMessage("Design", "CA1065: Do not raise exceptions in properties", Justification = "Very rare scenario")]
     public static IFullLogger Log<T>(this T logClassInstance)
-#pragma warning restore RCS1175 // Unused 'this' parameter.
         where T : IEnableLogger
     {
         var factory = AppLocator.Current.GetService<ILogManager>();

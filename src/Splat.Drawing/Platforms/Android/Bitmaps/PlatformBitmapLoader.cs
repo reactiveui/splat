@@ -107,10 +107,7 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
     public IBitmap? Create(float width, float height)
     {
         var config = Bitmap.Config.Argb8888 ?? throw new InvalidOperationException("The ARGB8888 bitmap format is unavailable");
-
-#pragma warning disable CA2000 // Dispose objects before losing scope
         return Bitmap.CreateBitmap((int)width, (int)height, config).FromNative();
-#pragma warning restore CA2000 // Dispose objects before losing scope
     }
 
     [RequiresDynamicCode("Calls Splat.PlatformBitmapLoader.GetDrawableList(IFullLogger, Assembly[])")]

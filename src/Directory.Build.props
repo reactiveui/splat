@@ -1,7 +1,6 @@
 <Project>
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);1591;1701;1702;1705;VSX1000;IDE0130</NoWarn>
     <Platform>AnyCPU</Platform>
     <IsTestProject>$(MSBuildProjectName.Contains('Tests'))</IsTestProject>
     <DebugType>embedded</DebugType>
@@ -37,7 +36,6 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <!-- Include PDB in the built .nupkg -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <NoWarn>$(NoWarn);CA1510;IDE0130</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -68,7 +66,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="$(IsTestProject) or $(MSBuildProjectName.Contains('TestRunner'))">
-    <NoWarn>$(NoWarn);CA1034;CA1515;CA1707;CA1852;CA2000</NoWarn>
+    <NoWarn>$(NoWarn);CA1031;CA1034;CA1040;CA1515;CA1707;CA1852;CA2000;CA2201</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>

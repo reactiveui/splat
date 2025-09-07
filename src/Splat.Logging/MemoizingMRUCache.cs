@@ -212,6 +212,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     /// Flag to indicate whether Exceptions during the resource Release call should not fail on the first item.
     /// But should try all items then throw an aggregate exception.
     /// </param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Aggregates the exceptions")]
     public void InvalidateAll(bool aggregateReleaseExceptions = false)
     {
         Dictionary<TParam, (LinkedListNode<TParam> param, TVal value)>? oldCacheToClear = null;
@@ -248,7 +249,6 @@ public sealed class MemoizingMRUCache<TParam, TVal>
             var exceptions = new List<Exception>(oldCacheToClear.Count);
             foreach (var item in oldCacheToClear)
             {
-#pragma warning disable CA1031 // Do not catch general exception types
                 try
                 {
                     _releaseFunction?.Invoke(item.Value.value);
@@ -257,7 +257,6 @@ public sealed class MemoizingMRUCache<TParam, TVal>
                 {
                     exceptions.Add(e);
                 }
-#pragma warning restore CA1031 // Do not catch general exception types
             }
 
             if (exceptions.Count > 0)

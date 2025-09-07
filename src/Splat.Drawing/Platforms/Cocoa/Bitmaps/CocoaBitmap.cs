@@ -26,7 +26,7 @@ namespace Splat;
 /// <param name="inner">The native image we are wrapping.</param>
 internal sealed class CocoaBitmap(UIImage inner) : IBitmap
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed in a Interlocked method")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Is Disposed using Interlocked method")]
     private UIImage? _inner = inner;
 
     /// <inheritdoc />

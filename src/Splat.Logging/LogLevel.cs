@@ -8,9 +8,8 @@ namespace Splat;
 /// <summary>
 /// Represents the minimum log level a <see cref="ILogger"/> will start emitting from.
 /// </summary>
-#pragma warning disable CA1008 // Enums should have zero value
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1008:Enums should have zero value", Justification = "Existing API")]
 public enum LogLevel
-#pragma warning restore CA1008 // Enums should have zero value
 {
     /// <summary>
     /// The log message is for debugging purposes.

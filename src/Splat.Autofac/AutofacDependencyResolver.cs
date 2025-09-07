@@ -4,9 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.Collections;
-#if NET6_0_OR_GREATER
 using System.Diagnostics.CodeAnalysis;
-#endif
 
 using Autofac;
 
@@ -27,9 +25,9 @@ public class AutofacDependencyResolver : IDependencyResolver
     private IContainer _internalContainer;
 
     private ILifetimeScope? _lifetimeScope;
-#pragma warning disable CA2213 // _internalLifetimeScope will be disposed, because it is a child of _internalContainer
+
+    [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "_internalLifetimeScope will be disposed, because it is a child of _internalContainer")]
     private ILifetimeScope _internalLifetimeScope;
-#pragma warning restore CA2213 // Disposable fields should be disposed
 
     /// <summary>
     ///     Set to true, when SetLifetimeScope has been called.

@@ -81,9 +81,7 @@ public static class MicrosoftExtensionsLoggingExtensions
         ArgumentNullException.ThrowIfNull(loggerFactory);
 #endif
 
-#pragma warning disable CA2000 // Dispose objects before losing scope
         loggerFactory.AddProvider(new MicrosoftExtensionsLogProvider());
-#pragma warning restore CA2000 // Dispose objects before losing scope
         return loggerFactory;
     }
 }

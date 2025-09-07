@@ -12,7 +12,6 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring;
 /// Common Unit Tests for Feature Usage Tracking.
 /// </summary>
 [TestFixture]
-[SuppressMessage("StyleCop", "CA1034: Nested types should not be visible", Justification = "Test Class")]
 public static class BaseFeatureUsageTrackingTests
 {
     /// <summary>

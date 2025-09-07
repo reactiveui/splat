@@ -4,15 +4,15 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-
-#pragma warning disable CA1716 // Identifiers should not match keywords
 
 namespace Splat;
 
 /// <summary>
 /// Represents the logging interface for the Static Default Logger.
 /// </summary>
+[SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Existing API")]
 public interface IStaticFullLogger
 {
     /// <summary>
@@ -359,4 +359,3 @@ public interface IStaticFullLogger
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
     void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel, [CallerMemberName]string? callerMemberName = null);
 }
-#pragma warning restore CA1716 // Identifiers should not match keywords
