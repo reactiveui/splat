@@ -1,0 +1,217 @@
+<Project>
+
+  <!-- =======================
+       A) Canonical TFM buckets
+       ======================= -->
+  <PropertyGroup>
+    <!-- Modern-only (for tests/benchmarks/apps) -->
+    <SplatModernTargets>net8.0;net9.0</SplatModernTargets>
+
+    <!-- Core libraries (keep netstandard for broad consumption) -->
+    <SplatCoreTargets>netstandard2.0;$(SplatModernTargets)</SplatCoreTargets>
+
+    <!-- Legacy desktop (Splat supports .NET Framework) -->
+    <SplatNetFxTargets>net462;net472</SplatNetFxTargets>
+
+    <!-- (Optional) Platform TFMs—only matter for projects that opt in -->
+    <SplatAndroidTargets>net9.0-android</SplatAndroidTargets>
+    <SplatAppleTargets>net9.0-ios;net9.0-macos;net9.0-maccatalyst;net9.0-tvos</SplatAppleTargets>
+    <SplatWindowsTargets>net9.0-windows10.0.19041.0</SplatWindowsTargets>
+    <SplatTizenTargets>net9.0-tizen</SplatTizenTargets>
+  </PropertyGroup>
+
+  <!-- =====================================
+       B) OS-aware composition (no custom flags)
+       ===================================== -->
+  <PropertyGroup>
+    <!-- Default set used by most library projects -->
+    <SplatFinalTargetFrameworks>$(SplatCoreTargets)</SplatFinalTargetFrameworks>
+
+    <!-- Add .NET Framework only on Windows -->
+    <SplatFinalTargetFrameworks Condition="$([MSBuild]::IsOsPlatform('Windows'))">
+      $(SplatFinalTargetFrameworks);$(SplatNetFxTargets)
+    </SplatFinalTargetFrameworks>
+
+    <!-- Optional buckets (only if a project chooses to use them) -->
+    <!-- Windows-specific TFMs on Windows -->
+    <SplatFinalTargetFrameworks Condition="$([MSBuild]::IsOsPlatform('Windows'))">
+      $(SplatFinalTargetFrameworks);$(SplatWindowsTargets)
+    </SplatFinalTargetFrameworks>
+
+    <!-- Apple TFMs on macOS and on Windows (Pair-to-Mac when actually building) -->
+    <SplatFinalTargetFrameworks Condition="$([MSBuild]::IsOsPlatform('OSX')) Or $([MSBuild]::IsOsPlatform('Windows'))">
+      $(SplatFinalTargetFrameworks);$(SplatAppleTargets)
+    </SplatFinalTargetFrameworks>
+
+    <!-- Android compiles on any OS if workloads exist -->
+    <SplatFinalTargetFrameworks>
+      $(SplatFinalTargetFrameworks);$(SplatAndroidTargets)
+    </SplatFinalTargetFrameworks>
+
+    <!-- Tizen most reliable on Windows -->
+    <SplatFinalTargetFrameworks Condition="$([MSBuild]::IsOsPlatform('Windows'))">
+      $(SplatFinalTargetFrameworks);$(SplatTizenTargets)
+    </SplatFinalTargetFrameworks>
+  </PropertyGroup>
+
+  <!-- ==================================================
+       C) Test / benchmark defaults (no hardcoded TFMs)
+       - Prefer modern .NET for runners
+       - Avoid netstandard in tests
+       ================================================== -->
+  <PropertyGroup>
+    <!-- Heuristic: treat *Tests and *.Benchmarks as special if unset -->
+    <IsTestProject Condition="'$(IsTestProject)'=='' and
+                              (HasTrailingSlash('$(MSBuildProjectName)') or '$(MSBuildProjectName)') != '' and
+                              ( $([System.String]::Copy('$(MSBuildProjectName)').EndsWith('.Tests')) Or
+                                $([System.String]::Copy('$(MSBuildProjectName)').EndsWith('Tests')) )">true</IsTestProject>
+
+    <IsBenchmarkProject Condition="'$(IsBenchmarkProject)'=='' and
+                                   ( $([System.String]::Copy('$(MSBuildProjectName)').EndsWith('.Benchmarks')) Or
+                                     $([System.String]::Copy('$(MSBuildProjectName)').EndsWith('Benchmarks')) )">true</IsBenchmarkProject>
+
+    <!-- If tests/benchmarks didn't set TFMs, give them modern defaults -->
+    <TargetFrameworks Condition="'$(TargetFrameworks)'=='' and '$(IsTestProject)'=='true'">$(SplatModernTargets)</TargetFrameworks>
+    <TargetFrameworks Condition="'$(TargetFrameworks)'=='' and '$(IsBenchmarkProject)'=='true'">$(SplatModernTargets)</TargetFrameworks>
+  </PropertyGroup>
+
+  <!-- ======================================================
+       D) .NET Framework fixups (net462/net472) in one place
+       - Pin System.Net.Http only for NetFx to resolve compile
+         symbol issues on older projects.
+       - Enable binding redirects for test runners.
+       ====================================================== -->
+  <ItemGroup Condition="'$(TargetFramework)'=='net462' or '$(TargetFramework)'=='net472'">
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='net462' or '$(TargetFramework)'=='net472'">
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+  </PropertyGroup>
+
+  <!-- ==================================================
+       E) Existing common properties (preserved from original)
+       ================================================== -->
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591;1701;1702;1705;VSX1000;IDE0130</NoWarn>
+    <Platform>AnyCPU</Platform>
+    <DebugType>embedded</DebugType>
+    <Authors>.NET Foundation and Contributors</Authors>
+    <Copyright>Copyright (c) .NET Foundation and Contributors</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/reactiveui/splat/</PackageProjectUrl>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageDescription>A library to make things cross-platform that should be.</PackageDescription>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <Owners>anaisbetts;ghuntley</Owners>
+    <PackageTags>drawing;colours;geometry;logging;unit test detection;service location;image handling;portable;xamarin;xamarin ios;xamarin mac;android</PackageTags>
+    <PackageReleaseNotes>https://github.com/reactiveui/splat/releases</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/reactiveui/splat</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
+    <!-- Net Analyzers config taken from : https://docs.microsoft.com/en-gb/visualstudio/code-quality/migrate-from-fxcop-analyzers-to-net-analyzers?view=vs-2019 -->
+    <EnableNETAnalyzers>True</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+    <ImplicitUsings>true</ImplicitUsings>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <!-- disable sourcelink on mono, to workaround https://github.com/dotnet/sourcelink/issues/155 -->
+    <EnableSourceLink Condition=" '$(OS)' != 'Windows_NT' AND '$(MSBuildRuntimeType)' != 'Core' ">false</EnableSourceLink>
+    <EnableSourceControlManagerQueries>$(EnableSourceLink)</EnableSourceControlManagerQueries>
+    <!-- Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <!-- Embed source files that are not tracked by the source control manager in the PDB -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!-- Include PDB in the built .nupkg -->
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(IsTestProject) != 'true'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(IsTestProject) or $(MSBuildProjectName.Contains('TestRunner'))">
+    <NoWarn>$(NoWarn);CA1034;CA1515;CA1707;CA1852;CA2000</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+  <ItemGroup Condition="$(IsTestProject) or $(MSBuildProjectName.Contains('TestRunner'))">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="NUnit.Analyzers" />
+    <PackageReference Include="Microsoft.Reactive.Testing" />
+    <PackageReference Include="PublicApiGenerator" />
+    <PackageReference Include="Verify.NUnit" />
+  </ItemGroup>
+  <ItemGroup Condition="$(IsTestProject)">
+    <PackageReference Include="coverlet.msbuild" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(IsTestProject)' != 'true'">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+  </ItemGroup>
+  <PropertyGroup>
+    <SolutionDir Condition="'$(SolutionDir)' == ''">$(MSBuildThisFileDirectory)</SolutionDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)..\LICENSE" Pack="true" PackagePath="LICENSE" />
+    <None Include="$(MSBuildThisFileDirectory)..\images\logo.png" Pack="true" PackagePath="\" />
+    <None Include="$(MSBuildThisFileDirectory)..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Nerdbank.GitVersioning" PrivateAssets="all" />
+    <PackageReference Include="stylecop.analyzers" PrivateAssets="all" />
+    <PackageReference Include="Roslynator.Analyzers" PrivateAssets="All" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+
+</Project>
+  <PropertyGroup Condition="$(IsTestProject) != 'true'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(IsTestProject) or $(MSBuildProjectName.Contains('TestRunner'))">
+    <NoWarn>$(NoWarn);CA1034;CA1515;CA1707;CA1852;CA2000</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+  <ItemGroup Condition="$(IsTestProject) or $(MSBuildProjectName.Contains('TestRunner'))">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="NUnit.Analyzers" />
+    <PackageReference Include="Microsoft.Reactive.Testing" />
+    <PackageReference Include="PublicApiGenerator" />
+    <PackageReference Include="Verify.NUnit" />
+  </ItemGroup>
+  <ItemGroup Condition="$(IsTestProject)">
+    <PackageReference Include="coverlet.msbuild" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(IsTestProject)' != 'true'">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+  </ItemGroup>
+  <PropertyGroup>
+    <SolutionDir Condition="'$(SolutionDir)' == ''">$(MSBuildThisFileDirectory)</SolutionDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)..\LICENSE" Pack="true" PackagePath="LICENSE" />
+    <None Include="$(MSBuildThisFileDirectory)..\images\logo.png" Pack="true" PackagePath="\" />
+    <None Include="$(MSBuildThisFileDirectory)..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Nerdbank.GitVersioning" PrivateAssets="all" />
+    <PackageReference Include="stylecop.analyzers" PrivateAssets="all" />
+    <PackageReference Include="Roslynator.Analyzers" PrivateAssets="All" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+</Project>
