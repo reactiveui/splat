@@ -11,6 +11,7 @@ namespace Splat.Tests.ServiceLocation;
 /// Unit Tests for the Modern Dependency Resolver.
 /// </summary>
 [TestFixture]
+[NonParallelizable]
 public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTests<MicrosoftDependencyResolver>
 {
     /// <summary>

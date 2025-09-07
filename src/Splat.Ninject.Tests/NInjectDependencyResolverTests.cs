@@ -12,6 +12,7 @@ namespace Splat.Ninject.Tests;
 /// Unit Tests for the Modern Dependency Resolver.
 /// </summary>
 [TestFixture]
+[NonParallelizable]
 public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests<NinjectDependencyResolver>
 {
     /// <summary>

@@ -14,6 +14,7 @@ namespace Splat.Autofac.Tests;
 /// Tests to show the <see cref="AutofacDependencyResolver"/> works correctly.
 /// </summary>
 [TestFixture]
+[NonParallelizable]
 public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDependencyResolver>
 {
     /// <summary>
