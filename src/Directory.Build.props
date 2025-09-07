@@ -39,7 +39,51 @@
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <SplatTargetFrameworks>netstandard2.0;net8.0</SplatTargetFrameworks>
     <SplatWindowsTargetFrameworks>net8.0-windows10.0.17763.0</SplatWindowsTargetFrameworks>
+
+    <!-- =======================
+         Modern TFM buckets for centralized management
+         ======================= -->
+    <!-- Modern-only (for tests/benchmarks/apps) -->
+    <SplatModernTargets>net8.0</SplatModernTargets>
+
+    <!-- Core libraries (keep netstandard for broad consumption) -->
+    <SplatCoreTargets>netstandard2.0;$(SplatModernTargets)</SplatCoreTargets>
+
+    <!-- Legacy desktop (Splat supports .NET Framework) -->
+    <SplatNetFxTargets>net462;net472</SplatNetFxTargets>
+
+    <!-- (Optional) Platform TFMs—only matter for projects that opt in -->
+    <SplatAndroidTargets>net8.0-android</SplatAndroidTargets>
+    <SplatAppleTargets>net8.0-ios;net8.0-macos;net8.0-maccatalyst;net8.0-tvos</SplatAppleTargets>
+    <SplatWindowsSpecificTargets>net8.0-windows10.0.19041.0</SplatWindowsSpecificTargets>
+    <SplatTizenTargets>net8.0-tizen</SplatTizenTargets>
   </PropertyGroup>
+
+  <!-- =====================================
+       OS-aware composition (no custom flags)
+       ===================================== -->
+  <PropertyGroup>
+    <!-- Default set used by most library projects -->
+    <SplatFinalTargetFrameworks>$(SplatCoreTargets)</SplatFinalTargetFrameworks>
+
+    <!-- Add .NET Framework only on Windows -->
+    <SplatFinalTargetFrameworks Condition="$([MSBuild]::IsOsPlatform('Windows'))">
+      $(SplatFinalTargetFrameworks);$(SplatNetFxTargets)
+    </SplatFinalTargetFrameworks>
+  </PropertyGroup>
+
+  <!-- ======================================================
+       .NET Framework fixups (net462/net472) in one place
+       ====================================================== -->
+  <ItemGroup Condition="'$(TargetFramework)'=='net462' or '$(TargetFramework)'=='net472'">
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='net462' or '$(TargetFramework)'=='net472'">
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+  </PropertyGroup>
+
   <PropertyGroup Condition="$(IsTestProject) != 'true'">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>

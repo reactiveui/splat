@@ -146,3 +146,44 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 
 * All features or bug fixes **must be tested** by one or more unit tests.
 * All public API methods **must be documented** with XML documentation.
+
+## Multi-Target Framework Management
+
+Splat uses a centralized approach for managing Target Framework Monikers (TFMs) to ensure consistency across projects and simplify cross-platform builds.
+
+### Copilot Instructions (Splat multi-TFM)
+
+* Only modify **`src/Directory.Build.props`** for TFM changes.
+* Use `$([MSBuild]::IsOsPlatform(...))` exclusively—no custom flags.
+* Libraries target `$(SplatCoreTargets)`; tests/benchmarks default to `$(SplatModernTargets)`.
+* On Windows, include **net462/net472** TFMs. If compile errors mention `HttpClient`/`HttpMethod`, the **conditional `System.Net.Http`** in **Directory.Build.props** should resolve it.
+* Do **not** set test TFMs to netstandard.
+* If you must rename the props file to fix casing, use `git mv -f`.
+
+### Available TFM Properties
+
+Use these centralized properties in project files instead of hardcoding TFMs:
+
+- **`$(SplatCoreTargets)`** - For core libraries: `netstandard2.0;net8.0`
+- **`$(SplatModernTargets)`** - For tests/benchmarks: `net8.0`
+- **`$(SplatNetFxTargets)`** - .NET Framework TFMs: `net462;net472` (Windows only)
+- **`$(SplatFinalTargetFrameworks)`** - OS-aware composition including NetFx on Windows
+
+### Examples
+
+```xml
+<!-- Core library project -->
+<PropertyGroup>
+  <TargetFrameworks>$(SplatCoreTargets)</TargetFrameworks>
+</PropertyGroup>
+
+<!-- Test project (auto-detected) -->
+<PropertyGroup>
+  <!-- No TargetFrameworks needed - auto-set to $(SplatModernTargets) -->
+</PropertyGroup>
+
+<!-- Benchmark project -->
+<PropertyGroup>
+  <TargetFramework>$(SplatModernTargets)</TargetFramework>
+</PropertyGroup>
+```
