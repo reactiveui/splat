@@ -5,11 +5,11 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Autofac" Version="8.4.0" />
-    <PackageVersion Include="Avalonia.Desktop" Version="11.3.4" />
-    <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.3.4" />
-    <PackageVersion Include="Avalonia.Headless.XUnit" Version="11.3.4" />
-    <PackageVersion Include="Avalonia.ReactiveUI" Version="11.3.4" />
-    <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.3.4" />
+    <PackageVersion Include="Avalonia.Desktop" Version="11.3.5" />
+    <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.3.5" />
+    <PackageVersion Include="Avalonia.Headless.XUnit" Version="11.3.5" />
+    <PackageVersion Include="Avalonia.ReactiveUI" Version="11.3.5" />
+    <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.3.5" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
     <PackageVersion Include="DryIoc.Dll" Version="5.4.3" />
     <PackageVersion Include="Exceptionless" Version="6.1.0" />
