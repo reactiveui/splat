@@ -26,7 +26,7 @@
     <PackageVersion Include="NLog" Version="6.0.3" />
     <PackageVersion Include="Prism.Core" Version="9.0.537" />
     <PackageVersion Include="Prism.Forms" Version="9.0.537" />
-    <PackageVersion Include="ReactiveUI" Version="20.4.1" />
+    <PackageVersion Include="ReactiveUI" Version="21.0.1" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.14.0" />
     <PackageVersion Include="Serilog" Version="4.3.0" />
     <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
