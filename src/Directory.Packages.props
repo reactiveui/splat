@@ -17,13 +17,13 @@
     <PackageVersion Include="Microsoft.AppCenter.Analytics" Version="5.0.7" />
     <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="5.0.7" />
     <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.23.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.9" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="11.2.4" />
     <PackageVersion Include="Nerdbank.GitVersioning" Version="3.7.115" />
     <PackageVersion Include="Ninject" Version="3.3.6" />
-    <PackageVersion Include="NLog" Version="6.0.3" />
+    <PackageVersion Include="NLog" Version="6.0.4" />
     <PackageVersion Include="Prism.Core" Version="9.0.537" />
     <PackageVersion Include="Prism.Forms" Version="9.0.537" />
     <PackageVersion Include="ReactiveUI" Version="20.4.1" />
@@ -38,17 +38,17 @@
     <PackageVersion Include="NUnit" Version="4.4.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="5.1.0" />
     <PackageVersion Include="NUnit.Analyzers" Version="4.10.0" />
-    <PackageVersion Include="Verify.NUnit" Version="30.7.3" />
+    <PackageVersion Include="Verify.NUnit" Version="30.13.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-    <PackageVersion Include="Microsoft.Reactive.Testing" Version="6.0.1" />
+    <PackageVersion Include="Microsoft.Reactive.Testing" Version="6.0.2" />
     <PackageVersion Include="PublicApiGenerator" Version="11.4.6" />
   </ItemGroup>
 
   <!-- Default versions for modern TFMs; overridden for legacy and net10 via Update -->
   <ItemGroup>
-    <PackageVersion Include="System.Collections.Immutable" Version="9.0.8" />
-    <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="9.0.8" />
-    <PackageVersion Include="System.Text.Json" Version="9.0.8" />
+    <PackageVersion Include="System.Collections.Immutable" Version="9.0.9" />
+    <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="9.0.9" />
+    <PackageVersion Include="System.Text.Json" Version="9.0.9" />
   </ItemGroup>
 
   <!-- Scope legacy System.* packages to legacy TFMs only -->
