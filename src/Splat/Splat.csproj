@@ -14,6 +14,34 @@
     <ProjectReference Include="..\Splat.Builder\Splat.Builder.csproj" />
     <ProjectReference Include="..\Splat.Logging\Splat.Logging.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <TypeForwarder Include="Splat.IMutableDependencyResolver" ForwardedTo="Splat.Core" />
+    <TypeForwarder Include="Splat.IReadonlyDependencyResolver" ForwardedTo="Splat.Core" />
+    <TypeForwarder Include="Splat.IDependencyResolver" ForwardedTo="Splat.Core" />
+    <TypeForwarder Include="Splat.ModernDependencyResolver" ForwardedTo="Splat.Core" />
+    <TypeForwarder Include="Splat.ActionLogger" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.AllocationFreeLoggerBase" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.ConsoleLogger" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.DebugLogger" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.DefaultLogManager" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.FuncLogManager" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.IAllocationFreeErrorLogger" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.IAllocationFreeLogger" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.IEnableLogger" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.IFullLogger" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.ILogger" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.ILogManager" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.IStaticFullLogger" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.LoggingException" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.LogHost" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.LogLevel" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.MemoizingMRUCache" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.NullLogger" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.StaticFullLogger" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.WrappingFullLogger" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.WrappingLogLevelLogger" ForwardedTo="Splat.Logging" />
+    <TypeForwarder Include="Splat.WrappingPrefixLogger" ForwardedTo="Splat.Logging" />
+  </ItemGroup>
 
 </Project>
 

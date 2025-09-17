@@ -1,0 +1,146 @@
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Builder.Tests")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Drawing")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Drawing.Tests")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.TestRunner.Android")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.TestRunner.Uwp")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Tests")]
+[assembly: System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v10.0", FrameworkDisplayName=".NET 10.0")]
+namespace Splat.ApplicationPerformanceMonitoring
+{
+    public sealed class DefaultFeatureUsageTrackingManager : Splat.ApplicationPerformanceMonitoring.FuncFeatureUsageTrackingManager
+    {
+        public DefaultFeatureUsageTrackingManager() { }
+    }
+    public sealed class DefaultFeatureUsageTrackingSession : Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession, Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession<System.Guid>, Splat.IEnableLogger, System.IDisposable
+    {
+        public DefaultFeatureUsageTrackingSession(string featureName) { }
+        public string FeatureName { get; }
+        public System.Guid FeatureReference { get; }
+        public System.Guid ParentReference { get; }
+        public void Dispose() { }
+        public void OnException(System.Exception exception) { }
+        public Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession SubFeature(string description) { }
+    }
+    public static class EnableFeatureUsageTrackingExtensions
+    {
+        public static Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession FeatureUsageTrackingSession(this Splat.ApplicationPerformanceMonitoring.IEnableFeatureUsageTracking instance, string featureName) { }
+        public static void WithFeatureUsageTrackingSession(this Splat.ApplicationPerformanceMonitoring.IEnableFeatureUsageTracking instance, string featureName, System.Action<Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession> action) { }
+        public static void WithSubFeatureUsageTrackingSession(this Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession instance, string featureName, System.Action<Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession> action) { }
+    }
+    public class FuncFeatureUsageTrackingManager : Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingManager
+    {
+        public FuncFeatureUsageTrackingManager(System.Func<string, Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession> featureUsageTrackingSessionFunc) { }
+        public Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName) { }
+    }
+    [System.Runtime.InteropServices.ComVisible(false)]
+    public interface IEnableFeatureUsageTracking { }
+    public interface IFeatureUsageTrackingManager
+    {
+        Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName);
+    }
+    public interface IFeatureUsageTrackingSession : System.IDisposable
+    {
+        string FeatureName { get; }
+        void OnException(System.Exception exception);
+        Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession SubFeature(string description);
+    }
+    public interface IFeatureUsageTrackingSession<out TReferenceType> : Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession, System.IDisposable
+    {
+        TReferenceType FeatureReference { get; }
+        TReferenceType ParentReference { get; }
+    }
+    public interface IViewTracking
+    {
+        void OnViewNavigation(string name);
+    }
+}
+namespace Splat
+{
+    public class DefaultModeDetector : Splat.IEnableLogger, Splat.IModeDetector
+    {
+        public DefaultModeDetector() { }
+        public bool? InUnitTestRunner() { }
+    }
+    public class FuncDependencyResolver : Splat.IDependencyResolver, Splat.IMutableDependencyResolver, Splat.IReadonlyDependencyResolver, System.IDisposable
+    {
+        public FuncDependencyResolver(System.Func<System.Type?, string?, System.Collections.Generic.IEnumerable<object>> getAllServices, System.Action<System.Func<object?>, System.Type?, string?>? register = null, System.Action<System.Type?, string?>? unregisterCurrent = null, System.Action<System.Type?, string?>? unregisterAll = null, System.IDisposable? toDispose = null) { }
+        public void Dispose() { }
+        protected virtual void Dispose(bool isDisposing) { }
+        public object? GetService(System.Type? serviceType, string? contract = null) { }
+        public System.Collections.Generic.IEnumerable<object> GetServices(System.Type? serviceType, string? contract = null) { }
+        public bool HasRegistration(System.Type? serviceType, string? contract = null) { }
+        public void Register(System.Func<object?> factory, System.Type? serviceType, string? contract = null) { }
+        public System.IDisposable ServiceRegistrationCallback(System.Type serviceType, string? contract, System.Action<System.IDisposable> callback) { }
+        public void UnregisterAll(System.Type? serviceType, string? contract = null) { }
+        public void UnregisterCurrent(System.Type? serviceType, string? contract = null) { }
+    }
+    public interface IModeDetector
+    {
+        bool? InUnitTestRunner();
+    }
+    public static class Locator
+    {
+        public static Splat.IReadonlyDependencyResolver Current { get; }
+        public static Splat.IMutableDependencyResolver CurrentMutable { get; }
+        public static bool AreResolverCallbackChangedNotificationsEnabled() { }
+        public static Splat.IDependencyResolver GetLocator() { }
+        public static System.IDisposable RegisterResolverCallbackChanged(System.Action callback) { }
+        public static void SetLocator(Splat.IDependencyResolver dependencyResolver) { }
+        public static System.IDisposable SuppressResolverCallbackChangedNotifications() { }
+    }
+    public static class ModeDetector
+    {
+        public static bool InUnitTestRunner() { }
+        public static void OverrideModeDetector(Splat.IModeDetector modeDetector) { }
+    }
+    public static class PointMathExtensions
+    {
+        public static float AngleInDegrees(this System.Drawing.PointF value) { }
+        public static float DistanceTo(this System.Drawing.PointF value, System.Drawing.PointF other) { }
+        public static float DotProduct(this System.Drawing.PointF value, System.Drawing.PointF other) { }
+        public static System.Drawing.PointF Floor(this System.Drawing.Point value) { }
+        public static float Length(this System.Drawing.PointF value) { }
+        public static System.Drawing.PointF Normalize(this System.Drawing.PointF value) { }
+        public static System.Drawing.PointF ProjectAlong(this System.Drawing.PointF value, System.Drawing.PointF direction) { }
+        public static System.Drawing.PointF ProjectAlongAngle(this System.Drawing.PointF value, float angleInDegrees) { }
+        public static System.Drawing.PointF ScaledBy(this System.Drawing.PointF value, float factor) { }
+        public static bool WithinEpsilonOf(this System.Drawing.PointF value, System.Drawing.PointF other, float epsilon) { }
+    }
+    public enum RectEdge
+    {
+        Left = 0,
+        Top = 1,
+        Right = 2,
+        Bottom = 3,
+    }
+    public static class RectangleMathExtensions
+    {
+        public static System.Drawing.PointF Center(this System.Drawing.RectangleF value) { }
+        public static System.Drawing.RectangleF Copy(this System.Drawing.RectangleF value, float? x = default, float? y = default, float? width = default, float? height = default, float? top = default, float? bottom = default) { }
+        public static System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF> Divide(this System.Drawing.RectangleF value, float amount, Splat.RectEdge fromEdge) { }
+        public static System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF> DivideWithPadding(this System.Drawing.RectangleF value, float sliceAmount, float padding, Splat.RectEdge fromEdge) { }
+        public static System.Drawing.RectangleF InvertWithin(this System.Drawing.RectangleF value, System.Drawing.RectangleF containingRect) { }
+    }
+    public static class ServiceLocationInitialization
+    {
+        public static void InitializeSplat(this Splat.IMutableDependencyResolver resolver) { }
+    }
+    public static class SizeMathExtensions
+    {
+        public static System.Drawing.SizeF ScaledBy(this System.Drawing.SizeF value, float factor) { }
+        public static bool WithinEpsilonOf(this System.Drawing.SizeF value, System.Drawing.SizeF other, float epsilon) { }
+    }
+    public static class TargetFrameworkExtensions
+    {
+        public static string? GetTargetFrameworkName(this System.Reflection.Assembly assembly) { }
+    }
+}
+namespace Splat.ModeDetection
+{
+    public sealed class Mode : Splat.IModeDetector
+    {
+        public static readonly Splat.ModeDetection.Mode Run;
+        public static readonly Splat.ModeDetection.Mode Test;
+        public bool? InUnitTestRunner() { }
+    }
+}

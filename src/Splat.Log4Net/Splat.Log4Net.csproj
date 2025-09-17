@@ -10,7 +10,9 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="log4net" />
-    <!-- Override old versions provided in the .NET Standard 1.3 package -->
+  </ItemGroup>
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net4')) or $(TargetFramework.StartsWith('netstandard'))">
+    <!-- Legacy System.* references for net4x/netstandard only -->
     <PackageReference Include="System.AppContext" />
     <PackageReference Include="System.Collections.NonGeneric" />
     <PackageReference Include="System.Console" />
