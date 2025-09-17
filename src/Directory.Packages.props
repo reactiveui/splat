@@ -32,7 +32,9 @@
     <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
     <PackageVersion Include="SimpleInjector" Version="5.5.0" />
     <PackageVersion Include="stylecop.analyzers" Version="1.2.0-beta.556" />
+    <PackageVersion Include="System.Net.Http" Version="4.3.4" />
     <PackageVersion Include="System.Reactive" Version="6.0.2" />
+    <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageVersion Include="NUnit" Version="4.4.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="5.1.0" />
     <PackageVersion Include="NUnit.Analyzers" Version="4.10.0" />
@@ -63,7 +65,6 @@
     <PackageVersion Include="System.IO.FileSystem" Version="4.3.0" />
     <PackageVersion Include="System.IO.FileSystem.Watcher" Version="4.3.0" />
     <PackageVersion Include="System.Linq" Version="4.3.0" />
-    <PackageVersion Include="System.Net.Http" Version="4.3.4" />
     <PackageVersion Include="System.Net.NameResolution" Version="4.3.0" />
     <PackageVersion Include="System.Net.Requests" Version="4.3.0" />
     <PackageVersion Include="System.Net.Sockets" Version="4.3.0" />
@@ -73,7 +74,6 @@
     <PackageVersion Include="System.Runtime.Extensions" Version="4.3.1" />
     <PackageVersion Include="System.Runtime.InteropServices" Version="4.3.0" />
     <PackageVersion Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
-    <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageVersion Include="System.Threading" Version="4.3.0" />
     <PackageVersion Include="System.Threading.Thread" Version="4.3.0" />
     <PackageVersion Include="System.Threading.Timer" Version="4.3.0" />
