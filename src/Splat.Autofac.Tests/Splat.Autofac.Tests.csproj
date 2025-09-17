@@ -4,17 +4,17 @@
     <TargetFrameworks>$(SplatModernTargets)</TargetFrameworks>
 
     <IsPackable>false</IsPackable>
-        <Nullable>enable</Nullable>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.Net.Http" />
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net4')) or $(TargetFramework.StartsWith('netstandard'))">
+    <PackageReference Include="System.Net.Http"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Splat.Autofac\Splat.Autofac.csproj" />
-    <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />
-    <ProjectReference Include="..\Splat.Tests\Splat.Tests.csproj" />
+    <ProjectReference Include="..\Splat.Autofac\Splat.Autofac.csproj"/>
+    <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj"/>
+    <ProjectReference Include="..\Splat.Tests\Splat.Tests.csproj"/>
   </ItemGroup>
 
   <ItemGroup>

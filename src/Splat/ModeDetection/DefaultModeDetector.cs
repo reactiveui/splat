@@ -3,6 +3,7 @@
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Splat;
@@ -185,11 +186,10 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
             }
 
             // Slower path: enumerate env vars once and check prefixes.
-            var vars = Environment.GetEnvironmentVariables();
-            foreach (System.Collections.DictionaryEntry kv in vars)
+            var vars = Environment.GetEnvironmentVariables(EnvironmentVariableTarget.Process);
+            foreach (DictionaryEntry kv in vars)
             {
-                var key = kv.Key as string;
-                if (string.IsNullOrEmpty(key))
+                if (kv.Key is not string key || string.IsNullOrEmpty(key))
                 {
                     continue;
                 }
@@ -229,7 +229,7 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
             {
                 for (var i = 0; i < _knownTestHostProcesses.Length; i++)
                 {
-#if NETSTANDARD || NET_45
+#if NETSTANDARD || NET40_OR_GREATER
                     if (procName.IndexOf(_knownTestHostProcesses[i], StringComparison.OrdinalIgnoreCase) >= 0)
 #else
                     if (procName.Contains(_knownTestHostProcesses[i], StringComparison.OrdinalIgnoreCase))
@@ -245,9 +245,9 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
             {
                 using var p = System.Diagnostics.Process.GetCurrentProcess();
                 var mainModule = p.MainModule?.FileName;
-                if (!string.IsNullOrEmpty(mainModule))
+                if (mainModule is not null && !string.IsNullOrEmpty(mainModule))
                 {
-#if NETSTANDARD || NET_45
+#if NETSTANDARD || NET40_OR_GREATER
                     if (mainModule.IndexOf("testhost", StringComparison.OrdinalIgnoreCase) >= 0 ||
                         mainModule.IndexOf("vstest", StringComparison.OrdinalIgnoreCase) >= 0)
 #else
@@ -302,7 +302,7 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
 
                 for (var j = 0; j < assemblyMarkers.Length; j++)
                 {
-#if NETSTANDARD || NET_45
+#if NETSTANDARD || NET40_OR_GREATER
                     if (fullName.IndexOf(assemblyMarkers[j], StringComparison.InvariantCultureIgnoreCase) >= 0)
 #else
                     if (fullName.Contains(assemblyMarkers[j], StringComparison.InvariantCultureIgnoreCase))

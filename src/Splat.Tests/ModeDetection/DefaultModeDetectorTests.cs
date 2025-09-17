@@ -97,4 +97,155 @@ public class DefaultModeDetectorTests
             Assert.That(result3, Is.EqualTo(result2));
         }
     }
+
+    /// <summary>
+    /// Verifies that DefaultModeDetector correctly detects when running in a unit test runner
+    /// by evaluating the explicit DOTNET_RUNNING_IN_TEST environment variable with commonly
+    /// used true-value representations.
+    /// </summary>
+    /// <param name="value">The value to set for the DOTNET_RUNNING_IN_TEST environment variable to test detection logic.</param>
+    [TestCase("1")]
+    [TestCase("true")]
+    [TestCase("TRUE")]
+    [TestCase("yes")]
+    [TestCase("YES")]
+    public void DefaultModeDetector_ExplicitEnvVar_DotnetRunningInTest_TrueVariants(string value)
+    {
+        // Arrange
+        var detector = new DefaultModeDetector();
+        var oldEnv = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_TEST");
+        var oldAppCtx = AppContext.GetData("DOTNET_RUNNING_IN_TEST");
+
+        try
+        {
+            // Prefer explicit env var; clear AppContext override to exercise env path.
+            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", value);
+            AppContext.SetData("DOTNET_RUNNING_IN_TEST", null);
+
+            // Act
+            var result = detector.InUnitTestRunner();
+
+            // Assert
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(result.HasValue, Is.True);
+                Assert.That(result!.Value, Is.True);
+            }
+        }
+        finally
+        {
+            // Restore prior state
+            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", oldEnv);
+            AppContext.SetData("DOTNET_RUNNING_IN_TEST", oldAppCtx);
+        }
+    }
+
+    /// <summary>
+    /// Verifies explicit AppContext-based detection using DOTNET_RUNNING_IN_TEST data.
+    /// </summary>
+    [Test]
+    public void DefaultModeDetector_AppContext_DotnetRunningInTest_ReturnsTrue()
+    {
+        // Arrange
+        var detector = new DefaultModeDetector();
+        var oldEnv = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_TEST");
+        var oldAppCtx = AppContext.GetData("DOTNET_RUNNING_IN_TEST");
+
+        try
+        {
+            // Clear env var and set AppContext data
+            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", null);
+            AppContext.SetData("DOTNET_RUNNING_IN_TEST", "true");
+
+            // Act
+            var result = detector.InUnitTestRunner();
+
+            // Assert
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(result.HasValue, Is.True);
+                Assert.That(result!.Value, Is.True);
+            }
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", oldEnv);
+            AppContext.SetData("DOTNET_RUNNING_IN_TEST", oldAppCtx);
+        }
+    }
+
+    /// <summary>
+    /// Verifies detection via exact test runner environment variables.
+    /// </summary>
+    [Test]
+    public void DefaultModeDetector_ExactEnvVar_NUnitTest_ReturnsTrue()
+    {
+        // Arrange
+        var detector = new DefaultModeDetector();
+        var oldDotnetEnv = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_TEST");
+        var oldAppCtx = AppContext.GetData("DOTNET_RUNNING_IN_TEST");
+        var oldNUnitEnv = Environment.GetEnvironmentVariable("NUNIT_TEST");
+
+        try
+        {
+            // Clear explicit signals to exercise runner env signal path and set NUNIT_TEST.
+            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", null);
+            AppContext.SetData("DOTNET_RUNNING_IN_TEST", null);
+            Environment.SetEnvironmentVariable("NUNIT_TEST", "1");
+
+            // Act
+            var result = detector.InUnitTestRunner();
+
+            // Assert
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(result.HasValue, Is.True);
+                Assert.That(result!.Value, Is.True);
+            }
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", oldDotnetEnv);
+            AppContext.SetData("DOTNET_RUNNING_IN_TEST", oldAppCtx);
+            Environment.SetEnvironmentVariable("NUNIT_TEST", oldNUnitEnv);
+        }
+    }
+
+    /// <summary>
+    /// Verifies detection via environment variable prefix signals (e.g., VSTEST_*, XUNIT_*).
+    /// </summary>
+    [Test]
+    public void DefaultModeDetector_EnvPrefix_VSTEST_ReturnsTrue()
+    {
+        // Arrange
+        var detector = new DefaultModeDetector();
+        var oldDotnetEnv = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_TEST");
+        var oldAppCtx = AppContext.GetData("DOTNET_RUNNING_IN_TEST");
+        var customVarName = "VSTEST_MY_CUSTOM_FLAG";
+        var oldCustom = Environment.GetEnvironmentVariable(customVarName);
+
+        try
+        {
+            // Clear explicit signals and set a prefixed env var.
+            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", null);
+            AppContext.SetData("DOTNET_RUNNING_IN_TEST", null);
+            Environment.SetEnvironmentVariable(customVarName, "1");
+
+            // Act
+            var result = detector.InUnitTestRunner();
+
+            // Assert
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(result.HasValue, Is.True);
+                Assert.That(result!.Value, Is.True);
+            }
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", oldDotnetEnv);
+            AppContext.SetData("DOTNET_RUNNING_IN_TEST", oldAppCtx);
+            Environment.SetEnvironmentVariable(customVarName, oldCustom);
+        }
+    }
 }

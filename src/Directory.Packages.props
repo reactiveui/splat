@@ -5,11 +5,11 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Autofac" Version="8.4.0" />
-    <PackageVersion Include="Avalonia.Desktop" Version="11.3.4" />
-    <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.3.4" />
-    <PackageVersion Include="Avalonia.Headless.XUnit" Version="11.3.4" />
-    <PackageVersion Include="Avalonia.ReactiveUI" Version="11.3.4" />
-    <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.3.4" />
+    <PackageVersion Include="Avalonia.Desktop" Version="11.3.6" />
+    <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.3.6" />
+    <PackageVersion Include="Avalonia.Headless.XUnit" Version="11.3.6" />
+    <PackageVersion Include="Avalonia.ReactiveUI" Version="11.3.6" />
+    <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.3.6" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
     <PackageVersion Include="DryIoc.Dll" Version="5.4.3" />
     <PackageVersion Include="Exceptionless" Version="6.1.0" />
@@ -32,8 +32,23 @@
     <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
     <PackageVersion Include="SimpleInjector" Version="5.5.0" />
     <PackageVersion Include="stylecop.analyzers" Version="1.2.0-beta.556" />
-    <PackageVersion Include="System.AppContext" Version="4.3.0" />
     <PackageVersion Include="System.Collections.Immutable" Version="9.0.8" />
+    <PackageVersion Include="System.Text.Json" Version="9.0.8" />
+    <PackageVersion Include="System.Reactive" Version="6.0.2" />
+    <PackageVersion Include="NUnit" Version="4.4.0" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="5.1.0" />
+    <PackageVersion Include="NUnit.Analyzers" Version="4.10.0" />
+    <PackageVersion Include="Verify.NUnit" Version="30.7.3" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageVersion Include="Microsoft.Reactive.Testing" Version="6.0.1" />
+    <PackageVersion Include="PublicApiGenerator" Version="11.4.6" />
+  </ItemGroup>
+
+  <!-- Scope legacy System.* packages to legacy TFMs only -->
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net4')) or $(TargetFramework.StartsWith('netstandard'))">
+    <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
+    <PackageVersion Include="System.Drawing.Primitives" Version="4.3.0" />
+    <PackageVersion Include="System.AppContext" Version="4.3.0" />
     <PackageVersion Include="System.Collections.NonGeneric" Version="4.3.0" />
     <PackageVersion Include="System.Console" Version="4.3.1" />
     <PackageVersion Include="System.Diagnostics.Debug" Version="4.3.0" />
@@ -47,34 +62,27 @@
     <PackageVersion Include="System.Net.NameResolution" Version="4.3.0" />
     <PackageVersion Include="System.Net.Requests" Version="4.3.0" />
     <PackageVersion Include="System.Net.Sockets" Version="4.3.0" />
-    <PackageVersion Include="System.Reactive" Version="6.0.2" />
     <PackageVersion Include="System.Reflection" Version="4.3.0" />
     <PackageVersion Include="System.Reflection.Extensions" Version="4.3.0" />
     <PackageVersion Include="System.Reflection.TypeExtensions" Version="4.7.0" />
     <PackageVersion Include="System.Runtime.Extensions" Version="4.3.1" />
     <PackageVersion Include="System.Runtime.InteropServices" Version="4.3.0" />
     <PackageVersion Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
-    <PackageVersion Include="System.Text.Json" Version="9.0.8" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageVersion Include="System.Threading" Version="4.3.0" />
     <PackageVersion Include="System.Threading.Thread" Version="4.3.0" />
     <PackageVersion Include="System.Threading.Timer" Version="4.3.0" />
     <PackageVersion Include="System.Xml.ReaderWriter" Version="4.3.1" />
     <PackageVersion Include="System.Xml.XmlDocument" Version="4.3.0" />
-    <PackageVersion Include="NUnit" Version="4.4.0" />
-    <PackageVersion Include="NUnit3TestAdapter" Version="5.1.0" />
-    <PackageVersion Include="NUnit.Analyzers" Version="4.10.0" />
-    <PackageVersion Include="Verify.NUnit" Version="30.7.3" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-    <PackageVersion Include="Microsoft.Reactive.Testing" Version="6.0.1" />
-    <PackageVersion Include="PublicApiGenerator" Version="11.4.6" />
   </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework.StartsWith('net4')) or $(TargetFramework.StartsWith('netstandard'))">
-    <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
-    <PackageVersion Include="System.Drawing.Primitives" Version="4.3.0" />
-  </ItemGroup>
+
   <ItemGroup Condition="$(TargetFramework.StartsWith('net8')) or $(TargetFramework.StartsWith('net9'))">
     <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="9.0.8" />
+  </ItemGroup>
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net10'))">
+    <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="10.0.0-rc.1.25451.107" />
+    <PackageVersion Include="System.Collections.Immutable" Version="10.0.0-rc.1.25451.107" />
+    <PackageVersion Include="System.Text.Json" Version="10.0.0-rc.1.25451.107" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net46'))">
     <PackageVersion Include="System.ValueTuple" Version="4.6.1" />
