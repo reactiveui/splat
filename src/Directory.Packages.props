@@ -32,8 +32,6 @@
     <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
     <PackageVersion Include="SimpleInjector" Version="5.5.0" />
     <PackageVersion Include="stylecop.analyzers" Version="1.2.0-beta.556" />
-    <PackageVersion Include="System.Collections.Immutable" Version="9.0.8" />
-    <PackageVersion Include="System.Text.Json" Version="9.0.8" />
     <PackageVersion Include="System.Reactive" Version="6.0.2" />
     <PackageVersion Include="NUnit" Version="4.4.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="5.1.0" />
@@ -44,9 +42,16 @@
     <PackageVersion Include="PublicApiGenerator" Version="11.4.6" />
   </ItemGroup>
 
+  <!-- Default versions for modern TFMs; overridden for legacy and net10 via Update -->
+  <ItemGroup>
+    <PackageVersion Include="System.Collections.Immutable" Version="9.0.8" />
+    <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="9.0.8" />
+    <PackageVersion Include="System.Text.Json" Version="9.0.8" />
+  </ItemGroup>
+
   <!-- Scope legacy System.* packages to legacy TFMs only -->
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4')) or $(TargetFramework.StartsWith('netstandard'))">
-    <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
+    <PackageVersion Update="System.Runtime.Serialization.Formatters" Version="4.3.0" />
     <PackageVersion Include="System.Drawing.Primitives" Version="4.3.0" />
     <PackageVersion Include="System.AppContext" Version="4.3.0" />
     <PackageVersion Include="System.Collections.NonGeneric" Version="4.3.0" />
@@ -76,19 +81,11 @@
     <PackageVersion Include="System.Xml.XmlDocument" Version="4.3.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="$(TargetFramework.StartsWith('net8')) or $(TargetFramework.StartsWith('net9'))">
-    <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="9.0.8" />
-    <!-- Ensure safe versions of legacy System.* packages if pulled transitively on modern TFMs -->
-    <PackageVersion Include="System.Net.Http" Version="4.3.4" />
-    <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
-  </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net10'))">
-    <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="10.0.0-rc.1.25451.107" />
-    <PackageVersion Include="System.Collections.Immutable" Version="10.0.0-rc.1.25451.107" />
-    <PackageVersion Include="System.Text.Json" Version="10.0.0-rc.1.25451.107" />
+    <PackageVersion Update="System.Runtime.Serialization.Formatters" Version="10.0.0-rc.1.25451.107" />
+    <PackageVersion Update="System.Collections.Immutable" Version="10.0.0-rc.1.25451.107" />
+    <PackageVersion Update="System.Text.Json" Version="10.0.0-rc.1.25451.107" />
     <!-- Ensure safe versions for net10 as well -->
-    <PackageVersion Include="System.Net.Http" Version="4.3.4" />
-    <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net46'))">
     <PackageVersion Include="System.ValueTuple" Version="4.6.1" />
