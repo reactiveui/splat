@@ -136,7 +136,11 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
             var value = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_TEST");
             if (string.IsNullOrWhiteSpace(value))
             {
+#if NETFRAMEWORK
+                var appCtx = AppDomain.CurrentDomain.GetData("DOTNET_RUNNING_IN_TEST") as string;
+#else
                 var appCtx = AppContext.GetData("DOTNET_RUNNING_IN_TEST") as string;
+#endif
                 if (!string.IsNullOrWhiteSpace(appCtx))
                 {
                     value = appCtx;
