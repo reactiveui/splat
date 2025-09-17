@@ -230,7 +230,7 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
                 for (var i = 0; i < _knownTestHostProcesses.Length; i++)
                 {
 #if NETSTANDARD || NET_45
-                    if (procName.IndexOf(knownTestHostProcesses[i], StringComparison.OrdinalIgnoreCase) >= 0)
+                    if (procName.IndexOf(_knownTestHostProcesses[i], StringComparison.OrdinalIgnoreCase) >= 0)
 #else
                     if (procName.Contains(_knownTestHostProcesses[i], StringComparison.OrdinalIgnoreCase))
 #endif
