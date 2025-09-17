@@ -78,11 +78,17 @@
 
   <ItemGroup Condition="$(TargetFramework.StartsWith('net8')) or $(TargetFramework.StartsWith('net9'))">
     <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="9.0.8" />
+    <!-- Ensure safe versions of legacy System.* packages if pulled transitively on modern TFMs -->
+    <PackageVersion Include="System.Net.Http" Version="4.3.4" />
+    <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net10'))">
     <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="10.0.0-rc.1.25451.107" />
     <PackageVersion Include="System.Collections.Immutable" Version="10.0.0-rc.1.25451.107" />
     <PackageVersion Include="System.Text.Json" Version="10.0.0-rc.1.25451.107" />
+    <!-- Ensure safe versions for net10 as well -->
+    <PackageVersion Include="System.Net.Http" Version="4.3.4" />
+    <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net46'))">
     <PackageVersion Include="System.ValueTuple" Version="4.6.1" />
