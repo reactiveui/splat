@@ -40,7 +40,7 @@
 
   <PropertyGroup>
     <SplatTargetFrameworks>netstandard2.0;net8.0;net9.0;net10.0</SplatTargetFrameworks>
-    <SplatWindowsTargetFrameworks>net8.0-windows10.0.17763.0;net9.0-windows10.0.17763.0;;net10.0-windows10.0.17763.0</SplatWindowsTargetFrameworks>
+    <SplatWindowsTargetFrameworks>net8.0-windows10.0.17763.0;net9.0-windows10.0.17763.0;net10.0-windows10.0.17763.0</SplatWindowsTargetFrameworks>
     <SplatModernTargets>net8.0;net9.0;net10.0</SplatModernTargets>
 
     <SplatLegacyTargets Condition="$([MSBuild]::IsOsPlatform('Windows'))">net462;net472</SplatLegacyTargets>
@@ -49,7 +49,7 @@
     <SplatCoreTargets Condition=" '$(SplatLegacyTargets)' != '' ">$(SplatCoreTargets);$(SplatLegacyTargets)</SplatCoreTargets>
 
     <SplatAndroidTargets>net9.0-android;net10.0-android</SplatAndroidTargets>
-    <SplatWindowsTargets>net9.0-windows10.0.17763.0;net10.0-windows10.0.17763.0;</SplatWindowsTargets>
+    <SplatWindowsTargets>net9.0-windows10.0.17763.0;net10.0-windows10.0.17763.0</SplatWindowsTargets>
     <SplatAppleTargets>net9.0-ios;net9.0-macos;net9.0-maccatalyst;net9.0-tvos;net10.0-ios;net10.0-macos;net10.0-maccatalyst;net10.0-tvos</SplatAppleTargets>
     <SplatUiFinalTargetFrameworks>$(SplatCoreTargets);$(SplatAndroidTargets)</SplatUiFinalTargetFrameworks>
   </PropertyGroup>
