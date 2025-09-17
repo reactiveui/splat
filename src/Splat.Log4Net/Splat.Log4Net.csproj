@@ -31,7 +31,7 @@
     <PackageReference Include="System.Reflection.Extensions" />
     <PackageReference Include="System.Reflection.TypeExtensions" />
     <PackageReference Include="System.Runtime.Extensions" />
-    <PackageReference Include="System.Runtime.Interopservices" />
+    <PackageReference Include="System.Runtime.InteropServices" />
     <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" />
     <PackageReference Include="System.Runtime.Serialization.Formatters" />
     <PackageReference Include="System.Text.RegularExpressions" />
