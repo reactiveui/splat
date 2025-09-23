@@ -33,6 +33,8 @@ public static class ApiExtensions
             .ScrubLines(l =>
                 l.StartsWith("[assembly: AssemblyVersion(", StringComparison.InvariantCulture) ||
                 l.StartsWith("[assembly: AssemblyFileVersion(", StringComparison.InvariantCulture) ||
+                l.StartsWith("[assembly: System.Runtime.Versioning.SupportedOSPlatform(", StringComparison.InvariantCulture) ||
+                l.StartsWith("[assembly: System.Runtime.Versioning.TargetPlatform(", StringComparison.InvariantCulture) ||
                 l.StartsWith("[assembly: AssemblyInformationalVersion(", StringComparison.InvariantCulture) ||
                 l.StartsWith("[assembly: System.Reflection.AssemblyMetadata(", StringComparison.InvariantCulture));
     }
