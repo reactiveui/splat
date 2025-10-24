@@ -12,8 +12,8 @@
     <PackageVersion Include="Microsoft.AppCenter.Analytics" Version="5.0.7" />
     <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="5.0.7" />
     <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.23.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.10" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="11.2.4" />
     <PackageVersion Include="Nerdbank.GitVersioning" Version="3.8.118" />
@@ -40,9 +40,9 @@
 
   <!-- Default versions for modern TFMs; overridden for legacy and net10 via Update -->
   <ItemGroup>
-    <PackageVersion Include="System.Collections.Immutable" Version="9.0.9" />
-    <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="9.0.9" />
-    <PackageVersion Include="System.Text.Json" Version="9.0.9" />
+    <PackageVersion Include="System.Collections.Immutable" Version="9.0.10" />
+    <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="9.0.10" />
+    <PackageVersion Include="System.Text.Json" Version="9.0.10" />
   </ItemGroup>
 
   <!-- Scope legacy System.* packages to legacy TFMs only -->
@@ -76,9 +76,9 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith('net10'))">
-    <PackageVersion Update="System.Runtime.Serialization.Formatters" Version="10.0.0-rc.1.25451.107" />
-    <PackageVersion Update="System.Collections.Immutable" Version="10.0.0-rc.1.25451.107" />
-    <PackageVersion Update="System.Text.Json" Version="10.0.0-rc.1.25451.107" />
+    <PackageVersion Update="System.Runtime.Serialization.Formatters" Version="10.0.0-rc.2.25502.107" />
+    <PackageVersion Update="System.Collections.Immutable" Version="10.0.0-rc.2.25502.107" />
+    <PackageVersion Update="System.Text.Json" Version="10.0.0-rc.2.25502.107" />
     <!-- Ensure safe versions for net10 as well -->
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net46'))">
