@@ -19,7 +19,7 @@ public static class MutableDependencyResolverExtensions
     /// <param name="instance">An instance of Mutable Dependency Resolver.</param>
     /// <example>
     /// <code>
-    /// Locator.CurrentMutable.UseSerilogWithWrappingFullLogger();
+    /// AppLocator.CurrentMutable.UseSerilogWithWrappingFullLogger();
     /// </code>
     /// </example>
     public static void UseSerilogFullLogger(this IMutableDependencyResolver instance)
@@ -43,7 +43,7 @@ public static class MutableDependencyResolverExtensions
     /// <param name="actualLogger">The serilog logger to register.</param>
     /// <example>
     /// <code>
-    /// Locator.CurrentMutable.UseSerilogWithWrappingFullLogger();
+    /// AppLocator.CurrentMutable.UseSerilogWithWrappingFullLogger();
     /// </code>
     /// </example>
     public static void UseSerilogFullLogger(this IMutableDependencyResolver instance, global::Serilog.ILogger actualLogger)

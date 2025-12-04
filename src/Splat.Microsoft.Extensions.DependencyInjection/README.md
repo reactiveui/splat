@@ -39,7 +39,7 @@ sealed partial class App // : Application
       .ConfigureServices(services =>
       {
         services.UseMicrosoftDependencyResolver();
-        var resolver = Locator.CurrentMutable;
+        var resolver = AppLocator.CurrentMutable;
         resolver.InitializeSplat();
         resolver.InitializeReactiveUI();
 
@@ -108,6 +108,6 @@ IServiceProvider container = services.BuildServiceProvider();
 container.UseMicrosoftDependencyResolver();
 ```
 
-### Use the Locator
+### Use the AppLocator
 
-Now, when registering or resolving services using Locator.Current, or via ReactiveUI, they will be directed to the Microsoft DI container.
+Now, when registering or resolving services using AppLocator.Current, or via ReactiveUI, they will be directed to the Microsoft DI container.

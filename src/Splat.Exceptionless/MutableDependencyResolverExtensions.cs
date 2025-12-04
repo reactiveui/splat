@@ -24,7 +24,7 @@ public static class MutableDependencyResolverExtensions
     /// <param name="exceptionlessClient">The configured Exceptionless client instance.</param>
     /// <example>
     /// <code>
-    /// Locator.CurrentMutable.UseExceptionlessWithWrappingFullLogger(exception);
+    /// AppLocator.CurrentMutable.UseExceptionlessWithWrappingFullLogger(exception);
     /// </code>
     /// </example>
     public static void UseExceptionlessWithWrappingFullLogger(this IMutableDependencyResolver instance, ExceptionlessClient exceptionlessClient)
