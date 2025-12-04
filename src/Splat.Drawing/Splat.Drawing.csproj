@@ -29,8 +29,6 @@
     <None Include="Resources\**\*.*"/>
   </ItemGroup>
   <ItemGroup Condition=" $(TargetFramework.StartsWith('netstandard')) ">
-    <PackageReference Include="System.Diagnostics.Contracts"/>
-    <PackageReference Include="System.Runtime.Serialization.Primitives"/>
     <PackageReference Include="System.Drawing.Primitives"/>
     <Compile Include="Platforms\ReflectionStubs.cs"/>
   </ItemGroup>

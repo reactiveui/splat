@@ -95,17 +95,17 @@ Desktop and Mobile applications, while still remaining reasonably flexible.
 
 There are 2 parts to the locator design:
 
-* **Locator.Current** The property to use to **retrieve** services. Locator.Current is a static variable that can be set on startup, to adapt Splat to other DI/IoC frameworks. We're currently working from v7 onward to make it easier to use your DI/IoC framework of choice. (see below)
-* **Locator.CurrentMutable** The property to use to **register** services
+* **AppLocator.Current** The property to use to **retrieve** services. AppLocator.Current is a static variable that can be set on startup, to adapt Splat to other DI/IoC frameworks. We're currently working from v7 onward to make it easier to use your DI/IoC framework of choice. (see below)
+* **AppLocator.CurrentMutable** The property to use to **register** services
 
 To get a service:
 
 ```cs
 // To get a single service registration
-var toaster = Locator.Current.GetService<IToaster>();
+var toaster = AppLocator.Current.GetService<IToaster>();
 
 // To get all service registrations
-var allToasterImpls = Locator.Current.GetServices<IToaster>();
+var allToasterImpls = AppLocator.Current.GetServices<IToaster>();
 ```
 
 Locator.Current is a static variable that can be set on startup, to adapt Splat
@@ -167,7 +167,7 @@ When targeting AOT or trimming scenarios, you can configure Splat (and consumers
 
 - IModule defines a single Configure(IMutableDependencyResolver) method where you register services.
 - AppBuilder gathers modules and custom registrations, then applies them to a chosen resolver when Build() is called.
-- You can target the current Locator.CurrentMutable or an external container that implements IMutableDependencyResolver via UseCurrentSplatLocator().
+- You can target the current AppLocator.CurrentMutable or an external container that implements IMutableDependencyResolver via UseCurrentSplatLocator().
 
 ### Define modules
 
@@ -244,17 +244,17 @@ using Splat.Microsoft.Extensions.DependencyInjection;
 using Splat.Microsoft.Extensions.Logging;
 
 var services = new ServiceCollection();
-services.UseMicrosoftDependencyResolver(); // set Locator.Current to MS.DI resolver backed by IServiceCollection
+services.UseMicrosoftDependencyResolver(); // set AppLocator.Current to MS.DI resolver backed by IServiceCollection
 
 // register framework logging provider that forwards to Splat
 services.AddLogging(b => b.AddSplat());
 
-// build container and rebind Locator.Current to the built provider
+// build container and rebind AppLocator.Current to the built provider
 var provider = services.BuildServiceProvider();
 provider.UseMicrosoftDependencyResolver();
 
-new AppBuilder(Locator.CurrentMutable)
-    .UseCurrentSplatLocator() // target whatever Locator.CurrentMutable points to (MS.DI in this case)
+new AppBuilder(AppLocator.CurrentMutable)
+    .UseCurrentSplatLocator() // target whatever AppLocator.CurrentMutable points to (MS.DI in this case)
     .UsingModule(new CoreModule())
     .WithCustomRegistration(r =>
     {
@@ -265,7 +265,7 @@ new AppBuilder(Locator.CurrentMutable)
     .Build();
 ```
 
-The same pattern works with other adapters (Autofac, DryIoc, SimpleInjector, Ninject) after setting Locator.Current to the adapter’s resolver.
+The same pattern works with other adapters (Autofac, DryIoc, SimpleInjector, Ninject) after setting AppLocator.Current to the adapter’s resolver.
 
 ### Extending AppBuilder
 

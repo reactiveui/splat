@@ -27,7 +27,7 @@ public static class MicrosoftExtensionsLoggingExtensions
     /// </param>
     /// <example>
     /// <code>
-    /// Locator.CurrentMutable.UseMicrosoftExtensionsLoggingWithWrappingFullLogger();
+    /// AppLocator.CurrentMutable.UseMicrosoftExtensionsLoggingWithWrappingFullLogger();
     /// </code>
     /// </example>
     public static void UseMicrosoftExtensionsLoggingWithWrappingFullLogger(

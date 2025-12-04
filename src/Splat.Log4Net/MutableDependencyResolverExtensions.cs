@@ -21,7 +21,7 @@ public static class MutableDependencyResolverExtensions
     /// </param>
     /// <example>
     /// <code>
-    /// Locator.CurrentMutable.UseLog4NetWithWrappingFullLogger();
+    /// AppLocator.CurrentMutable.UseLog4NetWithWrappingFullLogger();
     /// </code>
     /// </example>
     public static void UseLog4NetWithWrappingFullLogger(this IMutableDependencyResolver instance)

@@ -82,7 +82,7 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     public void Register(Func<object?> factory, Type? serviceType, string? contract = null)
     {
         // The function does nothing because there should be no registration called on this object.
-        // Anyway, Locator.SetLocator performs some unnecessary registrations.
+        // Anyway, AppLocator.SetLocator performs some unnecessary registrations.
     }
 
     /// <inheritdoc />

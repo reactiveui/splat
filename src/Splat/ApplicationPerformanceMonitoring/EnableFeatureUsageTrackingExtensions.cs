@@ -21,7 +21,7 @@ public static class EnableFeatureUsageTrackingExtensions
         this IEnableFeatureUsageTracking instance,
         string featureName)
     {
-        var featureUsageTrackingSession = Locator.Current.GetService<IFeatureUsageTrackingManager>();
+        var featureUsageTrackingSession = AppLocator.Current.GetService<IFeatureUsageTrackingManager>();
         return featureUsageTrackingSession switch
         {
             null => throw new InvalidOperationException("Feature Usage Tracking Manager is null. This should never happen, your dependency resolver is broken"),

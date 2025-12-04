@@ -22,4 +22,4 @@ container.UseDryIocDependencyResolver();
 
 ### Use the Locator
 
-Now, when registering or resolving services using Locator.Current, or via ReactiveUI, they will be directed to the DryIoc DI container.
+Now, when registering or resolving services using AppLocator.Current, or via ReactiveUI, they will be directed to the DryIoc DI container.
