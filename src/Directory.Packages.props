@@ -76,9 +76,9 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith('net10'))">
-    <PackageVersion Update="System.Runtime.Serialization.Formatters" Version="10.0.0" />
-    <PackageVersion Update="System.Collections.Immutable" Version="10.0.0" />
-    <PackageVersion Update="System.Text.Json" Version="10.0.0" />
+    <PackageVersion Update="System.Runtime.Serialization.Formatters" Version="10.0.1" />
+    <PackageVersion Update="System.Collections.Immutable" Version="10.0.1" />
+    <PackageVersion Update="System.Text.Json" Version="10.0.1" />
     <!-- Ensure safe versions for net10 as well -->
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net46'))">
