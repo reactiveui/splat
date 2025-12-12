@@ -12,8 +12,8 @@
     <PackageVersion Include="Microsoft.AppCenter.Analytics" Version="5.0.7" />
     <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="5.0.7" />
     <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.23.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.11" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.1" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="11.2.4" />
     <PackageVersion Include="Nerdbank.GitVersioning" Version="3.9.50" />
@@ -40,14 +40,14 @@
 
   <!-- Default versions for modern TFMs; overridden for legacy and net10 via Update -->
   <ItemGroup>
-    <PackageVersion Include="System.Collections.Immutable" Version="9.0.11" />
-    <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="9.0.11" />
-    <PackageVersion Include="System.Text.Json" Version="9.0.11" />
+    <PackageVersion Include="System.Collections.Immutable" Version="10.0.1" />
+    <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="10.0.1" />
+    <PackageVersion Include="System.Text.Json" Version="10.0.1" />
   </ItemGroup>
 
   <!-- Scope legacy System.* packages to legacy TFMs only -->
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4')) or $(TargetFramework.StartsWith('netstandard'))">
-    <PackageVersion Update="System.Runtime.Serialization.Formatters" Version="4.3.0" />
+    <PackageVersion Update="System.Runtime.Serialization.Formatters" Version="10.0.1" />
     <PackageVersion Include="System.Drawing.Primitives" Version="4.3.0" />
     <PackageVersion Include="System.AppContext" Version="4.3.0" />
     <PackageVersion Include="System.Collections.NonGeneric" Version="4.3.0" />
