@@ -40,7 +40,14 @@ public static class EnableFeatureUsageTrackingExtensions
         string featureName,
         Action<IFeatureUsageTrackingSession> action)
     {
-        action.ThrowArgumentNullExceptionIfNull(nameof(action));
+#if NET8_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(action);
+#else
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+#endif
 
         using var session = instance.FeatureUsageTrackingSession(featureName);
         try
@@ -65,8 +72,20 @@ public static class EnableFeatureUsageTrackingExtensions
         string featureName,
         Action<IFeatureUsageTrackingSession> action)
     {
-        instance.ThrowArgumentNullExceptionIfNull(nameof(instance));
-        action.ThrowArgumentNullExceptionIfNull(nameof(action));
+#if NET8_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(instance);
+        ArgumentNullException.ThrowIfNull(action);
+#else
+        if (instance is null)
+        {
+            throw new ArgumentNullException(nameof(instance));
+        }
+
+        if (action is null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+#endif
 
         using var session = instance.SubFeature(featureName);
         try

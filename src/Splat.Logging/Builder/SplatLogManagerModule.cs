@@ -16,6 +16,15 @@ public sealed class SplatLogManagerModule(IReadonlyDependencyResolver current) :
     /// <inheritdoc />
     public void Configure(IMutableDependencyResolver resolver)
     {
+#if NET8_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(resolver);
+#else
+        if (resolver is null)
+        {
+            throw new ArgumentNullException(nameof(resolver));
+        }
+#endif
+
         if (!resolver.HasRegistration(typeof(ILogManager)))
         {
             resolver.Register<ILogManager>(() => new DefaultLogManager(current));

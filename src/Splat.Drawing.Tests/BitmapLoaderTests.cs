@@ -50,6 +50,7 @@ public sealed class BitmapLoaderTests
     [TestCase("splatlogo.bmp")]
     [TestCase("splatlogo.jpg")]
     [TestCase("splatlogo.png")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2025:Do not pass 'IDisposable' instances into unawaited tasks", Justification = "Test so lack of dispose ok")]
     public void Load_Succeeds(string imageName)
     {
         var instance = new PlatformBitmapLoader();
@@ -57,13 +58,10 @@ public sealed class BitmapLoaderTests
         using var sourceStream = GetStream(imageName);
 
         object? result = null;
-        Assert.DoesNotThrow(() =>
-        {
-            result = instance.Load(
+        Assert.DoesNotThrow(() => result = instance.Load(
                 sourceStream,
                 640,
-                480);
-        });
+                480));
 
         Assert.That(result, Is.Not.Null);
     }

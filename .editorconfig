@@ -209,6 +209,7 @@ dotnet_diagnostic.CA1030.severity = none             # Use events where appropri
 dotnet_diagnostic.CA1031.severity = none             # Do not catch general exception types
 dotnet_diagnostic.CA1033.severity = none             # Interface methods should be callable by child types
 dotnet_diagnostic.CA1036.severity = none             # Override methods on comparable types
+dotnet_diagnostic.CA1040.severity = none             # Avoid empty interfaces
 dotnet_diagnostic.CA1056.severity = suggestion       # URI properties should not be strings
 dotnet_diagnostic.CA1060.severity = error            # Move P/Invokes to NativeMethods class
 dotnet_diagnostic.CA1061.severity = error            # Do not hide base class methods

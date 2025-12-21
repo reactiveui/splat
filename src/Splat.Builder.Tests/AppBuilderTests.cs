@@ -164,14 +164,4 @@ namespace Splat.Builder.Tests
             resolver.Dispose();
         }
     }
-
-    internal sealed class MokModule : IModule
-    {
-        public void Configure(IMutableDependencyResolver resolver)
-        {
-            // This is a mock module for testing purposes.
-            // It does not need to do anything specific.
-            // In a real scenario, you would register services here.}
-        }
-    }
 }

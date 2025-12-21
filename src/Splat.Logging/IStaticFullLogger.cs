@@ -26,14 +26,14 @@ public interface IStaticFullLogger
     /// <param name="exception">The exception.</param>
     /// <param name="message">The message.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Debug(Exception exception, [Localizable(false)] string message, [CallerMemberName]string? callerMemberName = null);
+    void Debug(Exception exception, [Localizable(false)] string message, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message to the debug log.
     /// </summary>
     /// <param name="message">A non-localizable message to send to the log.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Debug([Localizable(false)] string message, [CallerMemberName]string? callerMemberName = null);
+    void Debug([Localizable(false)] string message, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message to the debug log.
@@ -41,7 +41,7 @@ public interface IStaticFullLogger
     /// <typeparam name="T">The calling type.</typeparam>
     /// <param name="message">A non-localizable message to send to the log.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Debug<T>([Localizable(false)] string message, [CallerMemberName]string? callerMemberName = null);
+    void Debug<T>([Localizable(false)] string message, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message using formatting to the debug log.
@@ -51,7 +51,7 @@ public interface IStaticFullLogger
     /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
     /// <param name="argument">The argument for formatting purposes.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Debug<TArgument>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument argument, [CallerMemberName]string? callerMemberName = null);
+    void Debug<TArgument>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument argument, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message using formatting to the debug log.
@@ -63,7 +63,7 @@ public interface IStaticFullLogger
     /// <param name="argument1">The first argument for formatting purposes.</param>
     /// <param name="argument2">The second argument for formatting purposes.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Debug<TArgument1, TArgument2>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, [CallerMemberName]string? callerMemberName = null);
+    void Debug<TArgument1, TArgument2>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message using formatting to the debug log.
@@ -77,7 +77,7 @@ public interface IStaticFullLogger
     /// <param name="argument2">The second argument for formatting purposes.</param>
     /// <param name="argument3">The third argument for formatting purposes.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Debug<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [CallerMemberName]string? callerMemberName = null);
+    void Debug<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a info log message with exception.
@@ -87,14 +87,14 @@ public interface IStaticFullLogger
     /// <param name="exception">The exception which to emit in the log.</param>
     /// <param name="message">A message to emit.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Info(Exception exception, [Localizable(false)] string message, [CallerMemberName]string? callerMemberName = null);
+    void Info(Exception exception, [Localizable(false)] string message, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message to the info log.
     /// </summary>
     /// <param name="message">A non-localizable message to send to the log.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Info([Localizable(false)] string message, [CallerMemberName]string? callerMemberName = null);
+    void Info([Localizable(false)] string message, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message to the info log.
@@ -102,7 +102,7 @@ public interface IStaticFullLogger
     /// <typeparam name="T">The calling type.</typeparam>
     /// <param name="message">A non-localizable message to send to the log.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Info<T>([Localizable(false)] string message, [CallerMemberName]string? callerMemberName = null);
+    void Info<T>([Localizable(false)] string message, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message using formatting to the info log.
@@ -112,7 +112,7 @@ public interface IStaticFullLogger
     /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
     /// <param name="argument">The argument for formatting purposes.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Info<TArgument>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument argument, [CallerMemberName]string? callerMemberName = null);
+    void Info<TArgument>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument argument, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message using formatting to the info log.
@@ -124,7 +124,7 @@ public interface IStaticFullLogger
     /// <param name="argument1">The first argument for formatting purposes.</param>
     /// <param name="argument2">The second argument for formatting purposes.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Info<TArgument1, TArgument2>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, [CallerMemberName]string? callerMemberName = null);
+    void Info<TArgument1, TArgument2>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message using formatting to the info log.
@@ -138,7 +138,7 @@ public interface IStaticFullLogger
     /// <param name="argument2">The second argument for formatting purposes.</param>
     /// <param name="argument3">The third argument for formatting purposes.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Info<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [CallerMemberName]string? callerMemberName = null);
+    void Info<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a warning log message with exception.
@@ -148,14 +148,14 @@ public interface IStaticFullLogger
     /// <param name="exception">The exception which to emit in the log.</param>
     /// <param name="message">A message to emit.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Warn(Exception exception, [Localizable(false)] string message, [CallerMemberName]string? callerMemberName = null);
+    void Warn(Exception exception, [Localizable(false)] string message, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message to the warning log.
     /// </summary>
     /// <param name="message">A non-localizable message to send to the log.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Warn([Localizable(false)] string message, [CallerMemberName]string? callerMemberName = null);
+    void Warn([Localizable(false)] string message, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message to the warning log.
@@ -163,7 +163,7 @@ public interface IStaticFullLogger
     /// <typeparam name="T">The calling type.</typeparam>
     /// <param name="message">A non-localizable message to send to the log.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Warn<T>([Localizable(false)] string message, [CallerMemberName]string? callerMemberName = null);
+    void Warn<T>([Localizable(false)] string message, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message using formatting to the warning log.
@@ -173,7 +173,7 @@ public interface IStaticFullLogger
     /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
     /// <param name="argument">The argument for formatting purposes.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Warn<TArgument>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument argument, [CallerMemberName]string? callerMemberName = null);
+    void Warn<TArgument>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument argument, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message using formatting to the warning log.
@@ -185,7 +185,7 @@ public interface IStaticFullLogger
     /// <param name="argument1">The first argument for formatting purposes.</param>
     /// <param name="argument2">The second argument for formatting purposes.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Warn<TArgument1, TArgument2>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, [CallerMemberName]string? callerMemberName = null);
+    void Warn<TArgument1, TArgument2>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message using formatting to the warning log.
@@ -199,7 +199,7 @@ public interface IStaticFullLogger
     /// <param name="argument2">The second argument for formatting purposes.</param>
     /// <param name="argument3">The third argument for formatting purposes.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Warn<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [CallerMemberName]string? callerMemberName = null);
+    void Warn<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a error log message with exception.
@@ -209,14 +209,14 @@ public interface IStaticFullLogger
     /// <param name="exception">The exception which to emit in the log.</param>
     /// <param name="message">A message to emit.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Error(Exception exception, [Localizable(false)] string message, [CallerMemberName]string? callerMemberName = null);
+    void Error(Exception exception, [Localizable(false)] string message, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message to the error log.
     /// </summary>
     /// <param name="message">A non-localizable message to send to the log.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Error([Localizable(false)] string message, [CallerMemberName]string? callerMemberName = null);
+    void Error([Localizable(false)] string message, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message to the error log.
@@ -224,7 +224,7 @@ public interface IStaticFullLogger
     /// <typeparam name="T">The calling type.</typeparam>
     /// <param name="message">A non-localizable message to send to the log.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Error<T>([Localizable(false)] string message, [CallerMemberName]string? callerMemberName = null);
+    void Error<T>([Localizable(false)] string message, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message using formatting to the error log.
@@ -234,7 +234,7 @@ public interface IStaticFullLogger
     /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
     /// <param name="argument">The argument for formatting purposes.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Error<TArgument>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument argument, [CallerMemberName]string? callerMemberName = null);
+    void Error<TArgument>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument argument, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message using formatting to the error log.
@@ -246,7 +246,7 @@ public interface IStaticFullLogger
     /// <param name="argument1">The first argument for formatting purposes.</param>
     /// <param name="argument2">The second argument for formatting purposes.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Error<TArgument1, TArgument2>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, [CallerMemberName]string? callerMemberName = null);
+    void Error<TArgument1, TArgument2>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message using formatting to the error log.
@@ -260,7 +260,7 @@ public interface IStaticFullLogger
     /// <param name="argument2">The second argument for formatting purposes.</param>
     /// <param name="argument3">The third argument for formatting purposes.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Error<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [CallerMemberName]string? callerMemberName = null);
+    void Error<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a fatal log message with exception.
@@ -270,14 +270,14 @@ public interface IStaticFullLogger
     /// <param name="exception">The exception which to emit in the log.</param>
     /// <param name="message">A message to emit.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Fatal(Exception exception, [Localizable(false)] string message, [CallerMemberName]string? callerMemberName = null);
+    void Fatal(Exception exception, [Localizable(false)] string message, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message to the fatal log.
     /// </summary>
     /// <param name="message">A non-localizable message to send to the log.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Fatal([Localizable(false)] string message, [CallerMemberName]string? callerMemberName = null);
+    void Fatal([Localizable(false)] string message, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message to the fatal log.
@@ -285,7 +285,7 @@ public interface IStaticFullLogger
     /// <typeparam name="T">The calling type.</typeparam>
     /// <param name="message">A non-localizable message to send to the log.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Fatal<T>([Localizable(false)] string message, [CallerMemberName]string? callerMemberName = null);
+    void Fatal<T>([Localizable(false)] string message, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message using formatting to the fatal log.
@@ -295,7 +295,7 @@ public interface IStaticFullLogger
     /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
     /// <param name="argument">The argument for formatting purposes.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Fatal<TArgument>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument argument, [CallerMemberName]string? callerMemberName = null);
+    void Fatal<TArgument>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument argument, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message using formatting to the fatal log.
@@ -307,7 +307,7 @@ public interface IStaticFullLogger
     /// <param name="argument1">The first argument for formatting purposes.</param>
     /// <param name="argument2">The second argument for formatting purposes.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Fatal<TArgument1, TArgument2>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, [CallerMemberName]string? callerMemberName = null);
+    void Fatal<TArgument1, TArgument2>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Emits a message using formatting to the fatal log.
@@ -321,7 +321,7 @@ public interface IStaticFullLogger
     /// <param name="argument2">The second argument for formatting purposes.</param>
     /// <param name="argument3">The third argument for formatting purposes.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Fatal<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [CallerMemberName]string? callerMemberName = null);
+    void Fatal<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Writes a message to the target.
@@ -329,7 +329,7 @@ public interface IStaticFullLogger
     /// <param name="message">The message to write.</param>
     /// <param name="logLevel">The severity level of the log message.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Write([Localizable(false)] string message, LogLevel logLevel, [CallerMemberName]string? callerMemberName = null);
+    void Write([Localizable(false)] string message, LogLevel logLevel, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Writes a message to the target.
@@ -338,7 +338,7 @@ public interface IStaticFullLogger
     /// <param name="message">The message to write.</param>
     /// <param name="logLevel">The severity level of the log message.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel, [CallerMemberName]string? callerMemberName = null);
+    void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Writes a message to the target.
@@ -347,7 +347,7 @@ public interface IStaticFullLogger
     /// <param name="type">The type.</param>
     /// <param name="logLevel">The log level.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel, [CallerMemberName]string? callerMemberName = null);
+    void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel, [CallerMemberName] string? callerMemberName = null);
 
     /// <summary>
     /// Writes a message to the target.
@@ -357,5 +357,5 @@ public interface IStaticFullLogger
     /// <param name="type">The type.</param>
     /// <param name="logLevel">The log level.</param>
     /// <param name="callerMemberName">Allows you to pass the method or property name of the caller to the method, used to allow the capture in the static logger of some additional context for support and debugging.</param>
-    void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel, [CallerMemberName]string? callerMemberName = null);
+    void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel, [CallerMemberName] string? callerMemberName = null);
 }

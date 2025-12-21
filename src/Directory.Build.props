@@ -39,8 +39,6 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <SplatTargetFrameworks>net8.0;net9.0;net10.0</SplatTargetFrameworks>
-    <SplatWindowsTargetFrameworks>net8.0-windows10.0.17763.0;net9.0-windows10.0.17763.0;net10.0-windows10.0.17763.0</SplatWindowsTargetFrameworks>
     <SplatModernTargets>net8.0;net9.0;net10.0</SplatModernTargets>
 
     <SplatLegacyTargets Condition="$([MSBuild]::IsOsPlatform('Windows'))">net462;net472;net481</SplatLegacyTargets>
