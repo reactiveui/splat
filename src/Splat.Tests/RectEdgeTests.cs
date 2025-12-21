@@ -66,7 +66,11 @@ public class RectEdgeTests
     public void RectEdge_HasAllExpectedNames()
     {
         var expectedNames = new[] { "Left", "Top", "Right", "Bottom" };
+#if NET8_0_OR_GREATER
         var actualNames = Enum.GetNames<RectEdge>();
+#else
+        var actualNames = Enum.GetNames(typeof(RectEdge));
+#endif
 
         using (Assert.EnterMultipleScope())
         {
@@ -89,7 +93,11 @@ public class RectEdgeTests
     [TestCase("Bottom", RectEdge.Bottom)]
     public void RectEdge_CanBeParsedFromString(string edgeName, RectEdge expectedEdge)
     {
+#if NET8_0_OR_GREATER
         var parsed = Enum.Parse<RectEdge>(edgeName);
+#else
+        var parsed = (RectEdge)Enum.Parse(typeof(RectEdge), edgeName);
+#endif
         Assert.That(parsed, Is.EqualTo(expectedEdge));
     }
 

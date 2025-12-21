@@ -93,9 +93,6 @@
     <PackageReference Include="PublicApiGenerator" />
     <PackageReference Include="Verify.NUnit" />
   </ItemGroup>
-  <ItemGroup Condition="$(IsTestProject)">
-    <PackageReference Include="coverlet.msbuild" />
-  </ItemGroup>
 
   <ItemGroup Condition="'$(IsTestProject)' != 'true'">
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
