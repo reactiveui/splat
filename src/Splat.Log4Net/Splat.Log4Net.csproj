@@ -6,6 +6,7 @@
     <Authors>.NET Foundation and Contributors</Authors>
     <Description>Log4Net integrations for Splat</Description>
     <PackageId>Splat.Log4Net</PackageId>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="log4net" />
@@ -42,5 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Splat.Logging\Splat.Logging.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Splat.Tests" />
   </ItemGroup>
 </Project>

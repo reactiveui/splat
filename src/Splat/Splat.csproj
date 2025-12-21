@@ -14,6 +14,16 @@
     <ProjectReference Include="..\Splat.Builder\Splat.Builder.csproj" />
     <ProjectReference Include="..\Splat.Logging\Splat.Logging.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Splat.Tests" />
+    <InternalsVisibleTo Include="Splat.Drawing" />
+    <InternalsVisibleTo Include="Splat.Drawing.Tests" />
+    <InternalsVisibleTo Include="Splat.TestRunner.Android" />
+    <InternalsVisibleTo Include="Splat.TestRunner.Uwp" />
+    <InternalsVisibleTo Include="Splat.Builder.Tests" />
+  </ItemGroup>
+
   <ItemGroup>
     <TypeForwarder Include="Splat.IMutableDependencyResolver" ForwardedTo="Splat.Core" />
     <TypeForwarder Include="Splat.IReadonlyDependencyResolver" ForwardedTo="Splat.Core" />
