@@ -22,11 +22,9 @@ public sealed class Log4NetLogger : ILogger, IDisposable
     /// <exception cref="ArgumentNullException">Thrown when the Log4Net logger is null.</exception>
     public Log4NetLogger(log4net.ILog inner)
     {
-        _inner = inner ?? throw new ArgumentNullException(nameof(inner));
-        if (_inner.Logger.Repository == null)
-        {
-            throw new ArgumentException("Log4Net repository is not initialized. Configure Log4Net before using with Splat.", nameof(inner));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(inner);
+        _inner = inner;
+        ArgumentExceptionHelper.ThrowIfNullWithMessage(_inner.Logger.Repository, "Log4Net repository is not initialized. Configure Log4Net before using with Splat.", nameof(inner));
 
         SetLogLevel();
         _inner.Logger.Repository.ConfigurationChanged += OnInnerLoggerReconfigured;

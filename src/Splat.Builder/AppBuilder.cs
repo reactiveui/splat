@@ -23,8 +23,10 @@ public class AppBuilder : IAppBuilder, IAppInstance
     /// <exception cref="ArgumentNullException">resolver.</exception>
     public AppBuilder(IMutableDependencyResolver resolver, IReadonlyDependencyResolver? current = null)
     {
+        ArgumentExceptionHelper.ThrowIfNull(resolver);
+
         UsingBuilder = true;
-        CurrentMutable = resolver ?? throw new ArgumentNullException(nameof(resolver));
+        CurrentMutable = resolver;
         Current = current;
         _resolverProvider = () => CurrentMutable;
         _serviceProvider = () => Current;

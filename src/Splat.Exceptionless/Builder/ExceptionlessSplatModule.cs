@@ -12,13 +12,19 @@ namespace Splat.Builder;
 /// <summary>
 /// Splat module for configuring the Exceptionless integration.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="ExceptionlessSplatModule"/> class.
-/// </remarks>
-/// <param name="exceptionlessClient">The Exceptionless client.</param>
-public sealed class ExceptionlessSplatModule(ExceptionlessClient exceptionlessClient) : IModule
+public sealed class ExceptionlessSplatModule : IModule
 {
-    private readonly ExceptionlessClient _container = exceptionlessClient ?? throw new ArgumentNullException(nameof(exceptionlessClient));
+    private readonly ExceptionlessClient _container;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExceptionlessSplatModule"/> class.
+    /// </summary>
+    /// <param name="exceptionlessClient">The Exceptionless client.</param>
+    public ExceptionlessSplatModule(ExceptionlessClient exceptionlessClient)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(exceptionlessClient);
+        _container = exceptionlessClient;
+    }
 
     /// <inheritdoc />
     public void Configure(IMutableDependencyResolver resolver) => resolver.UseExceptionlessWithWrappingFullLogger(_container);

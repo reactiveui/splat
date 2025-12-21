@@ -92,12 +92,11 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     /// <param name="paramComparer">A comparer for the parameter.</param>
     public MemoizingMRUCache(Func<TParam, object?, TVal> calculationFunc, int maxSize, Action<TVal>? onRelease, IEqualityComparer<TParam> paramComparer)
     {
-        if (maxSize <= 0)
-        {
-            throw new ArgumentException("Max size must be larger than 0.", nameof(maxSize));
-        }
+        ArgumentExceptionHelper.ThrowIfLessThanOrEqual(maxSize, 0);
 
-        _calculationFunction = calculationFunc ?? throw new ArgumentNullException(nameof(calculationFunc));
+        ArgumentExceptionHelper.ThrowIfNull(calculationFunc);
+
+        _calculationFunction = calculationFunc;
         _releaseFunction = onRelease;
         _maxCacheSize = maxSize;
         _comparer = paramComparer ?? EqualityComparer<TParam>.Default;

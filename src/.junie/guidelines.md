@@ -328,12 +328,12 @@ public partial class ObservableLinkedList<T> : INotifyCollectionChanged, INotify
 - **net462/net472/net481** - .NET Framework for Windows compatibility
 
 ### Windows-Specific Frameworks
-- **net8.0-windows10.0.17763.0** - Windows-specific APIs
-- **net9.0-windows10.0.17763.0** - Windows-specific APIs
-- **net10.0-windows10.0.17763.0** - Latest Windows-specific APIs
+- **net8.0-windows10.0.19041.0** - Windows-specific APIs
+- **net9.0-windows10.0.19041.0** - Windows-specific APIs
+- **net10.0-windows10.0.19041.0** - Latest Windows-specific APIs
 
 ### AOT Compatibility
-- **net8.0 and net9.0** projects have `<IsAotCompatible>true</IsAotCompatible>`
+- **net8.0, net9.0 and net10.0** projects have `<IsAotCompatible>true</IsAotCompatible>`
 - **Test AOT scenarios** in `Splat.Aot.Tests` project
 - **Avoid reflection** where possible in AOT-compatible code paths
 

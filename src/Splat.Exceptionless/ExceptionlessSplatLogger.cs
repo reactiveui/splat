@@ -40,7 +40,8 @@ public sealed class ExceptionlessSplatLogger : ILogger
     {
         ArgumentExceptionHelper.ThrowIfNull(sourceType);
 
-        _sourceType = sourceType.FullName ?? throw new ArgumentException("Cannot find the source type name", nameof(sourceType));
+        ArgumentExceptionHelper.ThrowIfNullWithMessage(sourceType.FullName, "Cannot find the source type name");
+        _sourceType = sourceType.FullName!;
         ArgumentExceptionHelper.ThrowIfNull(exceptionlessClient);
         _exceptionlessClient = exceptionlessClient;
         _exceptionlessClient.Configuration.Changed += OnInnerLoggerReconfigured;

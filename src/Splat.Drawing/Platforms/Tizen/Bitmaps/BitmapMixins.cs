@@ -24,9 +24,9 @@ public static class BitmapMixins
     /// </summary>
     /// <param name="value">The bitmap to convert.</param>
     /// <returns>A <see cref="BitmapFrame"/> bitmap.</returns>
-    public static BitmapFrame ToNative(this IBitmap value) => value switch
+    public static BitmapFrame ToNative(this IBitmap value)
     {
-        null => throw new ArgumentNullException(nameof(value)),
-        _ => (value as TizenBitmap)?.Inner ?? throw new InvalidOperationException("Bitmap has been disposed")
-    };
+        ArgumentExceptionHelper.ThrowIfNull(value);
+        return (value as TizenBitmap)?.Inner ?? throw new InvalidOperationException("Bitmap has been disposed");
+    }
 }

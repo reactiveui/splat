@@ -29,19 +29,20 @@ internal sealed class BitmapSourceBitmap(BitmapSource bitmap) : IBitmap
     public BitmapSource? Inner { get; private set; } = bitmap;
 
     /// <inheritdoc />
-    public Task Save(CompressedBitmapFormat format, float quality, Stream target) => target switch
+    public Task Save(CompressedBitmapFormat format, float quality, Stream target)
     {
-        null => throw new ArgumentNullException(nameof(target)),
-        _ => Task.Run(() =>
-    {
-        var encoder = format == CompressedBitmapFormat.Jpeg ?
-            new JpegBitmapEncoder { QualityLevel = (int)(quality * 100.0f) } :
-            (BitmapEncoder)new PngBitmapEncoder();
+        ArgumentExceptionHelper.ThrowIfNull(target);
 
-        encoder.Frames.Add(BitmapFrame.Create(Inner));
-        encoder.Save(target);
-    })
-    };
+        return Task.Run(() =>
+        {
+            var encoder = format == CompressedBitmapFormat.Jpeg ?
+                new JpegBitmapEncoder { QualityLevel = (int)(quality * 100.0f) } :
+                (BitmapEncoder)new PngBitmapEncoder();
+
+            encoder.Frames.Add(BitmapFrame.Create(Inner));
+            encoder.Save(target);
+        });
+    }
 
     /// <inheritdoc />
     public void Dispose() => Inner = null;

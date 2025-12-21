@@ -12,13 +12,19 @@ namespace Splat;
 /// <summary>
 /// Exceptionless View Tracking integration.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="ExceptionlessViewTracking"/> class.
-/// </remarks>
-/// <param name="exceptionlessClient">The exceptionless client to use.</param>
-public sealed class ExceptionlessViewTracking(ExceptionlessClient exceptionlessClient) : IViewTracking
+public sealed class ExceptionlessViewTracking : IViewTracking
 {
-    private readonly ExceptionlessClient _exceptionlessClient = exceptionlessClient ?? throw new ArgumentNullException(nameof(exceptionlessClient));
+    private readonly ExceptionlessClient _exceptionlessClient;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExceptionlessViewTracking"/> class.
+    /// </summary>
+    /// <param name="exceptionlessClient">The exceptionless client to use.</param>
+    public ExceptionlessViewTracking(ExceptionlessClient exceptionlessClient)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(exceptionlessClient);
+        _exceptionlessClient = exceptionlessClient;
+    }
 
     /// <summary>
     /// Track a view navigation using just a name.

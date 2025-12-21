@@ -11,13 +11,19 @@ namespace Splat.Builder;
 /// <summary>
 /// Splat module for configuring the Ninject dependency resolver.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="NinjectSplatModule"/> class.
-/// </remarks>
-/// <param name="kernel">The Ninject container.</param>
-public sealed class NinjectSplatModule(IKernel kernel) : IModule
+public sealed class NinjectSplatModule : IModule
 {
-    private readonly IKernel _container = kernel ?? throw new ArgumentNullException(nameof(kernel));
+    private readonly IKernel _container;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NinjectSplatModule"/> class.
+    /// </summary>
+    /// <param name="kernel">The Ninject container.</param>
+    public NinjectSplatModule(IKernel kernel)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(kernel);
+        _container = kernel;
+    }
 
     /// <inheritdoc />
     public void Configure(IMutableDependencyResolver resolver) => _container.UseNinjectDependencyResolver();

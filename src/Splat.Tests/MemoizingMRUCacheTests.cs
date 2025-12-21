@@ -31,10 +31,10 @@ public class MemoizingMRUCacheTests
     {
         using (Assert.EnterMultipleScope())
         {
-            Assert.Throws<ArgumentException>(() =>
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
                 new MemoizingMRUCache<string, DummyObjectClass1>((_, _) => new(), 0));
 
-            Assert.Throws<ArgumentException>(() =>
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
                 new MemoizingMRUCache<string, DummyObjectClass1>((_, _) => new(), -1));
         }
     }

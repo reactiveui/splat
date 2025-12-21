@@ -462,6 +462,7 @@ dotnet_diagnostic.RCS1231.severity = suggestion      # Make parameter ref read-o
 dotnet_diagnostic.RCS1242.severity = error           # Do not pass non-read-only struct by read-only reference
 dotnet_diagnostic.RCS1248.severity = error           # Normalize null check
 dotnet_diagnostic.RCS1256.severity = none            # Invalid argument null check
+dotnet_diagnostic.RCS1263.severity = error           # Actionable parameter name in documentation comment
 
 ###################
 # Roslynator Analyzers (RCS) - Performance & Optimization

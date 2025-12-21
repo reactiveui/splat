@@ -11,13 +11,19 @@ namespace Splat;
 /// <summary>
 /// A full logger which used by the default static logger to allow capture of .NET framework caller data. Wraps a <see cref="IFullLogger"/>.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="StaticFullLogger"/> class.
-/// </remarks>
-/// <param name="fullLogger">The <see cref="IFullLogger"/> to wrap in this class.</param>
-public sealed class StaticFullLogger(IFullLogger fullLogger) : IStaticFullLogger
+public sealed class StaticFullLogger : IStaticFullLogger
 {
-    private readonly IFullLogger _fullLogger = fullLogger ?? throw new ArgumentNullException(nameof(fullLogger));
+    private readonly IFullLogger _fullLogger;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="StaticFullLogger"/> class.
+    /// </summary>
+    /// <param name="fullLogger">The <see cref="IFullLogger"/> to wrap in this class.</param>
+    public StaticFullLogger(IFullLogger fullLogger)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(fullLogger);
+        _fullLogger = fullLogger;
+    }
 
     /// <inheritdoc/>
     public LogLevel Level => _fullLogger.Level;

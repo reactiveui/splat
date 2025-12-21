@@ -11,14 +11,21 @@ namespace Splat;
 /// <summary>
 /// A full logger which wraps a <see cref="ILogger"/>.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="WrappingFullLogger"/> class.
-/// </remarks>
-/// <param name="inner">The <see cref="ILogger"/> to wrap in this class.</param>
-public class WrappingFullLogger(ILogger inner) : AllocationFreeLoggerBase(inner), IFullLogger
+public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
 {
-    private readonly ILogger _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+    private readonly ILogger _inner;
     private readonly MethodInfo _stringFormat = typeof(string).GetMethod("Format", [typeof(IFormatProvider), typeof(string), typeof(object[])]) ?? throw new InvalidOperationException("Cannot find the Format method which is required.");
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WrappingFullLogger"/> class.
+    /// </summary>
+    /// <param name="inner">The <see cref="ILogger"/> to wrap in this class.</param>
+    public WrappingFullLogger(ILogger inner)
+        : base(inner)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(inner);
+        _inner = inner;
+    }
 
     /// <inheritdoc />
     public void Debug<T>(T value)
