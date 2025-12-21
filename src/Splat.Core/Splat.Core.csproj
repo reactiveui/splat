@@ -6,11 +6,28 @@
     <Nullable>enable</Nullable>
     <Authors>.NET Foundation and Contributors</Authors>
     <Description>A library to make things cross-platform that should be, providing Builder and Dependency Injection abstractions and implementations. AOT compatible for .NET 8+</Description>
-      </PropertyGroup>
+  </PropertyGroup>
   <PropertyGroup Condition="$(TargetFramework.StartsWith('net8.0')) or $(TargetFramework.StartsWith('net9.0'))">
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Reactive" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Splat" />
+    <InternalsVisibleTo Include="Splat.Builder" />
+    <InternalsVisibleTo Include="Splat.Logging" />
+    <InternalsVisibleTo Include="Splat.Drawing" />
+    <InternalsVisibleTo Include="Splat.DryIoc" />
+    <InternalsVisibleTo Include="Splat.Microsoft.Extensions.DependencyInjection" />
+    <InternalsVisibleTo Include="Splat.Microsoft.Extensions.Logging" />
+    <InternalsVisibleTo Include="Splat.Raygun" />
+    <InternalsVisibleTo Include="Splat.Exceptionless" />
+    <InternalsVisibleTo Include="Splat.Tests" />
+    <InternalsVisibleTo Include="Splat.Drawing.Tests" />
+    <InternalsVisibleTo Include="Splat.TestRunner.Android" />
+    <InternalsVisibleTo Include="Splat.TestRunner.Uwp" />
+    <InternalsVisibleTo Include="Splat.Builder.Tests" />
   </ItemGroup>
 </Project>

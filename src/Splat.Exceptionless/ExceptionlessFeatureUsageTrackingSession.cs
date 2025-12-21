@@ -26,10 +26,7 @@ public sealed class ExceptionlessFeatureUsageTrackingSession : IFeatureUsageTrac
         string featureName,
         Guid parentReference)
     {
-        if (string.IsNullOrWhiteSpace(featureName))
-        {
-            throw new ArgumentNullException(nameof(featureName));
-        }
+        ArgumentExceptionHelper.ThrowIfNullOrWhiteSpace(featureName);
 
         ParentReference = parentReference;
         FeatureName = featureName;

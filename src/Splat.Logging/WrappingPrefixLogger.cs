@@ -33,14 +33,7 @@ public class WrappingPrefixLogger(ILogger inner, Type callingType) : ILogger
     /// <inheritdoc />
     public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
     {
-#if NET8_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(type);
-#else
-        if (type is null)
-        {
-            throw new ArgumentNullException(nameof(type));
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(type);
 
         _inner.Write($"{type.Name}: {message}", type, logLevel);
     }
@@ -48,14 +41,7 @@ public class WrappingPrefixLogger(ILogger inner, Type callingType) : ILogger
     /// <inheritdoc />
     public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel)
     {
-#if NET8_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(type);
-#else
-        if (type is null)
-        {
-            throw new ArgumentNullException(nameof(type));
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(type);
 
         _inner.Write(exception, $"{type.Name}: {message}", type, logLevel);
     }

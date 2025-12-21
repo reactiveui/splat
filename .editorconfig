@@ -215,6 +215,7 @@ dotnet_diagnostic.CA1060.severity = error            # Move P/Invokes to NativeM
 dotnet_diagnostic.CA1061.severity = error            # Do not hide base class methods
 dotnet_diagnostic.CA1062.severity = error            # Validate arguments of public methods
 dotnet_diagnostic.CA1063.severity = error            # Implement IDisposable correctly
+dotnet_diagnostic.CA1515.severity = none             # Consider making internal types internal
 dotnet_diagnostic.CA1064.severity = error            # Exceptions should be public
 dotnet_diagnostic.CA1065.severity = error            # Do not raise exceptions in unexpected locations
 dotnet_diagnostic.CA1066.severity = error            # Implement IEquatable when overriding Equals

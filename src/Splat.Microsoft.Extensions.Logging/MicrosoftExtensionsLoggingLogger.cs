@@ -51,14 +51,7 @@ public sealed class MicrosoftExtensionsLoggingLogger(global::Microsoft.Extension
     /// <inheritdoc />
     public void Write(string message, Type type, LogLevel logLevel)
     {
-#if NETFRAMEWORK
-        if (type is null)
-        {
-            throw new ArgumentNullException(nameof(type));
-        }
-#else
-        ArgumentNullException.ThrowIfNull(type);
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(type);
 
         using (_inner.BeginScope(type.ToString()))
         {
@@ -69,14 +62,7 @@ public sealed class MicrosoftExtensionsLoggingLogger(global::Microsoft.Extension
     /// <inheritdoc />
     public void Write(Exception exception, string message, Type type, LogLevel logLevel)
     {
-#if NETFRAMEWORK
-        if (type is null)
-        {
-            throw new ArgumentNullException(nameof(type));
-        }
-#else
-        ArgumentNullException.ThrowIfNull(type);
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(type);
 
         using (_inner.BeginScope(type.ToString()))
         {

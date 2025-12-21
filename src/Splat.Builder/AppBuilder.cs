@@ -102,7 +102,7 @@ public class AppBuilder : IAppBuilder, IAppInstance
     public IAppBuilder UsingModule<T>(T registrationModule)
         where T : IModule
     {
-        registrationModule.ThrowArgumentNullExceptionIfNull(nameof(registrationModule));
+        ArgumentExceptionHelper.ThrowIfNull(registrationModule);
         _registrations.Add(registrationModule.Configure);
         return this;
     }
@@ -114,7 +114,7 @@ public class AppBuilder : IAppBuilder, IAppInstance
     /// <returns>The builder instance for method chaining.</returns>
     public IAppBuilder WithCustomRegistration(Action<IMutableDependencyResolver> configureAction)
     {
-        configureAction.ThrowArgumentNullExceptionIfNull(nameof(configureAction));
+        ArgumentExceptionHelper.ThrowIfNull(configureAction);
 
         _registrations.Add(configureAction);
         return this;

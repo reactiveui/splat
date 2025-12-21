@@ -120,10 +120,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     /// <returns>The value that we have got.</returns>
     public TVal Get(TParam key, object? context = null)
     {
-        if (key is null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(key);
 
         lock (_lockObject)
         {
@@ -153,10 +150,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     /// <returns>If we were able to retrieve the value or not.</returns>
     public bool TryGet(TParam key, out TVal? result)
     {
-        if (key is null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(key);
 
         lock (_lockObject)
         {
@@ -182,10 +176,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     /// <param name="key">The key to invalidate the value for.</param>
     public void Invalidate(TParam key)
     {
-        if (key is null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(key);
 
         lock (_lockObject)
         {

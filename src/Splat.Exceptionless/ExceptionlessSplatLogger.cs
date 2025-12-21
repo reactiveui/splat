@@ -38,17 +38,11 @@ public sealed class ExceptionlessSplatLogger : ILogger
         Type sourceType,
         ExceptionlessClient exceptionlessClient)
     {
-#if NETFRAMEWORK
-        if (sourceType is null)
-        {
-            throw new ArgumentNullException(nameof(sourceType));
-        }
-#else
-        ArgumentNullException.ThrowIfNull(sourceType);
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(sourceType);
 
         _sourceType = sourceType.FullName ?? throw new ArgumentException("Cannot find the source type name", nameof(sourceType));
-        _exceptionlessClient = exceptionlessClient ?? throw new ArgumentNullException(nameof(exceptionlessClient));
+        ArgumentExceptionHelper.ThrowIfNull(exceptionlessClient);
+        _exceptionlessClient = exceptionlessClient;
         _exceptionlessClient.Configuration.Changed += OnInnerLoggerReconfigured;
         SetLogLevel();
     }
@@ -81,14 +75,7 @@ public sealed class ExceptionlessSplatLogger : ILogger
     /// <inheritdoc />
     public void Write(string message, Type type, LogLevel logLevel)
     {
-#if NETFRAMEWORK
-        if (type is null)
-        {
-            throw new ArgumentNullException(nameof(type));
-        }
-#else
-        ArgumentNullException.ThrowIfNull(type);
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(type);
 
         if ((int)logLevel < (int)Level)
         {
@@ -101,14 +88,7 @@ public sealed class ExceptionlessSplatLogger : ILogger
     /// <inheritdoc />
     public void Write(Exception exception, string message, Type type, LogLevel logLevel)
     {
-#if NETFRAMEWORK
-        if (type is null)
-        {
-            throw new ArgumentNullException(nameof(type));
-        }
-#else
-        ArgumentNullException.ThrowIfNull(type);
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(type);
 
         if ((int)logLevel < (int)Level)
         {

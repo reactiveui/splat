@@ -35,14 +35,7 @@ public sealed class MicrosoftExtensionsLogProvider : ILoggerProvider
                 return;
             }
 
-#if NETFRAMEWORK
-            if (formatter is null)
-            {
-                throw new ArgumentNullException(nameof(formatter));
-            }
-#else
-            ArgumentNullException.ThrowIfNull(formatter);
-#endif
+            ArgumentExceptionHelper.ThrowIfNull(formatter);
 
             var splatLogLevel = MsLoggingHelpers.MsLog2SplatDictionary[logLevel];
 

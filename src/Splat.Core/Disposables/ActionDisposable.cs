@@ -19,7 +19,7 @@ internal sealed class ActionDisposable : IDisposable
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="block"/> is null.</exception>
     public ActionDisposable(Action block)
     {
-        block.ThrowArgumentNullExceptionIfNull(nameof(block));
+        ArgumentExceptionHelper.ThrowIfNull(block);
         _block = block;
     }
 

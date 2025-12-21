@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(SplatCoreTargets)</TargetFrameworks>
+    <TargetFrameworks>$(SplatModernTargets)</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <PropertyGroup Condition="$([MSBuild]::IsOsPlatform('Windows'))">

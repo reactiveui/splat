@@ -51,14 +51,7 @@ public static class MicrosoftExtensionsLoggingExtensions
     /// <returns>The logging builder for chaining.</returns>
     public static ILoggingBuilder AddSplat(this ILoggingBuilder builder)
     {
-#if NETFRAMEWORK
-        if (builder is null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-#else
-        ArgumentNullException.ThrowIfNull(builder);
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(builder);
 
         builder.Services.AddSingleton<ILoggerProvider, MicrosoftExtensionsLogProvider>();
 
@@ -72,14 +65,7 @@ public static class MicrosoftExtensionsLoggingExtensions
     /// <returns>The logger factory for chaining.</returns>
     public static ILoggerFactory AddSplat(this ILoggerFactory loggerFactory)
     {
-#if NETFRAMEWORK
-        if (loggerFactory is null)
-        {
-            throw new ArgumentNullException(nameof(loggerFactory));
-        }
-#else
-        ArgumentNullException.ThrowIfNull(loggerFactory);
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(loggerFactory);
 
         loggerFactory.AddProvider(new MicrosoftExtensionsLogProvider());
         return loggerFactory;

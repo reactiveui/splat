@@ -16,14 +16,7 @@ public static class SplatBuilderExtensions
     /// <param name="module">The module to configure.</param>
     public static void Apply(this IModule module)
     {
-#if NETFRAMEWORK
-        if (module is null)
-        {
-            throw new ArgumentNullException(nameof(module));
-        }
-#else
-        ArgumentNullException.ThrowIfNull(module);
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(module);
 
         module.Configure(AppLocator.CurrentMutable);
     }
@@ -36,14 +29,7 @@ public static class SplatBuilderExtensions
     /// <exception cref="ArgumentNullException">Thrown when resolver is null.</exception>
     public static IAppBuilder CreateSplatBuilder(this IMutableDependencyResolver resolver)
     {
-#if NETFRAMEWORK
-        if (resolver is null)
-        {
-            throw new ArgumentNullException(nameof(resolver));
-        }
-#else
-        ArgumentNullException.ThrowIfNull(resolver);
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(resolver);
 
         // Create a new AppBuilder instance with the provided resolver
         return new AppBuilder(resolver);
@@ -58,14 +44,7 @@ public static class SplatBuilderExtensions
     /// <exception cref="ArgumentNullException">Thrown when resolver is null.</exception>
     public static IAppBuilder CreateSplatBuilder(this IMutableDependencyResolver resolver, Action<IMutableDependencyResolver> configureAction)
     {
-#if NETFRAMEWORK
-        if (resolver is null)
-        {
-            throw new ArgumentNullException(nameof(resolver));
-        }
-#else
-        ArgumentNullException.ThrowIfNull(resolver);
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(resolver);
 
         // Create a new AppBuilder instance with the provided resolver
         return new AppBuilder(resolver).WithCustomRegistration(configureAction);

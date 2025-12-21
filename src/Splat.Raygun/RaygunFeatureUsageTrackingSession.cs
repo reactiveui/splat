@@ -41,10 +41,7 @@ public sealed class RaygunFeatureUsageTrackingSession : IFeatureUsageTrackingSes
         RaygunClient raygunClient,
         RaygunSettings raygunSettings)
     {
-        if (string.IsNullOrWhiteSpace(featureName))
-        {
-            throw new ArgumentNullException(nameof(featureName));
-        }
+        ArgumentExceptionHelper.ThrowIfNullOrWhiteSpace(featureName);
 
         _raygunClient = raygunClient;
         _raygunSettings = raygunSettings;

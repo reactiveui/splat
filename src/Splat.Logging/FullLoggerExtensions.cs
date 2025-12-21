@@ -17,20 +17,8 @@ public static class FullLoggerExtensions
     /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
     public static void Debug(this IFullLogger logger, Func<string> function)
     {
-#if NET8_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(logger);
-        ArgumentNullException.ThrowIfNull(function);
-#else
-        if (logger is null)
-        {
-            throw new ArgumentNullException(nameof(logger));
-        }
-
-        if (function is null)
-        {
-            throw new ArgumentNullException(nameof(function));
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(logger);
+        ArgumentExceptionHelper.ThrowIfNull(function);
 
         if (logger.IsDebugEnabled)
         {
@@ -46,20 +34,8 @@ public static class FullLoggerExtensions
     /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
     public static void Debug<T>(this IFullLogger logger, Func<string> function)
     {
-#if NET8_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(logger);
-        ArgumentNullException.ThrowIfNull(function);
-#else
-        if (logger is null)
-        {
-            throw new ArgumentNullException(nameof(logger));
-        }
-
-        if (function is null)
-        {
-            throw new ArgumentNullException(nameof(function));
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(logger);
+        ArgumentExceptionHelper.ThrowIfNull(function);
 
         if (logger.IsDebugEnabled)
         {
@@ -75,20 +51,8 @@ public static class FullLoggerExtensions
     /// <param name="exception">A exception to log about.</param>
     public static void DebugException(this IFullLogger logger, Func<string> function, Exception exception)
     {
-#if NET8_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(logger);
-        ArgumentNullException.ThrowIfNull(function);
-#else
-        if (logger is null)
-        {
-            throw new ArgumentNullException(nameof(logger));
-        }
-
-        if (function is null)
-        {
-            throw new ArgumentNullException(nameof(function));
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(logger);
+        ArgumentExceptionHelper.ThrowIfNull(function);
 
         if (logger.IsDebugEnabled)
         {
@@ -105,20 +69,8 @@ public static class FullLoggerExtensions
     /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
     public static void Info(this IFullLogger logger, Func<string> function)
     {
-#if NET8_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(logger);
-        ArgumentNullException.ThrowIfNull(function);
-#else
-        if (logger is null)
-        {
-            throw new ArgumentNullException(nameof(logger));
-        }
-
-        if (function is null)
-        {
-            throw new ArgumentNullException(nameof(function));
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(logger);
+        ArgumentExceptionHelper.ThrowIfNull(function);
 
         if (logger.IsInfoEnabled)
         {
@@ -134,20 +86,8 @@ public static class FullLoggerExtensions
     /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
     public static void Info<T>(this IFullLogger logger, Func<string> function)
     {
-#if NET8_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(logger);
-        ArgumentNullException.ThrowIfNull(function);
-#else
-        if (logger is null)
-        {
-            throw new ArgumentNullException(nameof(logger));
-        }
-
-        if (function is null)
-        {
-            throw new ArgumentNullException(nameof(function));
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(logger);
+        ArgumentExceptionHelper.ThrowIfNull(function);
 
         if (logger.IsInfoEnabled)
         {
@@ -163,20 +103,8 @@ public static class FullLoggerExtensions
     /// <param name="exception">A exception to log about.</param>
     public static void InfoException(this IFullLogger logger, Func<string> function, Exception exception)
     {
-#if NET8_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(logger);
-        ArgumentNullException.ThrowIfNull(function);
-#else
-        if (logger is null)
-        {
-            throw new ArgumentNullException(nameof(logger));
-        }
-
-        if (function is null)
-        {
-            throw new ArgumentNullException(nameof(function));
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(logger);
+        ArgumentExceptionHelper.ThrowIfNull(function);
 
         if (logger.IsInfoEnabled)
         {
@@ -193,20 +121,8 @@ public static class FullLoggerExtensions
     /// <param name="function">The function to evaluate if Warn logging is enabled.</param>
     public static void Warn(this IFullLogger logger, Func<string> function)
     {
-#if NET8_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(logger);
-        ArgumentNullException.ThrowIfNull(function);
-#else
-        if (logger is null)
-        {
-            throw new ArgumentNullException(nameof(logger));
-        }
-
-        if (function is null)
-        {
-            throw new ArgumentNullException(nameof(function));
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(logger);
+        ArgumentExceptionHelper.ThrowIfNull(function);
 
         if (logger.IsWarnEnabled)
         {
@@ -222,20 +138,8 @@ public static class FullLoggerExtensions
     /// <param name="function">The function to evaluate if Warn logging is enabled.</param>
     public static void Warn<T>(this IFullLogger logger, Func<string> function)
     {
-#if NET8_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(logger);
-        ArgumentNullException.ThrowIfNull(function);
-#else
-        if (logger is null)
-        {
-            throw new ArgumentNullException(nameof(logger));
-        }
-
-        if (function is null)
-        {
-            throw new ArgumentNullException(nameof(function));
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(logger);
+        ArgumentExceptionHelper.ThrowIfNull(function);
 
         if (logger.IsWarnEnabled)
         {
@@ -251,20 +155,8 @@ public static class FullLoggerExtensions
     /// <param name="exception">A exception to log about.</param>
     public static void WarnException(this IFullLogger logger, Func<string> function, Exception exception)
     {
-#if NET8_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(logger);
-        ArgumentNullException.ThrowIfNull(function);
-#else
-        if (logger is null)
-        {
-            throw new ArgumentNullException(nameof(logger));
-        }
-
-        if (function is null)
-        {
-            throw new ArgumentNullException(nameof(function));
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(logger);
+        ArgumentExceptionHelper.ThrowIfNull(function);
 
         if (logger.IsWarnEnabled)
         {
@@ -281,20 +173,8 @@ public static class FullLoggerExtensions
     /// <param name="function">The function to evaluate if Error logging is enabled.</param>
     public static void Error(this IFullLogger logger, Func<string> function)
     {
-#if NET8_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(logger);
-        ArgumentNullException.ThrowIfNull(function);
-#else
-        if (logger is null)
-        {
-            throw new ArgumentNullException(nameof(logger));
-        }
-
-        if (function is null)
-        {
-            throw new ArgumentNullException(nameof(function));
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(logger);
+        ArgumentExceptionHelper.ThrowIfNull(function);
 
         if (logger.IsErrorEnabled)
         {
@@ -310,20 +190,8 @@ public static class FullLoggerExtensions
     /// <param name="function">The function to evaluate if Error logging is enabled.</param>
     public static void Error<T>(this IFullLogger logger, Func<string> function)
     {
-#if NET8_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(logger);
-        ArgumentNullException.ThrowIfNull(function);
-#else
-        if (logger is null)
-        {
-            throw new ArgumentNullException(nameof(logger));
-        }
-
-        if (function is null)
-        {
-            throw new ArgumentNullException(nameof(function));
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(logger);
+        ArgumentExceptionHelper.ThrowIfNull(function);
 
         if (logger.IsErrorEnabled)
         {
@@ -339,20 +207,8 @@ public static class FullLoggerExtensions
     /// <param name="exception">A exception to log about.</param>
     public static void ErrorException(this IFullLogger logger, Func<string> function, Exception exception)
     {
-#if NET8_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(logger);
-        ArgumentNullException.ThrowIfNull(function);
-#else
-        if (logger is null)
-        {
-            throw new ArgumentNullException(nameof(logger));
-        }
-
-        if (function is null)
-        {
-            throw new ArgumentNullException(nameof(function));
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(logger);
+        ArgumentExceptionHelper.ThrowIfNull(function);
 
         if (logger.IsErrorEnabled)
         {
@@ -369,20 +225,8 @@ public static class FullLoggerExtensions
     /// <param name="function">The function to evaluate if Fatal logging is enabled.</param>
     public static void Fatal(this IFullLogger logger, Func<string> function)
     {
-#if NET8_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(logger);
-        ArgumentNullException.ThrowIfNull(function);
-#else
-        if (logger is null)
-        {
-            throw new ArgumentNullException(nameof(logger));
-        }
-
-        if (function is null)
-        {
-            throw new ArgumentNullException(nameof(function));
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(logger);
+        ArgumentExceptionHelper.ThrowIfNull(function);
 
         if (logger.IsFatalEnabled)
         {
@@ -398,20 +242,8 @@ public static class FullLoggerExtensions
     /// <param name="function">The function to evaluate if Fatal logging is enabled.</param>
     public static void Fatal<T>(this IFullLogger logger, Func<string> function)
     {
-#if NET8_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(logger);
-        ArgumentNullException.ThrowIfNull(function);
-#else
-        if (logger is null)
-        {
-            throw new ArgumentNullException(nameof(logger));
-        }
-
-        if (function is null)
-        {
-            throw new ArgumentNullException(nameof(function));
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(logger);
+        ArgumentExceptionHelper.ThrowIfNull(function);
 
         if (logger.IsFatalEnabled)
         {
@@ -427,20 +259,8 @@ public static class FullLoggerExtensions
     /// <param name="exception">A exception to log about.</param>
     public static void FatalException(this IFullLogger logger, Func<string> function, Exception exception)
     {
-#if NET8_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(logger);
-        ArgumentNullException.ThrowIfNull(function);
-#else
-        if (logger is null)
-        {
-            throw new ArgumentNullException(nameof(logger));
-        }
-
-        if (function is null)
-        {
-            throw new ArgumentNullException(nameof(function));
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(logger);
+        ArgumentExceptionHelper.ThrowIfNull(function);
 
         if (logger.IsFatalEnabled)
         {

@@ -51,7 +51,7 @@ internal sealed class CompositeDisposable : IDisposable
     /// <exception cref="ArgumentException">Any of the disposables in the <paramref name="disposables"/> collection is <c>null</c>.</exception>
     public CompositeDisposable(params IDisposable[] disposables)
     {
-        disposables.ThrowArgumentNullExceptionIfNull(nameof(disposables));
+        ArgumentExceptionHelper.ThrowIfNull(disposables);
 
         _disposables = new(disposables.Length);
         Init(disposables);
@@ -65,10 +65,10 @@ internal sealed class CompositeDisposable : IDisposable
     /// <exception cref="ArgumentException">Any of the disposables in the <paramref name="disposables"/> collection is <c>null</c>.</exception>
     public CompositeDisposable(IEnumerable<IDisposable> disposables)
     {
+        ArgumentExceptionHelper.ThrowIfNull(disposables);
+
         switch (disposables)
         {
-            case null:
-                throw new ArgumentNullException(nameof(disposables));
 
             // If the disposables is a collection, get its size
             // and use it as a capacity hint for the copy.

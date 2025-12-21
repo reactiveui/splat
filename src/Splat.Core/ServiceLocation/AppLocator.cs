@@ -64,7 +64,7 @@ public static class AppLocator
     /// ignore this.</returns>
     public static IDisposable RegisterResolverCallbackChanged(Action callback)
     {
-        callback.ThrowArgumentNullExceptionIfNull(nameof(callback));
+        ArgumentExceptionHelper.ThrowIfNull(callback);
 
         return InternalLocator.RegisterResolverCallbackChanged(callback);
     }

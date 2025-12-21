@@ -74,20 +74,8 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
     /// <inheritdoc />
     public virtual void Register(Func<object?> factory, Type? serviceType, string? contract = null)
     {
-#if NETFRAMEWORK
-        if (factory is null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-
-        if (serviceType is null)
-        {
-            throw new ArgumentNullException(nameof(serviceType));
-        }
-#else
-        ArgumentNullException.ThrowIfNull(factory);
-        ArgumentNullException.ThrowIfNull(serviceType);
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(factory);
+        ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
         if (string.IsNullOrEmpty(contract))
         {
