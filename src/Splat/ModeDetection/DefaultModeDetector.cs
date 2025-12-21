@@ -234,7 +234,7 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
             {
                 for (var i = 0; i < _knownTestHostProcesses.Length; i++)
                 {
-#if NET40_OR_GREATER
+#if NETFRAMEWORK
                     if (procName.IndexOf(_knownTestHostProcesses[i], StringComparison.OrdinalIgnoreCase) >= 0)
 #else
                     if (procName.Contains(_knownTestHostProcesses[i], StringComparison.OrdinalIgnoreCase))
@@ -252,7 +252,7 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
                 var mainModule = p.MainModule?.FileName;
                 if (mainModule is not null && !string.IsNullOrEmpty(mainModule))
                 {
-#if NET40_OR_GREATER
+#if NETFRAMEWORK
                     if (mainModule.IndexOf("testhost", StringComparison.OrdinalIgnoreCase) >= 0 ||
                         mainModule.IndexOf("vstest", StringComparison.OrdinalIgnoreCase) >= 0)
 #else
@@ -307,7 +307,7 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
 
                 for (var j = 0; j < assemblyMarkers.Length; j++)
                 {
-#if NET40_OR_GREATER
+#if NETFRAMEWORK
                     if (fullName.IndexOf(assemblyMarkers[j], StringComparison.InvariantCultureIgnoreCase) >= 0)
 #else
                     if (fullName.Contains(assemblyMarkers[j], StringComparison.InvariantCultureIgnoreCase))

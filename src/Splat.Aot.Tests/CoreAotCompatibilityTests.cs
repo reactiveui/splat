@@ -405,25 +405,25 @@ public class CoreAotCompatibilityTests
 
         Assert.DoesNotThrow(() =>
         {
-            logger!.Debug("Simple message {0}", "arg1");
-            logger.Debug("Two args: {0} {1}", "arg1", "arg2");
-            logger.Debug("Three args: {0} {1} {2}", "arg1", "arg2", "arg3");
+            logger!.Debug(CultureInfo.InvariantCulture, "Simple message {0}", "arg1");
+            logger.Debug(CultureInfo.InvariantCulture, "Two args: {0} {1}", "arg1", "arg2");
+            logger.Debug(CultureInfo.InvariantCulture, "Three args: {0} {1} {2}", "arg1", "arg2", "arg3");
 
-            logger.Info("Simple message {0}", "arg1");
-            logger.Info("Two args: {0} {1}", "arg1", "arg2");
-            logger.Info("Three args: {0} {1} {2}", "arg1", "arg2", "arg3");
+            logger.Info(CultureInfo.InvariantCulture, "Simple message {0}", "arg1");
+            logger.Info(CultureInfo.InvariantCulture, "Two args: {0} {1}", "arg1", "arg2");
+            logger.Info(CultureInfo.InvariantCulture, "Three args: {0} {1} {2}", "arg1", "arg2", "arg3");
 
-            logger.Warn("Simple message {0}", "arg1");
-            logger.Warn("Two args: {0} {1}", "arg1", "arg2");
-            logger.Warn("Three args: {0} {1} {2}", "arg1", "arg2", "arg3");
+            logger.Warn(CultureInfo.InvariantCulture, "Simple message {0}", "arg1");
+            logger.Warn(CultureInfo.InvariantCulture, "Two args: {0} {1}", "arg1", "arg2");
+            logger.Warn(CultureInfo.InvariantCulture, "Three args: {0} {1} {2}", "arg1", "arg2", "arg3");
 
-            logger.Error("Simple message {0}", "arg1");
-            logger.Error("Two args: {0} {1}", "arg1", "arg2");
-            logger.Error("Three args: {0} {1} {2}", "arg1", "arg2", "arg3");
+            logger.Error(CultureInfo.InvariantCulture, "Simple message {0}", "arg1");
+            logger.Error(CultureInfo.InvariantCulture, "Two args: {0} {1}", "arg1", "arg2");
+            logger.Error(CultureInfo.InvariantCulture, "Three args: {0} {1} {2}", "arg1", "arg2", "arg3");
 
             // Higher-arity
-            logger.Debug("Four args: {0} {1} {2} {3}", "arg1", "arg2", "arg3", "arg4");
-            logger.Debug("Five args: {0} {1} {2} {3} {4}", "arg1", "arg2", "arg3", "arg4", "arg5");
+            logger.Debug(CultureInfo.InvariantCulture, "Four args: {0} {1} {2} {3}", "arg1", "arg2", "arg3", "arg4");
+            logger.Debug(CultureInfo.InvariantCulture, "Five args: {0} {1} {2} {3} {4}", "arg1", "arg2", "arg3", "arg4", "arg5");
         });
     }
 
@@ -478,8 +478,8 @@ public class CoreAotCompatibilityTests
             wrappingLogger.Error(exception, "Error with exception");
 
             // Formatting
-            wrappingLogger.Debug("Formatted message: {0}", "test");
-            wrappingLogger.Info("Multiple params: {0} {1}", "test1", "test2");
+            wrappingLogger.Debug(CultureInfo.InvariantCulture, "Formatted message: {0}", "test");
+            wrappingLogger.Info(CultureInfo.InvariantCulture, "Multiple params: {0} {1}", "test1", "test2");
         });
     }
 

@@ -87,7 +87,7 @@ namespace Splat.Builder.Tests
         {
             var resolver = new InternalLocator();
             var builder = new AppBuilder(resolver.CurrentMutable);
-            var result = builder.UsingModule(new MokModule());
+            var result = builder.UsingModule(new MockModule());
             Assert.That(result, Is.SameAs(builder));
             resolver.Dispose();
         }
