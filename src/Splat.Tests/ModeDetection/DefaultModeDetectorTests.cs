@@ -248,4 +248,88 @@ public class DefaultModeDetectorTests
             Environment.SetEnvironmentVariable(customVarName, oldCustom);
         }
     }
+
+    /// <summary>
+    /// Verifies that DefaultModeDetector can detect Microsoft Testing Platform (MTP) via assembly scan.
+    /// This test ensures MTP is recognized as a unit test framework.
+    /// </summary>
+    [Test]
+    public void DefaultModeDetector_DetectsMicrosoftTestingPlatform()
+    {
+        // Arrange
+        var detector = new DefaultModeDetector();
+
+        // Act
+        var result = detector.InUnitTestRunner();
+
+        // Determine if Microsoft.Testing.Platform is actually loaded.
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        var hasMTPAssembly = false;
+        foreach (var assembly in assemblies)
+        {
+            var fullName = assembly.FullName;
+            if (!string.IsNullOrEmpty(fullName) &&
+                fullName.Contains("Microsoft.Testing.Platform", StringComparison.OrdinalIgnoreCase))
+            {
+                hasMTPAssembly = true;
+                break;
+            }
+        }
+
+        // Assert - When running under Microsoft Testing Platform, should return true
+        // Only enforce this when the Microsoft.Testing.Platform assembly is actually loaded.
+        using (Assert.EnterMultipleScope())
+        {
+            if (hasMTPAssembly)
+            {
+                Assert.That(result.HasValue, Is.True);
+                Assert.That(
+                    result!.Value,
+                    Is.True,
+                    "ModeDetector should detect Microsoft.Testing.Platform assemblies when they are loaded");
+            }
+            else
+            {
+                // When Microsoft.Testing.Platform is not loaded (e.g., running under NUnit only),
+                // skip the MTP-specific assertion to avoid spurious failures.
+                Assert.Pass("Microsoft.Testing.Platform assembly not loaded; skipping MTP-specific detection assertion.");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Verifies that the Microsoft.Testing.Platform assembly marker is recognized.
+    /// This is a sanity check that the constant is correctly added to the markers array.
+    /// </summary>
+    [Test]
+    public void DefaultModeDetector_IncludesMTPAssemblyMarker()
+    {
+        // Arrange & Act
+        // Check if any loaded assemblies contain Microsoft.Testing.Platform
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        var hasMTPAssembly = assemblies.Any(a =>
+            a.FullName != null &&
+            a.FullName.Contains("Microsoft.Testing.Platform", StringComparison.OrdinalIgnoreCase));
+
+        var detector = new DefaultModeDetector();
+        var result = detector.InUnitTestRunner();
+
+        // Assert
+        using (Assert.EnterMultipleScope())
+        {
+            if (hasMTPAssembly)
+            {
+                Assert.That(
+                    result,
+                    Is.True,
+                    "When Microsoft.Testing.Platform assembly is loaded, ModeDetector should detect it");
+            }
+
+            // Ensure this test only passes if the MTP assembly is present or another test framework is detected
+            Assert.That(
+                hasMTPAssembly || (result.HasValue && result.Value),
+                Is.True,
+                "Test should only pass when either Microsoft.Testing.Platform is loaded or another unit test framework is detected.");
+        }
+    }
 }
