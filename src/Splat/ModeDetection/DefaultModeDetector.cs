@@ -35,6 +35,7 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
         "NBEHAVE",
         "VISUALSTUDIO.QUALITYTOOLS",
         "VISUALSTUDIO.TESTPLATFORM",
+        "MICROSOFT.TESTING.PLATFORM",
         "FIXIE",
         "NCRUNCH"
     ];

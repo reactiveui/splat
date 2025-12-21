@@ -12,8 +12,8 @@
     <PackageVersion Include="Microsoft.AppCenter.Analytics" Version="5.0.7" />
     <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="5.0.7" />
     <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.23.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.11" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.1" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="11.2.4" />
     <PackageVersion Include="Nerdbank.GitVersioning" Version="3.9.50" />
@@ -30,24 +30,44 @@
     <PackageVersion Include="System.Reactive" Version="6.1.0" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageVersion Include="NUnit" Version="4.4.0" />
-    <PackageVersion Include="NUnit3TestAdapter" Version="5.2.0" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="6.0.1" />
     <PackageVersion Include="NUnit.Analyzers" Version="4.11.2" />
     <PackageVersion Include="Verify.NUnit" Version="31.9.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageVersion Include="Microsoft.Reactive.Testing" Version="6.1.0" />
+    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.1.0" />
+    <PackageVersion Include="Microsoft.Testing.Platform.MSBuild" Version="2.0.2" />
     <PackageVersion Include="PublicApiGenerator" Version="11.5.4" />
   </ItemGroup>
 
-  <!-- Default versions for modern TFMs; overridden for legacy and net10 via Update -->
+  <!-- Pinned transitive dependencies for compatibility -->
   <ItemGroup>
-    <PackageVersion Include="System.Collections.Immutable" Version="9.0.11" />
-    <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="9.0.11" />
-    <PackageVersion Include="System.Text.Json" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="10.0.1" />
   </ItemGroup>
+
+  <!-- Latest versions for modern TFMs (net8.0+) -->
+  <ItemGroup>
+    <PackageVersion Include="System.Collections.Immutable" Version="10.0.1" />
+    <PackageVersion Include="System.Text.Json" Version="10.0.1" />
+  </ItemGroup>
+
+  <!-- System.Runtime.Serialization.Formatters: TFM-specific versioning -->
+  <!-- Legacy TFMs (net4*/netstandard) require 4.3.0, net8.0+ supports 10.0.1 -->
+  <Choose>
+    <When Condition="$(TargetFramework.StartsWith('net4')) or $(TargetFramework.StartsWith('netstandard'))">
+      <ItemGroup>
+        <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="10.0.1" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
 
   <!-- Scope legacy System.* packages to legacy TFMs only -->
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4')) or $(TargetFramework.StartsWith('netstandard'))">
-    <PackageVersion Update="System.Runtime.Serialization.Formatters" Version="4.3.0" />
     <PackageVersion Include="System.Drawing.Primitives" Version="4.3.0" />
     <PackageVersion Include="System.AppContext" Version="4.3.0" />
     <PackageVersion Include="System.Collections.NonGeneric" Version="4.3.0" />
@@ -73,13 +93,6 @@
     <PackageVersion Include="System.Threading.Timer" Version="4.3.0" />
     <PackageVersion Include="System.Xml.ReaderWriter" Version="4.3.1" />
     <PackageVersion Include="System.Xml.XmlDocument" Version="4.3.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition="$(TargetFramework.StartsWith('net10'))">
-    <PackageVersion Update="System.Runtime.Serialization.Formatters" Version="10.0.1" />
-    <PackageVersion Update="System.Collections.Immutable" Version="10.0.1" />
-    <PackageVersion Update="System.Text.Json" Version="10.0.1" />
-    <!-- Ensure safe versions for net10 as well -->
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net46'))">
     <PackageVersion Include="System.ValueTuple" Version="4.6.1" />
