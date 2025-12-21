@@ -56,7 +56,7 @@
   <Choose>
     <When Condition="$(TargetFramework.StartsWith('net4')) or $(TargetFramework.StartsWith('netstandard'))">
       <ItemGroup>
-        <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
+        <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="10.0.1" />
       </ItemGroup>
     </When>
     <Otherwise>
