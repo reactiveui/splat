@@ -98,6 +98,7 @@ public class DefaultModeDetectorTests
         }
     }
 
+#if NET8_0_OR_GREATER
     /// <summary>
     /// Verifies that DefaultModeDetector correctly detects when running in a unit test runner
     /// by evaluating the explicit DOTNET_RUNNING_IN_TEST environment variable with commonly
@@ -139,7 +140,9 @@ public class DefaultModeDetectorTests
             AppContext.SetData("DOTNET_RUNNING_IN_TEST", oldAppCtx);
         }
     }
+#endif
 
+#if NET8_0_OR_GREATER
     /// <summary>
     /// Verifies explicit AppContext-based detection using DOTNET_RUNNING_IN_TEST data.
     /// </summary>
@@ -173,7 +176,9 @@ public class DefaultModeDetectorTests
             AppContext.SetData("DOTNET_RUNNING_IN_TEST", oldAppCtx);
         }
     }
+#endif
 
+#if NET8_0_OR_GREATER
     /// <summary>
     /// Verifies detection via exact test runner environment variables.
     /// </summary>
@@ -210,7 +215,9 @@ public class DefaultModeDetectorTests
             Environment.SetEnvironmentVariable("NUNIT_TEST", oldNUnitEnv);
         }
     }
+#endif
 
+#if NET8_0_OR_GREATER
     /// <summary>
     /// Verifies detection via environment variable prefix signals (e.g., VSTEST_*, XUNIT_*).
     /// </summary>
@@ -248,6 +255,7 @@ public class DefaultModeDetectorTests
             Environment.SetEnvironmentVariable(customVarName, oldCustom);
         }
     }
+#endif
 
     /// <summary>
     /// Verifies that DefaultModeDetector can detect Microsoft Testing Platform (MTP) via assembly scan.

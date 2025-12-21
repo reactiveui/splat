@@ -8,16 +8,21 @@ namespace Splat.ApplicationPerformanceMonitoring;
 /// <summary>
 /// Func based Feature Usage Tracking Manager.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="FuncFeatureUsageTrackingManager"/> class.
-/// </remarks>
-/// <param name="featureUsageTrackingSessionFunc">
-/// Factory function for a Feature Usage Tracking Session.
-/// </param>
-public class FuncFeatureUsageTrackingManager(Func<string, IFeatureUsageTrackingSession> featureUsageTrackingSessionFunc) : IFeatureUsageTrackingManager
+public class FuncFeatureUsageTrackingManager : IFeatureUsageTrackingManager
 {
-    private readonly Func<string, IFeatureUsageTrackingSession> _featureUsageTrackingSessionFunc = featureUsageTrackingSessionFunc ??
-                                           throw new ArgumentNullException(nameof(featureUsageTrackingSessionFunc));
+    private readonly Func<string, IFeatureUsageTrackingSession> _featureUsageTrackingSessionFunc;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FuncFeatureUsageTrackingManager"/> class.
+    /// </summary>
+    /// <param name="featureUsageTrackingSessionFunc">
+    /// Factory function for a Feature Usage Tracking Session.
+    /// </param>
+    public FuncFeatureUsageTrackingManager(Func<string, IFeatureUsageTrackingSession> featureUsageTrackingSessionFunc)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(featureUsageTrackingSessionFunc);
+        _featureUsageTrackingSessionFunc = featureUsageTrackingSessionFunc;
+    }
 
     /// <inheritdoc/>
     public IFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName) => _featureUsageTrackingSessionFunc(featureName);

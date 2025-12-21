@@ -56,14 +56,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     /// <param name="services">An instance of <see cref="IServiceCollection"/>.</param>
     public void UpdateContainer(IServiceCollection services)
     {
-#if NETSTANDARD || NETFRAMEWORK
-        if (services is null)
-        {
-            throw new ArgumentNullException(nameof(services));
-        }
-#else
-        ArgumentNullException.ThrowIfNull(services);
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(services);
 
         if (_isImmutable)
         {
@@ -88,14 +81,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     /// <param name="serviceProvider">A ready to use service provider.</param>
     public void UpdateContainer(IServiceProvider serviceProvider)
     {
-#if NETSTANDARD || NETFRAMEWORK
-        if (serviceProvider is null)
-        {
-            throw new ArgumentNullException(nameof(serviceProvider));
-        }
-#else
-        ArgumentNullException.ThrowIfNull(serviceProvider);
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(serviceProvider);
 
         lock (_syncLock)
         {

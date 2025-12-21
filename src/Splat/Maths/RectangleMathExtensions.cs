@@ -47,7 +47,8 @@ public static class RectangleMathExtensions
                     value.Copy(y: value.Bottom - amount, height: amount),
                     value.Copy(height: value.Height - amount));
             default:
-                throw new ArgumentException($"Invalid edge: {fromEdge}", nameof(fromEdge));
+                ArgumentExceptionHelper.ThrowIf(true, $"Invalid edge: {fromEdge}", nameof(fromEdge));
+                return null!; // unreachable
         }
     }
 
@@ -129,20 +130,14 @@ public static class RectangleMathExtensions
 
         if (top.HasValue)
         {
-            if (y.HasValue)
-            {
-                throw new ArgumentException("Conflicting Copy arguments Y and Top");
-            }
+            ArgumentExceptionHelper.ThrowIf(y.HasValue, "Conflicting Copy arguments Y and Top");
 
             newRect.Y = top.Value;
         }
 
         if (bottom.HasValue)
         {
-            if (height.HasValue)
-            {
-                throw new ArgumentException("Conflicting Copy arguments Height and Bottom");
-            }
+            ArgumentExceptionHelper.ThrowIf(height.HasValue, "Conflicting Copy arguments Height and Bottom");
 
             newRect.Height = newRect.Y + bottom.Value;
         }

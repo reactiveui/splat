@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(SplatTargetFrameworks)</TargetFrameworks>
+    <TargetFrameworks>$(SplatCoreTargets)</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Authors>.NET Foundation and Contributors</Authors>
@@ -13,6 +13,16 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Splat.Core\Splat.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Splat" />
+    <InternalsVisibleTo Include="Splat.Tests" />
+    <InternalsVisibleTo Include="Splat.Drawing" />
+    <InternalsVisibleTo Include="Splat.Drawing.Tests" />
+    <InternalsVisibleTo Include="Splat.TestRunner.Android" />
+    <InternalsVisibleTo Include="Splat.TestRunner.Uwp" />
+    <InternalsVisibleTo Include="Splat.Builder.Tests" />
   </ItemGroup>
 
 </Project>

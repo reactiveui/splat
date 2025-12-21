@@ -11,13 +11,19 @@ namespace Splat.Builder;
 /// <summary>
 /// Splat module for configuring the Autofac dependency resolver.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="AutofacSplatModule"/> class.
-/// </remarks>
-/// <param name="builder">The Autofac container builder.</param>
-public sealed class AutofacSplatModule(ContainerBuilder builder) : IModule
+public sealed class AutofacSplatModule : IModule
 {
-    private readonly ContainerBuilder _builder = builder ?? throw new ArgumentNullException(nameof(builder));
+    private readonly ContainerBuilder _builder;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AutofacSplatModule"/> class.
+    /// </summary>
+    /// <param name="builder">The Autofac container builder.</param>
+    public AutofacSplatModule(ContainerBuilder builder)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(builder);
+        _builder = builder;
+    }
 
     /// <inheritdoc />
     public void Configure(IMutableDependencyResolver resolver)

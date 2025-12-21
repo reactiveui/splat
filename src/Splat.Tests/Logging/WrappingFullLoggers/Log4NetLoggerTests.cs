@@ -88,7 +88,12 @@ public class Log4NetLoggerTests : FullLoggerTestBase
                 MemoryTarget.Flush(0);
                 return MemoryTarget.GetEvents().Select(x =>
                 {
+#if NET8_0_OR_GREATER
                     var currentLevel = _log4Net2Splat.GetValueOrDefault(x.Level ?? Level.Debug, LogLevel.Debug);
+#else
+                    var levelKey = x.Level ?? Level.Debug;
+                    var currentLevel = _log4Net2Splat.ContainsKey(levelKey) ? _log4Net2Splat[levelKey] : LogLevel.Debug;
+#endif
 
                     return x.ExceptionObject switch
                     {

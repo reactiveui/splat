@@ -32,8 +32,13 @@ internal class ConsoleLoggerTests : FullLoggerTestBase
 
         public override void WriteLine(string? value)
         {
+#if NET8_0_OR_GREATER
             var colonIndex = value!.IndexOf(':', StringComparison.InvariantCulture);
             var level = Enum.Parse<LogLevel>(value.AsSpan(0, colonIndex));
+#else
+            var colonIndex = value!.IndexOf(':');
+            var level = (LogLevel)Enum.Parse(typeof(LogLevel), value.Substring(0, colonIndex));
+#endif
             var message = value.Substring(colonIndex + 1).Trim();
             _logs.Add((level, message));
             base.WriteLine(value);

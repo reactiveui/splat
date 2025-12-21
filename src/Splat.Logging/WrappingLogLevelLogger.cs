@@ -23,10 +23,10 @@ public class WrappingLogLevelLogger(ILogger inner) : ILogger
     public LogLevel Level => _inner.Level;
 
     /// <inheritdoc />
-    public void Write([Localizable(false)]string message, LogLevel logLevel) => _inner.Write($"{logLevel}: {message}", logLevel);
+    public void Write([Localizable(false)] string message, LogLevel logLevel) => _inner.Write($"{logLevel}: {message}", logLevel);
 
     /// <inheritdoc />
-    public void Write(Exception exception, [Localizable(false)]string message, LogLevel logLevel) => _inner.Write(exception, $"{logLevel}: {message}", logLevel);
+    public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel) => _inner.Write(exception, $"{logLevel}: {message}", logLevel);
 
     /// <inheritdoc />
     public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel) => _inner.Write($"{logLevel}: {message}", type, logLevel);

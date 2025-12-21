@@ -2,12 +2,10 @@
   <PropertyGroup>
     <TargetFrameworks>$(SplatModernTargets)</TargetFrameworks>
     <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Serilog.Exceptions"/>
-  </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework.StartsWith('net4')) or $(TargetFramework.StartsWith('netstandard'))">
-    <PackageReference Include="System.Net.Http"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Splat.ApplicationInsights\Splat.ApplicationInsights.csproj"/>

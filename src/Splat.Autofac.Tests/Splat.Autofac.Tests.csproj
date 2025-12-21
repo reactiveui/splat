@@ -5,11 +5,8 @@
 
     <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
-
-  <ItemGroup Condition="$(TargetFramework.StartsWith('net4')) or $(TargetFramework.StartsWith('netstandard'))">
-    <PackageReference Include="System.Net.Http"/>
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Splat.Autofac\Splat.Autofac.csproj"/>

@@ -220,7 +220,11 @@ internal sealed class StaticLoggerTests
 
                 var line = textLogger.Logs.First();
 
+#if NET8_0_OR_GREATER
                 var startOfCallerMemberSuffix = line.message.IndexOf('(', StringComparison.Ordinal);
+#else
+                var startOfCallerMemberSuffix = line.message.IndexOf('(');
+#endif
                 Assert.That(startOfCallerMemberSuffix, Is.GreaterThan(0));
 
                 var endOfCallerMemberSuffix = line.message.IndexOf(')', startOfCallerMemberSuffix);

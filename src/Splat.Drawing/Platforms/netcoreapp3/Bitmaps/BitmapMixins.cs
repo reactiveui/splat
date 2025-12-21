@@ -27,10 +27,7 @@ namespace Splat
         /// <returns>A <see cref="IBitmap"/> bitmap.</returns>
         public static BitmapSource ToNative(this IBitmap value)
         {
-            if (value is null)
-            {
-                throw new System.ArgumentNullException(nameof(value));
-            }
+            ArgumentExceptionHelper.ThrowIfNull(value);
 
             return ((BitmapSourceBitmap)value).Inner ?? throw new InvalidOperationException("The bitmap has been disposed");
         }

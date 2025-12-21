@@ -21,14 +21,7 @@ public sealed class DefaultLogManager : ILogManager
     /// <param name="dependencyResolver">A dependency resolver for testing purposes, will use the default Locator if null.</param>
     public DefaultLogManager(IReadonlyDependencyResolver dependencyResolver)
     {
-        #if !NET8_0_OR_GREATER
-        if (dependencyResolver == null)
-        {
-            throw new ArgumentNullException(nameof(dependencyResolver));
-        }
-        #else
-        ArgumentNullException.ThrowIfNull(dependencyResolver);
-        #endif
+        ArgumentExceptionHelper.ThrowIfNull(dependencyResolver);
 
         _loggerCache = new(
             (type, _) =>

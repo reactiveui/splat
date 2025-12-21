@@ -33,14 +33,7 @@ public static class PointExtensions
     /// <returns>A <see cref="System.Drawing.Point"/> of the value.</returns>
     public static System.Drawing.Point FromNative(this Point value)
     {
-#if NET6_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(value);
-#else
-        if (value == null)
-        {
-            throw new ArgumentNullException(nameof(value));
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(value);
 
         return new(value.X, value.Y);
     }
@@ -52,14 +45,7 @@ public static class PointExtensions
     /// <returns>A <see cref="System.Drawing.PointF"/> of the value.</returns>
     public static System.Drawing.PointF FromNative(this PointF value)
     {
-#if NET6_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(value);
-#else
-        if (value == null)
-        {
-            throw new ArgumentNullException(nameof(value));
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(value);
 
         return new(value.X, value.Y);
     }

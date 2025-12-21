@@ -7,7 +7,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Splat.Tests;
 
-#if WINDOWS
 /// <summary>
 /// Tests to make sure that the API matches the approved ones.
 /// </summary>
@@ -20,6 +19,12 @@ public class ApiApprovalTests
     /// </summary>
     /// <returns>The task.</returns>
     [Test]
-    public Task SplatUIProject() => typeof(IPlatformModeDetector).Assembly.CheckApproval(["Splat"]);
-}
+    public Task SplatUIProject()
+    {
+#if WINDOWS
+        return typeof(IPlatformModeDetector).Assembly.CheckApproval(["Splat"]);
+#else
+        return Task.CompletedTask;
 #endif
+    }
+}

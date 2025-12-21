@@ -22,9 +22,10 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     /// <param name="initializer">The initializer.</param>
     public SimpleInjectorDependencyResolver(Container container, SimpleInjectorInitializer initializer)
     {
-        _container = container ?? throw new ArgumentNullException(nameof(container));
-        _ = initializer ?? throw new ArgumentNullException(nameof(initializer));
+        ArgumentExceptionHelper.ThrowIfNull(container);
+        ArgumentExceptionHelper.ThrowIfNull(initializer);
 
+        _container = container;
         RegisterFactories(initializer);
     }
 

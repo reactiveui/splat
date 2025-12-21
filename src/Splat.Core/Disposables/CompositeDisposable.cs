@@ -31,14 +31,7 @@ internal sealed class CompositeDisposable : IDisposable
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> is less than zero.</exception>
     public CompositeDisposable(int capacity)
     {
-#if NET8_0_OR_GREATER
-        ArgumentOutOfRangeException.ThrowIfNegative(capacity);
-#else
-        if (capacity < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(capacity), "Capacity cannot be negative.");
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNegative(capacity);
 
         _disposables = new(capacity);
     }
@@ -51,7 +44,7 @@ internal sealed class CompositeDisposable : IDisposable
     /// <exception cref="ArgumentException">Any of the disposables in the <paramref name="disposables"/> collection is <c>null</c>.</exception>
     public CompositeDisposable(params IDisposable[] disposables)
     {
-        disposables.ThrowArgumentNullExceptionIfNull(nameof(disposables));
+        ArgumentExceptionHelper.ThrowIfNull(disposables);
 
         _disposables = new(disposables.Length);
         Init(disposables);
@@ -65,10 +58,10 @@ internal sealed class CompositeDisposable : IDisposable
     /// <exception cref="ArgumentException">Any of the disposables in the <paramref name="disposables"/> collection is <c>null</c>.</exception>
     public CompositeDisposable(IEnumerable<IDisposable> disposables)
     {
+        ArgumentExceptionHelper.ThrowIfNull(disposables);
+
         switch (disposables)
         {
-            case null:
-                throw new ArgumentNullException(nameof(disposables));
 
             // If the disposables is a collection, get its size
             // and use it as a capacity hint for the copy.
@@ -124,10 +117,7 @@ internal sealed class CompositeDisposable : IDisposable
         // second loop for just checking for null items
         foreach (var d in disposables)
         {
-            if (d is null)
-            {
-                throw new ArgumentException("The disposables collection contains null items", nameof(disposables));
-            }
+            ArgumentExceptionHelper.ThrowIfNullWithMessage(d, "The disposables collection contains null items", nameof(disposables));
 
             _disposables.Add(d);
         }

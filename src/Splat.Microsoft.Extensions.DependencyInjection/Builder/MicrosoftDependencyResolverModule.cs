@@ -12,9 +12,19 @@ namespace Splat.Builder;
 /// Splat module for configuring the Microsoft dependency resolver.
 /// </summary>
 /// <seealso cref="IModule" />
-public sealed class MicrosoftDependencyResolverModule(IServiceCollection serviceCollection) : IModule
+public sealed class MicrosoftDependencyResolverModule : IModule
 {
-    private readonly IServiceCollection _container = serviceCollection ?? throw new ArgumentNullException(nameof(serviceCollection));
+    private readonly IServiceCollection _container;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MicrosoftDependencyResolverModule"/> class.
+    /// </summary>
+    /// <param name="serviceCollection">The service collection.</param>
+    public MicrosoftDependencyResolverModule(IServiceCollection serviceCollection)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(serviceCollection);
+        _container = serviceCollection;
+    }
 
     /// <inheritdoc />
     public void Configure(IMutableDependencyResolver resolver) => _container.UseMicrosoftDependencyResolver();

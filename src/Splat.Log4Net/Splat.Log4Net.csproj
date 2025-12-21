@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>$(SplatTargetFrameworks)</TargetFrameworks>
-    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net462</TargetFrameworks>
+    <TargetFrameworks>$(SplatCoreTargets)</TargetFrameworks>
     <AssemblyName>Splat.Log4Net</AssemblyName>
     <RootNamespace>Splat</RootNamespace>
     <Authors>.NET Foundation and Contributors</Authors>
     <Description>Log4Net integrations for Splat</Description>
     <PackageId>Splat.Log4Net</PackageId>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="log4net" />
   </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework.StartsWith('net4')) or $(TargetFramework.StartsWith('netstandard'))">
-    <!-- Legacy System.* references for net4x/netstandard only -->
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
+    <!-- Legacy System.* references for net4x only -->
     <PackageReference Include="System.AppContext" />
     <PackageReference Include="System.Collections.NonGeneric" />
     <PackageReference Include="System.Console" />
@@ -43,5 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Splat.Logging\Splat.Logging.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Splat.Tests" />
   </ItemGroup>
 </Project>

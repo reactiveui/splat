@@ -1,0 +1,20 @@
+﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+namespace Splat.Common.Test;
+
+/// <summary>
+/// Represents a view bound to a view model.
+/// </summary>
+/// <typeparam name="T">The view model type.</typeparam>
+/// <seealso cref="IViewFor" />
+public interface IViewFor<T> : IViewFor
+    where T : class
+{
+    /// <summary>
+    /// Gets or sets the view model.
+    /// </summary>
+    new T? ViewModel { get; set; }
+}

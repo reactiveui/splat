@@ -11,13 +11,19 @@ namespace Splat.Builder;
 /// <summary>
 /// Splat module for configuring the DryIoc dependency resolver.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="DryIocSplatModule"/> class.
-/// </remarks>
-/// <param name="container">The DryIoc container.</param>
-public sealed class DryIocSplatModule(IContainer container) : IModule
+public sealed class DryIocSplatModule : IModule
 {
-    private readonly IContainer _container = container ?? throw new ArgumentNullException(nameof(container));
+    private readonly IContainer _container;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DryIocSplatModule"/> class.
+    /// </summary>
+    /// <param name="container">The DryIoc container.</param>
+    public DryIocSplatModule(IContainer container)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(container);
+        _container = container;
+    }
 
     /// <inheritdoc />
     public void Configure(IMutableDependencyResolver resolver) => _container.UseDryIocDependencyResolver();

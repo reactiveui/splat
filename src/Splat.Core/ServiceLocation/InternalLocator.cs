@@ -62,7 +62,8 @@ internal class InternalLocator : IDisposable
     /// <param name="dependencyResolver">The dependency resolver to set.</param>
     public void SetLocator(IDependencyResolver dependencyResolver)
     {
-        Internal = dependencyResolver ?? throw new ArgumentNullException(nameof(dependencyResolver));
+        ArgumentExceptionHelper.ThrowIfNull(dependencyResolver);
+        Internal = dependencyResolver;
 
         if (AreResolverCallbackChangedNotificationsEnabled())
         {

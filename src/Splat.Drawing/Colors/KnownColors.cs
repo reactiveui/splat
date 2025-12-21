@@ -231,7 +231,7 @@ internal static class KnownColors
     // Fast ARGB -> KnownColor reverse index. Keeps first occurrence for duplicates (e.g., Aqua/Cyan).
     private static readonly Dictionary<uint, KnownColor> ArgbToKnown = BuildReverseIndex();
 
-        /// <summary>
+    /// <summary>
     /// Creates a <see cref="SplatColor"/> for a given <see cref="KnownColor"/>.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -315,7 +315,7 @@ internal static class KnownColors
         {
             var kc = (KnownColor)i;
             var argb = ArgbValues[i];
-#if NET6_0_OR_GREATER || NETSTANDARD2_1 || NETCOREAPP2_0_OR_GREATER
+#if NET6_0_OR_GREATER
             _ = dict.TryAdd(argb, kc);
 #else
             if (!dict.ContainsKey(argb))

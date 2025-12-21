@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>$(SplatTargetFrameworks)</TargetFrameworks>
+		<TargetFrameworks>$(SplatModernTargets)</TargetFrameworks>
 		<Nullable>enable</Nullable>
-	</PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
 
 </Project>

@@ -31,10 +31,10 @@ public class MemoizingMRUCacheTests
     {
         using (Assert.EnterMultipleScope())
         {
-            Assert.Throws<ArgumentException>(() =>
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
                 new MemoizingMRUCache<string, DummyObjectClass1>((_, _) => new(), 0));
 
-            Assert.Throws<ArgumentException>(() =>
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
                 new MemoizingMRUCache<string, DummyObjectClass1>((_, _) => new(), -1));
         }
     }
@@ -400,15 +400,12 @@ public class MemoizingMRUCacheTests
 
         List<IEnumerable<DummyObjectClass1>>? results = null;
 
-        Assert.DoesNotThrow(() =>
-        {
-            results = tests.AsParallel().Select(_ =>
+        Assert.DoesNotThrow(() => results = tests.AsParallel().Select(_ =>
             {
                 instance.Invalidate("Test1");
                 instance.Get("Test1");
                 return instance.CachedValues();
-            }).ToList();
-        });
+            }).ToList());
 
         Assert.That(results, Is.Not.Null);
     }
@@ -424,9 +421,7 @@ public class MemoizingMRUCacheTests
 
         List<DummyObjectClass1>? results = null;
 
-        Assert.DoesNotThrow(() =>
-        {
-            results = tests.AsParallel().Select(i =>
+        Assert.DoesNotThrow(() => results = tests.AsParallel().Select(i =>
             {
                 instance.Invalidate("Test1");
                 var result = instance.Get("Test1");
@@ -434,8 +429,7 @@ public class MemoizingMRUCacheTests
                 // Also exercise CachedValues
                 _ = instance.CachedValues();
                 return result;
-            }).ToList();
-        });
+            }).ToList());
 
         Assert.That(results, Is.Not.Null);
     }
@@ -451,14 +445,11 @@ public class MemoizingMRUCacheTests
 
         List<DummyObjectClass1>? results = null;
 
-        Assert.DoesNotThrow(() =>
-        {
-            results = tests.AsParallel().Select(_ =>
+        Assert.DoesNotThrow(() => results = tests.AsParallel().Select(_ =>
             {
                 instance.InvalidateAll();
                 return instance.Get("Test1");
-            }).ToList();
-        });
+            }).ToList());
 
         Assert.That(results, Is.Not.Null);
     }

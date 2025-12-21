@@ -12,7 +12,13 @@
         "skipAutoProperties": true,
         "modulePaths": {
           "include": [ "Splat\\..*" ],
-          "exclude": [ ".*\\.Tests", ".*\\.TestRunner\\..*" ]
+          "exclude": [ ".*\\.Tests", ".*\\.TestRunner\\..*", ".*\\.Test" ]
+        },
+        "sourcePaths": {
+          "exclude": [
+            "**/Splat*Tests/**",
+            "**/Splat*.Test/**"
+          ]
         }
       }
     }

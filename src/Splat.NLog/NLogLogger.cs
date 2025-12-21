@@ -28,7 +28,8 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     /// <exception cref="ArgumentNullException">Thrown when the NLog logger is null.</exception>
     public NLogLogger(global::NLog.Logger inner)
     {
-        _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+        ArgumentExceptionHelper.ThrowIfNull(inner);
+        _inner = inner;
         SetLogLevel();
         _inner.LoggerReconfigured += OnInnerLoggerReconfigured;
     }
@@ -556,7 +557,7 @@ public sealed class NLogLogger : IFullLogger, IDisposable
         LogLevel.Warn => global::NLog.LogLevel.Warn,
         LogLevel.Error => global::NLog.LogLevel.Error,
         LogLevel.Fatal => global::NLog.LogLevel.Fatal,
-        _ => throw new ArgumentException($"Unknown LogLevel {logLevel}", nameof(logLevel)),
+        _ => throw new ArgumentOutOfRangeException(nameof(logLevel), $"Unknown LogLevel {logLevel}"),
     };
 
     private void OnInnerLoggerReconfigured(object? sender, EventArgs e) => SetLogLevel();

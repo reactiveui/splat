@@ -17,6 +17,8 @@ public sealed class SplatLoggerModule() : IModule
     /// <inheritdoc />
     public void Configure(IMutableDependencyResolver resolver)
     {
+        ArgumentExceptionHelper.ThrowIfNull(resolver);
+
         if (!resolver.HasRegistration(typeof(ILogger)))
         {
             var debugLogger = new DebugLogger();

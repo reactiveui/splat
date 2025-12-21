@@ -6,6 +6,7 @@
     <Description>A library to make things cross-platform that should be</Description>
     <PackageId>Splat.Drawing</PackageId>
     <Nullable>enable</Nullable>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
   <PropertyGroup Condition="$([MSBuild]::IsOsPlatform('Windows'))">
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
@@ -28,11 +29,7 @@
     <None Include="Colors\**\*.cs"/>
     <None Include="Resources\**\*.*"/>
   </ItemGroup>
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('netstandard')) ">
-    <PackageReference Include="System.Drawing.Primitives"/>
-    <Compile Include="Platforms\ReflectionStubs.cs"/>
-  </ItemGroup>
-  <ItemGroup Condition=" !$(TargetFramework.StartsWith('netstandard')) ">
+  <ItemGroup>
     <Compile Include="Platforms\ServiceLocationDrawingInitialization.cs"/>
   </ItemGroup>
   <ItemGroup Condition=" $(TargetFramework.StartsWith('net4')) ">
@@ -66,5 +63,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Splat\Splat.csproj"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Splat.Tests" />
+    <InternalsVisibleTo Include="Splat.Drawing.Tests" />
+    <InternalsVisibleTo Include="Splat.TestRunner.Android" />
+    <InternalsVisibleTo Include="Splat.TestRunner.Uwp" />
   </ItemGroup>
 </Project>

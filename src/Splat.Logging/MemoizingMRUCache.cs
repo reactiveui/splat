@@ -92,12 +92,11 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     /// <param name="paramComparer">A comparer for the parameter.</param>
     public MemoizingMRUCache(Func<TParam, object?, TVal> calculationFunc, int maxSize, Action<TVal>? onRelease, IEqualityComparer<TParam> paramComparer)
     {
-        if (maxSize <= 0)
-        {
-            throw new ArgumentException("Max size must be larger than 0.", nameof(maxSize));
-        }
+        ArgumentExceptionHelper.ThrowIfLessThanOrEqual(maxSize, 0);
 
-        _calculationFunction = calculationFunc ?? throw new ArgumentNullException(nameof(calculationFunc));
+        ArgumentExceptionHelper.ThrowIfNull(calculationFunc);
+
+        _calculationFunction = calculationFunc;
         _releaseFunction = onRelease;
         _maxCacheSize = maxSize;
         _comparer = paramComparer ?? EqualityComparer<TParam>.Default;
@@ -120,10 +119,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     /// <returns>The value that we have got.</returns>
     public TVal Get(TParam key, object? context = null)
     {
-        if (key is null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(key);
 
         lock (_lockObject)
         {
@@ -153,10 +149,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     /// <returns>If we were able to retrieve the value or not.</returns>
     public bool TryGet(TParam key, out TVal? result)
     {
-        if (key is null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(key);
 
         lock (_lockObject)
         {
@@ -182,10 +175,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     /// <param name="key">The key to invalidate the value for.</param>
     public void Invalidate(TParam key)
     {
-        if (key is null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(key);
 
         lock (_lockObject)
         {

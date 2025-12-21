@@ -46,48 +46,36 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
     }
 
     /// <inheritdoc />
-    public bool HasRegistration(Type? serviceType, string? contract = null) =>
-        serviceType switch
+    public bool HasRegistration(Type? serviceType, string? contract = null)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(serviceType);
+
+        return _container.GetServiceRegistrations().Any(x =>
         {
-            null => throw new ArgumentNullException(nameof(serviceType)),
-            _ => _container.GetServiceRegistrations().Any(x =>
+            if (x.ServiceType != serviceType)
             {
-                if (x.ServiceType != serviceType)
-                {
-                    return false;
-                }
+                return false;
+            }
 
-                if (contract is null)
-                {
-                    return x.OptionalServiceKey is null;
-                }
+            if (contract is null)
+            {
+                return x.OptionalServiceKey is null;
+            }
 
-                var key = (serviceType, contract ?? string.Empty);
+            var key = (serviceType, contract ?? string.Empty);
 
-                return key.Equals(x.OptionalServiceKey) ||
-                (contract is null && x.OptionalServiceKey is null) ||
-                (x.OptionalServiceKey is string serviceKeyAsString
-                 && contract?.Equals(serviceKeyAsString, StringComparison.Ordinal) == true);
-            })
-        };
+            return key.Equals(x.OptionalServiceKey) ||
+            (contract is null && x.OptionalServiceKey is null) ||
+            (x.OptionalServiceKey is string serviceKeyAsString
+             && contract?.Equals(serviceKeyAsString, StringComparison.Ordinal) == true);
+        });
+    }
 
     /// <inheritdoc />
     public virtual void Register(Func<object?> factory, Type? serviceType, string? contract = null)
     {
-#if NETSTANDARD || NETFRAMEWORK
-        if (factory is null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-
-        if (serviceType is null)
-        {
-            throw new ArgumentNullException(nameof(serviceType));
-        }
-#else
-        ArgumentNullException.ThrowIfNull(factory);
-        ArgumentNullException.ThrowIfNull(serviceType);
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(factory);
+        ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
         if (string.IsNullOrEmpty(contract))
         {

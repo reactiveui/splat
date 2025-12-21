@@ -22,7 +22,7 @@ public static class LogManagerMixin
     /// <returns>A logger for the specified type.</returns>
     public static IFullLogger GetLogger<T>(this ILogManager logManager)
     {
-        logManager.ThrowArgumentNullExceptionIfNull(nameof(logManager));
+        ArgumentExceptionHelper.ThrowIfNull(logManager);
 
         return logManager.GetLogger(typeof(T));
     }

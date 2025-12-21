@@ -26,14 +26,7 @@ public static class BitmapMixins
     /// <returns>A <see cref="IBitmap"/> bitmap.</returns>
     public static BitmapSource ToNative(this IBitmap value)
     {
-#if NET6_0_OR_GREATER
-        ArgumentNullException.ThrowIfNull(value);
-#else
-        if (value == null)
-        {
-            throw new System.ArgumentNullException(nameof(value));
-        }
-#endif
+        ArgumentExceptionHelper.ThrowIfNull(value);
 
         return ((BitmapSourceBitmap)value).Inner ?? throw new InvalidOperationException("The bitmap is not longer valid");
     }

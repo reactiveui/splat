@@ -224,7 +224,7 @@ public class DisposableTests
     public void CompositeDisposable_NullItemInArray_ThrowsArgumentException() =>
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => new CompositeDisposable(new ActionDisposable(() => { }), null!));
+        Assert.Throws<ArgumentNullException>(() => new CompositeDisposable(new ActionDisposable(() => { }), null!));
 
     /// <summary>
     /// Test CompositeDisposable throws for null item in enumerable.
@@ -236,7 +236,7 @@ public class DisposableTests
         var disposables = new List<IDisposable> { new ActionDisposable(() => { }), null! };
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => new CompositeDisposable(disposables));
+        Assert.Throws<ArgumentNullException>(() => new CompositeDisposable(disposables));
     }
 
     /// <summary>

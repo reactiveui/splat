@@ -8,20 +8,6 @@ namespace Splat.Common.Test;
 /// <summary>
 /// Represents a view bound to a view model.
 /// </summary>
-/// <typeparam name="T">The view model type.</typeparam>
-/// <seealso cref="IViewFor" />
-public interface IViewFor<T> : IViewFor
-    where T : class
-{
-    /// <summary>
-    /// Gets or sets the view model.
-    /// </summary>
-    new T? ViewModel { get; set; }
-}
-
-/// <summary>
-/// Represents a view bound to a view model.
-/// </summary>
 /// <seealso cref="IViewFor" />
 public interface IViewFor
 {

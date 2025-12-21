@@ -87,7 +87,7 @@ namespace Splat.Builder.Tests
         {
             var resolver = new InternalLocator();
             var builder = new AppBuilder(resolver.CurrentMutable);
-            var result = builder.UsingModule(new MokModule());
+            var result = builder.UsingModule(new MockModule());
             Assert.That(result, Is.SameAs(builder));
             resolver.Dispose();
         }
@@ -162,16 +162,6 @@ namespace Splat.Builder.Tests
             builder.Build(); // should not call registration again
             Assert.That(called, Is.False);
             resolver.Dispose();
-        }
-    }
-
-    internal sealed class MokModule : IModule
-    {
-        public void Configure(IMutableDependencyResolver resolver)
-        {
-            // This is a mock module for testing purposes.
-            // It does not need to do anything specific.
-            // In a real scenario, you would register services here.}
         }
     }
 }

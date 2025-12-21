@@ -4,7 +4,8 @@
     <TargetFrameworks>$(SplatModernTargets)</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-      </PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Splat\Splat.csproj" />

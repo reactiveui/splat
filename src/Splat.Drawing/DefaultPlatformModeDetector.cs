@@ -72,7 +72,7 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
         else
         {
             var designEnvironments = new[] { "BLEND.EXE", "XDESPROC.EXE" };
-#if NETSTANDARD || NETFRAMEWORK || TIZEN
+#if NETFRAMEWORK || TIZEN
             var entry = Assembly.GetEntryAssembly()?.Location;
 #else
             var entry = System.AppContext.BaseDirectory;
@@ -82,7 +82,7 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
                 var exeName = new FileInfo(entry).Name;
 
                 if (designEnvironments.Any(x =>
-#if NETSTANDARD || NETFRAMEWORK || TIZEN
+#if NETFRAMEWORK || TIZEN
                     x.IndexOf(exeName, StringComparison.InvariantCultureIgnoreCase) != -1))
 #else
                     x.Contains(exeName, StringComparison.InvariantCultureIgnoreCase)))

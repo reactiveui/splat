@@ -42,9 +42,9 @@ Always reference these instructions first and fallback to search or bash command
   ```
 
 - **Cross-platform considerations**:
-  - **Linux**: Builds `netstandard2.0`, `.NET 8/9`, and `Android` targets.
+  - **Linux**: Builds `.NET 8/9/10` and `Android` targets.
   - **Windows**: Builds all targets including `.NET Framework`, `Windows`, and `Apple` (via Pair-to-Mac).
-  - **macOS**: Builds `netstandard2.0`, `.NET 8/9`, `Android`, and `Apple` targets.
+  - **macOS**: Builds `.NET 8/9/10`, `Android`, and `Apple` targets.
 
 ### Testing
 - **Full test suite**:
@@ -332,9 +332,9 @@ public partial class ObservableLinkedList<T> : INotifyCollectionChanged, INotify
 Splat uses a centralized, OS-aware build system defined in `src/Directory.Build.props` that automatically selects appropriate target frameworks.
 
 #### TFM Property Groups
-- **`SplatModernTargets`**: `net8.0;net9.0` - Used by tests and benchmarks.
-- **`SplatLegacyTargets`**: `net462;net472` - Used by core libraries, only on Windows.
-- **`SplatCoreTargets`**: `netstandard2.0;net8.0;net9.0;net462;net472` - Used by core libraries for broad compatibility (legacy targets are conditional).
+- **`SplatModernTargets`**: `net8.0;net9.0;net10.0` - Used by tests and benchmarks.
+- **`SplatLegacyTargets`**: `net462;net472;net481` - Used by core libraries, only on Windows.
+- **`SplatCoreTargets`**: `net8.0;net9.0;net10.0;net462;net472;net481` - Used by core libraries for broad compatibility (legacy targets are conditional).
 - **`SplatUiFinalTargetFrameworks`**: An OS-aware composition for UI projects that includes platform-specific targets (Android, Apple, Windows, Tizen).
 
 #### OS-Aware Target Selection
@@ -354,9 +354,10 @@ Splat uses a centralized, OS-aware build system defined in `src/Directory.Build.
 - **Maintainability**: TFMs can be updated in a single location.
 
 ### Supported Frameworks
-- **netstandard2.0** - Broad compatibility with .NET Framework and .NET Core
 - **net8.0** - Modern .NET with performance improvements
-- **net9.0** - Latest .NET with newest features and AOT support
+- **net9.0** - .NET with advanced features and AOT support
+- **net10.0** - Latest .NET with newest features
+- **net462/net472/net481** - .NET Framework for Windows compatibility
 
 ### Windows-Specific Frameworks
 - **net8.0-windows10.0.17763.0** - Windows-specific APIs

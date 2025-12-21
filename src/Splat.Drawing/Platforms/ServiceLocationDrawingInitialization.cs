@@ -20,10 +20,10 @@ public static class ServiceLocationDrawingInitialization
 #endif
     public static void RegisterPlatformBitmapLoader(this IMutableDependencyResolver resolver)
     {
-        resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
+        ArgumentExceptionHelper.ThrowIfNull(resolver);
 
 #if !IS_SHARED_NET
-        // not supported in netstandard or NET6 library
+        // not supported in NET6+ library
         if (!resolver.HasRegistration(typeof(IBitmapLoader)))
         {
             resolver.RegisterLazySingleton(static () => new PlatformBitmapLoader(), typeof(IBitmapLoader));

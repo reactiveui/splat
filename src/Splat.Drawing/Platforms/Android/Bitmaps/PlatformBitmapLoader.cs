@@ -30,13 +30,10 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
     /// <inheritdoc />
     public async Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
     {
-        sourceStream.ThrowArgumentNullExceptionIfNull(nameof(sourceStream));
+        ArgumentExceptionHelper.ThrowIfNull(sourceStream);
 
         // this is a rough check to do with the termination check for #479
-        if (sourceStream.Length < 2)
-        {
-            throw new ArgumentException("The source stream is not a valid image file.", nameof(sourceStream));
-        }
+        ArgumentExceptionHelper.ThrowIf(sourceStream.Length < 2, "The source stream is not a valid image file.", nameof(sourceStream));
 
         if (!HasCorrectStreamEnd(sourceStream))
         {
@@ -98,9 +95,13 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
         // NB: On iOS, you have to pass the extension, but on Android it's
         // stripped - try stripping the extension to see if there's a Drawable.
         var key = System.IO.Path.GetFileNameWithoutExtension(source);
-        return _drawableList.TryGetValue(key, out var intValue)
-            ? Task.Run<IBitmap?>(() => GetFromDrawable(res.GetDrawable(intValue, theme)))
-            : throw new ArgumentException("Either pass in an integer ID cast to a string, or the name of a drawable resource");
+        if (_drawableList.TryGetValue(key, out var intValue))
+        {
+            return Task.Run<IBitmap?>(() => GetFromDrawable(res.GetDrawable(intValue, theme)));
+        }
+
+        ArgumentExceptionHelper.ThrowIf(true, "Either pass in an integer ID cast to a string, or the name of a drawable resource", nameof(source));
+        return null!; // unreachable
     }
 
     /// <inheritdoc />

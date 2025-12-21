@@ -201,10 +201,8 @@ public class LocatorTests
         testLocator.RegisterResolverCallbackChanged(NotificationAction);
 
         using (testLocator.Internal.WithResolver())
+        using (testLocator.Internal.WithResolver())
         {
-            using (testLocator.Internal.WithResolver())
-            {
-            }
         }
 
         // 1 due to the fact the callback is called when we register.
@@ -223,10 +221,8 @@ public class LocatorTests
         Locator.RegisterResolverCallbackChanged(NotificationAction);
 
         using (Locator.GetLocator().WithResolver(false))
+        using (Locator.GetLocator().WithResolver(false))
         {
-            using (Locator.GetLocator().WithResolver(false))
-            {
-            }
         }
 
         // 1 due to the fact the callback is called when we register.

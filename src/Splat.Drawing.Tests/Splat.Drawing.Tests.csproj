@@ -4,6 +4,7 @@
     <TargetFrameworks>$(SplatModernTargets)</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <PropertyGroup Condition="$([MSBuild]::IsOsPlatform('Windows'))">
