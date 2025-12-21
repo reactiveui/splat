@@ -51,7 +51,7 @@ public static class MicrosoftExtensionsLoggingExtensions
     /// <returns>The logging builder for chaining.</returns>
     public static ILoggingBuilder AddSplat(this ILoggingBuilder builder)
     {
-#if NETSTANDARD || NETFRAMEWORK
+#if NETFRAMEWORK
         if (builder is null)
         {
             throw new ArgumentNullException(nameof(builder));
@@ -72,7 +72,7 @@ public static class MicrosoftExtensionsLoggingExtensions
     /// <returns>The logger factory for chaining.</returns>
     public static ILoggerFactory AddSplat(this ILoggerFactory loggerFactory)
     {
-#if NETSTANDARD || NETFRAMEWORK
+#if NETFRAMEWORK
         if (loggerFactory is null)
         {
             throw new ArgumentNullException(nameof(loggerFactory));

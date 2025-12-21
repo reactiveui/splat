@@ -322,13 +322,15 @@ public partial class ObservableLinkedList<T> : INotifyCollectionChanged, INotify
 ## Target Framework Support
 
 ### Supported Frameworks
-- **netstandard2.0** - Broad compatibility with .NET Framework and .NET Core
 - **net8.0** - Modern .NET with performance improvements
-- **net9.0** - Latest .NET with newest features and AOT support
+- **net9.0** - .NET with advanced features and AOT support
+- **net10.0** - Latest .NET with newest features
+- **net462/net472/net481** - .NET Framework for Windows compatibility
 
 ### Windows-Specific Frameworks
 - **net8.0-windows10.0.17763.0** - Windows-specific APIs
-- **net9.0-windows10.0.17763.0** - Latest Windows-specific APIs
+- **net9.0-windows10.0.17763.0** - Windows-specific APIs
+- **net10.0-windows10.0.17763.0** - Latest Windows-specific APIs
 
 ### AOT Compatibility
 - **net8.0 and net9.0** projects have `<IsAotCompatible>true</IsAotCompatible>`

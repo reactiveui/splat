@@ -74,7 +74,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
     /// <inheritdoc />
     public virtual void Register(Func<object?> factory, Type? serviceType, string? contract = null)
     {
-#if NETSTANDARD || NETFRAMEWORK
+#if NETFRAMEWORK
         if (factory is null)
         {
             throw new ArgumentNullException(nameof(factory));

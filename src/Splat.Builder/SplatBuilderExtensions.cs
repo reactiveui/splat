@@ -16,7 +16,7 @@ public static class SplatBuilderExtensions
     /// <param name="module">The module to configure.</param>
     public static void Apply(this IModule module)
     {
-#if NETSTANDARD || NETFRAMEWORK
+#if NETFRAMEWORK
         if (module is null)
         {
             throw new ArgumentNullException(nameof(module));
@@ -36,7 +36,7 @@ public static class SplatBuilderExtensions
     /// <exception cref="ArgumentNullException">Thrown when resolver is null.</exception>
     public static IAppBuilder CreateSplatBuilder(this IMutableDependencyResolver resolver)
     {
-#if NETSTANDARD || NETFRAMEWORK
+#if NETFRAMEWORK
         if (resolver is null)
         {
             throw new ArgumentNullException(nameof(resolver));
@@ -58,7 +58,7 @@ public static class SplatBuilderExtensions
     /// <exception cref="ArgumentNullException">Thrown when resolver is null.</exception>
     public static IAppBuilder CreateSplatBuilder(this IMutableDependencyResolver resolver, Action<IMutableDependencyResolver> configureAction)
     {
-#if NETSTANDARD || NETFRAMEWORK
+#if NETFRAMEWORK
         if (resolver is null)
         {
             throw new ArgumentNullException(nameof(resolver));

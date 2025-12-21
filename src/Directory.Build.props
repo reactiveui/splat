@@ -39,13 +39,13 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <SplatTargetFrameworks>netstandard2.0;net8.0;net9.0;net10.0</SplatTargetFrameworks>
+    <SplatTargetFrameworks>net8.0;net9.0;net10.0</SplatTargetFrameworks>
     <SplatWindowsTargetFrameworks>net8.0-windows10.0.17763.0;net9.0-windows10.0.17763.0;net10.0-windows10.0.17763.0</SplatWindowsTargetFrameworks>
     <SplatModernTargets>net8.0;net9.0;net10.0</SplatModernTargets>
 
-    <SplatLegacyTargets Condition="$([MSBuild]::IsOsPlatform('Windows'))">net462;net472</SplatLegacyTargets>
+    <SplatLegacyTargets Condition="$([MSBuild]::IsOsPlatform('Windows'))">net462;net472;net481</SplatLegacyTargets>
 
-    <SplatCoreTargets>netstandard2.0;$(SplatModernTargets)</SplatCoreTargets>
+    <SplatCoreTargets>$(SplatModernTargets)</SplatCoreTargets>
     <SplatCoreTargets Condition=" '$(SplatLegacyTargets)' != '' ">$(SplatCoreTargets);$(SplatLegacyTargets)</SplatCoreTargets>
 
     <SplatAndroidTargets>net9.0-android;net10.0-android</SplatAndroidTargets>

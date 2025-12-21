@@ -23,7 +23,7 @@ public static class ServiceLocationDrawingInitialization
         resolver.ThrowArgumentNullExceptionIfNull(nameof(resolver));
 
 #if !IS_SHARED_NET
-        // not supported in netstandard or NET6 library
+        // not supported in NET6+ library
         if (!resolver.HasRegistration(typeof(IBitmapLoader)))
         {
             resolver.RegisterLazySingleton(static () => new PlatformBitmapLoader(), typeof(IBitmapLoader));

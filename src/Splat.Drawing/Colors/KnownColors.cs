@@ -315,7 +315,7 @@ internal static class KnownColors
         {
             var kc = (KnownColor)i;
             var argb = ArgbValues[i];
-#if NET6_0_OR_GREATER || NETSTANDARD2_1 || NETCOREAPP2_0_OR_GREATER
+#if NET6_0_OR_GREATER
             _ = dict.TryAdd(argb, kc);
 #else
             if (!dict.ContainsKey(argb))

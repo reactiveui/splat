@@ -430,11 +430,11 @@ ImageView.Background = ViewModel.ProfileBackgroundAccentColor.ToNativeBrush();
 ```
 
 If targeting iOS or Mac in a cross-platform solution (e.g. iOS & Android), use
-the SplatColor class to define colors in your netstandard library
+the SplatColor class to define colors in your shared library
 (since Cocoa doesn't include System.Drawing.Color).
 
 ```cs
-// In a netstandard library
+// In a shared library
 SplatColor BackgroundColor = SplatColor.Red;
 ```
 

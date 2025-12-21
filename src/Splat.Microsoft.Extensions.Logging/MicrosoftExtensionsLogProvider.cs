@@ -35,7 +35,7 @@ public sealed class MicrosoftExtensionsLogProvider : ILoggerProvider
                 return;
             }
 
-#if NETSTANDARD || NETFRAMEWORK
+#if NETFRAMEWORK
             if (formatter is null)
             {
                 throw new ArgumentNullException(nameof(formatter));

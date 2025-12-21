@@ -38,7 +38,7 @@ public sealed class ExceptionlessSplatLogger : ILogger
         Type sourceType,
         ExceptionlessClient exceptionlessClient)
     {
-#if NETSTANDARD || NETFRAMEWORK
+#if NETFRAMEWORK
         if (sourceType is null)
         {
             throw new ArgumentNullException(nameof(sourceType));
@@ -81,7 +81,7 @@ public sealed class ExceptionlessSplatLogger : ILogger
     /// <inheritdoc />
     public void Write(string message, Type type, LogLevel logLevel)
     {
-#if NETSTANDARD || NETFRAMEWORK
+#if NETFRAMEWORK
         if (type is null)
         {
             throw new ArgumentNullException(nameof(type));
@@ -101,7 +101,7 @@ public sealed class ExceptionlessSplatLogger : ILogger
     /// <inheritdoc />
     public void Write(Exception exception, string message, Type type, LogLevel logLevel)
     {
-#if NETSTANDARD || NETFRAMEWORK
+#if NETFRAMEWORK
         if (type is null)
         {
             throw new ArgumentNullException(nameof(type));
