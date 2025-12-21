@@ -299,8 +299,11 @@ public class DefaultModeDetectorTests
                     "When Microsoft.Testing.Platform assembly is loaded, ModeDetector should detect it");
             }
 
-            // This test always passes if MTP assembly is present OR if another test framework is detected
-            Assert.That(result, Is.Not.Null, "ModeDetector should return a value");
+            // Ensure this test only passes if the MTP assembly is present or another test framework is detected
+            Assert.That(
+                hasMTPAssembly || (result.HasValue && result.Value),
+                Is.True,
+                "Test should only pass when either Microsoft.Testing.Platform is loaded or another unit test framework is detected.");
         }
     }
 }
