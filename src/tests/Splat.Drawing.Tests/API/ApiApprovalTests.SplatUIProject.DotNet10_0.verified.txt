@@ -36,9 +36,6 @@ namespace Splat
     public class DefaultPlatformModeDetector : Splat.IPlatformModeDetector
     {
         public DefaultPlatformModeDetector() { }
-        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("Uses Activator.CreateInstance and reflection which require dynamic code generatio" +
-            "n")]
-        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("Uses Type.GetType and Activator.CreateInstance which may be trimmed")]
         public bool? InDesignMode() { }
     }
     public interface IBitmap : System.IDisposable
@@ -55,9 +52,6 @@ namespace Splat
     }
     public interface IPlatformModeDetector
     {
-        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("Uses Activator.CreateInstance and reflection which require dynamic code generatio" +
-            "n")]
-        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("Uses Type.GetType and Activator.CreateInstance which may be trimmed")]
         bool? InDesignMode();
     }
     public enum KnownColor
@@ -247,9 +241,6 @@ namespace Splat
     }
     public static class PlatformModeDetector
     {
-        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("Uses Activator.CreateInstance and reflection which require dynamic code generatio" +
-            "n")]
-        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("Uses Type.GetType and Activator.CreateInstance which may be trimmed")]
         public static bool InDesignMode() { }
         public static void OverrideModeDetector(Splat.IPlatformModeDetector modeDetector) { }
     }
@@ -267,7 +258,6 @@ namespace Splat
     }
     public static class ServiceLocationDrawingInitialization
     {
-        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("Needs to use reflection")]
         [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("Needs to use reflection")]
         public static void RegisterPlatformBitmapLoader(this Splat.IMutableDependencyResolver resolver) { }
     }

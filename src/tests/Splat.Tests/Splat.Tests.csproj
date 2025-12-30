@@ -3,21 +3,12 @@
     <TargetFrameworks>$(SplatModernTargets)</TargetFrameworks>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Serilog.Exceptions"/>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Splat.ApplicationInsights\Splat.ApplicationInsights.csproj"/>
-    <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj"/>
-    <ProjectReference Include="..\..\Splat.Exceptionless\Splat.Exceptionless.csproj"/>
-    <ProjectReference Include="..\..\Splat.AppCenter\Splat.AppCenter.csproj"/>
-    <ProjectReference Include="..\..\Splat.Log4Net\Splat.Log4Net.csproj"/>
-    <ProjectReference Include="..\..\Splat.Microsoft.Extensions.Logging\Splat.Microsoft.Extensions.Logging.csproj"/>
-    <ProjectReference Include="..\..\Splat.NLog\Splat.NLog.csproj"/>
-    <ProjectReference Include="..\..\Splat.Raygun\Splat.Raygun.csproj"/>
-    <ProjectReference Include="..\..\Splat.Serilog\Splat.Serilog.csproj"/>
-    <ProjectReference Include="..\..\Splat\Splat.csproj"/>
+    <ProjectReference Include="..\..\Splat.Core\Splat.Core.csproj" />
+    <ProjectReference Include="..\..\Splat\Splat.csproj" />
+    <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="splatlogo.bmp">
@@ -32,5 +23,9 @@
     <None Update="xunit.runner.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Logging\Helpers\" />
+    <Folder Include="Mocks\" />
   </ItemGroup>
 </Project>

@@ -82,18 +82,11 @@ public partial struct SplatColor : IEquatable<SplatColor>
     {
         get
         {
-#if NET_2_0_ONCE_MONO_BUG_324144_IS_FIXED
-    if (IsNamedColor)
-      return KnownColors.GetName (knownColor);
-    else
-      return String.Format ("{0:x}", ToArgb ());
-#else
             // name is required for serialization under 1.x, but not under 2.0
             // Can happen with stuff deserialized from MS
             _name ??= IsNamedColor ? KnownColors.GetName(_knownColor) : $"{ToArgb():x}";
 
             return _name;
-#endif
         }
     }
 
@@ -111,13 +104,6 @@ public partial struct SplatColor : IEquatable<SplatColor>
     /// Gets a value indicating whether the color is par tof the <see cref="ColorType.Known"/> or <see cref="ColorType.Named"/> groups.
     /// </summary>
     public readonly bool IsNamedColor => (_state & (short)(ColorType.Known | ColorType.Named)) != 0;
-
-#if TARGET_JVM
-    /// <summary>
-    /// Gets the java native object of the color.
-    /// </summary>
-    internal java.awt.SplatColor NativeObject => return new java.awt.SplatColor (R, G, B, A);
-#endif
 
     /// <summary>
     /// Gets or sets the value of the color.
@@ -390,24 +376,6 @@ public partial struct SplatColor : IEquatable<SplatColor>
         // Use the property here, not the field.
         return IsNamedColor ? "SplatColor [" + Name + "]" : $"SplatColor [A={A}, R={R}, G={G}, B={B}]";
     }
-
-#if TARGET_JVM
-internal static SplatColor FromArgbNamed (int alpha, int red, int green, int blue, string name, KnownColor knownColor)
-{
-  SplatColor color = FromArgb (alpha, red, green, blue);
-  color.state = (short) (ColorType.Known|ColorType.Named);
-  color.name = KnownColors.GetName (knownColor);
-  color.knownColor = (short) knownColor;
-  return color;
-}
-
-internal static SplatColor FromArgbSystem (int alpha, int red, int green, int blue, string name, KnownColor knownColor)
-{
-  SplatColor color = FromArgbNamed (alpha, red, green, blue, name, knownColor);
-  color.state |= (short) ColorType.System;
-  return color;
-}
-#endif
 
     private static void CheckRGBValues(int red, int green, int blue)
     {

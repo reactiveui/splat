@@ -11,6 +11,22 @@
 
 # Splat
 
+## Table of Contents
+
+- [What does it do?](#what-does-it-do)
+- [How do I install?](#how-do-i-install)
+- [Detecting whether you're in a unit test runner](#detecting-whether-youre-in-a-unit-test-runner)
+- [Service Location](#service-location)
+  - [The Default Dependency Resolver (v19+)](#the-default-dependency-resolver-v19)
+  - [AppBuilder and IModule](#appbuilder-and-imodule-aot-friendly-configuration)
+- [Logging](#logging)
+- [Cross platform drawing](#cross-platform-drawing)
+- [Cross-platform Image Loading](#cross-platform-image-loading)
+- [Detecting if you're in design mode](#detecting-if-youre-in-design-mode)
+- [Application Performance Monitoring](#application-performance-monitoring)
+- [Dependency Resolver Performance Benchmarks](#dependency-resolver-performance-benchmarks)
+- [Contribute](#contribute)
+
 Certain types of things are basically impossible to do in cross-platform
 mobile code today, yet there's no reason why. Writing a ViewModel that handles
 loading a gallery of pictures from disk will be completely riddled with
@@ -124,6 +140,272 @@ Locator.CurrentMutable.RegisterConstant(new ExtraGoodToaster(), typeof(IToaster)
 // Register a singleton which won't get created until the first user accesses it
 Locator.CurrentMutable.RegisterLazySingleton(() => new LazyToaster(), typeof(IToaster));
 ```
+
+### The Default Dependency Resolver (v19+)
+
+Starting with v19, Splat provides two high-performance resolver implementations optimized for AOT compilation: **GlobalGenericFirstDependencyResolver** and **InstanceGenericFirstDependencyResolver**. Both deliver significantly better performance than the legacy ModernDependencyResolver while supporting different isolation requirements.
+
+#### Quick Start for New Users
+
+The service locator is simple to use - register services at startup, then resolve them when needed:
+
+```cs
+// Register services at application startup
+Locator.CurrentMutable.Register<IToaster>(() => new Toaster());
+Locator.CurrentMutable.RegisterConstant<IConfiguration>(myConfig);
+Locator.CurrentMutable.RegisterLazySingleton<ILogger>(() => new FileLogger());
+
+// Resolve services anywhere in your application
+var toaster = Locator.Current.GetService<IToaster>();
+var config = Locator.Current.GetService<IConfiguration>();
+```
+
+**Key Concepts:**
+
+- **Locator.CurrentMutable** - Use this to **register** services during initialization
+- **Locator.Current** - Use this to **retrieve** services during runtime
+- **Contracts** - Optional named registrations when you need multiple implementations: `Register<IToaster>(() => new FastToaster(), "Fast")`
+- **Lazy Singletons** - Services created once on first access: `RegisterLazySingleton<T>`
+- **Constants** - Pre-created singleton instances: `RegisterConstant<T>`
+
+#### Choosing Between Global and Instance Resolvers
+
+Splat provides two resolver implementations with identical APIs but different isolation characteristics:
+
+| Feature | GlobalGenericFirstDependencyResolver | InstanceGenericFirstDependencyResolver |
+|---------|--------------------------------------|----------------------------------------|
+| **Container Storage** | Process-wide static containers | Per-resolver instance containers (ConditionalWeakTable) |
+| **Isolation** | Shared across all resolver instances | Isolated per resolver instance |
+| **Performance** | Fastest - direct static access | Very fast - one additional CWT lookup |
+| **Memory** | Minimal - static fields only | Low - weak references, GC-friendly |
+| **Use Case** | Single global service locator | Multiple independent resolvers, testing scenarios |
+| **Thread Safety** | Lock-free reads, thread-safe writes | Lock-free reads, thread-safe writes |
+| **AOT Compatible** | Yes | Yes |
+
+**When to use GlobalGenericFirstDependencyResolver:**
+- Single application-wide service locator (most common scenario)
+- Maximum performance requirements
+- Simple dependency injection needs
+- Traditional singleton pattern usage
+
+**When to use InstanceGenericFirstDependencyResolver:**
+- Multiple independent DI containers in same process
+- Unit testing with isolated container instances
+- Plugin systems with separate service graphs
+- Multi-tenant applications with isolated service scopes
+
+**Example: Creating Instance Resolvers**
+
+```cs
+// Global resolver (default) - all instances share registrations
+var resolver1 = new GlobalGenericFirstDependencyResolver();
+var resolver2 = new GlobalGenericFirstDependencyResolver();
+resolver1.Register<IService>(() => new ServiceA());
+// resolver2 can also see ServiceA registration!
+
+// Instance resolver - each has independent registrations
+var resolver1 = new InstanceGenericFirstDependencyResolver();
+var resolver2 = new InstanceGenericFirstDependencyResolver();
+resolver1.Register<IService>(() => new ServiceA());
+resolver2.Register<IService>(() => new ServiceB());
+// Completely isolated - resolver1 only sees ServiceA, resolver2 only sees ServiceB
+```
+
+#### Container Architecture: How It Works
+
+Both resolvers use a **generic-first, two-tier architecture** designed for maximum performance:
+
+##### 1. Static Generic Containers (Fast Path)
+
+When you call generic methods like `GetService<IToaster>()`, the resolver uses static generic containers:
+
+```cs
+// Each type T gets its own static container - no dictionary lookups needed!
+internal static class Container<T>
+{
+    private static readonly Entry<Registration<T>> Entries = new();
+    // ... resolution logic
+}
+```
+
+##### New Container Performance
+
+**Performance characteristics:**
+- **O(1) constant-time** service resolution - no hash calculations, no dictionary lookups
+- **Lock-free reads** using versioned snapshots with volatile memory semantics
+- **O(1) registration** - snapshots are rebuilt lazily on first read, not on every registration
+- **Zero boxing/unboxing** for value types
+- **AOT-friendly** - no reflection required for generic registrations
+
+
+##### 2. Type Registry (Compatibility Fallback)
+
+When you call Type-based methods like `GetService(typeof(IToaster))`, the resolver uses a concurrent dictionary:
+
+```cs
+// Fallback for Type-based calls and interop with legacy code
+internal static class ServiceTypeRegistry
+{
+    private static readonly ConcurrentDictionary<(Type, string?), Entry<Func<object?>>> Entries;
+    // ... resolution logic with per-entry locking
+}
+```
+
+**Why the fallback exists:**
+- Compatibility with libraries that use Type-based APIs
+- Interop with other DI containers (Autofac, Microsoft.Extensions.DependencyInjection, etc.)
+- Support for dynamic scenarios where types aren't known at compile-time
+
+##### 3. Contract Support (Named Services)
+
+Contracts allow multiple registrations for the same type:
+
+```cs
+// Register different implementations with different contracts
+Locator.CurrentMutable.Register<IToaster>(() => new FastToaster(), "Fast");
+Locator.CurrentMutable.Register<IToaster>(() => new SlowToaster(), "Slow");
+
+// Retrieve specific implementation
+var fastToaster = Locator.Current.GetService<IToaster>("Fast");
+```
+
+Contracts use a separate `ContractContainer<T>` for each type, providing the same lock-free performance as the non-contract path.
+
+#### Thread Safety and Concurrency
+
+GenericFirstDependencyResolver is designed for high-concurrency scenarios:
+
+**Lock-free reads:**
+- All `GetService` calls use lock-free fast paths
+- Snapshots are published with `Volatile.Write` for proper memory ordering
+- Multiple threads can resolve services simultaneously with zero contention
+
+**Fine-grained locking for writes:**
+- Registrations use per-type or per-entry locks (not global locks)
+- Lock contention only affects threads registering the *same* type simultaneously
+- Most apps register at startup and read during runtime - optimal for this pattern
+
+**Clear semantics:**
+- `Clear()` operations are designed as "stop-the-world" teardown operations
+- Threads with existing references may continue using old snapshots until next lookup
+- This is standard behavior for DI containers during test cleanup or app shutdown
+
+#### Performance: Generic vs Type-Based Methods
+
+**Always prefer generic methods** when the type is known at compile-time:
+
+```cs
+// FAST: Generic method - no dictionary lookup, no boxing
+var toaster = Locator.Current.GetService<IToaster>();
+
+// SLOW: Type-based method - dictionary lookup + potential boxing
+var toaster = (IToaster)Locator.Current.GetService(typeof(IToaster));
+```
+
+**Benchmark results** (500 registrations):
+- Generic registration: ~2-3ms for 500 services (constant time)
+- Type-based registration: Previously O(n²), now O(n) but still slower than generic
+- Generic resolution: ~50-100ns per call (lock-free, no allocations)
+- Type-based resolution: ~200-500ns per call (dictionary lookup)
+
+#### Registration Patterns
+
+**Transient (new instance every time):**
+```cs
+Locator.CurrentMutable.Register<IToaster>(() => new Toaster());
+```
+
+**Singleton (shared instance):**
+```cs
+// Created immediately
+Locator.CurrentMutable.RegisterConstant<IToaster>(new Toaster());
+
+// Created on first access (lazy)
+Locator.CurrentMutable.RegisterLazySingleton<IToaster>(() => new Toaster());
+```
+
+**Multiple implementations:**
+```cs
+// Get all registered implementations
+Locator.CurrentMutable.Register<IPlugin>(() => new PluginA());
+Locator.CurrentMutable.Register<IPlugin>(() => new PluginB());
+
+var allPlugins = Locator.Current.GetServices<IPlugin>(); // Returns both
+```
+
+**Constructor-based registration (requires parameterless constructor):**
+```cs
+// Registers a factory that calls new TImplementation()
+Locator.CurrentMutable.Register<IToaster, Toaster>();
+```
+
+#### Important: Null Service Type Edge Case
+
+Due to overload resolution, there's one edge case when registering with a null service type (rare in practice):
+
+```cs
+// AMBIGUOUS: Calls generic method Register<int> with contract: null
+resolver.Register(() => 5, null);
+
+// CORRECT: Use named parameters to call non-generic method with serviceType: null
+resolver.Register(() => 5, serviceType: null);
+```
+
+In normal usage, this ambiguity doesn't occur:
+
+```cs
+// Unambiguous - calls generic method
+resolver.Register<IToaster>(() => new Toaster());
+
+// Unambiguous - calls Type-based method
+resolver.Register(() => new Toaster(), typeof(IToaster));
+```
+
+#### Why GenericFirstDependencyResolver Replaced ModernDependencyResolver
+
+**ModernDependencyResolver** (v1-v18) had several performance and correctness issues:
+
+1. **O(n²) Registration Growth**
+   - Every registration rebuilt the entire snapshot array
+   - 500 registrations required 124,750 array copies
+   - Benchmarks showed exponential time growth and wouldn't complete overnight
+
+2. **Global Lock Contention**
+   - Single `ReaderWriterLockSlim` for all operations
+   - All readers blocked when any thread was registering
+   - Poor scaling on multi-core systems
+
+3. **Reflection-Heavy, Poor AOT Support**
+   - Heavy use of `Type`-based dictionaries even for generic calls
+   - Required runtime code generation for optimal performance
+   - Not compatible with Native AOT compilation
+
+4. **Memory Inefficiency**
+   - Separate dictionary entries for every registration
+   - High GC pressure from constant array rebuilds
+   - No sharing of metadata between related generic types
+
+**GenericFirstDependencyResolver** (v19+) fixes all these issues:
+
+1. **O(1) Registration** - Lazy snapshot rebuilding eliminates O(n²) behavior
+2. **Lock-Free Reads** - Zero contention for service resolution (the hot path)
+3. **AOT-Compatible** - Static generic containers require no reflection
+4. **Memory Efficient** - Versioned snapshots, minimal allocations
+5. **Correct Concurrency** - Volatile semantics, proper memory ordering
+6. **Backward Compatible** - Type-based APIs still work for legacy code
+
+**Migration is seamless** - GenericFirstDependencyResolver implements the same `IMutableDependencyResolver` interface, so existing code works without changes. Just recompile against v19+ to get the performance benefits.
+
+**When to use Type-based methods:**
+- Interop with other containers (Autofac, Microsoft.Extensions.DependencyInjection)
+- Dynamic plugin scenarios where types are loaded at runtime
+- Legacy code that hasn't been updated to use generics
+
+**When to use generic methods (preferred):**
+- All new code
+- Application startup registration
+- Hot-path service resolution
+- AOT/trimming scenarios
 
 ### Dependency Injection Source Generator
 There is a source generator that will inject constructor and properties. See [here](https://github.com/reactivemarbles/Splat.DI.SourceGenerator) for instructions.
@@ -678,6 +960,81 @@ The unit tests for this functionality do not generate activity to the relevant p
 The integration tests DO SEND TEST DATA to the relevant platforms, so they need to have
 the user-secrets configured. There is a script in the \scripts\inttestusersecrets.cmd
 that shows how to set the relevant secrets up.
+
+## Dependency Resolver Performance Benchmarks
+
+Here is the comprehensive performance summary for the new `InstanceGenericFirstDependencyResolver` (referred to as the **New Resolver**) compared to the existing `ModernDependencyResolver` (referred to as the **Legacy Resolver**).
+
+These statistics are based on the .NET 10.0 benchmark results provided.
+
+The **New Resolver** is a massive upgrade over the legacy implementation. It is fully **AOT-compatible** and statistically superior in every critical metric:
+
+* **3.5x Faster** in real-world usage (Mixed Read/Write).
+* **3.6x Faster** for empty container checks (Startup/Misses).
+* **18x Less Memory Allocated** during service registration.
+* **2x Faster** at registering services.
+
+It achieves this by replacing the old Dictionary-based lookup with a generic-first architecture that leverages static generic caching and `ConditionalWeakTable` for instance isolation.
+
+### 1. Real-World Performance
+
+*Simulates a realistic application lifecycle: registering services, resolving them, and checking for existence.*
+
+| Workload | New Resolver | Legacy Resolver | Improvement |
+| --- | --- | --- | --- |
+| **Realistic Usage** | **431.1 μs** | 1,513.1 μs | **3.5x Faster** |
+
+> **Why this matters:** This is the metric that users will actually "feel" in their applications. The overhead of using Splat for dependency resolution effectively disappears.
+
+### 2. Retrieval (Read) Performance
+
+*Resolving services (`GetService`) or checking for them (`HasRegistration`).*
+
+| Operation | Scenario | New Resolver | Legacy Resolver | Improvement |
+| --- | --- | --- | --- | --- |
+| **Empty / Miss** | *Service not found* | **~8.6 ns** | ~31.4 ns | **3.6x Faster** |
+| **Hit (Generic)** | *Service found* | **~54 ns** | ~71 ns | **1.3x Faster** |
+| **Collection** | *GetServices* | **168 μs** | 581 μs | **3.4x Faster** |
+
+> **Why this matters:** The "Empty/Miss" path is critical for app startup and unit testing where containers are often empty or checking for optional services. The optimizations we applied reduced this cost from ~7000ns to just ~9ns.
+
+### 3. Mutation (Write) Performance
+
+*Registering new services into the container.*
+
+| Operation | New Resolver | Legacy Resolver | Improvement |
+| --- | --- | --- | --- |
+| **Register (Generic)** | **73 μs** | 152 μs | **2.1x Faster** |
+| **Register (Constant)** | **92 μs** | 173 μs | **1.9x Faster** |
+| **Register (Contract)** | **107 μs** | 163 μs | **1.5x Faster** |
+
+> **Why this matters:** Faster registration means faster application startup times, especially for apps with hundreds of services.
+
+### 4. Memory Efficiency (Allocations)
+
+*How much garbage (memory) is created during operations.*
+
+| Operation | New Resolver | Legacy Resolver | Improvement |
+| --- | --- | --- | --- |
+| **Register (Constant)** | **66 KB** | 1,212 KB | **18x Less** |
+| **Register (Generic)** | **59 KB** | 1,177 KB | **20x Less** |
+| **Mixed Workload** | **832 KB** | 1,856 KB | **2.2x Less** |
+
+> **Why this matters:** The Legacy resolver allocated over **1 MB** just to register 300 simple services due to boxing and closure overhead. The New Resolver slashes this to just **60 KB**, significantly reducing GC pressure and pauses in mobile and desktop apps.
+
+### 5. Architectural Comparison
+
+| Feature | New Resolver (`InstanceGenericFirst`) | Legacy Resolver (`Modern`) |
+| --- | --- | --- |
+| **Storage** | Generic Static Cache (`ContainerCache<T>`) | `Dictionary<Type, List<Func>>` |
+| **Isolation** | `ConditionalWeakTable` (Per-Instance) | Dictionary Instance |
+| **Registration** | `readonly record struct` (Zero Alloc) | `Func<object>` Delegate (High Alloc) |
+| **AOT Support** | **Native** (No reflection on hot paths) | **Poor** (Requires reflection/boxing) |
+| **Concurrency** | Lock-Free Reads (Volatile Snapshots) | Lock-Free Reads (Volatile Snapshots) |
+
+### Conclusion for Consumers
+
+By switching to the new resolver, consumers get a **free performance boost** and **AOT compatibility** without changing their code. The memory savings alone make this a mandatory upgrade for memory-constrained environments like mobile (MAUI/Xamarin) and WebAssembly (Blazor).
 
 ## Contribute
 

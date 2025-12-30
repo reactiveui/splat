@@ -5,6 +5,7 @@
 
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
+
 using Splat.ApplicationPerformanceMonitoring;
 
 namespace Splat;

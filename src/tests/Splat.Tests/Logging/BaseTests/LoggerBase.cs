@@ -11,6 +11,7 @@ namespace Splat.Tests.Logging;
 /// Contains common tests associated with all loggers.
 /// </summary>
 /// <typeparam name="T">The type of logger.</typeparam>
+[NotInParallel]
 public abstract class LoggerBase<T>
     where T : ILogger
 {

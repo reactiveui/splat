@@ -19,6 +19,8 @@
     <InternalsVisibleTo Include="Splat.Builder" />
     <InternalsVisibleTo Include="Splat.Logging" />
     <InternalsVisibleTo Include="Splat.Drawing" />
+    <InternalsVisibleTo Include="Splat.Common.Test" />
+    <InternalsVisibleTo Include="Splat.Microsoft.Extensions.Logging.Tests" />
     <InternalsVisibleTo Include="Splat.DryIoc" />
     <InternalsVisibleTo Include="Splat.Microsoft.Extensions.DependencyInjection" />
     <InternalsVisibleTo Include="Splat.Microsoft.Extensions.Logging" />
@@ -31,6 +33,7 @@
     <InternalsVisibleTo Include="Splat.Builder.Tests" />
     <InternalsVisibleTo Include="Splat.Autofac" />
     <InternalsVisibleTo Include="Splat.Ninject" />
+    <InternalsVisibleTo Include="Splat.Serilog" />
     <InternalsVisibleTo Include="Splat.SimpleInjector" />
     <InternalsVisibleTo Include="Splat.NLog" />
     <InternalsVisibleTo Include="Splat.Log4Net" />

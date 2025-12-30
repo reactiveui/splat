@@ -15,8 +15,7 @@ internal static class MsLoggingHelpers
         new(LogLevel.Info, global::Microsoft.Extensions.Logging.LogLevel.Information),
         new(LogLevel.Warn, global::Microsoft.Extensions.Logging.LogLevel.Warning),
         new(LogLevel.Error, global::Microsoft.Extensions.Logging.LogLevel.Error),
-        new(LogLevel.Fatal, global::Microsoft.Extensions.Logging.LogLevel.Critical),
-    ];
+        new(LogLevel.Fatal, global::Microsoft.Extensions.Logging.LogLevel.Critical)];
 
     public static ImmutableDictionary<LogLevel, global::Microsoft.Extensions.Logging.LogLevel> Splat2MsLogDictionary { get; } = Mappings.ToImmutableDictionary();
 

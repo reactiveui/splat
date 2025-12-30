@@ -82,4 +82,138 @@ public static class AppLocator
     /// </summary>
     /// <returns>A value indicating whether the notifications are happening.</returns>
     public static bool AreResolverCallbackChangedNotificationsEnabled() => InternalLocator.AreResolverCallbackChangedNotificationsEnabled();
+
+    // Generic-first service resolution methods for AOT compatibility
+
+    /// <summary>
+    /// Gets an instance of the given service type. Must return <c>null</c>
+    /// if the service is not available (must not throw).
+    /// </summary>
+    /// <typeparam name="T">The object type.</typeparam>
+    /// <returns>The requested object, if found; <c>null</c> otherwise.</returns>
+    public static T? GetService<T>() => Current.GetService<T>();
+
+    /// <summary>
+    /// Gets an instance of the given service type. Must return <c>null</c>
+    /// if the service is not available (must not throw).
+    /// </summary>
+    /// <typeparam name="T">The object type.</typeparam>
+    /// <param name="contract">A value which will retrieve only a object registered with the same contract.</param>
+    /// <returns>The requested object, if found; <c>null</c> otherwise.</returns>
+    public static T? GetService<T>(string contract) => Current.GetService<T>(contract);
+
+    /// <summary>
+    /// Gets all instances of the given service type. Must return an empty
+    /// collection if the service is not available (must not return <c>null</c> or throw).
+    /// </summary>
+    /// <typeparam name="T">The object type.</typeparam>
+    /// <returns>A sequence of instances of the requested service type. The sequence
+    /// should be empty (not <c>null</c>) if no objects of the given type are available.</returns>
+    public static IEnumerable<T> GetServices<T>() => Current.GetServices<T>();
+
+    /// <summary>
+    /// Gets all instances of the given service type. Must return an empty
+    /// collection if the service is not available (must not return <c>null</c> or throw).
+    /// </summary>
+    /// <typeparam name="T">The object type.</typeparam>
+    /// <param name="contract">A value which will retrieve only objects registered with the same contract.</param>
+    /// <returns>A sequence of instances of the requested service type. The sequence
+    /// should be empty (not <c>null</c>) if no objects of the given type are available.</returns>
+    public static IEnumerable<T> GetServices<T>(string contract) => Current.GetServices<T>(contract);
+
+    /// <summary>
+    /// Check to see if a resolver has a registration for a type.
+    /// </summary>
+    /// <typeparam name="T">The type to check for registration.</typeparam>
+    /// <returns>Whether there is a registration for the type.</returns>
+    public static bool HasRegistration<T>() => CurrentMutable.HasRegistration<T>();
+
+    /// <summary>
+    /// Check to see if a resolver has a registration for a type.
+    /// </summary>
+    /// <typeparam name="T">The type to check for registration.</typeparam>
+    /// <param name="contract">A contract value which will indicates to only check for the registration if this contract is specified.</param>
+    /// <returns>Whether there is a registration for the type.</returns>
+    public static bool HasRegistration<T>(string contract) => CurrentMutable.HasRegistration<T>(contract);
+
+    /// <summary>
+    /// Register a function with the resolver which will generate an object
+    /// for the specified service type.
+    /// </summary>
+    /// <typeparam name="T">The type which is used for the registration.</typeparam>
+    /// <param name="factory">The factory function which generates our object.</param>
+    public static void Register<T>(Func<T?> factory) => CurrentMutable.Register(factory);
+
+    /// <summary>
+    /// Register a function with the resolver which will generate an object
+    /// for the specified service type.
+    /// </summary>
+    /// <typeparam name="T">The type which is used for the registration.</typeparam>
+    /// <param name="factory">The factory function which generates our object.</param>
+    /// <param name="contract">A contract value which will indicates to only generate the value if this contract is specified.</param>
+    public static void Register<T>(Func<T?> factory, string contract) => CurrentMutable.Register(factory, contract);
+
+    /// <summary>
+    /// Registers a constant value which will always return the specified object instance.
+    /// </summary>
+    /// <typeparam name="T">The service type to register for (must be a reference type).</typeparam>
+    /// <param name="value">The specified instance to always return.</param>
+    public static void RegisterConstant<T>(T? value)
+        where T : class => CurrentMutable.RegisterConstant(value);
+
+    /// <summary>
+    /// Registers a constant value which will always return the specified object instance.
+    /// </summary>
+    /// <typeparam name="T">The service type to register for (must be a reference type).</typeparam>
+    /// <param name="value">The specified instance to always return.</param>
+    /// <param name="contract">A contract value which will indicates to only return the value if this contract is specified.</param>
+    public static void RegisterConstant<T>(T? value, string contract)
+        where T : class => CurrentMutable.RegisterConstant(value, contract);
+
+    /// <summary>
+    /// Registers a lazy singleton value which will always return the specified object instance once created.
+    /// The value is only generated once someone requests the service from the resolver.
+    /// </summary>
+    /// <typeparam name="T">The service type to register for (must be a reference type).</typeparam>
+    /// <param name="valueFactory">A factory method for generating a object of the specified type.</param>
+    public static void RegisterLazySingleton<[System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory)
+        where T : class =>
+        CurrentMutable.RegisterLazySingleton(valueFactory);
+
+    /// <summary>
+    /// Registers a lazy singleton value which will always return the specified object instance once created.
+    /// The value is only generated once someone requests the service from the resolver.
+    /// </summary>
+    /// <typeparam name="T">The service type to register for (must be a reference type).</typeparam>
+    /// <param name="valueFactory">A factory method for generating a object of the specified type.</param>
+    /// <param name="contract">A contract value which will indicates to only return the value if this contract is specified.</param>
+    public static void RegisterLazySingleton<[System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory, string contract)
+        where T : class =>
+        CurrentMutable.RegisterLazySingleton(valueFactory, contract);
+
+    /// <summary>
+    /// Unregisters the current the value for the specified type and the optional contract.
+    /// </summary>
+    /// <typeparam name="T">The type of item to unregister.</typeparam>
+    public static void UnregisterCurrent<T>() => CurrentMutable.UnregisterCurrent<T>();
+
+    /// <summary>
+    /// Unregisters the current the value for the specified type and the optional contract.
+    /// </summary>
+    /// <typeparam name="T">The type of item to unregister.</typeparam>
+    /// <param name="contract">A contract which indicates to only removed the item registered with this contract.</param>
+    public static void UnregisterCurrent<T>(string contract) => CurrentMutable.UnregisterCurrent<T>(contract);
+
+    /// <summary>
+    /// Unregisters the all the values for the specified type and the optional contract.
+    /// </summary>
+    /// <typeparam name="T">The type of items to unregister.</typeparam>
+    public static void UnregisterAll<T>() => CurrentMutable.UnregisterAll<T>();
+
+    /// <summary>
+    /// Unregisters the all the values for the specified type and the optional contract.
+    /// </summary>
+    /// <typeparam name="T">The type of items to unregister.</typeparam>
+    /// <param name="contract">A contract which indicates to only removed those items registered with this contract.</param>
+    public static void UnregisterAll<T>(string contract) => CurrentMutable.UnregisterAll<T>(contract);
 }

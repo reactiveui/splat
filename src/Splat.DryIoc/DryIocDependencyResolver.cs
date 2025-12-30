@@ -1,13 +1,12 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2025 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
-#if NET6_0_OR_GREATER
 using System.Diagnostics.CodeAnalysis;
-#endif
 using System.Linq.Expressions;
+
 using DryIoc;
 
 namespace Splat.DryIoc;
@@ -26,11 +25,11 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
     private readonly IContainer _container = container ?? new Container();
 
     /// <inheritdoc />
-    public virtual object? GetService(Type? serviceType, string? contract = null) =>
+    public virtual object? GetService(Type? serviceType, string? contract) =>
         GetServices(serviceType, contract).LastOrDefault();
 
     /// <inheritdoc />
-    public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
+    public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract)
     {
         var key = (serviceType, contract ?? string.Empty);
         var registeredinSplat = _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray, serviceKey: key);
@@ -46,7 +45,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
     }
 
     /// <inheritdoc />
-    public bool HasRegistration(Type? serviceType, string? contract = null)
+    public bool HasRegistration(Type? serviceType, string? contract)
     {
         ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
@@ -72,7 +71,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
     }
 
     /// <inheritdoc />
-    public virtual void Register(Func<object?> factory, Type? serviceType, string? contract = null)
+    public virtual void Register(Func<object?> factory, Type? serviceType, string? contract)
     {
         ArgumentExceptionHelper.ThrowIfNull(factory);
         ArgumentExceptionHelper.ThrowIfNull(serviceType);
@@ -103,7 +102,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
     }
 
     /// <inheritdoc />
-    public virtual void UnregisterCurrent(Type? serviceType, string? contract = null)
+    public virtual void UnregisterCurrent(Type? serviceType, string? contract)
     {
         var key = (serviceType, contract ?? string.Empty);
         var hadvalue = _container.GetServiceRegistrations().Any(x =>
@@ -137,7 +136,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
     }
 
     /// <inheritdoc />
-    public virtual void UnregisterAll(Type? serviceType, string? contract = null)
+    public virtual void UnregisterAll(Type? serviceType, string? contract)
     {
         var key = (serviceType, contract ?? string.Empty);
         foreach (var x in _container.GetServiceRegistrations())
@@ -170,6 +169,176 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
     /// <inheritdoc />
     public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) => throw new NotImplementedException();
 
+    /// <inheritdoc/>
+    public object? GetService(Type? serviceType) =>
+        GetService(serviceType, null);
+
+    /// <inheritdoc/>
+    public T? GetService<T>() =>
+        (T?)GetService(typeof(T), null);
+
+    /// <inheritdoc/>
+    public T? GetService<T>(string? contract) =>
+        (T?)GetService(typeof(T), contract);
+
+    /// <inheritdoc/>
+    public IEnumerable<object> GetServices(Type? serviceType) =>
+        GetServices(serviceType, null);
+
+    /// <inheritdoc/>
+    public IEnumerable<T> GetServices<T>() =>
+        GetServices(typeof(T), null).Cast<T>();
+
+    /// <inheritdoc/>
+    public IEnumerable<T> GetServices<T>(string? contract) =>
+        GetServices(typeof(T), contract).Cast<T>();
+
+    /// <inheritdoc/>
+    public bool HasRegistration(Type? serviceType) =>
+        HasRegistration(serviceType, null);
+
+    /// <inheritdoc/>
+    public bool HasRegistration<T>() =>
+        HasRegistration(typeof(T), null);
+
+    /// <inheritdoc/>
+    public bool HasRegistration<T>(string? contract) =>
+        HasRegistration(typeof(T), contract);
+
+    /// <inheritdoc/>
+    public void Register(Func<object?> factory, Type? serviceType) =>
+        Register(factory, serviceType, null);
+
+    /// <inheritdoc/>
+    public void Register<T>(Func<T?> factory) =>
+        Register(() => factory(), typeof(T), null);
+
+    /// <inheritdoc/>
+    public void Register<T>(Func<T?> factory, string? contract) =>
+        Register(() => factory(), typeof(T), contract);
+
+    /// <inheritdoc/>
+    public void UnregisterCurrent(Type? serviceType) =>
+        UnregisterCurrent(serviceType, null);
+
+    /// <inheritdoc/>
+    public void UnregisterCurrent<T>() =>
+        UnregisterCurrent(typeof(T), null);
+
+    /// <inheritdoc/>
+    public void UnregisterCurrent<T>(string? contract) =>
+        UnregisterCurrent(typeof(T), contract);
+
+    /// <inheritdoc/>
+    public void UnregisterAll(Type? serviceType) =>
+        UnregisterAll(serviceType, null);
+
+    /// <inheritdoc/>
+    public void UnregisterAll<T>() =>
+        UnregisterAll(typeof(T), null);
+
+    /// <inheritdoc/>
+    public void UnregisterAll<T>(string? contract) =>
+        UnregisterAll(typeof(T), contract);
+
+    /// <inheritdoc/>
+    public IDisposable ServiceRegistrationCallback(Type serviceType, Action<IDisposable> callback) =>
+        ServiceRegistrationCallback(serviceType, null, callback);
+
+    /// <inheritdoc/>
+    public IDisposable ServiceRegistrationCallback<T>(Action<IDisposable> callback) =>
+        ServiceRegistrationCallback(typeof(T), null, callback);
+
+    /// <inheritdoc/>
+    public IDisposable ServiceRegistrationCallback<T>(string? contract, Action<IDisposable> callback) =>
+        ServiceRegistrationCallback(typeof(T), contract, callback);
+
+    /// <inheritdoc/>
+    void IMutableDependencyResolver.Register<TService, TImplementation>()
+    {
+        _container.RegisterDelegate<TService>(
+            _ => new TImplementation(),
+            ifAlreadyRegistered: IfAlreadyRegistered.AppendNewImplementation);
+    }
+
+    /// <inheritdoc/>
+    void IMutableDependencyResolver.Register<TService, TImplementation>(string? contract)
+    {
+        var key = (typeof(TService), contract ?? string.Empty);
+
+        if (HasRegistration<TService>(contract))
+        {
+            Trace.WriteLine($"Warning: Service {typeof(TService)} already exists with key {contract}, the registration will be replaced.");
+        }
+
+        _container.RegisterDelegate<TService>(
+            _ => new TImplementation(),
+            ifAlreadyRegistered: IfAlreadyRegistered.Replace,
+            serviceKey: key);
+    }
+
+    /// <inheritdoc/>
+    public void RegisterConstant<T>(T? value)
+        where T : class
+    {
+        ArgumentExceptionHelper.ThrowIfNull(value);
+
+        _container.RegisterInstance<T>(
+            value!,
+            ifAlreadyRegistered: IfAlreadyRegistered.AppendNewImplementation);
+    }
+
+    /// <inheritdoc/>
+    public void RegisterConstant<T>(T? value, string? contract)
+        where T : class
+    {
+        ArgumentExceptionHelper.ThrowIfNull(value);
+
+        var key = (typeof(T), contract ?? string.Empty);
+
+        if (HasRegistration<T>(contract))
+        {
+            Trace.WriteLine($"Warning: Service {typeof(T)} already exists with key {contract}, the registration will be replaced.");
+        }
+
+        _container.RegisterInstance<T>(
+            value!,
+            ifAlreadyRegistered: IfAlreadyRegistered.Replace,
+            serviceKey: key);
+    }
+
+    /// <inheritdoc/>
+    public void RegisterLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory)
+        where T : class
+    {
+        ArgumentExceptionHelper.ThrowIfNull(valueFactory);
+
+        _container.RegisterDelegate<T>(
+            _ => valueFactory()!,
+            Reuse.Singleton,
+            ifAlreadyRegistered: IfAlreadyRegistered.AppendNewImplementation);
+    }
+
+    /// <inheritdoc/>
+    public void RegisterLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory, string? contract)
+        where T : class
+    {
+        ArgumentExceptionHelper.ThrowIfNull(valueFactory);
+
+        var key = (typeof(T), contract ?? string.Empty);
+
+        if (HasRegistration<T>(contract))
+        {
+            Trace.WriteLine($"Warning: Service {typeof(T)} already exists with key {contract}, the registration will be replaced.");
+        }
+
+        _container.RegisterDelegate<T>(
+            _ => valueFactory()!,
+            Reuse.Singleton,
+            ifAlreadyRegistered: IfAlreadyRegistered.Replace,
+            serviceKey: key);
+    }
+
     /// <inheritdoc />
     public void Dispose()
     {
@@ -198,10 +367,6 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
         return instance != null ? Cast(serviceType, instance) : null;
     }
 
-#if NET6_0_OR_GREATER
-    [RequiresUnreferencedCode("Uses Expression compilation and DynamicInvoke which may be trimmed")]
-    [RequiresDynamicCode("Uses Expression compilation and DynamicInvoke which require dynamic code generation")]
-#endif
     private static object? Cast(Type type, object data)
     {
         // based upon https://stackoverflow.com/a/27584212

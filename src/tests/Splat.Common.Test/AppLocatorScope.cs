@@ -30,7 +30,7 @@ public sealed class AppLocatorScope : IDisposable
     public AppLocatorScope()
     {
         _savedResolver = AppLocator.GetLocator();
-        var newResolver = new ModernDependencyResolver();
+        var newResolver = new InstanceGenericFirstDependencyResolver();
         newResolver.InitializeSplat();
         AppLocator.SetLocator(newResolver);
     }

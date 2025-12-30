@@ -16,7 +16,6 @@ public static class ServiceLocationDrawingInitialization
     /// <param name="resolver">The resolver to register against.</param>
 #if !IS_SHARED_NET && !NET462_OR_GREATER
     [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("Needs to use reflection")]
-    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("Needs to use reflection")]
 #endif
     public static void RegisterPlatformBitmapLoader(this IMutableDependencyResolver resolver)
     {
@@ -24,7 +23,7 @@ public static class ServiceLocationDrawingInitialization
 
 #if !IS_SHARED_NET
         // not supported in NET6+ library
-        if (!resolver.HasRegistration(typeof(IBitmapLoader)))
+        if (!resolver.HasRegistration<IBitmapLoader>())
         {
             resolver.RegisterLazySingleton(static () => new PlatformBitmapLoader(), typeof(IBitmapLoader));
         }

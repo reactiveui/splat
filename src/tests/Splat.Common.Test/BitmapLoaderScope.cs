@@ -36,8 +36,5 @@ public sealed class BitmapLoaderScope : IDisposable
     /// <summary>
     /// Restores the BitmapLoader to its previous state.
     /// </summary>
-    public void Dispose()
-    {
-        BitmapLoader.RestoreState(_savedState);
-    }
+    public void Dispose() => BitmapLoader.RestoreState(_savedState);
 }

@@ -13,4 +13,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Splat.Logging\Splat.Logging.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Splat.NLog.Test" />
+    <InternalsVisibleTo Include="Splat.Microsoft.Extensions.DependencyInjection.Tests" />
+  </ItemGroup>
 </Project>

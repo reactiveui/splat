@@ -1,9 +1,11 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2025 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Splat.Microsoft.Extensions.DependencyInjection;
@@ -99,11 +101,15 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     }
 
     /// <inheritdoc />
-    public virtual object? GetService(Type? serviceType, string? contract = null) =>
+    public virtual object? GetService(Type? serviceType) =>
+        GetServices(serviceType).LastOrDefault();
+
+    /// <inheritdoc />
+    public virtual object? GetService(Type? serviceType, string? contract) =>
         GetServices(serviceType, contract).LastOrDefault();
 
     /// <inheritdoc />
-    public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
+    public virtual IEnumerable<object> GetServices(Type? serviceType)
     {
         if (ServiceProvider is null)
         {
@@ -111,18 +117,37 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
         }
 
         var isNull = serviceType is null;
-        serviceType ??= typeof(NullServiceType);
+        serviceType ??= NullServiceType.CachedType;
+
+        // this is to deal with CS8613 that GetServices returns IEnumerable<object?>?
+        IEnumerable<object> services = ServiceProvider.GetServices(serviceType)
+            .Where(a => a is not null)
+            .Select(a => a!);
+
+        if (isNull)
+        {
+            services = services
+                .Cast<NullServiceType>()
+                .Select(nst => nst.Factory()!);
+        }
+
+        return services;
+    }
+
+    /// <inheritdoc />
+    public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract)
+    {
+        if (ServiceProvider is null)
+        {
+            throw new InvalidOperationException("The ServiceProvider is null.");
+        }
+
+        var isNull = serviceType is null;
+        serviceType ??= NullServiceType.CachedType;
 
         IEnumerable<object> services = [];
 
-        if (contract is null || string.IsNullOrWhiteSpace(contract))
-        {
-            // this is to deal with CS8613 that GetServices returns IEnumerable<object?>?
-            services = ServiceProvider.GetServices(serviceType)
-                .Where(a => a is not null)
-                .Select(a => a!);
-        }
-        else if (ServiceProvider is IKeyedServiceProvider serviceProvider)
+        if (ServiceProvider is IKeyedServiceProvider serviceProvider)
         {
             services = serviceProvider.GetKeyedServices(serviceType, contract)
                 .Where(a => a is not null)
@@ -140,7 +165,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     }
 
     /// <inheritdoc />
-    public virtual void Register(Func<object?> factory, Type? serviceType, string? contract = null)
+    public virtual void Register(Func<object?> factory, Type? serviceType)
     {
         if (_isImmutable)
         {
@@ -149,23 +174,62 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
 
         var isNull = serviceType is null;
 
-        serviceType ??= typeof(NullServiceType);
+        serviceType ??= NullServiceType.CachedType;
 
         lock (_syncLock)
         {
-            if (contract is null || string.IsNullOrWhiteSpace(contract))
+            _serviceCollection?.AddTransient(serviceType, _ =>
+            isNull
+            ? new NullServiceType(factory)
+            : factory()!);
+
+            // required so that it gets rebuilt if not injected externally.
+            DisposeServiceProvider(_serviceProvider);
+            _serviceProvider = null;
+        }
+    }
+
+    /// <inheritdoc />
+    public virtual void Register(Func<object?> factory, Type? serviceType, string? contract)
+    {
+        if (_isImmutable)
+        {
+            throw new InvalidOperationException(ImmutableExceptionMessage);
+        }
+
+        var isNull = serviceType is null;
+
+        serviceType ??= NullServiceType.CachedType;
+
+        lock (_syncLock)
+        {
+            _serviceCollection?.AddKeyedTransient(serviceType, contract, (_, _) =>
+            isNull
+            ? new NullServiceType(factory)
+            : factory()!);
+
+            // required so that it gets rebuilt if not injected externally.
+            DisposeServiceProvider(_serviceProvider);
+            _serviceProvider = null;
+        }
+    }
+
+    /// <inheritdoc/>
+    public virtual void UnregisterCurrent(Type? serviceType)
+    {
+        if (_isImmutable)
+        {
+            throw new InvalidOperationException(ImmutableExceptionMessage);
+        }
+
+        serviceType ??= NullServiceType.CachedType;
+
+        lock (_syncLock)
+        {
+            var sd = _serviceCollection?.LastOrDefault(s => !s.IsKeyedService && s.ServiceType == serviceType);
+            if (sd is not null)
             {
-                _serviceCollection?.AddTransient(serviceType, _ =>
-                isNull
-                ? new NullServiceType(factory)
-                : factory()!);
-            }
-            else
-            {
-                _serviceCollection?.AddKeyedTransient(serviceType, contract, (_, _) =>
-                isNull
-                ? new NullServiceType(factory)
-                : factory()!);
+                _ = _serviceCollection?.Remove(sd);
             }
 
             // required so that it gets rebuilt if not injected externally.
@@ -175,32 +239,54 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     }
 
     /// <inheritdoc/>
-    public virtual void UnregisterCurrent(Type? serviceType, string? contract = null)
+    public virtual void UnregisterCurrent(Type? serviceType, string? contract)
     {
         if (_isImmutable)
         {
             throw new InvalidOperationException(ImmutableExceptionMessage);
         }
 
-        serviceType ??= typeof(NullServiceType);
+        serviceType ??= NullServiceType.CachedType;
 
         lock (_syncLock)
         {
-            if (contract is null || string.IsNullOrWhiteSpace(contract))
+            var sd = _serviceCollection?.LastOrDefault(sd => MatchesKeyedContract(serviceType, contract, sd));
+            if (sd is not null)
             {
-                var sd = _serviceCollection?.LastOrDefault(s => !s.IsKeyedService && s.ServiceType == serviceType);
-                if (sd is not null)
-                {
-                    _ = _serviceCollection?.Remove(sd);
-                }
+                _ = _serviceCollection?.Remove(sd);
             }
-            else
+
+            // required so that it gets rebuilt if not injected externally.
+            DisposeServiceProvider(_serviceProvider);
+            _serviceProvider = null;
+        }
+    }
+
+    /// <inheritdoc />
+    public virtual void UnregisterAll(Type? serviceType)
+    {
+        if (_isImmutable)
+        {
+            throw new InvalidOperationException(ImmutableExceptionMessage);
+        }
+
+        serviceType ??= NullServiceType.CachedType;
+
+        lock (_syncLock)
+        {
+            if (_serviceCollection is null)
             {
-                var sd = _serviceCollection?.LastOrDefault(sd => MatchesKeyedContract(serviceType, contract, sd));
-                if (sd is not null)
-                {
-                    _ = _serviceCollection?.Remove(sd);
-                }
+                // required so that it gets rebuilt if not injected externally.
+                DisposeServiceProvider(_serviceProvider);
+                _serviceProvider = null;
+                return;
+            }
+
+            var sds = _serviceCollection.Where(s => !s.IsKeyedService && s.ServiceType == serviceType);
+
+            foreach (var sd in sds.ToList())
+            {
+                _ = _serviceCollection.Remove(sd);
             }
 
             // required so that it gets rebuilt if not injected externally.
@@ -215,15 +301,15 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     /// ignoring the <paramref name="serviceType"/> argument.
     /// </summary>
     /// <param name="serviceType">The service type to unregister.</param>
-    /// <param name="contract">An optional value which will remove only an object registered with the same contract.</param>
-    public virtual void UnregisterAll(Type? serviceType, string? contract = null)
+    /// <param name="contract">A value which will remove only objects registered with the same contract.</param>
+    public virtual void UnregisterAll(Type? serviceType, string? contract)
     {
         if (_isImmutable)
         {
             throw new InvalidOperationException(ImmutableExceptionMessage);
         }
 
-        serviceType ??= typeof(NullServiceType);
+        serviceType ??= NullServiceType.CachedType;
 
         lock (_syncLock)
         {
@@ -235,12 +321,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
                 return;
             }
 
-            IEnumerable<ServiceDescriptor> sds = [];
-
-            sds = contract is null || string.IsNullOrWhiteSpace(contract)
-                ? _serviceCollection.Where(s => !s.IsKeyedService && s.ServiceType == serviceType)
-                : _serviceCollection
-                  .Where(sd => MatchesKeyedContract(serviceType, contract, sd));
+            var sds = _serviceCollection.Where(sd => MatchesKeyedContract(serviceType, contract, sd));
 
             foreach (var sd in sds.ToList())
             {
@@ -254,28 +335,210 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     }
 
     /// <inheritdoc />
-    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) => throw new NotImplementedException();
+    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, Action<IDisposable> callback) =>
+        throw new NotImplementedException("ServiceRegistrationCallback without contract is not implemented in the Microsoft dependency resolver.");
+
+    /// <inheritdoc />
+    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) =>
+        throw new NotImplementedException("ServiceRegistrationCallback is not implemented in the Microsoft dependency resolver.");
 
     /// <inheritdoc/>
-    public virtual bool HasRegistration(Type? serviceType, string? contract = null)
+    public virtual bool HasRegistration(Type? serviceType)
     {
-        serviceType ??= typeof(NullServiceType);
+        serviceType ??= NullServiceType.CachedType;
 
         if (!_isImmutable)
         {
-            return contract is null || string.IsNullOrWhiteSpace(contract)
-                ? _serviceCollection?.Any(sd => !sd.IsKeyedService && sd.ServiceType == serviceType) == true
-                : _serviceCollection?.Any(sd => MatchesKeyedContract(serviceType, contract, sd)) == true;
+            return _serviceCollection?.Any(sd => !sd.IsKeyedService && sd.ServiceType == serviceType) == true;
         }
 
-        if (contract is null)
+        var service = _serviceProvider?.GetService(serviceType);
+        return service is not null;
+    }
+
+    /// <inheritdoc/>
+    public virtual bool HasRegistration(Type? serviceType, string? contract)
+    {
+        serviceType ??= NullServiceType.CachedType;
+
+        if (!_isImmutable)
         {
-            var service = _serviceProvider?.GetService(serviceType);
-            return service is not null;
+            return _serviceCollection?.Any(sd => MatchesKeyedContract(serviceType, contract, sd)) == true;
         }
 
         return _serviceProvider is IKeyedServiceProvider keyedServiceProvider
                 && keyedServiceProvider.GetKeyedService(serviceType, contract) is not null;
+    }
+
+    /// <inheritdoc/>
+    public T? GetService<T>() => (T?)GetService(typeof(T));
+
+    /// <inheritdoc/>
+    public T? GetService<T>(string? contract) =>
+        (T?)GetService(typeof(T), contract);
+
+    /// <inheritdoc/>
+    public IEnumerable<T> GetServices<T>() => GetServices(typeof(T)).Cast<T>();
+
+    /// <inheritdoc/>
+    public IEnumerable<T> GetServices<T>(string? contract) =>
+        GetServices(typeof(T), contract).Cast<T>();
+
+    /// <inheritdoc/>
+    public bool HasRegistration<T>() => HasRegistration(typeof(T));
+
+    /// <inheritdoc/>
+    public bool HasRegistration<T>(string? contract) =>
+        HasRegistration(typeof(T), contract);
+
+    /// <inheritdoc/>
+    public void Register<T>(Func<T?> factory) =>
+        Register(() => factory(), typeof(T));
+
+    /// <inheritdoc/>
+    public void Register<T>(Func<T?> factory, string? contract) =>
+        Register(() => factory(), typeof(T), contract);
+
+    /// <inheritdoc/>
+    public void UnregisterCurrent<T>() => UnregisterCurrent(typeof(T));
+
+    /// <inheritdoc/>
+    public void UnregisterCurrent<T>(string? contract) =>
+        UnregisterCurrent(typeof(T), contract);
+
+    /// <inheritdoc/>
+    public void UnregisterAll<T>() => UnregisterAll(typeof(T));
+
+    /// <inheritdoc/>
+    public void UnregisterAll<T>(string? contract) =>
+        UnregisterAll(typeof(T), contract);
+
+    /// <inheritdoc/>
+    public IDisposable ServiceRegistrationCallback<T>(Action<IDisposable> callback) =>
+        ServiceRegistrationCallback(typeof(T), callback);
+
+    /// <inheritdoc/>
+    public IDisposable ServiceRegistrationCallback<T>(string? contract, Action<IDisposable> callback) =>
+        ServiceRegistrationCallback(typeof(T), contract, callback);
+
+    /// <inheritdoc/>
+    public void Register<TService, TImplementation>()
+        where TService : class
+        where TImplementation : class, TService, new()
+    {
+        if (_isImmutable)
+        {
+            throw new InvalidOperationException(ImmutableExceptionMessage);
+        }
+
+        lock (_syncLock)
+        {
+            _serviceCollection?.AddTransient<TService, TImplementation>();
+
+            // required so that it gets rebuilt if not injected externally.
+            DisposeServiceProvider(_serviceProvider);
+            _serviceProvider = null;
+        }
+    }
+
+    /// <inheritdoc/>
+    public void Register<TService, TImplementation>(string? contract)
+        where TService : class
+        where TImplementation : class, TService, new()
+    {
+        if (_isImmutable)
+        {
+            throw new InvalidOperationException(ImmutableExceptionMessage);
+        }
+
+        lock (_syncLock)
+        {
+            _serviceCollection?.AddKeyedTransient<TService, TImplementation>(contract);
+
+            // required so that it gets rebuilt if not injected externally.
+            DisposeServiceProvider(_serviceProvider);
+            _serviceProvider = null;
+        }
+    }
+
+    /// <inheritdoc/>
+    public void RegisterConstant<T>(T? value)
+        where T : class
+    {
+        if (_isImmutable)
+        {
+            throw new InvalidOperationException(ImmutableExceptionMessage);
+        }
+
+        lock (_syncLock)
+        {
+            _serviceCollection?.AddSingleton<T>(value!);
+
+            // required so that it gets rebuilt if not injected externally.
+            DisposeServiceProvider(_serviceProvider);
+            _serviceProvider = null;
+        }
+    }
+
+    /// <inheritdoc/>
+    public void RegisterConstant<T>(T? value, string? contract)
+        where T : class
+    {
+        if (_isImmutable)
+        {
+            throw new InvalidOperationException(ImmutableExceptionMessage);
+        }
+
+        lock (_syncLock)
+        {
+            _serviceCollection?.AddKeyedSingleton<T>(contract, value!);
+
+            // required so that it gets rebuilt if not injected externally.
+            DisposeServiceProvider(_serviceProvider);
+            _serviceProvider = null;
+        }
+    }
+
+    /// <inheritdoc/>
+    public void RegisterLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory)
+        where T : class
+    {
+        if (_isImmutable)
+        {
+            throw new InvalidOperationException(ImmutableExceptionMessage);
+        }
+
+        var lazy = new Lazy<T?>(valueFactory, LazyThreadSafetyMode.ExecutionAndPublication);
+
+        lock (_syncLock)
+        {
+            _serviceCollection?.AddSingleton<T>(_ => lazy.Value!);
+
+            // required so that it gets rebuilt if not injected externally.
+            DisposeServiceProvider(_serviceProvider);
+            _serviceProvider = null;
+        }
+    }
+
+    /// <inheritdoc/>
+    public void RegisterLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory, string? contract)
+        where T : class
+    {
+        if (_isImmutable)
+        {
+            throw new InvalidOperationException(ImmutableExceptionMessage);
+        }
+
+        var lazy = new Lazy<T?>(valueFactory, LazyThreadSafetyMode.ExecutionAndPublication);
+
+        lock (_syncLock)
+        {
+            _serviceCollection?.AddKeyedSingleton<T>(contract, (_, _) => lazy.Value!);
+
+            // required so that it gets rebuilt if not injected externally.
+            DisposeServiceProvider(_serviceProvider);
+            _serviceProvider = null;
+        }
     }
 
     /// <inheritdoc/>
@@ -316,7 +579,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool MatchesKeyedContract(Type? serviceType, string contract, ServiceDescriptor sd) =>
+    private static bool MatchesKeyedContract(Type? serviceType, string? contract, ServiceDescriptor sd) =>
         sd.ServiceType == serviceType
         && sd is { IsKeyedService: true, ServiceKey: string serviceKey }
         && serviceKey == contract;

@@ -3,6 +3,8 @@
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
+
 using SimpleInjector;
 
 namespace Splat.SimpleInjector;
@@ -31,9 +33,9 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
 
     /// <inheritdoc />
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We provide a different registration instead")]
-    public object? GetService(Type? serviceType, string? contract = null)
+    public object? GetService(Type? serviceType)
     {
-        serviceType ??= typeof(NullServiceType);
+        serviceType ??= NullServiceType.CachedType;
         try
         {
             var registration = _container.GetRegistration(serviceType);
@@ -53,9 +55,17 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
 
     /// <inheritdoc />
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We provide a different registration instead")]
-    public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
+    public object? GetService(Type? serviceType, string? contract)
     {
-        serviceType ??= typeof(NullServiceType);
+        // SimpleInjector doesn't natively support contracts, so we treat contract-based calls the same as non-contract
+        return GetService(serviceType);
+    }
+
+    /// <inheritdoc />
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We provide a different registration instead")]
+    public IEnumerable<object> GetServices(Type? serviceType)
+    {
+        serviceType ??= NullServiceType.CachedType;
         try
         {
             return _container.GetAllInstances(serviceType);
@@ -72,28 +82,182 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     }
 
     /// <inheritdoc />
-    public bool HasRegistration(Type? serviceType, string? contract = null)
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We provide a different registration instead")]
+    public IEnumerable<object> GetServices(Type? serviceType, string? contract)
     {
-        serviceType ??= typeof(NullServiceType);
+        // SimpleInjector doesn't natively support contracts, so we treat contract-based calls the same as non-contract
+        return GetServices(serviceType);
+    }
+
+    /// <inheritdoc />
+    public bool HasRegistration(Type? serviceType)
+    {
+        serviceType ??= NullServiceType.CachedType;
 
         return _container.GetCurrentRegistrations().Any(x => x.ServiceType == serviceType);
     }
 
     /// <inheritdoc />
-    public void Register(Func<object?> factory, Type? serviceType, string? contract = null)
+    public bool HasRegistration(Type? serviceType, string? contract)
+    {
+        // SimpleInjector doesn't natively support contracts, so we treat contract-based calls the same as non-contract
+        return HasRegistration(serviceType);
+    }
+
+    /// <inheritdoc />
+    public void Register(Func<object?> factory, Type? serviceType)
     {
         // The function does nothing because there should be no registration called on this object.
         // Anyway, AppLocator.SetLocator performs some unnecessary registrations.
     }
 
     /// <inheritdoc />
-    public void UnregisterCurrent(Type? serviceType, string? contract = null) => throw new NotImplementedException();
+    public void Register(Func<object?> factory, Type? serviceType, string? contract)
+    {
+        // The function does nothing because there should be no registration called on this object.
+        // Anyway, AppLocator.SetLocator performs some unnecessary registrations.
+    }
 
     /// <inheritdoc />
-    public void UnregisterAll(Type? serviceType, string? contract = null) => throw new NotImplementedException();
+    public void UnregisterCurrent(Type? serviceType) => throw new NotImplementedException("UnregisterCurrent is not supported in the SimpleInjector dependency resolver. SimpleInjector does not support removing individual registrations after they have been added.");
 
     /// <inheritdoc />
-    public IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) => throw new NotImplementedException();
+    public void UnregisterCurrent(Type? serviceType, string? contract) => throw new NotImplementedException("UnregisterCurrent with contract is not supported in the SimpleInjector dependency resolver. SimpleInjector does not support contracts or removing individual registrations after they have been added.");
+
+    /// <inheritdoc />
+    public void UnregisterAll(Type? serviceType) => throw new NotImplementedException("UnregisterAll is not supported in the SimpleInjector dependency resolver. SimpleInjector does not support removing registrations after they have been added.");
+
+    /// <inheritdoc />
+    public void UnregisterAll(Type? serviceType, string? contract) => throw new NotImplementedException("UnregisterAll with contract is not supported in the SimpleInjector dependency resolver. SimpleInjector does not support contracts or removing registrations after they have been added.");
+
+    /// <inheritdoc />
+    public IDisposable ServiceRegistrationCallback(Type serviceType, Action<IDisposable> callback) => throw new NotImplementedException("ServiceRegistrationCallback is not supported in the SimpleInjector dependency resolver. SimpleInjector does not provide a mechanism for service registration callbacks.");
+
+    /// <inheritdoc />
+    public IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) => throw new NotImplementedException("ServiceRegistrationCallback with contract is not supported in the SimpleInjector dependency resolver. SimpleInjector does not support contracts or service registration callbacks.");
+
+    /// <inheritdoc/>
+    public T? GetService<T>()
+    {
+        // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
+        return (T?)GetService(typeof(T));
+    }
+
+    /// <inheritdoc/>
+    public T? GetService<T>(string? contract)
+    {
+        // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
+        return (T?)GetService(typeof(T), contract);
+    }
+
+    /// <inheritdoc/>
+    public IEnumerable<T> GetServices<T>()
+    {
+        // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
+        return GetServices(typeof(T)).Cast<T>();
+    }
+
+    /// <inheritdoc/>
+    public IEnumerable<T> GetServices<T>(string? contract)
+    {
+        // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
+        return GetServices(typeof(T), contract).Cast<T>();
+    }
+
+    /// <inheritdoc/>
+    public bool HasRegistration<T>() =>
+        HasRegistration(typeof(T));
+
+    /// <inheritdoc/>
+    public bool HasRegistration<T>(string? contract) =>
+        HasRegistration(typeof(T), contract);
+
+    /// <inheritdoc/>
+    public void Register<T>(Func<T?> factory)
+    {
+        // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
+        Register(() => factory(), typeof(T));
+    }
+
+    /// <inheritdoc/>
+    public void Register<T>(Func<T?> factory, string? contract)
+    {
+        // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
+        Register(() => factory(), typeof(T), contract);
+    }
+
+    /// <inheritdoc/>
+    public void UnregisterCurrent<T>() =>
+        UnregisterCurrent(typeof(T));
+
+    /// <inheritdoc/>
+    public void UnregisterCurrent<T>(string? contract) =>
+        UnregisterCurrent(typeof(T), contract);
+
+    /// <inheritdoc/>
+    public void UnregisterAll<T>() =>
+        UnregisterAll(typeof(T));
+
+    /// <inheritdoc/>
+    public void UnregisterAll<T>(string? contract) =>
+        UnregisterAll(typeof(T), contract);
+
+    /// <inheritdoc/>
+    public IDisposable ServiceRegistrationCallback<T>(Action<IDisposable> callback) =>
+        ServiceRegistrationCallback(typeof(T), callback);
+
+    /// <inheritdoc/>
+    public IDisposable ServiceRegistrationCallback<T>(string? contract, Action<IDisposable> callback) =>
+        ServiceRegistrationCallback(typeof(T), contract, callback);
+
+    /// <inheritdoc/>
+    public void Register<TService, TImplementation>()
+        where TService : class
+        where TImplementation : class, TService, new() =>
+        _container.Register<TService, TImplementation>();
+
+    /// <inheritdoc/>
+    public void Register<TService, TImplementation>(string? contract)
+        where TService : class
+        where TImplementation : class, TService, new() =>
+        Register(() => (TService)(object)new TImplementation(), contract);
+
+    /// <inheritdoc/>
+    public void RegisterConstant<T>(T? value)
+        where T : class
+    {
+        ArgumentExceptionHelper.ThrowIfNull(value);
+
+        _container.RegisterInstance<T>(value);
+    }
+
+    /// <inheritdoc/>
+    public void RegisterConstant<T>(T? value, string? contract)
+        where T : class
+    {
+        ArgumentExceptionHelper.ThrowIfNull(value);
+
+        Register(() => value, typeof(T), contract);
+    }
+
+    /// <inheritdoc/>
+    public void RegisterLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory)
+        where T : class
+    {
+        ArgumentExceptionHelper.ThrowIfNull(valueFactory);
+
+        _container.RegisterSingleton<T>(() => valueFactory()!);
+    }
+
+    /// <inheritdoc/>
+    public void RegisterLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory, string? contract)
+        where T : class
+    {
+        ArgumentExceptionHelper.ThrowIfNull(valueFactory);
+
+        var lazy = new Lazy<T?>(valueFactory, LazyThreadSafetyMode.ExecutionAndPublication);
+        Register(() => lazy.Value, typeof(T), contract);
+    }
 
     /// <inheritdoc />
     public void Dispose()

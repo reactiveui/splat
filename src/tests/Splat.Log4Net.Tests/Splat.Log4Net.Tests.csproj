@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(SplatModernTargets)</TargetFrameworks>
+
+    <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Splat.Tests\Logging\BaseTests\LoggerBase.cs" Link="BaseTests\LoggerBase.cs" />
+    <Compile Include="..\Splat.Tests\Logging\BaseTests\FullLoggerTestBase.cs" Link="BaseTests\FullLoggerTestBase.cs" />
+    <Compile Include="..\Splat.Tests\Logging\BaseTests\AllocationFreeLoggerBaseTestBase.cs" Link="BaseTests\AllocationFreeLoggerBaseTestBase.cs" />
+    <Compile Include="..\Splat.Tests\Logging\BaseTests\AllocateFreeErrorLoggerTestBase.cs" Link="BaseTests\AllocateFreeErrorLoggerTestBase.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Splat.Log4Net\Splat.Log4Net.csproj"/>
+    <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj"/>
+  </ItemGroup>
+
+</Project>

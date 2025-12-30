@@ -17,8 +17,7 @@ internal sealed class TizenBitmap : IBitmap
         new JpegDecoder(),
         new PngDecoder(),
         new BmpDecoder(),
-        new GifDecoder(),
-    ];
+        new GifDecoder()];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TizenBitmap"/> class.

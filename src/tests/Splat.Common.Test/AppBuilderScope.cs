@@ -38,8 +38,5 @@ public sealed class AppBuilderScope : IDisposable
     /// <summary>
     /// Restores the AppBuilder to its previous state.
     /// </summary>
-    public void Dispose()
-    {
-        AppBuilder.RestoreState(_savedState);
-    }
+    public void Dispose() => AppBuilder.RestoreState(_savedState);
 }

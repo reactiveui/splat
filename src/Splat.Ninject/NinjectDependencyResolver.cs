@@ -3,6 +3,8 @@
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
+
 using Ninject;
 
 namespace Splat.Ninject;
@@ -20,70 +22,159 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     private readonly IKernel _kernel = kernel;
 
     /// <inheritdoc />
-    public virtual object? GetService(Type? serviceType, string? contract = null) =>
+    public virtual object? GetService(Type? serviceType) =>
+        GetServices(serviceType).LastOrDefault()!;
+
+    /// <inheritdoc />
+    public virtual object? GetService(Type? serviceType, string? contract) =>
         GetServices(serviceType, contract).LastOrDefault()!;
 
     /// <inheritdoc />
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2263:Prefer generic overload when type is known", Justification = "TODO: evaluate if we can go to the generic overload in future")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We provide a different registration instead")]
-    public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
+    public virtual IEnumerable<object> GetServices(Type? serviceType)
     {
-#pragma warning disable IDE0305 // Simplify collection initialization
-        var isNull = serviceType is null;
-        serviceType ??= typeof(NullServiceType);
+        serviceType ??= NullServiceType.CachedType;
 
-        if (isNull)
+        try
         {
-            try
-            {
-                return _kernel.GetAll(typeof(NullServiceType), contract).ToArray();
-            }
-            catch
+            // Get all bindings and filter by metadata to avoid implicit self-binding issues
+            var matchingBindings = _kernel.GetBindings(serviceType)
+                .Where(b => IsCorrectMetadata(b.BindingConfiguration.Metadata, null))
+                .ToList();
+
+            if (matchingBindings.Count == 0)
             {
                 return [];
             }
-        }
 
-        return _kernel.GetAll(serviceType, contract).ToArray();
-#pragma warning restore IDE0305 // Simplify collection initialization
+            // Resolve each binding individually
+            var results = new List<object>(matchingBindings.Count);
+            foreach (var binding in matchingBindings)
+            {
+                try
+                {
+                    var instance = _kernel.Get(serviceType, meta => meta.Equals(binding.BindingConfiguration.Metadata));
+                    if (instance is not null)
+                    {
+                        results.Add(instance);
+                    }
+                }
+                catch
+                {
+                    // Skip bindings that can't be resolved
+                }
+            }
+
+            return results;
+        }
+        catch
+        {
+            return [];
+        }
     }
 
     /// <inheritdoc />
-    public bool HasRegistration(Type? serviceType, string? contract = null)
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We provide a different registration instead")]
+    public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract)
     {
-        serviceType ??= typeof(NullServiceType);
+        serviceType ??= NullServiceType.CachedType;
+
+        try
+        {
+            // Get all bindings and filter by metadata to avoid implicit self-binding issues
+            var matchingBindings = _kernel.GetBindings(serviceType)
+                .Where(b => IsCorrectMetadata(b.BindingConfiguration.Metadata, contract))
+                .ToList();
+
+            if (matchingBindings.Count == 0)
+            {
+                return [];
+            }
+
+            // Resolve each binding individually
+            var results = new List<object>(matchingBindings.Count);
+            foreach (var binding in matchingBindings)
+            {
+                try
+                {
+                    var instance = _kernel.Get(serviceType, meta => meta.Equals(binding.BindingConfiguration.Metadata));
+                    if (instance is not null)
+                    {
+                        results.Add(instance);
+                    }
+                }
+                catch
+                {
+                    // Skip bindings that can't be resolved
+                }
+            }
+
+            return results;
+        }
+        catch
+        {
+            return [];
+        }
+    }
+
+    /// <inheritdoc />
+    public bool HasRegistration(Type? serviceType)
+    {
+        serviceType ??= NullServiceType.CachedType;
+
+        return _kernel.CanResolve(serviceType, metadata => IsCorrectMetadata(metadata, null));
+    }
+
+    /// <inheritdoc />
+    public bool HasRegistration(Type? serviceType, string? contract)
+    {
+        serviceType ??= NullServiceType.CachedType;
 
         return _kernel.CanResolve(serviceType, metadata => IsCorrectMetadata(metadata, contract));
     }
 
     /// <inheritdoc />
-    public virtual void Register(Func<object?> factory, Type? serviceType, string? contract = null)
+    public virtual void Register(Func<object?> factory, Type? serviceType)
     {
-        var isNull = serviceType is null;
+        serviceType ??= NullServiceType.CachedType;
 
-        if (isNull)
-        {
-            serviceType = typeof(NullServiceType);
-        }
+        _ = _kernel.Bind(serviceType).ToMethod(_ => factory());
+    }
 
-        if (string.IsNullOrWhiteSpace(contract))
-        {
-            _ = _kernel.Bind(serviceType).ToMethod(_ => factory());
-            return;
-        }
+    /// <inheritdoc />
+    public virtual void Register(Func<object?> factory, Type? serviceType, string? contract)
+    {
+        serviceType ??= NullServiceType.CachedType;
 
         _ = _kernel.Bind(serviceType).ToMethod(_ => factory()).Named(contract);
     }
 
     /// <inheritdoc />
-    public virtual void UnregisterCurrent(Type? serviceType, string? contract = null)
+    public virtual void UnregisterCurrent(Type? serviceType)
     {
-        var isNull = serviceType is null;
+        serviceType ??= NullServiceType.CachedType;
 
-        if (isNull)
+        var bindings = _kernel.GetBindings(serviceType).ToArray();
+
+        if (bindings is null || bindings.Length < 1)
         {
-            serviceType = typeof(NullServiceType);
+            return;
         }
+
+        var matchingBinding = bindings.LastOrDefault(x => IsCorrectMetadata(x.BindingConfiguration.Metadata, null));
+
+        if (matchingBinding is null)
+        {
+            return;
+        }
+
+        _kernel.RemoveBinding(matchingBinding);
+    }
+
+    /// <inheritdoc />
+    public virtual void UnregisterCurrent(Type? serviceType, string? contract)
+    {
+        serviceType ??= NullServiceType.CachedType;
 
         var bindings = _kernel.GetBindings(serviceType).ToArray();
 
@@ -103,14 +194,34 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     }
 
     /// <inheritdoc />
-    public virtual void UnregisterAll(Type? serviceType, string? contract = null)
+    public virtual void UnregisterAll(Type? serviceType)
     {
-        var isNull = serviceType is null;
+        serviceType ??= NullServiceType.CachedType;
 
-        if (isNull)
+        var bindings = _kernel.GetBindings(serviceType).ToArray();
+
+        if (bindings is null || bindings.Length < 1)
         {
-            serviceType = typeof(NullServiceType);
+            return;
         }
+
+        var matchingBinding = bindings.Where(x => IsCorrectMetadata(x.BindingConfiguration.Metadata, null)).ToArray();
+
+        if (matchingBinding.Length < 1)
+        {
+            return;
+        }
+
+        foreach (var binding in matchingBinding)
+        {
+            _kernel.RemoveBinding(binding);
+        }
+    }
+
+    /// <inheritdoc />
+    public virtual void UnregisterAll(Type? serviceType, string? contract)
+    {
+        serviceType ??= NullServiceType.CachedType;
 
         var bindings = _kernel.GetBindings(serviceType).ToArray();
 
@@ -133,7 +244,190 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     }
 
     /// <inheritdoc />
-    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) => throw new NotImplementedException();
+    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, Action<IDisposable> callback) =>
+        throw new NotImplementedException("ServiceRegistrationCallback is not supported by the NInject framework");
+
+    /// <inheritdoc />
+    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) =>
+        throw new NotImplementedException("ServiceRegistrationCallback is not supported by the NInject framework");
+
+    /// <inheritdoc/>
+    public T? GetService<T>() =>
+        GetServices<T>().LastOrDefault();
+
+    /// <inheritdoc/>
+    public T? GetService<T>(string? contract) =>
+        GetServices<T>(contract).LastOrDefault();
+
+    /// <inheritdoc/>
+    public IEnumerable<T> GetServices<T>()
+    {
+        try
+        {
+            // Get all bindings and filter by metadata to avoid implicit self-binding issues
+            var matchingBindings = _kernel.GetBindings(typeof(T))
+                .Where(b => IsCorrectMetadata(b.BindingConfiguration.Metadata, null))
+                .ToList();
+
+            if (matchingBindings.Count == 0)
+            {
+                return [];
+            }
+
+            // Resolve each binding individually using generic method
+            var results = new List<T>(matchingBindings.Count);
+            foreach (var binding in matchingBindings)
+            {
+                try
+                {
+                    var instance = _kernel.Get<T>(meta => meta.Equals(binding.BindingConfiguration.Metadata));
+                    if (instance is not null)
+                    {
+                        results.Add(instance);
+                    }
+                }
+                catch
+                {
+                    // Skip bindings that can't be resolved
+                }
+            }
+
+            return results;
+        }
+        catch
+        {
+            return [];
+        }
+    }
+
+    /// <inheritdoc/>
+    public IEnumerable<T> GetServices<T>(string? contract)
+    {
+        try
+        {
+            // Get all bindings and filter by metadata to avoid implicit self-binding issues
+            var matchingBindings = _kernel.GetBindings(typeof(T))
+                .Where(b => IsCorrectMetadata(b.BindingConfiguration.Metadata, contract))
+                .ToList();
+
+            if (matchingBindings.Count == 0)
+            {
+                return [];
+            }
+
+            // Resolve each binding individually using generic method
+            var results = new List<T>(matchingBindings.Count);
+            foreach (var binding in matchingBindings)
+            {
+                try
+                {
+                    var instance = _kernel.Get<T>(meta => meta.Equals(binding.BindingConfiguration.Metadata));
+                    if (instance is not null)
+                    {
+                        results.Add(instance);
+                    }
+                }
+                catch
+                {
+                    // Skip bindings that can't be resolved
+                }
+            }
+
+            return results;
+        }
+        catch
+        {
+            return [];
+        }
+    }
+
+    /// <inheritdoc/>
+    public bool HasRegistration<T>() =>
+        HasRegistration(typeof(T));
+
+    /// <inheritdoc/>
+    public bool HasRegistration<T>(string? contract) =>
+        HasRegistration(typeof(T), contract);
+
+    /// <inheritdoc/>
+    public void Register<T>(Func<T?> factory) =>
+        _kernel.Bind<T>().ToMethod(_ => factory()!);
+
+    /// <inheritdoc/>
+    public void Register<T>(Func<T?> factory, string? contract) =>
+        _kernel.Bind<T>().ToMethod(_ => factory()!).Named(contract);
+
+    /// <inheritdoc/>
+    public void UnregisterCurrent<T>() =>
+        UnregisterCurrent(typeof(T));
+
+    /// <inheritdoc/>
+    public void UnregisterCurrent<T>(string? contract) =>
+        UnregisterCurrent(typeof(T), contract);
+
+    /// <inheritdoc/>
+    public void UnregisterAll<T>() =>
+        UnregisterAll(typeof(T));
+
+    /// <inheritdoc/>
+    public void UnregisterAll<T>(string? contract) =>
+        UnregisterAll(typeof(T), contract);
+
+    /// <inheritdoc/>
+    public IDisposable ServiceRegistrationCallback<T>(Action<IDisposable> callback) =>
+        ServiceRegistrationCallback(typeof(T), callback);
+
+    /// <inheritdoc/>
+    public IDisposable ServiceRegistrationCallback<T>(string? contract, Action<IDisposable> callback) =>
+        ServiceRegistrationCallback(typeof(T), contract, callback);
+
+    /// <inheritdoc/>
+    public void Register<TService, TImplementation>()
+        where TService : class
+        where TImplementation : class, TService, new() =>
+        _kernel.Bind<TService>().To<TImplementation>();
+
+    /// <inheritdoc/>
+    public void Register<TService, TImplementation>(string? contract)
+        where TService : class
+        where TImplementation : class, TService, new() =>
+        _kernel.Bind<TService>().To<TImplementation>().Named(contract);
+
+    /// <inheritdoc/>
+    public void RegisterConstant<T>(T? value)
+        where T : class
+    {
+        ArgumentExceptionHelper.ThrowIfNull(value);
+
+        _kernel.Bind<T>().ToConstant(value);
+    }
+
+    /// <inheritdoc/>
+    public void RegisterConstant<T>(T? value, string? contract)
+        where T : class
+    {
+        ArgumentExceptionHelper.ThrowIfNull(value);
+
+        _kernel.Bind<T>().ToConstant(value).Named(contract);
+    }
+
+    /// <inheritdoc/>
+    public void RegisterLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory)
+        where T : class
+    {
+        ArgumentExceptionHelper.ThrowIfNull(valueFactory);
+
+        _kernel.Bind<T>().ToMethod(_ => valueFactory()!).InSingletonScope();
+    }
+
+    /// <inheritdoc/>
+    public void RegisterLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory, string? contract)
+        where T : class
+    {
+        ArgumentExceptionHelper.ThrowIfNull(valueFactory);
+
+        _kernel.Bind<T>().ToMethod(_ => valueFactory()!).InSingletonScope().Named(contract);
+    }
 
     /// <inheritdoc />
     public void Dispose()

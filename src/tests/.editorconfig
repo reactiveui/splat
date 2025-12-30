@@ -15,3 +15,4 @@ dotnet_diagnostic.CA1065.severity = none            # Do not raise exceptions in
 dotnet_diagnostic.CA1707.severity = none            # Remove underscores from names
 dotnet_diagnostic.CA1812.severity = none            # Avoid uninstantiated internal classes
 dotnet_diagnostic.CA2213.severity = none            # Disposable fields should be disposed
+dotnet_diagnostic.CA2263.severity = none            # Use generic method

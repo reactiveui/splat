@@ -16,12 +16,8 @@ internal static class AssemblyFinder
     /// <typeparam name="T">The type to cast the value to if we find it.</typeparam>
     /// <param name="fullTypeName">The name of the full type.</param>
     /// <returns>The created object or the default value.</returns>
-#if NET6_0_OR_GREATER
-    [RequiresUnreferencedCode("Uses Type.GetType and Activator.CreateInstance which may be trimmed")]
+    [RequiresUnreferencedCode("This method uses reflection to dynamically load types and cannot be made AOT-compatible.")]
     public static T? AttemptToLoadType<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(string fullTypeName)
-#else
-    public static T? AttemptToLoadType<T>(string fullTypeName)
-#endif
     {
         var thisType = typeof(AssemblyFinder);
 

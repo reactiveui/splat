@@ -34,6 +34,8 @@ public static class MicrosoftExtensionsLoggingExtensions
         this IMutableDependencyResolver instance,
         ILoggerFactory loggerFactory)
     {
+        ArgumentExceptionHelper.ThrowIfNull(instance);
+
         var funcLogManager = new FuncLogManager(type =>
         {
             var actualLogger = loggerFactory.CreateLogger(type.ToString());

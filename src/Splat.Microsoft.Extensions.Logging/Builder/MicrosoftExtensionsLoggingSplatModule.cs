@@ -4,6 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using Microsoft.Extensions.Logging;
+
 using Splat.Microsoft.Extensions.Logging;
 
 namespace Splat.Builder;

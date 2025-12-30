@@ -15,7 +15,7 @@ internal class InternalLocator : IDisposable
 
     internal InternalLocator()
     {
-        Internal = new ModernDependencyResolver();
+        Internal = new InstanceGenericFirstDependencyResolver();
 
         _resolverChangedNotification = RegisterResolverCallbackChanged(() =>
         {
@@ -45,7 +45,7 @@ internal class InternalLocator : IDisposable
     /// </summary>
     public IMutableDependencyResolver CurrentMutable => Internal;
 
-    internal IDependencyResolver Internal { get; private set; }
+    internal IDependencyResolver Internal { get; set; }
 
     /// <summary>
     /// Releases unmanaged and - optionally - managed resources.

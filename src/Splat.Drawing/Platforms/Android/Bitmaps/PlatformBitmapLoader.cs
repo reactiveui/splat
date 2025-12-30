@@ -5,11 +5,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
-
-using Android.App;
-using Android.Graphics;
 
 namespace Splat;
 
@@ -18,86 +14,125 @@ namespace Splat;
 /// </summary>
 public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
 {
+    private static Func<string, int>? _drawableResolver;
+    private static Type? _drawableType;
     private readonly Dictionary<string, int> _drawableList;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PlatformBitmapLoader"/> class.
     /// </summary>
-    [RequiresUnreferencedCode("Calls Splat.PlatformBitmapLoader.GetDrawableList()")]
-    [RequiresDynamicCode("Calls Splat.PlatformBitmapLoader.GetDrawableList()")]
-    public PlatformBitmapLoader() => _drawableList = GetDrawableList();
+    /// <remarks>
+    /// For AOT compatibility, call <see cref="RegisterDrawableResolver"/> or <see cref="RegisterDrawables{TDrawable}"/>
+    /// before creating instances of this class.
+    /// </remarks>
+    [RequiresUnreferencedCode("Constructor may use reflection for drawable discovery if RegisterDrawableResolver() or RegisterDrawables<T>() are not called first. For full AOT compatibility, use PlatformBitmapLoader<T> instead.")]
+    public PlatformBitmapLoader()
+    {
+        // If a resolver is registered, we don't need the dictionary at all (AOT-safe)
+        if (_drawableResolver is not null)
+        {
+            _drawableList = new Dictionary<string, int>();
+            return;
+        }
+
+        // If a drawable type is registered, use it (targeted reflection, user opted in)
+        if (_drawableType is not null)
+        {
+            _drawableList = GetDrawableListFromRegisteredType();
+            return;
+        }
+
+        // Fall back to assembly scanning (reflection-based, not AOT-compatible)
+        _drawableList = GetDrawableListViaReflection();
+    }
+
+    /// <summary>
+    /// Registers a drawable resolver function for AOT-friendly resource lookup.
+    /// This avoids assembly scanning and is recommended for modern MAUI applications.
+    /// </summary>
+    /// <param name="resolver">A function that maps drawable names to resource IDs.</param>
+    /// <example>
+    /// <code>
+    /// PlatformBitmapLoader.RegisterDrawableResolver(name => name switch
+    /// {
+    ///     "icon" => Resource.Drawable.icon,
+    ///     "logo" => Resource.Drawable.logo,
+    ///     _ => 0
+    /// });
+    /// </code>
+    /// </example>
+    public static void RegisterDrawableResolver(Func<string, int> resolver)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(resolver);
+        _drawableResolver = resolver;
+    }
+
+    /// <summary>
+    /// Registers a Resource.Drawable type for AOT-friendly resource lookup.
+    /// This avoids assembly scanning and is recommended for modern MAUI applications.
+    /// </summary>
+    /// <typeparam name="TDrawable">The Resource.Drawable type from your application.</typeparam>
+    /// <example>
+    /// <code>
+    /// PlatformBitmapLoader.RegisterDrawables&lt;MyApp.Resource.Drawable&gt;();
+    /// </code>
+    /// </example>
+    public static void RegisterDrawables<TDrawable>()
+    {
+        _drawableType = typeof(TDrawable);
+    }
 
     /// <inheritdoc />
-    public async Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight)
-    {
-        ArgumentExceptionHelper.ThrowIfNull(sourceStream);
-
-        // this is a rough check to do with the termination check for #479
-        ArgumentExceptionHelper.ThrowIf(sourceStream.Length < 2, "The source stream is not a valid image file.", nameof(sourceStream));
-
-        if (!HasCorrectStreamEnd(sourceStream))
-        {
-            AttemptStreamByteCorrection(sourceStream);
-        }
-
-        sourceStream.Position = 0;
-        Bitmap? bitmap = null;
-
-        if (desiredWidth is null || desiredHeight is null)
-        {
-            bitmap = await Task.Run(() => BitmapFactory.DecodeStream(sourceStream)).ConfigureAwait(false);
-        }
-        else
-        {
-            using var opts = new BitmapFactory.Options()
-            {
-                OutWidth = (int)desiredWidth.Value,
-                OutHeight = (int)desiredHeight.Value,
-            };
-
-            using var noPadding = new Rect(0, 0, 0, 0);
-            bitmap = await Task.Run(() => BitmapFactory.DecodeStream(sourceStream, noPadding, opts)).ConfigureAwait(true);
-        }
-
-        return bitmap switch
-        {
-            null => throw new IOException("Failed to load bitmap from source stream"),
-            _ => bitmap.FromNative()
-        };
-    }
+    public Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight) =>
+        PlatformBitmapLoaderHelpers.LoadFromStream(sourceStream, desiredWidth, desiredHeight, this);
 
     /// <inheritdoc />
     public Task<IBitmap?> LoadFromResource(string source, float? desiredWidth, float? desiredHeight)
     {
+        // Try parsing as integer ID first
+        if (int.TryParse(source, out var id))
+        {
+            return Task.Run(() => PlatformBitmapLoaderHelpers.LoadFromDrawableId(id));
+        }
+
+        // Try registered resolver (AOT-friendly path)
+        if (_drawableResolver is not null)
+        {
+            var resourceId = _drawableResolver(source);
+            if (resourceId != 0)
+            {
+                return Task.Run(() => PlatformBitmapLoaderHelpers.LoadFromDrawableId(resourceId));
+            }
+
+            // Try without extension
+            var key = System.IO.Path.GetFileNameWithoutExtension(source);
+            resourceId = _drawableResolver(key);
+            if (resourceId != 0)
+            {
+                return Task.Run(() => PlatformBitmapLoaderHelpers.LoadFromDrawableId(resourceId));
+            }
+
+            ArgumentExceptionHelper.ThrowIf(true, "Either pass in an integer ID cast to a string, or the name of a drawable resource", nameof(source));
+            return null!; // unreachable
+        }
+
+        // Fall back to dictionary lookup (from reflection or registered type)
         if (_drawableList is null)
         {
             throw new InvalidOperationException("No resources found in any of the drawable folders.");
         }
 
-        var res = Application.Context.Resources;
-        var theme = Application.Context.Theme;
-
-        if (res is null)
-        {
-            throw new InvalidOperationException("No resources found in the application.");
-        }
-
-        if (int.TryParse(source, out var id))
-        {
-            return Task.Run<IBitmap?>(() => GetFromDrawable(res.GetDrawable(id, theme)));
-        }
-
         if (_drawableList.TryGetValue(source, out var value))
         {
-            return Task.Run<IBitmap?>(() => GetFromDrawable(res.GetDrawable(value, theme)));
+            return Task.Run(() => PlatformBitmapLoaderHelpers.LoadFromDrawableId(value));
         }
 
         // NB: On iOS, you have to pass the extension, but on Android it's
         // stripped - try stripping the extension to see if there's a Drawable.
-        var key = System.IO.Path.GetFileNameWithoutExtension(source);
-        if (_drawableList.TryGetValue(key, out var intValue))
+        var key2 = System.IO.Path.GetFileNameWithoutExtension(source);
+        if (_drawableList.TryGetValue(key2, out var intValue))
         {
-            return Task.Run<IBitmap?>(() => GetFromDrawable(res.GetDrawable(intValue, theme)));
+            return Task.Run(() => PlatformBitmapLoaderHelpers.LoadFromDrawableId(intValue));
         }
 
         ArgumentExceptionHelper.ThrowIf(true, "Either pass in an integer ID cast to a string, or the name of a drawable resource", nameof(source));
@@ -105,22 +140,68 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
     }
 
     /// <inheritdoc />
-    public IBitmap? Create(float width, float height)
-    {
-        var config = Bitmap.Config.Argb8888 ?? throw new InvalidOperationException("The ARGB8888 bitmap format is unavailable");
-        return Bitmap.CreateBitmap((int)width, (int)height, config).FromNative();
-    }
+    public IBitmap? Create(float width, float height) =>
+        PlatformBitmapLoaderHelpers.CreateBitmap(width, height);
 
-    [RequiresDynamicCode("Calls Splat.PlatformBitmapLoader.GetDrawableList(IFullLogger, Assembly[])")]
-    [RequiresUnreferencedCode("Calls Splat.PlatformBitmapLoader.GetDrawableList(IFullLogger, Assembly[])")]
+    [RequiresUnreferencedCode("Assembly scanning uses reflection and is not AOT-compatible. Use RegisterDrawables<T>() or RegisterDrawableResolver() for AOT scenarios.")]
     internal static Dictionary<string, int> GetDrawableList(IFullLogger? log)
     {
+        // Check for registered drawable type first (AOT-friendly)
+        if (_drawableType is not null)
+        {
+            return GetDrawableListFromType(_drawableType, log);
+        }
+
+        // Fall back to assembly scanning (reflection-based, not AOT-compatible)
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
         return GetDrawableList(log, assemblies);
     }
 
-    [RequiresDynamicCode("Reflection is required to get drawable resources.")]
-    [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetTypes()")]
+    [RequiresUnreferencedCode("Uses reflection to extract drawable fields. For full AOT compatibility, use RegisterDrawableResolver() instead.")]
+    private static Dictionary<string, int> GetDrawableListFromRegisteredType()
+    {
+        var log = Locator.Current.GetService<ILogManager>()?.GetLogger(typeof(PlatformBitmapLoader));
+        return GetDrawableListFromType(_drawableType!, log);
+    }
+
+    [RequiresUnreferencedCode("Assembly scanning uses reflection and is not AOT-compatible. Call RegisterDrawableResolver() or RegisterDrawables<T>() before instantiation to avoid reflection.")]
+    private static Dictionary<string, int> GetDrawableListViaReflection()
+    {
+        var log = Locator.Current.GetService<ILogManager>()?.GetLogger(typeof(PlatformBitmapLoader));
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        return GetDrawableList(log, assemblies);
+    }
+
+    [RequiresUnreferencedCode("Uses reflection to extract drawable fields. For full AOT compatibility, use RegisterDrawableResolver() instead.")]
+    private static Dictionary<string, int> GetDrawableListFromType(Type drawableType, IFullLogger? log)
+    {
+        if (log?.IsDebugEnabled == true)
+        {
+            log.Debug($"GetDrawableListFromType: Using registered type {drawableType.FullName}");
+        }
+
+        var result = drawableType
+            .GetFields()
+            .Where(x => x.FieldType == typeof(int) && x.IsLiteral)
+            .ToDictionary(k => k.Name, v => ((int?)v.GetRawConstantValue()) ?? 0);
+
+        if (log?.IsDebugEnabled == true)
+        {
+            var output = new StringBuilder();
+            output.Append("DrawableList. Got ").Append(result.Count).AppendLine(" items from registered type.");
+
+            foreach (var keyValuePair in result)
+            {
+                output.Append("DrawableList Item: ").AppendLine(keyValuePair.Key);
+            }
+
+            log.Debug(output.ToString());
+        }
+
+        return result;
+    }
+
+    [RequiresUnreferencedCode("Assembly scanning uses reflection and is not AOT-compatible.")]
     private static Type[] GetTypesFromAssembly(
         Assembly assembly,
         IFullLogger? log)
@@ -158,8 +239,7 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
         }
     }
 
-    [RequiresDynamicCode("Reflection is required to get drawable resources.")]
-    [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetTypes()")]
+    [RequiresUnreferencedCode("Assembly scanning uses reflection and is not AOT-compatible.")]
     private static Dictionary<string, int> GetDrawableList(
         IFullLogger? log,
         Assembly[] assemblies)
@@ -207,41 +287,5 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
         }
 
         return result;
-    }
-
-    private static DrawableBitmap? GetFromDrawable(Android.Graphics.Drawables.Drawable? drawable) => drawable is null ? null : new DrawableBitmap(drawable);
-
-    /// <summary>
-    /// Checks to make sure the last 2 bytes are as expected.
-    /// issue #479 xamarin android can throw an objectdisposedexception on stream
-    /// suggestion is it relates to https://forums.xamarin.com/discussion/16500/bitmap-decode-byte-array-skia-decoder-returns-false
-    /// and truncated jpeg\png files.
-    /// </summary>
-    /// <param name="sourceStream">Input image source stream.</param>
-    /// <returns>Whether the termination is correct.</returns>
-    private static bool HasCorrectStreamEnd(Stream sourceStream)
-    {
-        // 0-based and go back 2.
-        sourceStream.Position = sourceStream.Length - 3;
-        return sourceStream.ReadByte() == 0xFF
-               && sourceStream.ReadByte() == 0xD9;
-    }
-
-    [RequiresDynamicCode("Calls Splat.PlatformBitmapLoader.GetDrawableList(IFullLogger)")]
-    [RequiresUnreferencedCode("Calls Splat.PlatformBitmapLoader.GetDrawableList(IFullLogger)")]
-    private static Dictionary<string, int> GetDrawableList() => GetDrawableList(Locator.Current.GetService<ILogManager>()?.GetLogger(typeof(PlatformBitmapLoader)));
-
-    private void AttemptStreamByteCorrection(Stream sourceStream)
-    {
-        if (!sourceStream.CanWrite)
-        {
-            this.Log().Warn("Stream missing terminating bytes but is read only.");
-        }
-        else
-        {
-            this.Log().Warn("Carrying out source stream byte correction.");
-            sourceStream.Position = sourceStream.Length;
-            sourceStream.Write([0xFF, 0xD9]);
-        }
     }
 }

@@ -36,8 +36,5 @@ public sealed class ModeDetectorScope : IDisposable
     /// <summary>
     /// Restores the ModeDetector to its previous state.
     /// </summary>
-    public void Dispose()
-    {
-        ModeDetector.RestoreState(_savedState);
-    }
+    public void Dispose() => ModeDetector.RestoreState(_savedState);
 }

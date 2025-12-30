@@ -18,12 +18,11 @@ public class ApiApprovalTests
     /// </summary>
     /// <returns>The task.</returns>
     [Test]
-    public Task SplatUIProject()
-    {
+    public Task SplatUIProject() =>
 #if WINDOWS
-        return typeof(IPlatformModeDetector).Assembly.CheckApproval(["Splat"]);
+        typeof(IPlatformModeDetector).Assembly.CheckApproval(["Splat"]);
 #else
         return Task.CompletedTask;
 #endif
-    }
+
 }

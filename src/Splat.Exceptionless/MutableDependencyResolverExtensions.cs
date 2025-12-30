@@ -29,6 +29,8 @@ public static class MutableDependencyResolverExtensions
     /// </example>
     public static void UseExceptionlessWithWrappingFullLogger(this IMutableDependencyResolver instance, ExceptionlessClient exceptionlessClient)
     {
+        ArgumentExceptionHelper.ThrowIfNull(instance);
+
         var funcLogManager = new FuncLogManager(type =>
         {
             var miniLoggingWrapper = new ExceptionlessSplatLogger(type, exceptionlessClient);

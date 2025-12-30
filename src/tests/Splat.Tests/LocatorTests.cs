@@ -17,10 +17,7 @@ public class LocatorTests
     /// Setup method to initialize AppLocatorScope before each test.
     /// </summary>
     [Before(HookType.Test)]
-    public void SetUpAppLocatorScope()
-    {
-        _appLocatorScope = new AppLocatorScope();
-    }
+    public void SetUpAppLocatorScope() => _appLocatorScope = new AppLocatorScope();
 
     /// <summary>
     /// Teardown method to dispose AppLocatorScope after each test.
@@ -42,11 +39,13 @@ public class LocatorTests
         var container = new InternalLocator();
 
         const int foo = 5;
-        container.CurrentMutable.Register(() => foo, null);
+
+        // Explicitly cast to call the non-generic Register method with null service type
+        container.CurrentMutable.Register(() => (object)foo, serviceType: null);
 
         const int bar = 4;
         const string contract = "foo";
-        container.CurrentMutable.Register(() => bar, null, contract);
+        container.CurrentMutable.Register(() => (object)bar, serviceType: null, contract: contract);
 
         await Assert.That(container.CurrentMutable.HasRegistration(null)).IsTrue();
         var value = container.Current.GetService(null);
@@ -87,8 +86,8 @@ public class LocatorTests
     {
         // this is using the internal constructor
         var testLocator = new InternalLocator();
-        var logManager = testLocator.Current.GetService(typeof(ILogManager));
-        var logger = testLocator.Current.GetService(typeof(ILogger));
+        var logManager = testLocator.Current.GetService<ILogManager>();
+        var logger = testLocator.Current.GetService<ILogger>();
 
         using (Assert.Multiple())
         {
@@ -111,8 +110,8 @@ public class LocatorTests
     public async Task InitializeSplat_ContractRegistrationsNullNoRegistration()
     {
         var testLocator = new InternalLocator();
-        var logManager = testLocator.Current.GetService(typeof(ILogManager), "test");
-        var logger = testLocator.Current.GetService(typeof(ILogger), "test");
+        var logManager = testLocator.Current.GetService<ILogManager>("test");
+        var logger = testLocator.Current.GetService<ILogger>("test");
 
         using (Assert.Multiple())
         {

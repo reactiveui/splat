@@ -18,9 +18,5 @@ public interface IPlatformModeDetector
     /// Gets a value indicating whether the current library or application is running in a GUI design mode tool.
     /// </summary>
     /// <returns>If we are currently running in design mode.</returns>
-#if NET6_0_OR_GREATER
-    [RequiresUnreferencedCode("Uses Type.GetType and Activator.CreateInstance which may be trimmed")]
-    [RequiresDynamicCode("Uses Activator.CreateInstance and reflection which require dynamic code generation")]
-#endif
     bool? InDesignMode();
 }

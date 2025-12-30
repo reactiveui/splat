@@ -16,10 +16,7 @@ public class AppBuilderTests
     /// Setup method to initialize AppBuilderScope before each test.
     /// </summary>
     [Before(HookType.Test)]
-    public void SetUpAppBuilderScope()
-    {
-        _appBuilderScope = new AppBuilderScope();
-    }
+    public void SetUpAppBuilderScope() => _appBuilderScope = new AppBuilderScope();
 
     /// <summary>
     /// Teardown method to dispose AppBuilderScope after each test.

@@ -17,10 +17,7 @@ public class ModeTests
     /// Setup method to initialize ModeDetectorScope before each test.
     /// </summary>
     [Before(HookType.Test)]
-    public void SetUpModeDetectorScope()
-    {
-        _modeDetectorScope = new ModeDetectorScope();
-    }
+    public void SetUpModeDetectorScope() => _modeDetectorScope = new ModeDetectorScope();
 
     /// <summary>
     /// Teardown method to dispose ModeDetectorScope after each test.

@@ -24,6 +24,8 @@ public static class MutableDependencyResolverExtensions
     /// </example>
     public static void UseSerilogFullLogger(this IMutableDependencyResolver instance)
     {
+        ArgumentExceptionHelper.ThrowIfNull(instance);
+
         var funcLogManager = new FuncLogManager(type =>
         {
             var actualLogger = global::Serilog.Log.ForContext(type);
@@ -48,6 +50,8 @@ public static class MutableDependencyResolverExtensions
     /// </example>
     public static void UseSerilogFullLogger(this IMutableDependencyResolver instance, global::Serilog.ILogger actualLogger)
     {
+        ArgumentExceptionHelper.ThrowIfNull(instance);
+
         var funcLogManager = new FuncLogManager(type => new SerilogFullLogger(actualLogger.ForContext(type)));
 
         instance.Register<ILogManager>(() => funcLogManager);

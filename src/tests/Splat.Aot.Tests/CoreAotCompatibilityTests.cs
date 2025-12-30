@@ -36,10 +36,7 @@ public class CoreAotCompatibilityTests
     /// Setup method to initialize AppLocatorScope before each test.
     /// </summary>
     [Before(HookType.Test)]
-    public void SetUpAppLocatorScope()
-    {
-        _appLocatorScope = new AppLocatorScope();
-    }
+    public void SetUpAppLocatorScope() => _appLocatorScope = new AppLocatorScope();
 
     /// <summary>
     /// Teardown method to dispose AppLocatorScope after each test.
@@ -58,7 +55,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task BasicServiceRegistration_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
 
         // Register services using factory methods (AOT-safe)
         resolver.RegisterConstant<ILogger>(new DebugLogger());
@@ -88,7 +85,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task RegistrationMixins_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
 
         // Test all registration methods
         resolver.Register<ITestInterface>(() => new TestImplementation());
@@ -122,7 +119,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task ServiceRegistrationCallbacks_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
         var callbackTriggered = false;
 
         using var subscription = resolver.ServiceRegistrationCallback(
@@ -142,7 +139,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task Logging_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
         resolver.RegisterConstant<ILogger>(new DebugLogger());
         resolver.RegisterConstant<ILogManager>(new DefaultLogManager(resolver));
         using var resolveInner = resolver.WithResolver();
@@ -185,7 +182,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task LazySingleton_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
         var creationCount = 0;
 
         resolver.RegisterLazySingleton<IEnableLogger>(() =>
@@ -213,7 +210,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task ServiceUnregistration_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
         resolver.RegisterConstant<ILogger>(new DebugLogger());
 
         var logger1 = resolver.GetService<ILogger>();
@@ -250,7 +247,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task MultipleServiceRegistration_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
 
         resolver.Register<ITestInterface>(() => new TestImplementation());
         resolver.Register<ITestInterface>(() => new AlternateTestImplementation());
@@ -272,7 +269,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task LocatorStatic_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
         resolver.RegisterConstant<ILogger>(new DebugLogger());
 
         using var resolveInner = resolver.WithResolver();
@@ -293,7 +290,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task GenericTypeRegistrationWithConstraints_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
 
         // Register types with new() constraint
         resolver.Register<ITestInterface, TestImplementation>();
@@ -316,7 +313,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task ContractBasedRegistration_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
         const string contract1 = "Contract1";
         const string contract2 = "Contract2";
 
@@ -343,7 +340,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task TypeBasedServiceQueries_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
         resolver.RegisterConstant(new DebugLogger(), typeof(ILogger));
         resolver.RegisterConstant(new DefaultLogManager(resolver), typeof(ILogManager));
         var logger = resolver.GetService(typeof(ILogger));
@@ -365,7 +362,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task HasRegistrationQueries_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
 
         // Before registration
         using (Assert.Multiple())
@@ -393,7 +390,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task ComprehensiveLogging_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
         resolver.RegisterConstant<ILogger>(new DebugLogger());
         resolver.RegisterConstant<ILogManager>(new DefaultLogManager(resolver));
         using var resolverInner = resolver.WithResolver();
@@ -432,7 +429,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task AllocationFreeLogging_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
         resolver.RegisterConstant<ILogger>(new DebugLogger());
         resolver.RegisterConstant<ILogManager>(new DefaultLogManager(resolver));
         using var resolverInner = resolver.WithResolver();
@@ -470,7 +467,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task StaticLoggingHost_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
         resolver.RegisterConstant<ILogger>(new DebugLogger());
         resolver.RegisterConstant<ILogManager>(new DefaultLogManager(resolver));
         using var resolvedInner = resolver.WithResolver();
@@ -551,7 +548,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task ServiceRegistrationCallbacksWithContracts_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
         var defaultCallbackTriggered = false;
         var contractCallbackTriggered = false;
         const string contract = "TestContract";
@@ -583,7 +580,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task ComprehensiveServiceUnregistration_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
         const string contract = "TestContract";
 
         // Register multiple services
@@ -635,7 +632,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task FluentRegistrationApis_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
 
         resolver.RegisterAnd<ITestInterface>(() => new TestImplementation())
                 .RegisterConstantAnd<ILogger>(new DebugLogger())
@@ -671,10 +668,14 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task ResolverScoping_WorksWithAot()
     {
-        using var originalResolver = new ModernDependencyResolver();
-        using var scopedResolver = new ModernDependencyResolver();
-
+        using var originalResolver = new InstanceGenericFirstDependencyResolver();
         originalResolver.RegisterConstant<ILogger>(new DebugLogger());
+
+        // Set as current resolver
+        using var originalScope = originalResolver.WithResolver();
+
+        // Create a scoped resolver with a different logger
+        using var scopedResolver = new InstanceGenericFirstDependencyResolver();
         scopedResolver.RegisterConstant<ILogger>(new ConsoleLogger());
 
         using (scopedResolver.WithResolver())
@@ -687,7 +688,7 @@ public class CoreAotCompatibilityTests
             }
         }
 
-        // After reverting scope, ensure it's not the scoped ConsoleLogger
+        // After exiting the scoped resolver, we should be back to the original resolver
         var revertedLogger = Locator.Current.GetService<ILogger>();
         if (revertedLogger is not null)
         {
@@ -702,7 +703,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task CallbackSuppression_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
         var resolverCallbackTriggered = false;
         var serviceCallbackTriggered = false;
 
@@ -752,7 +753,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task TypeConversions_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
 
         var service = new TestServiceWithMultipleInterfaces();
         resolver.RegisterConstant<ITestInterface>(service);
@@ -777,7 +778,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task NestedGenericScenarios_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
 
         resolver.Register<IEnumerable<ITestInterface>>(() => new List<ITestInterface>
         {
@@ -810,7 +811,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task ConcurrentAccess_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
         resolver.RegisterLazySingleton<ILogger>(() => new DebugLogger());
 
         var exceptions = new List<Exception>();
@@ -857,7 +858,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task NullServiceTypeHandling_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
 
         var nullService = resolver.GetService(null);
         var nullServices = resolver.GetServices(null);
@@ -877,7 +878,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task DependencyResolverExtensions_WorksWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
 
         await Assert.That(resolver.HasRegistration(typeof(ITestInterface))).IsFalse();
 
@@ -902,7 +903,7 @@ public class CoreAotCompatibilityTests
     [Test]
     public async Task ParameterizedConstructors_WorkWithAot()
     {
-        using var resolver = new ModernDependencyResolver();
+        using var resolver = new InstanceGenericFirstDependencyResolver();
         resolver.RegisterConstant<ILogger>(new DebugLogger());
 
         resolver.Register<ITestInterface>(() => new TestImplementationWithDependency(resolver.GetService<ILogger>()!));
@@ -925,7 +926,7 @@ public class CoreAotCompatibilityTests
     public async Task ServiceDisposal_WorksWithAot()
     {
         var disposableService = new DisposableTestService();
-        var resolver = new ModernDependencyResolver();
+        var resolver = new InstanceGenericFirstDependencyResolver();
         resolver.RegisterConstant<ITestInterface>(disposableService);
 
         resolver.Dispose();
