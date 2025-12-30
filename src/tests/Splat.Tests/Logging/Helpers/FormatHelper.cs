@@ -18,5 +18,6 @@ public static class FormatHelper
     /// <summary>
     /// Gets an exception for testing.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2201:Do not raise reserved exception types", Justification = "Deliberate for test")]
     internal static Exception Exception => new();
 }

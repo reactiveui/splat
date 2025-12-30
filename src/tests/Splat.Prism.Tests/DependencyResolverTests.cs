@@ -4,17 +4,17 @@
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Common.Test;
+using TUnit.Assertions;
+using TUnit.Assertions.Extensions;
+using TUnit.Core;
+using static TUnit.Assertions.Assert;
 
 namespace Splat.Prism.Tests;
 
-/// <summary>
-/// Represents a test suite for verifying the behavior and functionality of the
-/// dependency resolver implementation in Splat with Prism integration.
-/// </summary>
-[TestFixture]
+[NotInParallel]
 public class DependencyResolverTests
 {
-    /// <summary>
+/// <summary>
     /// Tracks CreateScope not being implemented in case it's changed in future.
     /// </summary>
     [Test]
@@ -67,64 +67,69 @@ public class DependencyResolverTests
     /// <summary>
     /// Test to ensure a simple resolve succeeds.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Resolve_Succeeds()
+    public async Task Resolve_Succeeds()
     {
         using var container = new SplatContainerExtension();
         container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne));
 
         var instance = container.Resolve(typeof(IViewFor<ViewModelOne>));
 
-        Assert.That(instance, Is.Not.Null);
+        await Assert.That(instance).IsNotNull();
     }
 
     /// <summary>
     /// Test to ensure a resolve with name succeeds.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Resolve_With_Name_Succeeds()
+    public async Task Resolve_With_Name_Succeeds()
     {
         using var container = new SplatContainerExtension();
         container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne), "name");
 
         var instance = container.Resolve(typeof(IViewFor<ViewModelOne>), "name");
 
-        Assert.That(instance, Is.Not.Null);
+        await Assert.That(instance).IsNotNull();
     }
 
     /// <summary>
     /// Test to ensure a simple is registered check succeeds.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void IsRegistered_Returns_True()
+    public async Task IsRegistered_Returns_True()
     {
         using var container = new SplatContainerExtension();
         container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne));
 
         var isRegistered = container.IsRegistered(typeof(IViewFor<ViewModelOne>));
 
-        Assert.That(isRegistered, Is.True);
+        await Assert.That(isRegistered).IsTrue();
     }
 
     /// <summary>
     /// Test to ensure a simple is registered check succeeds.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void IsRegistered_With_Name_Returns_True()
+    public async Task IsRegistered_With_Name_Returns_True()
     {
         using var container = new SplatContainerExtension();
         container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne), "name");
 
         var isRegistered = container.IsRegistered(typeof(IViewFor<ViewModelOne>), "name");
 
-        Assert.That(isRegistered, Is.True);
+        await Assert.That(isRegistered).IsTrue();
     }
 
     /// <summary>
     /// Should resolve the views.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void PrismDependencyResolver_Should_Resolve_Views()
+    public async Task PrismDependencyResolver_Should_Resolve_Views()
     {
         using var container = new SplatContainerExtension();
         container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne));
@@ -133,36 +138,38 @@ public class DependencyResolverTests
         var viewOne = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
         var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
-        Assert.That(viewOne, Is.Not.Null);
-        using (Assert.EnterMultipleScope())
+        await Assert.That(viewOne).IsNotNull();
+        using (Assert.Multiple())
         {
-            Assert.That(viewOne, Is.TypeOf<ViewOne>());
-            Assert.That(viewTwo, Is.Not.Null);
+            await Assert.That(viewOne).IsTypeOf<ViewOne>();
+            await Assert.That(viewTwo).IsNotNull();
         }
 
-        Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
+        await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
     }
 
     /// <summary>
     /// Should resolve the views.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void PrismDependencyResolver_Should_Resolve_Named_View()
+    public async Task PrismDependencyResolver_Should_Resolve_Named_View()
     {
         using var container = new SplatContainerExtension();
         container.Register(typeof(IViewFor<ViewModelTwo>), typeof(ViewTwo), "Other");
 
         var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>), "Other");
 
-        Assert.That(viewTwo, Is.Not.Null);
-        Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
+        await Assert.That(viewTwo).IsNotNull();
+        await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
     }
 
     /// <summary>
     /// Should resolve the view models.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void PrismDependencyResolver_Should_Resolve_View_Models()
+    public async Task PrismDependencyResolver_Should_Resolve_View_Models()
     {
         using var container = new SplatContainerExtension();
 
@@ -172,90 +179,95 @@ public class DependencyResolverTests
         var vmOne = AppLocator.Current.GetService<ViewModelOne>();
         var vmTwo = AppLocator.Current.GetService<ViewModelTwo>();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(vmOne, Is.Not.Null);
-            Assert.That(vmTwo, Is.Not.Null);
+            await Assert.That(vmOne).IsNotNull();
+            await Assert.That(vmTwo).IsNotNull();
         }
     }
 
     /// <summary>
     /// Should resolve the screen.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void PrismDependencyResolver_Should_Resolve_Screen()
+    public async Task PrismDependencyResolver_Should_Resolve_Screen()
     {
         using var builder = new SplatContainerExtension();
         builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen));
 
         var screen = AppLocator.Current.GetService<IScreen>();
 
-        Assert.That(screen, Is.Not.Null);
-        Assert.That(screen, Is.TypeOf<MockScreen>());
+        await Assert.That(screen).IsNotNull();
+        await Assert.That(screen).IsTypeOf<MockScreen>();
     }
 
     /// <summary>
     /// Should unregister the screen.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void PrismDependencyResolver_Should_UnregisterCurrent_Screen()
+    public async Task PrismDependencyResolver_Should_UnregisterCurrent_Screen()
     {
         using var builder = new SplatContainerExtension();
         builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen));
 
-        Assert.That(AppLocator.Current.GetService<IScreen>(), Is.Not.Null);
+        await Assert.That(AppLocator.Current.GetService<IScreen>()).IsNotNull();
 
         AppLocator.CurrentMutable.UnregisterCurrent(typeof(IScreen));
 
-        Assert.That(AppLocator.Current.GetService<IScreen>(), Is.Null);
+        await Assert.That(AppLocator.Current.GetService<IScreen>()).IsNull();
     }
 
     /// <summary>
     /// Should unregister the screen.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void PrismDependencyResolver_Should_UnregisterCurrent_Screen_With_Contract()
+    public async Task PrismDependencyResolver_Should_UnregisterCurrent_Screen_With_Contract()
     {
         using var builder = new SplatContainerExtension();
         builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen), nameof(MockScreen));
 
-        Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen)), Is.Not.Null);
+        await Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen))).IsNotNull();
 
         AppLocator.CurrentMutable.UnregisterCurrent(typeof(IScreen), nameof(MockScreen));
 
-        Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen)), Is.Null);
+        await Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen))).IsNull();
     }
 
     /// <summary>
     /// Should unregister the screen.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void PrismDependencyResolver_Should_UnregisterAll_Screen()
+    public async Task PrismDependencyResolver_Should_UnregisterAll_Screen()
     {
         using var builder = new SplatContainerExtension();
         builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen));
 
-        Assert.That(AppLocator.Current.GetService<IScreen>(), Is.Not.Null);
+        await Assert.That(AppLocator.Current.GetService<IScreen>()).IsNotNull();
 
         AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen));
 
-        Assert.That(AppLocator.Current.GetService<IScreen>(), Is.Null);
+        await Assert.That(AppLocator.Current.GetService<IScreen>()).IsNull();
     }
 
     /// <summary>
     /// Should unregister the screen.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void PrismDependencyResolver_Should_UnregisterAll_Screen_With_Contract()
+    public async Task PrismDependencyResolver_Should_UnregisterAll_Screen_With_Contract()
     {
         using var builder = new SplatContainerExtension();
         builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen), nameof(MockScreen));
 
-        Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen)), Is.Not.Null);
+        await Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen))).IsNotNull();
 
         AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen), nameof(MockScreen));
 
-        Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen)), Is.Null);
+        await Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen))).IsNull();
     }
 
     /// <summary>
@@ -264,8 +276,9 @@ public class DependencyResolverTests
     /// <remarks>
     /// Introduced for Splat #331.
     /// </remarks>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void PrismDependencyResolver_Should_ReturnRegisteredLogger()
+    public async Task PrismDependencyResolver_Should_ReturnRegisteredLogger()
     {
         using var c = new SplatContainerExtension();
         c.Register(typeof(ILogger), typeof(ConsoleLogger));
@@ -274,7 +287,7 @@ public class DependencyResolverTests
 
         var d = AppLocator.Current.GetService<ILogManager>();
 
-        Assert.That(d, Is.TypeOf<FuncLogManager>());
+        await Assert.That(d).IsTypeOf<FuncLogManager>();
     }
 
     /// <summary>
@@ -283,8 +296,9 @@ public class DependencyResolverTests
     /// <remarks>
     /// Introduced for Splat #331.
     /// </remarks>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void PrismDependencyResolver_PreInit_Should_ReturnRegisteredLogger()
+    public async Task PrismDependencyResolver_PreInit_Should_ReturnRegisteredLogger()
     {
         using var c = new SplatContainerExtension();
         c.RegisterInstance(
@@ -293,6 +307,6 @@ public class DependencyResolverTests
 
         var d = AppLocator.Current.GetService<ILogManager>();
 
-        Assert.That(d, Is.TypeOf<FuncLogManager>());
+        await Assert.That(d).IsTypeOf<FuncLogManager>();
     }
 }

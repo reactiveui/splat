@@ -58,6 +58,7 @@
     <File Path="Directory.Build.targets" />
     <File Path="Directory.Packages.props" />
     <File Path="stylecop.json" />
+    <File Path="testconfig.json" />
   </Folder>
   <Properties Name="MonoDevelopProperties">
     <Property Name="StartupItem" Value="Splat\Splat-monotouch.csproj" />

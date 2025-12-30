@@ -35,4 +35,21 @@ public static class BitmapLoader
         }
         set => _current = value;
     }
+
+    /// <summary>
+    /// Gets the current state for test isolation. Used by test scopes.
+    /// </summary>
+    /// <returns>The current bitmap loader.</returns>
+    internal static IBitmapLoader? GetState() => _current;
+
+    /// <summary>
+    /// Restores the state for test isolation. Used by test scopes.
+    /// </summary>
+    /// <param name="state">The state to restore.</param>
+    internal static void RestoreState(IBitmapLoader? state) => _current = state;
+
+    /// <summary>
+    /// Resets the state to default for test isolation. Used by test scopes.
+    /// </summary>
+    internal static void ResetState() => _current = AppLocator.Current.GetService<IBitmapLoader>();
 }

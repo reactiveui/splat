@@ -1,14 +1,10 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2025 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.Tests;
 
-/// <summary>
-/// Unit Tests for Target Framework Extensions.
-/// </summary>
-[TestFixture]
 public class TargetFrameworkExtensionsTests
 {
     /// <summary>
@@ -50,10 +46,12 @@ public class TargetFrameworkExtensionsTests
     /// </summary>
     /// <param name="frameworkName">The framework name.</param>
     /// <param name="expected">The expected result.</param>
-    [TestCaseSource(nameof(FrameworkNamesTestSource))]
-    public void ReturnsName(string frameworkName, string expected)
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    [MethodDataSource(nameof(FrameworkNamesTestSource))]
+    public async Task ReturnsName(string frameworkName, string expected)
     {
         var actual = TargetFrameworkExtensions.GetTargetFrameworkName(frameworkName);
-        Assert.That(actual, Is.EqualTo(expected));
+        await Assert.That(actual).IsEqualTo(expected);
     }
 }

@@ -17,13 +17,29 @@ namespace Splat;
 /// you need in order to do dependency resolution, don't bother with using
 /// a full IoC container.
 /// </para>
-/// <para>This container is not thread safe.</para>
 /// </summary>
 public class ModernDependencyResolver : IDependencyResolver
 {
-    private readonly Dictionary<(Type serviceType, string? contract), List<Action<IDisposable>>> _callbackRegistry;
-    private Dictionary<(Type serviceType, string? contract), List<Func<object?>>>? _registry;
+#if NET9_0_OR_GREATER
+    private readonly Lock _gate = new();
+#else
+    private readonly object _gate = new();
+#endif
 
+    /// <summary>
+    /// Stores all registration callbacks keyed by (service type, contract).
+    /// </summary>
+    private readonly Dictionary<(Type serviceType, string? contract), List<Action<IDisposable>>> _callbackRegistry;
+
+    /// <summary>
+    /// Stores all registered factory delegates keyed by (service type, contract).
+    /// This is a copy-on-write snapshot to allow lock-free reads.
+    /// </summary>
+    private Snapshot? _snapshot;
+
+    /// <summary>
+    /// Tracks whether this resolver has already been disposed.
+    /// </summary>
     private bool _isDisposed;
 
     /// <summary>
@@ -40,17 +56,20 @@ public class ModernDependencyResolver : IDependencyResolver
     /// <param name="registry">A registry of services.</param>
     protected ModernDependencyResolver(Dictionary<(Type serviceType, string? contract), List<Func<object?>>>? registry)
     {
-        _registry = registry is not null ?
+        var reg = registry is not null ?
             registry.ToDictionary(k => k.Key, v => v.Value.ToList()) :
-            [];
+            new Dictionary<(Type serviceType, string? contract), List<Func<object?>>>();
 
-        _callbackRegistry = [];
+        _snapshot = new Snapshot(reg);
+
+        _callbackRegistry = new Dictionary<(Type serviceType, string? contract), List<Action<IDisposable>>>();
     }
 
     /// <inheritdoc />
     public bool HasRegistration(Type? serviceType, string? contract = null)
     {
-        if (_registry is null)
+        var snap = Volatile.Read(ref _snapshot);
+        if (snap is null)
         {
             return false;
         }
@@ -58,16 +77,13 @@ public class ModernDependencyResolver : IDependencyResolver
         serviceType ??= typeof(NullServiceType);
 
         var pair = GetKey(serviceType, contract);
-        return _registry.TryGetValue(pair, out var registrations) && registrations.Count > 0;
+        return snap.Registry.TryGetValue(pair, out var registrations) && registrations.Count > 0;
     }
 
     /// <inheritdoc />
     public void Register(Func<object?> factory, Type? serviceType, string? contract = null)
     {
-        if (_registry is null)
-        {
-            return;
-        }
+        ArgumentExceptionHelper.ThrowIfNull(factory);
 
         var isNull = serviceType is null;
 
@@ -75,25 +91,53 @@ public class ModernDependencyResolver : IDependencyResolver
 
         var pair = GetKey(serviceType, contract);
 
-        if (!_registry.TryGetValue(pair, out var value))
+        List<Action<IDisposable>>? callbacksToRun = null;
+
+        lock (_gate)
         {
-            value = [];
-            _registry[pair] = value;
+            var snap = _snapshot;
+            if (snap is null)
+            {
+                return;
+            }
+
+            // Copy-on-write update of the registry for this key only.
+            var newRegistry = CloneRegistryShallow(snap.Registry);
+
+            if (!newRegistry.TryGetValue(pair, out var value))
+            {
+                value = [];
+                newRegistry[pair] = value;
+            }
+            else
+            {
+                // The list is mutable; clone it before mutating.
+                value = [.. value];
+                newRegistry[pair] = value;
+            }
+
+            value.Add(() =>
+                isNull
+                    ? new NullServiceType(factory)
+                    : factory());
+
+            // Capture callbacks for this key (run outside the lock).
+            if (_callbackRegistry.TryGetValue(pair, out var callbackList) && callbackList.Count > 0)
+            {
+                callbacksToRun = [.. callbackList];
+            }
+
+            _snapshot = snap with { Registry = newRegistry };
         }
 
-        value.Add(() =>
-            isNull
-                ? new NullServiceType(factory)
-                : factory());
-
-        if (!_callbackRegistry.TryGetValue(pair, out var callbackList))
+        if (callbacksToRun is null)
         {
             return;
         }
 
         List<Action<IDisposable>>? toRemove = null;
 
-        foreach (var callback in callbackList)
+        foreach (var callback in callbacksToRun)
         {
             using var disp = new BooleanDisposable();
 
@@ -107,9 +151,15 @@ public class ModernDependencyResolver : IDependencyResolver
 
         if (toRemove is not null)
         {
-            foreach (var c in toRemove)
+            lock (_gate)
             {
-                _ = _callbackRegistry[pair].Remove(c);
+                foreach (var c in toRemove)
+                {
+                    if (_callbackRegistry.TryGetValue(pair, out var list))
+                    {
+                        _ = list.Remove(c);
+                    }
+                }
             }
         }
     }
@@ -117,7 +167,8 @@ public class ModernDependencyResolver : IDependencyResolver
     /// <inheritdoc />
     public object? GetService(Type? serviceType, string? contract = null)
     {
-        if (_registry is null)
+        var snap = Volatile.Read(ref _snapshot);
+        if (snap is null)
         {
             return default;
         }
@@ -125,7 +176,7 @@ public class ModernDependencyResolver : IDependencyResolver
         serviceType ??= typeof(NullServiceType);
 
         var pair = GetKey(serviceType, contract);
-        if (!_registry.TryGetValue(pair, out var value))
+        if (!snap.Registry.TryGetValue(pair, out var value))
         {
             return default;
         }
@@ -152,7 +203,8 @@ public class ModernDependencyResolver : IDependencyResolver
     /// <inheritdoc />
     public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
     {
-        if (_registry is null)
+        var snap = Volatile.Read(ref _snapshot);
+        if (snap is null)
         {
             return [];
         }
@@ -160,7 +212,7 @@ public class ModernDependencyResolver : IDependencyResolver
         serviceType ??= typeof(NullServiceType);
 
         var pair = GetKey(serviceType, contract);
-        return !_registry.TryGetValue(pair, out var value) ? Array.Empty<object>() : value.ConvertAll(x =>
+        return !snap.Registry.TryGetValue(pair, out var value) ? Array.Empty<object>() : value.ConvertAll(x =>
         {
             var v = x()!;
             return v is Lazy<object?> lazy ? lazy.Value! : v;
@@ -170,42 +222,60 @@ public class ModernDependencyResolver : IDependencyResolver
     /// <inheritdoc />
     public void UnregisterCurrent(Type? serviceType, string? contract = null)
     {
-        if (_registry is null)
-        {
-            return;
-        }
-
         serviceType ??= typeof(NullServiceType);
 
         var pair = GetKey(serviceType, contract);
 
-        if (!_registry.TryGetValue(pair, out var list))
+        lock (_gate)
         {
-            return;
-        }
+            var snap = _snapshot;
+            if (snap is null)
+            {
+                return;
+            }
 
-        var position = list.Count - 1;
-        if (position < 0)
-        {
-            return;
-        }
+            if (!snap.Registry.TryGetValue(pair, out var list))
+            {
+                return;
+            }
 
-        list.RemoveAt(position);
+            var position = list.Count - 1;
+            if (position < 0)
+            {
+                return;
+            }
+
+            // Copy-on-write: clone only the list being modified and publish a new snapshot.
+            var newRegistry = CloneRegistryShallow(snap.Registry);
+            var newList = list.ToList();
+            newList.RemoveAt(position);
+            newRegistry[pair] = newList;
+
+            _snapshot = snap with { Registry = newRegistry };
+        }
     }
 
     /// <inheritdoc />
     public void UnregisterAll(Type? serviceType, string? contract = null)
     {
-        if (_registry is null)
-        {
-            return;
-        }
-
         serviceType ??= typeof(NullServiceType);
 
         var pair = GetKey(serviceType, contract);
 
-        _registry[pair] = [];
+        lock (_gate)
+        {
+            var snap = _snapshot;
+            if (snap is null)
+            {
+                return;
+            }
+
+            // Copy-on-write: publish a new snapshot with an empty list for this key.
+            var newRegistry = CloneRegistryShallow(snap.Registry);
+            newRegistry[pair] = [];
+
+            _snapshot = snap with { Registry = newRegistry };
+        }
     }
 
     /// <inheritdoc />
@@ -214,24 +284,43 @@ public class ModernDependencyResolver : IDependencyResolver
         ArgumentExceptionHelper.ThrowIfNull(serviceType);
         ArgumentExceptionHelper.ThrowIfNull(callback);
 
-        if (_registry is null)
+        if (Volatile.Read(ref _snapshot) is null)
         {
             return new ActionDisposable(() => { });
         }
 
         var pair = GetKey(serviceType, contract);
 
-        if (!_callbackRegistry.TryGetValue(pair, out var value))
+        lock (_gate)
         {
-            value = [];
-            _callbackRegistry[pair] = value;
+            if (Volatile.Read(ref _snapshot) is null)
+            {
+                return new ActionDisposable(() => { });
+            }
+
+            if (!_callbackRegistry.TryGetValue(pair, out var value))
+            {
+                value = [];
+                _callbackRegistry[pair] = value;
+            }
+
+            value.Add(callback);
         }
 
-        value.Add(callback);
+        var disp = new ActionDisposable(() =>
+        {
+            lock (_gate)
+            {
+                if (_callbackRegistry.TryGetValue(pair, out var list))
+                {
+                    _ = list.Remove(callback);
+                }
+            }
+        });
 
-        var disp = new ActionDisposable(() => value.Remove(callback));
-
-        if (!_registry.TryGetValue(pair, out var callbackList))
+        // Preserve original behavior: invoke callback once per existing registration.
+        var snap = Volatile.Read(ref _snapshot);
+        if (snap is null || !snap.Registry.TryGetValue(pair, out var callbackList))
         {
             return disp;
         }
@@ -249,7 +338,11 @@ public class ModernDependencyResolver : IDependencyResolver
     /// Useful if you want to generate temporary resolver using the <see cref="DependencyResolverMixins.WithResolver(IDependencyResolver, bool)"/> method.
     /// </summary>
     /// <returns>The newly generated <see cref="ModernDependencyResolver"/> class with the current registrations.</returns>
-    public ModernDependencyResolver Duplicate() => new(_registry);
+    public ModernDependencyResolver Duplicate()
+    {
+        var snap = Volatile.Read(ref _snapshot);
+        return snap is null ? new ModernDependencyResolver() : new ModernDependencyResolver(snap.Registry);
+    }
 
     /// <inheritdoc />
     public void Dispose()
@@ -271,6 +364,9 @@ public class ModernDependencyResolver : IDependencyResolver
 
         if (isDisposing)
         {
+            // Atomically prevent any further operations.
+            var snap = Interlocked.Exchange(ref _snapshot, null);
+
             // Dispose of all IDisposable callbacks
             foreach (var pair in _callbackRegistry)
             {
@@ -284,9 +380,9 @@ public class ModernDependencyResolver : IDependencyResolver
             _callbackRegistry.Clear();
 
             // Clear the registry and dispose of all factory registrations
-            if (_registry is not null)
+            if (snap is not null)
             {
-                foreach (var pair in _registry.Values)
+                foreach (var pair in snap.Registry.Values)
                 {
                     foreach (var factory in pair)
                     {
@@ -311,15 +407,35 @@ public class ModernDependencyResolver : IDependencyResolver
                     }
                 }
             }
-
-            _registry = null;
         }
 
         _isDisposed = true;
+    }
+
+    /// <summary>
+    /// Generates a duplicate of the registry with all the current registrations.
+    /// </summary>
+    private static Dictionary<(Type serviceType, string? contract), List<Func<object?>>> CloneRegistryShallow(
+        Dictionary<(Type serviceType, string? contract), List<Func<object?>>> source)
+    {
+        // Shallow-clone dictionary: lists are cloned only when mutated.
+        var clone = new Dictionary<(Type serviceType, string? contract), List<Func<object?>>>(source.Count);
+        foreach (var kvp in source)
+        {
+            clone[kvp.Key] = kvp.Value;
+        }
+
+        return clone;
     }
 
     private static (Type type, string contract) GetKey(
         Type? serviceType,
         string? contract = null) =>
         (serviceType!, contract ?? string.Empty);
+
+    /// <summary>
+    /// A copy-on-write snapshot of the registry.
+    /// </summary>
+    /// <param name="Registry">A registry of services.</param>
+    private sealed record Snapshot(Dictionary<(Type serviceType, string? contract), List<Func<object?>>> Registry);
 }

@@ -17,7 +17,7 @@ public sealed class NLogLogger : IFullLogger, IDisposable
 #if NET5_0_OR_GREATER
     private static readonly LogLevel[] _allLogLevels = Enum.GetValues<LogLevel>();
 #else
-    private static readonly LogLevel[] _allLogLevels = Enum.GetValues(typeof(LogLevel)).Cast<LogLevel>().ToArray();
+    private static readonly LogLevel[] _allLogLevels = [.. Enum.GetValues(typeof(LogLevel)).Cast<LogLevel>()];
 #endif
     private readonly global::NLog.Logger _inner;
 

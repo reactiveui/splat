@@ -56,4 +56,30 @@ public static class ModeDetector
         // runner :-/
         return false;
     }
+
+    /// <summary>
+    /// Gets the current state for test isolation. Used by test scopes.
+    /// </summary>
+    /// <returns>A tuple containing the current detector and cached result.</returns>
+    internal static (IModeDetector detector, bool? cachedResult) GetState() =>
+        (Current, _cachedInUnitTestRunnerResult);
+
+    /// <summary>
+    /// Restores the state for test isolation. Used by test scopes.
+    /// </summary>
+    /// <param name="state">The state to restore.</param>
+    internal static void RestoreState((IModeDetector detector, bool? cachedResult) state)
+    {
+        Current = state.detector;
+        _cachedInUnitTestRunnerResult = state.cachedResult;
+    }
+
+    /// <summary>
+    /// Resets the state to default for test isolation. Used by test scopes.
+    /// </summary>
+    internal static void ResetState()
+    {
+        Current = new DefaultModeDetector();
+        _cachedInUnitTestRunnerResult = null;
+    }
 }

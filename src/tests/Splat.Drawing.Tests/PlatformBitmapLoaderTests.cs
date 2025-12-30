@@ -1,25 +1,22 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2025 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.Tests.Platform;
 
-/// <summary>
-/// Unit tests for the platform specific Bitmap loader.
-/// </summary>
-[TestFixture]
 public sealed class PlatformBitmapLoaderTests
 {
 #if !IS_SHARED_NET
     /// <summary>
     /// Check to ensure an instance is returned.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Constructor_ReturnsInstance()
+    public async Task Constructor_ReturnsInstance()
     {
         var instance = new PlatformBitmapLoader();
-        Assert.That(instance, Is.Not.Null);
+        await Assert.That(instance).IsNotNull();
     }
 #endif
 

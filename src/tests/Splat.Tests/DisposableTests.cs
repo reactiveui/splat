@@ -5,30 +5,28 @@
 
 namespace Splat.Tests;
 
-/// <summary>
-/// Unit Tests for the disposable classes.
-/// </summary>
-[TestFixture]
 public class DisposableTests
 {
     /// <summary>
     /// Test BooleanDisposable initial state.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void BooleanDisposable_InitialState_IsNotDisposed()
+    public async Task BooleanDisposable_InitialState_IsNotDisposed()
     {
         // Arrange & Act
         var disposable = new BooleanDisposable();
 
         // Assert
-        Assert.That(disposable.IsDisposed, Is.False);
+        await Assert.That(disposable.IsDisposed).IsFalse();
     }
 
     /// <summary>
     /// Test BooleanDisposable dispose sets IsDisposed to true.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void BooleanDisposable_Dispose_SetsIsDisposedToTrue()
+    public async Task BooleanDisposable_Dispose_SetsIsDisposedToTrue()
     {
         // Arrange
         var disposable = new BooleanDisposable();
@@ -37,14 +35,15 @@ public class DisposableTests
         disposable.Dispose();
 
         // Assert
-        Assert.That(disposable.IsDisposed, Is.True);
+        await Assert.That(disposable.IsDisposed).IsTrue();
     }
 
     /// <summary>
     /// Test BooleanDisposable multiple dispose calls.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void BooleanDisposable_MultipleDisposeCallsAreSafe()
+    public async Task BooleanDisposable_MultipleDisposeCallsAreSafe()
     {
         // Arrange
         var disposable = new BooleanDisposable();
@@ -55,14 +54,15 @@ public class DisposableTests
         disposable.Dispose();
 
         // Assert
-        Assert.That(disposable.IsDisposed, Is.True);
+        await Assert.That(disposable.IsDisposed).IsTrue();
     }
 
     /// <summary>
     /// Test ActionDisposable executes action on dispose.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ActionDisposable_Dispose_ExecutesAction()
+    public async Task ActionDisposable_Dispose_ExecutesAction()
     {
         // Arrange
         var actionExecuted = false;
@@ -72,14 +72,15 @@ public class DisposableTests
         disposable.Dispose();
 
         // Assert
-        Assert.That(actionExecuted, Is.True);
+        await Assert.That(actionExecuted).IsTrue();
     }
 
     /// <summary>
     /// Test ActionDisposable executes action only once.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ActionDisposable_MultipleDispose_ExecutesActionOnlyOnce()
+    public async Task ActionDisposable_MultipleDispose_ExecutesActionOnlyOnce()
     {
         // Arrange
         var executionCount = 0;
@@ -91,7 +92,7 @@ public class DisposableTests
         disposable.Dispose();
 
         // Assert
-        Assert.That(executionCount, Is.EqualTo(1));
+        await Assert.That(executionCount).IsEqualTo(1);
     }
 
     /// <summary>
@@ -137,17 +138,19 @@ public class DisposableTests
     /// <summary>
     /// Test CompositeDisposable with negative capacity throws ArgumentOutOfRangeException.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void CompositeDisposable_NegativeCapacity_ThrowsArgumentOutOfRangeException() =>
+    public async Task CompositeDisposable_NegativeCapacity_ThrowsArgumentOutOfRangeException() =>
 
         // Act & Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => new CompositeDisposable(-1));
+        await Assert.That(() => _ = new CompositeDisposable(-1)).Throws<ArgumentOutOfRangeException>();
 
     /// <summary>
     /// Test CompositeDisposable with array constructor.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void CompositeDisposable_ArrayConstructor_DisposesAllItems()
+    public async Task CompositeDisposable_ArrayConstructor_DisposesAllItems()
     {
         // Arrange
         var disposed1 = false;
@@ -160,19 +163,20 @@ public class DisposableTests
         // Act
         disposable.Dispose();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
             // Assert
-            Assert.That(disposed1, Is.True);
-            Assert.That(disposed2, Is.True);
+            await Assert.That(disposed1).IsTrue();
+            await Assert.That(disposed2).IsTrue();
         }
     }
 
     /// <summary>
     /// Test CompositeDisposable with enumerable constructor.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void CompositeDisposable_EnumerableConstructor_DisposesAllItems()
+    public async Task CompositeDisposable_EnumerableConstructor_DisposesAllItems()
     {
         // Arrange
         var disposed1 = false;
@@ -190,60 +194,65 @@ public class DisposableTests
         // Act
         compositeDisposable.Dispose();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
             // Assert
-            Assert.That(disposed1, Is.True);
-            Assert.That(disposed2, Is.True);
-            Assert.That(disposed3, Is.True);
+            await Assert.That(disposed1).IsTrue();
+            await Assert.That(disposed2).IsTrue();
+            await Assert.That(disposed3).IsTrue();
         }
     }
 
     /// <summary>
     /// Test CompositeDisposable throws for null array.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void CompositeDisposable_NullArray_ThrowsArgumentNullException() =>
+    public async Task CompositeDisposable_NullArray_ThrowsArgumentNullException() =>
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new CompositeDisposable((IDisposable[])null!));
+        await Assert.That(() => _ = new CompositeDisposable((IDisposable[])null!)).Throws<ArgumentNullException>();
 
     /// <summary>
     /// Test CompositeDisposable throws for null enumerable.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void CompositeDisposable_NullEnumerable_ThrowsArgumentNullException() =>
+    public async Task CompositeDisposable_NullEnumerable_ThrowsArgumentNullException() =>
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new CompositeDisposable((IEnumerable<IDisposable>)null!));
+        await Assert.That(() => _ = new CompositeDisposable((IEnumerable<IDisposable>)null!)).Throws<ArgumentNullException>();
 
     /// <summary>
     /// Test CompositeDisposable throws for null item in array.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void CompositeDisposable_NullItemInArray_ThrowsArgumentException() =>
+    public async Task CompositeDisposable_NullItemInArray_ThrowsArgumentException() =>
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new CompositeDisposable(new ActionDisposable(() => { }), null!));
+        await Assert.That(() => _ = new CompositeDisposable(new ActionDisposable(() => { }), null!)).Throws<ArgumentNullException>();
 
     /// <summary>
     /// Test CompositeDisposable throws for null item in enumerable.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void CompositeDisposable_NullItemInEnumerable_ThrowsArgumentException()
+    public async Task CompositeDisposable_NullItemInEnumerable_ThrowsArgumentException()
     {
         // Arrange
         var disposables = new List<IDisposable> { new ActionDisposable(() => { }), null! };
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new CompositeDisposable(disposables));
+        await Assert.That(() => _ = new CompositeDisposable(disposables)).Throws<ArgumentNullException>();
     }
 
     /// <summary>
     /// Test CompositeDisposable multiple dispose calls are safe.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void CompositeDisposable_MultipleDisposeCallsAreSafe()
+    public async Task CompositeDisposable_MultipleDisposeCallsAreSafe()
     {
         // Arrange
         var executionCount = 0;
@@ -256,7 +265,7 @@ public class DisposableTests
         disposable.Dispose();
 
         // Assert
-        Assert.That(executionCount, Is.EqualTo(1));
+        await Assert.That(executionCount).IsEqualTo(1);
     }
 
     /// <summary>

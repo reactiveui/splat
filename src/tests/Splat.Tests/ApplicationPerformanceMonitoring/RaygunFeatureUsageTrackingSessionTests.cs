@@ -26,6 +26,7 @@ public static class RaygunFeatureUsageTrackingSessionTests
     }
 
     /// <inheritdoc />>
+    [InheritsTests]
     public sealed class ConstructorTests : BaseFeatureUsageTrackingTests.BaseConstructorTests<RaygunFeatureUsageTrackingSession>
     {
         /// <inheritdoc/>
@@ -33,6 +34,7 @@ public static class RaygunFeatureUsageTrackingSessionTests
     }
 
     /// <inheritdoc />>
+    [InheritsTests]
     public sealed class SubFeatureMethodTests : BaseFeatureUsageTrackingTests.BaseSubFeatureMethodTests<RaygunFeatureUsageTrackingSession>
     {
         /// <inheritdoc/>

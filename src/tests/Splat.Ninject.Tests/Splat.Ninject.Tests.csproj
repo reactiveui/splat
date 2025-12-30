@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>$(SplatModernTargets)</TargetFrameworks>
-        <IsPackable>false</IsPackable>
+    <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
   </PropertyGroup>

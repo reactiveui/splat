@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2025 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -21,26 +21,28 @@ public class SplatColorTests
     /// Tests to check you can get a SplatColor from a KnownColor.
     /// </summary>
     /// <param name="knownColor">The Known Colour to convert.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    [TestCaseSource(nameof(KnownColorEnums))]
-    public void FromKnownColorTests(KnownColor knownColor)
+    [MethodDataSource(nameof(KnownColorEnums))]
+    public async Task FromKnownColorTests(KnownColor knownColor)
     {
         var splatColor = SplatColor.FromKnownColor(knownColor);
 
-        Assert.That(splatColor.Name, Is.Not.Null);
+        await Assert.That(splatColor.Name).IsNotNull();
     }
 
     /// <summary>
     /// Tests to check you can get a SplatColor from a name.
     /// </summary>
     /// <param name="knownColor">The Known Colour to convert.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    [TestCaseSource(nameof(KnownColorEnums))]
-    public void FromNameTests(KnownColor knownColor)
+    [MethodDataSource(nameof(KnownColorEnums))]
+    public async Task FromNameTests(KnownColor knownColor)
     {
         var splatColor = SplatColor.FromName(knownColor.ToString());
 
-        Assert.That(splatColor.Name, Is.Not.Null);
+        await Assert.That(splatColor.Name).IsNotNull();
     }
 
     ////private static IEnumerable<object[]> GetEnumAsTestTheory()

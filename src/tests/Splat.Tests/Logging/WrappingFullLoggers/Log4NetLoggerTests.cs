@@ -16,6 +16,8 @@ namespace Splat.Tests.Logging;
 /// <summary>
 /// Tests that verify the <see cref="Log4NetLogger"/> class.
 /// </summary>
+[InheritsTests]
+[NotInParallel]
 public class Log4NetLoggerTests : FullLoggerTestBase
 {
     private static readonly Dictionary<Level, LogLevel> _log4Net2Splat = new()
@@ -36,6 +38,23 @@ public class Log4NetLoggerTests : FullLoggerTestBase
         { LogLevel.Fatal, Level.Fatal },
     };
 
+    private Hierarchy? _hierarchy;
+    private log4net.Appender.MemoryAppender? _currentAppender;
+
+    /// <summary>
+    /// Clean up the current test's appender after each test.
+    /// </summary>
+    [After(HookType.Test)]
+    public void CleanupAppender()
+    {
+        if (_hierarchy != null && _currentAppender != null)
+        {
+            _hierarchy.Root.RemoveAppender(_currentAppender);
+            _currentAppender = null;
+            _hierarchy = null;
+        }
+    }
+
     /// <inheritdoc/>
     protected override (IFullLogger logger, IMockLogTarget mockTarget) GetLogger(LogLevel minimumLogLevel)
     {
@@ -49,13 +68,7 @@ public class Log4NetLoggerTests : FullLoggerTestBase
 
     private MemoryTargetWrapper CreateRepository(LogLevel minimumLogLevel)
     {
-        Hierarchy hierarchy = (Hierarchy)LogManager.GetRepository(GetType().Assembly);
-
-        PatternLayout patternLayout = new()
-        {
-            ConversionPattern = "%m %exception",
-        };
-        patternLayout.ActivateOptions();
+        _hierarchy = (Hierarchy)LogManager.GetRepository(GetType().Assembly);
 
         var memoryAppender = new log4net.Appender.MemoryAppender
         {
@@ -67,12 +80,12 @@ public class Log4NetLoggerTests : FullLoggerTestBase
         };
 
         memoryAppender.ActivateOptions();
-        var memoryWrapper = new MemoryTargetWrapper(memoryAppender);
-        memoryWrapper.MemoryTarget.ActivateOptions();
-        hierarchy.Root.AddAppender(memoryWrapper.MemoryTarget);
+        _currentAppender = memoryAppender;
 
-        hierarchy.Root.Level = _splat2log4net[minimumLogLevel];
-        hierarchy.Configured = true;
+        var memoryWrapper = new MemoryTargetWrapper(memoryAppender);
+        _hierarchy.Root.AddAppender(_currentAppender);
+        _hierarchy.Root.Level = _splat2log4net[minimumLogLevel];
+        _hierarchy.Configured = true;
 
         return memoryWrapper;
     }

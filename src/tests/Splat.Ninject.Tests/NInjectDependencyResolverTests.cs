@@ -1,18 +1,16 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2025 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Ninject;
+
 using Splat.Tests.ServiceLocation;
 
 namespace Splat.Ninject.Tests;
 
-/// <summary>
-/// Unit Tests for the Modern Dependency Resolver.
-/// </summary>
-[TestFixture]
-[NonParallelizable]
+[NotInParallel]
+[InheritsTests]
 public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests<NinjectDependencyResolver>
 {
     /// <summary>
@@ -20,8 +18,9 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
     /// Should really be brought down to the <see cref="BaseDependencyResolverTests{T}"/>,
     /// it fails for some of the DIs.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Can_Register_And_Resolve_Null_Types()
+    public async Task Can_Register_And_Resolve_Null_Types()
     {
         var resolver = GetDependencyResolver();
 
@@ -32,39 +31,39 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
         const string contract = "foo";
         resolver.Register(() => bar, null, contract);
 
-        Assert.That(resolver.HasRegistration(null), Is.True);
+        await Assert.That(resolver.HasRegistration(null)).IsTrue();
 
         var value = resolver.GetService(null);
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(value, Is.EqualTo(foo));
+            await Assert.That(value).IsEqualTo(foo);
 
-            Assert.That(resolver.HasRegistration(null, contract), Is.True);
+            await Assert.That(resolver.HasRegistration(null, contract)).IsTrue();
         }
 
         value = resolver.GetService(null, contract);
-        Assert.That(value, Is.EqualTo(bar));
+        await Assert.That(value).IsEqualTo(bar);
 
         var values = resolver.GetServices(null);
-        Assert.That(values.Count(), Is.EqualTo(1));
+        await Assert.That(values.Count()).IsEqualTo(1);
 
         resolver.UnregisterCurrent(null);
 
         var valuesNC = resolver.GetServices(null);
-        Assert.That(valuesNC.Count(), Is.Zero);
+        await Assert.That(valuesNC.Count()).IsEqualTo(0);
 
         var valuesC = resolver.GetServices(null, contract);
-        Assert.That(valuesC.Count(), Is.EqualTo(1));
+        await Assert.That(valuesC.Count()).IsEqualTo(1);
 
         resolver.UnregisterAll(null);
 
         valuesNC = resolver.GetServices(null);
-        Assert.That(valuesNC.Count(), Is.Zero);
+        await Assert.That(valuesNC.Count()).IsEqualTo(0);
 
         resolver.UnregisterAll(null, contract);
 
         valuesC = resolver.GetServices(null, contract);
-        Assert.That(valuesC.Count(), Is.Zero);
+        await Assert.That(valuesC.Count()).IsEqualTo(0);
     }
 
     /// <inheritdoc />

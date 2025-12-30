@@ -1,19 +1,15 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2025 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+#if !IS_SHARED_NET
+
 using System.IO;
 using System.Reflection;
 
-#if !IS_SHARED_NET
-
 namespace Splat.Tests;
 
-/// <summary>
-/// Unit Tests for the Bitmap Loader.
-/// </summary>
-[TestFixture]
 public sealed class BitmapLoaderTests
 {
     /// <summary>
@@ -22,48 +18,52 @@ public sealed class BitmapLoaderTests
     /// <remarks>
     /// Looks crude and pointless, but was produced to track an issue on Android between VS2017 and VS2019.
     /// </remarks>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ReturnsInstance()
+    public async Task ReturnsInstance()
     {
         var instance = new PlatformBitmapLoader();
-        Assert.That(instance, Is.Not.Null);
+        await Assert.That(instance).IsNotNull();
     }
 
     /// <summary>
     /// Test to ensure creating a default bitmap succeeds on all platforms.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Create_Succeeds()
+    public async Task Create_Succeeds()
     {
         var instance = new PlatformBitmapLoader();
 
         object? result = null;
-        Assert.DoesNotThrow(() => result = instance.Create(1, 1));
+        await Assert.That(() => result = instance.Create(1, 1)).ThrowsNothing();
 
-        Assert.That(result, Is.Not.Null);
+        await Assert.That(result).IsNotNull();
     }
 
     /// <summary>
     /// Test to ensure loading a bitmap succeeds on all platforms.
     /// </summary>
     /// <param name="imageName">The resource name of the image to load.</param>
-    [TestCase("splatlogo.bmp")]
-    [TestCase("splatlogo.jpg")]
-    [TestCase("splatlogo.png")]
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    [Arguments("splatlogo.bmp")]
+    [Arguments("splatlogo.jpg")]
+    [Arguments("splatlogo.png")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2025:Do not pass 'IDisposable' instances into unawaited tasks", Justification = "Test so lack of dispose ok")]
-    public void Load_Succeeds(string imageName)
+    public async Task Load_Succeeds(string imageName)
     {
         var instance = new PlatformBitmapLoader();
 
         using var sourceStream = GetStream(imageName);
 
         object? result = null;
-        Assert.DoesNotThrow(() => result = instance.Load(
+        await Assert.That(() => result = instance.Load(
                 sourceStream,
                 640,
-                480));
+                480)).ThrowsNothing();
 
-        Assert.That(result, Is.Not.Null);
+        await Assert.That(result).IsNotNull();
     }
 
     private static Stream GetStream(string imageName)
@@ -71,7 +71,7 @@ public sealed class BitmapLoaderTests
 #if ANDROID
         return Android.App.Application.Context.Assets.Open(imageName);
 #else
-        var assembly = Assembly.GetExecutingAssembly();
+        var assembly = System.Reflection.Assembly.GetExecutingAssembly();
         return assembly.GetManifestResourceStream(imageName)!;
 #endif
     }

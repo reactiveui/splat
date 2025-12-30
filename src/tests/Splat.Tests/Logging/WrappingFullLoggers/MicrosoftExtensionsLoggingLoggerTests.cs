@@ -12,6 +12,7 @@ namespace Splat.Tests.Logging;
 /// <summary>
 /// Tests that verify the <see cref="MicrosoftExtensionsLoggingLogger"/> class.
 /// </summary>
+[InheritsTests]
 public class MicrosoftExtensionsLoggingLoggerTests : FullLoggerTestBase
 {
     private static readonly Dictionary<LogLevel, global::Microsoft.Extensions.Logging.LogLevel> _splat2MSLog = new()

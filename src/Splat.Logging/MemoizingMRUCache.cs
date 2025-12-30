@@ -5,6 +5,11 @@
 
 using System.Diagnostics.Contracts;
 
+#if NET8_0_OR_GREATER
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+#endif
+
 namespace Splat;
 
 /// <summary>
@@ -25,14 +30,53 @@ namespace Splat;
 public sealed class MemoizingMRUCache<TParam, TVal>
     where TParam : notnull
 {
+#if NET9_0_OR_GREATER
+    /// <summary>
+    /// The synchronization gate for all mutations of the MRU list and cache dictionary.
+    /// </summary>
+    private readonly Lock _lockObject = new();
+#else
+    /// <summary>
+    /// The synchronization gate for all mutations of the MRU list and cache dictionary.
+    /// </summary>
     private readonly object _lockObject = new();
+#endif
+
+    /// <summary>
+    /// The function whose results you want to cache,
+    /// which is provided the key value, and an Tag object that is
+    /// user-defined.
+    /// </summary>
     private readonly Func<TParam, object?, TVal> _calculationFunction;
+
+    /// <summary>
+    /// A function to call when a result gets
+    /// evicted from the cache (i.e. because Invalidate was called or the
+    /// cache is full).
+    /// </summary>
     private readonly Action<TVal>? _releaseFunction;
+
+    /// <summary>
+    /// The size of the cache to maintain, after which old
+    /// items will start to be thrown out.
+    /// </summary>
     private readonly int _maxCacheSize;
 
+    /// <summary>
+    /// A comparer for the parameter.
+    /// </summary>
     private readonly IEqualityComparer<TParam> _comparer;
 
+    /// <summary>
+    /// The MRU list of cached keys. Front is most recently used; back is least recently used.
+    /// </summary>
     private LinkedList<TParam> _cacheMRUList;
+
+    /// <summary>
+    /// The cache entries. Each key maps to a tuple of:
+    /// - the corresponding node in <see cref="_cacheMRUList"/>
+    /// - the cached value.
+    /// </summary>
     private Dictionary<TParam, (LinkedListNode<TParam> param, TVal value)> _cacheEntries;
 
     /// <summary>
@@ -101,7 +145,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
         _maxCacheSize = maxSize;
         _comparer = paramComparer ?? EqualityComparer<TParam>.Default;
         _cacheMRUList = [];
-        _cacheEntries = [];
+        _cacheEntries = new(_comparer);
     }
 
     /// <summary>
@@ -121,6 +165,27 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     {
         ArgumentExceptionHelper.ThrowIfNull(key);
 
+#if NET9_0_OR_GREATER
+        // Lock modernization: opportunistic fast path under contention.
+        if (_lockObject.TryEnter())
+        {
+            try
+            {
+                if (_cacheEntries.TryGetValue(key, out var found))
+                {
+                    RefreshEntry(found.param);
+
+                    return found.value;
+                }
+            }
+            finally
+            {
+                _lockObject.Exit();
+            }
+        }
+#endif
+
+        // Lock minimisation: do not compute under the lock.
         lock (_lockObject)
         {
             if (_cacheEntries.TryGetValue(key, out var found))
@@ -129,8 +194,19 @@ public sealed class MemoizingMRUCache<TParam, TVal>
 
                 return found.value;
             }
+        }
 
-            var result = _calculationFunction(key, context);
+        var result = _calculationFunction(key, context);
+
+        lock (_lockObject)
+        {
+            // Double-check in case another thread populated it while we computed.
+            if (_cacheEntries.TryGetValue(key, out var found))
+            {
+                RefreshEntry(found.param);
+
+                return found.value;
+            }
 
             var node = new LinkedListNode<TParam>(key);
             _cacheMRUList.AddFirst(node);
@@ -229,14 +305,11 @@ public sealed class MemoizingMRUCache<TParam, TVal>
             _cacheEntries = new(_comparer);
         }
 
-        if (oldCacheToClear is null)
-        {
-            return;
-        }
-
         if (aggregateReleaseExceptions)
         {
-            var exceptions = new List<Exception>(oldCacheToClear.Count);
+            // Allocation minimisation: only allocate if an exception actually occurs.
+            List<Exception>? exceptions = null;
+
             foreach (var item in oldCacheToClear)
             {
                 try
@@ -245,11 +318,11 @@ public sealed class MemoizingMRUCache<TParam, TVal>
                 }
                 catch (Exception e)
                 {
-                    exceptions.Add(e);
+                    (exceptions ??= new()).Add(e);
                 }
             }
 
-            if (exceptions.Count > 0)
+            if (exceptions is not null && exceptions.Count > 0)
             {
                 throw new AggregateException("Exceptions throw during MRU Cache Invalidate All Item Release.", exceptions);
             }
@@ -274,10 +347,14 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     {
         lock (_lockObject)
         {
-            return _cacheEntries.Select(x => x.Value.value);
+            // Materialise inside the lock to avoid a deferred iterator escaping the lock.
+            return _cacheEntries.Select(x => x.Value.value).ToArray();
         }
     }
 
+    /// <summary>
+    /// Ensures the cache does not exceed the configured maximum size, evicting least-recently-used entries as needed.
+    /// </summary>
     private void MaintainCache()
     {
         while (_cacheMRUList.Count > _maxCacheSize)
@@ -288,13 +365,28 @@ public sealed class MemoizingMRUCache<TParam, TVal>
             }
 
             var toRemove = _cacheMRUList.Last.Value;
+
+#if NET8_0_OR_GREATER
+            // Modernisation: avoid repeated dictionary lookups in eviction path.
+            // We expect the key to exist; if it does not, fall back to the safe path.
+            ref var entry = ref CollectionsMarshal.GetValueRefOrNullRef(_cacheEntries, toRemove);
+            if (!Unsafe.IsNullRef(ref entry))
+            {
+                _releaseFunction?.Invoke(entry.value);
+            }
+#else
             _releaseFunction?.Invoke(_cacheEntries[toRemove].value);
+#endif
 
             _ = _cacheEntries.Remove(_cacheMRUList.Last.Value);
             _cacheMRUList.RemoveLast();
         }
     }
 
+    /// <summary>
+    /// Moves the specified node to the front of the MRU list.
+    /// </summary>
+    /// <param name="item">The MRU node to refresh.</param>
     private void RefreshEntry(LinkedListNode<TParam> item)
     {
         // only juggle entries if more than 1 of them.
@@ -305,6 +397,9 @@ public sealed class MemoizingMRUCache<TParam, TVal>
         }
     }
 
+    /// <summary>
+    /// Ensures cache invariants are maintained.
+    /// </summary>
     [ContractInvariantMethod]
     private void Invariants()
     {

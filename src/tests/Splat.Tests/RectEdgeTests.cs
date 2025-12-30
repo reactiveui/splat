@@ -7,63 +7,64 @@ using System.Drawing;
 
 namespace Splat.Tests;
 
-/// <summary>
-/// Unit Tests for the RectEdge enum and its usage.
-/// </summary>
-[TestFixture]
 public class RectEdgeTests
 {
     /// <summary>
     /// Test that all RectEdge values work with Divide method.
     /// </summary>
     /// <param name="edge">The edge to test.</param>
-    [TestCase(RectEdge.Left)]
-    [TestCase(RectEdge.Top)]
-    [TestCase(RectEdge.Right)]
-    [TestCase(RectEdge.Bottom)]
-    public void RectEdge_AllValues_WorkWithDivide(RectEdge edge)
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    [Arguments(RectEdge.Left)]
+    [Arguments(RectEdge.Top)]
+    [Arguments(RectEdge.Right)]
+    [Arguments(RectEdge.Bottom)]
+    public async Task RectEdge_AllValues_WorkWithDivide(RectEdge edge)
     {
         // Arrange
         var rect = new RectangleF(0.0f, 0.0f, 100.0f, 100.0f);
 
         // Act & Assert - should not throw
         RectangleF slice = default, remainder = default;
-        Assert.DoesNotThrow(() =>
+        await Assert.That(() =>
         {
             var result = rect.Divide(25.0f, edge);
             slice = result.Item1;
             remainder = result.Item2;
-        });
+        }).ThrowsNothing();
 
         // Basic validation
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(slice.Width > 0 || slice.Height > 0, Is.True);
-            Assert.That(remainder.Width, Is.GreaterThanOrEqualTo(0f));
-            Assert.That(remainder.Height, Is.GreaterThanOrEqualTo(0f));
+            await Assert.That(slice.Width > 0 || slice.Height > 0).IsTrue();
+            await Assert.That(remainder.Width).IsGreaterThanOrEqualTo(0f);
+            await Assert.That(remainder.Height).IsGreaterThanOrEqualTo(0f);
         }
     }
 
     /// <summary>
     /// Test that RectEdge enum has expected values.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void RectEdge_HasExpectedValues()
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "TUnitAssertions0005:Assert.That(...) should not be used with a constant value", Justification = "Deliberately checking constant value")]
+    public async Task RectEdge_HasExpectedValues()
     {
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That((int)RectEdge.Left, Is.Zero);
-            Assert.That((int)RectEdge.Top, Is.EqualTo(1));
-            Assert.That((int)RectEdge.Right, Is.EqualTo(2));
-            Assert.That((int)RectEdge.Bottom, Is.EqualTo(3));
+            await Assert.That((int)RectEdge.Left).IsEqualTo(0);
+            await Assert.That((int)RectEdge.Top).IsEqualTo(1);
+            await Assert.That((int)RectEdge.Right).IsEqualTo(2);
+            await Assert.That((int)RectEdge.Bottom).IsEqualTo(3);
         }
     }
 
     /// <summary>
     /// Test that RectEdge enum has all expected names.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void RectEdge_HasAllExpectedNames()
+    public async Task RectEdge_HasAllExpectedNames()
     {
         var expectedNames = new[] { "Left", "Top", "Right", "Bottom" };
 #if NET8_0_OR_GREATER
@@ -72,12 +73,12 @@ public class RectEdgeTests
         var actualNames = Enum.GetNames(typeof(RectEdge));
 #endif
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(actualNames, Has.Length.EqualTo(expectedNames.Length));
+            await Assert.That(actualNames.Length).IsEqualTo(expectedNames.Length);
             foreach (var expectedName in expectedNames)
             {
-                Assert.That(actualNames, Does.Contain(expectedName));
+                await Assert.That(actualNames).Contains(expectedName);
             }
         }
     }
@@ -87,25 +88,28 @@ public class RectEdgeTests
     /// </summary>
     /// <param name="edgeName">The name of the edge to parse.</param>
     /// <param name="expectedEdge">The expected edge value.</param>
-    [TestCase("Left", RectEdge.Left)]
-    [TestCase("Top", RectEdge.Top)]
-    [TestCase("Right", RectEdge.Right)]
-    [TestCase("Bottom", RectEdge.Bottom)]
-    public void RectEdge_CanBeParsedFromString(string edgeName, RectEdge expectedEdge)
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    [Arguments("Left", RectEdge.Left)]
+    [Arguments("Top", RectEdge.Top)]
+    [Arguments("Right", RectEdge.Right)]
+    [Arguments("Bottom", RectEdge.Bottom)]
+    public async Task RectEdge_CanBeParsedFromString(string edgeName, RectEdge expectedEdge)
     {
 #if NET8_0_OR_GREATER
         var parsed = Enum.Parse<RectEdge>(edgeName);
 #else
         var parsed = (RectEdge)Enum.Parse(typeof(RectEdge), edgeName);
 #endif
-        Assert.That(parsed, Is.EqualTo(expectedEdge));
+        await Assert.That(parsed).IsEqualTo(expectedEdge);
     }
 
     /// <summary>
     /// Test that each RectEdge value produces different results with Divide.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void RectEdge_ProducesDifferentResultsWithDivide()
+    public async Task RectEdge_ProducesDifferentResultsWithDivide()
     {
         // Arrange
         var rect = new RectangleF(10.0f, 20.0f, 100.0f, 80.0f);
@@ -118,18 +122,18 @@ public class RectEdgeTests
         var bottomResult = rect.Divide(amount, RectEdge.Bottom);
 
         // Assert - Each should produce different slice positions
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(leftResult.Item1.X, Is.Not.EqualTo(rightResult.Item1.X));
-            Assert.That(topResult.Item1.Y, Is.Not.EqualTo(bottomResult.Item1.Y));
+            await Assert.That(leftResult.Item1.X).IsNotEqualTo(rightResult.Item1.X);
+            await Assert.That(topResult.Item1.Y).IsNotEqualTo(bottomResult.Item1.Y);
 
             // Left and Right should affect X coordinates differently
-            Assert.That(leftResult.Item1.X, Is.EqualTo(rect.X));
-            Assert.That(rightResult.Item1.X, Is.Not.EqualTo(rect.X));
+            await Assert.That(leftResult.Item1.X).IsEqualTo(rect.X);
+            await Assert.That(rightResult.Item1.X).IsNotEqualTo(rect.X);
 
             // Top and Bottom should affect Y coordinates differently
-            Assert.That(topResult.Item1.Y, Is.EqualTo(rect.Y));
-            Assert.That(bottomResult.Item1.Y, Is.Not.EqualTo(rect.Y));
+            await Assert.That(topResult.Item1.Y).IsEqualTo(rect.Y);
+            await Assert.That(bottomResult.Item1.Y).IsNotEqualTo(rect.Y);
         }
     }
 }

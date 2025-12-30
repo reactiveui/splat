@@ -158,4 +158,30 @@ public class AppBuilder : IAppBuilder, IAppInstance
         Current = _serviceProvider();
         return this;
     }
+
+    /// <summary>
+    /// Gets the current state for test isolation. Used by test scopes.
+    /// </summary>
+    /// <returns>A tuple containing HasBeenBuilt and UsingBuilder state.</returns>
+    internal static (bool hasBeenBuilt, bool usingBuilder) GetState() =>
+        (HasBeenBuilt, UsingBuilder);
+
+    /// <summary>
+    /// Restores the state for test isolation. Used by test scopes.
+    /// </summary>
+    /// <param name="state">The state to restore.</param>
+    internal static void RestoreState((bool hasBeenBuilt, bool usingBuilder) state)
+    {
+        HasBeenBuilt = state.hasBeenBuilt;
+        UsingBuilder = state.usingBuilder;
+    }
+
+    /// <summary>
+    /// Resets the state to default for test isolation. Used by test scopes.
+    /// </summary>
+    internal static void ResetState()
+    {
+        HasBeenBuilt = false;
+        UsingBuilder = false;
+    }
 }

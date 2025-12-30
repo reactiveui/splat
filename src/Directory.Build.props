@@ -64,11 +64,8 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
-    <EnableNUnitRunner>true</EnableNUnitRunner>
     <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
-  </PropertyGroup>
-  <PropertyGroup Condition="$(IsTestProject) or $(MSBuildProjectName.Contains('TestRunner'))">
-    <NoWarn>$(NoWarn);CA1031;CA1034;CA1040;CA1515;CA1707;CA1852;CA2000;CA2201</NoWarn>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
@@ -81,17 +78,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
 
+    <PackageReference Include="TUnit"/>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="NUnit" />
-    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="Verify.TUnit"/>
     <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
-  </ItemGroup>
-
-  <ItemGroup Condition="$(IsTestProject) or $(MSBuildProjectName.Contains('TestRunner'))">
-    <PackageReference Include="NUnit.Analyzers" />
     <PackageReference Include="Microsoft.Reactive.Testing" />
     <PackageReference Include="PublicApiGenerator" />
-    <PackageReference Include="Verify.NUnit" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(IsTestProject)' != 'true'">

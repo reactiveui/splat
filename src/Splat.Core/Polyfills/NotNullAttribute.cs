@@ -10,6 +10,7 @@ namespace System.Diagnostics.CodeAnalysis;
 /// <summary>
 ///   Specifies that an output is not <see langword="null"/> even if the
 ///   corresponding type allows it.
+///   Modification of Using SimonCropp's polyfill's library.
 /// </summary>
 [ExcludeFromCodeCoverage]
 [DebuggerNonUserCode]

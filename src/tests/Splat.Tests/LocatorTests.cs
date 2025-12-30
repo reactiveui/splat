@@ -1,24 +1,43 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2025 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using Splat.Common.Test;
 using Splat.Tests.Mocks;
 
 namespace Splat.Tests;
 
-/// <summary>
-/// Tests to confirm that the locator is working.
-/// </summary>
-[TestFixture]
-[NonParallelizable]
+[NotInParallel]
 public class LocatorTests
 {
+    private AppLocatorScope? _appLocatorScope;
+
+    /// <summary>
+    /// Setup method to initialize AppLocatorScope before each test.
+    /// </summary>
+    [Before(HookType.Test)]
+    public void SetUpAppLocatorScope()
+    {
+        _appLocatorScope = new AppLocatorScope();
+    }
+
+    /// <summary>
+    /// Teardown method to dispose AppLocatorScope after each test.
+    /// </summary>
+    [After(HookType.Test)]
+    public void TearDownAppLocatorScope()
+    {
+        _appLocatorScope?.Dispose();
+        _appLocatorScope = null;
+    }
+
     /// <summary>
     /// Should the resolve nulls.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Can_Register_And_Resolve_Null_Types()
+    public async Task Can_Register_And_Resolve_Null_Types()
     {
         var container = new InternalLocator();
 
@@ -29,122 +48,127 @@ public class LocatorTests
         const string contract = "foo";
         container.CurrentMutable.Register(() => bar, null, contract);
 
-        Assert.That(container.CurrentMutable.HasRegistration(null), Is.True);
+        await Assert.That(container.CurrentMutable.HasRegistration(null)).IsTrue();
         var value = container.Current.GetService(null);
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(value, Is.EqualTo(foo));
+            await Assert.That(value).IsEqualTo(foo);
 
-            Assert.That(container.CurrentMutable.HasRegistration(null, contract), Is.True);
+            await Assert.That(container.CurrentMutable.HasRegistration(null, contract)).IsTrue();
         }
 
         value = container.Current.GetService(null, contract);
-        Assert.That(value, Is.EqualTo(bar));
+        await Assert.That(value).IsEqualTo(bar);
 
         var values = container.Current.GetServices(null);
-        Assert.That(values.Count(), Is.EqualTo(1));
+        await Assert.That(values.Count()).IsEqualTo(1);
 
         container.CurrentMutable.UnregisterCurrent(null);
         var valuesNC = container.Current.GetServices(null).ToList();
-        Assert.That(valuesNC, Is.Empty);
+        await Assert.That(valuesNC).IsEmpty();
         var valuesC = container.Current.GetServices(null, contract);
-        Assert.That(valuesC.Count(), Is.EqualTo(1));
+        await Assert.That(valuesC.Count()).IsEqualTo(1);
 
         container.CurrentMutable.UnregisterAll(null);
-        valuesNC = container.Current.GetServices(null).ToList();
-        Assert.That(valuesNC, Is.Empty);
+        valuesNC = [.. container.Current.GetServices(null)];
+        await Assert.That(valuesNC).IsEmpty();
 
         container.CurrentMutable.UnregisterAll(null, contract);
         valuesC = container.Current.GetServices(null, contract);
-        Assert.That(valuesC.Count(), Is.Zero);
+        await Assert.That(valuesC.Count()).IsEqualTo(0);
     }
 
     /// <summary>
     /// Tests if the registrations are not empty on no external registrations.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InitializeSplat_RegistrationsNotEmptyNoRegistrations()
+    public async Task InitializeSplat_RegistrationsNotEmptyNoRegistrations()
     {
         // this is using the internal constructor
         var testLocator = new InternalLocator();
         var logManager = testLocator.Current.GetService(typeof(ILogManager));
         var logger = testLocator.Current.GetService(typeof(ILogger));
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(logManager, Is.Not.Null);
-            Assert.That(logger, Is.Not.Null);
+            await Assert.That(logManager).IsNotNull();
+            await Assert.That(logger).IsNotNull();
         }
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(logger, Is.TypeOf<DebugLogger>());
-            Assert.That(logManager, Is.TypeOf<DefaultLogManager>());
+            await Assert.That(logger).IsTypeOf<DebugLogger>();
+            await Assert.That(logManager).IsTypeOf<DefaultLogManager>();
         }
     }
 
     /// <summary>
     /// Tests that if we use a contract it returns null entries for that type.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InitializeSplat_ContractRegistrationsNullNoRegistration()
+    public async Task InitializeSplat_ContractRegistrationsNullNoRegistration()
     {
         var testLocator = new InternalLocator();
         var logManager = testLocator.Current.GetService(typeof(ILogManager), "test");
         var logger = testLocator.Current.GetService(typeof(ILogger), "test");
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(logManager, Is.Null);
-            Assert.That(logger, Is.Null);
+            await Assert.That(logManager).IsNull();
+            await Assert.That(logger).IsNull();
         }
     }
 
     /// <summary>
     /// Tests that if we use a contract it returns null entries for that type.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InitializeSplat_ContractRegistrationsExtensionMethodsNullNoRegistration()
+    public async Task InitializeSplat_ContractRegistrationsExtensionMethodsNullNoRegistration()
     {
         var testLocator = new InternalLocator();
         var logManager = testLocator.Current.GetService<ILogManager>("test");
         var logger = testLocator.Current.GetService<ILogger>("test");
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(logManager, Is.Null);
-            Assert.That(logger, Is.Null);
+            await Assert.That(logManager).IsNull();
+            await Assert.That(logger).IsNull();
         }
     }
 
     /// <summary>
     /// Tests using the extension methods that the retrieving of the default InitializeSplat() still work.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InitializeSplat_ExtensionMethodsNotNull()
+    public async Task InitializeSplat_ExtensionMethodsNotNull()
     {
         var testLocator = new InternalLocator();
         var logManager = testLocator.Current.GetService<ILogManager>();
         var logger = testLocator.Current.GetService<ILogger>();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(logManager, Is.Not.Null);
-            Assert.That(logger, Is.Not.Null);
+            await Assert.That(logManager).IsNotNull();
+            await Assert.That(logger).IsNotNull();
         }
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(logger, Is.TypeOf<DebugLogger>());
-            Assert.That(logManager, Is.TypeOf<DefaultLogManager>());
+            await Assert.That(logger).IsTypeOf<DebugLogger>();
+            await Assert.That(logManager).IsTypeOf<DefaultLogManager>();
         }
     }
 
     /// <summary>
     /// Tests to make sure that the locator's fire the resolver changed notifications.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WithoutSuppress_NotificationsHappen()
+    public async Task WithoutSuppress_NotificationsHappen()
     {
         var testLocator = new InternalLocator();
         var originalLocator = testLocator.Internal;
@@ -158,7 +182,7 @@ public class LocatorTests
         testLocator.SetLocator(new ModernDependencyResolver());
 
         // 2 for the changes, 1 for the callback being immediately called.
-        Assert.That(numberNotifications, Is.EqualTo(3));
+        await Assert.That(numberNotifications).IsEqualTo(3);
 
         testLocator.SetLocator(originalLocator);
     }
@@ -166,8 +190,9 @@ public class LocatorTests
     /// <summary>
     /// Tests to make sure that the locator's don't fire the resolver changed notifications if they are suppressed.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WithSuppression_NotificationsDontHappen()
+    public async Task WithSuppression_NotificationsDontHappen()
     {
         var testLocator = new InternalLocator();
         var originalLocator = testLocator.Internal;
@@ -182,7 +207,7 @@ public class LocatorTests
             testLocator.SetLocator(new ModernDependencyResolver());
             testLocator.SetLocator(new ModernDependencyResolver());
 
-            Assert.That(numberNotifications, Is.Zero);
+            await Assert.That(numberNotifications).IsEqualTo(0);
 
             testLocator.SetLocator(originalLocator);
         }
@@ -191,8 +216,9 @@ public class LocatorTests
     /// <summary>
     /// Tests to make sure that the locator's don't fire the resolver changed notifications if we use WithResolver().
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WithResolver_NotificationsDontHappen()
+    public async Task WithResolver_NotificationsDontHappen()
     {
         var numberNotifications = 0;
         void NotificationAction() => numberNotifications++;
@@ -206,14 +232,15 @@ public class LocatorTests
         }
 
         // 1 due to the fact the callback is called when we register.
-        Assert.That(numberNotifications, Is.EqualTo(1));
+        await Assert.That(numberNotifications).IsEqualTo(1);
     }
 
     /// <summary>
     /// Tests to make sure that the locator's don't fire the resolver changed notifications if we use WithResolver().
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WithResolver_NotificationsNotSuppressedHappen()
+    public async Task WithResolver_NotificationsNotSuppressedHappen()
     {
         var numberNotifications = 0;
         void NotificationAction() => numberNotifications++;
@@ -228,15 +255,16 @@ public class LocatorTests
         // 1 due to the fact the callback is called when we register.
         // 2 for, 1 for change to resolver, 1 for change back
         // 2 for, 1 for change to resolver, 1 for change back
-        Assert.That(numberNotifications, Is.EqualTo(5));
+        await Assert.That(numberNotifications).IsEqualTo(5);
     }
 
     /// <summary>
     /// Tests to make sure that the unregister all functions correctly.
     /// This is a test when there are values registered.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ModernDependencyResolver_UnregisterAll_WithValuesWorks()
+    public async Task ModernDependencyResolver_UnregisterAll_WithValuesWorks()
     {
         var currentMutable = new ModernDependencyResolver();
 
@@ -255,102 +283,115 @@ public class LocatorTests
 
         foreach (var testContract in testContracts)
         {
-            var items = currentMutable.GetServices<IDummyInterface>(testContract);
+            var items = currentMutable.GetServices<IDummyInterface>(testContract).ToList();
 
-            Assert.That(items, Is.EquivalentTo(new IDummyInterface[] { dummy1, dummy2, dummy3 }));
+            using (Assert.Multiple())
+            {
+                await Assert.That(items).Count().IsEqualTo(3);
+                await Assert.That(items).Contains(dummy1);
+                await Assert.That(items).Contains(dummy2);
+                await Assert.That(items).Contains(dummy3);
+            }
 
             currentMutable.UnregisterAll<IDummyInterface>(testContract);
 
-            items = currentMutable.GetServices<IDummyInterface>(testContract);
+            items = [.. currentMutable.GetServices<IDummyInterface>(testContract)];
 
-            Assert.That(items, Is.Empty);
+            await Assert.That(items).IsEmpty();
         }
     }
 
     /// <summary>
     /// Nullables the type.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void RegisterAndResolveANullableTypeWithValue()
+    public async Task RegisterAndResolveANullableTypeWithValue()
     {
         Locator.CurrentMutable.Register<DummyObjectClass1?>(() => new());
         var doc = Locator.Current.GetService<DummyObjectClass1?>();
-        Assert.That(doc, Is.TypeOf<DummyObjectClass1>());
+        await Assert.That(doc).IsTypeOf<DummyObjectClass1>();
     }
 
     /// <summary>
     /// Nullables the type.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void RegisterAndResolveANullableTypeWithNull()
+    public async Task RegisterAndResolveANullableTypeWithNull()
     {
         Locator.CurrentMutable.Register<DummyObjectClass1?>(() => null);
         var doc = Locator.Current.GetService<DummyObjectClass1?>();
-        Assert.That(doc, Is.Null);
+        await Assert.That(doc).IsNull();
     }
 
     /// <summary>
     /// Nullables the type.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void RegisterAndResolveANullableTypeWithValueLocatorDisposed()
+    public async Task RegisterAndResolveANullableTypeWithValueLocatorDisposed()
     {
         var currentMutable = new ModernDependencyResolver();
         currentMutable.Register<DummyObjectClass1?>(() => new());
         currentMutable.Dispose();
         var doc = currentMutable.GetService<DummyObjectClass1?>();
-        Assert.That(doc, Is.Null);
+        await Assert.That(doc).IsNull();
     }
 
     /// <summary>
     /// Nullables the type.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void RegisterAndResolveANullableTypeWithDefault()
+    public async Task RegisterAndResolveANullableTypeWithDefault()
     {
         Locator.CurrentMutable.Register<DummyObjectClass1?>(() => null);
         var doc = Locator.Current.GetService<DummyObjectClass1?>();
-        Assert.That(doc, Is.Null);
+        await Assert.That(doc).IsNull();
     }
 
     /// <summary>
     /// Nullables the type.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void RegisterAndResolveANullableTypeWithNulledInstance()
+    public async Task RegisterAndResolveANullableTypeWithNulledInstance()
     {
         DummyObjectClass1? dummy = null;
         Locator.CurrentMutable.Register(() => dummy);
         var doc = Locator.Current.GetService<DummyObjectClass1?>();
-        Assert.That(doc, Is.Null);
+        await Assert.That(doc).IsNull();
     }
 
     /// <summary>
     /// Tests to make sure that the unregister all functions correctly.
     /// This is a test when there are values not registered.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ModernDependencyResolver_UnregisterAll_NoValuesWorks()
+    public async Task ModernDependencyResolver_UnregisterAll_NoValuesWorks()
     {
         var currentMutable = new ModernDependencyResolver();
 
         var items = currentMutable.GetServices<IDummyInterface>();
 
-        Assert.That(items, Is.Empty);
+        await Assert.That(items).IsEmpty();
 
         currentMutable.UnregisterAll<IDummyInterface>();
 
         items = currentMutable.GetServices<IDummyInterface>();
 
-        Assert.That(items, Is.Empty);
+        await Assert.That(items).IsEmpty();
     }
 
     /// <summary>
     /// Tests tomake sure that the unregister current functions correctly.
     /// This is a test when there are values registered.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ModernDependencyResolver_UnregisterCurrent_WithValuesWorks()
+    public async Task ModernDependencyResolver_UnregisterCurrent_WithValuesWorks()
     {
         var dummy1 = new DummyObjectClass1();
         var dummy2 = new DummyObjectClass2();
@@ -369,15 +410,26 @@ public class LocatorTests
 
         foreach (var testContract in testContracts)
         {
-            var items = currentMutable.GetServices<IDummyInterface>(testContract);
+            var items = currentMutable.GetServices<IDummyInterface>(testContract).ToList();
 
-            Assert.That(items, Is.EquivalentTo(new IDummyInterface[] { dummy1, dummy2, dummy3 }));
+            using (Assert.Multiple())
+            {
+                await Assert.That(items).Count().IsEqualTo(3);
+                await Assert.That(items).Contains(dummy1);
+                await Assert.That(items).Contains(dummy2);
+                await Assert.That(items).Contains(dummy3);
+            }
 
             currentMutable.UnregisterCurrent<IDummyInterface>(testContract);
 
-            items = currentMutable.GetServices<IDummyInterface>(testContract);
+            items = [.. currentMutable.GetServices<IDummyInterface>(testContract)];
 
-            Assert.That(items, Is.EquivalentTo(new IDummyInterface[] { dummy1, dummy2 }));
+            using (Assert.Multiple())
+            {
+                await Assert.That(items).Count().IsEqualTo(2);
+                await Assert.That(items).Contains(dummy1);
+                await Assert.That(items).Contains(dummy2);
+            }
         }
     }
 
@@ -385,27 +437,29 @@ public class LocatorTests
     /// Tests to make sure that the unregister all functions correctly.
     /// This is a test when there are values not registered.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ModernDependencyResolver_UnregisterCurrent_NoValuesWorks()
+    public async Task ModernDependencyResolver_UnregisterCurrent_NoValuesWorks()
     {
         var currentMutable = new ModernDependencyResolver();
         var items = currentMutable.GetServices<IDummyInterface>();
 
-        Assert.That(items, Is.Empty);
+        await Assert.That(items).IsEmpty();
 
         currentMutable.UnregisterCurrent<IDummyInterface>();
 
         items = currentMutable.GetServices<IDummyInterface>();
 
-        Assert.That(items, Is.Empty);
+        await Assert.That(items).IsEmpty();
     }
 
     /// <summary>
     /// Tests to make sure that the unregister all functions correctly.
     /// This is a test when there are values not registered.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void FuncDependencyResolver_UnregisterAll()
+    public async Task FuncDependencyResolver_UnregisterAll()
     {
         var unregisterAllCalled = false;
         Type? type = null;
@@ -421,21 +475,21 @@ public class LocatorTests
             });
 
         currentMutable.UnregisterAll<IDummyInterface>();
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
             // 'type' is a System.Type; compare to typeof(...)
-            Assert.That(type, Is.EqualTo(typeof(IDummyInterface)));
-            Assert.That(contract, Is.Null);
-            Assert.That(unregisterAllCalled, Is.True);
+            await Assert.That(type).IsEqualTo(typeof(IDummyInterface));
+            await Assert.That(contract).IsNull();
+            await Assert.That(unregisterAllCalled).IsTrue();
         }
 
         unregisterAllCalled = false;
         currentMutable.UnregisterAll<IEnableLogger>("test");
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(type, Is.EqualTo(typeof(IEnableLogger)));
-            Assert.That(contract, Is.EqualTo("test"));
-            Assert.That(unregisterAllCalled, Is.True);
+            await Assert.That(type).IsEqualTo(typeof(IEnableLogger));
+            await Assert.That(contract).IsEqualTo("test");
+            await Assert.That(unregisterAllCalled).IsTrue();
         }
     }
 
@@ -443,8 +497,9 @@ public class LocatorTests
     /// Tests tomake sure that the unregister current functions correctly.
     /// This is a test when there are values registered.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void FuncDependencyResolver_UnregisterCurrent()
+    public async Task FuncDependencyResolver_UnregisterCurrent()
     {
         var unregisterAllCalled = false;
         Type? type = null;
@@ -460,21 +515,21 @@ public class LocatorTests
             });
 
         currentMutable.UnregisterCurrent<IDummyInterface>();
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
             // 'type' is a System.Type; compare to typeof(...)
-            Assert.That(type, Is.EqualTo(typeof(IDummyInterface)));
-            Assert.That(contract, Is.Null);
-            Assert.That(unregisterAllCalled, Is.True);
+            await Assert.That(type).IsEqualTo(typeof(IDummyInterface));
+            await Assert.That(contract).IsNull();
+            await Assert.That(unregisterAllCalled).IsTrue();
         }
 
         unregisterAllCalled = false;
         currentMutable.UnregisterCurrent<IEnableLogger>("test");
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(type, Is.EqualTo(typeof(IEnableLogger)));
-            Assert.That(contract, Is.EqualTo("test"));
-            Assert.That(unregisterAllCalled, Is.True);
+            await Assert.That(type).IsEqualTo(typeof(IEnableLogger));
+            await Assert.That(contract).IsEqualTo("test");
+            await Assert.That(unregisterAllCalled).IsTrue();
         }
     }
 }

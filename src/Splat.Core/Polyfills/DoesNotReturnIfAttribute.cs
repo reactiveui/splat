@@ -12,6 +12,7 @@ namespace System.Diagnostics.CodeAnalysis;
 
 /// <summary>
 /// Indicates that a parameter captures the expression passed for another parameter as a string.
+/// Modification of Using SimonCropp's polyfill's library.
 /// </summary>
 [ExcludeFromCodeCoverage]
 [DebuggerNonUserCode]

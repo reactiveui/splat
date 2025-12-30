@@ -60,4 +60,30 @@ public static class PlatformModeDetector
 
         return _cachedInDesignModeResult.GetValueOrDefault();
     }
+
+    /// <summary>
+    /// Gets the current state for test isolation. Used by test scopes.
+    /// </summary>
+    /// <returns>A tuple containing the current detector and cached result.</returns>
+    internal static (IPlatformModeDetector detector, bool? cachedResult) GetState() =>
+        (Current, _cachedInDesignModeResult);
+
+    /// <summary>
+    /// Restores the state for test isolation. Used by test scopes.
+    /// </summary>
+    /// <param name="state">The state to restore.</param>
+    internal static void RestoreState((IPlatformModeDetector detector, bool? cachedResult) state)
+    {
+        Current = state.detector;
+        _cachedInDesignModeResult = state.cachedResult;
+    }
+
+    /// <summary>
+    /// Resets the state to default for test isolation. Used by test scopes.
+    /// </summary>
+    internal static void ResetState()
+    {
+        Current = new DefaultPlatformModeDetector();
+        _cachedInDesignModeResult = null;
+    }
 }

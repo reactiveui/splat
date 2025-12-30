@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2025 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -9,1096 +9,1088 @@ namespace Splat.Tests.Logging;
 /// Tests the error based allocation free logging.
 /// </summary>
 /// <typeparam name="T">The type of logger.</typeparam>
+[InheritsTests]
+[NotInParallel]
 public abstract class AllocateFreeErrorLoggerTestBase<T> : LoggerBase<T>
     where T : IAllocationFreeErrorLogger
 {
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DebugExceptionOneArgumentMethod_Should_Write_Message()
+    public async Task DebugExceptionOneArgumentMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug(FormatHelper.Exception, "{0}", 1);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DebugExceptionOneArgumentMethod_Should_Not_Write_If_Higher_Level()
+    public async Task DebugExceptionOneArgumentMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Debug(FormatHelper.Exception, "{0}", 1);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DebugExceptionTwoArgumentsMethod_Should_Write_Message()
+    public async Task DebugExceptionTwoArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug(FormatHelper.Exception, "{0}, {1}", 1, 2);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DebugExceptionTwoArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task DebugExceptionTwoArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Debug(FormatHelper.Exception, "{0}, {1}", 1, 2);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DebugExceptionThreeArgumentsMethod_Should_Write_Message()
+    public async Task DebugExceptionThreeArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug(FormatHelper.Exception, "{0}, {1}, {2}", 1, 2, 3);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DebugExceptionThreeArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task DebugExceptionThreeArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Debug(FormatHelper.Exception, "{0}, {1}, {2}", 1, 2, 3);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DebugExceptionFourArgumentsMethod_Should_Write_Message()
+    public async Task DebugExceptionFourArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug(FormatHelper.Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DebugExceptionFourArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task DebugExceptionFourArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Debug(FormatHelper.Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DebugExceptionFiveArgumentsMethod_Should_Write_Message()
+    public async Task DebugExceptionFiveArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DebugExceptionFiveArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task DebugExceptionFiveArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Debug(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DebugExceptionSixArgumentsMethod_Should_Write_Message()
+    public async Task DebugExceptionSixArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DebugExceptionSixArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task DebugExceptionSixArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Debug(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes seven arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DebugExceptionSevenArgumentsMethod_Should_Write_Message()
+    public async Task DebugExceptionSevenArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6, 7 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6, 7 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes seven arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DebugExceptionSevenArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task DebugExceptionSevenArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Debug(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes eight arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DebugExceptionEightArgumentsMethod_Should_Write_Message()
+    public async Task DebugExceptionEightArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6, 7, 8 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes eight arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DebugExceptionEightArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task DebugExceptionEightArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Debug(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes nine arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DebugExceptionNineArgumentsMethod_Should_Write_Message()
+    public async Task DebugExceptionNineArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes nine arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DebugExceptionNineArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task DebugExceptionNineArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Debug(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes ten arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DebugExceptionTenArgumentsMethod_Should_Write_Message()
+    public async Task DebugExceptionTenArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Debug(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9, 10 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9, 10 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes ten arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DebugExceptionTenArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task DebugExceptionTenArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Info);
         logger.Debug(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InfoExceptionOneArgumentMethod_Should_Write_Message()
+    public async Task InfoExceptionOneArgumentMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Info(FormatHelper.Exception, "{0}", 1);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InfoExceptionOneArgumentMethod_Should_Not_Write_If_Higher_Level()
+    public async Task InfoExceptionOneArgumentMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Info(FormatHelper.Exception, "{0}", 1);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InfoExceptionTwoArgumentsMethod_Should_Write_Message()
+    public async Task InfoExceptionTwoArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Info(FormatHelper.Exception, "{0}, {1}", 1, 2);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InfoExceptionTwoArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task InfoExceptionTwoArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Info(FormatHelper.Exception, "{0}, {1}", 1, 2);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InfoExceptionThreeArgumentsMethod_Should_Write_Message()
+    public async Task InfoExceptionThreeArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Info(FormatHelper.Exception, "{0}, {1}, {2}", 1, 2, 3);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InfoExceptionThreeArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task InfoExceptionThreeArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Info(FormatHelper.Exception, "{0}, {1}, {2}", 1, 2, 3);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes four arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InfoExceptionFourArgumentsMethod_Should_Write_Message()
+    public async Task InfoExceptionFourArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes four arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InfoExceptionFourArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task InfoExceptionFourArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes five arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InfoExceptionFiveArgumentsMethod_Should_Write_Message()
+    public async Task InfoExceptionFiveArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes five arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InfoExceptionFiveArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task InfoExceptionFiveArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes six arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InfoExceptionSixArgumentsMethod_Should_Write_Message()
+    public async Task InfoExceptionSixArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes six arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InfoExceptionSixArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task InfoExceptionSixArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes seven arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InfoExceptionSevenArgumentsMethod_Should_Write_Message()
+    public async Task InfoExceptionSevenArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6, 7 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6, 7 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes seven arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InfoExceptionSevenArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task InfoExceptionSevenArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
-        var (logger, target) = GetLogger(LogLevel.Info);
-        logger.Debug(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
-        Assert.That(target.Logs, Is.Empty);
+        var (logger, target) = GetLogger(LogLevel.Warn);
+        logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes eight arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InfoExceptionEightArgumentsMethod_Should_Write_Message()
+    public async Task InfoExceptionEightArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6, 7, 8 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes eight arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InfoExceptionEightArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task InfoExceptionEightArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes nine arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InfoExceptionNineArgumentsMethod_Should_Write_Message()
+    public async Task InfoExceptionNineArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes nine arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InfoExceptionNineArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task InfoExceptionNineArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes ten arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InfoExceptionTenArgumentsMethod_Should_Write_Message()
+    public async Task InfoExceptionTenArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9, 10 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9, 10 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes ten arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InfoExceptionTenArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task InfoExceptionTenArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WarnExceptionOneArgumentMethod_Should_Write_Message()
+    public async Task WarnExceptionOneArgumentMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Warn(FormatHelper.Exception, "{0}", 1);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WarnExceptionOneArgumentMethod_Should_Not_Write_If_Higher_Level()
+    public async Task WarnExceptionOneArgumentMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Warn(FormatHelper.Exception, "{0}", 1);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WarnExceptionTwoArgumentsMethod_Should_Write_Message()
+    public async Task WarnExceptionTwoArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Warn(FormatHelper.Exception, "{0}, {1}", 1, 2);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WarnExceptionTwoArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task WarnExceptionTwoArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Warn(FormatHelper.Exception, "{0}, {1}", 1, 2);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WarnExceptionThreeArgumentsMethod_Should_Write_Message()
+    public async Task WarnExceptionThreeArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}", 1, 2, 3);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WarnExceptionThreeArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task WarnExceptionThreeArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}", 1, 2, 3);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes four arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WarnExceptionFourArgumentsMethod_Should_Write_Message()
+    public async Task WarnExceptionFourArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes four arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WarnExceptionFourArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task WarnExceptionFourArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
-        logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
-        Assert.That(target.Logs, Is.Empty);
+        logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes five arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WarnExceptionFiveArgumentsMethod_Should_Write_Message()
+    public async Task WarnExceptionFiveArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes five arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WarnExceptionFiveArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task WarnExceptionFiveArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
-        logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
-        Assert.That(target.Logs, Is.Empty);
+        logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes six arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WarnExceptionSixArgumentsMethod_Should_Write_Message()
+    public async Task WarnExceptionSixArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes six arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WarnExceptionSixArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task WarnExceptionSixArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
-        logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
-        Assert.That(target.Logs, Is.Empty);
+        logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes seven arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WarnExceptionSevenArgumentsMethod_Should_Write_Message()
+    public async Task WarnExceptionSevenArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6, 7 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6, 7 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes seven arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WarnExceptionSevenArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task WarnExceptionSevenArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes eight arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WarnExceptionEightArgumentsMethod_Should_Write_Message()
+    public async Task WarnExceptionEightArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6, 7, 8 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes eight arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WarnExceptionEightArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task WarnExceptionEightArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
-        logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8);
-        Assert.That(target.Logs, Is.Empty);
+        logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes nine arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WarnExceptionNineArgumentsMethod_Should_Write_Message()
+    public async Task WarnExceptionNineArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes nine arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WarnExceptionNineArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task WarnExceptionNineArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes ten arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WarnExceptionTenArgumentsMethod_Should_Write_Message()
+    public async Task WarnExceptionTenArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9, 10 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9, 10 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes ten arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WarnExceptionTenArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task WarnExceptionTenArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Warn(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes one argument.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ErrorExceptionOneArgumentMethod_Should_Write_Message()
+    public async Task ErrorExceptionOneArgumentMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Error(FormatHelper.Exception, "{0}", 1);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes one argument.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ErrorExceptionOneArgumentMethod_Should_Not_Write_If_Higher_Level()
+    public async Task ErrorExceptionOneArgumentMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Error(FormatHelper.Exception, "{0}", 1);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes two arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ErrorExceptionTwoArgumentsMethod_Should_Write_Message()
+    public async Task ErrorExceptionTwoArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Error(FormatHelper.Exception, "{0}, {1}", 1, 2);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes two arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ErrorExceptionTwoArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task ErrorExceptionTwoArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Error(FormatHelper.Exception, "{0}, {1}", 1, 2);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ErrorExceptionThreeArgumentsMethod_Should_Write_Message()
+    public async Task ErrorExceptionThreeArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Error(FormatHelper.Exception, "{0}, {1}, {2}", 1, 2, 3);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ErrorExceptionThreeArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task ErrorExceptionThreeArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Error(FormatHelper.Exception, "{0}, {1}, {2}", 1, 2, 3);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes four arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ErrorExceptionFourArgumentsMethod_Should_Write_Message()
+    public async Task ErrorExceptionFourArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Error(FormatHelper.Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes four arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ErrorExceptionFourArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task ErrorExceptionFourArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Error(FormatHelper.Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes five arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ErrorExceptionFiveArgumentsMethod_Should_Write_Message()
+    public async Task ErrorExceptionFiveArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Error(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes five arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ErrorExceptionFiveArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task ErrorExceptionFiveArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Error(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes six arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ErrorExceptionSixArgumentsMethod_Should_Write_Message()
+    public async Task ErrorExceptionSixArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Error(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes six arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ErrorExceptionSixArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task ErrorExceptionSixArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Error(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes seven arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ErrorExceptionSevenArgumentsMethod_Should_Write_Message()
+    public async Task ErrorExceptionSevenArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Error(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6, 7 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6, 7 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes seven arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ErrorExceptionSevenArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task ErrorExceptionSevenArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Error(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes eight arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ErrorExceptionEightArgumentsMethod_Should_Write_Message()
+    public async Task ErrorExceptionEightArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Error(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6, 7, 8 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes eight arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ErrorExceptionEightArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task ErrorExceptionEightArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Error(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes nine arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ErrorExceptionNineArgumentsMethod_Should_Write_Message()
+    public async Task ErrorExceptionNineArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Error(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes nine arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ErrorExceptionNineArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task ErrorExceptionNineArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Error(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes ten arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ErrorExceptionTenArgumentsMethod_Should_Write_Message()
+    public async Task ErrorExceptionTenArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Error(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9, 10 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9, 10 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes ten arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ErrorExceptionTenArgumentsMethod_Should_Not_Write_If_Higher_Level()
+    public async Task ErrorExceptionTenArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Error(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        Assert.That(target.Logs, Is.Empty);
+        await Assert.That(target.Logs).IsEmpty();
     }
 
     /// <summary>
     /// Tests the inner logger writes one argument.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void FatalExceptionOneArgumentMethod_Should_Write_Message()
+    public async Task FatalExceptionOneArgumentMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Fatal(FormatHelper.Exception, "{0}", 1);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes two arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void FatalExceptionTwoArgumentsMethod_Should_Write_Message()
+    public async Task FatalExceptionTwoArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Fatal(FormatHelper.Exception, "{0}, {1}", 1, 2);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes three arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void FatalExceptionThreeArgumentsMethod_Should_Write_Message()
+    public async Task FatalExceptionThreeArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Fatal(FormatHelper.Exception, "{0}, {1}, {2}", 1, 2, 3);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes four arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void FatalExceptionFourArgumentsMethod_Should_Write_Message()
+    public async Task FatalExceptionFourArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}", 1, 2, 3, 4);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes five arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void FatalExceptionFiveArgumentsMethod_Should_Write_Message()
+    public async Task FatalExceptionFiveArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Fatal(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}", 1, 2, 3, 4, 5);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes six arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void FatalExceptionSixArgumentsMethod_Should_Write_Message()
+    public async Task FatalExceptionSixArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Info(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}", 1, 2, 3, 4, 5, 6);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes seven arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void FatalExceptionSevenArgumentsMethod_Should_Write_Message()
+    public async Task FatalExceptionSevenArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Fatal(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}", 1, 2, 3, 4, 5, 6, 7);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6, 7 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6, 7 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes eight arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void FatalExceptionEightArgumentsMethod_Should_Write_Message()
+    public async Task FatalExceptionEightArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Fatal(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", 1, 2, 3, 4, 5, 6, 7, 8);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6, 7, 8 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes nine arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void FatalExceptionNineArgumentsMethod_Should_Write_Message()
+    public async Task FatalExceptionNineArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Fatal(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 1, 2, 3, 4, 5, 6, 7, 8, 9);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 
     /// <summary>
     /// Tests the inner logger writes ten arguments.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void FatalExceptionTenArgumentsMethod_Should_Write_Message()
+    public async Task FatalExceptionTenArgumentsMethod_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         logger.Fatal(FormatHelper.Exception, "{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        Assert.That(
-            target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(),
-            Is.EqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9, 10 System.Exception: Exception of type 'System.Exception' was thrown."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("1, 2, 3, 4, 5, 6, 7, 8, 9, 10 System.Exception: Exception of type 'System.Exception' was thrown.");
     }
 }

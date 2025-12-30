@@ -14,6 +14,7 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring;
 public static class ApplicationInsightsViewTrackingTests
 {
     /// <inheritdoc/>
+    [InheritsTests]
     public sealed class ConstructorMethod : BaseViewTrackingTests.ConstructorMethod<ApplicationInsightsViewTracking>
     {
         /// <inheritdoc/>

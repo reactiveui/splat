@@ -12,14 +12,15 @@ namespace Splat.Tests.Logging;
 /// <summary>
 /// Tests that verify the <see cref="ConsoleLoggerTests"/> class.
 /// </summary>
-internal class ConsoleLoggerTests : FullLoggerTestBase
+[InheritsTests]
+[NotInParallel]
+internal sealed class ConsoleLoggerTests : FullLoggerTestBase
 {
     /// <inheritdoc/>
     protected override (IFullLogger logger, IMockLogTarget mockTarget) GetLogger(LogLevel minimumLogLevel)
     {
         var outputWriter = new ConsoleWriter();
-        Console.SetOut(outputWriter);
-        return (new WrappingFullLogger(new WrappingLogLevelLogger(new ConsoleLogger { Level = minimumLogLevel, ExceptionMessageFormat = "{0} {1}" })), outputWriter);
+        return (new WrappingFullLogger(new WrappingLogLevelLogger(new ConsoleLogger(outputWriter) { Level = minimumLogLevel, ExceptionMessageFormat = "{0} {1}" })), outputWriter);
     }
 
     private sealed class ConsoleWriter : TextWriter, IMockLogTarget
@@ -32,16 +33,39 @@ internal class ConsoleLoggerTests : FullLoggerTestBase
 
         public override void WriteLine(string? value)
         {
+            if (string.IsNullOrEmpty(value))
+            {
+                return;
+            }
+
+            try
+            {
 #if NET8_0_OR_GREATER
-            var colonIndex = value!.IndexOf(':', StringComparison.InvariantCulture);
-            var level = Enum.Parse<LogLevel>(value.AsSpan(0, colonIndex));
+                var colonIndex = value.IndexOf(':', StringComparison.InvariantCulture);
+                if (colonIndex == -1)
+                {
+                    // No colon found - not a properly formatted log message
+                    return;
+                }
+
+                var level = Enum.Parse<LogLevel>(value.AsSpan(0, colonIndex));
 #else
-            var colonIndex = value!.IndexOf(':');
-            var level = (LogLevel)Enum.Parse(typeof(LogLevel), value.Substring(0, colonIndex));
+                var colonIndex = value.IndexOf(':');
+                if (colonIndex == -1)
+                {
+                    // No colon found - not a properly formatted log message
+                    return;
+                }
+
+                var level = (LogLevel)Enum.Parse(typeof(LogLevel), value.Substring(0, colonIndex));
 #endif
-            var message = value.Substring(colonIndex + 1).Trim();
-            _logs.Add((level, message));
-            base.WriteLine(value);
+                var message = value.Substring(colonIndex + 1).Trim();
+                _logs.Add((level, message));
+            }
+            catch
+            {
+                // Ignore improperly formatted lines
+            }
         }
     }
 }
