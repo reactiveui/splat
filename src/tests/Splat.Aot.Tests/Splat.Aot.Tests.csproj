@@ -22,10 +22,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Splat\Splat.csproj" />
-    <ProjectReference Include="..\Splat.Drawing\Splat.Drawing.csproj" />
-    <ProjectReference Include="..\Splat.Microsoft.Extensions.DependencyInjection\Splat.Microsoft.Extensions.DependencyInjection.csproj" />
-    <ProjectReference Include="..\Splat.Microsoft.Extensions.Logging\Splat.Microsoft.Extensions.Logging.csproj" />
+    <ProjectReference Include="..\..\Splat\Splat.csproj" />
+    <ProjectReference Include="..\..\Splat.Drawing\Splat.Drawing.csproj" />
+    <ProjectReference Include="..\..\Splat.Microsoft.Extensions.DependencyInjection\Splat.Microsoft.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\Splat.Microsoft.Extensions.Logging\Splat.Microsoft.Extensions.Logging.csproj" />
   </ItemGroup>
 
 </Project>

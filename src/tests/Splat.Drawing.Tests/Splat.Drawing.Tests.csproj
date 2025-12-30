@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Splat.Drawing\Splat.Drawing.csproj" />
+    <ProjectReference Include="..\..\Splat.Drawing\Splat.Drawing.csproj" />
     <ProjectReference Include="..\Splat.Tests\Splat.Tests.csproj" />
   </ItemGroup>
 

@@ -157,39 +157,39 @@
     <SDKReference Include="TestPlatform.Universal, Version=$(UnitTestPlatformVersion)" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Splat.AppCenter\Splat.AppCenter.csproj">
+    <ProjectReference Include="..\..\Splat.AppCenter\Splat.AppCenter.csproj">
       <Project>{dca3c3b2-dbd1-4c92-ac3b-4de6fad598a3}</Project>
       <Name>Splat.AppCenter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Splat.ApplicationInsights\Splat.ApplicationInsights.csproj">
+    <ProjectReference Include="..\..\Splat.ApplicationInsights\Splat.ApplicationInsights.csproj">
       <Project>{2ed64333-8b11-461e-a009-fffbfe4bd0d9}</Project>
       <Name>Splat.ApplicationInsights</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Splat.Log4Net\Splat.Log4Net.csproj">
+    <ProjectReference Include="..\..\Splat.Log4Net\Splat.Log4Net.csproj">
       <Project>{d65c61d8-c073-4761-9ba3-c595a079c42e}</Project>
       <Name>Splat.Log4Net</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Splat.Microsoft.Extensions.Logging\Splat.Microsoft.Extensions.Logging.csproj">
+    <ProjectReference Include="..\..\Splat.Microsoft.Extensions.Logging\Splat.Microsoft.Extensions.Logging.csproj">
       <Project>{898c7105-00af-45ec-948a-d004bcc01eb6}</Project>
       <Name>Splat.Microsoft.Extensions.Logging</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Splat.NLog\Splat.NLog.csproj">
+    <ProjectReference Include="..\..\Splat.NLog\Splat.NLog.csproj">
       <Project>{24bcc71a-0998-4b81-9a55-bc00c2a3f8ce}</Project>
       <Name>Splat.NLog</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Splat.Raygun\Splat.Raygun.csproj">
+    <ProjectReference Include="..\..\Splat.Raygun\Splat.Raygun.csproj">
       <Project>{a587ef52-4a3f-4375-a335-9ed7c6d410cb}</Project>
       <Name>Splat.Raygun</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Splat.Serilog\Splat.Serilog.csproj">
+    <ProjectReference Include="..\..\Splat.Serilog\Splat.Serilog.csproj">
       <Project>{75538893-9968-45f1-9c05-edb837fe0cfe}</Project>
       <Name>Splat.Serilog</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Splat\Splat.csproj">
+    <ProjectReference Include="..\..\Splat\Splat.csproj">
       <Project>{8535bde3-25b5-41d6-bf5d-2df766ae879b}</Project>
       <Name>Splat</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Splat.Drawing\Splat.Drawing.csproj">
+    <ProjectReference Include="..\..\Splat.Drawing\Splat.Drawing.csproj">
       <Project>{694d2813-14ff-456a-b1e7-c5bb82aee400}</Project>
       <Name>Splat.Drawing</Name>
     </ProjectReference>

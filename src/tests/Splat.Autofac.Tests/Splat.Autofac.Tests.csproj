@@ -2,15 +2,16 @@
 
   <PropertyGroup>
     <TargetFrameworks>$(SplatModernTargets)</TargetFrameworks>
+
+    <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />
-    <ProjectReference Include="..\Splat.DryIoc\Splat.DryIoc.csproj" />
-    <ProjectReference Include="..\Splat\Splat.csproj" />
+    <ProjectReference Include="..\..\Splat.Autofac\Splat.Autofac.csproj"/>
+    <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj"/>
+    <ProjectReference Include="..\Splat.Tests\Splat.Tests.csproj"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -18,5 +19,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>
