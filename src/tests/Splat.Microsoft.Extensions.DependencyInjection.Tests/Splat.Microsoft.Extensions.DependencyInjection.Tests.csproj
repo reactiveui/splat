@@ -2,20 +2,21 @@
 
   <PropertyGroup>
     <TargetFrameworks>$(SplatModernTargets)</TargetFrameworks>
-        <IsPackable>false</IsPackable>
+    <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\Splat.NLog\LogResolver.cs" Link="LogResolver.cs" />
     <Compile Include="..\Splat.Tests\ServiceLocation\BaseDependencyResolverTests.cs" Link="BaseDependencyResolverTests.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Splat.NLog\Splat.NLog.csproj" />
+    <ProjectReference Include="..\..\Splat.NLog\Splat.NLog.csproj" />
     <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />
-    <ProjectReference Include="..\Splat.Ninject\Splat.Ninject.csproj" />
-    <ProjectReference Include="..\Splat\Splat.csproj" />
+    <ProjectReference Include="..\..\Splat.Microsoft.Extensions.DependencyInjection\Splat.Microsoft.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\Splat\Splat.csproj" />
   </ItemGroup>
-
 </Project>

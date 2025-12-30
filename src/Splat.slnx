@@ -1,0 +1,65 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="ARM" />
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Core/">
+    <Project Path="Splat.Builder/Splat.Builder.csproj" />
+    <Project Path="Splat.Core/Splat.Core.csproj" />
+    <Project Path="Splat.Drawing/Splat.Drawing.csproj" />
+    <Project Path="Splat.Logging/Splat.Logging.csproj" />
+    <Project Path="Splat/Splat.csproj" />
+  </Folder>
+  <Folder Name="/ExtensionsAppLocator/">
+    <Project Path="Splat.Autofac/Splat.Autofac.csproj" />
+    <Project Path="Splat.DryIoc/Splat.DryIoc.csproj" />
+    <Project Path="Splat.Microsoft.Extensions.DependencyInjection/Splat.Microsoft.Extensions.DependencyInjection.csproj" />
+    <Project Path="Splat.Ninject/Splat.Ninject.csproj" />
+    <Project Path="Splat.Prism/Splat.Prism.csproj" />
+    <Project Path="Splat.SimpleInjector/Splat.SimpleInjector.csproj" />
+  </Folder>
+  <Folder Name="/ExtensionsLogging/">
+    <Project Path="Splat.Log4Net/Splat.Log4Net.csproj" />
+    <Project Path="Splat.Microsoft.Extensions.Logging/Splat.Microsoft.Extensions.Logging.csproj" />
+    <Project Path="Splat.NLog/Splat.NLog.csproj" />
+    <Project Path="Splat.Serilog/Splat.Serilog.csproj" />
+  </Folder>
+  <Folder Name="/Other/">
+    <Project Path="Splat.AppCenter/Splat.AppCenter.csproj" />
+    <Project Path="Splat.ApplicationInsights/Splat.ApplicationInsights.csproj" />
+    <Project Path="Splat.Exceptionless/Splat.Exceptionless.csproj" />
+    <Project Path="Splat.Prism.Forms/Splat.Prism.Forms.csproj" />
+    <Project Path="Splat.Raygun/Splat.Raygun.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="tests/Splat.Aot.Tests/Splat.Aot.Tests.csproj" />
+    <Project Path="tests/Splat.Autofac.Tests/Splat.Autofac.Tests.csproj" />
+    <Project Path="tests/Splat.Builder.Tests/Splat.Builder.Tests.csproj" />
+    <Project Path="tests/Splat.Common.Test/Splat.Common.Test.csproj" />
+    <Project Path="tests/Splat.Drawing.Tests/Splat.Drawing.Tests.csproj" />
+    <Project Path="tests/Splat.DryIoc.Tests/Splat.DryIoc.Tests.csproj" />
+    <Project Path="tests/Splat.Microsoft.Extensions.DependencyInjection.Tests/Splat.Microsoft.Extensions.DependencyInjection.Tests.csproj" />
+    <Project Path="tests/Splat.Ninject.Tests/Splat.Ninject.Tests.csproj" />
+    <Project Path="tests/Splat.Prism.Tests/Splat.Prism.Tests.csproj" />
+    <Project Path="tests/Splat.SimpleInjector.Tests/Splat.SimpleInjector.Tests.csproj" />
+    <Project Path="tests/Splat.Tests/Splat.Tests.csproj" />
+  </Folder>
+  <Folder Name="/_Solution Items/">
+    <File Path="../.editorconfig" />
+    <File Path="../.github/COPILOT_INSTRUCTIONS.md" />
+    <File Path="../.github/workflows/ci-build.yml" />
+    <File Path="../.github/workflows/release.yml" />
+    <File Path="../README.md" />
+    <File Path="../version.json" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="Directory.Packages.props" />
+    <File Path="stylecop.json" />
+  </Folder>
+  <Properties Name="MonoDevelopProperties">
+    <Property Name="StartupItem" Value="Splat\Splat-monotouch.csproj" />
+  </Properties>
+</Solution>
