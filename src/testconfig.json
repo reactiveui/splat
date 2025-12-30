@@ -16,6 +16,7 @@
         },
         "sourcePaths": {
           "exclude": [
+            "**/tests/**",
             "**/Splat*Tests/**",
             "**/Splat*.Test/**"
           ]
