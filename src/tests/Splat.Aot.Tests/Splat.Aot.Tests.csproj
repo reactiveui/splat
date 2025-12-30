@@ -26,6 +26,7 @@
     <ProjectReference Include="..\..\Splat.Drawing\Splat.Drawing.csproj" />
     <ProjectReference Include="..\..\Splat.Microsoft.Extensions.DependencyInjection\Splat.Microsoft.Extensions.DependencyInjection.csproj" />
     <ProjectReference Include="..\..\Splat.Microsoft.Extensions.Logging\Splat.Microsoft.Extensions.Logging.csproj" />
+    <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />
   </ItemGroup>
 
 </Project>

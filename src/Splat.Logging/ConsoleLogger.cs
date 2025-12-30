@@ -14,6 +14,20 @@ namespace Splat;
 public class ConsoleLogger : ILogger
 {
     /// <summary>
+    /// The text writer to write log messages to.
+    /// </summary>
+    private readonly TextWriter _writer;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ConsoleLogger"/> class.
+    /// </summary>
+    /// <param name="writer">The text writer to write log messages to. Defaults to Console.Out if null.</param>
+    public ConsoleLogger(TextWriter? writer = null)
+    {
+        _writer = writer ?? Console.Out;
+    }
+
+    /// <summary>
     /// Gets or sets the exception message format.
     /// First parameter will be the message, second will be the exception.
     /// </summary>
@@ -30,7 +44,7 @@ public class ConsoleLogger : ILogger
             return;
         }
 
-        Console.WriteLine(message);
+        _writer.WriteLine(message);
     }
 
     /// <inheritdoc />
@@ -41,7 +55,7 @@ public class ConsoleLogger : ILogger
             return;
         }
 
-        Console.WriteLine(string.Format(CultureInfo.InvariantCulture, ExceptionMessageFormat, message, exception));
+        _writer.WriteLine(string.Format(CultureInfo.InvariantCulture, ExceptionMessageFormat, message, exception));
     }
 
     /// <inheritdoc />
@@ -52,7 +66,7 @@ public class ConsoleLogger : ILogger
             return;
         }
 
-        Console.WriteLine(message);
+        _writer.WriteLine(message);
     }
 
     /// <inheritdoc />
@@ -63,6 +77,6 @@ public class ConsoleLogger : ILogger
             return;
         }
 
-        Console.WriteLine(string.Format(CultureInfo.InvariantCulture, ExceptionMessageFormat, message, exception));
+        _writer.WriteLine(string.Format(CultureInfo.InvariantCulture, ExceptionMessageFormat, message, exception));
     }
 }

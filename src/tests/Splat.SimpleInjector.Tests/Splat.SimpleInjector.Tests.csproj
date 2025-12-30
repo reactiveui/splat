@@ -12,9 +12,4 @@
     <ProjectReference Include="..\..\Splat\Splat.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="xunit.runner.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 </Project>

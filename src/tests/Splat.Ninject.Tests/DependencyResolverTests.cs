@@ -4,21 +4,20 @@
 // See the LICENSE file in the project root for full license information.
 
 using Ninject;
+
 using Splat.Common.Test;
 
 namespace Splat.Ninject.Tests;
 
-/// <summary>
-/// Contains unit tests for the dependency resolver functionality using Ninject.
-/// </summary>
-[TestFixture]
+[NotInParallel]
 public class DependencyResolverTests
 {
-    /// <summary>
+/// <summary>
     /// Should resolve views.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void NinjectDependencyResolver_Should_Resolve_Views()
+    public async Task NinjectDependencyResolver_Should_Resolve_Views()
     {
         var container = new StandardKernel();
         container.Bind<IViewFor<ViewModelOne>>().To<ViewOne>();
@@ -28,49 +27,52 @@ public class DependencyResolverTests
         var viewOne = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
         var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
-        Assert.That(viewOne, Is.Not.Null);
-        using (Assert.EnterMultipleScope())
+        await Assert.That(viewOne).IsNotNull();
+        using (Assert.Multiple())
         {
-            Assert.That(viewOne, Is.TypeOf<ViewOne>());
-            Assert.That(viewTwo, Is.Not.Null);
+            await Assert.That(viewOne).IsTypeOf<ViewOne>();
+            await Assert.That(viewTwo).IsNotNull();
         }
 
-        Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
+        await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
     }
 
     /// <summary>
     /// Should return null when no binding exists.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void NinjectDependencyResolver_Should_Return_Null()
+    public async Task NinjectDependencyResolver_Should_Return_Null()
     {
         var container = new StandardKernel();
         container.UseNinjectDependencyResolver();
 
         var viewOne = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
 
-        Assert.That(viewOne, Is.Null);
+        await Assert.That(viewOne).IsNull();
     }
 
     /// <summary>
     /// GetServices should return an empty collection when no bindings exist.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void NinjectDependencyResolver_GetServices_Should_Return_Empty_Collection()
+    public async Task NinjectDependencyResolver_GetServices_Should_Return_Empty_Collection()
     {
         var container = new StandardKernel();
         container.UseNinjectDependencyResolver();
 
         var viewOne = AppLocator.Current.GetServices(typeof(IViewFor<ViewModelOne>));
 
-        Assert.That(viewOne, Is.Empty);
+        await Assert.That(viewOne).IsEmpty();
     }
 
     /// <summary>
     /// Should resolve views.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void NinjectDependencyResolver_Should_Resolve_Named_View()
+    public async Task NinjectDependencyResolver_Should_Resolve_Named_View()
     {
         var container = new StandardKernel();
         container.Bind<IViewFor<ViewModelTwo>>().To<ViewTwo>();
@@ -78,15 +80,16 @@ public class DependencyResolverTests
 
         var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
-        Assert.That(viewTwo, Is.Not.Null);
-        Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
+        await Assert.That(viewTwo).IsNotNull();
+        await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
     }
 
     /// <summary>
     /// Should resolve view models.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void NinjectDependencyResolver_Should_Resolve_View_Models()
+    public async Task NinjectDependencyResolver_Should_Resolve_View_Models()
     {
         var container = new StandardKernel();
         container.Bind<ViewModelOne>().ToSelf();
@@ -96,18 +99,19 @@ public class DependencyResolverTests
         var vmOne = AppLocator.Current.GetService<ViewModelOne>();
         var vmTwo = AppLocator.Current.GetService<ViewModelTwo>();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(vmOne, Is.Not.Null);
-            Assert.That(vmTwo, Is.Not.Null);
+            await Assert.That(vmOne).IsNotNull();
+            await Assert.That(vmTwo).IsNotNull();
         }
     }
 
     /// <summary>
     /// Should resolve screen.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void NinjectDependencyResolver_Should_Resolve_Screen()
+    public async Task NinjectDependencyResolver_Should_Resolve_Screen()
     {
         var container = new StandardKernel();
         container.Bind<IScreen>().ToConstant(new MockScreen());
@@ -115,15 +119,15 @@ public class DependencyResolverTests
 
         var screen = AppLocator.Current.GetService<IScreen>();
 
-        Assert.That(screen, Is.Not.Null);
-        Assert.That(screen, Is.TypeOf<MockScreen>());
+        await Assert.That(screen).IsNotNull();
+        await Assert.That(screen).IsTypeOf<MockScreen>();
     }
 
     /// <summary>
     /// Should throw an exception if UnregisterCurrent is called. (Pending verification).
     /// </summary>
     [Test]
-    [Ignore("Further testing required")]
+    [Skip("Further testing required")]
     public void NinjectDependencyResolver_Should_Throw_If_UnregisterCurrent_Called()
     {
         var container = new StandardKernel();
@@ -136,8 +140,9 @@ public class DependencyResolverTests
     /// <summary>
     /// Should unregister all.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void NinjectDependencyResolver_Should_UnregisterAll()
+    public async Task NinjectDependencyResolver_Should_UnregisterAll()
     {
         var container = new StandardKernel();
         container.Bind<IScreen>().ToConstant(new MockScreen());
@@ -145,13 +150,13 @@ public class DependencyResolverTests
 
         var screen = AppLocator.Current.GetService<IScreen>();
 
-        Assert.That(screen, Is.Not.Null);
-        Assert.That(screen, Is.TypeOf<MockScreen>());
+        await Assert.That(screen).IsNotNull();
+        await Assert.That(screen).IsTypeOf<MockScreen>();
 
         AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen));
 
         var result = AppLocator.Current.GetService<IScreen>();
-        Assert.That(result, Is.Null);
+        await Assert.That(result).IsNull();
     }
 
     /// <summary>

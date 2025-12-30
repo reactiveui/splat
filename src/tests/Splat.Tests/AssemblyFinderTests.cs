@@ -5,87 +5,89 @@
 
 namespace Splat.Tests;
 
-/// <summary>
-/// Unit Tests for the AssemblyFinder class.
-/// </summary>
-[TestFixture]
 public class AssemblyFinderTests
 {
     /// <summary>
     /// Test that AttemptToLoadType returns default for non-existent type.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void AttemptToLoadType_ReturnsDefault_ForNonExistentType()
+    public async Task AttemptToLoadType_ReturnsDefault_ForNonExistentType()
     {
         // Act
         var result = AssemblyFinder.AttemptToLoadType<string>("NonExistent.Type");
 
         // Assert
-        Assert.That(result, Is.Null);
+        await Assert.That(result).IsNull();
     }
 
     /// <summary>
     /// Test that AttemptToLoadType returns default for invalid type name.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void AttemptToLoadType_ReturnsDefault_ForInvalidTypeName()
+    public async Task AttemptToLoadType_ReturnsDefault_ForInvalidTypeName()
     {
         // Act
         var result = AssemblyFinder.AttemptToLoadType<object>("Invalid..Type..Name");
 
         // Assert
-        Assert.That(result, Is.Null);
+        await Assert.That(result).IsNull();
     }
 
     /// <summary>
     /// Test that AttemptToLoadType works with well-known types.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void AttemptToLoadType_Works_WithWellKnownTypes()
+    public async Task AttemptToLoadType_Works_WithWellKnownTypes()
     {
         // Act - Try to load a well-known system type
         var result = AssemblyFinder.AttemptToLoadType<object>("System.String");
 
         // Assert - Should return default for reference types when type can't be instantiated with parameterless constructor
-        Assert.That(result, Is.Null);
+        await Assert.That(result).IsNull();
     }
 
     /// <summary>
     /// Test that AttemptToLoadType returns default for value types when type doesn't exist.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void AttemptToLoadType_ReturnsDefault_ForValueTypes()
+    public async Task AttemptToLoadType_ReturnsDefault_ForValueTypes()
     {
         // Act
         var result = AssemblyFinder.AttemptToLoadType<int>("NonExistent.ValueType");
 
         // Assert
-        Assert.That(result, Is.Zero); // Default for int
+        await Assert.That(result).IsEqualTo(0); // Default for int
     }
 
     /// <summary>
     /// Test that AttemptToLoadType handles empty string gracefully.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void AttemptToLoadType_HandlesEmptyString()
+    public async Task AttemptToLoadType_HandlesEmptyString()
     {
         // Act
         var result = AssemblyFinder.AttemptToLoadType<string>(string.Empty);
 
         // Assert
-        Assert.That(result, Is.Null);
+        await Assert.That(result).IsNull();
     }
 
     /// <summary>
     /// Test that AttemptToLoadType handles null string gracefully.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void AttemptToLoadType_HandlesNull()
+    public async Task AttemptToLoadType_HandlesNull()
     {
         // Act
         var result = AssemblyFinder.AttemptToLoadType<string>(null!);
 
         // Assert
-        Assert.That(result, Is.Null);
+        await Assert.That(result).IsNull();
     }
 }

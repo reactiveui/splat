@@ -14,6 +14,7 @@ namespace Splat.Tests.Logging;
 /// <summary>
 /// Tests that verify the <see cref="NLogLogger"/> class.
 /// </summary>
+[InheritsTests]
 public class NLogLoggerTests : FullLoggerTestBase
 {
     private static readonly Dictionary<global::NLog.LogLevel, LogLevel> _nLog2Splat = new()

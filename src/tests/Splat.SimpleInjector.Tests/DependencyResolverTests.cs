@@ -3,8 +3,6 @@
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using NUnit.Framework;
-
 using SimpleInjector;
 
 using Splat.Common.Test;
@@ -12,18 +10,15 @@ using Splat.SimpleInjector;
 
 namespace Splat.Simplnjector;
 
-/// <summary>
-/// Tests to show the <see cref="SimpleInjectorDependencyResolver"/> works correctly.
-/// </summary>
-[TestFixture]
-[NonParallelizable]
+[NotInParallel]
 public class DependencyResolverTests
 {
-    /// <summary>
+/// <summary>
     /// Simples the injector dependency resolver should resolve a view model.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void SimpleInjectorDependencyResolver_Should_Resolve_View_Model()
+    public async Task SimpleInjectorDependencyResolver_Should_Resolve_View_Model()
     {
         var container = new Container();
         container.Register<ViewModelOne>();
@@ -31,30 +26,32 @@ public class DependencyResolverTests
 
         var viewModel = AppLocator.Current.GetService(typeof(ViewModelOne));
 
-        Assert.That(viewModel, Is.Not.Null);
-        Assert.That(viewModel, Is.TypeOf<ViewModelOne>());
+        await Assert.That(viewModel).IsNotNull();
+        await Assert.That(viewModel).IsTypeOf<ViewModelOne>();
     }
 
     /// <summary>
     /// Simples the injector dependency resolver should resolve a view model.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void SimpleInjectorDependencyResolver_Should_Resolve_View_Model_Directly()
+    public async Task SimpleInjectorDependencyResolver_Should_Resolve_View_Model_Directly()
     {
         var container = new SimpleInjectorInitializer();
         container.Register(() => new ViewModelOne());
 
         var viewModel = container.GetService<ViewModelOne>();
 
-        Assert.That(viewModel, Is.Not.Null);
-        Assert.That(viewModel, Is.TypeOf<ViewModelOne>());
+        await Assert.That(viewModel).IsNotNull();
+        await Assert.That(viewModel).IsTypeOf<ViewModelOne>();
     }
 
     /// <summary>
     /// Simples the injector dependency resolver should resolve a view.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void SimpleInjectorDependencyResolver_Should_Resolve_View()
+    public async Task SimpleInjectorDependencyResolver_Should_Resolve_View()
     {
         var container = new Container();
         container.Register<IViewFor<ViewModelOne>, ViewOne>();
@@ -62,15 +59,16 @@ public class DependencyResolverTests
 
         var view = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
 
-        Assert.That(view, Is.Not.Null);
-        Assert.That(view, Is.TypeOf<ViewOne>());
+        await Assert.That(view).IsNotNull();
+        await Assert.That(view).IsTypeOf<ViewOne>();
     }
 
     /// <summary>
     /// Simples the injector dependency resolver should resolve the screen.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void SimpleInjectorDependencyResolver_Should_Resolve_Screen()
+    public async Task SimpleInjectorDependencyResolver_Should_Resolve_Screen()
     {
         var container = new Container();
         container.RegisterSingleton<IScreen, MockScreen>();
@@ -78,8 +76,8 @@ public class DependencyResolverTests
 
         var screen = AppLocator.Current.GetService(typeof(IScreen));
 
-        Assert.That(screen, Is.Not.Null);
-        Assert.That(screen, Is.TypeOf<MockScreen>());
+        await Assert.That(screen).IsNotNull();
+        await Assert.That(screen).IsTypeOf<MockScreen>();
     }
 
     /// <summary>
@@ -99,8 +97,9 @@ public class DependencyResolverTests
     /// <summary>
     /// Should resolve dependency registered during Splat initialization.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void SimpleInjectorDependencyResolver_ShouldResolveSplatRegisteredDependency()
+    public async Task SimpleInjectorDependencyResolver_ShouldResolveSplatRegisteredDependency()
     {
         Container container = new();
         SimpleInjectorInitializer initializer = new();
@@ -110,19 +109,20 @@ public class DependencyResolverTests
         container.UseSimpleInjectorDependencyResolver(initializer);
 
         var dependency = AppLocator.Current.GetService(typeof(ILogger)) as ILogger;
-        Assert.That(dependency, Is.Not.Null);
+        await Assert.That(dependency).IsNotNull();
     }
 
     /// <summary>
     /// Should resolve dependency registered during Splat initialization.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void SimpleInjectorDependencyResolver_CollectionShouldNeverReturnNull()
+    public async Task SimpleInjectorDependencyResolver_CollectionShouldNeverReturnNull()
     {
         var container = new Container();
         container.UseSimpleInjectorDependencyResolver(new());
 
         var views = AppLocator.Current.GetServices(typeof(ViewOne));
-        Assert.That(views, Is.Not.Null);
+        await Assert.That(views).IsNotNull();
     }
 }

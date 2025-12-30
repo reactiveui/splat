@@ -1,9 +1,9 @@
 ﻿[assembly: System.Resources.NeutralResourcesLanguage("en-US")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Common.Test")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Drawing.Tests")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.TestRunner.Android")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.TestRunner.Uwp")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Tests")]
-[assembly: System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v8.0", FrameworkDisplayName=".NET 8.0")]
 namespace Splat
 {
     public static class BitmapLoader

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2025 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -12,13 +12,15 @@ namespace Splat.Tests.Logging;
 /// <summary>
 /// A base class for testing full loggers that are available.
 /// </summary>
+[InheritsTests]
 public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFullLogger>
 {
     /// <summary>
     /// Test to make sure the debug emits nothing when not enabled.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Debug_Disabled_Should_Not_Emit()
+    public async Task Debug_Disabled_Should_Not_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         var invoked = false;
@@ -30,18 +32,19 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
                 return "This is a test.";
             });
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(target.Logs, Is.Empty);
-            Assert.That(invoked, Is.False);
+            await Assert.That(target.Logs).IsEmpty();
+            await Assert.That(invoked).IsFalse();
         }
     }
 
     /// <summary>
     /// Test to make sure the debug emits something when enabled.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Debug_Enabled_Should_Emit()
+    public async Task Debug_Enabled_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         var invoked = false;
@@ -53,18 +56,19 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
                 return "This is a test.";
             });
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
-            Assert.That(invoked, Is.True);
+            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(invoked).IsTrue();
         }
     }
 
     /// <summary>
     /// Test to make sure the Info emits nothing when not enabled.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Info_Disabled_Should_Not_Emit()
+    public async Task Info_Disabled_Should_Not_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         var invoked = false;
@@ -76,18 +80,19 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
                 return "This is a test.";
             });
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(target.Logs, Is.Empty);
-            Assert.That(invoked, Is.False);
+            await Assert.That(target.Logs).IsEmpty();
+            await Assert.That(invoked).IsFalse();
         }
     }
 
     /// <summary>
     /// Test to make sure the Info emits something when enabled.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Info_Enabled_Should_Emit()
+    public async Task Info_Enabled_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         var invoked = false;
@@ -99,18 +104,19 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
                 return "This is a test.";
             });
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
-            Assert.That(invoked, Is.True);
+            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(invoked).IsTrue();
         }
     }
 
     /// <summary>
     /// Test to make sure the Warn emits nothing when not enabled.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Warn_Disabled_Should_Not_Emit()
+    public async Task Warn_Disabled_Should_Not_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         var invoked = false;
@@ -122,18 +128,19 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
                 return "This is a test.";
             });
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(target.Logs, Is.Empty);
-            Assert.That(invoked, Is.False);
+            await Assert.That(target.Logs).IsEmpty();
+            await Assert.That(invoked).IsFalse();
         }
     }
 
     /// <summary>
     /// Test to make sure the Warn emits something when enabled.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Warn_Enabled_Should_Emit()
+    public async Task Warn_Enabled_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         var invoked = false;
@@ -145,18 +152,19 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
                 return "This is a test.";
             });
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
-            Assert.That(invoked, Is.True);
+            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(invoked).IsTrue();
         }
     }
 
     /// <summary>
     /// Test to make sure the Error emits nothing when not enabled.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Error_Disabled_Should_Not_Emit()
+    public async Task Error_Disabled_Should_Not_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         var invoked = false;
@@ -168,18 +176,19 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
                 return "This is a test.";
             });
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(target.Logs, Is.Empty);
-            Assert.That(invoked, Is.False);
+            await Assert.That(target.Logs).IsEmpty();
+            await Assert.That(invoked).IsFalse();
         }
     }
 
     /// <summary>
     /// Test to make sure the Error emits something when enabled.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Error_Enabled_Should_Emit()
+    public async Task Error_Enabled_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
         var invoked = false;
@@ -191,18 +200,19 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
                 return "This is a test.";
             });
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
-            Assert.That(invoked, Is.True);
+            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(invoked).IsTrue();
         }
     }
 
     /// <summary>
     /// Test to make sure the Fatal emits something when enabled.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Fatal_Enabled_Should_Emit()
+    public async Task Fatal_Enabled_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
         var invoked = false;
@@ -214,335 +224,360 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
                 return "This is a test.";
             });
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
-            Assert.That(invoked, Is.True);
+            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(invoked).IsTrue();
         }
     }
 
     /// <summary>
     /// Test to make sure the message is passed to the logger.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Debug_With_Generic_Type_Should_Write_Message()
+    public async Task Debug_With_Generic_Type_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Debug<DummyObjectClass1>("This is a test.");
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
     /// <summary>
     /// Test to make sure the message is passed to the logger.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Debug_With_Generic_Type_Should_Write_Message_Provided()
+    public async Task Debug_With_Generic_Type_Should_Write_Message_Provided()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Debug<DummyObjectClass2>("This is a test.");
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
     /// <summary>
     /// Test to make sure the message is passed to the logger.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Info_With_Generic_Type_Should_Write_Message()
+    public async Task Info_With_Generic_Type_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Info<DummyObjectClass1>("This is a test.");
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
     /// <summary>
     /// Test to make sure the message is passed to the logger.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Info_With_Generic_Type_Should_Write_Message_Provided()
+    public async Task Info_With_Generic_Type_Should_Write_Message_Provided()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Info<DummyObjectClass2>("This is a test.");
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
     /// <summary>
     /// Test to make sure the message is passed to the logger.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Warn_With_Generic_Type_Should_Write_Message()
+    public async Task Warn_With_Generic_Type_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Warn<DummyObjectClass1>("This is a test.");
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
     /// <summary>
     /// Test to make sure the message is passed to the logger.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Warn_With_Generic_Type_Should_Write_Message_Provided()
+    public async Task Warn_With_Generic_Type_Should_Write_Message_Provided()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Warn<DummyObjectClass2>("This is a test.");
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
     /// <summary>
     /// Test to make sure the message is passed to the logger.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Error_With_Generic_Type_Should_Write_Message()
+    public async Task Error_With_Generic_Type_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Error<DummyObjectClass1>("This is a test.");
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
     /// <summary>
     /// Test to make sure the message is passed to the logger.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Error_With_Generic_Type_Should_Write_Message_Provided()
+    public async Task Error_With_Generic_Type_Should_Write_Message_Provided()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Error<DummyObjectClass2>("This is a test.");
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
     /// <summary>
     /// Test to make sure the message is passed to the logger.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Fatal_With_Generic_Type_Should_Write_Message()
+    public async Task Fatal_With_Generic_Type_Should_Write_Message()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Fatal<DummyObjectClass1>("This is a test.");
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
     /// <summary>
     /// Test to make sure the message is passed to the logger.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Fatal_With_Generic_Type_Should_Write_Message_Provided()
+    public async Task Fatal_With_Generic_Type_Should_Write_Message_Provided()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Fatal<DummyObjectClass2>("This is a test.");
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
     /// <summary>
     /// Test to make sure the debug emits something when enabled.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Debug_Enabled_FormatProvider_Should_Emit()
+    public async Task Debug_Enabled_FormatProvider_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Debug(CultureInfo.InvariantCulture, "This is a test.");
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
     /// <summary>
     /// Test to make sure that when enabled debug emits values.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Debug_Message_Should_Emit()
+    public async Task Debug_Message_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Debug("This is a test.");
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
     /// <summary>
     /// Test to make sure that when enabled debug emits values.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Debug_Object_Should_Emit()
+    public async Task Debug_Object_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
         logger.Debug(new DummyObjectClass1());
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo(typeof(DummyObjectClass1).ToString()));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(typeof(DummyObjectClass1).ToString());
     }
 
     /// <summary>
     /// Test to make sure the debug emits something when enabled.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Info_Enabled_FormatProvider_Should_Emit()
+    public async Task Info_Enabled_FormatProvider_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Info);
 
         logger.Info(CultureInfo.InvariantCulture, "This is a test.");
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
     /// <summary>
     /// Test to make sure that when enabled debug emits values.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Info_Object_Should_Emit()
+    public async Task Info_Object_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Info);
 
         logger.Info(new DummyObjectClass1());
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo(typeof(DummyObjectClass1).ToString()));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(typeof(DummyObjectClass1).ToString());
     }
 
     /// <summary>
     /// Test to make sure that when enabled debug emits values.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Info_Message_Should_Emit()
+    public async Task Info_Message_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Info);
 
         logger.Info("This is a test.");
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
     /// <summary>
     /// Test to make sure the debug emits something when enabled.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Warn_Enabled_FormatProvider_Should_Emit()
+    public async Task Warn_Enabled_FormatProvider_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
 
         logger.Warn(CultureInfo.InvariantCulture, "This is a test.");
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
     /// <summary>
     /// Test to make sure that when enabled debug emits values.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Warn_Message_Should_Emit()
+    public async Task Warn_Message_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
 
         logger.Warn("This is a test.");
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
     /// <summary>
     /// Test to make sure that when enabled debug emits values.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Warn_Object_Should_Emit()
+    public async Task Warn_Object_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
 
         logger.Warn(new DummyObjectClass1());
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo(typeof(DummyObjectClass1).ToString()));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(typeof(DummyObjectClass1).ToString());
     }
 
     /// <summary>
     /// Test to make sure the debug emits something when enabled.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Error_Enabled_FormatProvider_Should_Emit()
+    public async Task Error_Enabled_FormatProvider_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Error);
 
         logger.Error(CultureInfo.InvariantCulture, "This is a test.");
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
     /// <summary>
     /// Test to make sure that when enabled debug emits values.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Error_Message_Should_Emit()
+    public async Task Error_Message_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Error);
 
         logger.Error("This is a test.");
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
     /// <summary>
     /// Test to make sure that when enabled debug emits values.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Error_Object_Should_Emit()
+    public async Task Error_Object_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Error);
 
         logger.Error(new DummyObjectClass1());
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo(typeof(DummyObjectClass1).ToString()));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(typeof(DummyObjectClass1).ToString());
     }
 
     /// <summary>
     /// Test to make sure the debug emits something when enabled.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Fatal_Enabled_FormatProvider_Should_Emit()
+    public async Task Fatal_Enabled_FormatProvider_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
 
         logger.Fatal(CultureInfo.InvariantCulture, "This is a test.");
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
     /// <summary>
     /// Test to make sure that when enabled debug emits values.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Fatal_Object_Should_Emit()
+    public async Task Fatal_Object_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
 
         logger.Fatal(new DummyObjectClass1());
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo(typeof(DummyObjectClass1).ToString()));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(typeof(DummyObjectClass1).ToString());
     }
 
     /// <summary>
     /// Test to make sure that when enabled debug emits values.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Fatal_Message_Should_Emit()
+    public async Task Fatal_Message_Should_Emit()
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
 
         logger.Fatal("This is a test.");
 
-        Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim(), Is.EqualTo("This is a test."));
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 }

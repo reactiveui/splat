@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>$(SplatModernTargets)</TargetFrameworks>
-        <Nullable>enable</Nullable>
+    <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 

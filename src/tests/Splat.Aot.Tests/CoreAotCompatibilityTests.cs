@@ -5,20 +5,21 @@
 
 using System.Globalization;
 
+using Splat.Common.Test;
+
 namespace Splat.Tests.Aot;
 
 /// <summary>
-/// Comprehensive tests to verify AOT and trimming compatibility of the core Splat library.
-/// These tests ensure that the library works correctly when used with Native AOT
-/// and when assemblies are trimmed by the linker.
+/// AOT compatibility tests for core Splat functionality.
 /// </summary>
-[TestFixture]
-[NonParallelizable] // Uses Locator/AppLocator and resolver scopes; keep serialized to avoid cross-fixture interference.
+[NotInParallel] // Uses Locator/AppLocator and resolver scopes; keep serialized to avoid cross-fixture interference.
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Testing Purposes")]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2263:Prefer generic overload when type is known", Justification = "Testing purposes")]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.", Justification = "Testing Purposes")]
 public class CoreAotCompatibilityTests
 {
+    private AppLocatorScope? _appLocatorScope;
+
     /// <summary>
     /// Interface for testing dependency injection.
     /// </summary>
@@ -32,10 +33,30 @@ public class CoreAotCompatibilityTests
     }
 
     /// <summary>
+    /// Setup method to initialize AppLocatorScope before each test.
+    /// </summary>
+    [Before(HookType.Test)]
+    public void SetUpAppLocatorScope()
+    {
+        _appLocatorScope = new AppLocatorScope();
+    }
+
+    /// <summary>
+    /// Teardown method to dispose AppLocatorScope after each test.
+    /// </summary>
+    [After(HookType.Test)]
+    public void TearDownAppLocatorScope()
+    {
+        _appLocatorScope?.Dispose();
+        _appLocatorScope = null;
+    }
+
+    /// <summary>
     /// Test that basic service registration and resolution works in AOT scenarios.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void BasicServiceRegistration_WorksWithAot()
+    public async Task BasicServiceRegistration_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
 
@@ -49,22 +70,23 @@ public class CoreAotCompatibilityTests
         var logManager = resolver.GetService<ILogManager>();
         var enableLogger = resolver.GetService<IEnableLogger>();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(logger, Is.Not.Null);
-            Assert.That(logManager, Is.Not.Null);
-            Assert.That(enableLogger, Is.Not.Null);
-            Assert.That(logger, Is.TypeOf<DebugLogger>());
-            Assert.That(logManager, Is.TypeOf<DefaultLogManager>());
-            Assert.That(enableLogger, Is.TypeOf<TestService>());
+            await Assert.That(logger).IsNotNull();
+            await Assert.That(logManager).IsNotNull();
+            await Assert.That(enableLogger).IsNotNull();
+            await Assert.That(logger).IsTypeOf<DebugLogger>();
+            await Assert.That(logManager).IsTypeOf<DefaultLogManager>();
+            await Assert.That(enableLogger).IsTypeOf<TestService>();
         }
     }
 
     /// <summary>
     /// Test that all registration mixins work with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void RegistrationMixins_WorksWithAot()
+    public async Task RegistrationMixins_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
 
@@ -84,20 +106,21 @@ public class CoreAotCompatibilityTests
         var logManager = resolver.GetService<ILogManager>();
         var enableLogger = resolver.GetService<IEnableLogger>();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(testInterface, Is.Not.Null);
-            Assert.That(logger, Is.Not.Null);
-            Assert.That(logManager, Is.Not.Null);
-            Assert.That(enableLogger, Is.Not.Null);
+            await Assert.That(testInterface).IsNotNull();
+            await Assert.That(logger).IsNotNull();
+            await Assert.That(logManager).IsNotNull();
+            await Assert.That(enableLogger).IsNotNull();
         }
     }
 
     /// <summary>
     /// Test that service callbacks work with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ServiceRegistrationCallbacks_WorksWithAot()
+    public async Task ServiceRegistrationCallbacks_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
         var callbackTriggered = false;
@@ -109,14 +132,15 @@ public class CoreAotCompatibilityTests
 
         resolver.RegisterConstant<ILogger>(new DebugLogger());
 
-        Assert.That(callbackTriggered, Is.True);
+        await Assert.That(callbackTriggered).IsTrue();
     }
 
     /// <summary>
     /// Test that logging functionality works with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Logging_WorksWithAot()
+    public async Task Logging_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
         resolver.RegisterConstant<ILogger>(new DebugLogger());
@@ -124,40 +148,42 @@ public class CoreAotCompatibilityTests
         using var resolveInner = resolver.WithResolver();
 
         var logger = resolver.GetService<ILogManager>()?.GetLogger<CoreAotCompatibilityTests>();
-        Assert.That(logger, Is.Not.Null);
+        await Assert.That(logger).IsNotNull();
 
         // Logging methods shouldn't throw in AOT
-        Assert.DoesNotThrow(() =>
+        await Assert.That(() =>
         {
             logger!.Debug("Test debug message");
             logger.Info("Test info message");
             logger.Warn("Test warning message");
             logger.Error("Test error message");
             logger.Fatal("Test fatal message");
-        });
+        }).ThrowsNothing();
     }
 
     /// <summary>
     /// Test that mode detection works with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ModeDetection_WorksWithAot()
+    public async Task ModeDetection_WorksWithAot()
     {
         var modeDetector = new DefaultModeDetector();
 
         var inUnitTest = modeDetector.InUnitTestRunner();
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(inUnitTest, Is.Not.Null);
-            Assert.That(inUnitTest!.Value, Is.True); // We're running in a unit test
+            await Assert.That(inUnitTest).IsNotNull();
+            await Assert.That(inUnitTest!.Value).IsTrue(); // We're running in a unit test
         }
     }
 
     /// <summary>
     /// Test that lazy singleton registration works with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void LazySingleton_WorksWithAot()
+    public async Task LazySingleton_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
         var creationCount = 0;
@@ -171,38 +197,40 @@ public class CoreAotCompatibilityTests
         var service1 = resolver.GetService<IEnableLogger>();
         var service2 = resolver.GetService<IEnableLogger>();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(service1, Is.Not.Null);
-            Assert.That(service2, Is.Not.Null);
-            Assert.That(service1, Is.SameAs(service2)); // Should be the same instance
-            Assert.That(creationCount, Is.EqualTo(1));  // Created once
+            await Assert.That(service1).IsNotNull();
+            await Assert.That(service2).IsNotNull();
+            await Assert.That(service1).IsSameReferenceAs(service2); // Should be the same instance
+            await Assert.That(creationCount).IsEqualTo(1);  // Created once
         }
     }
 
     /// <summary>
     /// Test that unregistering services works with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ServiceUnregistration_WorksWithAot()
+    public async Task ServiceUnregistration_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
         resolver.RegisterConstant<ILogger>(new DebugLogger());
 
         var logger1 = resolver.GetService<ILogger>();
-        Assert.That(logger1, Is.Not.Null);
+        await Assert.That(logger1).IsNotNull();
 
         resolver.UnregisterCurrent<ILogger>();
         var logger2 = resolver.GetService<ILogger>();
 
-        Assert.That(logger2, Is.Null);
+        await Assert.That(logger2).IsNull();
     }
 
     /// <summary>
     /// Test that target framework extensions work with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void TargetFrameworkExtensions_WorksWithAot()
+    public async Task TargetFrameworkExtensions_WorksWithAot()
     {
         var assembly = typeof(CoreAotCompatibilityTests).Assembly;
 
@@ -211,15 +239,16 @@ public class CoreAotCompatibilityTests
 
         if (targetFramework is not null)
         {
-            Assert.That(targetFramework, Does.Contain("net"));
+            await Assert.That(targetFramework).Contains("net");
         }
     }
 
     /// <summary>
     /// Test that multiple service registration works with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void MultipleServiceRegistration_WorksWithAot()
+    public async Task MultipleServiceRegistration_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
 
@@ -228,19 +257,20 @@ public class CoreAotCompatibilityTests
 
         var services = resolver.GetServices<ITestInterface>().ToList();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(services, Has.Count.EqualTo(2));
-            Assert.That(services, Has.Some.InstanceOf<TestImplementation>());
-            Assert.That(services, Has.Some.InstanceOf<AlternateTestImplementation>());
+            await Assert.That(services).Count().IsEqualTo(2);
+            await Assert.That(services).Any(s => s is TestImplementation);
+            await Assert.That(services).Any(s => s is AlternateTestImplementation);
         }
     }
 
     /// <summary>
     /// Test that locator static methods work with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void LocatorStatic_WorksWithAot()
+    public async Task LocatorStatic_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
         resolver.RegisterConstant<ILogger>(new DebugLogger());
@@ -248,10 +278,10 @@ public class CoreAotCompatibilityTests
         using var resolveInner = resolver.WithResolver();
         var logger = AppLocator.Current.GetService<ILogger>();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(logger, Is.Not.Null);
-            Assert.That(logger, Is.TypeOf<DebugLogger>());
+            await Assert.That(logger).IsNotNull();
+            await Assert.That(logger).IsTypeOf<DebugLogger>();
         }
     }
 
@@ -259,8 +289,9 @@ public class CoreAotCompatibilityTests
     /// Test that generic type registration with constraints works with AOT.
     /// This tests DynamicallyAccessedMembers annotations on generic type parameters.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void GenericTypeRegistrationWithConstraints_WorksWithAot()
+    public async Task GenericTypeRegistrationWithConstraints_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
 
@@ -271,18 +302,19 @@ public class CoreAotCompatibilityTests
         var testInterface = resolver.GetService<ITestInterface>();
         var enableLogger = resolver.GetService<IEnableLogger>();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(testInterface, Is.Not.Null.And.TypeOf<TestImplementation>());
-            Assert.That(enableLogger, Is.Not.Null.And.TypeOf<TestService>());
+            await Assert.That(testInterface).IsTypeOf<TestImplementation>();
+            await Assert.That(enableLogger).IsTypeOf<TestService>();
         }
     }
 
     /// <summary>
     /// Test that service registrations with contracts work with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ContractBasedRegistration_WorksWithAot()
+    public async Task ContractBasedRegistration_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
         const string contract1 = "Contract1";
@@ -296,19 +328,20 @@ public class CoreAotCompatibilityTests
         var service2 = resolver.GetService<ITestInterface>(contract2);
         var defaultService = resolver.GetService<ITestInterface>();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(service1, Is.Not.Null.And.TypeOf<TestImplementation>());
-            Assert.That(service2, Is.Not.Null.And.TypeOf<AlternateTestImplementation>());
-            Assert.That(defaultService, Is.Not.Null.And.TypeOf<TestImplementation>());
+            await Assert.That(service1).IsTypeOf<TestImplementation>();
+            await Assert.That(service2).IsTypeOf<AlternateTestImplementation>();
+            await Assert.That(defaultService).IsTypeOf<TestImplementation>();
         }
     }
 
     /// <summary>
     /// Test that type-based service queries work with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void TypeBasedServiceQueries_WorksWithAot()
+    public async Task TypeBasedServiceQueries_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
         resolver.RegisterConstant(new DebugLogger(), typeof(ILogger));
@@ -317,37 +350,38 @@ public class CoreAotCompatibilityTests
         var logManager = resolver.GetService(typeof(ILogManager));
         var services = resolver.GetServices(typeof(ILogger)).ToList();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(logger, Is.Not.Null.And.TypeOf<DebugLogger>());
-            Assert.That(logManager, Is.Not.Null.And.TypeOf<DefaultLogManager>());
-            Assert.That(services, Has.Count.EqualTo(1));
+            await Assert.That(logger).IsTypeOf<DebugLogger>();
+            await Assert.That(logManager).IsTypeOf<DefaultLogManager>();
+            await Assert.That(services).Count().IsEqualTo(1);
         }
     }
 
     /// <summary>
     /// Test that HasRegistration queries work with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void HasRegistrationQueries_WorksWithAot()
+    public async Task HasRegistrationQueries_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
 
         // Before registration
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(resolver.HasRegistration(typeof(ITestInterface)), Is.False);
-            Assert.That(resolver.HasRegistration(typeof(ITestInterface), "contract"), Is.False);
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface))).IsFalse();
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), "contract")).IsFalse();
         }
 
         // After registration
         resolver.RegisterConstant<ITestInterface>(new TestImplementation());
         resolver.RegisterConstant<ITestInterface>(new AlternateTestImplementation(), "contract");
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(resolver.HasRegistration(typeof(ITestInterface)), Is.True);
-            Assert.That(resolver.HasRegistration(typeof(ITestInterface), "contract"), Is.True);
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface))).IsTrue();
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), "contract")).IsTrue();
         }
     }
 
@@ -355,18 +389,19 @@ public class CoreAotCompatibilityTests
     /// Test that comprehensive logging functionality works with AOT.
     /// This tests generic logging methods with type parameters.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ComprehensiveLogging_WorksWithAot()
+    public async Task ComprehensiveLogging_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
         resolver.RegisterConstant<ILogger>(new DebugLogger());
         resolver.RegisterConstant<ILogManager>(new DefaultLogManager(resolver));
         using var resolverInner = resolver.WithResolver();
         var logger = resolver.GetService<ILogManager>()?.GetLogger<CoreAotCompatibilityTests>();
-        Assert.That(logger, Is.Not.Null);
+        await Assert.That(logger).IsNotNull();
 
         // Generic logging methods + culture + exceptions shouldn't throw
-        Assert.DoesNotThrow(() =>
+        await Assert.That(() =>
         {
             logger!.Debug<string>("Debug with generic type");
             logger.Info<int>("Info with generic type");
@@ -386,24 +421,25 @@ public class CoreAotCompatibilityTests
             logger.Warn(testException, "Warn with exception");
             logger.Error(testException, "Error with exception");
             logger.Fatal(testException, "Fatal with exception");
-        });
+        }).ThrowsNothing();
     }
 
     /// <summary>
     /// Test that allocation-free logging methods work with AOT.
     /// This ensures that high-performance logging scenarios are AOT-compatible.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void AllocationFreeLogging_WorksWithAot()
+    public async Task AllocationFreeLogging_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
         resolver.RegisterConstant<ILogger>(new DebugLogger());
         resolver.RegisterConstant<ILogManager>(new DefaultLogManager(resolver));
         using var resolverInner = resolver.WithResolver();
         var logger = resolver.GetService<ILogManager>()?.GetLogger<CoreAotCompatibilityTests>();
-        Assert.That(logger, Is.Not.Null);
+        await Assert.That(logger).IsNotNull();
 
-        Assert.DoesNotThrow(() =>
+        await Assert.That(() =>
         {
             logger!.Debug(CultureInfo.InvariantCulture, "Simple message {0}", "arg1");
             logger.Debug(CultureInfo.InvariantCulture, "Two args: {0} {1}", "arg1", "arg2");
@@ -424,21 +460,22 @@ public class CoreAotCompatibilityTests
             // Higher-arity
             logger.Debug(CultureInfo.InvariantCulture, "Four args: {0} {1} {2} {3}", "arg1", "arg2", "arg3", "arg4");
             logger.Debug(CultureInfo.InvariantCulture, "Five args: {0} {1} {2} {3} {4}", "arg1", "arg2", "arg3", "arg4", "arg5");
-        });
+        }).ThrowsNothing();
     }
 
     /// <summary>
     /// Test that static logging host works with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void StaticLoggingHost_WorksWithAot()
+    public async Task StaticLoggingHost_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
         resolver.RegisterConstant<ILogger>(new DebugLogger());
         resolver.RegisterConstant<ILogManager>(new DefaultLogManager(resolver));
         using var resolvedInner = resolver.WithResolver();
 
-        Assert.DoesNotThrow(() =>
+        await Assert.That(() =>
         {
             LogHost.Default.Debug("Static debug message");
             LogHost.Default.Info("Static info message");
@@ -446,19 +483,20 @@ public class CoreAotCompatibilityTests
             LogHost.Default.Error("Static error message");
             LogHost.Default.Fatal("Static fatal message");
             LogHost.Default.Debug("Static debug with param: {0}", "test");
-        });
+        }).ThrowsNothing();
     }
 
     /// <summary>
     /// Test that WrappingFullLogger works correctly with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WrappingFullLogger_WorksWithAot()
+    public async Task WrappingFullLogger_WorksWithAot()
     {
         var baseLogger = new DebugLogger();
         var wrappingLogger = new WrappingFullLogger(baseLogger);
 
-        Assert.DoesNotThrow(() =>
+        await Assert.That(() =>
         {
             wrappingLogger.Debug("Debug message");
             wrappingLogger.Info("Info message");
@@ -480,36 +518,38 @@ public class CoreAotCompatibilityTests
             // Formatting
             wrappingLogger.Debug(CultureInfo.InvariantCulture, "Formatted message: {0}", "test");
             wrappingLogger.Info(CultureInfo.InvariantCulture, "Multiple params: {0} {1}", "test1", "test2");
-        });
+        }).ThrowsNothing();
     }
 
     /// <summary>
     /// Test that platform mode detector works with AOT including design mode detection.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void PlatformModeDetector_WorksWithAot()
+    public async Task PlatformModeDetector_WorksWithAot()
     {
         var defaultDetector = new DefaultModeDetector();
         var platformDetector = new DefaultPlatformModeDetector();
 
         var inUnitTest1 = defaultDetector.InUnitTestRunner();
         var inDesignMode = platformDetector.InDesignMode();
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(inUnitTest1, Is.Not.Null);
-            Assert.That(inUnitTest1!.Value, Is.True);
+            await Assert.That(inUnitTest1).IsNotNull();
+            await Assert.That(inUnitTest1!.Value).IsTrue();
 
             // We're not in design mode during tests
-            Assert.That(inDesignMode, Is.Not.Null);
-            Assert.That(inDesignMode!.Value, Is.False);
+            await Assert.That(inDesignMode).IsNotNull();
+            await Assert.That(inDesignMode!.Value).IsFalse();
         }
     }
 
     /// <summary>
     /// Test that service registration callbacks with different parameters work with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ServiceRegistrationCallbacksWithContracts_WorksWithAot()
+    public async Task ServiceRegistrationCallbacksWithContracts_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
         var defaultCallbackTriggered = false;
@@ -529,18 +569,19 @@ public class CoreAotCompatibilityTests
         resolver.RegisterConstant<ITestInterface>(new TestImplementation());
         resolver.RegisterConstant<ITestInterface>(new AlternateTestImplementation(), contract);
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(defaultCallbackTriggered, Is.True);
-            Assert.That(contractCallbackTriggered, Is.True);
+            await Assert.That(defaultCallbackTriggered).IsTrue();
+            await Assert.That(contractCallbackTriggered).IsTrue();
         }
     }
 
     /// <summary>
     /// Test that service unregistration scenarios work with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ComprehensiveServiceUnregistration_WorksWithAot()
+    public async Task ComprehensiveServiceUnregistration_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
         const string contract = "TestContract";
@@ -551,47 +592,48 @@ public class CoreAotCompatibilityTests
         resolver.Register<ITestInterface>(() => new TestImplementation(), "factory");
 
         // Verify initial registrations
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(resolver.HasRegistration(typeof(ITestInterface)), Is.True);
-            Assert.That(resolver.HasRegistration(typeof(ITestInterface), contract), Is.True);
-            Assert.That(resolver.HasRegistration(typeof(ITestInterface), "factory"), Is.True);
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface))).IsTrue();
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), contract)).IsTrue();
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), "factory")).IsTrue();
         }
 
         // Unregister current (default contract)
         resolver.UnregisterCurrent<ITestInterface>();
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(resolver.HasRegistration(typeof(ITestInterface)), Is.False);
-            Assert.That(resolver.HasRegistration(typeof(ITestInterface), contract), Is.True);
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface))).IsFalse();
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), contract)).IsTrue();
         }
 
         // Unregister current with contract
         resolver.UnregisterCurrent<ITestInterface>(contract);
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(resolver.HasRegistration(typeof(ITestInterface), contract), Is.False);
-            Assert.That(resolver.HasRegistration(typeof(ITestInterface), "factory"), Is.True);
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), contract)).IsFalse();
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), "factory")).IsTrue();
         }
 
         // Unregister all (default contract only)
         resolver.RegisterConstant<ITestInterface>(new TestImplementation());
         resolver.Register<ITestInterface>(() => new AlternateTestImplementation());
-        Assert.That(resolver.HasRegistration(typeof(ITestInterface)), Is.True);
+        await Assert.That(resolver.HasRegistration(typeof(ITestInterface))).IsTrue();
 
         resolver.UnregisterAll<ITestInterface>();
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(resolver.HasRegistration(typeof(ITestInterface)), Is.False);
-            Assert.That(resolver.HasRegistration(typeof(ITestInterface), "factory"), Is.True);
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface))).IsFalse();
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), "factory")).IsTrue();
         }
     }
 
     /// <summary>
     /// Test that fluent registration APIs work with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void FluentRegistrationApis_WorksWithAot()
+    public async Task FluentRegistrationApis_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
 
@@ -600,12 +642,12 @@ public class CoreAotCompatibilityTests
                 .RegisterLazySingletonAnd<ILogManager>(() => new DefaultLogManager(resolver))
                 .Register<IEnableLogger>(() => new TestService());
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(resolver.HasRegistration(typeof(ITestInterface)), Is.True);
-            Assert.That(resolver.HasRegistration(typeof(ILogger)), Is.True);
-            Assert.That(resolver.HasRegistration(typeof(ILogManager)), Is.True);
-            Assert.That(resolver.HasRegistration(typeof(IEnableLogger)), Is.True);
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface))).IsTrue();
+            await Assert.That(resolver.HasRegistration(typeof(ILogger))).IsTrue();
+            await Assert.That(resolver.HasRegistration(typeof(ILogManager))).IsTrue();
+            await Assert.That(resolver.HasRegistration(typeof(IEnableLogger))).IsTrue();
         }
 
         var testInterface = resolver.GetService<ITestInterface>();
@@ -613,20 +655,21 @@ public class CoreAotCompatibilityTests
         var logManager = resolver.GetService<ILogManager>();
         var enableLogger = resolver.GetService<IEnableLogger>();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(testInterface, Is.Not.Null);
-            Assert.That(logger, Is.Not.Null);
-            Assert.That(logManager, Is.Not.Null);
-            Assert.That(enableLogger, Is.Not.Null);
+            await Assert.That(testInterface).IsNotNull();
+            await Assert.That(logger).IsNotNull();
+            await Assert.That(logManager).IsNotNull();
+            await Assert.That(enableLogger).IsNotNull();
         }
     }
 
     /// <summary>
     /// Test that resolver scoping and isolation work with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ResolverScoping_WorksWithAot()
+    public async Task ResolverScoping_WorksWithAot()
     {
         using var originalResolver = new ModernDependencyResolver();
         using var scopedResolver = new ModernDependencyResolver();
@@ -637,23 +680,27 @@ public class CoreAotCompatibilityTests
         using (scopedResolver.WithResolver())
         {
             var logger = Locator.Current.GetService<ILogger>();
-            using (Assert.EnterMultipleScope())
+            using (Assert.Multiple())
             {
-                Assert.That(logger, Is.Not.Null);
-                Assert.That(logger, Is.TypeOf<ConsoleLogger>());
+                await Assert.That(logger).IsNotNull();
+                await Assert.That(logger).IsTypeOf<ConsoleLogger>();
             }
         }
 
         // After reverting scope, ensure it's not the scoped ConsoleLogger
         var revertedLogger = Locator.Current.GetService<ILogger>();
-        Assert.That(revertedLogger, Is.Null.Or.Not.InstanceOf<ConsoleLogger>());
+        if (revertedLogger is not null)
+        {
+            await Assert.That(revertedLogger).IsNotTypeOf<ConsoleLogger>();
+        }
     }
 
     /// <summary>
     /// Test that callback suppression works with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void CallbackSuppression_WorksWithAot()
+    public async Task CallbackSuppression_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
         var resolverCallbackTriggered = false;
@@ -675,10 +722,10 @@ public class CoreAotCompatibilityTests
             resolver.RegisterConstant<ILogger>(new DebugLogger());
         }
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(serviceCallbackTriggered, Is.True, "Service registration callback should not be suppressed.");
-            Assert.That(resolverCallbackTriggered, Is.False, "Resolver change callbacks should be suppressed.");
+            await Assert.That(serviceCallbackTriggered).IsTrue();
+            await Assert.That(resolverCallbackTriggered).IsFalse();
         }
 
         // Reset
@@ -691,18 +738,19 @@ public class CoreAotCompatibilityTests
             resolver.RegisterConstant<ILogger>(new ConsoleLogger());
         }
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(serviceCallbackTriggered, Is.True);
-            Assert.That(resolverCallbackTriggered, Is.True);
+            await Assert.That(serviceCallbackTriggered).IsTrue();
+            await Assert.That(resolverCallbackTriggered).IsTrue();
         }
     }
 
     /// <summary>
     /// Test that cross-casting and type conversions work with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void TypeConversions_WorksWithAot()
+    public async Task TypeConversions_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
 
@@ -713,20 +761,21 @@ public class CoreAotCompatibilityTests
         var testInterface = resolver.GetService<ITestInterface>();
         var enableLogger = resolver.GetService<IEnableLogger>();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(testInterface, Is.Not.Null);
-            Assert.That(enableLogger, Is.Not.Null);
-            Assert.That(testInterface, Is.SameAs(service));
-            Assert.That(enableLogger, Is.SameAs(service));
+            await Assert.That(testInterface).IsNotNull();
+            await Assert.That(enableLogger).IsNotNull();
+            await Assert.That(testInterface).IsSameReferenceAs(service);
+            await Assert.That(enableLogger).IsSameReferenceAs(service);
         }
     }
 
     /// <summary>
     /// Test that complex nested generic scenarios work with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void NestedGenericScenarios_WorksWithAot()
+    public async Task NestedGenericScenarios_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
 
@@ -743,14 +792,14 @@ public class CoreAotCompatibilityTests
         var factory = resolver.GetService<Func<ITestInterface>>();
         var lazy = resolver.GetService<Lazy<ILogger>>();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(enumerable, Is.Not.Null);
-            Assert.That(factory, Is.Not.Null);
-            Assert.That(lazy, Is.Not.Null);
-            Assert.That(enumerable!.Count(), Is.EqualTo(2));
-            Assert.That(factory!(), Is.Not.Null);
-            Assert.That(lazy!.Value, Is.Not.Null.And.TypeOf<DebugLogger>());
+            await Assert.That(enumerable).IsNotNull();
+            await Assert.That(factory).IsNotNull();
+            await Assert.That(lazy).IsNotNull();
+            await Assert.That(enumerable!.Count()).IsEqualTo(2);
+            await Assert.That(factory!()).IsNotNull();
+            await Assert.That(lazy!.Value).IsTypeOf<DebugLogger>();
         }
     }
 
@@ -770,20 +819,20 @@ public class CoreAotCompatibilityTests
 
         for (var i = 0; i < taskCount; i++)
         {
-            tasks[i] = Task.Run(() =>
+            tasks[i] = Task.Run(async () =>
             {
                 try
                 {
                     for (var j = 0; j < 100; j++)
                     {
                         var logger = resolver.GetService<ILogger>();
-                        Assert.That(logger, Is.Not.Null);
+                        await Assert.That(logger).IsNotNull();
 
                         var services = resolver.GetServices<ILogger>();
-                        Assert.That(services, Is.Not.Null);
+                        await Assert.That(services).IsNotNull();
 
                         var hasRegistration = resolver.HasRegistration(typeof(ILogger));
-                        Assert.That(hasRegistration, Is.True);
+                        await Assert.That(hasRegistration).IsTrue();
                     }
                 }
                 catch (Exception ex)
@@ -798,57 +847,60 @@ public class CoreAotCompatibilityTests
 
         await Task.WhenAll(tasks);
 
-        Assert.That(exceptions, Is.Empty);
+        await Assert.That(exceptions).IsEmpty();
     }
 
     /// <summary>
     /// Test that null service type handling works with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void NullServiceTypeHandling_WorksWithAot()
+    public async Task NullServiceTypeHandling_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
 
         var nullService = resolver.GetService(null);
         var nullServices = resolver.GetServices(null);
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(nullService, Is.Null);
-            Assert.That(nullServices, Is.Not.Null);
-            Assert.That(resolver.HasRegistration(null), Is.False);
+            await Assert.That(nullService).IsNull();
+            await Assert.That(nullServices).IsNotNull();
+            await Assert.That(resolver.HasRegistration(null)).IsFalse();
         }
     }
 
     /// <summary>
     /// Test that dependency resolver extension methods work with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DependencyResolverExtensions_WorksWithAot()
+    public async Task DependencyResolverExtensions_WorksWithAot()
     {
         using var resolver = new ModernDependencyResolver();
 
-        Assert.That(resolver.HasRegistration(typeof(ITestInterface)), Is.False);
+        await Assert.That(resolver.HasRegistration(typeof(ITestInterface))).IsFalse();
 
         resolver.RegisterConstant<ITestInterface>(new TestImplementation());
-        Assert.That(resolver.HasRegistration(typeof(ITestInterface)), Is.True);
+        await Assert.That(resolver.HasRegistration(typeof(ITestInterface))).IsTrue();
 
         var service = resolver.GetService<ITestInterface>();
         var services = resolver.GetServices<ITestInterface>();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(service, Is.Not.Null.And.TypeOf<TestImplementation>());
-            Assert.That(services, Is.Not.Null);
-            Assert.That(services!.Count(), Is.EqualTo(1));
+            await Assert.That(service).IsTypeOf<TestImplementation>();
+            await Assert.That(services).IsNotNull();
+            await Assert.That(services!.Count()).IsEqualTo(1);
         }
     }
 
     /// <summary>
     /// Test that dependency injection with parameterized constructors works with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ParameterizedConstructors_WorkWithAot()
+    public async Task ParameterizedConstructors_WorkWithAot()
     {
         using var resolver = new ModernDependencyResolver();
         resolver.RegisterConstant<ILogger>(new DebugLogger());
@@ -857,19 +909,20 @@ public class CoreAotCompatibilityTests
 
         var service = resolver.GetService<ITestInterface>();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(service, Is.Not.Null.And.TypeOf<TestImplementationWithDependency>());
+            await Assert.That(service).IsTypeOf<TestImplementationWithDependency>();
             var typed = (TestImplementationWithDependency)service!;
-            Assert.That(typed.Logger, Is.Not.Null.And.TypeOf<DebugLogger>());
+            await Assert.That(typed.Logger).IsTypeOf<DebugLogger>();
         }
     }
 
     /// <summary>
     /// Test that service disposal works correctly with AOT.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ServiceDisposal_WorksWithAot()
+    public async Task ServiceDisposal_WorksWithAot()
     {
         var disposableService = new DisposableTestService();
         var resolver = new ModernDependencyResolver();
@@ -877,7 +930,7 @@ public class CoreAotCompatibilityTests
 
         resolver.Dispose();
 
-        Assert.That(disposableService.IsDisposed, Is.True);
+        await Assert.That(disposableService.IsDisposed).IsTrue();
     }
 
     private sealed class TestImplementation : ITestInterface

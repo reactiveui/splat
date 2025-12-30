@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2025 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -7,82 +7,82 @@ using Splat.Tests.Mocks;
 
 namespace Splat.Tests;
 
-/// <summary>
-/// Tests to confirm that the locator is working.
-/// </summary>
-[TestFixture]
-[NonParallelizable]
+[NotInParallel]
 public class LocatorSerialRegisterTests
 {
     /// <summary>
     /// Tests if the registrations are not empty on no external registrations.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InitializeSplat_RegistrationsNotEmptyNoRegistrations()
+    public async Task InitializeSplat_RegistrationsNotEmptyNoRegistrations()
     {
         // this is using the internal constructor
         var testLocator = new InternalLocator();
         var logManager = testLocator.Current.GetService(typeof(ILogManager));
         var logger = testLocator.Current.GetService(typeof(ILogger));
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(logManager, Is.Not.Null);
-            Assert.That(logger, Is.Not.Null);
+            await Assert.That(logManager).IsNotNull();
+            await Assert.That(logger).IsNotNull();
         }
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(logger, Is.TypeOf<DebugLogger>());
-            Assert.That(logManager, Is.TypeOf<DefaultLogManager>());
+            await Assert.That(logger).IsTypeOf<DebugLogger>();
+            await Assert.That(logManager).IsTypeOf<DefaultLogManager>();
         }
     }
 
     /// <summary>
     /// Tests that if we use a contract it returns null entries for that type.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InitializeSplat_ContractRegistrationsNullNoRegistration()
+    public async Task InitializeSplat_ContractRegistrationsNullNoRegistration()
     {
         var testLocator = new InternalLocator();
         var logManager = testLocator.Current.GetService(typeof(ILogManager), "test");
         var logger = testLocator.Current.GetService(typeof(ILogger), "test");
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(logManager, Is.Null);
-            Assert.That(logger, Is.Null);
+            await Assert.That(logManager).IsNull();
+            await Assert.That(logger).IsNull();
         }
     }
 
     /// <summary>
     /// Tests using the extension methods that the retrieving of the default InitializeSplat() still work.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void InitializeSplat_ExtensionMethodsNotNull()
+    public async Task InitializeSplat_ExtensionMethodsNotNull()
     {
         var testLocator = new InternalLocator();
         var logManager = testLocator.Current.GetService<ILogManager>();
         var logger = testLocator.Current.GetService<ILogger>();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(logManager, Is.Not.Null);
-            Assert.That(logger, Is.Not.Null);
+            await Assert.That(logManager).IsNotNull();
+            await Assert.That(logger).IsNotNull();
         }
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(logger, Is.TypeOf<DebugLogger>());
-            Assert.That(logManager, Is.TypeOf<DefaultLogManager>());
+            await Assert.That(logger).IsTypeOf<DebugLogger>();
+            await Assert.That(logManager).IsTypeOf<DefaultLogManager>();
         }
     }
 
     /// <summary>
     /// Tests to make sure that the locator's fire the resolver changed notifications.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WithoutSuppress_NotificationsHappen()
+    public async Task WithoutSuppress_NotificationsHappen()
     {
         var testLocator = new InternalLocator();
         var originalLocator = testLocator.Internal;
@@ -96,7 +96,7 @@ public class LocatorSerialRegisterTests
         testLocator.SetLocator(new ModernDependencyResolver());
 
         // 2 for the changes, 1 for the callback being immediately called.
-        Assert.That(numberNotifications, Is.EqualTo(3));
+        await Assert.That(numberNotifications).IsEqualTo(3);
 
         testLocator.SetLocator(originalLocator);
     }
@@ -104,8 +104,9 @@ public class LocatorSerialRegisterTests
     /// <summary>
     /// Tests to make sure that the locator's don't fire the resolver changed notifications if they are suppressed.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WithSuppression_NotificationsDontHappen()
+    public async Task WithSuppression_NotificationsDontHappen()
     {
         var testLocator = new InternalLocator();
         var originalLocator = testLocator.Internal;
@@ -120,7 +121,7 @@ public class LocatorSerialRegisterTests
             testLocator.SetLocator(new ModernDependencyResolver());
             testLocator.SetLocator(new ModernDependencyResolver());
 
-            Assert.That(numberNotifications, Is.Zero);
+            await Assert.That(numberNotifications).IsEqualTo(0);
 
             testLocator.SetLocator(originalLocator);
         }
@@ -129,8 +130,9 @@ public class LocatorSerialRegisterTests
     /// <summary>
     /// Tests to make sure that the locator's don't fire the resolver changed notifications if we use WithResolver().
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WithResolver_NotificationsDontHappen()
+    public async Task WithResolver_NotificationsDontHappen()
     {
         var numberNotifications = 0;
         void NotificationAction() => numberNotifications++;
@@ -144,14 +146,15 @@ public class LocatorSerialRegisterTests
         }
 
         // 1 due to the fact the callback is called when we register.
-        Assert.That(numberNotifications, Is.EqualTo(1));
+        await Assert.That(numberNotifications).IsEqualTo(1);
     }
 
     /// <summary>
     /// Tests to make sure that the locator's don't fire the resolver changed notifications if we use WithResolver().
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void WithResolver_NotificationsNotSuppressedHappen()
+    public async Task WithResolver_NotificationsNotSuppressedHappen()
     {
         var numberNotifications = 0;
         void NotificationAction() => numberNotifications++;
@@ -166,15 +169,16 @@ public class LocatorSerialRegisterTests
         // 1 due to the fact the callback is called when we register.
         // 2 for, 1 for change to resolver, 1 for change back
         // 2 for, 1 for change to resolver, 1 for change back
-        Assert.That(numberNotifications, Is.EqualTo(5));
+        await Assert.That(numberNotifications).IsEqualTo(5);
     }
 
     /// <summary>
     /// Tests to make sure that the unregister all functions correctly.
     /// This is a test when there are values registered.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ModernDependencyResolver_UnregisterAll_WithValuesWorks()
+    public async Task ModernDependencyResolver_UnregisterAll_WithValuesWorks()
     {
         var currentMutable = new ModernDependencyResolver();
 
@@ -193,15 +197,21 @@ public class LocatorSerialRegisterTests
 
         foreach (var testContract in testContracts)
         {
-            var items = currentMutable.GetServices<IDummyInterface>(testContract);
+            var items = currentMutable.GetServices<IDummyInterface>(testContract).ToList();
 
-            Assert.That(items, Is.EquivalentTo(new IDummyInterface[] { dummy1, dummy2, dummy3 }));
+            using (Assert.Multiple())
+            {
+                await Assert.That(items).Count().IsEqualTo(3);
+                await Assert.That(items).Contains(dummy1);
+                await Assert.That(items).Contains(dummy2);
+                await Assert.That(items).Contains(dummy3);
+            }
 
             currentMutable.UnregisterAll<IDummyInterface>(testContract);
 
-            items = currentMutable.GetServices<IDummyInterface>(testContract);
+            items = [.. currentMutable.GetServices<IDummyInterface>(testContract)];
 
-            Assert.That(items, Is.Empty);
+            await Assert.That(items).IsEmpty();
         }
     }
 
@@ -209,28 +219,30 @@ public class LocatorSerialRegisterTests
     /// Tests to make sure that the unregister all functions correctly.
     /// This is a test when there are values not registered.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ModernDependencyResolver_UnregisterAll_NoValuesWorks()
+    public async Task ModernDependencyResolver_UnregisterAll_NoValuesWorks()
     {
         var currentMutable = new ModernDependencyResolver();
 
         var items = currentMutable.GetServices<IDummyInterface>();
 
-        Assert.That(items, Is.Empty);
+        await Assert.That(items).IsEmpty();
 
         currentMutable.UnregisterAll<IDummyInterface>();
 
         items = currentMutable.GetServices<IDummyInterface>();
 
-        Assert.That(items, Is.Empty);
+        await Assert.That(items).IsEmpty();
     }
 
     /// <summary>
     /// Tests tomake sure that the unregister current functions correctly.
     /// This is a test when there are values registered.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ModernDependencyResolver_ConstantUnregisterCurrent_WithValuesWorks()
+    public async Task ModernDependencyResolver_ConstantUnregisterCurrent_WithValuesWorks()
     {
         var dummy1 = new DummyObjectClass1();
         var dummy2 = new DummyObjectClass2();
@@ -249,15 +261,26 @@ public class LocatorSerialRegisterTests
 
         foreach (var testContract in testContracts)
         {
-            var items = currentMutable.GetServices<IDummyInterface>(testContract);
+            var items = currentMutable.GetServices<IDummyInterface>(testContract).ToList();
 
-            Assert.That(items, Is.EquivalentTo(new IDummyInterface[] { dummy1, dummy2, dummy3 }));
+            using (Assert.Multiple())
+            {
+                await Assert.That(items).Count().IsEqualTo(3);
+                await Assert.That(items).Contains(dummy1);
+                await Assert.That(items).Contains(dummy2);
+                await Assert.That(items).Contains(dummy3);
+            }
 
             currentMutable.UnregisterCurrent<IDummyInterface>(testContract);
 
-            items = currentMutable.GetServices<IDummyInterface>(testContract);
+            items = [.. currentMutable.GetServices<IDummyInterface>(testContract)];
 
-            Assert.That(items, Is.EquivalentTo(new IDummyInterface[] { dummy1, dummy2 }));
+            using (Assert.Multiple())
+            {
+                await Assert.That(items).Count().IsEqualTo(2);
+                await Assert.That(items).Contains(dummy1);
+                await Assert.That(items).Contains(dummy2);
+            }
         }
     }
 
@@ -265,8 +288,9 @@ public class LocatorSerialRegisterTests
     /// Tests tomake sure that the unregister current functions correctly.
     /// This is a test when there are values registered.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ModernDependencyResolver_UnregisterCurrent_WithValuesWorks()
+    public async Task ModernDependencyResolver_UnregisterCurrent_WithValuesWorks()
     {
         var currentMutable = new ModernDependencyResolver();
 
@@ -283,13 +307,13 @@ public class LocatorSerialRegisterTests
         {
             var items = currentMutable.GetServices<IDummyInterface>(testContract).ToList();
 
-            Assert.That(items, Has.Count.EqualTo(3));
+            await Assert.That(items).Count().IsEqualTo(3);
 
             currentMutable.UnregisterCurrent<IDummyInterface>(testContract);
 
-            items = currentMutable.GetServices<IDummyInterface>(testContract).ToList();
+            items = [.. currentMutable.GetServices<IDummyInterface>(testContract)];
 
-            Assert.That(items, Has.Count.EqualTo(2));
+            await Assert.That(items).Count().IsEqualTo(2);
         }
     }
 
@@ -297,27 +321,29 @@ public class LocatorSerialRegisterTests
     /// Tests to make sure that the unregister all functions correctly.
     /// This is a test when there are values not registered.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ModernDependencyResolver_UnregisterCurrent_NoValuesWorks()
+    public async Task ModernDependencyResolver_UnregisterCurrent_NoValuesWorks()
     {
         var currentMutable = new ModernDependencyResolver();
         var items = currentMutable.GetServices<IDummyInterface>();
 
-        Assert.That(items, Is.Empty);
+        await Assert.That(items).IsEmpty();
 
         currentMutable.UnregisterCurrent<IDummyInterface>();
 
         items = currentMutable.GetServices<IDummyInterface>();
 
-        Assert.That(items, Is.Empty);
+        await Assert.That(items).IsEmpty();
     }
 
     /// <summary>
     /// Tests to make sure that the unregister all functions correctly.
     /// This is a test when there are values not registered.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void FuncDependencyResolver_UnregisterAll()
+    public async Task FuncDependencyResolver_UnregisterAll()
     {
         var unregisterAllCalled = false;
         Type? type = null;
@@ -333,21 +359,21 @@ public class LocatorSerialRegisterTests
             });
 
         currentMutable.UnregisterAll<IDummyInterface>();
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
             // 'type' is a System.Type; compare to typeof(...)
-            Assert.That(type, Is.EqualTo(typeof(IDummyInterface)));
-            Assert.That(contract, Is.Null);
-            Assert.That(unregisterAllCalled, Is.True);
+            await Assert.That(type).IsEqualTo(typeof(IDummyInterface));
+            await Assert.That(contract).IsNull();
+            await Assert.That(unregisterAllCalled).IsTrue();
         }
 
         unregisterAllCalled = false;
         currentMutable.UnregisterAll<IEnableLogger>("test");
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(type, Is.EqualTo(typeof(IEnableLogger)));
-            Assert.That(contract, Is.EqualTo("test"));
-            Assert.That(unregisterAllCalled, Is.True);
+            await Assert.That(type).IsEqualTo(typeof(IEnableLogger));
+            await Assert.That(contract).IsEqualTo("test");
+            await Assert.That(unregisterAllCalled).IsTrue();
         }
     }
 
@@ -355,8 +381,9 @@ public class LocatorSerialRegisterTests
     /// Tests tomake sure that the unregister current functions correctly.
     /// This is a test when there are values registered.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void FuncDependencyResolver_UnregisterCurrent()
+    public async Task FuncDependencyResolver_UnregisterCurrent()
     {
         var unregisterAllCalled = false;
         Type? type = null;
@@ -372,21 +399,21 @@ public class LocatorSerialRegisterTests
             });
 
         currentMutable.UnregisterCurrent<IDummyInterface>();
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
             // 'type' is a System.Type; compare to typeof(...)
-            Assert.That(type, Is.EqualTo(typeof(IDummyInterface)));
-            Assert.That(contract, Is.Null);
-            Assert.That(unregisterAllCalled, Is.True);
+            await Assert.That(type).IsEqualTo(typeof(IDummyInterface));
+            await Assert.That(contract).IsNull();
+            await Assert.That(unregisterAllCalled).IsTrue();
         }
 
         unregisterAllCalled = false;
         currentMutable.UnregisterCurrent<IEnableLogger>("test");
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(type, Is.EqualTo(typeof(IEnableLogger)));
-            Assert.That(contract, Is.EqualTo("test"));
-            Assert.That(unregisterAllCalled, Is.True);
+            await Assert.That(type).IsEqualTo(typeof(IEnableLogger));
+            await Assert.That(contract).IsEqualTo("test");
+            await Assert.That(unregisterAllCalled).IsTrue();
         }
     }
 }

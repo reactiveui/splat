@@ -13,6 +13,7 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring;
 public static class ExceptionlessFeatureUsageTrackingSessionTests
 {
     /// <inheritdoc />>
+    [InheritsTests]
     public sealed class ConstructorTests : BaseFeatureUsageTrackingTests.BaseConstructorTests<ExceptionlessFeatureUsageTrackingSession>
     {
         /// <inheritdoc/>
@@ -20,6 +21,7 @@ public static class ExceptionlessFeatureUsageTrackingSessionTests
     }
 
     /// <inheritdoc />>
+    [InheritsTests]
     public sealed class SubFeatureMethodTests : BaseFeatureUsageTrackingTests.BaseSubFeatureMethodTests<ExceptionlessFeatureUsageTrackingSession>
     {
         /// <inheritdoc/>

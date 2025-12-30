@@ -1,24 +1,24 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2025 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Globalization;
+
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Exceptions;
 using Serilog.Formatting.Display;
+
+using Splat.Common.Test;
 using Splat.Serilog;
 using Splat.Tests.Mocks;
 
 namespace Splat.Tests.Logging;
 
-/// <summary>
-/// Tests that verify the <see cref="Logger"/> class.
-/// </summary>
-[TestFixture]
-[NonParallelizable] // touches global static state (AppLocator, Serilog.Log.Logger)
+[NotInParallel] // touches global static state (AppLocator, Serilog.Log.Logger)
+[InheritsTests]
 public class SerilogLoggerTests : FullLoggerTestBase
 {
     private static readonly char[] _newLine = Environment.NewLine.ToCharArray();
@@ -47,65 +47,70 @@ public class SerilogLoggerTests : FullLoggerTestBase
         { LogEventLevel.Fatal, LogLevel.Fatal },
     };
 
+    private AppLocatorScope? _appLocatorScope;
+
+    /// <summary>
+    /// Setup method to initialize AppLocatorScope before each test.
+    /// </summary>
+    [Before(HookType.Test)]
+    public void SetUpAppLocatorScope()
+    {
+        _appLocatorScope = new AppLocatorScope();
+    }
+
+    /// <summary>
+    /// Teardown method to dispose AppLocatorScope after each test.
+    /// </summary>
+    [After(HookType.Test)]
+    public void TearDownAppLocatorScope()
+    {
+        _appLocatorScope?.Dispose();
+        _appLocatorScope = null;
+    }
+
     /// <summary>
     /// Test to make sure the calling `UseSerilogWithWrappingFullLogger` logs.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Configuring_With_Static_Log_Should_Write_Message()
+    public async Task Configuring_With_Static_Log_Should_Write_Message()
     {
-        var originalLocator = AppLocator.InternalLocator;
-        try
+        var (seriLogger, target) = CreateSerilogger(LogLevel.Debug);
+        Log.Logger = seriLogger;
+
+        Locator.CurrentMutable.UseSerilogFullLogger();
+
+        await Assert.That(target.Logs).IsEmpty();
+
+        IEnableLogger logger = null!;
+        logger.Log().Debug<DummyObjectClass2>("This is a test.");
+
+        using (Assert.Multiple())
         {
-            AppLocator.InternalLocator = new();
-            var (seriLogger, target) = CreateSerilogger(LogLevel.Debug);
-            Log.Logger = seriLogger;
-
-            Locator.CurrentMutable.UseSerilogFullLogger();
-
-            Assert.That(target.Logs, Is.Empty);
-
-            IEnableLogger logger = null!;
-            logger.Log().Debug<DummyObjectClass2>("This is a test.");
-
-            using (Assert.EnterMultipleScope())
-            {
-                Assert.That(target.Logs, Has.Count.EqualTo(1));
-                Assert.That(target.Logs.Last().message.Trim(_newLine).Trim(), Is.EqualTo("This is a test."));
-            }
-        }
-        finally
-        {
-            AppLocator.InternalLocator = originalLocator;
+            await Assert.That(target.Logs).Count().IsEqualTo(1);
+            await Assert.That(target.Logs.Last().message.Trim(_newLine).Trim()).IsEqualTo("This is a test.");
         }
     }
 
     /// <summary>
     /// Test to make calling `UseSerilogWithWrappingFullLogger(Serilog.ILogger)` logs.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void Configuring_With_PreConfigured_Log_Should_Write_Message()
+    public async Task Configuring_With_PreConfigured_Log_Should_Write_Message()
     {
-        var originalLocator = AppLocator.InternalLocator;
-        try
+        var (seriLogger, target) = CreateSerilogger(LogLevel.Debug);
+        AppLocator.CurrentMutable.UseSerilogFullLogger(seriLogger);
+
+        await Assert.That(target.Logs).IsEmpty();
+
+        IEnableLogger logger = null!;
+        logger.Log().Debug<DummyObjectClass2>("This is a test.");
+
+        using (Assert.Multiple())
         {
-            AppLocator.InternalLocator = new();
-            var (seriLogger, target) = CreateSerilogger(LogLevel.Debug);
-            AppLocator.CurrentMutable.UseSerilogFullLogger(seriLogger);
-
-            Assert.That(target.Logs, Is.Empty);
-
-            IEnableLogger logger = null!;
-            logger.Log().Debug<DummyObjectClass2>("This is a test.");
-
-            using (Assert.EnterMultipleScope())
-            {
-                Assert.That(target.Logs, Has.Count.EqualTo(1));
-                Assert.That(target.Logs.Last().message.Trim(_newLine).Trim(), Is.EqualTo("This is a test."));
-            }
-        }
-        finally
-        {
-            AppLocator.InternalLocator = originalLocator;
+            await Assert.That(target.Logs).Count().IsEqualTo(1);
+            await Assert.That(target.Logs.Last().message.Trim(_newLine).Trim()).IsEqualTo("This is a test.");
         }
     }
 

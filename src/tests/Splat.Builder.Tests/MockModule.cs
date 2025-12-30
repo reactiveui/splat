@@ -3,15 +3,14 @@
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-namespace Splat.Builder.Tests
+namespace Splat.Builder.Tests;
+
+internal sealed class MockModule : IModule
 {
-    internal sealed class MockModule : IModule
+    public void Configure(IMutableDependencyResolver resolver)
     {
-        public void Configure(IMutableDependencyResolver resolver)
-        {
-            // This is a mock module for testing purposes.
-            // It does not need to do anything specific.
-            // In a real scenario, you would register services here.
-        }
+        // This is a mock module for testing purposes.
+        // It does not need to do anything specific.
+        // In a real scenario, you would register services here.
     }
 }

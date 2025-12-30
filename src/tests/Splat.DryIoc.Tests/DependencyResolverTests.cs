@@ -4,17 +4,15 @@
 // See the LICENSE file in the project root for full license information.
 
 using DryIoc;
+
 using Splat.Common.Test;
 
 namespace Splat.DryIoc.Tests;
 
-/// <summary>
-/// Tests to show the <see cref="DryIocDependencyResolver"/> works correctly.
-/// </summary>
-[TestFixture]
+[NotInParallel]
 public class DependencyResolverTests
 {
-    /// <summary>
+/// <summary>
     /// Shoulds the resolve nulls.
     /// </summary>
     [Test] //// (Ignore("Further investigation required"))]
@@ -89,8 +87,9 @@ public class DependencyResolverTests
     /// <summary>
     /// Should resolve the views.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DryIocDependencyResolver_Should_Resolve_Views()
+    public async Task DryIocDependencyResolver_Should_Resolve_Views()
     {
         var container = new Container();
         container.Register<IViewFor<ViewModelOne>, ViewOne>();
@@ -100,21 +99,22 @@ public class DependencyResolverTests
         var viewOne = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
         var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
-        Assert.That(viewOne, Is.Not.Null);
-        using (Assert.EnterMultipleScope())
+        await Assert.That(viewOne).IsNotNull();
+        using (Assert.Multiple())
         {
-            Assert.That(viewOne, Is.TypeOf<ViewOne>());
-            Assert.That(viewTwo, Is.Not.Null);
+            await Assert.That(viewOne).IsTypeOf<ViewOne>();
+            await Assert.That(viewTwo).IsNotNull();
         }
 
-        Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
+        await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
     }
 
     /// <summary>
     /// Should resolve the views.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DryIocDependencyResolver_Should_Resolve_Named_View()
+    public async Task DryIocDependencyResolver_Should_Resolve_Named_View()
     {
         var container = new Container();
         container.Register<IViewFor<ViewModelTwo>, ViewTwo>(serviceKey: "Other");
@@ -122,15 +122,16 @@ public class DependencyResolverTests
 
         var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>), "Other");
 
-        Assert.That(viewTwo, Is.Not.Null);
-        Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
+        await Assert.That(viewTwo).IsNotNull();
+        await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
     }
 
     /// <summary>
     /// Should resolve the view models.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DryIocDependencyResolver_Should_Resolve_View_Models()
+    public async Task DryIocDependencyResolver_Should_Resolve_View_Models()
     {
         var container = new Container();
         container.Register<ViewModelOne>();
@@ -142,18 +143,19 @@ public class DependencyResolverTests
         var vmOne = AppLocator.Current.GetService<ViewModelOne>();
         var vmTwo = AppLocator.Current.GetService<ViewModelTwo>();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(vmOne, Is.Not.Null);
-            Assert.That(vmTwo, Is.Not.Null);
+            await Assert.That(vmOne).IsNotNull();
+            await Assert.That(vmTwo).IsNotNull();
         }
     }
 
     /// <summary>
     /// Should resolve the screen.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DryIocDependencyResolver_Should_Resolve_Screen()
+    public async Task DryIocDependencyResolver_Should_Resolve_Screen()
     {
         var builder = new Container();
         builder.Register<IScreen, MockScreen>(Reuse.Singleton);
@@ -161,76 +163,80 @@ public class DependencyResolverTests
 
         var screen = AppLocator.Current.GetService<IScreen>();
 
-        Assert.That(screen, Is.Not.Null);
-        Assert.That(screen, Is.TypeOf<MockScreen>());
+        await Assert.That(screen).IsNotNull();
+        await Assert.That(screen).IsTypeOf<MockScreen>();
     }
 
     /// <summary>
     /// Should unregister the screen.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DryIocDependencyResolver_Should_UnregisterCurrent_Screen()
+    public async Task DryIocDependencyResolver_Should_UnregisterCurrent_Screen()
     {
         var builder = new Container();
         builder.Register<IScreen, MockScreen>(Reuse.Singleton);
         builder.UseDryIocDependencyResolver();
 
-        Assert.That(AppLocator.Current.GetService<IScreen>(), Is.Not.Null);
+        await Assert.That(AppLocator.Current.GetService<IScreen>()).IsNotNull();
 
         AppLocator.CurrentMutable.UnregisterCurrent(typeof(IScreen));
 
-        Assert.That(AppLocator.Current.GetService<IScreen>(), Is.Null);
+        await Assert.That(AppLocator.Current.GetService<IScreen>()).IsNull();
     }
 
     /// <summary>
     /// Should unregister the screen.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DryIocDependencyResolver_Should_UnregisterCurrent_Screen_With_Contract()
+    public async Task DryIocDependencyResolver_Should_UnregisterCurrent_Screen_With_Contract()
     {
         var builder = new Container();
         builder.Register<IScreen, MockScreen>(Reuse.Singleton, serviceKey: nameof(MockScreen));
         builder.UseDryIocDependencyResolver();
 
-        Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen)), Is.Not.Null);
+        await Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen))).IsNotNull();
 
         AppLocator.CurrentMutable.UnregisterCurrent(typeof(IScreen), nameof(MockScreen));
 
-        Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen)), Is.Null);
+        await Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen))).IsNull();
     }
 
     /// <summary>
     /// Should unregister the screen.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DryIocDependencyResolver_Should_UnregisterAll_Screen()
+    public async Task DryIocDependencyResolver_Should_UnregisterAll_Screen()
     {
         var builder = new Container();
         builder.Register<IScreen, MockScreen>(Reuse.Singleton);
         builder.UseDryIocDependencyResolver();
 
-        Assert.That(AppLocator.Current.GetService<IScreen>(), Is.Not.Null);
+        await Assert.That(AppLocator.Current.GetService<IScreen>()).IsNotNull();
 
         AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen));
 
-        Assert.That(AppLocator.Current.GetService<IScreen>(), Is.Null);
+        await Assert.That(AppLocator.Current.GetService<IScreen>()).IsNull();
     }
 
     /// <summary>
     /// Should unregister the screen.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DryIocDependencyResolver_Should_UnregisterAll_Screen_With_Contract()
+    public async Task DryIocDependencyResolver_Should_UnregisterAll_Screen_With_Contract()
     {
         var builder = new Container();
         builder.Register<IScreen, MockScreen>(Reuse.Singleton, serviceKey: nameof(MockScreen));
         builder.UseDryIocDependencyResolver();
 
-        Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen)), Is.Not.Null);
+        await Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen))).IsNotNull();
 
         AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen), nameof(MockScreen));
 
-        Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen)), Is.Null);
+        await Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen))).IsNull();
     }
 
     /// <summary>
@@ -252,8 +258,9 @@ public class DependencyResolverTests
     /// <remarks>
     /// Introduced for Splat #331.
     /// </remarks>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DryIocDependencyResolver_Should_ReturnRegisteredLogger()
+    public async Task DryIocDependencyResolver_Should_ReturnRegisteredLogger()
     {
         var c = new Container();
         c.UseDryIocDependencyResolver();
@@ -263,7 +270,7 @@ public class DependencyResolverTests
 
         var d = AppLocator.Current.GetService<ILogManager>();
 
-        Assert.That(d, Is.TypeOf<FuncLogManager>());
+        await Assert.That(d).IsTypeOf<FuncLogManager>();
     }
 
     /// <summary>
@@ -272,8 +279,9 @@ public class DependencyResolverTests
     /// <remarks>
     /// Introduced for Splat #331.
     /// </remarks>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DryIocDependencyResolver_PreInit_Should_ReturnRegisteredLogger()
+    public async Task DryIocDependencyResolver_PreInit_Should_ReturnRegisteredLogger()
     {
         var c = new Container();
         c.RegisterInstance<ILogManager>(
@@ -282,14 +290,15 @@ public class DependencyResolverTests
 
         var d = AppLocator.Current.GetService<ILogManager>();
 
-        Assert.That(d, Is.TypeOf<FuncLogManager>());
+        await Assert.That(d).IsTypeOf<FuncLogManager>();
     }
 
     /// <summary>
     /// DryIoc dependency resolver should resolve after duplicate keyed registratoion.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DryIocDependencyResolver_Should_Resolve_AfterDuplicateKeyedRegistration()
+    public async Task DryIocDependencyResolver_Should_Resolve_AfterDuplicateKeyedRegistration()
     {
         var container = new Container();
         container.UseDryIocDependencyResolver();
@@ -298,14 +307,15 @@ public class DependencyResolverTests
 
         var vmOne = AppLocator.Current.GetService<ViewModelOne>("ViewModelOne");
 
-        Assert.That(vmOne, Is.Not.Null);
+        await Assert.That(vmOne).IsNotNull();
     }
 
     /// <summary>
     /// DryIoc dependency resolver should create a resolved object only once when resolving.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DryIocDependencyResolver_Should_Create_Once_When_Resolving()
+    public async Task DryIocDependencyResolver_Should_Create_Once_When_Resolving()
     {
         var container = new Container();
         var count = 0;
@@ -319,13 +329,13 @@ public class DependencyResolverTests
 
         // Imitate a call to Locator.Current.GetService<ViewModelOne>()
         var vms = resolver.GetServices(typeof(ViewModelOne));
-        Assert.That(count, Is.EqualTo(1));
+        await Assert.That(count).IsEqualTo(1);
 
         var vmOne = vms.LastOrDefault();
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(vmOne, Is.Not.Null);
-            Assert.That(count, Is.EqualTo(1));
+            await Assert.That(vmOne).IsNotNull();
+            await Assert.That(count).IsEqualTo(1);
         }
     }
 }

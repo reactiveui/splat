@@ -153,7 +153,7 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
             // null check here because mono doesn't appear to follow the MSDN documentation
             // as of July 2019.
             return e.Types is not null
-                ? e.Types.Where(x => x is not null).Select(x => x!).ToArray()
+                ? [.. e.Types.Where(x => x is not null).Select(x => x!)]
                 : [];
         }
     }

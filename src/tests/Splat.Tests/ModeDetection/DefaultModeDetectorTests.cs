@@ -5,17 +5,14 @@
 
 namespace Splat.Tests.ModeDetection;
 
-/// <summary>
-/// Unit Tests for the DefaultModeDetector class.
-/// </summary>
-[TestFixture]
 public class DefaultModeDetectorTests
 {
     /// <summary>
     /// Test that DefaultModeDetector can detect unit test runner.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DefaultModeDetector_CanDetectUnitTestRunner()
+    public async Task DefaultModeDetector_CanDetectUnitTestRunner()
     {
         // Arrange
         var detector = new DefaultModeDetector();
@@ -24,63 +21,62 @@ public class DefaultModeDetectorTests
         var result = detector.InUnitTestRunner();
 
         // Assert
-        // Since we're running under NUnit, this should return true
-        using (Assert.EnterMultipleScope())
+        // Since we're running under TUnit, this should return true
+        using (Assert.Multiple())
         {
-            Assert.That(result.HasValue, Is.True);
-            Assert.That(result!.Value, Is.True);
+            await Assert.That(result.HasValue).IsTrue();
+            await Assert.That(result!.Value).IsTrue();
         }
     }
 
     /// <summary>
     /// Test that DefaultModeDetector implements IModeDetector.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DefaultModeDetector_ImplementsIModeDetector()
+    public async Task DefaultModeDetector_ImplementsIModeDetector()
     {
         // Arrange & Act
         var detector = new DefaultModeDetector();
 
         // Assert
-        Assert.That(detector, Is.AssignableTo<IModeDetector>());
+        await Assert.That(detector).IsAssignableTo<IModeDetector>();
     }
 
     /// <summary>
     /// Test that DefaultModeDetector implements IEnableLogger.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DefaultModeDetector_ImplementsIEnableLogger()
+    public async Task DefaultModeDetector_ImplementsIEnableLogger()
     {
         // Arrange & Act
         var detector = new DefaultModeDetector();
 
         // Assert
-        Assert.That(detector, Is.AssignableTo<IEnableLogger>());
+        await Assert.That(detector).IsAssignableTo<IEnableLogger>();
     }
 
     /// <summary>
     /// Test that DefaultModeDetector handles exceptions gracefully.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DefaultModeDetector_HandlesExceptionsGracefully()
+    public async Task DefaultModeDetector_HandlesExceptionsGracefully()
     {
         // Arrange
         var detector = new DefaultModeDetector();
 
         // Act & Assert - should not throw
-        Assert.DoesNotThrow(() => detector.InUnitTestRunner());
-
-        var result = detector.InUnitTestRunner();
-
-        // Should return a value (either true or false) or null if exception occurred
-        Assert.That(result, Is.Null.Or.True.Or.False);
+        await Assert.That(() => detector.InUnitTestRunner()).ThrowsNothing();
     }
 
     /// <summary>
     /// Test that DefaultModeDetector returns consistent results.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DefaultModeDetector_ReturnsConsistentResults()
+    public async Task DefaultModeDetector_ReturnsConsistentResults()
     {
         // Arrange
         var detector = new DefaultModeDetector();
@@ -91,10 +87,10 @@ public class DefaultModeDetectorTests
         var result3 = detector.InUnitTestRunner();
 
         // Assert - Should return consistent results
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(result2, Is.EqualTo(result1));
-            Assert.That(result3, Is.EqualTo(result2));
+            await Assert.That(result2).IsEqualTo(result1);
+            await Assert.That(result3).IsEqualTo(result2);
         }
     }
 
@@ -105,12 +101,14 @@ public class DefaultModeDetectorTests
     /// used true-value representations.
     /// </summary>
     /// <param name="value">The value to set for the DOTNET_RUNNING_IN_TEST environment variable to test detection logic.</param>
-    [TestCase("1")]
-    [TestCase("true")]
-    [TestCase("TRUE")]
-    [TestCase("yes")]
-    [TestCase("YES")]
-    public void DefaultModeDetector_ExplicitEnvVar_DotnetRunningInTest_TrueVariants(string value)
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    [Arguments("1")]
+    [Arguments("true")]
+    [Arguments("TRUE")]
+    [Arguments("yes")]
+    [Arguments("YES")]
+    public async Task DefaultModeDetector_ExplicitEnvVar_DotnetRunningInTest_TrueVariants(string value)
     {
         // Arrange
         var detector = new DefaultModeDetector();
@@ -127,10 +125,10 @@ public class DefaultModeDetectorTests
             var result = detector.InUnitTestRunner();
 
             // Assert
-            using (Assert.EnterMultipleScope())
+            using (Assert.Multiple())
             {
-                Assert.That(result.HasValue, Is.True);
-                Assert.That(result!.Value, Is.True);
+                await Assert.That(result.HasValue).IsTrue();
+                await Assert.That(result!.Value).IsTrue();
             }
         }
         finally
@@ -146,8 +144,9 @@ public class DefaultModeDetectorTests
     /// <summary>
     /// Verifies explicit AppContext-based detection using DOTNET_RUNNING_IN_TEST data.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DefaultModeDetector_AppContext_DotnetRunningInTest_ReturnsTrue()
+    public async Task DefaultModeDetector_AppContext_DotnetRunningInTest_ReturnsTrue()
     {
         // Arrange
         var detector = new DefaultModeDetector();
@@ -164,10 +163,10 @@ public class DefaultModeDetectorTests
             var result = detector.InUnitTestRunner();
 
             // Assert
-            using (Assert.EnterMultipleScope())
+            using (Assert.Multiple())
             {
-                Assert.That(result.HasValue, Is.True);
-                Assert.That(result!.Value, Is.True);
+                await Assert.That(result.HasValue).IsTrue();
+                await Assert.That(result!.Value).IsTrue();
             }
         }
         finally
@@ -182,8 +181,9 @@ public class DefaultModeDetectorTests
     /// <summary>
     /// Verifies detection via exact test runner environment variables.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DefaultModeDetector_ExactEnvVar_NUnitTest_ReturnsTrue()
+    public async Task DefaultModeDetector_ExactEnvVar_NUnitTest_ReturnsTrue()
     {
         // Arrange
         var detector = new DefaultModeDetector();
@@ -202,10 +202,10 @@ public class DefaultModeDetectorTests
             var result = detector.InUnitTestRunner();
 
             // Assert
-            using (Assert.EnterMultipleScope())
+            using (Assert.Multiple())
             {
-                Assert.That(result.HasValue, Is.True);
-                Assert.That(result!.Value, Is.True);
+                await Assert.That(result.HasValue).IsTrue();
+                await Assert.That(result!.Value).IsTrue();
             }
         }
         finally
@@ -221,8 +221,9 @@ public class DefaultModeDetectorTests
     /// <summary>
     /// Verifies detection via environment variable prefix signals (e.g., VSTEST_*, XUNIT_*).
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DefaultModeDetector_EnvPrefix_VSTEST_ReturnsTrue()
+    public async Task DefaultModeDetector_EnvPrefix_VSTEST_ReturnsTrue()
     {
         // Arrange
         var detector = new DefaultModeDetector();
@@ -242,10 +243,10 @@ public class DefaultModeDetectorTests
             var result = detector.InUnitTestRunner();
 
             // Assert
-            using (Assert.EnterMultipleScope())
+            using (Assert.Multiple())
             {
-                Assert.That(result.HasValue, Is.True);
-                Assert.That(result!.Value, Is.True);
+                await Assert.That(result.HasValue).IsTrue();
+                await Assert.That(result!.Value).IsTrue();
             }
         }
         finally
@@ -261,8 +262,9 @@ public class DefaultModeDetectorTests
     /// Verifies that DefaultModeDetector can detect Microsoft Testing Platform (MTP) via assembly scan.
     /// This test ensures MTP is recognized as a unit test framework.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DefaultModeDetector_DetectsMicrosoftTestingPlatform()
+    public async Task DefaultModeDetector_DetectsMicrosoftTestingPlatform()
     {
         // Arrange
         var detector = new DefaultModeDetector();
@@ -286,21 +288,17 @@ public class DefaultModeDetectorTests
 
         // Assert - When running under Microsoft Testing Platform, should return true
         // Only enforce this when the Microsoft.Testing.Platform assembly is actually loaded.
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
             if (hasMTPAssembly)
             {
-                Assert.That(result.HasValue, Is.True);
-                Assert.That(
-                    result!.Value,
-                    Is.True,
-                    "ModeDetector should detect Microsoft.Testing.Platform assemblies when they are loaded");
+                await Assert.That(result.HasValue).IsTrue();
+                await Assert.That(result!.Value).IsTrue();
             }
             else
             {
-                // When Microsoft.Testing.Platform is not loaded (e.g., running under NUnit only),
+                // When Microsoft.Testing.Platform is not loaded (e.g., running under TUnit only),
                 // skip the MTP-specific assertion to avoid spurious failures.
-                Assert.Pass("Microsoft.Testing.Platform assembly not loaded; skipping MTP-specific detection assertion.");
             }
         }
     }
@@ -309,8 +307,9 @@ public class DefaultModeDetectorTests
     /// Verifies that the Microsoft.Testing.Platform assembly marker is recognized.
     /// This is a sanity check that the constant is correctly added to the markers array.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void DefaultModeDetector_IncludesMTPAssemblyMarker()
+    public async Task DefaultModeDetector_IncludesMTPAssemblyMarker()
     {
         // Arrange & Act
         // Check if any loaded assemblies contain Microsoft.Testing.Platform
@@ -323,21 +322,15 @@ public class DefaultModeDetectorTests
         var result = detector.InUnitTestRunner();
 
         // Assert
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
             if (hasMTPAssembly)
             {
-                Assert.That(
-                    result,
-                    Is.True,
-                    "When Microsoft.Testing.Platform assembly is loaded, ModeDetector should detect it");
+                await Assert.That(result).IsTrue();
             }
 
             // Ensure this test only passes if the MTP assembly is present or another test framework is detected
-            Assert.That(
-                hasMTPAssembly || (result.HasValue && result.Value),
-                Is.True,
-                "Test should only pass when either Microsoft.Testing.Platform is loaded or another unit test framework is detected.");
+            await Assert.That(hasMTPAssembly || (result.HasValue && result.Value)).IsTrue();
         }
     }
 }

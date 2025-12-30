@@ -10,17 +10,15 @@ using Splat.NLog;
 
 namespace Splat.Microsoft.Extensions.DependencyInjection.Tests;
 
-/// <summary>
-/// Tests to show the <see cref="MicrosoftDependencyResolver"/> works correctly.
-/// </summary>
-[TestFixture]
+[NotInParallel]
 public class DependencyResolverTests
 {
-    /// <summary>
+/// <summary>
     /// Should resolve views.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void MicrosoftDependencyResolver_Should_Resolve_Views()
+    public async Task MicrosoftDependencyResolver_Should_Resolve_Views()
     {
         var wrapper = new ContainerWrapper();
         var services = wrapper.ServiceCollection;
@@ -32,21 +30,22 @@ public class DependencyResolverTests
         var viewOne = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
         var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
-        Assert.That(viewOne, Is.Not.Null);
-        using (Assert.EnterMultipleScope())
+        await Assert.That(viewOne).IsNotNull();
+        using (Assert.Multiple())
         {
-            Assert.That(viewOne, Is.TypeOf<ViewOne>());
-            Assert.That(viewTwo, Is.Not.Null);
+            await Assert.That(viewOne).IsTypeOf<ViewOne>();
+            await Assert.That(viewTwo).IsNotNull();
         }
 
-        Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
+        await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
     }
 
     /// <summary>
     /// Should resolve views.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void MicrosoftDependencyResolver_Should_Resolve_Named_View()
+    public async Task MicrosoftDependencyResolver_Should_Resolve_Named_View()
     {
         var wrapper = new ContainerWrapper();
         var services = wrapper.ServiceCollection;
@@ -56,15 +55,16 @@ public class DependencyResolverTests
 
         var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
 
-        Assert.That(viewTwo, Is.Not.Null);
-        Assert.That(viewTwo, Is.TypeOf<ViewTwo>());
+        await Assert.That(viewTwo).IsNotNull();
+        await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
     }
 
     /// <summary>
     /// Should resolve view models.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void MicrosoftDependencyResolver_Should_Resolve_View_Models()
+    public async Task MicrosoftDependencyResolver_Should_Resolve_View_Models()
     {
         var wrapper = new ContainerWrapper();
         var services = wrapper.ServiceCollection;
@@ -76,18 +76,19 @@ public class DependencyResolverTests
         var vmOne = AppLocator.Current.GetService<ViewModelOne>();
         var vmTwo = AppLocator.Current.GetService<ViewModelTwo>();
 
-        using (Assert.EnterMultipleScope())
+        using (Assert.Multiple())
         {
-            Assert.That(vmOne, Is.Not.Null);
-            Assert.That(vmTwo, Is.Not.Null);
+            await Assert.That(vmOne).IsNotNull();
+            await Assert.That(vmTwo).IsNotNull();
         }
     }
 
     /// <summary>
     /// Should resolve screen.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void MicrosoftDependencyResolver_Should_Resolve_Screen()
+    public async Task MicrosoftDependencyResolver_Should_Resolve_Screen()
     {
         var wrapper = new ContainerWrapper();
         var services = wrapper.ServiceCollection;
@@ -97,27 +98,28 @@ public class DependencyResolverTests
 
         var screen = AppLocator.Current.GetService<IScreen>();
 
-        Assert.That(screen, Is.Not.Null);
-        Assert.That(screen, Is.TypeOf<MockScreen>());
+        await Assert.That(screen).IsNotNull();
+        await Assert.That(screen).IsTypeOf<MockScreen>();
     }
 
     /// <summary>
     /// Should unregister all.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void MicrosoftDependencyResolver_Should_UnregisterAll()
+    public async Task MicrosoftDependencyResolver_Should_UnregisterAll()
     {
         var wrapper = new ContainerWrapper();
         var services = wrapper.ServiceCollection;
 
         services.AddSingleton<IScreen>(new MockScreen());
 
-        Assert.That(AppLocator.CurrentMutable.HasRegistration(typeof(IScreen)), Is.True);
+        await Assert.That(AppLocator.CurrentMutable.HasRegistration(typeof(IScreen))).IsTrue();
 
         AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen));
 
         var result = AppLocator.Current.GetService<IScreen>();
-        Assert.That(result, Is.Null);
+        await Assert.That(result).IsNull();
     }
 
     /// <summary>
@@ -150,8 +152,9 @@ public class DependencyResolverTests
     /// Tests to ensure NLog registers correctly with different service locators.
     /// Based on issue reported in #553.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public void ILogManager_Resolvable()
+    public async Task ILogManager_Resolvable()
     {
         var wrapper = new ContainerWrapper();
         var services = wrapper.ServiceCollection;
@@ -164,9 +167,9 @@ public class DependencyResolverTests
 
         // Get the ILogManager instance.
         var lm = AppLocator.Current.GetService<ILogManager>();
-        Assert.That(lm, Is.Not.Null);
+        await Assert.That(lm).IsNotNull();
 
         var mgr = lm!.GetLogger<NLogLogger>();
-        Assert.That(mgr, Is.Not.Null);
+        await Assert.That(mgr).IsNotNull();
     }
 }

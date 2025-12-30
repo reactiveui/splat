@@ -17,6 +17,7 @@ namespace Splat.Tests.Logging.WrappingFullLoggers;
 /// <summary>
 /// Unit tests for the Exceptionless Logger.
 /// </summary>
+[InheritsTests]
 public class ExceptionlessLoggerTests : FullLoggerTestBase
 {
     private static readonly Dictionary<global::Exceptionless.Logging.LogLevel, LogLevel> _exceptionless2Splat = new()
