@@ -143,7 +143,11 @@ Locator.CurrentMutable.RegisterLazySingleton(() => new LazyToaster(), typeof(ITo
 
 ### The Default Dependency Resolver (v19+)
 
-Starting with v19, Splat provides two high-performance resolver implementations optimized for AOT compilation: **GlobalGenericFirstDependencyResolver** and **InstanceGenericFirstDependencyResolver**. Both deliver significantly better performance than the legacy ModernDependencyResolver while supporting different isolation requirements.
+Starting with v19, Splat provides two high-performance resolver implementations optimized for AOT compilation: **GlobalGenericFirstDependencyResolver** and **InstanceGenericFirstDependencyResolver**. Both deliver significantly better performance than the legacy ModernDependencyResolver while supporting different isolation requirements. By default **InstanceGenericFirstDependencyResolver** is now the default container.
+
+Note:
+`ModernDependencyResolver` remains supported for backward compatibility, but new applications should strongly prefer one of the GenericFirst resolvers.
+
 
 #### Quick Start for New Users
 
@@ -170,31 +174,77 @@ var config = Locator.Current.GetService<IConfiguration>();
 
 #### Choosing Between Global and Instance Resolvers
 
-Splat provides two resolver implementations with identical APIs but different isolation characteristics:
+Splat provides two resolver implementations with identical APIs but different
+tradeoffs around **performance** and **state isolation**.
 
-| Feature | GlobalGenericFirstDependencyResolver | InstanceGenericFirstDependencyResolver |
-|---------|--------------------------------------|----------------------------------------|
-| **Container Storage** | Process-wide static containers | Per-resolver instance containers (ConditionalWeakTable) |
-| **Isolation** | Shared across all resolver instances | Isolated per resolver instance |
-| **Performance** | Fastest - direct static access | Very fast - one additional CWT lookup |
-| **Memory** | Minimal - static fields only | Low - weak references, GC-friendly |
-| **Use Case** | Single global service locator | Multiple independent resolvers, testing scenarios |
-| **Thread Safety** | Lock-free reads, thread-safe writes | Lock-free reads, thread-safe writes |
-| **AOT Compatible** | Yes | Yes |
+**Short version**
 
-**When to use GlobalGenericFirstDependencyResolver:**
-- Single application-wide service locator (most common scenario)
-- Maximum performance requirements
-- Simple dependency injection needs
-- Traditional singleton pattern usage
+- **GlobalGenericFirstDependencyResolver** is the fastest option.
+- **InstanceGenericFirstDependencyResolver** is easier to reason about and safer for libraries and tests.
 
-**When to use InstanceGenericFirstDependencyResolver:**
-- Multiple independent DI containers in same process
-- Unit testing with isolated container instances
-- Plugin systems with separate service graphs
-- Multi-tenant applications with isolated service scopes
+**Performance vs Isolation Tradeoff**
 
-**Example: Creating Instance Resolvers**
+The Global resolver achieves its speed by sharing static generic containers
+across the process. This is intentional and safe, but it means registrations
+are visible globally.
+
+If global container state feels confusing or risky for your use case,
+choose the Instance resolver. The performance difference is measurable but
+rarely user-visible outside of very hot paths.
+
+##### Performance Characteristics
+
+Based on internal benchmarks using realistic application workloads:
+
+- **Global** is approximately **25–30% faster** than Instance in mixed read/write scenarios.
+- **Instance** adds a small but measurable overhead due to per-resolver isolation.
+- Both resolvers are orders of magnitude faster than the legacy `ModernDependencyResolver`.
+
+For most applications, both are “fast enough”. The deciding factor is **how much shared global state you are willing to expose to users**.
+
+The table below summarizes the **practical performance and behavioral differences** between Splat’s dependency resolvers, based on internal benchmarks using .NET 10 and realistic application workloads.
+
+| Operation / Concern                     | GlobalGenericFirst      | InstanceGenericFirst                    | ModernDependencyResolver        |
+| --------------------------------------- | ----------------------- | --------------------------------------- | ------------------------        |
+| Service resolution (hit)                | Fastest                 | Very fast (slightly slower than Global) | Slow                            |
+| Service resolution (miss)               | Fastest                 | Very fast (slightly slower than Global) | Very slow                       |
+| Mixed workload (real application usage) | Fastest                 | ~25–30% slower than Global              | ~3–4× slower                    |
+| Bulk registration (startup)             | Fastest                 | ~25–30% slower                          | Very slow (O(n²))               |
+| Memory allocations                      | Lowest                  | Low (slightly higher than Global)       | Very high                       |
+| Scales to hundreds of services          | Yes                     | Yes                                     | Poor                            |
+| Container state                         | Process-wide shared     | Isolated per resolver instance          | Isolated per resolver instance  |
+| Test isolation                          | Requires manual cleanup | Automatic                               | Automatic                       |
+| AOT / NativeAOT support                 | Full                    | Full                                    | Poor                            |
+| Recommended for new code                | Yes                     | Yes                                     | No                              |
+
+##### Behavioral Differences
+
+| Aspect | Global | Instance |
+|------|-------|----------|
+| Container state | Shared process-wide | Isolated per resolver |
+| Surprise factor | Higher | Lower |
+| Test isolation | Requires manual cleanup | Automatic |
+| Performance | **Fastest** | Slightly slower |
+| Debuggability | Harder (implicit coupling) | Easier (explicit ownership) |
+
+#### Recommended Defaults
+
+**For application authors**
+- Use **GlobalGenericFirstDependencyResolver** if:
+  - You have a single application-wide container
+  - You control the full application lifecycle
+  - You want maximum performance and minimal allocations
+
+**For library authors**
+- Use **InstanceGenericFirstDependencyResolver** as the default
+- Avoid mutating global container state from library code
+- Allow consumers to opt into Global if they explicitly choose to
+
+**For tests**
+- Prefer **InstanceGenericFirstDependencyResolver**
+- Isolation avoids ordering bugs and test cross-contamination
+
+#### Example: Creating Instance Resolvers
 
 ```cs
 // Global resolver (default) - all instances share registrations

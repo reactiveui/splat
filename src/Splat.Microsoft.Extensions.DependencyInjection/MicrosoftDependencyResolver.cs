@@ -377,15 +377,25 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     /// <inheritdoc/>
     public virtual bool HasRegistration(Type? serviceType, string? contract)
     {
+        // Contract semantics: a null contract means "use the non-keyed registration path".
+        // This matches Register(..., Type?, string? contract) which delegates to Register(..., Type?)
+        // when contract is null, and matches expected IDependencyResolver behavior in Splat tests.
+        if (contract is null)
+        {
+            return HasRegistration(serviceType);
+        }
+
         serviceType ??= NullServiceType.CachedType;
 
         if (!_isImmutable)
         {
+            // Only keyed services match when a non-null contract is specified.
             return _serviceCollection?.Any(sd => MatchesKeyedContract(serviceType, contract, sd)) == true;
         }
 
+        // Immutable provider path: only keyed services match when a non-null contract is specified.
         return _serviceProvider is IKeyedServiceProvider keyedServiceProvider
-                && keyedServiceProvider.GetKeyedService(serviceType, contract) is not null;
+               && keyedServiceProvider.GetKeyedService(serviceType, contract) is not null;
     }
 
     /// <inheritdoc/>
