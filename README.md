@@ -148,6 +148,16 @@ Starting with v19, Splat provides two high-performance resolver implementations 
 Note:
 `ModernDependencyResolver` remains supported for backward compatibility, but new applications should strongly prefer one of the GenericFirst resolvers.
 
+| Feature | GlobalGenericFirstDependencyResolver | InstanceGenericFirstDependencyResolver |
+|---------|--------------------------------------|----------------------------------------|
+| **Container Storage** | Process-wide static containers | Per-resolver instance containers (ConditionalWeakTable) |
+| **Isolation** | Shared across all resolver instances | Isolated per resolver instance |
+| **Performance** | Fastest - direct static access | Very fast - one additional CWT lookup |
+| **Memory** | Minimal - static fields only | Low - weak references, GC-friendly |
+| **Use Case** | Single global service locator | Multiple independent resolvers, testing scenarios |
+| **Thread Safety** | Lock-free reads, thread-safe writes | Lock-free reads, thread-safe writes |
+| **AOT Compatible** | Yes | Yes |
+
 
 #### Quick Start for New Users
 
