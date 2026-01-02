@@ -9,145 +9,261 @@ using System.Runtime.CompilerServices;
 namespace Splat;
 
 /// <summary>
-/// Per-type static cache for instance-scoped containers using ConditionalWeakTable.
-/// Maps resolver state to per-resolver Container&lt;T&gt; instances.
+/// Per-type static cache for instance-scoped containers keyed by <see cref="ResolverState"/>.
 /// </summary>
+/// <remarks>
+/// <para>
+/// This cache is used by instance-scoped resolvers to store per-resolver registrations for <typeparamref name="T"/>.
+/// The backing store is a <see cref="ConditionalWeakTable{TKey,TValue}"/> so that containers are reclaimed when the
+/// associated <see cref="ResolverState"/> becomes unreachable.
+/// </para>
+/// <para>
+/// The container uses a mutable list guarded by a per-entry gate and a published snapshot array for lock-free reads.
+/// </para>
+/// </remarks>
 /// <typeparam name="T">The service type.</typeparam>
 internal static class ContainerCache<T>
 {
+    /// <summary>
+    /// Maps resolver state to the per-resolver container for <typeparamref name="T"/>.
+    /// </summary>
     private static readonly ConditionalWeakTable<ResolverState, Container> Containers = new();
 
     /// <summary>
     /// Gets or creates the container for the specified resolver state.
     /// </summary>
+    /// <param name="state">The resolver state used as the cache key.</param>
+    /// <returns>The per-resolver <see cref="Container"/> for <typeparamref name="T"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="state"/> is <see langword="null"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Container Get(ResolverState state) => Containers.GetOrCreateValue(state);
+    public static Container Get(ResolverState state)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(state);
+        return Containers.GetOrCreateValue(state);
+    }
 
     /// <summary>
-    /// Per-resolver container for type T.
+    /// Per-resolver container for registrations of <typeparamref name="T"/>.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The most recent registration wins for <see cref="TryGet"/> (last registration wins).
+    /// </para>
+    /// <para>
+    /// Thread-safety:
+    /// <list type="bullet">
+    ///   <item><description>Mutations are synchronized using <c>lock(_entry.Gate)</c>.</description></item>
+    ///   <item><description>Reads are lock-free when a current snapshot is available.</description></item>
+    ///   <item><description>User factories are invoked without holding any internal locks.</description></item>
+    /// </list>
+    /// </para>
+    /// </remarks>
     internal sealed class Container
     {
-        private readonly ArrayHelpers.Entry<Registration<T>> _entries = new();
-        private int _count;
+        /// <summary>
+        /// Registration list and snapshot/version metadata.
+        /// </summary>
+        /// <remarks>
+        /// The associated <see cref="ArrayHelpers.Entry{TValue}.Gate"/> is used for synchronization.
+        /// </remarks>
+        private readonly ArrayHelpers.Entry<Registration<T>> _entry = new();
 
-        public bool HasRegistrations => Volatile.Read(ref _count) > 0;
+        /// <summary>
+        /// Gets a value indicating whether the container has at least one registration.
+        /// </summary>
+        /// <remarks>
+        /// This uses the published snapshot when available; otherwise, it falls back to checking the list under the entry gate.
+        /// </remarks>
+        public bool HasRegistrations
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                var snapshot = Volatile.Read(ref _entry.Snapshot);
+                if (snapshot is not null)
+                {
+                    return snapshot.Length != 0;
+                }
 
-        public int GetCount() => Volatile.Read(ref _count);
+                lock (_entry.Gate)
+                {
+                    return _entry.List.Count != 0;
+                }
+            }
+        }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// <summary>
+        /// Gets the number of registrations currently stored in this container.
+        /// </summary>
+        /// <returns>The number of registrations.</returns>
+        /// <remarks>
+        /// This uses the published snapshot length when available; otherwise, it reads the list count under the entry gate.
+        /// </remarks>
+        public int GetCount()
+        {
+            var snapshot = Volatile.Read(ref _entry.Snapshot);
+            if (snapshot is not null)
+            {
+                return snapshot.Length;
+            }
+
+            lock (_entry.Gate)
+            {
+                return _entry.List.Count;
+            }
+        }
+
+        /// <summary>
+        /// Attempts to resolve the most recent registration (last registration wins).
+        /// </summary>
+        /// <param name="instance">Receives the resolved instance when available.</param>
+        /// <returns>
+        /// <see langword="true"/> if a registration exists and produces a non-null instance; otherwise <see langword="false"/>.
+        /// </returns>
+        /// <remarks>
+        /// This method does not hold internal locks while invoking user factories.
+        /// </remarks>
         public bool TryGet([MaybeNullWhen(false)] out T instance)
         {
-            // Fast path: avoid snapshot materialization if empty
-            if (Volatile.Read(ref _count) == 0)
+            // Fast exit when we already know we have no registrations (snapshot available and empty).
+            var snapshot = Volatile.Read(ref _entry.Snapshot);
+            if (snapshot is not null && snapshot.Length == 0)
             {
                 instance = default;
                 return false;
             }
 
             var registrations = EnsureSnapshot();
-
             if (registrations.Length == 0)
             {
                 instance = default;
                 return false;
             }
 
-            // Get the most recent registration
             var last = registrations[registrations.Length - 1];
-            if (last.IsFactory)
+
+            if (last.TryGetFactory(out var factory))
             {
-                var factory = last.GetFactory()!;
                 instance = factory.Invoke()!;
                 return instance is not null;
             }
 
-            instance = last.GetInstance()!;
+            instance = last.GetInstance();
             return instance is not null;
         }
 
+        /// <summary>
+        /// Resolves all registrations in this container.
+        /// </summary>
+        /// <returns>
+        /// An array of resolved instances. Returns an empty array when no registrations exist.
+        /// </returns>
+        /// <remarks>
+        /// Factories are invoked during materialization. Exceptions are not caught and propagate to the caller.
+        /// </remarks>
         public T[] GetAll()
         {
             var registrations = EnsureSnapshot();
-            return ArrayHelpers.MaterializeRegistrations(registrations);
+            return registrations.Length == 0 ? [] : ArrayHelpers.MaterializeRegistrations(registrations);
         }
 
+        /// <summary>
+        /// Registers a constant instance.
+        /// </summary>
+        /// <param name="service">The instance to register (may be <see langword="null"/>).</param>
         public void Add(T service)
         {
-            lock (_entries)
+            lock (_entry.Gate)
             {
-                _entries.List.Add(Registration<T>.FromInstance(service));
-                _entries.Version++;
-                Volatile.Write(ref _count, _entries.List.Count);
+                _entry.List.Add(Registration<T>.FromInstance(service));
+                _entry.Version++;
+
+                // Snapshot becomes stale; rebuilt lazily.
             }
         }
 
+        /// <summary>
+        /// Registers a factory delegate.
+        /// </summary>
+        /// <param name="factory">The factory used to produce instances.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> is <see langword="null"/>.</exception>
         public void Add(Func<T?> factory)
         {
-            lock (_entries)
+            ArgumentExceptionHelper.ThrowIfNull(factory);
+
+            lock (_entry.Gate)
             {
-                _entries.List.Add(Registration<T>.FromFactory(factory));
-                _entries.Version++;
-                Volatile.Write(ref _count, _entries.List.Count);
+                _entry.List.Add(Registration<T>.FromFactory(factory));
+                _entry.Version++;
             }
         }
 
+        /// <summary>
+        /// Removes the most recent registration, if any.
+        /// </summary>
         public void RemoveCurrent()
         {
-            lock (_entries)
+            lock (_entry.Gate)
             {
-                if (_entries.List.Count > 0)
+                var list = _entry.List;
+                if (list.Count == 0)
                 {
-                    _entries.List.RemoveAt(_entries.List.Count - 1);
-                    _entries.Version++;
-                    Volatile.Write(ref _count, _entries.List.Count);
+                    return;
                 }
+
+                list.RemoveAt(list.Count - 1);
+                _entry.Version++;
             }
         }
 
+        /// <summary>
+        /// Removes all registrations from this container.
+        /// </summary>
+        /// <remarks>
+        /// Publishes an empty snapshot to keep the read path fast after a clear.
+        /// </remarks>
         public void Clear()
         {
-            lock (_entries)
+            lock (_entry.Gate)
             {
-                _entries.List.Clear();
-                _entries.Version++;
-                Volatile.Write(ref _count, 0);
+                _entry.List.Clear();
+                _entry.Version++;
 
-                // Publish empty snapshot to avoid rebuild cost on next read
-                Volatile.Write(ref _entries.Snapshot, []);
-                Volatile.Write(ref _entries.SnapshotVersion, _entries.Version);
+                // Publish an empty snapshot corresponding to the current version.
+                _entry.Snapshot = [];
+                _entry.SnapshotVersion = _entry.Version;
             }
         }
 
+        /// <summary>
+        /// Returns a current snapshot of registrations, rebuilding it if stale.
+        /// </summary>
+        /// <returns>A snapshot array representing the current registration list.</returns>
+        /// <remarks>
+        /// Fast path is lock-free when the snapshot version matches the list version.
+        /// Snapshot rebuild occurs under <c>lock(_entry.Gate)</c> and allocates an array copy of the list.
+        /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private Registration<T>[] EnsureSnapshot()
         {
-            // Lock-free fast path: check if snapshot is current
-            var snapshot = Volatile.Read(ref _entries.Snapshot);
-            var version = Volatile.Read(ref _entries.Version);
-            var snapshotVersion = Volatile.Read(ref _entries.SnapshotVersion);
+            var version = Volatile.Read(ref _entry.Version);
+            var snapshot = Volatile.Read(ref _entry.Snapshot);
 
-            if (snapshot != null && snapshotVersion == version)
+            if (snapshot is not null && Volatile.Read(ref _entry.SnapshotVersion) == version)
             {
                 return snapshot;
             }
 
-            // Snapshot is stale, rebuild under lock
-            lock (_entries)
+            lock (_entry.Gate)
             {
-                // Double-check after acquiring lock
-                snapshot = Volatile.Read(ref _entries.Snapshot);
-                version = Volatile.Read(ref _entries.Version);
-                snapshotVersion = Volatile.Read(ref _entries.SnapshotVersion);
+                snapshot = _entry.Snapshot;
+                var currentVersion = _entry.Version;
 
-                if (snapshot == null || snapshotVersion != version)
+                if (snapshot is null || _entry.SnapshotVersion != currentVersion)
                 {
-                    Registration<T>[] newSnapshot = [.. _entries.List];
-
-                    // Publish snapshot with proper memory ordering
-                    Volatile.Write(ref _entries.Snapshot, newSnapshot);
-                    Volatile.Write(ref _entries.SnapshotVersion, version);
-
+                    Registration<T>[] newSnapshot = _entry.List.Count == 0 ? [] : [.. _entry.List];
+                    _entry.Snapshot = newSnapshot;
+                    _entry.SnapshotVersion = currentVersion;
                     return newSnapshot;
                 }
 

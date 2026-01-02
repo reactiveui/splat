@@ -192,6 +192,12 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     /// <inheritdoc />
     public virtual void Register(Func<object?> factory, Type? serviceType, string? contract)
     {
+        if (contract is null)
+        {
+            Register(factory, serviceType);
+            return;
+        }
+
         if (_isImmutable)
         {
             throw new InvalidOperationException(ImmutableExceptionMessage);
@@ -241,6 +247,12 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     /// <inheritdoc/>
     public virtual void UnregisterCurrent(Type? serviceType, string? contract)
     {
+        if (contract is null)
+        {
+            UnregisterCurrent(serviceType);
+            return;
+        }
+
         if (_isImmutable)
         {
             throw new InvalidOperationException(ImmutableExceptionMessage);
@@ -304,6 +316,12 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     /// <param name="contract">A value which will remove only objects registered with the same contract.</param>
     public virtual void UnregisterAll(Type? serviceType, string? contract)
     {
+        if (contract is null)
+        {
+            UnregisterAll(serviceType);
+            return;
+        }
+
         if (_isImmutable)
         {
             throw new InvalidOperationException(ImmutableExceptionMessage);
@@ -446,6 +464,12 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
         where TService : class
         where TImplementation : class, TService, new()
     {
+        if (contract is null)
+        {
+            Register<TService, TImplementation>();
+            return;
+        }
+
         if (_isImmutable)
         {
             throw new InvalidOperationException(ImmutableExceptionMessage);
@@ -484,6 +508,12 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     public void RegisterConstant<T>(T? value, string? contract)
         where T : class
     {
+        if (contract is null)
+        {
+            RegisterConstant(value);
+            return;
+        }
+
         if (_isImmutable)
         {
             throw new InvalidOperationException(ImmutableExceptionMessage);
@@ -524,6 +554,12 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     public void RegisterLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory, string? contract)
         where T : class
     {
+        if (contract is null)
+        {
+            RegisterLazySingleton(valueFactory);
+            return;
+        }
+
         if (_isImmutable)
         {
             throw new InvalidOperationException(ImmutableExceptionMessage);

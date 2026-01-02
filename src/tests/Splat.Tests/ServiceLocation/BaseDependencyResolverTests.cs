@@ -808,6 +808,579 @@ public abstract class BaseDependencyResolverTests<T>
     }
 
     /// <summary>
+    /// Test GetService with null contract delegates to non-contract version.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task GetService_Generic_WithNullContract_DelegatesToNonContract()
+    {
+        var resolver = GetDependencyResolver();
+        var instance = new ViewModelOne();
+        resolver.RegisterConstant(instance);
+
+        var result = resolver.GetService<ViewModelOne>(null);
+
+        await Assert.That(result).IsSameReferenceAs(instance);
+    }
+
+    /// <summary>
+    /// Test GetService non-generic with null contract returns null when no registrations.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task GetService_NonGeneric_WithContract_ReturnsNullWhenEmpty()
+    {
+        var resolver = GetDependencyResolver();
+
+        var result = resolver.GetService(typeof(ViewModelOne), "test");
+
+        await Assert.That(result).IsNull();
+    }
+
+    /// <summary>
+    /// Test GetServices with null contract delegates to non-contract version.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task GetServices_Generic_WithNullContract_DelegatesToNonContract()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.Register(() => new ViewModelOne());
+
+        var results = resolver.GetServices<ViewModelOne>(null).ToList();
+
+        await Assert.That(results).Count().IsGreaterThanOrEqualTo(1);
+    }
+
+    /// <summary>
+    /// Test GetServices non-generic with null contract delegates to non-contract version.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task GetServices_NonGeneric_WithNullContract_DelegatesToNonContract()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+
+        var results = resolver.GetServices(typeof(ViewModelOne), null).ToList();
+
+        await Assert.That(results).Count().IsGreaterThanOrEqualTo(1);
+    }
+
+    /// <summary>
+    /// Test GetServices non-generic with contract returns empty when no registrations.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task GetServices_NonGeneric_WithContract_ReturnsEmptyWhenNoRegistrations()
+    {
+        var resolver = GetDependencyResolver();
+
+        var results = resolver.GetServices(typeof(ViewModelOne), "test").ToList();
+
+        await Assert.That(results).IsEmpty();
+    }
+
+    /// <summary>
+    /// Test HasRegistration with null contract delegates to non-contract version.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task HasRegistration_Generic_WithNullContract_DelegatesToNonContract()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.RegisterConstant(new ViewModelOne());
+
+        var result = resolver.HasRegistration<ViewModelOne>(null);
+
+        await Assert.That(result).IsTrue();
+    }
+
+    /// <summary>
+    /// Test HasRegistration generic with contract returns false when no registrations.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task HasRegistration_Generic_WithContract_ReturnsFalseWhenEmpty()
+    {
+        var resolver = GetDependencyResolver();
+
+        var result = resolver.HasRegistration<ViewModelOne>("test");
+
+        await Assert.That(result).IsFalse();
+    }
+
+    /// <summary>
+    /// Test HasRegistration non-generic with null contract delegates to non-contract version.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task HasRegistration_NonGeneric_WithNullContract_DelegatesToNonContract()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+
+        var result = resolver.HasRegistration(typeof(ViewModelOne), null);
+
+        await Assert.That(result).IsTrue();
+    }
+
+    /// <summary>
+    /// Test Register with null contract delegates to non-contract version.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task Register_Generic_WithNullContract_DelegatesToNonContract()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.Register(() => new ViewModelOne(), null);
+
+        var result = resolver.GetService<ViewModelOne>();
+
+        await Assert.That(result).IsNotNull();
+    }
+
+    /// <summary>
+    /// Test Register non-generic with null contract delegates to non-contract version.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task Register_NonGeneric_WithNullContract_DelegatesToNonContract()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne), null);
+
+        var result = resolver.GetService(typeof(ViewModelOne));
+
+        await Assert.That(result).IsNotNull();
+    }
+
+    /// <summary>
+    /// Test Register with TService and TImplementation and null contract delegates to non-contract version.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task Register_Generic_WithServiceImplementationAndNullContract_DelegatesToNonContract()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.Register<IViewModelOne, ViewModelOne>(null);
+
+        var result = resolver.GetService<IViewModelOne>();
+
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result).IsTypeOf<ViewModelOne>();
+    }
+
+    /// <summary>
+    /// Test RegisterConstant with null contract delegates to non-contract version.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task RegisterConstant_Generic_WithNullContract_DelegatesToNonContract()
+    {
+        var resolver = GetDependencyResolver();
+        var instance = new ViewModelOne();
+        resolver.RegisterConstant(instance, null);
+
+        var result = resolver.GetService<ViewModelOne>();
+
+        await Assert.That(result).IsSameReferenceAs(instance);
+    }
+
+    /// <summary>
+    /// Test RegisterLazySingleton with null contract delegates to non-contract version.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task RegisterLazySingleton_Generic_WithNullContract_DelegatesToNonContract()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.RegisterLazySingleton<ViewModelOne>(() => new(), null);
+
+        var result1 = resolver.GetService<ViewModelOne>();
+        var result2 = resolver.GetService<ViewModelOne>();
+
+        await Assert.That(result1).IsNotNull();
+        await Assert.That(result1).IsSameReferenceAs(result2);
+    }
+
+    /// <summary>
+    /// Test UnregisterCurrent with null contract delegates to non-contract version.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task UnregisterCurrent_Generic_WithNullContract_DelegatesToNonContract()
+    {
+        var resolver = GetDependencyResolver();
+        var instance1 = new ViewModelOne();
+        var instance2 = new ViewModelOne();
+
+        resolver.RegisterConstant(instance1);
+        resolver.RegisterConstant(instance2);
+
+        resolver.UnregisterCurrent<ViewModelOne>(null);
+
+        var result = resolver.GetService<ViewModelOne>();
+        await Assert.That(result).IsSameReferenceAs(instance1);
+    }
+
+    /// <summary>
+    /// Test UnregisterCurrent non-generic with null contract delegates to non-contract version.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task UnregisterCurrent_NonGeneric_WithNullContract_DelegatesToNonContract()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+
+        resolver.UnregisterCurrent(typeof(ViewModelOne), null);
+
+        await Assert.That(resolver.HasRegistration(typeof(ViewModelOne))).IsTrue();
+    }
+
+    /// <summary>
+    /// Test UnregisterAll with null contract delegates to non-contract version.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task UnregisterAll_Generic_WithNullContract_DelegatesToNonContract()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.RegisterConstant(new ViewModelOne());
+        resolver.Register(() => new ViewModelOne());
+
+        resolver.UnregisterAll<ViewModelOne>(null);
+
+        await Assert.That(resolver.HasRegistration<ViewModelOne>()).IsFalse();
+    }
+
+    /// <summary>
+    /// Test UnregisterAll non-generic with null contract delegates to non-contract version.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task UnregisterAll_NonGeneric_WithNullContract_DelegatesToNonContract()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+
+        resolver.UnregisterAll(typeof(ViewModelOne), null);
+
+        await Assert.That(resolver.HasRegistration(typeof(ViewModelOne))).IsFalse();
+    }
+
+    /// <summary>
+    /// Test GetServices combines generic and non-generic registrations.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task GetServices_Generic_CombinesGenericAndNonGenericResults()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.Register(() => new ViewModelOne());
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+
+        var results = resolver.GetServices<ViewModelOne>().ToList();
+
+        await Assert.That(results).Count().IsGreaterThanOrEqualTo(2);
+    }
+
+    /// <summary>
+    /// Test GetServices with contract combines generic and non-generic registrations.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task GetServices_Generic_WithContract_CombinesGenericAndNonGenericResults()
+    {
+        var resolver = GetDependencyResolver();
+        const string contract = "test";
+        resolver.Register(() => new ViewModelOne(), contract);
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne), contract);
+
+        var results = resolver.GetServices<ViewModelOne>(contract).ToList();
+
+        await Assert.That(results).Count().IsGreaterThanOrEqualTo(2);
+    }
+
+    /// <summary>
+    /// Test ServiceRegistrationCallback invokes callback for each existing registration.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task ServiceRegistrationCallback_Generic_InvokesForEachExistingRegistration()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.Register(() => new ViewModelOne());
+        resolver.Register(() => new ViewModelOne());
+        resolver.Register(() => new ViewModelOne());
+
+        var callbackCount = 0;
+
+        using var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(_ => callbackCount++);
+
+        await Assert.That(callbackCount).IsGreaterThanOrEqualTo(3);
+    }
+
+    /// <summary>
+    /// Test Dispose handles exceptions from callbacks gracefully.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task Dispose_SuppressesExceptionsFromCallbacks()
+    {
+        var resolver = GetDependencyResolver();
+
+        resolver.ServiceRegistrationCallback<ViewModelOne>(_ => throw new InvalidOperationException("Test exception"));
+
+        await Assert.That(() =>
+        {
+            resolver.Dispose();
+            return Task.CompletedTask;
+        }).ThrowsNothing();
+    }
+
+    /// <summary>
+    /// Test Dispose handles exceptions from service disposal gracefully.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task Dispose_SuppressesExceptionsFromServiceDisposal()
+    {
+        var resolver = GetDependencyResolver();
+        var throwingService = new ThrowingDisposableService();
+
+        resolver.RegisterConstant(throwingService);
+
+        await Assert.That(() =>
+        {
+            resolver.Dispose();
+            return Task.CompletedTask;
+        }).ThrowsNothing();
+    }
+
+    /// <summary>
+    /// Test registration callbacks are not invoked after disposal.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task Register_AfterDispose_DoesNotInvokeCallbacks()
+    {
+        var resolver = GetDependencyResolver();
+        var callbackCount = 0;
+
+        resolver.ServiceRegistrationCallback<ViewModelOne>(_ => callbackCount++);
+
+        resolver.Dispose();
+
+        var countAfterDispose = callbackCount;
+
+        await Assert.That(() =>
+        {
+            resolver.Register(() => new ViewModelOne());
+        }).Throws<ObjectDisposedException>();
+
+        await Assert.That(callbackCount).IsEqualTo(countAfterDispose);
+    }
+
+    /// <summary>
+    /// Test RegisterLazySingleton unwrapping in non-generic GetService.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task GetService_NonGeneric_UnwrapsLazySingleton()
+    {
+        var resolver = GetDependencyResolver();
+        var factoryCalled = false;
+
+        resolver.RegisterLazySingleton<ViewModelOne>(() =>
+        {
+            factoryCalled = true;
+            return new();
+        });
+
+        await Assert.That(factoryCalled).IsFalse();
+
+        var result1 = resolver.GetService(typeof(ViewModelOne));
+        await Assert.That(factoryCalled).IsTrue();
+        await Assert.That(result1).IsNotNull();
+
+        var result2 = resolver.GetService(typeof(ViewModelOne));
+        await Assert.That(result1).IsSameReferenceAs(result2);
+    }
+
+    /// <summary>
+    /// Test RegisterLazySingleton unwrapping in non-generic GetService with contract.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task GetService_NonGeneric_WithContract_UnwrapsLazySingleton()
+    {
+        var resolver = GetDependencyResolver();
+        const string contract = "test";
+        var factoryCalled = false;
+
+        resolver.RegisterLazySingleton<ViewModelOne>(
+            () =>
+            {
+                factoryCalled = true;
+                return new();
+            },
+            contract);
+
+        await Assert.That(factoryCalled).IsFalse();
+
+        var result1 = resolver.GetService(typeof(ViewModelOne), contract);
+        await Assert.That(factoryCalled).IsTrue();
+        await Assert.That(result1).IsNotNull();
+
+        var result2 = resolver.GetService(typeof(ViewModelOne), contract);
+        await Assert.That(result1).IsSameReferenceAs(result2);
+    }
+
+    /// <summary>
+    /// Test Dispose checks Lazy.IsValueCreated before disposing.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task Dispose_WithAccessedLazySingleton_DisposesValue()
+    {
+        var resolver = GetDependencyResolver();
+        var disposableService = new DisposableTestService();
+
+        resolver.RegisterLazySingleton<DisposableTestService>(() => disposableService);
+
+        var retrieved = resolver.GetService<DisposableTestService>();
+        await Assert.That(retrieved).IsSameReferenceAs(disposableService);
+        await Assert.That(disposableService.IsDisposed).IsFalse();
+
+        resolver.Dispose();
+
+        await Assert.That(disposableService.IsDisposed).IsTrue();
+    }
+
+    /// <summary>
+    /// Test that Dispose does NOT create transient services.
+    /// Transient services should never be instantiated during disposal.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task Dispose_WithTransientServices_DoesNotCreateInstances()
+    {
+        var resolver = GetDependencyResolver();
+        var transientCreatedCount = 0;
+        var disposableCreatedCount = 0;
+
+        // Register transient non-disposable services
+        resolver.Register(() =>
+        {
+            transientCreatedCount++;
+            return new ViewModelOne();
+        });
+
+        // Register transient disposable services
+        resolver.Register<DisposableTestService>(() =>
+        {
+            disposableCreatedCount++;
+            return new DisposableTestService();
+        });
+
+        // Get some instances to verify registration works
+        _ = resolver.GetService<ViewModelOne>();
+        _ = resolver.GetService<DisposableTestService>();
+
+        await Assert.That(transientCreatedCount).IsEqualTo(1);
+        await Assert.That(disposableCreatedCount).IsEqualTo(1);
+
+        // Dispose the resolver - should NOT create any new transient instances
+        resolver.Dispose();
+
+        // Counts should remain the same - no new instances created during disposal
+        await Assert.That(transientCreatedCount).IsEqualTo(1);
+        await Assert.That(disposableCreatedCount).IsEqualTo(1);
+    }
+
+    /// <summary>
+    /// Test GetService with null serviceType uses NullServiceType.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task GetService_NonGeneric_WithNullType_HandlesNullServiceType()
+    {
+        var resolver = GetDependencyResolver();
+        var instance = new ViewModelOne();
+
+        resolver.Register((Func<object?>)(() => instance), (Type?)null);
+
+        var result = resolver.GetService(null);
+
+        await Assert.That(result).IsSameReferenceAs(instance);
+    }
+
+    /// <summary>
+    /// Test GetServices with null serviceType uses NullServiceType.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task GetServices_NonGeneric_WithNullType_HandlesNullServiceType()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.Register((Func<object?>)(() => new ViewModelOne()), (Type?)null);
+
+        var results = resolver.GetServices(null).ToList();
+
+        await Assert.That(results).Count().IsGreaterThanOrEqualTo(1);
+    }
+
+    /// <summary>
+    /// Test HasRegistration with null serviceType uses NullServiceType.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task HasRegistration_NonGeneric_WithNullType_HandlesNullServiceType()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.Register((Func<object?>)(() => new ViewModelOne()), (Type?)null);
+
+        var result = resolver.HasRegistration(null);
+
+        await Assert.That(result).IsTrue();
+    }
+
+    /// <summary>
+    /// Test UnregisterCurrent with null serviceType uses NullServiceType.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task UnregisterCurrent_NonGeneric_WithNullType_HandlesNullServiceType()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.Register((Func<object?>)(() => new ViewModelOne()), (Type?)null);
+        resolver.Register((Func<object?>)(() => new ViewModelOne()), (Type?)null);
+
+        resolver.UnregisterCurrent(null);
+
+        await Assert.That(resolver.HasRegistration(null)).IsTrue();
+    }
+
+    /// <summary>
+    /// Test UnregisterAll with null serviceType uses NullServiceType.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task UnregisterAll_NonGeneric_WithNullType_HandlesNullServiceType()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.Register((Func<object?>)(() => new ViewModelOne()), (Type?)null);
+
+        resolver.UnregisterAll(null);
+
+        await Assert.That(resolver.HasRegistration(null)).IsFalse();
+    }
+
+    /// <summary>
     /// Gets an instance of a dependency resolver to test.
     /// </summary>
     /// <returns>Dependency Resolver.</returns>
@@ -821,5 +1394,13 @@ public abstract class BaseDependencyResolverTests<T>
         public bool IsDisposed { get; private set; }
 
         public void Dispose() => IsDisposed = true;
+    }
+
+    /// <summary>
+    /// Disposable test service that throws exceptions during disposal.
+    /// </summary>
+    protected sealed class ThrowingDisposableService : IDisposable
+    {
+        public void Dispose() => throw new InvalidOperationException("Disposal exception");
     }
 }

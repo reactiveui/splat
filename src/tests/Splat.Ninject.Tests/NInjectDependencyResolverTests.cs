@@ -3,6 +3,7 @@
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using Ninject;
 
 using Splat.Common.Test;
@@ -159,34 +160,75 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
     }
 
     /// <summary>
+    /// Verifies that ServiceRegistrationCallback invokes for each throws NotImplementedException for Ninject.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public override Task ServiceRegistrationCallback_Generic_InvokesForEachExistingRegistration()
+    {
+        var resolver = GetDependencyResolver();
+        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Verifies that Register after dispose throws NotImplementedException for Ninject (due to callbacks not implemented).
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public override Task Register_AfterDispose_DoesNotInvokeCallbacks()
+    {
+        var resolver = GetDependencyResolver();
+
+        // Since ServiceRegistrationCallback throws, we verify that instead of the full test flow
+        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Verifies that Dispose suppresses exceptions from callbacks (NotApplicable for Ninject as callbacks throw).
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public override Task Dispose_SuppressesExceptionsFromCallbacks()
+    {
+        var resolver = GetDependencyResolver();
+        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
     /// Ninject doesn't invoke callbacks on disposal.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public override Task Dispose_InvokesCallbacks() =>
-
+    public override Task Dispose_InvokesCallbacks()
+    {
         // Ninject ServiceRegistrationCallback throws NotImplementedException, so this test doesn't apply
-        Task.CompletedTask;
+        return Task.CompletedTask;
+    }
 
     /// <summary>
     /// Ninject manages disposal of registered services itself.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public override Task Dispose_DisposesRegisteredServices() =>
-
+    public override Task Dispose_DisposesRegisteredServices()
+    {
         // Ninject manages its own service disposal lifecycle
-        Task.CompletedTask;
+        return Task.CompletedTask;
+    }
 
     /// <summary>
     /// Ninject handles lazy singletons itself.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public override Task Dispose_WithLazySingleton_DoesNotCreateIfNotAccessed() =>
-
+    public override Task Dispose_WithLazySingleton_DoesNotCreateIfNotAccessed()
+    {
         // Ninject manages lazy singleton creation and disposal
-        Task.CompletedTask;
+        return Task.CompletedTask;
+    }
 
     /// <inheritdoc />
     protected override NinjectDependencyResolver GetDependencyResolver() => new(new StandardKernel());

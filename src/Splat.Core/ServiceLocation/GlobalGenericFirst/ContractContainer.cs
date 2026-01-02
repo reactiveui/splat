@@ -10,81 +10,110 @@ using System.Runtime.CompilerServices;
 namespace Splat;
 
 /// <summary>
-/// Generic container for service registrations with contracts (named services).
-/// Uses versioned Entry pattern for O(1) registration and lazy snapshot rebuild.
-/// Lock-free reads via ConcurrentDictionary, per-entry locks for snapshot rebuilds.
+/// Global generic container for service registrations indexed by contract (named services).
 /// </summary>
+/// <remarks>
+/// <para>
+/// Registrations are stored per contract key and exposed through a lazily rebuilt snapshot array per contract.
+/// Writes are O(1) (append/remove under a per-contract gate). Reads are lock-free when the snapshot is current.
+/// </para>
+/// <para>
+/// Thread-safety:
+/// <list type="bullet">
+///   <item><description>The contract map is a <see cref="ConcurrentDictionary{TKey,TValue}"/>.</description></item>
+///   <item><description>Each contract has an independent gate (<c>lock(entry.Gate)</c>) for list mutation and snapshot rebuild.</description></item>
+///   <item><description>User factories are invoked without holding internal locks.</description></item>
+/// </list>
+/// </para>
+/// <para>
+/// Contract normalization:
+/// <list type="bullet">
+///   <item><description><see langword="null"/> is treated as the default contract (<see cref="string.Empty"/>).</description></item>
+/// </list>
+/// </para>
+/// </remarks>
 /// <typeparam name="T">The service type.</typeparam>
 internal static class ContractContainer<T>
 {
-    private static readonly ConcurrentDictionary<string, ArrayHelpers.Entry<Registration<T>>> Entries = new(StringComparer.Ordinal);
-    private static readonly ConcurrentDictionary<string, int> Counts = [];
+    /// <summary>
+    /// Contract-to-entry map storing per-contract registrations.
+    /// </summary>
+    private static readonly ConcurrentDictionary<string, ArrayHelpers.Entry<Registration<T>>> Entries =
+        new(StringComparer.Ordinal);
 
     static ContractContainer() => GlobalGenericFirstDependencyResolver.RegisterClearAction(ClearAll);
 
     /// <summary>
-    /// Adds a service instance with a contract.
-    /// Snapshot rebuild is deferred until first read - O(1) operation.
+    /// Adds a constant instance registration for a contract.
     /// </summary>
-    /// <param name="service">The service instance to add.</param>
-    /// <param name="contract">The contract name.</param>
+    /// <param name="service">The instance to register (may be <see langword="null"/>).</param>
+    /// <param name="contract">The contract name. When <see langword="null"/>, the default contract is used.</param>
     public static void Add(T service, string? contract)
     {
-        var key = contract ?? string.Empty;
-        var entry = Entries.GetOrAdd(key, _ => new());
+        var key = NormalizeContract(contract);
+        var entry = Entries.GetOrAdd(key, static _ => new());
 
-        lock (entry)
+        lock (entry.Gate)
         {
             entry.List.Add(Registration<T>.FromInstance(service));
-            entry.Version++; // Under lock, simple increment is fine
-            Counts[key] = entry.List.Count;
+            entry.Version++;
         }
     }
 
     /// <summary>
-    /// Adds a service factory with a contract.
-    /// Snapshot rebuild is deferred until first read - O(1) operation.
+    /// Adds a factory registration for a contract.
     /// </summary>
-    /// <param name="factory">The factory function to add.</param>
-    /// <param name="contract">The contract name.</param>
+    /// <param name="factory">Factory delegate used to produce instances.</param>
+    /// <param name="contract">The contract name. When <see langword="null"/>, the default contract is used.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> is <see langword="null"/>.</exception>
     public static void Add(Func<T?> factory, string? contract)
     {
-        var key = contract ?? string.Empty;
-        var entry = Entries.GetOrAdd(key, _ => new());
+        ArgumentExceptionHelper.ThrowIfNull(factory);
 
-        lock (entry)
+        var key = NormalizeContract(contract);
+        var entry = Entries.GetOrAdd(key, static _ => new());
+
+        lock (entry.Gate)
         {
             entry.List.Add(Registration<T>.FromFactory(factory));
-            entry.Version++; // Under lock, simple increment is fine
-            Counts[key] = entry.List.Count;
+            entry.Version++;
         }
     }
 
     /// <summary>
-    /// Tries to get the most recent service registration for a contract.
-    /// Rebuilds snapshot lazily if stale. Lock-free fast path for reads.
+    /// Attempts to resolve the most recent registration for a contract (last registration wins).
     /// </summary>
-    /// <param name="contract">The contract name.</param>
-    /// <param name="instance">The resolved service instance.</param>
-    /// <returns>True if a service was found; otherwise false.</returns>
+    /// <param name="contract">
+    /// The contract name. For compatibility, <see langword="null"/> is treated as the default contract.
+    /// </param>
+    /// <param name="instance">Receives the resolved instance.</param>
+    /// <returns>
+    /// <see langword="true"/> if a registration exists and resolves to a non-null instance; otherwise <see langword="false"/>.
+    /// </returns>
+    /// <remarks>
+    /// This method does not hold internal locks while invoking user factories.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool TryGet(string contract, [MaybeNullWhen(false)] out T instance)
     {
-        // Fast path: check count first to avoid dictionary lookup if empty
-        if (Counts.TryGetValue(contract, out var count) && count == 0)
+        // Signature is non-null for API compatibility, but we still normalize defensively.
+        var key = NormalizeContract(contract);
+
+        if (!Entries.TryGetValue(key, out var entry))
         {
             instance = default;
             return false;
         }
 
-        if (!Entries.TryGetValue(contract, out var entry))
+        // Fast exit when we already have a published empty snapshot.
+        var snapshot = Volatile.Read(ref entry.Snapshot);
+        if (snapshot is not null && snapshot.Length == 0)
         {
             instance = default;
             return false;
         }
 
         var registrations = EnsureSnapshot(entry);
-
         if (registrations.Length == 0)
         {
             instance = default;
@@ -92,141 +121,195 @@ internal static class ContractContainer<T>
         }
 
         var last = registrations[registrations.Length - 1];
-        if (last.IsFactory)
+
+        if (last.TryGetFactory(out var factory))
         {
-            var factory = last.GetFactory()!;
             instance = factory.Invoke()!;
             return instance is not null;
         }
 
-        instance = last.GetInstance()!;
+        instance = last.GetInstance();
         return instance is not null;
     }
 
     /// <summary>
-    /// Gets all registered services for a contract as a materialized array.
-    /// Rebuilds snapshot lazily if stale. Lock-free fast path for reads.
+    /// Resolves all registrations for a contract.
     /// </summary>
-    /// <param name="contract">The contract name.</param>
-    /// <returns>An array of all registered services for the contract.</returns>
+    /// <param name="contract">
+    /// The contract name. For compatibility, <see langword="null"/> is treated as the default contract.
+    /// </param>
+    /// <returns>
+    /// An array of resolved instances (excluding nulls). Returns an empty array when no registrations exist.
+    /// </returns>
     public static T[] GetAll(string contract)
     {
-        if (!Entries.TryGetValue(contract, out var entry))
+        var key = NormalizeContract(contract);
+
+        if (!Entries.TryGetValue(key, out var entry))
         {
             return [];
         }
 
         var registrations = EnsureSnapshot(entry);
-        return ArrayHelpers.MaterializeRegistrations(registrations);
+        return registrations.Length == 0 ? [] : ArrayHelpers.MaterializeRegistrations(registrations);
     }
 
     /// <summary>
-    /// Removes the most recent service registration for a contract.
-    /// Snapshot rebuild is deferred until first read.
+    /// Removes the most recent registration for a contract, if any.
     /// </summary>
-    /// <param name="contract">The contract name.</param>
+    /// <param name="contract">
+    /// The contract name. For compatibility, <see langword="null"/> is treated as the default contract.
+    /// </param>
     public static void RemoveCurrent(string contract)
     {
-        if (!Entries.TryGetValue(contract, out var entry))
+        var key = NormalizeContract(contract);
+
+        if (!Entries.TryGetValue(key, out var entry))
         {
             return;
         }
 
-        lock (entry)
+        var becameEmpty = false;
+
+        lock (entry.Gate)
         {
-            if (entry.List.Count > 0)
+            var list = entry.List;
+            var count = list.Count;
+            if (count == 0)
             {
-                entry.List.RemoveAt(entry.List.Count - 1);
-                entry.Version++; // Under lock, simple increment is fine
-
-                var newCount = entry.List.Count;
-                Counts[contract] = newCount;
-
-                // Remove empty entries
-                if (newCount == 0)
-                {
-                    Entries.TryRemove(contract, out _);
-                    Counts.TryRemove(contract, out _);
-                }
+                return;
             }
+
+            list.RemoveAt(count - 1);
+            entry.Version++;
+
+            becameEmpty = list.Count == 0;
+
+            if (becameEmpty)
+            {
+                // Publish an empty snapshot aligned with the new version so reads become lock-free fast-exit.
+                entry.Snapshot = [];
+                entry.SnapshotVersion = entry.Version;
+            }
+        }
+
+        if (becameEmpty)
+        {
+            Entries.TryRemove(key, out _);
         }
     }
 
     /// <summary>
-    /// Clears all service registrations for a specific contract.
+    /// Clears all registrations for a specific contract.
     /// </summary>
-    /// <param name="contract">The contract name.</param>
+    /// <param name="contract">
+    /// The contract name. For compatibility, <see langword="null"/> is treated as the default contract.
+    /// </param>
     public static void Clear(string contract)
     {
-        Entries.TryRemove(contract, out _);
-        Counts.TryRemove(contract, out _);
+        var key = NormalizeContract(contract);
+        Entries.TryRemove(key, out _);
     }
 
     /// <summary>
-    /// Clears all service registrations for all contracts.
-    /// Note: Threads that have already obtained an Entry reference from Entries.TryGetValue
-    /// may continue to resolve from the old entry snapshot until they attempt a new lookup.
-    /// This is acceptable for DI containers where Clear operations are typically stop-the-world
-    /// operations invoked during teardown or test cleanup.
+    /// Clears all registrations for all contracts.
     /// </summary>
-    public static void ClearAll()
+    public static void ClearAll() => Entries.Clear();
+
+    /// <summary>
+    /// Returns whether a contract has any registrations.
+    /// </summary>
+    /// <param name="contract">
+    /// The contract name. For compatibility, <see langword="null"/> is treated as the default contract.
+    /// </param>
+    /// <returns><see langword="true"/> when the contract has at least one registration; otherwise <see langword="false"/>.</returns>
+    public static bool HasRegistrations(string contract)
     {
-        Entries.Clear();
-        Counts.Clear();
+        var key = NormalizeContract(contract);
+
+        if (!Entries.TryGetValue(key, out var entry))
+        {
+            return false;
+        }
+
+        var snapshot = Volatile.Read(ref entry.Snapshot);
+        if (snapshot is not null)
+        {
+            return snapshot.Length != 0;
+        }
+
+        lock (entry.Gate)
+        {
+            return entry.List.Count != 0;
+        }
     }
 
     /// <summary>
-    /// Checks if there are any registrations for a specific contract.
-    /// Fast path using count check to avoid lock acquisition.
+    /// Gets the number of registrations for a contract without invoking any factories.
     /// </summary>
-    /// <param name="contract">The contract name.</param>
-    /// <returns>True if registrations exist for the contract; otherwise false.</returns>
-    public static bool HasRegistrations(string contract) => Counts.TryGetValue(contract, out var count) && count > 0;
-
-    /// <summary>
-    /// Gets the count of registrations for a specific contract without invoking any factories.
-    /// </summary>
-    /// <param name="contract">The contract name.</param>
+    /// <param name="contract">
+    /// The contract name. For compatibility, <see langword="null"/> is treated as the default contract.
+    /// </param>
     /// <returns>The number of registrations for the contract.</returns>
-    public static int GetCount(string contract) => Counts.TryGetValue(contract, out var count) ? count : 0;
+    public static int GetCount(string contract)
+    {
+        var key = NormalizeContract(contract);
+
+        if (!Entries.TryGetValue(key, out var entry))
+        {
+            return 0;
+        }
+
+        var snapshot = Volatile.Read(ref entry.Snapshot);
+        if (snapshot is not null)
+        {
+            return snapshot.Length;
+        }
+
+        lock (entry.Gate)
+        {
+            return entry.List.Count;
+        }
+    }
 
     /// <summary>
-    /// Ensures the snapshot is current, rebuilding if stale.
-    /// Uses volatile semantics for lock-free fast path.
+    /// Ensures the snapshot for an entry is current, rebuilding it if stale.
     /// </summary>
+    /// <param name="entry">Entry containing the mutable list and snapshot/version metadata.</param>
+    /// <returns>A snapshot of the current registration list.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static Registration<T>[] EnsureSnapshot(ArrayHelpers.Entry<Registration<T>> entry)
     {
-        // Lock-free fast path: check if snapshot is current
-        var snapshot = Volatile.Read(ref entry.Snapshot);
         var version = Volatile.Read(ref entry.Version);
-        var snapshotVersion = Volatile.Read(ref entry.SnapshotVersion);
+        var snapshot = Volatile.Read(ref entry.Snapshot);
 
-        if (snapshot != null && snapshotVersion == version)
+        if (snapshot is not null && Volatile.Read(ref entry.SnapshotVersion) == version)
         {
             return snapshot;
         }
 
-        // Snapshot is stale, rebuild under lock
-        lock (entry)
+        lock (entry.Gate)
         {
-            // Double-check after acquiring lock
-            snapshot = Volatile.Read(ref entry.Snapshot);
-            version = Volatile.Read(ref entry.Version);
-            snapshotVersion = Volatile.Read(ref entry.SnapshotVersion);
+            snapshot = entry.Snapshot;
+            var currentVersion = entry.Version;
 
-            if (snapshot == null || snapshotVersion != version)
+            if (snapshot is null || entry.SnapshotVersion != currentVersion)
             {
-                Registration<T>[] newSnapshot = [.. entry.List];
-
-                // Publish snapshot with proper memory ordering
-                Volatile.Write(ref entry.Snapshot, newSnapshot);
-                Volatile.Write(ref entry.SnapshotVersion, version);
-
+                Registration<T>[] newSnapshot = entry.List.Count == 0 ? [] : [.. entry.List];
+                entry.Snapshot = newSnapshot;
+                entry.SnapshotVersion = currentVersion;
                 return newSnapshot;
             }
 
             return snapshot;
         }
     }
+
+    /// <summary>
+    /// Normalizes a contract key for internal storage and lookup.
+    /// </summary>
+    /// <param name="contract">Contract string, possibly <see langword="null"/>.</param>
+    /// <returns>The normalized contract key. Never <see langword="null"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static string NormalizeContract(string? contract) => contract ?? string.Empty;
 }

@@ -9,302 +9,288 @@ using System.Runtime.CompilerServices;
 namespace Splat;
 
 /// <summary>
-/// Non-generic registry for service types accessed via reflection or Type parameters.
+/// Non-generic registry for service types accessed via reflection or <see cref="Type"/> parameters.
 /// Tracks which types have been registered via non-generic APIs for fallback lookups.
-/// Uses versioned Entry pattern for O(1) registration and lazy snapshot rebuild.
-/// Lock-free reads via ConcurrentDictionary, per-entry locks for snapshot rebuilds.
 /// </summary>
+/// <remarks>
+/// Uses per-entry versioned snapshots for lock-free reads and per-entry gates for mutation.
+/// </remarks>
 internal static class ServiceTypeRegistry
 {
 #if NET9_0_OR_GREATER
-    private static readonly Lock NonGenericLock = new();
+    private static readonly Lock NonGenericGate = new();
 #else
-    private static readonly object NonGenericLock = new();
+    private static readonly object NonGenericGate = new();
 #endif
-    private static readonly ConcurrentDictionary<(Type, string?), ArrayHelpers.Entry<Func<object?>>> Entries = [];
-    private static readonly HashSet<(Type, string?)> NonGenericRegistrationSet = [];
 
-    private static HashSet<(Type, string?)> NonGenericRegistrations = [];
-    private static bool _hasAnyNonGenericRegistrations;
+    private static readonly ConcurrentDictionary<(Type ServiceType, string Contract), ArrayHelpers.Entry<Func<object?>>> Entries = [];
+
+    private static readonly HashSet<(Type ServiceType, string Contract)> NonGenericRegistrationSet = [];
+    private static HashSet<(Type ServiceType, string Contract)> NonGenericRegistrations = [];
 
     /// <summary>
-    /// Tracks that a type was registered via non-generic API.
+    /// Tracks that a type was registered via the non-generic API.
     /// </summary>
-    /// <param name="serviceType">The service type.</param>
-    /// <param name="contract">Optional contract name.</param>
     public static void TrackNonGenericRegistration(Type serviceType, string? contract = null)
     {
-        lock (NonGenericLock)
+        ArgumentExceptionHelper.ThrowIfNull(serviceType);
+
+        var key = (serviceType, NormalizeContract(contract));
+
+        lock (NonGenericGate)
         {
-            NonGenericRegistrationSet.Add((serviceType, contract));
-            RefreshNonGenericSnapshot();
-            Volatile.Write(ref _hasAnyNonGenericRegistrations, true);
+            NonGenericRegistrationSet.Add(key);
+            PublishNonGenericSnapshot_NoThrow();
         }
     }
 
     /// <summary>
     /// Checks if a type has non-generic registrations.
-    /// Fast path using global flag to avoid HashSet lookup when empty.
     /// </summary>
-    /// <param name="serviceType">The service type.</param>
-    /// <param name="contract">Optional contract name.</param>
-    /// <returns>True if the type was registered via non-generic API; otherwise false.</returns>
     public static bool HasNonGenericRegistrations(Type serviceType, string? contract = null)
     {
-        // Fast path: avoid HashSet lookup if there are no non-generic registrations at all
-        if (!Volatile.Read(ref _hasAnyNonGenericRegistrations))
-        {
-            return false;
-        }
+        ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
         var snapshot = Volatile.Read(ref NonGenericRegistrations);
-        return snapshot.Contains((serviceType, contract));
+        return snapshot.Count != 0 && snapshot.Contains((serviceType, NormalizeContract(contract)));
     }
 
     /// <summary>
     /// Registers a factory for a service type.
-    /// Snapshot rebuild is deferred until first read - O(1) operation.
     /// </summary>
-    /// <param name="serviceType">The service type.</param>
-    /// <param name="factory">The factory function.</param>
-    /// <param name="contract">Optional contract name.</param>
     public static void Register(Type serviceType, Func<object?> factory, string? contract = null)
     {
-        var key = (serviceType, contract);
-        var entry = Entries.GetOrAdd(key, _ => new());
+        ArgumentExceptionHelper.ThrowIfNull(serviceType);
+        ArgumentExceptionHelper.ThrowIfNull(factory);
 
-        lock (entry)
+        var key = (serviceType, NormalizeContract(contract));
+        var entry = Entries.GetOrAdd(key, static _ => new());
+
+        lock (entry.Gate)
         {
             entry.List.Add(factory);
-            entry.Version++; // Under lock, simple increment is fine
+            entry.Version++;
         }
     }
 
     /// <summary>
-    /// Gets the most recent service registration.
-    /// Rebuilds snapshot lazily if stale. Lock-free fast path for reads.
+    /// Gets the most recent service registration (last registration wins).
     /// </summary>
-    /// <param name="serviceType">The service type.</param>
-    /// <param name="contract">Optional contract name.</param>
-    /// <returns>The service instance or null.</returns>
     public static object? GetService(Type serviceType, string? contract = null)
     {
-        if (!Entries.TryGetValue((serviceType, contract), out var entry))
+        ArgumentExceptionHelper.ThrowIfNull(serviceType);
+
+        if (!Entries.TryGetValue((serviceType, NormalizeContract(contract)), out var entry))
         {
             return null;
         }
 
         var factories = EnsureSnapshot(entry);
-
-        if (factories.Length == 0)
-        {
-            return null;
-        }
-
-        return factories[factories.Length - 1]();
+        return factories.Length == 0 ? null : factories[factories.Length - 1]();
     }
 
     /// <summary>
-    /// Gets all registered services as a materialized array.
-    /// Rebuilds snapshot lazily if stale. Lock-free fast path for reads.
+    /// Gets all registered services for a type.
     /// </summary>
-    /// <param name="serviceType">The service type.</param>
-    /// <param name="contract">Optional contract name.</param>
-    /// <returns>An array of all registered services.</returns>
     public static object[] GetServices(Type serviceType, string? contract = null)
     {
-        if (!Entries.TryGetValue((serviceType, contract), out var entry))
+        ArgumentExceptionHelper.ThrowIfNull(serviceType);
+
+        if (!Entries.TryGetValue((serviceType, NormalizeContract(contract)), out var entry))
         {
             return [];
         }
 
         var factories = EnsureSnapshot(entry);
-        return Materialize(factories);
+        return factories.Length == 0 ? [] : Materialize(factories);
     }
 
     /// <summary>
-    /// Checks if there are any registrations for a service type.
+    /// Returns whether any registrations exist.
     /// </summary>
-    /// <param name="serviceType">The service type.</param>
-    /// <param name="contract">Optional contract name.</param>
-    /// <returns>True if registrations exist; otherwise false.</returns>
     public static bool HasRegistration(Type serviceType, string? contract = null)
     {
-        if (!Entries.TryGetValue((serviceType, contract), out var entry))
+        ArgumentExceptionHelper.ThrowIfNull(serviceType);
+
+        if (!Entries.TryGetValue((serviceType, NormalizeContract(contract)), out var entry))
         {
             return false;
         }
 
-        // Lock to avoid data race on List.Count
-        lock (entry)
+        var snapshot = Volatile.Read(ref entry.Snapshot);
+        if (snapshot is not null)
         {
-            return entry.List.Count > 0;
+            return snapshot.Length != 0;
+        }
+
+        lock (entry.Gate)
+        {
+            return entry.List.Count != 0;
         }
     }
 
     /// <summary>
-    /// Gets the count of registrations for a service type without invoking any factories.
+    /// Gets the number of registrations for a type.
     /// </summary>
-    /// <param name="serviceType">The service type.</param>
-    /// <param name="contract">Optional contract name.</param>
-    /// <returns>The number of registrations.</returns>
     public static int GetCount(Type serviceType, string? contract = null)
     {
-        if (!Entries.TryGetValue((serviceType, contract), out var entry))
+        ArgumentExceptionHelper.ThrowIfNull(serviceType);
+
+        if (!Entries.TryGetValue((serviceType, NormalizeContract(contract)), out var entry))
         {
             return 0;
         }
 
-        // Lock to avoid data race on List.Count
-        lock (entry)
+        var snapshot = Volatile.Read(ref entry.Snapshot);
+        if (snapshot is not null)
+        {
+            return snapshot.Length;
+        }
+
+        lock (entry.Gate)
         {
             return entry.List.Count;
         }
     }
 
     /// <summary>
-    /// Removes the most recent service registration.
-    /// Snapshot rebuild is deferred until first read.
-    /// Also removes from NonGenericRegistrationSet if entry becomes empty.
+    /// Removes the most recent registration.
     /// </summary>
-    /// <param name="serviceType">The service type.</param>
-    /// <param name="contract">Optional contract name.</param>
     public static void UnregisterCurrent(Type serviceType, string? contract = null)
     {
-        var key = (serviceType, contract);
+        ArgumentExceptionHelper.ThrowIfNull(serviceType);
+
+        var key = (serviceType, NormalizeContract(contract));
+
         if (!Entries.TryGetValue(key, out var entry))
         {
             return;
         }
 
-        bool shouldRemoveTracking = false;
+        var becameEmpty = false;
 
-        lock (entry)
+        lock (entry.Gate)
         {
-            if (entry.List.Count > 0)
+            var list = entry.List;
+            if (list.Count == 0)
             {
-                entry.List.RemoveAt(entry.List.Count - 1);
-                entry.Version++; // Under lock, simple increment is fine
-
-                // Remove empty entries
-                if (entry.List.Count == 0)
-                {
-                    Entries.TryRemove(key, out _);
-                    shouldRemoveTracking = true;
-                }
+                return;
             }
+
+            list.RemoveAt(list.Count - 1);
+            entry.Version++;
+            becameEmpty = list.Count == 0;
         }
 
-        // Remove from tracking set to avoid permanent "tax" on this type
-        if (shouldRemoveTracking)
+        if (becameEmpty)
         {
-            lock (NonGenericLock)
+            Entries.TryRemove(key, out _);
+
+            lock (NonGenericGate)
             {
                 NonGenericRegistrationSet.Remove(key);
-                RefreshNonGenericSnapshot();
+                PublishNonGenericSnapshot_NoThrow();
             }
         }
     }
 
     /// <summary>
-    /// Removes all service registrations for a type.
-    /// Also removes from NonGenericRegistrationSet to avoid permanent "tax".
+    /// Removes all registrations for a type.
     /// </summary>
-    /// <param name="serviceType">The service type.</param>
-    /// <param name="contract">Optional contract name.</param>
     public static void UnregisterAll(Type serviceType, string? contract = null)
     {
-        var key = (serviceType, contract);
-        bool removed = Entries.TryRemove(key, out _);
+        ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
-        // Remove from tracking set to avoid permanent "tax" on this type
-        if (removed)
+        var key = (serviceType, NormalizeContract(contract));
+
+        if (!Entries.TryRemove(key, out _))
         {
-            lock (NonGenericLock)
-            {
-                NonGenericRegistrationSet.Remove(key);
-                RefreshNonGenericSnapshot();
-            }
+            return;
+        }
+
+        lock (NonGenericGate)
+        {
+            NonGenericRegistrationSet.Remove(key);
+            PublishNonGenericSnapshot_NoThrow();
         }
     }
 
     /// <summary>
-    /// Clears all service registrations from the registry.
-    /// Note: Threads that have already obtained an Entry reference from Entries.TryGetValue
-    /// may continue to resolve from the old entry snapshot until they attempt a new lookup.
-    /// The NonGenericRegistrations snapshot is published with volatile semantics for visibility.
-    /// This is acceptable for DI containers where Clear operations are typically stop-the-world
-    /// operations invoked during teardown or test cleanup.
+    /// Clears all registrations.
     /// </summary>
     public static void Clear()
     {
         Entries.Clear();
 
-        lock (NonGenericLock)
+        lock (NonGenericGate)
         {
             NonGenericRegistrationSet.Clear();
             Volatile.Write(ref NonGenericRegistrations, []);
-            Volatile.Write(ref _hasAnyNonGenericRegistrations, false);
         }
     }
 
     /// <summary>
-    /// Gets all registered factories for disposal purposes.
-    /// Returns a snapshot of all factories at the time of call.
+    /// Returns a snapshot of all registered factories for disposal.
     /// </summary>
-    /// <returns>An enumerable of all registered factories.</returns>
-    public static IEnumerable<Func<object?>> GetAllFactoriesForDisposal()
+    public static Func<object?>[] GetAllFactoriesForDisposal()
     {
-        // Take a snapshot of entries to avoid issues if dictionary is modified during disposal
-        KeyValuePair<(Type, string?), ArrayHelpers.Entry<Func<object?>>>[] entriesSnapshot = [.. Entries];
+        var entriesSnapshot = Entries.ToArray();
 
-        var allFactories = new List<Func<object?>>(entriesSnapshot.Length * 2);
-
-        foreach (var kvp in entriesSnapshot)
+        var total = 0;
+        for (var i = 0; i < entriesSnapshot.Length; i++)
         {
-            var entry = kvp.Value;
-            lock (entry)
+            var entry = entriesSnapshot[i].Value;
+            lock (entry.Gate)
             {
-                allFactories.AddRange(entry.List);
+                total += entry.List.Count;
             }
         }
 
-        return allFactories;
+        if (total == 0)
+        {
+            return [];
+        }
+
+        var result = new Func<object?>[total];
+        var idx = 0;
+
+        for (var i = 0; i < entriesSnapshot.Length; i++)
+        {
+            var entry = entriesSnapshot[i].Value;
+            lock (entry.Gate)
+            {
+                var list = entry.List;
+                for (var j = 0; j < list.Count; j++)
+                {
+                    result[idx++] = list[j];
+                }
+            }
+        }
+
+        return result;
     }
 
-    /// <summary>
-    /// Ensures the snapshot is current, rebuilding if stale.
-    /// Uses volatile semantics for lock-free fast path.
-    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static Func<object?>[] EnsureSnapshot(ArrayHelpers.Entry<Func<object?>> entry)
     {
-        // Lock-free fast path: check if snapshot is current
-        var snapshot = Volatile.Read(ref entry.Snapshot);
         var version = Volatile.Read(ref entry.Version);
-        var snapshotVersion = Volatile.Read(ref entry.SnapshotVersion);
+        var snapshot = Volatile.Read(ref entry.Snapshot);
 
-        if (snapshot != null && snapshotVersion == version)
+        if (snapshot is not null && Volatile.Read(ref entry.SnapshotVersion) == version)
         {
             return snapshot;
         }
 
-        // Snapshot is stale, rebuild under lock
-        lock (entry)
+        lock (entry.Gate)
         {
-            // Double-check after acquiring lock
-            snapshot = Volatile.Read(ref entry.Snapshot);
-            version = Volatile.Read(ref entry.Version);
-            snapshotVersion = Volatile.Read(ref entry.SnapshotVersion);
+            snapshot = entry.Snapshot;
+            var currentVersion = entry.Version;
 
-            if (snapshot == null || snapshotVersion != version)
+            if (snapshot is null || entry.SnapshotVersion != currentVersion)
             {
-                Func<object?>[] newSnapshot = [.. entry.List];
-
-                // Publish snapshot with proper memory ordering
-                Volatile.Write(ref entry.Snapshot, newSnapshot);
-                Volatile.Write(ref entry.SnapshotVersion, version);
-
+                Func<object?>[] newSnapshot = entry.List.Count == 0 ? [] : [.. entry.List];
+                entry.Snapshot = newSnapshot;
+                entry.SnapshotVersion = currentVersion;
                 return newSnapshot;
             }
 
@@ -314,18 +300,39 @@ internal static class ServiceTypeRegistry
 
     private static object[] Materialize(Func<object?>[] factories)
     {
-        var results = new List<object>(factories.Length);
-        foreach (var factory in factories)
+        var tmp = new object[factories.Length];
+        var idx = 0;
+
+        for (var i = 0; i < factories.Length; i++)
         {
-            var value = factory();
+            var value = factories[i]();
             if (value is not null)
             {
-                results.Add(value);
+                tmp[idx++] = value;
             }
         }
 
-        return [.. results];
+        if (idx == 0)
+        {
+            return [];
+        }
+
+        if (idx == tmp.Length)
+        {
+            return tmp;
+        }
+
+        var result = new object[idx];
+        Array.Copy(tmp, result, idx);
+        return result;
     }
 
-    private static void RefreshNonGenericSnapshot() => Volatile.Write(ref NonGenericRegistrations, [.. NonGenericRegistrationSet]);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void PublishNonGenericSnapshot_NoThrow()
+    {
+        Volatile.Write(ref NonGenericRegistrations, [.. NonGenericRegistrationSet]);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static string NormalizeContract(string? contract) => contract ?? string.Empty;
 }

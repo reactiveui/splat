@@ -3,25 +3,37 @@
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace Splat;
 
 /// <summary>
-/// Helper methods for array operations and concurrent registry management in the GenericFirst resolver.
-/// Provides optimized implementations for array manipulation and snapshot-based registration patterns.
+/// Helper methods for array operations and snapshot-based registration patterns used by GenericFirst resolvers.
 /// </summary>
+/// <remarks>
+/// <para>
+/// This type centralizes performance-sensitive patterns used throughout the resolver implementation:
+/// <list type="bullet">
+///   <item><description>Small array mutation helpers for legacy array-based storage.</description></item>
+///   <item><description>Materialization of <see cref="Registration{T}"/> into concrete instances.</description></item>
+///   <item><description>Snapshotting patterns for O(1) writes and amortized O(n) reads using <see cref="Entry{TValue}"/>.</description></item>
+/// </list>
+/// </para>
+/// <para>
+/// Threading: the dictionary-based methods assume the caller holds an appropriate lock for the provided dictionary.
+/// The <see cref="Entry{TValue}.Gate"/> exists for per-entry synchronization when used in concurrent dictionaries.
+/// </para>
+/// </remarks>
 internal static class ArrayHelpers
 {
     /// <summary>
-    /// Appends a new registration to an existing array, creating a new array if null.
-    /// This is used for legacy array-based registration patterns.
+    /// Appends a registration to an existing array, creating a new array if the input is <see langword="null"/>.
     /// </summary>
-    /// <typeparam name="T">The service type.</typeparam>
-    /// <param name="current">The current array of registrations, or null.</param>
-    /// <param name="newItem">The new registration to append.</param>
-    /// <returns>A new array containing all previous items plus the new item.</returns>
+    /// <typeparam name="T">Service type for the registration.</typeparam>
+    /// <param name="current">Existing array of registrations, or <see langword="null"/>.</param>
+    /// <param name="newItem">Registration to append.</param>
+    /// <returns>A new array containing all prior items followed by <paramref name="newItem"/>.</returns>
 #if NET8_0_OR_GREATER
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
 #else
@@ -29,26 +41,27 @@ internal static class ArrayHelpers
 #endif
     public static Registration<T>[] AppendNullable<T>(Registration<T>[]? current, Registration<T> newItem)
     {
-        if (current == null)
+        if (current is null)
         {
             return [newItem];
         }
 
-        // Create new array with space for one more item
-        var newArray = new Registration<T>[current.Length + 1];
-        Array.Copy(current, newArray, current.Length);
-        newArray[newArray.Length - 1] = newItem;
+        var len = current.Length;
+        var newArray = new Registration<T>[len + 1];
+        Array.Copy(current, newArray, len);
+        newArray[len] = newItem;
         return newArray;
     }
 
     /// <summary>
-    /// Removes the last item from an array, returning a new array.
-    /// Returns an empty array if the input is null, empty, or has only one item.
-    /// This is used for legacy array-based unregistration patterns.
+    /// Removes the last element from an array, returning a new array.
     /// </summary>
-    /// <typeparam name="T">The array element type.</typeparam>
-    /// <param name="current">The current array, or null.</param>
-    /// <returns>A new array with the last item removed, or an empty array.</returns>
+    /// <typeparam name="T">Element type.</typeparam>
+    /// <param name="current">Current array, or <see langword="null"/>.</param>
+    /// <returns>
+    /// An empty array when <paramref name="current"/> is <see langword="null"/>, empty, or length 1;
+    /// otherwise, a new array containing all elements except the last.
+    /// </returns>
 #if NET8_0_OR_GREATER
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
 #else
@@ -56,30 +69,32 @@ internal static class ArrayHelpers
 #endif
     public static T[] RemoveLast<T>(T[]? current)
     {
-        if (current is null || current.Length == 0)
-        {
-            return current ?? [];
-        }
-
-        if (current.Length == 1)
+        if (current is null || current.Length <= 1)
         {
             return [];
         }
 
-        // Copy all but the last item
-        var newArray = new T[current.Length - 1];
-        Array.Copy(current, newArray, current.Length - 1);
+        var newLen = current.Length - 1;
+        var newArray = new T[newLen];
+        Array.Copy(current, newArray, newLen);
         return newArray;
     }
 
     /// <summary>
-    /// Materializes all registrations by invoking factories and collecting non-null instances.
-    /// This converts an array of registrations (which can be instances or factories) into
-    /// an array of actual service instances, filtering out any null results.
+    /// Materializes registrations by invoking factories and collecting non-null results.
     /// </summary>
     /// <typeparam name="T">The service type.</typeparam>
-    /// <param name="registrations">The array of registrations to materialize.</param>
-    /// <returns>An array of non-null service instances.</returns>
+    /// <param name="registrations">Registrations to materialize.</param>
+    /// <returns>An array of materialized, non-null instances.</returns>
+    /// <remarks>
+    /// <para>
+    /// Factories are invoked exactly once per factory registration.
+    /// </para>
+    /// <para>
+    /// Any exception thrown by a factory is not caught and will propagate to the caller.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="registrations"/> is <see langword="null"/>.</exception>
 #if NET8_0_OR_GREATER
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
 #else
@@ -87,46 +102,75 @@ internal static class ArrayHelpers
 #endif
     public static T[] MaterializeRegistrations<T>(Registration<T>[] registrations)
     {
-        var results = new List<T>(registrations.Length);
-        foreach (var reg in registrations)
+        ArgumentExceptionHelper.ThrowIfNull(registrations);
+
+        // Fast exit.
+        if (registrations.Length == 0)
         {
-            if (reg.IsFactory)
+            return [];
+        }
+
+        // Single-pass materialization:
+        // - Invoke each factory at most once.
+        // - Avoid List<T> allocations.
+        // - Allocate a temporary array at the maximum possible size, then shrink.
+        var tmp = new T[registrations.Length];
+        var idx = 0;
+
+        for (var i = 0; i < registrations.Length; i++)
+        {
+            ref readonly var reg = ref registrations[i];
+
+            // Prefer TryGetFactory for clarity and to avoid null-forgiving in the caller.
+            if (reg.TryGetFactory(out var factory))
             {
-                // Invoke factory and collect result if non-null
-                var factory = reg.GetFactory()!;
                 var value = factory.Invoke();
                 if (value is not null)
                 {
-                    results.Add(value);
+                    tmp[idx++] = value;
                 }
+
+                continue;
             }
-            else
+
+            // Instance registration path.
+            var instance = reg.GetInstance();
+            if (instance is not null)
             {
-                // Get instance directly if non-null
-                var instance = reg.GetInstance();
-                if (instance is not null)
-                {
-                    results.Add(instance);
-                }
+                tmp[idx++] = instance;
             }
         }
 
-        return [.. results];
+        if (idx == 0)
+        {
+            return [];
+        }
+
+        // If all registrations produced non-null values, return the buffer as-is.
+        if (idx == tmp.Length)
+        {
+            return tmp;
+        }
+
+        // Shrink to exact size.
+        var result = new T[idx];
+        Array.Copy(tmp, result, idx);
+        return result;
     }
 
     /// <summary>
     /// Adds an item to an entry's list and increments the version.
-    /// The snapshot is NOT rebuilt immediately - it will be lazily rebuilt on first read.
-    /// This makes registration O(1) instead of O(n).
     /// </summary>
-    /// <typeparam name="TKey">The key type for the dictionary.</typeparam>
-    /// <typeparam name="TValue">The value type being registered.</typeparam>
-    /// <param name="entries">The dictionary of versioned entries.</param>
-    /// <param name="key">The key to register under.</param>
-    /// <param name="value">The value to add.</param>
+    /// <typeparam name="TKey">Key type.</typeparam>
+    /// <typeparam name="TValue">Value type stored in the entry list.</typeparam>
+    /// <param name="entries">Dictionary of entries.</param>
+    /// <param name="key">Key under which to add the value.</param>
+    /// <param name="value">Value to add.</param>
     /// <remarks>
-    /// This method must be called under a lock to ensure thread-safety.
+    /// This method assumes the caller holds an appropriate lock for <paramref name="entries"/>.
+    /// The snapshot is not rebuilt; it is rebuilt lazily on read.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="entries"/> or <paramref name="key"/> is <see langword="null"/>.</exception>
 #if NET8_0_OR_GREATER
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
 #else
@@ -138,32 +182,32 @@ internal static class ArrayHelpers
         TValue value)
         where TKey : notnull
     {
-        // Get or create the entry for this key
+        ArgumentExceptionHelper.ThrowIfNull(entries);
+        ArgumentExceptionHelper.ThrowIfNull(key);
+
         if (!entries.TryGetValue(key, out var entry))
         {
             entry = new();
             entries[key] = entry;
         }
 
-        // Add to list and increment version - O(1)
         entry.List.Add(value);
         entry.Version++;
-
-        // Snapshot is NOT rebuilt here - deferred until read
     }
 
     /// <summary>
-    /// Gets the snapshot array for a key, lazily rebuilding if stale.
-    /// This is where the O(n) cost is paid - only when reading, and only once per version.
+    /// Gets the immutable snapshot array for a key, rebuilding it if stale.
     /// </summary>
-    /// <typeparam name="TKey">The key type for the dictionary.</typeparam>
-    /// <typeparam name="TValue">The value type being retrieved.</typeparam>
-    /// <param name="entries">The dictionary of versioned entries.</param>
-    /// <param name="key">The key to get the snapshot for.</param>
-    /// <returns>The immutable snapshot array, or empty array if key not found.</returns>
+    /// <typeparam name="TKey">Key type.</typeparam>
+    /// <typeparam name="TValue">Value type.</typeparam>
+    /// <param name="entries">Dictionary of entries.</param>
+    /// <param name="key">Key to retrieve.</param>
+    /// <returns>The snapshot array for the key, or an empty array when the key is not present.</returns>
     /// <remarks>
-    /// This method must be called under a lock to ensure thread-safety during snapshot rebuild.
+    /// This method assumes the caller holds an appropriate lock for <paramref name="entries"/>.
+    /// Snapshot rebuild cost is O(n) but occurs only once per version.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="entries"/> or <paramref name="key"/> is <see langword="null"/>.</exception>
 #if NET8_0_OR_GREATER
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
 #else
@@ -174,16 +218,17 @@ internal static class ArrayHelpers
         TKey key)
         where TKey : notnull
     {
+        ArgumentExceptionHelper.ThrowIfNull(entries);
+        ArgumentExceptionHelper.ThrowIfNull(key);
+
         if (!entries.TryGetValue(key, out var entry))
         {
             return [];
         }
 
-        // Check if snapshot needs rebuild
-        if (entry.Snapshot == null || entry.SnapshotVersion != entry.Version)
+        if (entry.Snapshot is null || entry.SnapshotVersion != entry.Version)
         {
-            // Rebuild snapshot from current list - O(n) but only once per version
-            entry.Snapshot = [.. entry.List];
+            entry.Snapshot = entry.List.Count == 0 ? [] : [.. entry.List];
             entry.SnapshotVersion = entry.Version;
         }
 
@@ -191,17 +236,17 @@ internal static class ArrayHelpers
     }
 
     /// <summary>
-    /// Removes the last item from an entry's list and increments the version.
-    /// If the list becomes empty, the entry is removed entirely.
-    /// The snapshot will be rebuilt lazily on next read.
+    /// Removes the last item from an entry list for a key. If the list becomes empty, removes the key entry.
     /// </summary>
-    /// <typeparam name="TKey">The key type for the dictionary.</typeparam>
-    /// <typeparam name="TValue">The value type being unregistered.</typeparam>
-    /// <param name="entries">The dictionary of versioned entries.</param>
-    /// <param name="key">The key to unregister from.</param>
+    /// <typeparam name="TKey">Key type.</typeparam>
+    /// <typeparam name="TValue">Value type.</typeparam>
+    /// <param name="entries">Dictionary of entries.</param>
+    /// <param name="key">Key to remove the current registration from.</param>
     /// <remarks>
-    /// This method must be called under a lock to ensure thread-safety.
+    /// This method assumes the caller holds an appropriate lock for <paramref name="entries"/>.
+    /// Snapshot is not rebuilt; it will be rebuilt lazily on next read.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="entries"/> or <paramref name="key"/> is <see langword="null"/>.</exception>
 #if NET8_0_OR_GREATER
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
 #else
@@ -212,32 +257,41 @@ internal static class ArrayHelpers
         TKey key)
         where TKey : notnull
     {
-        if (entries.TryGetValue(key, out var entry) && entry.List.Count > 0)
+        ArgumentExceptionHelper.ThrowIfNull(entries);
+        ArgumentExceptionHelper.ThrowIfNull(key);
+
+        if (!entries.TryGetValue(key, out var entry))
         {
-            // Remove last item and increment version
-            entry.List.RemoveAt(entry.List.Count - 1);
-            entry.Version++;
+            return;
+        }
 
-            // Remove empty entries
-            if (entry.List.Count == 0)
-            {
-                entries.Remove(key);
-            }
+        var list = entry.List;
+        var count = list.Count;
+        if (count == 0)
+        {
+            return;
+        }
 
-            // Snapshot will be rebuilt lazily on next read
+        list.RemoveAt(count - 1);
+        entry.Version++;
+
+        if (list.Count == 0)
+        {
+            entries.Remove(key);
         }
     }
 
     /// <summary>
     /// Removes all registrations for a key by removing the entry entirely.
     /// </summary>
-    /// <typeparam name="TKey">The key type for the dictionary.</typeparam>
-    /// <typeparam name="TValue">The value type being unregistered.</typeparam>
-    /// <param name="entries">The dictionary of versioned entries.</param>
-    /// <param name="key">The key to remove all registrations for.</param>
+    /// <typeparam name="TKey">Key type.</typeparam>
+    /// <typeparam name="TValue">Value type.</typeparam>
+    /// <param name="entries">Dictionary of entries.</param>
+    /// <param name="key">Key to remove.</param>
     /// <remarks>
-    /// This method must be called under a lock to ensure thread-safety.
+    /// This method assumes the caller holds an appropriate lock for <paramref name="entries"/>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="entries"/> or <paramref name="key"/> is <see langword="null"/>.</exception>
 #if NET8_0_OR_GREATER
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
 #else
@@ -248,18 +302,22 @@ internal static class ArrayHelpers
         TKey key)
         where TKey : notnull
     {
+        ArgumentExceptionHelper.ThrowIfNull(entries);
+        ArgumentExceptionHelper.ThrowIfNull(key);
+
         entries.Remove(key);
     }
 
     /// <summary>
     /// Clears all registrations from the entries dictionary.
     /// </summary>
-    /// <typeparam name="TKey">The key type for the dictionary.</typeparam>
-    /// <typeparam name="TValue">The value type.</typeparam>
-    /// <param name="entries">The dictionary of versioned entries to clear.</param>
+    /// <typeparam name="TKey">Key type.</typeparam>
+    /// <typeparam name="TValue">Value type.</typeparam>
+    /// <param name="entries">Dictionary to clear.</param>
     /// <remarks>
-    /// This method must be called under a lock to ensure thread-safety.
+    /// This method assumes the caller holds an appropriate lock for <paramref name="entries"/>.
     /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="entries"/> is <see langword="null"/>.</exception>
 #if NET8_0_OR_GREATER
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
 #else
@@ -269,37 +327,56 @@ internal static class ArrayHelpers
         Dictionary<TKey, Entry<TValue>> entries)
         where TKey : notnull
     {
+        ArgumentExceptionHelper.ThrowIfNull(entries);
         entries.Clear();
     }
 
     /// <summary>
     /// Entry that tracks a mutable list with a lazily-updated immutable snapshot.
-    /// Uses versioning to defer snapshot rebuilds until read - O(1) writes, amortized O(n) reads.
-    /// This is a mutable class for performance - one allocation per key, not per mutation.
-    /// Fields (not properties) to support Volatile.Read/Write with ref.
     /// </summary>
-    /// <typeparam name="TValue">The type of values stored in the entry.</typeparam>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:Fields should be private", Justification = "Needed for volatile read/writes")]
+    /// <remarks>
+    /// <para>
+    /// Writes are O(1): callers append/remove items and increment <see cref="Version"/> under the appropriate synchronization.
+    /// Reads can be O(n) when rebuilding the snapshot, but only once per version.
+    /// </para>
+    /// <para>
+    /// When used in concurrent containers, <see cref="Gate"/> should be used with <c>lock(Gate)</c>.
+    /// On .NET 9+ the runtime will use fast-locking when <see cref="Gate"/> is a Lock class.
+    /// </para>
+    /// </remarks>
+    /// <typeparam name="TValue">The value type stored in the entry.</typeparam>
+    [SuppressMessage(
+        "StyleCop.CSharp.MaintainabilityRules",
+        "SA1401:Fields should be private",
+        Justification = "Needed for by-ref and volatile patterns; encapsulation would add overhead.")]
     internal sealed class Entry<TValue>
     {
         /// <summary>
-        /// The mutable list for O(1) append operations.
+        /// Per-entry gate used for synchronizing mutations and snapshot rebuilds.
+        /// </summary>
+#if NET9_0_OR_GREATER
+        public readonly Lock Gate = new();
+#else
+        public readonly object Gate = new();
+#endif
+
+        /// <summary>
+        /// Mutable list of values. Mutate only under the associated lock.
         /// </summary>
         public readonly List<TValue> List = new(4);
 
         /// <summary>
-        /// The immutable snapshot array for lock-free reads.
-        /// Null if snapshot has never been built.
+        /// Immutable snapshot of <see cref="List"/>. May be <see langword="null"/> until first built.
         /// </summary>
         public TValue[]? Snapshot;
 
         /// <summary>
-        /// The current version, incremented on every mutation.
+        /// Current version, incremented on every mutation.
         /// </summary>
         public int Version;
 
         /// <summary>
-        /// The version when the snapshot was last built.
+        /// Version corresponding to the current <see cref="Snapshot"/>.
         /// </summary>
         public int SnapshotVersion;
     }

@@ -3,6 +3,7 @@
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using Splat.Common.Test;
 using Splat.Microsoft.Extensions.DependencyInjection;
 
@@ -72,6 +73,7 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [ExcludeFromCodeCoverage]
     public override Task ServiceRegistrationCallback_Generic_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
@@ -84,6 +86,7 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [ExcludeFromCodeCoverage]
     public override Task ServiceRegistrationCallback_Generic_WithExistingRegistration_InvokesImmediately()
     {
         var resolver = GetDependencyResolver();
@@ -96,6 +99,7 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [ExcludeFromCodeCoverage]
     public override Task ServiceRegistrationCallback_Generic_WithContract_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
@@ -108,6 +112,7 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [ExcludeFromCodeCoverage]
     public override Task ServiceRegistrationCallback_NonGeneric_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
@@ -120,6 +125,7 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [ExcludeFromCodeCoverage]
     public override Task ServiceRegistrationCallback_NonGeneric_WithContract_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
@@ -132,6 +138,7 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [ExcludeFromCodeCoverage]
     public override Task ServiceRegistrationCallback_Disposal_StopsReceivingNotifications()
     {
         var resolver = GetDependencyResolver();
@@ -144,6 +151,7 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [ExcludeFromCodeCoverage]
     public override async Task ServiceRegistrationCallback_NullCallback_Throws()
     {
         var resolver = GetDependencyResolver();
@@ -157,34 +165,81 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     }
 
     /// <summary>
+    /// Verifies that ServiceRegistrationCallback invokes for each throws NotImplementedException for MS.DI.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    [ExcludeFromCodeCoverage]
+    public override Task ServiceRegistrationCallback_Generic_InvokesForEachExistingRegistration()
+    {
+        var resolver = GetDependencyResolver();
+        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Verifies that Register after dispose throws NotImplementedException for MS.DI (due to callbacks not implemented).
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    [ExcludeFromCodeCoverage]
+    public override Task Register_AfterDispose_DoesNotInvokeCallbacks()
+    {
+        var resolver = GetDependencyResolver();
+
+        // Since ServiceRegistrationCallback throws, we verify that instead of the full test flow
+        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Verifies that Dispose suppresses exceptions from callbacks (NotApplicable for MS.DI as callbacks throw).
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    [ExcludeFromCodeCoverage]
+    public override Task Dispose_SuppressesExceptionsFromCallbacks()
+    {
+        var resolver = GetDependencyResolver();
+        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
     /// MS.DI doesn't invoke callbacks on disposal.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public override Task Dispose_InvokesCallbacks() =>
-
+    [ExcludeFromCodeCoverage]
+    public override Task Dispose_InvokesCallbacks()
+    {
         // MS.DI ServiceRegistrationCallback throws NotImplementedException, so this test doesn't apply
-        Task.CompletedTask;
+        return Task.CompletedTask;
+    }
 
     /// <summary>
     /// MS.DI manages disposal of registered services itself.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public override Task Dispose_DisposesRegisteredServices() =>
-
+    [ExcludeFromCodeCoverage]
+    public override Task Dispose_DisposesRegisteredServices()
+    {
         // MS.DI manages its own service disposal lifecycle
-        Task.CompletedTask;
+        return Task.CompletedTask;
+    }
 
     /// <summary>
     /// MS.DI handles lazy singletons itself.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public override Task Dispose_WithLazySingleton_DoesNotCreateIfNotAccessed() =>
-
+    [ExcludeFromCodeCoverage]
+    public override Task Dispose_WithLazySingleton_DoesNotCreateIfNotAccessed()
+    {
         // MS.DI manages lazy singleton creation and disposal
-        Task.CompletedTask;
+        return Task.CompletedTask;
+    }
 
     /// <inheritdoc />
     protected override MicrosoftDependencyResolver GetDependencyResolver() => new();

@@ -147,35 +147,6 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
     }
 
     /// <summary>
-    /// Test operations after disposal do not throw.
-    /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task AfterDispose_Operations_DoNotThrow()
-    {
-        var resolver = new ModernDependencyResolver();
-        resolver.Dispose();
-
-        await Assert.That(() =>
-        {
-            resolver.Register(() => new ViewModelOne());
-            return Task.CompletedTask;
-        }).ThrowsNothing();
-
-        await Assert.That(() =>
-        {
-            resolver.UnregisterCurrent<ViewModelOne>();
-            return Task.CompletedTask;
-        }).ThrowsNothing();
-
-        await Assert.That(() =>
-        {
-            _ = resolver.GetService<ViewModelOne>();
-            return Task.CompletedTask;
-        }).ThrowsNothing();
-    }
-
-    /// <summary>
     /// Test GetService returns null after disposal.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>

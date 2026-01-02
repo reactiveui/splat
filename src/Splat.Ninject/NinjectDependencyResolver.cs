@@ -144,7 +144,14 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         serviceType ??= NullServiceType.CachedType;
 
-        _ = kernel.Bind(serviceType).ToMethod(_ => factory()).Named(contract);
+        if (contract is null)
+        {
+            _ = kernel.Bind(serviceType).ToMethod(_ => factory());
+        }
+        else
+        {
+            _ = kernel.Bind(serviceType).ToMethod(_ => factory()).Named(contract);
+        }
     }
 
     /// <inheritdoc />
@@ -352,8 +359,17 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
         kernel.Bind<T>().ToMethod(_ => factory()!);
 
     /// <inheritdoc/>
-    public void Register<T>(Func<T?> factory, string? contract) =>
-        kernel.Bind<T>().ToMethod(_ => factory()!).Named(contract);
+    public void Register<T>(Func<T?> factory, string? contract)
+    {
+        if (contract is null)
+        {
+            kernel.Bind<T>().ToMethod(_ => factory()!);
+        }
+        else
+        {
+            kernel.Bind<T>().ToMethod(_ => factory()!).Named(contract);
+        }
+    }
 
     /// <inheritdoc/>
     public void UnregisterCurrent<T>() =>
@@ -388,8 +404,17 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     /// <inheritdoc/>
     public void Register<TService, TImplementation>(string? contract)
         where TService : class
-        where TImplementation : class, TService, new() =>
-        kernel.Bind<TService>().To<TImplementation>().Named(contract);
+        where TImplementation : class, TService, new()
+    {
+        if (contract is null)
+        {
+            kernel.Bind<TService>().To<TImplementation>();
+        }
+        else
+        {
+            kernel.Bind<TService>().To<TImplementation>().Named(contract);
+        }
+    }
 
     /// <inheritdoc/>
     public void RegisterConstant<T>(T? value)
@@ -406,7 +431,14 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         ArgumentExceptionHelper.ThrowIfNull(value);
 
-        kernel.Bind<T>().ToConstant(value).Named(contract);
+        if (contract is null)
+        {
+            kernel.Bind<T>().ToConstant(value);
+        }
+        else
+        {
+            kernel.Bind<T>().ToConstant(value).Named(contract);
+        }
     }
 
     /// <inheritdoc/>
@@ -424,7 +456,14 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         ArgumentExceptionHelper.ThrowIfNull(valueFactory);
 
-        kernel.Bind<T>().ToMethod(_ => valueFactory()!).InSingletonScope().Named(contract);
+        if (contract is null)
+        {
+            kernel.Bind<T>().ToMethod(_ => valueFactory()!).InSingletonScope();
+        }
+        else
+        {
+            kernel.Bind<T>().ToMethod(_ => valueFactory()!).InSingletonScope().Named(contract);
+        }
     }
 
     /// <inheritdoc />
