@@ -22,7 +22,8 @@ public sealed class FullLoggerExtensionsTests
     public async Task Debug_WithNullFunction_ThrowsArgumentNullException()
     {
         var logger = new WrappingFullLogger(new TextLogger());
-        await Assert.That(() => logger.Debug(null!)).Throws<ArgumentNullException>();
+        Func<string> nullFunc = null!;
+        await Assert.That(() => FullLoggerExtensions.Debug(logger, nullFunc)).Throws<ArgumentNullException>();
     }
 
     [Test]
@@ -69,7 +70,8 @@ public sealed class FullLoggerExtensionsTests
     public async Task DebugGeneric_WithNullFunction_ThrowsArgumentNullException()
     {
         var logger = new WrappingFullLogger(new TextLogger());
-        await Assert.That(() => logger.Debug<string>(null!)).Throws<ArgumentNullException>();
+        Func<string> nullFunc = null!;
+        await Assert.That(() => logger.Debug<string>(nullFunc)).Throws<ArgumentNullException>();
     }
 
     [Test]
@@ -114,7 +116,8 @@ public sealed class FullLoggerExtensionsTests
     public async Task DebugException_WithNullFunction_ThrowsArgumentNullException()
     {
         var logger = new WrappingFullLogger(new TextLogger());
-        await Assert.That(() => logger.DebugException(null!, new Exception())).Throws<ArgumentNullException>();
+        Func<string> nullFunc = null!;
+        await Assert.That(() => logger.DebugException(nullFunc, new Exception())).Throws<ArgumentNullException>();
     }
 
     [Test]
@@ -162,7 +165,8 @@ public sealed class FullLoggerExtensionsTests
     public async Task Info_WithNullFunction_ThrowsArgumentNullException()
     {
         var logger = new WrappingFullLogger(new TextLogger());
-        await Assert.That(() => logger.Info(null!)).Throws<ArgumentNullException>();
+        Func<string> nullFunc = null!;
+        await Assert.That(() => FullLoggerExtensions.Info(logger, nullFunc)).Throws<ArgumentNullException>();
     }
 
     [Test]
@@ -206,7 +210,8 @@ public sealed class FullLoggerExtensionsTests
     public async Task InfoGeneric_WithNullFunction_ThrowsArgumentNullException()
     {
         var logger = new WrappingFullLogger(new TextLogger());
-        await Assert.That(() => logger.Info<string>(null!)).Throws<ArgumentNullException>();
+        Func<string> nullFunc = null!;
+        await Assert.That(() => logger.Info<string>(nullFunc)).Throws<ArgumentNullException>();
     }
 
     [Test]
@@ -251,7 +256,8 @@ public sealed class FullLoggerExtensionsTests
     public async Task InfoException_WithNullFunction_ThrowsArgumentNullException()
     {
         var logger = new WrappingFullLogger(new TextLogger());
-        await Assert.That(() => logger.InfoException(null!, new Exception())).Throws<ArgumentNullException>();
+        Func<string> nullFunc = null!;
+        await Assert.That(() => logger.InfoException(nullFunc, new Exception())).Throws<ArgumentNullException>();
     }
 
     [Test]
@@ -299,7 +305,8 @@ public sealed class FullLoggerExtensionsTests
     public async Task Warn_WithNullFunction_ThrowsArgumentNullException()
     {
         var logger = new WrappingFullLogger(new TextLogger());
-        await Assert.That(() => logger.Warn(null!)).Throws<ArgumentNullException>();
+        Func<string> nullFunc = null!;
+        await Assert.That(() => FullLoggerExtensions.Warn(logger, nullFunc)).Throws<ArgumentNullException>();
     }
 
     [Test]
@@ -343,7 +350,8 @@ public sealed class FullLoggerExtensionsTests
     public async Task WarnGeneric_WithNullFunction_ThrowsArgumentNullException()
     {
         var logger = new WrappingFullLogger(new TextLogger());
-        await Assert.That(() => logger.Warn<string>(null!)).Throws<ArgumentNullException>();
+        Func<string> nullFunc = null!;
+        await Assert.That(() => logger.Warn<string>(nullFunc)).Throws<ArgumentNullException>();
     }
 
     [Test]
@@ -388,7 +396,8 @@ public sealed class FullLoggerExtensionsTests
     public async Task WarnException_WithNullFunction_ThrowsArgumentNullException()
     {
         var logger = new WrappingFullLogger(new TextLogger());
-        await Assert.That(() => logger.WarnException(null!, new Exception())).Throws<ArgumentNullException>();
+        Func<string> nullFunc = null!;
+        await Assert.That(() => logger.WarnException(nullFunc, new Exception())).Throws<ArgumentNullException>();
     }
 
     [Test]
@@ -436,7 +445,8 @@ public sealed class FullLoggerExtensionsTests
     public async Task Error_WithNullFunction_ThrowsArgumentNullException()
     {
         var logger = new WrappingFullLogger(new TextLogger());
-        await Assert.That(() => logger.Error(null!)).Throws<ArgumentNullException>();
+        Func<string> nullFunc = null!;
+        await Assert.That(() => FullLoggerExtensions.Error(logger, nullFunc)).Throws<ArgumentNullException>();
     }
 
     [Test]
@@ -481,7 +491,8 @@ public sealed class FullLoggerExtensionsTests
     public async Task ErrorGeneric_WithNullFunction_ThrowsArgumentNullException()
     {
         var logger = new WrappingFullLogger(new TextLogger());
-        await Assert.That(() => logger.Error<string>(null!)).Throws<ArgumentNullException>();
+        Func<string> nullFunc = null!;
+        await Assert.That(() => logger.Error<string>(nullFunc)).Throws<ArgumentNullException>();
     }
 
     [Test]
@@ -526,7 +537,8 @@ public sealed class FullLoggerExtensionsTests
     public async Task ErrorException_WithNullFunction_ThrowsArgumentNullException()
     {
         var logger = new WrappingFullLogger(new TextLogger());
-        await Assert.That(() => logger.ErrorException(null!, new Exception())).Throws<ArgumentNullException>();
+        Func<string> nullFunc = null!;
+        await Assert.That(() => logger.ErrorException(nullFunc, new Exception())).Throws<ArgumentNullException>();
     }
 
     [Test]
@@ -574,7 +586,8 @@ public sealed class FullLoggerExtensionsTests
     public async Task Fatal_WithNullFunction_ThrowsArgumentNullException()
     {
         var logger = new WrappingFullLogger(new TextLogger());
-        await Assert.That(() => logger.Fatal(null!)).Throws<ArgumentNullException>();
+        Func<string> nullFunc = null!;
+        await Assert.That(() => FullLoggerExtensions.Fatal(logger, nullFunc)).Throws<ArgumentNullException>();
     }
 
     [Test]
@@ -603,7 +616,8 @@ public sealed class FullLoggerExtensionsTests
     public async Task FatalGeneric_WithNullFunction_ThrowsArgumentNullException()
     {
         var logger = new WrappingFullLogger(new TextLogger());
-        await Assert.That(() => logger.Fatal<string>(null!)).Throws<ArgumentNullException>();
+        Func<string> nullFunc = null!;
+        await Assert.That(() => logger.Fatal<string>(nullFunc)).Throws<ArgumentNullException>();
     }
 
     [Test]
@@ -632,7 +646,8 @@ public sealed class FullLoggerExtensionsTests
     public async Task FatalException_WithNullFunction_ThrowsArgumentNullException()
     {
         var logger = new WrappingFullLogger(new TextLogger());
-        await Assert.That(() => logger.FatalException(null!, new Exception())).Throws<ArgumentNullException>();
+        Func<string> nullFunc = null!;
+        await Assert.That(() => logger.FatalException(nullFunc, new Exception())).Throws<ArgumentNullException>();
     }
 
     [Test]
