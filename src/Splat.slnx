@@ -53,6 +53,7 @@
   <Folder Name="/test/Logging/">
     <Project Path="tests/Splat.Exceptionless.Tests/Splat.Exceptionless.Tests.csproj" />
     <Project Path="tests/Splat.Log4Net.Tests/Splat.Log4Net.Tests.csproj" />
+    <Project Path="tests/Splat.Logging.Tests/Splat.Logging.Tests.csproj" />
     <Project Path="tests/Splat.Microsoft.Extensions.Logging.Tests/Splat.Microsoft.Extensions.Logging.Tests.csproj" />
     <Project Path="tests/Splat.NLog.Tests/Splat.NLog.Tests.csproj" />
     <Project Path="tests/Splat.Serilog.Tests/Splat.Serilog.Tests.csproj" />

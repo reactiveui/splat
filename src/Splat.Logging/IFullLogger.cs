@@ -120,6 +120,34 @@ public interface IFullLogger : IAllocationFreeLogger
     void Debug<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
     /// <summary>
+    /// Sends the value provided by the provided delegate, only if Debug is enabled.
+    /// </summary>
+    /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
+    void Debug(Func<string> function);
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Debug is enabled.
+    /// </summary>
+    /// <typeparam name="T">The calling type.</typeparam>
+    /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
+    void Debug<T>(Func<string> function);
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Debug is enabled.
+    /// </summary>
+    /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
+    /// <param name="exception">A exception to log about.</param>
+    [Obsolete("Use void Debug(Exception exception, Func<string> function)")]
+    void DebugException(Func<string> function, Exception exception);
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Debug is enabled.
+    /// </summary>
+    /// <param name="exception">A exception to log about.</param>
+    /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
+    void Debug(Exception exception, Func<string> function);
+
+    /// <summary>
     /// Emits a info log message.
     /// This will emit the public contents of the object provided to the log.
     /// </summary>
@@ -223,6 +251,34 @@ public interface IFullLogger : IAllocationFreeLogger
     /// <param name="argument2">The second argument for formatting purposes.</param>
     /// <param name="argument3">The third argument for formatting purposes.</param>
     void Info<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Info is enabled.
+    /// </summary>
+    /// <param name="function">The function to evaluate if Info logging is enabled.</param>
+    void Info(Func<string> function);
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Info is enabled.
+    /// </summary>
+    /// <typeparam name="T">The calling type.</typeparam>
+    /// <param name="function">The function to evaluate if Info logging is enabled.</param>
+    void Info<T>(Func<string> function);
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Info is enabled.
+    /// </summary>
+    /// <param name="function">The function to evaluate if Info logging is enabled.</param>
+    /// <param name="exception">A exception to log about.</param>
+    [Obsolete("Use void Info(Exception exception, Func<string> function)")]
+    void InfoException(Func<string> function, Exception exception);
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Info is enabled.
+    /// </summary>
+    /// <param name="exception">A exception to log about.</param>
+    /// <param name="function">The function to evaluate if Info logging is enabled.</param>
+    void Info(Exception exception, Func<string> function);
 
     /// <summary>
     /// Emits a warning log message.
@@ -330,6 +386,34 @@ public interface IFullLogger : IAllocationFreeLogger
     void Warn<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
     /// <summary>
+    /// Sends the value provided by the provided delegate, only if Warn is enabled.
+    /// </summary>
+    /// <param name="function">The function to evaluate if Warn logging is enabled.</param>
+    void Warn(Func<string> function);
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Warn is enabled.
+    /// </summary>
+    /// <typeparam name="T">The calling type.</typeparam>
+    /// <param name="function">The function to evaluate if Warn logging is enabled.</param>
+    void Warn<T>(Func<string> function);
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Warn is enabled.
+    /// </summary>
+    /// <param name="function">The function to evaluate if Warn logging is enabled.</param>
+    /// <param name="exception">A exception to log about.</param>
+    [Obsolete("Use void Warn(Exception exception, Func<string> function)")]
+    void WarnException(Func<string> function, Exception exception);
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Warn is enabled.
+    /// </summary>
+    /// <param name="exception">A exception to log about.</param>
+    /// <param name="function">The function to evaluate if Warn logging is enabled.</param>
+    void Warn(Exception exception, Func<string> function);
+
+    /// <summary>
     /// Emits a error log message.
     /// This will emit the public contents of the object provided to the log.
     /// </summary>
@@ -435,6 +519,34 @@ public interface IFullLogger : IAllocationFreeLogger
     void Error<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
     /// <summary>
+    /// Sends the value provided by the provided delegate, only if Error is enabled.
+    /// </summary>
+    /// <param name="function">The function to evaluate if Error logging is enabled.</param>
+    void Error(Func<string> function);
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Error is enabled.
+    /// </summary>
+    /// <typeparam name="T">The calling type.</typeparam>
+    /// <param name="function">The function to evaluate if Error logging is enabled.</param>
+    void Error<T>(Func<string> function);
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Error is enabled.
+    /// </summary>
+    /// <param name="function">The function to evaluate if Error logging is enabled.</param>
+    /// <param name="exception">A exception to log about.</param>
+    [Obsolete("Use void Error(Exception exception, Func<string> function)")]
+    void ErrorException(Func<string> function, Exception exception);
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Error is enabled.
+    /// </summary>
+    /// <param name="exception">A exception to log about.</param>
+    /// <param name="function">The function to evaluate if Error logging is enabled.</param>
+    void Error(Exception exception, Func<string> function);
+
+    /// <summary>
     /// Emits a fatal log message.
     /// This will emit the public contents of the object provided to the log.
     /// </summary>
@@ -538,4 +650,32 @@ public interface IFullLogger : IAllocationFreeLogger
     /// <param name="argument2">The second argument for formatting purposes.</param>
     /// <param name="argument3">The third argument for formatting purposes.</param>
     void Fatal<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Fatal is enabled.
+    /// </summary>
+    /// <param name="function">The function to evaluate if Fatal logging is enabled.</param>
+    void Fatal(Func<string> function);
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Fatal is enabled.
+    /// </summary>
+    /// <typeparam name="T">The calling type.</typeparam>
+    /// <param name="function">The function to evaluate if Fatal logging is enabled.</param>
+    void Fatal<T>(Func<string> function);
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Fatal is enabled.
+    /// </summary>
+    /// <param name="function">The function to evaluate if Fatal logging is enabled.</param>
+    /// <param name="exception">A exception to log about.</param>
+    [Obsolete("Use void Fatal(Exception exception, Func<string> function)")]
+    void FatalException(Func<string> function, Exception exception);
+
+    /// <summary>
+    /// Sends the value provided by the provided delegate, only if Fatal is enabled.
+    /// </summary>
+    /// <param name="exception">A exception to log about.</param>
+    /// <param name="function">The function to evaluate if Fatal logging is enabled.</param>
+    void Fatal(Exception exception, Func<string> function);
 }

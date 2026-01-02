@@ -580,4 +580,211 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
 
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
+
+    /// <summary>
+    /// Test to make sure the debug func emits nothing when not enabled.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Debug_Func_Disabled_Should_Not_Emit()
+    {
+        var (logger, target) = GetLogger(LogLevel.Fatal);
+        var invoked = false;
+
+        logger.Debug(() =>
+        {
+            invoked = true;
+            return "This is a test.";
+        });
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(target.Logs).IsEmpty();
+            await Assert.That(invoked).IsFalse();
+        }
+    }
+
+    /// <summary>
+    /// Test to make sure the debug func emits something when enabled.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Debug_Func_Enabled_Should_Emit()
+    {
+        var (logger, target) = GetLogger(LogLevel.Debug);
+        var invoked = false;
+
+        logger.Debug(() =>
+        {
+            invoked = true;
+            return "This is a test.";
+        });
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(invoked).IsTrue();
+        }
+    }
+
+    /// <summary>
+    /// Test to make sure the info func emits nothing when not enabled.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Info_Func_Disabled_Should_Not_Emit()
+    {
+        var (logger, target) = GetLogger(LogLevel.Fatal);
+        var invoked = false;
+
+        logger.Info(() =>
+        {
+            invoked = true;
+            return "This is a test.";
+        });
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(target.Logs).IsEmpty();
+            await Assert.That(invoked).IsFalse();
+        }
+    }
+
+    /// <summary>
+    /// Test to make sure the info func emits something when enabled.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Info_Func_Enabled_Should_Emit()
+    {
+        var (logger, target) = GetLogger(LogLevel.Debug);
+        var invoked = false;
+
+        logger.Info(() =>
+        {
+            invoked = true;
+            return "This is a test.";
+        });
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(invoked).IsTrue();
+        }
+    }
+
+    /// <summary>
+    /// Test to make sure the warn func emits nothing when not enabled.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Warn_Func_Disabled_Should_Not_Emit()
+    {
+        var (logger, target) = GetLogger(LogLevel.Fatal);
+        var invoked = false;
+
+        logger.Warn(() =>
+        {
+            invoked = true;
+            return "This is a test.";
+        });
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(target.Logs).IsEmpty();
+            await Assert.That(invoked).IsFalse();
+        }
+    }
+
+    /// <summary>
+    /// Test to make sure the warn func emits something when enabled.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Warn_Func_Enabled_Should_Emit()
+    {
+        var (logger, target) = GetLogger(LogLevel.Debug);
+        var invoked = false;
+
+        logger.Warn(() =>
+        {
+            invoked = true;
+            return "This is a test.";
+        });
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(invoked).IsTrue();
+        }
+    }
+
+    /// <summary>
+    /// Test to make sure the error func emits nothing when not enabled.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Error_Func_Disabled_Should_Not_Emit()
+    {
+        var (logger, target) = GetLogger(LogLevel.Fatal);
+        var invoked = false;
+
+        logger.Error(() =>
+        {
+            invoked = true;
+            return "This is a test.";
+        });
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(target.Logs).IsEmpty();
+            await Assert.That(invoked).IsFalse();
+        }
+    }
+
+    /// <summary>
+    /// Test to make sure the error func emits something when enabled.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Error_Func_Enabled_Should_Emit()
+    {
+        var (logger, target) = GetLogger(LogLevel.Debug);
+        var invoked = false;
+
+        logger.Error(() =>
+        {
+            invoked = true;
+            return "This is a test.";
+        });
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(invoked).IsTrue();
+        }
+    }
+
+    /// <summary>
+    /// Test to make sure the fatal func emits something when enabled.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Fatal_Func_Enabled_Should_Emit()
+    {
+        var (logger, target) = GetLogger(LogLevel.Fatal);
+        var invoked = false;
+
+        logger.Fatal(() =>
+        {
+            invoked = true;
+            return "This is a test.";
+        });
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(invoked).IsTrue();
+        }
+    }
 }

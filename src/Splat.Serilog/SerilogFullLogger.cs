@@ -123,6 +123,52 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     public void Debug(Exception exception, [Localizable(false)] string? message) => logger.Debug(exception, message ?? exception?.Message ?? string.Empty);
 
     /// <inheritdoc />
+    public void Debug(Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsDebugEnabled)
+        {
+            logger.Debug(function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+    public void Debug<T>(Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsDebugEnabled)
+        {
+            logger.ForContext<T>().Debug(function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+#pragma warning disable CS0618 // Type or member is obsolete
+    public void DebugException(Func<string> function, Exception exception)
+#pragma warning restore CS0618 // Type or member is obsolete
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsDebugEnabled)
+        {
+            logger.Debug(exception, function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+    public void Debug(Exception exception, Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsDebugEnabled)
+        {
+            logger.Debug(exception, function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
     public void Error<T>(T value) => logger.Error(value?.ToString() ?? string.Empty);
 
     /// <inheritdoc />
@@ -187,6 +233,52 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
 
     /// <inheritdoc />
     public void ErrorException([Localizable(false)] string? message, Exception exception) => logger.Error(exception, message ?? exception?.Message ?? string.Empty);
+
+    /// <inheritdoc />
+    public void Error(Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsErrorEnabled)
+        {
+            logger.Error(function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+    public void Error<T>(Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsErrorEnabled)
+        {
+            logger.ForContext<T>().Error(function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+#pragma warning disable CS0618 // Type or member is obsolete
+    public void ErrorException(Func<string> function, Exception exception)
+#pragma warning restore CS0618 // Type or member is obsolete
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsErrorEnabled)
+        {
+            logger.Error(exception, function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+    public void Error(Exception exception, Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsErrorEnabled)
+        {
+            logger.Error(exception, function.Invoke());
+        }
+    }
 
     /// <inheritdoc />
     public void Fatal<T>(T value) => logger.Fatal(value?.ToString() ?? string.Empty);
@@ -255,6 +347,52 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     public void FatalException([Localizable(false)] string? message, Exception exception) => logger.Fatal(exception, message ?? exception?.Message ?? string.Empty);
 
     /// <inheritdoc />
+    public void Fatal(Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsFatalEnabled)
+        {
+            logger.Fatal(function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+    public void Fatal<T>(Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsFatalEnabled)
+        {
+            logger.ForContext<T>().Fatal(function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+#pragma warning disable CS0618 // Type or member is obsolete
+    public void FatalException(Func<string> function, Exception exception)
+#pragma warning restore CS0618 // Type or member is obsolete
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsFatalEnabled)
+        {
+            logger.Fatal(exception, function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+    public void Fatal(Exception exception, Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsFatalEnabled)
+        {
+            logger.Fatal(exception, function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
     public void Info<T>(T value) => logger.Information(value?.ToString() ?? string.Empty);
 
     /// <inheritdoc />
@@ -321,6 +459,52 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     public void InfoException([Localizable(false)] string? message, Exception exception) => logger.Information(exception, message ?? exception?.Message ?? string.Empty);
 
     /// <inheritdoc />
+    public void Info(Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsInfoEnabled)
+        {
+            logger.Information(function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+    public void Info<T>(Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsInfoEnabled)
+        {
+            logger.ForContext<T>().Information(function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+#pragma warning disable CS0618 // Type or member is obsolete
+    public void InfoException(Func<string> function, Exception exception)
+#pragma warning restore CS0618 // Type or member is obsolete
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsInfoEnabled)
+        {
+            logger.Information(exception, function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+    public void Info(Exception exception, Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsInfoEnabled)
+        {
+            logger.Information(exception, function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
     public void Warn<T>(T value) => logger.Warning(value?.ToString() ?? string.Empty);
 
     /// <inheritdoc />
@@ -385,6 +569,52 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
 
     /// <inheritdoc />
     public void WarnException([Localizable(false)] string? message, Exception exception) => logger.Warning(exception, message ?? exception?.Message ?? string.Empty);
+
+    /// <inheritdoc />
+    public void Warn(Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsWarnEnabled)
+        {
+            logger.Warning(function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+    public void Warn<T>(Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsWarnEnabled)
+        {
+            logger.ForContext<T>().Warning(function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+#pragma warning disable CS0618 // Type or member is obsolete
+    public void WarnException(Func<string> function, Exception exception)
+#pragma warning restore CS0618 // Type or member is obsolete
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsWarnEnabled)
+        {
+            logger.Warning(exception, function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+    public void Warn(Exception exception, Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsWarnEnabled)
+        {
+            logger.Warning(exception, function.Invoke());
+        }
+    }
 
     /// <inheritdoc />
     public void Write(string message, LogLevel logLevel) => logger.Write(SerilogHelper.MappingsDictionary[logLevel], message);

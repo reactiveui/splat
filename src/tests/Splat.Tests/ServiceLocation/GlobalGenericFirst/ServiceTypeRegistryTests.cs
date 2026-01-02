@@ -421,7 +421,7 @@ public class ServiceTypeRegistryTests
 
         // Assert
         await Assert.That(result).IsNotNull();
-        await Assert.That(result.Count()).IsEqualTo(0);
+        await Assert.That(result).Count().IsEqualTo(0);
     }
 
     [Test]

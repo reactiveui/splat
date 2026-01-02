@@ -62,6 +62,7 @@ public class RegistrationTests
 
         // Act
         var resultFactory = registration.GetFactory();
+        await Assert.That(resultFactory).IsNotNull();
         var result = resultFactory();
 
         // Assert
@@ -86,12 +87,16 @@ public class RegistrationTests
         Func<string?> factory = () => null;
         var registration = Registration<string?>.FromFactory(factory);
 
+        // Assert factory mode is set
+        await Assert.That(registration.IsFactory).IsTrue();
+
         // Act
-        var resultFactory = registration.GetFactory();
-        var result = resultFactory();
+        var success = registration.TryGetFactory(out var resultFactory);
+        await Assert.That(success).IsTrue();
+        await Assert.That(resultFactory is not null).IsTrue();
+        var result = resultFactory!();
 
         // Assert
-        await Assert.That(registration.IsFactory).IsTrue();
         await Assert.That(result).IsNull();
     }
 
@@ -131,6 +136,7 @@ public class RegistrationTests
         var result = registration.GetInstance();
 
         // Assert
+        await Assert.That(result).IsNotNull();
         await Assert.That(result).IsEqualTo(complexObject);
         await Assert.That(result.Value).IsEqualTo(42);
         await Assert.That(result.Name).IsEqualTo("Test");
@@ -145,6 +151,7 @@ public class RegistrationTests
 
         // Act
         var resultFactory = registration.GetFactory();
+        await Assert.That(resultFactory).IsNotNull();
         var result = resultFactory();
 
         // Assert

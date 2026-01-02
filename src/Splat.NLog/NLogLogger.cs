@@ -232,6 +232,52 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     /// <inheritdoc/>
     public void Debug(Exception exception, string? message) => _inner.Debug(exception, message ?? string.Empty);
 
+    /// <inheritdoc />
+    public void Debug(Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsDebugEnabled)
+        {
+            _inner.Debug(function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+    public void Debug<T>(Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsDebugEnabled)
+        {
+            LogResolver.Resolve(typeof(T)).Debug(function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+#pragma warning disable CS0618 // Type or member is obsolete
+    public void DebugException(Func<string> function, Exception exception)
+#pragma warning restore CS0618 // Type or member is obsolete
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsDebugEnabled)
+        {
+            _inner.Debug(exception, function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+    public void Debug(Exception exception, Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsDebugEnabled)
+        {
+            _inner.Debug(exception, function.Invoke());
+        }
+    }
+
     /// <inheritdoc/>
     public void Debug(IFormatProvider formatProvider, string message, params object[] args) => _inner.Debug(formatProvider, message, args);
 
@@ -267,6 +313,52 @@ public sealed class NLogLogger : IFullLogger, IDisposable
 
     /// <inheritdoc/>
     public void Info(Exception exception, string? message) => _inner.Info(exception, message ?? string.Empty);
+
+    /// <inheritdoc />
+    public void Info(Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsInfoEnabled)
+        {
+            _inner.Info(function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+    public void Info<T>(Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsInfoEnabled)
+        {
+            LogResolver.Resolve(typeof(T)).Info(function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+#pragma warning disable CS0618 // Type or member is obsolete
+    public void InfoException(Func<string> function, Exception exception)
+#pragma warning restore CS0618 // Type or member is obsolete
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsInfoEnabled)
+        {
+            _inner.Info(exception, function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+    public void Info(Exception exception, Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsInfoEnabled)
+        {
+            _inner.Info(exception, function.Invoke());
+        }
+    }
 
     /// <inheritdoc/>
     public void Info(IFormatProvider formatProvider, string message, params object[] args) => _inner.Info(formatProvider, message, args);
@@ -304,6 +396,52 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     /// <inheritdoc/>
     public void Warn(Exception exception, string? message) => _inner.Warn(exception, message ?? string.Empty);
 
+    /// <inheritdoc />
+    public void Warn(Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsWarnEnabled)
+        {
+            _inner.Warn(function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+    public void Warn<T>(Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsWarnEnabled)
+        {
+            LogResolver.Resolve(typeof(T)).Warn(function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+#pragma warning disable CS0618 // Type or member is obsolete
+    public void WarnException(Func<string> function, Exception exception)
+#pragma warning restore CS0618 // Type or member is obsolete
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsWarnEnabled)
+        {
+            _inner.Warn(exception, function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+    public void Warn(Exception exception, Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsWarnEnabled)
+        {
+            _inner.Warn(exception, function.Invoke());
+        }
+    }
+
     /// <inheritdoc/>
     public void Warn(IFormatProvider formatProvider, string message, params object[] args) => _inner.Warn(formatProvider, message, args);
 
@@ -340,6 +478,52 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     /// <inheritdoc/>
     public void Error(Exception exception, string? message) => _inner.Error(exception, message ?? string.Empty);
 
+    /// <inheritdoc />
+    public void Error(Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsErrorEnabled)
+        {
+            _inner.Error(function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+    public void Error<T>(Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsErrorEnabled)
+        {
+            LogResolver.Resolve(typeof(T)).Error(function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+#pragma warning disable CS0618 // Type or member is obsolete
+    public void ErrorException(Func<string> function, Exception exception)
+#pragma warning restore CS0618 // Type or member is obsolete
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsErrorEnabled)
+        {
+            _inner.Error(exception, function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+    public void Error(Exception exception, Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsErrorEnabled)
+        {
+            _inner.Error(exception, function.Invoke());
+        }
+    }
+
     /// <inheritdoc/>
     public void Error(IFormatProvider formatProvider, string message, params object[] args) => _inner.Error(formatProvider, message, args);
 
@@ -375,6 +559,52 @@ public sealed class NLogLogger : IFullLogger, IDisposable
 
     /// <inheritdoc/>
     public void Fatal(Exception exception, string? message) => _inner.Fatal(exception, message ?? string.Empty);
+
+    /// <inheritdoc />
+    public void Fatal(Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsFatalEnabled)
+        {
+            _inner.Fatal(function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+    public void Fatal<T>(Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsFatalEnabled)
+        {
+            LogResolver.Resolve(typeof(T)).Fatal(function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+#pragma warning disable CS0618 // Type or member is obsolete
+    public void FatalException(Func<string> function, Exception exception)
+#pragma warning restore CS0618 // Type or member is obsolete
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsFatalEnabled)
+        {
+            _inner.Fatal(exception, function.Invoke());
+        }
+    }
+
+    /// <inheritdoc />
+    public void Fatal(Exception exception, Func<string> function)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(function);
+
+        if (IsFatalEnabled)
+        {
+            _inner.Fatal(exception, function.Invoke());
+        }
+    }
 
     /// <inheritdoc/>
     public void Fatal(IFormatProvider formatProvider, string message, params object[] args) => _inner.Fatal(formatProvider, message, args);

@@ -18,6 +18,7 @@
     <InternalsVisibleTo Include="Splat" />
     <InternalsVisibleTo Include="Splat.Builder" />
     <InternalsVisibleTo Include="Splat.Logging" />
+    <InternalsVisibleTo Include="Splat.Logging.Tests" />
     <InternalsVisibleTo Include="Splat.Drawing" />
     <InternalsVisibleTo Include="Splat.Common.Test" />
     <InternalsVisibleTo Include="Splat.Microsoft.Extensions.Logging.Tests" />

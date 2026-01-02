@@ -24,8 +24,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Logging\Helpers\" />
-    <Folder Include="Mocks\" />
-  </ItemGroup>
 </Project>

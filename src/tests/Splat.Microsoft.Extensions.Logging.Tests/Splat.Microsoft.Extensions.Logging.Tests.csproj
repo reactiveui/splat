@@ -9,11 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\Splat.Tests\Logging\BaseTests\LoggerBase.cs" Link="BaseTests\LoggerBase.cs" />
-    <Compile Include="..\Splat.Tests\Logging\BaseTests\FullLoggerTestBase.cs" Link="BaseTests\FullLoggerTestBase.cs" />
-    <Compile Include="..\Splat.Tests\Logging\BaseTests\WrappingFullLoggerTestBase.cs" Link="BaseTests\WrappingFullLoggerTestBase.cs" />
-    <Compile Include="..\Splat.Tests\Logging\BaseTests\AllocationFreeLoggerBaseTestBase.cs" Link="BaseTests\AllocationFreeLoggerBaseTestBase.cs" />
-    <Compile Include="..\Splat.Tests\Logging\BaseTests\AllocateFreeErrorLoggerTestBase.cs" Link="BaseTests\AllocateFreeErrorLoggerTestBase.cs" />
+    <Compile Include="..\Splat.Logging.Tests\BaseTests\LoggerBase.cs" Link="BaseTests\LoggerBase.cs" />
+    <Compile Include="..\Splat.Logging.Tests\BaseTests\FullLoggerTestBase.cs" Link="BaseTests\FullLoggerTestBase.cs" />
+    <Compile Include="..\Splat.Logging.Tests\BaseTests\WrappingFullLoggerTestBase.cs" Link="BaseTests\WrappingFullLoggerTestBase.cs" />
+    <Compile Include="..\Splat.Logging.Tests\BaseTests\AllocationFreeLoggerBaseTestBase.cs" Link="BaseTests\AllocationFreeLoggerBaseTestBase.cs" />
+    <Compile Include="..\Splat.Logging.Tests\BaseTests\AllocateFreeErrorLoggerTestBase.cs" Link="BaseTests\AllocateFreeErrorLoggerTestBase.cs" />
   </ItemGroup>
 
   <ItemGroup>

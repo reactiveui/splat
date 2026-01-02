@@ -28,7 +28,7 @@ namespace Splat;
 /// </para>
 /// </remarks>
 /// <typeparam name="T">The registered service type.</typeparam>
-internal readonly struct Registration<T>
+internal readonly record struct Registration<T>
 {
     /// <summary>
     /// Stored instance for instance-mode registrations; otherwise <see langword="null"/>.
@@ -98,7 +98,7 @@ internal readonly struct Registration<T>
     /// This method is intended to be used only when <see cref="IsFactory"/> is <see langword="true"/>.
     /// For performance reasons, this method does not throw if the registration is in instance mode; it returns <see langword="null"/>.
     /// </remarks>
-    public Func<T?>? GetFactory() => IsFactory ? _factory : null;
+    public Func<T?>? GetFactory() => IsFactory ? _factory! : null;
 
     /// <summary>
     /// Attempts to retrieve the stored instance when in instance mode.

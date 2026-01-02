@@ -5,8 +5,11 @@
 
 using Splat.Tests.Mocks;
 
-namespace Splat.Tests;
+namespace Splat.Tests.Logging;
 
+/// <summary>
+/// Tests for the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.
+/// </summary>
 public class MemoizingMRUCacheTests
 {
     /// <summary>
