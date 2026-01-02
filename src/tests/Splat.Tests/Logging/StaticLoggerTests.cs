@@ -19,6 +19,13 @@ internal sealed class StaticLoggerTests
     private static char[] NewLine => Environment.NewLine.ToCharArray();
 
     /// <summary>
+    /// Test that constructor throws ArgumentNullException when passed null logger.
+    /// </summary>
+    [Test]
+    public async Task Constructor_WithNullLogger_ThrowsArgumentNullException() =>
+        await Assert.That(() => new StaticFullLogger(null!)).Throws<ArgumentNullException>();
+
+    /// <summary>
     /// Base tests for the static logger.
     /// </summary>
     public abstract class BaseStaticLoggerTests
