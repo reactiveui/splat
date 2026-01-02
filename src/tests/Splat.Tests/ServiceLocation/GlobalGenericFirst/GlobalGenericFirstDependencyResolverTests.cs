@@ -49,14 +49,12 @@ public sealed class GlobalGenericFirstDependencyResolverTests : BaseDependencyRe
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task Constructor_WithNullConfigure_DoesNotThrow()
-    {
+    public async Task Constructor_WithNullConfigure_DoesNotThrow() =>
         await Assert.That(() =>
         {
-            var resolver = new GlobalGenericFirstDependencyResolver(null);
+            _ = new GlobalGenericFirstDependencyResolver(null);
             return Task.CompletedTask;
         }).ThrowsNothing();
-    }
 
     /// <summary>
     /// Test Clear method removes all registrations.

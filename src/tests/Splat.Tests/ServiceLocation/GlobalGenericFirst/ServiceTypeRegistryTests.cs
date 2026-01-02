@@ -12,18 +12,16 @@ namespace Splat.Tests.ServiceLocation.GenericFirst;
 public class ServiceTypeRegistryTests
 {
     [Before(HookType.Test)]
-    public void Setup()
-    {
+    public void Setup() =>
+
         // Clear the registry before each test
         ServiceTypeRegistry.Clear();
-    }
 
     [After(HookType.Test)]
-    public void Cleanup()
-    {
+    public void Cleanup() =>
+
         // Clear the registry after each test
         ServiceTypeRegistry.Clear();
-    }
 
     [Test]
     public async Task TrackNonGenericRegistration_TracksType()
@@ -47,11 +45,10 @@ public class ServiceTypeRegistryTests
     }
 
     [Test]
-    public async Task HasNonGenericRegistrations_WhenNotTracked_ReturnsFalse()
-    {
+    public async Task HasNonGenericRegistrations_WhenNotTracked_ReturnsFalse() =>
+
         // Act & Assert
         await Assert.That(ServiceTypeRegistry.HasNonGenericRegistrations(typeof(string))).IsFalse();
-    }
 
     [Test]
     public async Task Register_StoresFactory()
@@ -208,11 +205,10 @@ public class ServiceTypeRegistryTests
     }
 
     [Test]
-    public async Task HasRegistration_WhenEmpty_ReturnsFalse()
-    {
+    public async Task HasRegistration_WhenEmpty_ReturnsFalse() =>
+
         // Act & Assert
         await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(string))).IsFalse();
-    }
 
     [Test]
     public async Task HasRegistration_AfterRegistering_ReturnsTrue()
@@ -236,11 +232,10 @@ public class ServiceTypeRegistryTests
     }
 
     [Test]
-    public async Task UnregisterCurrent_WhenEmpty_DoesNotThrow()
-    {
+    public async Task UnregisterCurrent_WhenEmpty_DoesNotThrow() =>
+
         // Act & Assert - should not throw
         ServiceTypeRegistry.UnregisterCurrent(typeof(string));
-    }
 
     [Test]
     public async Task UnregisterCurrent_WithSingleItem_ClearsRegistration()
@@ -339,11 +334,10 @@ public class ServiceTypeRegistryTests
     }
 
     [Test]
-    public async Task Clear_WhenEmpty_DoesNotThrow()
-    {
+    public async Task Clear_WhenEmpty_DoesNotThrow() =>
+
         // Act & Assert - should not throw
         ServiceTypeRegistry.Clear();
-    }
 
     [Test]
     public async Task Registry_WithDifferentTypes_AreIsolated()

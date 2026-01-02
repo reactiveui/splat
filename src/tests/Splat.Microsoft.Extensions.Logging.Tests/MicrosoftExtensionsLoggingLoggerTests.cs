@@ -45,10 +45,9 @@ public class MicrosoftExtensionsLoggingLoggerTests : FullLoggerTestBase
     /// <summary>
     /// Mock Logger for Testing Microsoft.Extensions.Logging.
     /// </summary>
-    private sealed class MockActualMicrosoftExtensionsLoggingLogger(global::Microsoft.Extensions.Logging.LogLevel logLevel) : global::Microsoft.Extensions.Logging.ILogger, IMockLogTarget
+    private sealed class MockActualMicrosoftExtensionsLoggingLogger(global::Microsoft.Extensions.Logging.LogLevel level) : global::Microsoft.Extensions.Logging.ILogger, IMockLogTarget
     {
         private readonly List<(LogLevel, string)> _logs = [];
-        private readonly global::Microsoft.Extensions.Logging.LogLevel _logLevel = logLevel;
 
         public ICollection<(LogLevel logLevel, string message)> Logs => _logs;
 
@@ -67,7 +66,7 @@ public class MicrosoftExtensionsLoggingLoggerTests : FullLoggerTestBase
         }
 
         /// <inheritdoc/>
-        public bool IsEnabled(global::Microsoft.Extensions.Logging.LogLevel logLevel) => logLevel >= _logLevel;
+        public bool IsEnabled(global::Microsoft.Extensions.Logging.LogLevel logLevel) => logLevel >= level;
 
         /// <inheritdoc/>
         public IDisposable BeginScope<TState>(TState state)

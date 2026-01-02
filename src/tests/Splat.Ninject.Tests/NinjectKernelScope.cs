@@ -23,19 +23,13 @@ public sealed class NinjectKernelScope : IDisposable
     /// Initializes a new instance of the <see cref="NinjectKernelScope"/> class.
     /// Creates a fresh AppLocator state for the test.
     /// </summary>
-    public NinjectKernelScope()
-    {
-        _appLocatorScope = new AppLocatorScope();
-    }
+    public NinjectKernelScope() => _appLocatorScope = new();
 
     /// <summary>
     /// Tracks a kernel for disposal at the end of the test.
     /// </summary>
     /// <param name="kernel">The kernel to track.</param>
-    public void TrackKernel(IKernel kernel)
-    {
-        _kernels.Add(kernel);
-    }
+    public void TrackKernel(IKernel kernel) => _kernels.Add(kernel);
 
     /// <summary>
     /// Disposes all tracked kernels and restores AppLocator state.

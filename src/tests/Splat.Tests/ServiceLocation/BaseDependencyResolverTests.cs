@@ -155,7 +155,7 @@ public abstract class BaseDependencyResolverTests<T>
     }
 
     /// <summary>
-    /// Tests for ensuring hasregistration behaves when using contracts.
+    /// Tests for ensuring Has Registration method behaves when using contracts.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -226,7 +226,7 @@ public abstract class BaseDependencyResolverTests<T>
     }
 
     /// <summary>
-    /// Registers the and tests.
+    /// Registers the resolver and tests.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -483,7 +483,7 @@ public abstract class BaseDependencyResolverTests<T>
         resolver.RegisterLazySingleton<ViewModelOne>(() =>
         {
             callCount++;
-            return new ViewModelOne();
+            return new();
         });
 
         await Assert.That(callCount).IsEqualTo(0); // Not called yet
@@ -508,7 +508,7 @@ public abstract class BaseDependencyResolverTests<T>
         var resolver = GetDependencyResolver();
         const string contract = "test";
 
-        resolver.RegisterLazySingleton<ViewModelOne>(() => new ViewModelOne(), contract);
+        resolver.RegisterLazySingleton<ViewModelOne>(() => new(), contract);
 
         var result1 = resolver.GetService<ViewModelOne>(contract);
         var result2 = resolver.GetService<ViewModelOne>(contract);
@@ -605,10 +605,7 @@ public abstract class BaseDependencyResolverTests<T>
         var resolver = GetDependencyResolver();
         var callbackInvoked = false;
 
-        using var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(_ =>
-        {
-            callbackInvoked = true;
-        });
+        using var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(_ => callbackInvoked = true);
 
         await Assert.That(callbackInvoked).IsFalse();
 
@@ -629,10 +626,7 @@ public abstract class BaseDependencyResolverTests<T>
 
         var callbackInvoked = false;
 
-        using var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(_ =>
-        {
-            callbackInvoked = true;
-        });
+        using var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(_ => callbackInvoked = true);
 
         await Assert.That(callbackInvoked).IsTrue();
     }
@@ -648,10 +642,7 @@ public abstract class BaseDependencyResolverTests<T>
         const string contract = "test";
         var callbackInvoked = false;
 
-        using var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(contract, _ =>
-        {
-            callbackInvoked = true;
-        });
+        using var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(contract, _ => callbackInvoked = true);
 
         await Assert.That(callbackInvoked).IsFalse();
 
@@ -670,10 +661,7 @@ public abstract class BaseDependencyResolverTests<T>
         var resolver = GetDependencyResolver();
         var callbackInvoked = false;
 
-        using var subscription = resolver.ServiceRegistrationCallback(typeof(ViewModelOne), _ =>
-        {
-            callbackInvoked = true;
-        });
+        using var subscription = resolver.ServiceRegistrationCallback(typeof(ViewModelOne), _ => callbackInvoked = true);
 
         await Assert.That(callbackInvoked).IsFalse();
 
@@ -693,10 +681,10 @@ public abstract class BaseDependencyResolverTests<T>
         const string contract = "test";
         var callbackInvoked = false;
 
-        using var subscription = resolver.ServiceRegistrationCallback(typeof(ViewModelOne), contract, _ =>
-        {
-            callbackInvoked = true;
-        });
+        using var subscription = resolver.ServiceRegistrationCallback(
+            typeof(ViewModelOne),
+            contract,
+            _ => callbackInvoked = true);
 
         await Assert.That(callbackInvoked).IsFalse();
 
@@ -715,10 +703,7 @@ public abstract class BaseDependencyResolverTests<T>
         var resolver = GetDependencyResolver();
         var callbackCount = 0;
 
-        var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(_ =>
-        {
-            callbackCount++;
-        });
+        var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(_ => callbackCount++);
 
         resolver.Register(() => new ViewModelOne());
         await Assert.That(callbackCount).IsEqualTo(1);
@@ -794,7 +779,7 @@ public abstract class BaseDependencyResolverTests<T>
         resolver.RegisterLazySingleton<DisposableTestService>(() =>
         {
             factoryCalled = true;
-            return new DisposableTestService();
+            return new();
         });
 
         await Assert.That(factoryCalled).IsFalse();
@@ -815,10 +800,7 @@ public abstract class BaseDependencyResolverTests<T>
         var resolver = GetDependencyResolver();
         var callbackInvoked = false;
 
-        resolver.ServiceRegistrationCallback<ViewModelOne>(_ =>
-        {
-            callbackInvoked = true;
-        });
+        resolver.ServiceRegistrationCallback<ViewModelOne>(_ => callbackInvoked = true);
 
         resolver.Dispose();
 
@@ -838,9 +820,6 @@ public abstract class BaseDependencyResolverTests<T>
     {
         public bool IsDisposed { get; private set; }
 
-        public void Dispose()
-        {
-            IsDisposed = true;
-        }
+        public void Dispose() => IsDisposed = true;
     }
 }

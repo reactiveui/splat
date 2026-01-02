@@ -76,7 +76,7 @@ public class ContainerCacheTests
         container.Add(() =>
         {
             callCount++;
-            return new TestService { Value = 42 };
+            return new() { Value = 42 };
         });
 
         var result = container.TryGet(out var service);

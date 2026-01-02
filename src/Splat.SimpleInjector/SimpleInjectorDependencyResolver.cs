@@ -55,11 +55,10 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
 
     /// <inheritdoc />
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We provide a different registration instead")]
-    public object? GetService(Type? serviceType, string? contract)
-    {
+    public object? GetService(Type? serviceType, string? contract) =>
+
         // SimpleInjector doesn't natively support contracts, so we treat contract-based calls the same as non-contract
-        return GetService(serviceType);
-    }
+        GetService(serviceType);
 
     /// <inheritdoc />
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We provide a different registration instead")]
@@ -83,11 +82,10 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
 
     /// <inheritdoc />
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We provide a different registration instead")]
-    public IEnumerable<object> GetServices(Type? serviceType, string? contract)
-    {
+    public IEnumerable<object> GetServices(Type? serviceType, string? contract) =>
+
         // SimpleInjector doesn't natively support contracts, so we treat contract-based calls the same as non-contract
-        return GetServices(serviceType);
-    }
+        GetServices(serviceType);
 
     /// <inheritdoc />
     public bool HasRegistration(Type? serviceType)
@@ -98,11 +96,10 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     }
 
     /// <inheritdoc />
-    public bool HasRegistration(Type? serviceType, string? contract)
-    {
+    public bool HasRegistration(Type? serviceType, string? contract) =>
+
         // SimpleInjector doesn't natively support contracts, so we treat contract-based calls the same as non-contract
-        return HasRegistration(serviceType);
-    }
+        HasRegistration(serviceType);
 
     /// <inheritdoc />
     public void Register(Func<object?> factory, Type? serviceType)
@@ -137,32 +134,28 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     public IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) => throw new NotImplementedException("ServiceRegistrationCallback with contract is not supported in the SimpleInjector dependency resolver. SimpleInjector does not support contracts or service registration callbacks.");
 
     /// <inheritdoc/>
-    public T? GetService<T>()
-    {
+    public T? GetService<T>() =>
+
         // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
-        return (T?)GetService(typeof(T));
-    }
+        (T?)GetService(typeof(T));
 
     /// <inheritdoc/>
-    public T? GetService<T>(string? contract)
-    {
+    public T? GetService<T>(string? contract) =>
+
         // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
-        return (T?)GetService(typeof(T), contract);
-    }
+        (T?)GetService(typeof(T), contract);
 
     /// <inheritdoc/>
-    public IEnumerable<T> GetServices<T>()
-    {
+    public IEnumerable<T> GetServices<T>() =>
+
         // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
-        return GetServices(typeof(T)).Cast<T>();
-    }
+        GetServices(typeof(T)).Cast<T>();
 
     /// <inheritdoc/>
-    public IEnumerable<T> GetServices<T>(string? contract)
-    {
+    public IEnumerable<T> GetServices<T>(string? contract) =>
+
         // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
-        return GetServices(typeof(T), contract).Cast<T>();
-    }
+        GetServices(typeof(T), contract).Cast<T>();
 
     /// <inheritdoc/>
     public bool HasRegistration<T>() =>
@@ -173,18 +166,16 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
         HasRegistration(typeof(T), contract);
 
     /// <inheritdoc/>
-    public void Register<T>(Func<T?> factory)
-    {
+    public void Register<T>(Func<T?> factory) =>
+
         // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
         Register(() => factory(), typeof(T));
-    }
 
     /// <inheritdoc/>
-    public void Register<T>(Func<T?> factory, string? contract)
-    {
+    public void Register<T>(Func<T?> factory, string? contract) =>
+
         // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
         Register(() => factory(), typeof(T), contract);
-    }
 
     /// <inheritdoc/>
     public void UnregisterCurrent<T>() =>
@@ -220,7 +211,7 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     public void Register<TService, TImplementation>(string? contract)
         where TService : class
         where TImplementation : class, TService, new() =>
-        Register(() => (TService)(object)new TImplementation(), contract);
+        Register(() => (TService)new TImplementation(), contract);
 
     /// <inheritdoc/>
     public void RegisterConstant<T>(T? value)

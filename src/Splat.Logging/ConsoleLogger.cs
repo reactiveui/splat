@@ -22,10 +22,7 @@ public class ConsoleLogger : ILogger
     /// Initializes a new instance of the <see cref="ConsoleLogger"/> class.
     /// </summary>
     /// <param name="writer">The text writer to write log messages to. Defaults to Console.Out if null.</param>
-    public ConsoleLogger(TextWriter? writer = null)
-    {
-        _writer = writer ?? Console.Out;
-    }
+    public ConsoleLogger(TextWriter? writer = null) => _writer = writer ?? Console.Out;
 
     /// <summary>
     /// Gets or sets the exception message format.

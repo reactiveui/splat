@@ -46,10 +46,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
     /// });
     /// </code>
     /// </example>
-    public InstanceGenericFirstDependencyResolver(Action<IMutableDependencyResolver>? configure)
-    {
-        configure?.Invoke(this);
-    }
+    public InstanceGenericFirstDependencyResolver(Action<IMutableDependencyResolver>? configure) => configure?.Invoke(this);
 
     /// <inheritdoc />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -754,7 +751,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         // Atomically replace state with a fresh empty one to make old state unreachable
         // This enables ConditionalWeakTable cleanup of all generic containers
-        var oldState = Interlocked.Exchange(ref _state, new ResolverState());
+        var oldState = Interlocked.Exchange(ref _state, new());
 
         // Take a snapshot of callbacks to avoid issues if modified during disposal
         var callbacksToInvoke = Volatile.Read(ref _callbackSnapshot);

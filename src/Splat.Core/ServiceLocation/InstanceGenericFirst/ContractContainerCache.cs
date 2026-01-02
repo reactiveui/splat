@@ -22,10 +22,7 @@ internal static class ContractContainerCache<T>
     /// Gets or creates the contract container for the specified resolver state.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ContractContainer Get(ResolverState state)
-    {
-        return Containers.GetOrCreateValue(state);
-    }
+    public static ContractContainer Get(ResolverState state) => Containers.GetOrCreateValue(state);
 
     /// <summary>
     /// Per-resolver contract container for type T.
@@ -35,15 +32,9 @@ internal static class ContractContainerCache<T>
         private readonly ConcurrentDictionary<string, ArrayHelpers.Entry<Registration<T>>> _entries = new();
         private readonly ConcurrentDictionary<string, int> _counts = new();
 
-        public bool HasRegistrations(string contract)
-        {
-            return _counts.TryGetValue(contract, out var count) && count > 0;
-        }
+        public bool HasRegistrations(string contract) => _counts.TryGetValue(contract, out var count) && count > 0;
 
-        public int GetCount(string contract)
-        {
-            return _counts.TryGetValue(contract, out var count) ? count : 0;
-        }
+        public int GetCount(string contract) => _counts.TryGetValue(contract, out var count) ? count : 0;
 
         public bool TryGet(string contract, [MaybeNullWhen(false)] out T instance)
         {
@@ -94,7 +85,7 @@ internal static class ContractContainerCache<T>
 
         public void Add(T service, string contract)
         {
-            var entry = _entries.GetOrAdd(contract, _ => new ArrayHelpers.Entry<Registration<T>>());
+            var entry = _entries.GetOrAdd(contract, _ => new());
 
             lock (entry)
             {
@@ -106,7 +97,7 @@ internal static class ContractContainerCache<T>
 
         public void Add(Func<T?> factory, string contract)
         {
-            var entry = _entries.GetOrAdd(contract, _ => new ArrayHelpers.Entry<Registration<T>>());
+            var entry = _entries.GetOrAdd(contract, _ => new());
 
             lock (entry)
             {

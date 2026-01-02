@@ -53,7 +53,7 @@ public class SerilogLoggerTests : FullLoggerTestBase
     /// Setup method to initialize AppLocatorScope before each test.
     /// </summary>
     [Before(HookType.Test)]
-    public void SetUpAppLocatorScope() => _appLocatorScope = new AppLocatorScope();
+    public void SetUpAppLocatorScope() => _appLocatorScope = new();
 
     /// <summary>
     /// Teardown method to dispose AppLocatorScope after each test.

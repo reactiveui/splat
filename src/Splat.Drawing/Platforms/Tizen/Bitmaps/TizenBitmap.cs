@@ -98,8 +98,13 @@ internal sealed class TizenBitmap : IBitmap
         {
             try
             {
-                result = decoder.DecodeAsync(imageBuffer).Result.First();
-                break;
+                var frames = decoder.DecodeAsync(imageBuffer).Result;
+                using var enumerator = frames.GetEnumerator();
+                if (enumerator.MoveNext())
+                {
+                    result = enumerator.Current;
+                    break;
+                }
             }
             catch (Tizen.Multimedia.FileFormatException)
             {

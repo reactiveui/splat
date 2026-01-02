@@ -17,7 +17,7 @@ public class LocatorTests
     /// Setup method to initialize AppLocatorScope before each test.
     /// </summary>
     [Before(HookType.Test)]
-    public void SetUpAppLocatorScope() => _appLocatorScope = new AppLocatorScope();
+    public void SetUpAppLocatorScope() => _appLocatorScope = new();
 
     /// <summary>
     /// Teardown method to dispose AppLocatorScope after each test.
@@ -41,11 +41,11 @@ public class LocatorTests
         const int foo = 5;
 
         // Explicitly cast to call the non-generic Register method with null service type
-        container.CurrentMutable.Register(() => (object)foo, serviceType: null);
+        container.CurrentMutable.Register(() => foo, serviceType: null);
 
         const int bar = 4;
         const string contract = "foo";
-        container.CurrentMutable.Register(() => (object)bar, serviceType: null, contract: contract);
+        container.CurrentMutable.Register(() => bar, serviceType: null, contract: contract);
 
         await Assert.That(container.CurrentMutable.HasRegistration(null)).IsTrue();
         var value = container.Current.GetService(null);

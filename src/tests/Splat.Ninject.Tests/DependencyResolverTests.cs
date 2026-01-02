@@ -18,7 +18,7 @@ public class DependencyResolverTests
     /// Setup method to initialize Ninject scope before each test.
     /// </summary>
     [Before(HookType.Test)]
-    public void SetUp() => _scope = new NinjectKernelScope();
+    public void SetUp() => _scope = new();
 
     /// <summary>
     /// Teardown method to dispose Ninject scope after each test.

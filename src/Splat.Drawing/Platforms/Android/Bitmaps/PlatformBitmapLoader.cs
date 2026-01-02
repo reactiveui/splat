@@ -31,7 +31,7 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
         // If a resolver is registered, we don't need the dictionary at all (AOT-safe)
         if (_drawableResolver is not null)
         {
-            _drawableList = new Dictionary<string, int>();
+            _drawableList = [];
             return;
         }
 
@@ -77,10 +77,7 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
     /// PlatformBitmapLoader.RegisterDrawables&lt;MyApp.Resource.Drawable&gt;();
     /// </code>
     /// </example>
-    public static void RegisterDrawables<TDrawable>()
-    {
-        _drawableType = typeof(TDrawable);
-    }
+    public static void RegisterDrawables<TDrawable>() => _drawableType = typeof(TDrawable);
 
     /// <inheritdoc />
     public Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight) =>
@@ -180,10 +177,15 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
             log.Debug($"GetDrawableListFromType: Using registered type {drawableType.FullName}");
         }
 
-        var result = drawableType
-            .GetFields()
-            .Where(x => x.FieldType == typeof(int) && x.IsLiteral)
-            .ToDictionary(k => k.Name, v => ((int?)v.GetRawConstantValue()) ?? 0);
+        var fields = drawableType.GetFields();
+        var result = new Dictionary<string, int>(fields.Length);
+        foreach (var field in fields)
+        {
+            if (field.FieldType == typeof(int) && field.IsLiteral)
+            {
+                result[field.Name] = (int?)field.GetRawConstantValue() ?? 0;
+            }
+        }
 
         if (log?.IsDebugEnabled == true)
         {
@@ -233,9 +235,21 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
 
             // null check here because mono doesn't appear to follow the MSDN documentation
             // as of July 2019.
-            return e.Types is not null
-                ? [.. e.Types.Where(x => x is not null).Select(x => x!)]
-                : [];
+            if (e.Types is null)
+            {
+                return [];
+            }
+
+            var result = new List<Type>(e.Types.Length);
+            foreach (var type in e.Types)
+            {
+                if (type is not null)
+                {
+                    result.Add(type);
+                }
+            }
+
+            return [.. result];
         }
     }
 
@@ -271,7 +285,7 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
             .AsParallel()
             .SelectMany(x => x.GetFields())
             .Where(x => x.FieldType == typeof(int) && x.IsLiteral)
-            .ToDictionary(k => k.Name, v => ((int?)v.GetRawConstantValue()) ?? 0);
+            .ToDictionary(k => k.Name, v => (int?)v.GetRawConstantValue() ?? 0);
 
         if (log?.IsDebugEnabled == true)
         {

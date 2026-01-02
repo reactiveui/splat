@@ -20,7 +20,7 @@ public sealed class AppLocatorTests
     }
 
     [Before(HookType.Test)]
-    public void SetUp() => _scope = new AppLocatorScope();
+    public void SetUp() => _scope = new();
 
     [After(HookType.Test)]
     public void TearDown()
@@ -57,10 +57,7 @@ public sealed class AppLocatorTests
     }
 
     [Test]
-    public async Task SetLocator_WithNullResolver_ShouldThrow()
-    {
-        await Assert.That(() => AppLocator.SetLocator(null!)).ThrowsExactly<ArgumentNullException>();
-    }
+    public async Task SetLocator_WithNullResolver_ShouldThrow() => await Assert.That(() => AppLocator.SetLocator(null!)).ThrowsExactly<ArgumentNullException>();
 
     [Test]
     public async Task SetLocator_ShouldUpdateResolver()
@@ -154,7 +151,7 @@ public sealed class AppLocatorTests
 
         await Assert.That(callCount).IsEqualTo(0);
 
-        var service = AppLocator.GetService<ITestService>("test");
+        _ = AppLocator.GetService<ITestService>("test");
         await Assert.That(callCount).IsEqualTo(1);
     }
 
@@ -296,10 +293,7 @@ public sealed class AppLocatorTests
     }
 
     [Test]
-    public async Task RegisterResolverCallbackChanged_WithNullCallback_ShouldThrow()
-    {
-        await Assert.That(() => AppLocator.RegisterResolverCallbackChanged(null!)).ThrowsExactly<ArgumentNullException>();
-    }
+    public async Task RegisterResolverCallbackChanged_WithNullCallback_ShouldThrow() => await Assert.That(() => AppLocator.RegisterResolverCallbackChanged(null!)).ThrowsExactly<ArgumentNullException>();
 
     [Test]
     public async Task RegisterResolverCallbackChanged_ShouldInvokeImmediately()

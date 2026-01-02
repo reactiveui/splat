@@ -211,7 +211,7 @@ public class DisposableTests
     public async Task CompositeDisposable_NullArray_ThrowsArgumentNullException() =>
 
         // Act & Assert
-        await Assert.That(() => _ = new CompositeDisposable((IDisposable[])null!)).Throws<ArgumentNullException>();
+        await Assert.That(() => _ = new CompositeDisposable(null!)).Throws<ArgumentNullException>();
 
     /// <summary>
     /// Test CompositeDisposable throws for null enumerable.

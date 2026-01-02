@@ -21,10 +21,7 @@ internal static class ContainerCache<T>
     /// Gets or creates the container for the specified resolver state.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Container Get(ResolverState state)
-    {
-        return Containers.GetOrCreateValue(state);
-    }
+    public static Container Get(ResolverState state) => Containers.GetOrCreateValue(state);
 
     /// <summary>
     /// Per-resolver container for type T.

@@ -34,7 +34,7 @@ public partial struct SplatColor : IEquatable<SplatColor>
 
     // The specs also indicate that all three of these properties are true
     // if created with FromKnownColor or FromNamedColor, false otherwise (FromARGB).
-    // Per Microsoft and ECMA specs these varibles are set by which constructor is used, not by their values.
+    // Per Microsoft and ECMA specs these variables are set by which constructor is used, not by their values.
     [Flags]
     internal enum ColorType : short
     {
@@ -93,12 +93,12 @@ public partial struct SplatColor : IEquatable<SplatColor>
     /// <summary>
     /// Gets a value indicating whether the color is part of the <see cref="ColorType.Known"/> group.
     /// </summary>
-    public readonly bool IsKnownColor => (_state & ((short)ColorType.Known)) != 0;
+    public readonly bool IsKnownColor => (_state & (short)ColorType.Known) != 0;
 
     /// <summary>
     /// Gets a value indicating whether the color is part of the <see cref="ColorType.System"/> group.
     /// </summary>
-    public readonly bool IsSystemColor => (_state & ((short)ColorType.System)) != 0;
+    public readonly bool IsSystemColor => (_state & (short)ColorType.System) != 0;
 
     /// <summary>
     /// Gets a value indicating whether the color is par tof the <see cref="ColorType.Known"/> or <see cref="ColorType.Named"/> groups.
@@ -200,7 +200,7 @@ public partial struct SplatColor : IEquatable<SplatColor>
     {
         var n = (short)color;
         SplatColor c;
-        if ((n <= 0) || (n >= KnownColors.ArgbValues.Length))
+        if (n <= 0 || n >= KnownColors.ArgbValues.Length)
         {
             // This is what it returns!
             c = Empty;

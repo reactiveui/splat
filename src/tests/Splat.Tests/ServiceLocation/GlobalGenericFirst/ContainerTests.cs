@@ -32,11 +32,10 @@ public class ContainerTests
     }
 
     [Test]
-    public async Task HasRegistrations_WhenEmpty_ReturnsFalse()
-    {
+    public async Task HasRegistrations_WhenEmpty_ReturnsFalse() =>
+
         // Act & Assert
         await Assert.That(Container<string>.HasRegistrations).IsFalse();
-    }
 
     [Test]
     public async Task HasRegistrations_AfterAdding_ReturnsTrue()

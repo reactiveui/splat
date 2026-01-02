@@ -23,10 +23,7 @@ internal static class Container<T>
     private static readonly ArrayHelpers.Entry<Registration<T>> Entries = new();
     private static int _count;
 
-    static Container()
-    {
-        GlobalGenericFirstDependencyResolver.RegisterClearAction(Clear);
-    }
+    static Container() => GlobalGenericFirstDependencyResolver.RegisterClearAction(Clear);
 
     /// <summary>
     /// Gets a value indicating whether this container has any registrations.

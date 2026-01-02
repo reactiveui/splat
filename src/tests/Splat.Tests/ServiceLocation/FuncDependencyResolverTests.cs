@@ -272,7 +272,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
             });
 
         // Act
-        resolver.Register(() => (object)"test", serviceType: null);
+        resolver.Register(() => "test", serviceType: null);
 
         // Assert
         await Assert.That(capturedValue).IsNotNull();
@@ -345,7 +345,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         resolver.RegisterLazySingleton<TestClass>(() =>
         {
             callCount++;
-            return new TestClass();
+            return new();
         });
 
         // Assert - factory should be captured
@@ -479,7 +479,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
             register: (_, _, _) => { });
 
         // Act
-        var disposable = resolver.ServiceRegistrationCallback<string>(_ => callbackInvoked = true);
+        var disposable = resolver.ServiceRegistrationCallback<string>(disp => callbackInvoked = true);
 
         // Register a service to trigger callbacks
         resolver.Register(() => "test", typeof(string));
@@ -509,7 +509,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
             getAllServices: (_, _) => [],
             register: (_, _, _) => { });
 
-        var disposable = resolver.ServiceRegistrationCallback<string>(_ => callbackInvoked = true);
+        var disposable = resolver.ServiceRegistrationCallback<string>(disp => callbackInvoked = true);
 
         // Act
         disposable.Dispose();
@@ -562,10 +562,10 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
             register: (_, _, _) => { });
 
         var callbackInvoked = false;
-        var disposable = resolver.ServiceRegistrationCallback<string>(_ =>
+        var disposable = resolver.ServiceRegistrationCallback<string>(disp =>
         {
             callbackInvoked = true;
-            _.Dispose(); // Signal to remove this callback
+            disp.Dispose(); // Signal to remove this callback
         });
 
         // Act - first registration should invoke callback
@@ -633,11 +633,10 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public override Task Dispose_DisposesRegisteredServices()
-    {
+    public override Task Dispose_DisposesRegisteredServices() =>
+
         // FuncDependencyResolver doesn't track instances, so it can't dispose them
-        return Task.CompletedTask;
-    }
+        Task.CompletedTask;
 
     [Test]
     public async Task Register_TwoTypeParameters_ShouldCreateNewInstance()
@@ -689,7 +688,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     {
         var services = new Dictionary<(Type? type, string contract), List<Func<object?>>>();
 
-        return new FuncDependencyResolver(
+        return new(
             getAllServices: (type, contract) =>
             {
                 type ??= NullServiceType.CachedType;
@@ -752,10 +751,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     {
         private readonly Action? _onDispose;
 
-        public TestDisposable(Action? onDispose = null)
-        {
-            _onDispose = onDispose;
-        }
+        public TestDisposable(Action? onDispose = null) => _onDispose = onDispose;
 
         public bool IsDisposed { get; private set; }
 

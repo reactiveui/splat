@@ -25,11 +25,7 @@ public class FuncDependencyResolver(
     Action<Type?, string?>? unregisterAll = null,
     IDisposable? toDispose = null) : IDependencyResolver
 {
-    private readonly Func<Type?, string?, IEnumerable<object>> _innerGetServices = getAllServices;
-    private readonly Action<Func<object?>, Type?, string?>? _innerRegister = register;
-    private readonly Action<Type?, string?>? _unregisterCurrent = unregisterCurrent;
-    private readonly Action<Type?, string?>? _unregisterAll = unregisterAll;
-    private readonly Dictionary<(Type? type, string? callback), List<Action<IDisposable>>> _callbackRegistry = [];
+    private readonly Dictionary<(Type? type, string? callback), List<Action<IDisposable>>> _callbackRegistry = new(16);
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Field is Disposed using Interlocked method")]
     private IDisposable _inner = toDispose ?? ActionDisposable.Empty;
@@ -55,7 +51,7 @@ public class FuncDependencyResolver(
     {
         serviceType ??= NullServiceType.CachedType;
 
-        return _innerGetServices(serviceType, string.Empty) ?? [];
+        return getAllServices(serviceType, string.Empty) ?? [];
     }
 
     /// <inheritdoc />
@@ -63,7 +59,7 @@ public class FuncDependencyResolver(
     {
         serviceType ??= NullServiceType.CachedType;
 
-        return _innerGetServices(serviceType, contract) ?? [];
+        return getAllServices(serviceType, contract) ?? [];
     }
 
     /// <inheritdoc />
@@ -78,7 +74,7 @@ public class FuncDependencyResolver(
     {
         serviceType ??= NullServiceType.CachedType;
 
-        return _innerGetServices(serviceType, string.Empty) is not null;
+        return getAllServices(serviceType, string.Empty) is not null;
     }
 
     /// <inheritdoc />
@@ -86,7 +82,7 @@ public class FuncDependencyResolver(
     {
         serviceType ??= NullServiceType.CachedType;
 
-        return _innerGetServices(serviceType, contract) is not null;
+        return getAllServices(serviceType, contract) is not null;
     }
 
     /// <inheritdoc />
@@ -99,7 +95,7 @@ public class FuncDependencyResolver(
     /// <inheritdoc />
     public void Register(Func<object?> factory, Type? serviceType)
     {
-        if (_innerRegister is null)
+        if (register is null)
         {
             throw new NotImplementedException("Register is not implemented in this resolver.");
         }
@@ -108,7 +104,7 @@ public class FuncDependencyResolver(
 
         serviceType ??= NullServiceType.CachedType;
 
-        _innerRegister(
+        register(
             () =>
             isNull
                 ? new NullServiceType(factory)
@@ -133,7 +129,7 @@ public class FuncDependencyResolver(
 
             if (disp.IsDisposed)
             {
-                (toRemove ??= []).Add(callback);
+                (toRemove ??= new(4)).Add(callback);
             }
         }
 
@@ -149,7 +145,7 @@ public class FuncDependencyResolver(
     /// <inheritdoc />
     public void Register(Func<object?> factory, Type? serviceType, string? contract)
     {
-        if (_innerRegister is null)
+        if (register is null)
         {
             throw new NotImplementedException("Register is not implemented in this resolver.");
         }
@@ -158,7 +154,7 @@ public class FuncDependencyResolver(
 
         serviceType ??= NullServiceType.CachedType;
 
-        _innerRegister(
+        register(
             () =>
             isNull
                 ? new NullServiceType(factory)
@@ -183,7 +179,7 @@ public class FuncDependencyResolver(
 
             if (disp.IsDisposed)
             {
-                (toRemove ??= []).Add(callback);
+                (toRemove ??= new(4)).Add(callback);
             }
         }
 
@@ -249,27 +245,27 @@ public class FuncDependencyResolver(
     /// <inheritdoc />
     public void UnregisterCurrent(Type? serviceType)
     {
-        if (_unregisterCurrent is null)
+        if (unregisterCurrent is null)
         {
             throw new NotImplementedException("UnregisterCurrent is not implemented in this resolver.");
         }
 
         serviceType ??= NullServiceType.CachedType;
 
-        _unregisterCurrent.Invoke(serviceType, null);
+        unregisterCurrent.Invoke(serviceType, null);
     }
 
     /// <inheritdoc />
     public void UnregisterCurrent(Type? serviceType, string? contract)
     {
-        if (_unregisterCurrent is null)
+        if (unregisterCurrent is null)
         {
             throw new NotImplementedException("UnregisterCurrent is not implemented in this resolver.");
         }
 
         serviceType ??= NullServiceType.CachedType;
 
-        _unregisterCurrent.Invoke(serviceType, contract);
+        unregisterCurrent.Invoke(serviceType, contract);
     }
 
     /// <inheritdoc />
@@ -281,27 +277,27 @@ public class FuncDependencyResolver(
     /// <inheritdoc />
     public void UnregisterAll(Type? serviceType)
     {
-        if (_unregisterAll is null)
+        if (unregisterAll is null)
         {
             throw new NotImplementedException("UnregisterAll is not implemented in this resolver.");
         }
 
         serviceType ??= NullServiceType.CachedType;
 
-        _unregisterAll.Invoke(serviceType, null);
+        unregisterAll.Invoke(serviceType, null);
     }
 
     /// <inheritdoc />
     public void UnregisterAll(Type? serviceType, string? contract)
     {
-        if (_unregisterAll is null)
+        if (unregisterAll is null)
         {
             throw new NotImplementedException("UnregisterAll is not implemented in this resolver.");
         }
 
         serviceType ??= NullServiceType.CachedType;
 
-        _unregisterAll.Invoke(serviceType, contract);
+        unregisterAll.Invoke(serviceType, contract);
     }
 
     /// <inheritdoc />
@@ -320,7 +316,7 @@ public class FuncDependencyResolver(
 
         if (!_callbackRegistry.TryGetValue(pair, out var value))
         {
-            value = [];
+            value = new(4);
             _callbackRegistry[pair] = value;
         }
 
@@ -330,7 +326,7 @@ public class FuncDependencyResolver(
 
         // Invoke callback once per existing registration to match ModernDependencyResolver behavior
         var existingServices = GetServices(serviceType);
-        foreach (var service in existingServices)
+        foreach (var unused in existingServices)
         {
             callback(disp);
         }
@@ -348,7 +344,7 @@ public class FuncDependencyResolver(
 
         if (!_callbackRegistry.TryGetValue(pair, out var value))
         {
-            value = [];
+            value = new(4);
             _callbackRegistry[pair] = value;
         }
 
@@ -358,7 +354,7 @@ public class FuncDependencyResolver(
 
         // Invoke callback once per existing registration to match ModernDependencyResolver behavior
         var existingServices = GetServices(serviceType, contract);
-        foreach (var service in existingServices)
+        foreach (var unused in existingServices)
         {
             callback(disp);
         }
@@ -413,9 +409,9 @@ public class FuncDependencyResolver(
             _callbackRegistry.Clear();
 
             // Dispose all registered services that are IDisposable
-            if (_innerGetServices != null)
+            if (getAllServices != null)
             {
-                var allServices = _innerGetServices(null, null);
+                var allServices = getAllServices(null, null);
                 if (allServices != null)
                 {
                     foreach (var service in allServices)

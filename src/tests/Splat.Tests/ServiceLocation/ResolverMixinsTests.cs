@@ -20,7 +20,7 @@ public sealed class ResolverMixinsTests
     }
 
     [Before(HookType.Test)]
-    public void SetUp() => _scope = new AppLocatorScope();
+    public void SetUp() => _scope = new();
 
     [After(HookType.Test)]
     public void TearDown()
@@ -256,7 +256,7 @@ public sealed class ResolverMixinsTests
         await Assert.That(result).IsEqualTo(resolver);
         await Assert.That(callCount).IsEqualTo(0);
 
-        var service = AppLocator.GetService<ITestService>("test");
+        _ = AppLocator.GetService<ITestService>("test");
         await Assert.That(callCount).IsEqualTo(1);
     }
 

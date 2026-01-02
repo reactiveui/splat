@@ -348,7 +348,14 @@ public sealed class MemoizingMRUCache<TParam, TVal>
         lock (_lockObject)
         {
             // Materialise inside the lock to avoid a deferred iterator escaping the lock.
-            return _cacheEntries.Select(x => x.Value.value).ToArray();
+            var result = new TVal[_cacheEntries.Count];
+            var index = 0;
+            foreach (var entry in _cacheEntries)
+            {
+                result[index++] = entry.Value.value;
+            }
+
+            return result;
         }
     }
 

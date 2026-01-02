@@ -29,11 +29,11 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
         const int foo = 5;
 
         // Explicitly cast to call the non-generic Register method with null service type
-        Locator.CurrentMutable.Register(() => (object)foo, serviceType: null);
+        Locator.CurrentMutable.Register(() => foo, serviceType: null);
 
         const int bar = 4;
         const string contract = "foo";
-        Locator.CurrentMutable.Register(() => (object)bar, serviceType: null, contract: contract);
+        Locator.CurrentMutable.Register(() => bar, serviceType: null, contract: contract);
 
         autofacResolver.SetLifetimeScope(builder.Build());
 
@@ -435,33 +435,30 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public override Task Dispose_InvokesCallbacks()
-    {
+    public override Task Dispose_InvokesCallbacks() =>
+
         // Autofac ServiceRegistrationCallback throws NotImplementedException, so this test doesn't apply
-        return Task.CompletedTask;
-    }
+        Task.CompletedTask;
 
     /// <summary>
     /// Autofac manages disposal of registered services itself.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public override Task Dispose_DisposesRegisteredServices()
-    {
+    public override Task Dispose_DisposesRegisteredServices() =>
+
         // Autofac manages its own service disposal lifecycle
-        return Task.CompletedTask;
-    }
+        Task.CompletedTask;
 
     /// <summary>
     /// Autofac handles lazy singletons itself.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public override Task Dispose_WithLazySingleton_DoesNotCreateIfNotAccessed()
-    {
+    public override Task Dispose_WithLazySingleton_DoesNotCreateIfNotAccessed() =>
+
         // Autofac manages lazy singleton creation and disposal
-        return Task.CompletedTask;
-    }
+        Task.CompletedTask;
 
     /// <inheritdoc />
     protected override AutofacDependencyResolver GetDependencyResolver()

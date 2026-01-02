@@ -22,7 +22,7 @@ public class ApiApprovalTests
 #if WINDOWS
         typeof(IPlatformModeDetector).Assembly.CheckApproval(["Splat"]);
 #else
-        return Task.CompletedTask;
+        Task.CompletedTask;
 #endif
 
 }

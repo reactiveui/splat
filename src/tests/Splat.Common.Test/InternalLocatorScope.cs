@@ -31,7 +31,7 @@ internal sealed class InternalLocatorScope : IDisposable
     public InternalLocatorScope()
     {
         _savedLocator = AppLocator.InternalLocator;
-        Locator = new InternalLocator();
+        Locator = new();
         Locator.CurrentMutable.InitializeSplat();
         AppLocator.InternalLocator = Locator;
     }

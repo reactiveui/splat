@@ -170,7 +170,7 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
 
         await Assert.That(() =>
         {
-            var result = resolver.GetService<ViewModelOne>();
+            _ = resolver.GetService<ViewModelOne>();
             return Task.CompletedTask;
         }).ThrowsNothing();
     }

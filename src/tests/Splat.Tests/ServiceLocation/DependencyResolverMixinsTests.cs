@@ -20,7 +20,7 @@ public sealed class DependencyResolverMixinsTests
     }
 
     [Before(HookType.Test)]
-    public void SetUp() => _scope = new AppLocatorScope();
+    public void SetUp() => _scope = new();
 
     [After(HookType.Test)]
     public void TearDown()
@@ -137,7 +137,7 @@ public sealed class DependencyResolverMixinsTests
             () =>
             {
                 callCount++;
-                return (object)new TestService();
+                return new TestService();
             },
             typeof(ITestService));
 
@@ -161,7 +161,7 @@ public sealed class DependencyResolverMixinsTests
             () =>
             {
                 callCount++;
-                return (object)new TestService();
+                return new TestService();
             },
             typeof(ITestService),
             "test");

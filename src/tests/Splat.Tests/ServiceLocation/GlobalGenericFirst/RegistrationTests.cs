@@ -140,7 +140,7 @@ public class RegistrationTests
     public async Task FactoryRegistration_WithComplexType_WorksCorrectly()
     {
         // Arrange
-        Func<TestClass?> factory = () => new TestClass { Value = 100, Name = "Factory" };
+        Func<TestClass?> factory = () => new() { Value = 100, Name = "Factory" };
         var registration = Registration<TestClass>.FromFactory(factory);
 
         // Act

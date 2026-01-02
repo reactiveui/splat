@@ -19,8 +19,6 @@ namespace Splat.Ninject;
 /// <param name="kernel">The kernel.</param>
 public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 {
-    private readonly IKernel _kernel = kernel;
-
     /// <inheritdoc />
     public virtual object? GetService(Type? serviceType) =>
         GetServices(serviceType).LastOrDefault()!;
@@ -38,7 +36,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
         try
         {
             // Get all bindings and filter by metadata to avoid implicit self-binding issues
-            var matchingBindings = _kernel.GetBindings(serviceType)
+            var matchingBindings = kernel.GetBindings(serviceType)
                 .Where(b => IsCorrectMetadata(b.BindingConfiguration.Metadata, null))
                 .ToList();
 
@@ -53,7 +51,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
             {
                 try
                 {
-                    var instance = _kernel.Get(serviceType, meta => meta.Equals(binding.BindingConfiguration.Metadata));
+                    var instance = kernel.Get(serviceType, meta => meta.Equals(binding.BindingConfiguration.Metadata));
                     if (instance is not null)
                     {
                         results.Add(instance);
@@ -82,7 +80,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
         try
         {
             // Get all bindings and filter by metadata to avoid implicit self-binding issues
-            var matchingBindings = _kernel.GetBindings(serviceType)
+            var matchingBindings = kernel.GetBindings(serviceType)
                 .Where(b => IsCorrectMetadata(b.BindingConfiguration.Metadata, contract))
                 .ToList();
 
@@ -97,7 +95,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
             {
                 try
                 {
-                    var instance = _kernel.Get(serviceType, meta => meta.Equals(binding.BindingConfiguration.Metadata));
+                    var instance = kernel.Get(serviceType, meta => meta.Equals(binding.BindingConfiguration.Metadata));
                     if (instance is not null)
                     {
                         results.Add(instance);
@@ -122,7 +120,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         serviceType ??= NullServiceType.CachedType;
 
-        return _kernel.CanResolve(serviceType, metadata => IsCorrectMetadata(metadata, null));
+        return kernel.CanResolve(serviceType, metadata => IsCorrectMetadata(metadata, null));
     }
 
     /// <inheritdoc />
@@ -130,7 +128,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         serviceType ??= NullServiceType.CachedType;
 
-        return _kernel.CanResolve(serviceType, metadata => IsCorrectMetadata(metadata, contract));
+        return kernel.CanResolve(serviceType, metadata => IsCorrectMetadata(metadata, contract));
     }
 
     /// <inheritdoc />
@@ -138,7 +136,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         serviceType ??= NullServiceType.CachedType;
 
-        _ = _kernel.Bind(serviceType).ToMethod(_ => factory());
+        _ = kernel.Bind(serviceType).ToMethod(_ => factory());
     }
 
     /// <inheritdoc />
@@ -146,7 +144,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         serviceType ??= NullServiceType.CachedType;
 
-        _ = _kernel.Bind(serviceType).ToMethod(_ => factory()).Named(contract);
+        _ = kernel.Bind(serviceType).ToMethod(_ => factory()).Named(contract);
     }
 
     /// <inheritdoc />
@@ -154,7 +152,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         serviceType ??= NullServiceType.CachedType;
 
-        var bindings = _kernel.GetBindings(serviceType).ToArray();
+        var bindings = kernel.GetBindings(serviceType).ToArray();
 
         if (bindings is null || bindings.Length < 1)
         {
@@ -168,7 +166,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
             return;
         }
 
-        _kernel.RemoveBinding(matchingBinding);
+        kernel.RemoveBinding(matchingBinding);
     }
 
     /// <inheritdoc />
@@ -176,7 +174,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         serviceType ??= NullServiceType.CachedType;
 
-        var bindings = _kernel.GetBindings(serviceType).ToArray();
+        var bindings = kernel.GetBindings(serviceType).ToArray();
 
         if (bindings is null || bindings.Length < 1)
         {
@@ -190,7 +188,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
             return;
         }
 
-        _kernel.RemoveBinding(matchingBinding);
+        kernel.RemoveBinding(matchingBinding);
     }
 
     /// <inheritdoc />
@@ -198,7 +196,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         serviceType ??= NullServiceType.CachedType;
 
-        var bindings = _kernel.GetBindings(serviceType).ToArray();
+        var bindings = kernel.GetBindings(serviceType).ToArray();
 
         if (bindings is null || bindings.Length < 1)
         {
@@ -214,7 +212,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
         foreach (var binding in matchingBinding)
         {
-            _kernel.RemoveBinding(binding);
+            kernel.RemoveBinding(binding);
         }
     }
 
@@ -223,7 +221,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         serviceType ??= NullServiceType.CachedType;
 
-        var bindings = _kernel.GetBindings(serviceType).ToArray();
+        var bindings = kernel.GetBindings(serviceType).ToArray();
 
         if (bindings is null || bindings.Length < 1)
         {
@@ -239,7 +237,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
         foreach (var binding in matchingBinding)
         {
-            _kernel.RemoveBinding(binding);
+            kernel.RemoveBinding(binding);
         }
     }
 
@@ -265,7 +263,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
         try
         {
             // Get all bindings and filter by metadata to avoid implicit self-binding issues
-            var matchingBindings = _kernel.GetBindings(typeof(T))
+            var matchingBindings = kernel.GetBindings(typeof(T))
                 .Where(b => IsCorrectMetadata(b.BindingConfiguration.Metadata, null))
                 .ToList();
 
@@ -280,7 +278,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
             {
                 try
                 {
-                    var instance = _kernel.Get<T>(meta => meta.Equals(binding.BindingConfiguration.Metadata));
+                    var instance = kernel.Get<T>(meta => meta.Equals(binding.BindingConfiguration.Metadata));
                     if (instance is not null)
                     {
                         results.Add(instance);
@@ -306,7 +304,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
         try
         {
             // Get all bindings and filter by metadata to avoid implicit self-binding issues
-            var matchingBindings = _kernel.GetBindings(typeof(T))
+            var matchingBindings = kernel.GetBindings(typeof(T))
                 .Where(b => IsCorrectMetadata(b.BindingConfiguration.Metadata, contract))
                 .ToList();
 
@@ -321,7 +319,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
             {
                 try
                 {
-                    var instance = _kernel.Get<T>(meta => meta.Equals(binding.BindingConfiguration.Metadata));
+                    var instance = kernel.Get<T>(meta => meta.Equals(binding.BindingConfiguration.Metadata));
                     if (instance is not null)
                     {
                         results.Add(instance);
@@ -351,11 +349,11 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
     /// <inheritdoc/>
     public void Register<T>(Func<T?> factory) =>
-        _kernel.Bind<T>().ToMethod(_ => factory()!);
+        kernel.Bind<T>().ToMethod(_ => factory()!);
 
     /// <inheritdoc/>
     public void Register<T>(Func<T?> factory, string? contract) =>
-        _kernel.Bind<T>().ToMethod(_ => factory()!).Named(contract);
+        kernel.Bind<T>().ToMethod(_ => factory()!).Named(contract);
 
     /// <inheritdoc/>
     public void UnregisterCurrent<T>() =>
@@ -385,13 +383,13 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     public void Register<TService, TImplementation>()
         where TService : class
         where TImplementation : class, TService, new() =>
-        _kernel.Bind<TService>().To<TImplementation>();
+        kernel.Bind<TService>().To<TImplementation>();
 
     /// <inheritdoc/>
     public void Register<TService, TImplementation>(string? contract)
         where TService : class
         where TImplementation : class, TService, new() =>
-        _kernel.Bind<TService>().To<TImplementation>().Named(contract);
+        kernel.Bind<TService>().To<TImplementation>().Named(contract);
 
     /// <inheritdoc/>
     public void RegisterConstant<T>(T? value)
@@ -399,7 +397,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         ArgumentExceptionHelper.ThrowIfNull(value);
 
-        _kernel.Bind<T>().ToConstant(value);
+        kernel.Bind<T>().ToConstant(value);
     }
 
     /// <inheritdoc/>
@@ -408,7 +406,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         ArgumentExceptionHelper.ThrowIfNull(value);
 
-        _kernel.Bind<T>().ToConstant(value).Named(contract);
+        kernel.Bind<T>().ToConstant(value).Named(contract);
     }
 
     /// <inheritdoc/>
@@ -417,7 +415,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         ArgumentExceptionHelper.ThrowIfNull(valueFactory);
 
-        _kernel.Bind<T>().ToMethod(_ => valueFactory()!).InSingletonScope();
+        kernel.Bind<T>().ToMethod(_ => valueFactory()!).InSingletonScope();
     }
 
     /// <inheritdoc/>
@@ -426,7 +424,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         ArgumentExceptionHelper.ThrowIfNull(valueFactory);
 
-        _kernel.Bind<T>().ToMethod(_ => valueFactory()!).InSingletonScope().Named(contract);
+        kernel.Bind<T>().ToMethod(_ => valueFactory()!).InSingletonScope().Named(contract);
     }
 
     /// <inheritdoc />
@@ -444,7 +442,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         if (disposing)
         {
-            _kernel?.Dispose();
+            kernel?.Dispose();
         }
     }
 

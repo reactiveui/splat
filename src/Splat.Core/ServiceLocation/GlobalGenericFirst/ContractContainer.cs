@@ -20,10 +20,7 @@ internal static class ContractContainer<T>
     private static readonly ConcurrentDictionary<string, ArrayHelpers.Entry<Registration<T>>> Entries = new(StringComparer.Ordinal);
     private static readonly ConcurrentDictionary<string, int> Counts = [];
 
-    static ContractContainer()
-    {
-        GlobalGenericFirstDependencyResolver.RegisterClearAction(ClearAll);
-    }
+    static ContractContainer() => GlobalGenericFirstDependencyResolver.RegisterClearAction(ClearAll);
 
     /// <summary>
     /// Adds a service instance with a contract.
@@ -34,7 +31,7 @@ internal static class ContractContainer<T>
     public static void Add(T service, string? contract)
     {
         var key = contract ?? string.Empty;
-        var entry = Entries.GetOrAdd(key, _ => new ArrayHelpers.Entry<Registration<T>>());
+        var entry = Entries.GetOrAdd(key, _ => new());
 
         lock (entry)
         {
@@ -53,7 +50,7 @@ internal static class ContractContainer<T>
     public static void Add(Func<T?> factory, string? contract)
     {
         var key = contract ?? string.Empty;
-        var entry = Entries.GetOrAdd(key, _ => new ArrayHelpers.Entry<Registration<T>>());
+        var entry = Entries.GetOrAdd(key, _ => new());
 
         lock (entry)
         {
@@ -184,20 +181,14 @@ internal static class ContractContainer<T>
     /// </summary>
     /// <param name="contract">The contract name.</param>
     /// <returns>True if registrations exist for the contract; otherwise false.</returns>
-    public static bool HasRegistrations(string contract)
-    {
-        return Counts.TryGetValue(contract, out var count) && count > 0;
-    }
+    public static bool HasRegistrations(string contract) => Counts.TryGetValue(contract, out var count) && count > 0;
 
     /// <summary>
     /// Gets the count of registrations for a specific contract without invoking any factories.
     /// </summary>
     /// <param name="contract">The contract name.</param>
     /// <returns>The number of registrations for the contract.</returns>
-    public static int GetCount(string contract)
-    {
-        return Counts.TryGetValue(contract, out var count) ? count : 0;
-    }
+    public static int GetCount(string contract) => Counts.TryGetValue(contract, out var count) ? count : 0;
 
     /// <summary>
     /// Ensures the snapshot is current, rebuilding if stale.

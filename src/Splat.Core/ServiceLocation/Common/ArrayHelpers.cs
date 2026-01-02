@@ -141,7 +141,7 @@ internal static class ArrayHelpers
         // Get or create the entry for this key
         if (!entries.TryGetValue(key, out var entry))
         {
-            entry = new Entry<TValue>();
+            entry = new();
             entries[key] = entry;
         }
 
@@ -285,7 +285,7 @@ internal static class ArrayHelpers
         /// <summary>
         /// The mutable list for O(1) append operations.
         /// </summary>
-        public List<TValue> List = [];
+        public readonly List<TValue> List = new(4);
 
         /// <summary>
         /// The immutable snapshot array for lock-free reads.

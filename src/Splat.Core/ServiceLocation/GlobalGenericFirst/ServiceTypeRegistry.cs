@@ -71,7 +71,7 @@ internal static class ServiceTypeRegistry
     public static void Register(Type serviceType, Func<object?> factory, string? contract = null)
     {
         var key = (serviceType, contract);
-        var entry = Entries.GetOrAdd(key, _ => new ArrayHelpers.Entry<Func<object?>>());
+        var entry = Entries.GetOrAdd(key, _ => new());
 
         lock (entry)
         {
@@ -255,10 +255,10 @@ internal static class ServiceTypeRegistry
     /// <returns>An enumerable of all registered factories.</returns>
     public static IEnumerable<Func<object?>> GetAllFactoriesForDisposal()
     {
-        var allFactories = new List<Func<object?>>();
-
         // Take a snapshot of entries to avoid issues if dictionary is modified during disposal
-        var entriesSnapshot = Entries.ToArray();
+        KeyValuePair<(Type, string?), ArrayHelpers.Entry<Func<object?>>>[] entriesSnapshot = [.. Entries];
+
+        var allFactories = new List<Func<object?>>(entriesSnapshot.Length * 2);
 
         foreach (var kvp in entriesSnapshot)
         {

@@ -17,7 +17,7 @@ public class LocatorSerialRegisterTests
     /// Setup method to initialize InternalLocatorScope before each test.
     /// </summary>
     [Before(HookType.Test)]
-    public void SetUpLocatorScope() => _locatorScope = new InternalLocatorScope();
+    public void SetUpLocatorScope() => _locatorScope = new();
 
     /// <summary>
     /// Teardown method to dispose InternalLocatorScope after each test.

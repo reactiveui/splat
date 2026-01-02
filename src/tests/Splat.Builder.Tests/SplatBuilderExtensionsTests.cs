@@ -16,7 +16,7 @@ public class SplatBuilderExtensionsTests
     /// Setup method to initialize AppBuilderScope before each test.
     /// </summary>
     [Before(HookType.Test)]
-    public void SetUpAppBuilderScope() => _appBuilderScope = new AppBuilderScope();
+    public void SetUpAppBuilderScope() => _appBuilderScope = new();
 
     /// <summary>
     /// Teardown method to dispose AppBuilderScope after each test.
@@ -44,7 +44,7 @@ public class SplatBuilderExtensionsTests
     [Test]
     public void CreateSplatBuilderThrowsOnNullResolver()
     {
-        IMutableDependencyResolver resolver = (IMutableDependencyResolver)null!;
+        IMutableDependencyResolver resolver = null!;
         Assert.Throws<ArgumentNullException>(() => resolver.CreateSplatBuilder());
     }
 
@@ -67,7 +67,7 @@ public class SplatBuilderExtensionsTests
     [Test]
     public void CreateSplatBuilderWithConfigureActionThrowsOnNullResolver()
     {
-        IMutableDependencyResolver resolver = (IMutableDependencyResolver)null!;
+        IMutableDependencyResolver resolver = null!;
         Assert.Throws<ArgumentNullException>(() => resolver.CreateSplatBuilder(_ => { }));
     }
 

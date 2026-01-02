@@ -254,12 +254,10 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
         ServiceRegistrationCallback(typeof(T), contract, callback);
 
     /// <inheritdoc/>
-    void IMutableDependencyResolver.Register<TService, TImplementation>()
-    {
+    void IMutableDependencyResolver.Register<TService, TImplementation>() =>
         _container.RegisterDelegate<TService>(
             _ => new TImplementation(),
             ifAlreadyRegistered: IfAlreadyRegistered.AppendNewImplementation);
-    }
 
     /// <inheritdoc/>
     void IMutableDependencyResolver.Register<TService, TImplementation>(string? contract)

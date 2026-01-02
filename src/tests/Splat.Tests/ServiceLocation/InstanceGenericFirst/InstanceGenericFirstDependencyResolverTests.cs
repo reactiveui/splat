@@ -40,14 +40,12 @@ public sealed class InstanceGenericFirstDependencyResolverTests : BaseDependency
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task Constructor_WithNullConfigure_DoesNotThrow()
-    {
+    public async Task Constructor_WithNullConfigure_DoesNotThrow() =>
         await Assert.That(() =>
         {
-            var resolver = new InstanceGenericFirstDependencyResolver(null);
+            _ = new InstanceGenericFirstDependencyResolver(null);
             return Task.CompletedTask;
         }).ThrowsNothing();
-    }
 
     /// <summary>
     /// Test Dispose method disposes resolver properly.

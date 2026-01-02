@@ -33,11 +33,10 @@ public class ContractContainerTests
     }
 
     [Test]
-    public async Task HasRegistrations_WhenEmpty_ReturnsFalse()
-    {
+    public async Task HasRegistrations_WhenEmpty_ReturnsFalse() =>
+
         // Act & Assert
         await Assert.That(ContractContainer<string>.HasRegistrations(Contract1)).IsFalse();
-    }
 
     [Test]
     public async Task HasRegistrations_AfterAdding_ReturnsTrue()
@@ -339,11 +338,10 @@ public class ContractContainerTests
     }
 
     [Test]
-    public async Task ClearAll_WhenEmpty_DoesNotThrow()
-    {
+    public async Task ClearAll_WhenEmpty_DoesNotThrow() =>
+
         // Act & Assert - should not throw
         ContractContainer<string>.ClearAll();
-    }
 
     [Test]
     public async Task ContractContainer_DifferentTypes_AreIsolated()

@@ -56,13 +56,23 @@ public class ModernDependencyResolver : IDependencyResolver
     /// <param name="registry">A registry of services.</param>
     protected ModernDependencyResolver(Dictionary<(Type serviceType, string? contract), List<Func<object?>>>? registry)
     {
-        var reg = registry is not null ?
-            registry.ToDictionary(k => k.Key, v => v.Value.ToList()) :
-            [];
+        Dictionary<(Type serviceType, string? contract), List<Func<object?>>> reg;
+        if (registry is not null)
+        {
+            reg = new(registry.Count);
+            foreach (var kvp in registry)
+            {
+                reg[kvp.Key] = [.. kvp.Value];
+            }
+        }
+        else
+        {
+            reg = new(32);
+        }
 
-        _snapshot = new Snapshot(reg);
+        _snapshot = new(reg);
 
-        _callbackRegistry = [];
+        _callbackRegistry = new(16);
     }
 
     /// <inheritdoc />
@@ -128,7 +138,7 @@ public class ModernDependencyResolver : IDependencyResolver
 
             if (!newRegistry.TryGetValue(pair, out var value))
             {
-                value = [];
+                value = new(4);
                 newRegistry[pair] = value;
             }
             else
@@ -185,7 +195,7 @@ public class ModernDependencyResolver : IDependencyResolver
 
             if (!newRegistry.TryGetValue(pair, out var value))
             {
-                value = [];
+                value = new(4);
                 newRegistry[pair] = value;
             }
             else
@@ -312,7 +322,7 @@ public class ModernDependencyResolver : IDependencyResolver
         serviceType ??= NullServiceType.CachedType;
 
         var pair = GetKey(serviceType, contract);
-        return !snap.Registry.TryGetValue(pair, out var value) ? Array.Empty<object>() : value.ConvertAll(x =>
+        return !snap.Registry.TryGetValue(pair, out var value) ? [] : value.ConvertAll(x =>
         {
             var v = x()!;
             return v is Lazy<object?> lazy ? lazy.Value! : v;
@@ -391,7 +401,7 @@ public class ModernDependencyResolver : IDependencyResolver
 
             // Copy-on-write: clone only the list being modified and publish a new snapshot.
             var newRegistry = CloneRegistryShallow(snap.Registry);
-            var newList = list.ToList();
+            List<Func<object?>> newList = [.. list];
             newList.RemoveAt(position);
             newRegistry[pair] = newList;
 
@@ -428,7 +438,7 @@ public class ModernDependencyResolver : IDependencyResolver
 
             // Copy-on-write: clone only the list being modified and publish a new snapshot.
             var newRegistry = CloneRegistryShallow(snap.Registry);
-            var newList = list.ToList();
+            List<Func<object?>> newList = [.. list];
             newList.RemoveAt(position);
             newRegistry[pair] = newList;
 
@@ -511,7 +521,7 @@ public class ModernDependencyResolver : IDependencyResolver
 
             if (!_callbackRegistry.TryGetValue(pair, out var value))
             {
-                value = [];
+                value = new(4);
                 _callbackRegistry[pair] = value;
             }
 
@@ -536,7 +546,7 @@ public class ModernDependencyResolver : IDependencyResolver
             return disp;
         }
 
-        foreach (var s in callbackList)
+        foreach (var unused in callbackList)
         {
             callback(disp);
         }
@@ -568,7 +578,7 @@ public class ModernDependencyResolver : IDependencyResolver
 
             if (!_callbackRegistry.TryGetValue(pair, out var value))
             {
-                value = [];
+                value = new(4);
                 _callbackRegistry[pair] = value;
             }
 
@@ -593,7 +603,7 @@ public class ModernDependencyResolver : IDependencyResolver
             return disp;
         }
 
-        foreach (var s in callbackList)
+        foreach (var unused in callbackList)
         {
             callback(disp);
         }
@@ -649,7 +659,7 @@ public class ModernDependencyResolver : IDependencyResolver
     public ModernDependencyResolver Duplicate()
     {
         var snap = Volatile.Read(ref _snapshot);
-        return snap is null ? new ModernDependencyResolver() : new ModernDependencyResolver(snap.Registry);
+        return snap is null ? new() : new ModernDependencyResolver(snap.Registry);
     }
 
     /// <inheritdoc />

@@ -28,16 +28,16 @@ internal static class AssemblyFinder
             return default;
         }
 
-        var toSearch = new[]
-        {
+        AssemblyName[] toSearch =
+        [
 #if NET6_0_OR_GREATER
-            thisTypeName.Replace(thisType.FullName + ", ", string.Empty, StringComparison.CurrentCulture),
-            thisTypeName.Replace(thisType.FullName + ", ", string.Empty, StringComparison.CurrentCulture).Replace(".Portable", string.Empty, StringComparison.CurrentCulture),
+            new(thisTypeName.Replace(thisType.FullName + ", ", string.Empty, StringComparison.CurrentCulture)),
+            new(thisTypeName.Replace(thisType.FullName + ", ", string.Empty, StringComparison.CurrentCulture).Replace(".Portable", string.Empty, StringComparison.CurrentCulture)),
 #else
-            thisTypeName.Replace(thisType.FullName + ", ", string.Empty),
-            thisTypeName.Replace(thisType.FullName + ", ", string.Empty).Replace(".Portable", string.Empty),
+            new(thisTypeName.Replace(thisType.FullName + ", ", string.Empty)),
+            new(thisTypeName.Replace(thisType.FullName + ", ", string.Empty).Replace(".Portable", string.Empty)),
 #endif
-        }.Select(x => new AssemblyName(x)).ToArray();
+        ];
 
         foreach (var assembly in toSearch)
         {

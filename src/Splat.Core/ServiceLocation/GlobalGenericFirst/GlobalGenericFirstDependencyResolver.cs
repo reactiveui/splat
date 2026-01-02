@@ -61,10 +61,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
     /// });
     /// </code>
     /// </example>
-    public GlobalGenericFirstDependencyResolver(Action<IMutableDependencyResolver>? configure)
-    {
-        configure?.Invoke(this);
-    }
+    public GlobalGenericFirstDependencyResolver(Action<IMutableDependencyResolver>? configure) => configure?.Invoke(this);
 
     /// <summary>
     /// Clears all registered service types and tracked container instances from the registry.

@@ -20,10 +20,7 @@ internal static class ServiceTypeRegistryCache
     /// Gets or creates the registry for the specified resolver state.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Registry Get(ResolverState state)
-    {
-        return Registries.GetOrCreateValue(state);
-    }
+    public static Registry Get(ResolverState state) => Registries.GetOrCreateValue(state);
 
     /// <summary>
     /// Per-resolver non-generic type registry.
@@ -66,7 +63,7 @@ internal static class ServiceTypeRegistryCache
         public void Register(Type serviceType, Func<object?> factory, string? contract = null)
         {
             var key = (serviceType, contract);
-            var entry = _entries.GetOrAdd(key, _ => new ArrayHelpers.Entry<Func<object?>>());
+            var entry = _entries.GetOrAdd(key, _ => new());
 
             lock (entry)
             {
@@ -193,10 +190,10 @@ internal static class ServiceTypeRegistryCache
 
         public IEnumerable<Func<object?>> GetAllFactoriesForDisposal()
         {
-            var allFactories = new List<Func<object?>>();
-
             // Take a snapshot of entries to avoid issues if dictionary is modified during disposal
-            var entriesSnapshot = _entries.ToArray();
+            KeyValuePair<(Type, string?), ArrayHelpers.Entry<Func<object?>>>[] entriesSnapshot = [.. _entries];
+
+            var allFactories = new List<Func<object?>>(entriesSnapshot.Length * 2);
 
             foreach (var kvp in entriesSnapshot)
             {

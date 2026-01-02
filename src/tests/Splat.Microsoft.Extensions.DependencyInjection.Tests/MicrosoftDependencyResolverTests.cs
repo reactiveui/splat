@@ -26,11 +26,11 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
         const int foo = 5;
 
         // Explicitly cast to call the non-generic Register method with null service type
-        resolver.Register(() => (object)foo, serviceType: null);
+        resolver.Register(() => foo, serviceType: null);
 
         const int bar = 4;
         const string contract = "foo";
-        resolver.Register(() => (object)bar, serviceType: null, contract: contract);
+        resolver.Register(() => bar, serviceType: null, contract: contract);
 
         await Assert.That(resolver.HasRegistration(null)).IsTrue();
 
@@ -161,33 +161,30 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public override Task Dispose_InvokesCallbacks()
-    {
+    public override Task Dispose_InvokesCallbacks() =>
+
         // MS.DI ServiceRegistrationCallback throws NotImplementedException, so this test doesn't apply
-        return Task.CompletedTask;
-    }
+        Task.CompletedTask;
 
     /// <summary>
     /// MS.DI manages disposal of registered services itself.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public override Task Dispose_DisposesRegisteredServices()
-    {
+    public override Task Dispose_DisposesRegisteredServices() =>
+
         // MS.DI manages its own service disposal lifecycle
-        return Task.CompletedTask;
-    }
+        Task.CompletedTask;
 
     /// <summary>
     /// MS.DI handles lazy singletons itself.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public override Task Dispose_WithLazySingleton_DoesNotCreateIfNotAccessed()
-    {
+    public override Task Dispose_WithLazySingleton_DoesNotCreateIfNotAccessed() =>
+
         // MS.DI manages lazy singleton creation and disposal
-        return Task.CompletedTask;
-    }
+        Task.CompletedTask;
 
     /// <inheritdoc />
     protected override MicrosoftDependencyResolver GetDependencyResolver() => new();

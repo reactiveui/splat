@@ -23,7 +23,7 @@ public sealed class InternalLocatorTests
     [Before(HookType.Test)]
     public void SetUp()
     {
-        _scope = new InternalLocatorScope();
+        _scope = new();
         _locator = _scope.Locator;
     }
 
@@ -42,22 +42,13 @@ public sealed class InternalLocatorTests
     }
 
     [Test]
-    public async Task Current_ShouldReturnInternal()
-    {
-        await Assert.That(_locator.Current).IsEqualTo(_locator.Internal);
-    }
+    public async Task Current_ShouldReturnInternal() => await Assert.That(_locator.Current).IsEqualTo(_locator.Internal);
 
     [Test]
-    public async Task CurrentMutable_ShouldReturnInternal()
-    {
-        await Assert.That(_locator.CurrentMutable).IsEqualTo(_locator.Internal);
-    }
+    public async Task CurrentMutable_ShouldReturnInternal() => await Assert.That(_locator.CurrentMutable).IsEqualTo(_locator.Internal);
 
     [Test]
-    public async Task SetLocator_WithNullResolver_ShouldThrowArgumentNullException()
-    {
-        await Assert.That(() => _locator.SetLocator(null!)).ThrowsExactly<ArgumentNullException>();
-    }
+    public async Task SetLocator_WithNullResolver_ShouldThrowArgumentNullException() => await Assert.That(() => _locator.SetLocator(null!)).ThrowsExactly<ArgumentNullException>();
 
     [Test]
     public async Task SetLocator_ShouldUpdateInternal()
@@ -113,11 +104,10 @@ public sealed class InternalLocatorTests
     }
 
     [Test]
-    public async Task RegisterResolverCallbackChanged_WithNullCallback_ShouldThrowNullReferenceException()
-    {
+    public async Task RegisterResolverCallbackChanged_WithNullCallback_ShouldThrowNullReferenceException() =>
+
         // InternalLocator doesn't validate null parameter, so it throws NullReferenceException
         await Assert.That(() => _locator.RegisterResolverCallbackChanged(null!)).ThrowsExactly<NullReferenceException>();
-    }
 
     [Test]
     public async Task RegisterResolverCallbackChanged_ShouldInvokeCallbackImmediately()

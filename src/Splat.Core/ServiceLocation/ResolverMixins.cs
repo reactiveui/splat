@@ -21,7 +21,7 @@ public static class ResolverMixins
     {
         ArgumentExceptionHelper.ThrowIfNull(resolver);
 
-        resolver.Register<TService>(() => new TService());
+        resolver.Register<TService>(() => new());
         return resolver;
     }
 
@@ -37,7 +37,7 @@ public static class ResolverMixins
     {
         ArgumentExceptionHelper.ThrowIfNull(resolver);
 
-        resolver.Register<TService>(() => new TService(), contract);
+        resolver.Register<TService>(() => new(), contract);
         return resolver;
     }
 
@@ -282,7 +282,7 @@ public static class ResolverMixins
     {
         ArgumentExceptionHelper.ThrowIfNull(resolver);
 
-        var val = new Lazy<TService?>(() => new TService(), LazyThreadSafetyMode.ExecutionAndPublication);
+        var val = new Lazy<TService?>(() => new(), LazyThreadSafetyMode.ExecutionAndPublication);
         resolver.Register<TService>(() => val.Value);
         return resolver;
     }
@@ -300,7 +300,7 @@ public static class ResolverMixins
     {
         ArgumentExceptionHelper.ThrowIfNull(resolver);
 
-        var val = new Lazy<TService?>(() => new TService(), LazyThreadSafetyMode.ExecutionAndPublication);
+        var val = new Lazy<TService?>(() => new(), LazyThreadSafetyMode.ExecutionAndPublication);
         resolver.Register<TService>(() => val.Value, contract);
         return resolver;
     }

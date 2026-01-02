@@ -77,14 +77,17 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
             {
                 var exeName = new FileInfo(entry).Name;
 
-                if (designEnvironments.Any(x =>
-#if NETFRAMEWORK || TIZEN
-                    x.IndexOf(exeName, StringComparison.InvariantCultureIgnoreCase) != -1))
-#else
-                    x.Contains(exeName, StringComparison.InvariantCultureIgnoreCase)))
-#endif
+                foreach (var designEnv in designEnvironments)
                 {
-                    _cachedInDesignModeResult = true;
+#if NETFRAMEWORK || TIZEN
+                    if (designEnv.IndexOf(exeName, StringComparison.InvariantCultureIgnoreCase) != -1)
+#else
+                    if (designEnv.Contains(exeName, StringComparison.InvariantCultureIgnoreCase))
+#endif
+                    {
+                        _cachedInDesignModeResult = true;
+                        break;
+                    }
                 }
             }
         }
