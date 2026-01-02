@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(SplatModernTargets)</TargetFrameworks>
+
+    <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Splat.Tests\ApplicationPerformanceMonitoring\BaseFeatureUsageTrackingTests.cs" Link="BaseTests\BaseFeatureUsageTrackingTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Splat.Raygun\Splat.Raygun.csproj"/>
+    <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj"/>
+  </ItemGroup>
+
+</Project>

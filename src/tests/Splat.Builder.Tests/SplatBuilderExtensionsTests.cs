@@ -16,10 +16,7 @@ public class SplatBuilderExtensionsTests
     /// Setup method to initialize AppBuilderScope before each test.
     /// </summary>
     [Before(HookType.Test)]
-    public void SetUpAppBuilderScope()
-    {
-        _appBuilderScope = new AppBuilderScope();
-    }
+    public void SetUpAppBuilderScope() => _appBuilderScope = new();
 
     /// <summary>
     /// Teardown method to dispose AppBuilderScope after each test.
@@ -47,7 +44,7 @@ public class SplatBuilderExtensionsTests
     [Test]
     public void CreateSplatBuilderThrowsOnNullResolver()
     {
-        IMutableDependencyResolver resolver = (IMutableDependencyResolver)null!;
+        IMutableDependencyResolver resolver = null!;
         Assert.Throws<ArgumentNullException>(() => resolver.CreateSplatBuilder());
     }
 
@@ -70,7 +67,7 @@ public class SplatBuilderExtensionsTests
     [Test]
     public void CreateSplatBuilderWithConfigureActionThrowsOnNullResolver()
     {
-        IMutableDependencyResolver resolver = (IMutableDependencyResolver)null!;
+        IMutableDependencyResolver resolver = null!;
         Assert.Throws<ArgumentNullException>(() => resolver.CreateSplatBuilder(_ => { }));
     }
 
@@ -80,6 +77,22 @@ public class SplatBuilderExtensionsTests
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task CreateSplatBuilderWithConfigureActionReturnsAppBuilder()
+    {
+        var resolver = new InternalLocator();
+        var builder = resolver.CurrentMutable.CreateSplatBuilder(r => r.Register<string>(() => "Hello"))
+            .Build();
+        await Assert.That(builder).IsNotNull();
+        var hello = resolver.Current.GetService<string>();
+        await Assert.That(hello).IsEqualTo("Hello");
+        resolver.Dispose();
+    }
+
+    /// <summary>
+    /// Creates the splat builder with configure action returns application builder.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task CreateSplatBuilderWithConfigureActionReturnsAppBuilderNonGeneric()
     {
         var resolver = new InternalLocator();
         var builder = resolver.CurrentMutable.CreateSplatBuilder(r => r.Register(() => "Hello", typeof(string)))

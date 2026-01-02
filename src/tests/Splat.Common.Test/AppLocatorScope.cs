@@ -30,7 +30,7 @@ public sealed class AppLocatorScope : IDisposable
     public AppLocatorScope()
     {
         _savedResolver = AppLocator.GetLocator();
-        var newResolver = new ModernDependencyResolver();
+        var newResolver = new InstanceGenericFirstDependencyResolver();
         newResolver.InitializeSplat();
         AppLocator.SetLocator(newResolver);
     }
@@ -38,8 +38,5 @@ public sealed class AppLocatorScope : IDisposable
     /// <summary>
     /// Restores the AppLocator to its previous state.
     /// </summary>
-    public void Dispose()
-    {
-        AppLocator.SetLocator(_savedResolver);
-    }
+    public void Dispose() => AppLocator.SetLocator(_savedResolver);
 }

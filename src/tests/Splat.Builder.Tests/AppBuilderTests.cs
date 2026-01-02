@@ -16,10 +16,7 @@ public class AppBuilderTests
     /// Setup method to initialize AppBuilderScope before each test.
     /// </summary>
     [Before(HookType.Test)]
-    public void SetUpAppBuilderScope()
-    {
-        _appBuilderScope = new AppBuilderScope();
-    }
+    public void SetUpAppBuilderScope() => _appBuilderScope = new();
 
     /// <summary>
     /// Teardown method to dispose AppBuilderScope after each test.
@@ -35,7 +32,7 @@ public class AppBuilderTests
     /// Constructors the throws on null resolver.
     /// </summary>
     [Test]
-    public void ConstructorThrowsOnNullResolver() => Assert.Throws<ArgumentNullException>(() => _ = new AppBuilder((IMutableDependencyResolver)null!));
+    public void ConstructorThrowsOnNullResolver() => Assert.Throws<ArgumentNullException>(() => _ = new AppBuilder(null!));
 
     /// <summary>
     /// Constructors the sets using builder true.
@@ -125,7 +122,7 @@ public class AppBuilderTests
         var resolver = new InternalLocator();
         var builder = new AppBuilder(resolver.CurrentMutable);
         Assert.Throws<ArgumentNullException>(() =>
-            builder.WithCustomRegistration((Action<IMutableDependencyResolver>)null!));
+            builder.WithCustomRegistration(null!));
         resolver.Dispose();
     }
 

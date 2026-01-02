@@ -12,7 +12,25 @@ namespace Splat.Ninject.Tests;
 [NotInParallel]
 public class DependencyResolverTests
 {
-/// <summary>
+    private NinjectKernelScope? _scope;
+
+    /// <summary>
+    /// Setup method to initialize Ninject scope before each test.
+    /// </summary>
+    [Before(HookType.Test)]
+    public void SetUp() => _scope = new();
+
+    /// <summary>
+    /// Teardown method to dispose Ninject scope after each test.
+    /// </summary>
+    [After(HookType.Test)]
+    public void TearDown()
+    {
+        _scope?.Dispose();
+        _scope = null;
+    }
+
+    /// <summary>
     /// Should resolve views.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -20,12 +38,13 @@ public class DependencyResolverTests
     public async Task NinjectDependencyResolver_Should_Resolve_Views()
     {
         var container = new StandardKernel();
+        _scope!.TrackKernel(container);
         container.Bind<IViewFor<ViewModelOne>>().To<ViewOne>();
         container.Bind<IViewFor<ViewModelTwo>>().To<ViewTwo>();
         container.UseNinjectDependencyResolver();
 
-        var viewOne = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
-        var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
+        var viewOne = AppLocator.Current.GetService<IViewFor<ViewModelOne>>();
+        var viewTwo = AppLocator.Current.GetService<IViewFor<ViewModelTwo>>();
 
         await Assert.That(viewOne).IsNotNull();
         using (Assert.Multiple())
@@ -45,9 +64,10 @@ public class DependencyResolverTests
     public async Task NinjectDependencyResolver_Should_Return_Null()
     {
         var container = new StandardKernel();
+        _scope!.TrackKernel(container);
         container.UseNinjectDependencyResolver();
 
-        var viewOne = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
+        var viewOne = AppLocator.Current.GetService<IViewFor<ViewModelOne>>();
 
         await Assert.That(viewOne).IsNull();
     }
@@ -60,9 +80,10 @@ public class DependencyResolverTests
     public async Task NinjectDependencyResolver_GetServices_Should_Return_Empty_Collection()
     {
         var container = new StandardKernel();
+        _scope!.TrackKernel(container);
         container.UseNinjectDependencyResolver();
 
-        var viewOne = AppLocator.Current.GetServices(typeof(IViewFor<ViewModelOne>));
+        var viewOne = AppLocator.Current.GetServices<IViewFor<ViewModelOne>>();
 
         await Assert.That(viewOne).IsEmpty();
     }
@@ -75,10 +96,11 @@ public class DependencyResolverTests
     public async Task NinjectDependencyResolver_Should_Resolve_Named_View()
     {
         var container = new StandardKernel();
+        _scope!.TrackKernel(container);
         container.Bind<IViewFor<ViewModelTwo>>().To<ViewTwo>();
         container.UseNinjectDependencyResolver();
 
-        var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
+        var viewTwo = AppLocator.Current.GetService<IViewFor<ViewModelTwo>>();
 
         await Assert.That(viewTwo).IsNotNull();
         await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
@@ -92,6 +114,7 @@ public class DependencyResolverTests
     public async Task NinjectDependencyResolver_Should_Resolve_View_Models()
     {
         var container = new StandardKernel();
+        _scope!.TrackKernel(container);
         container.Bind<ViewModelOne>().ToSelf();
         container.Bind<ViewModelTwo>().ToSelf();
         container.UseNinjectDependencyResolver();
@@ -114,6 +137,7 @@ public class DependencyResolverTests
     public async Task NinjectDependencyResolver_Should_Resolve_Screen()
     {
         var container = new StandardKernel();
+        _scope!.TrackKernel(container);
         container.Bind<IScreen>().ToConstant(new MockScreen());
         container.UseNinjectDependencyResolver();
 
@@ -131,10 +155,11 @@ public class DependencyResolverTests
     public void NinjectDependencyResolver_Should_Throw_If_UnregisterCurrent_Called()
     {
         var container = new StandardKernel();
+        _scope!.TrackKernel(container);
         container.UseNinjectDependencyResolver();
 
         Assert.Throws<NotImplementedException>(() =>
-            AppLocator.CurrentMutable.UnregisterCurrent(typeof(IScreen)));
+            AppLocator.CurrentMutable.UnregisterCurrent<IScreen>());
     }
 
     /// <summary>
@@ -145,6 +170,7 @@ public class DependencyResolverTests
     public async Task NinjectDependencyResolver_Should_UnregisterAll()
     {
         var container = new StandardKernel();
+        _scope!.TrackKernel(container);
         container.Bind<IScreen>().ToConstant(new MockScreen());
         container.UseNinjectDependencyResolver();
 
@@ -153,7 +179,7 @@ public class DependencyResolverTests
         await Assert.That(screen).IsNotNull();
         await Assert.That(screen).IsTypeOf<MockScreen>();
 
-        AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen));
+        AppLocator.CurrentMutable.UnregisterAll<IScreen>();
 
         var result = AppLocator.Current.GetService<IScreen>();
         await Assert.That(result).IsNull();
@@ -166,6 +192,7 @@ public class DependencyResolverTests
     public void NinjectDependencyResolver_Should_Throw_If_ServiceRegistionCallback_Called()
     {
         var container = new StandardKernel();
+        _scope!.TrackKernel(container);
         container.UseNinjectDependencyResolver();
 
         Assert.Throws<NotImplementedException>(() =>

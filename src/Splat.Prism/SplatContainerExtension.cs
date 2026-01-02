@@ -22,13 +22,13 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     public SplatContainerExtension()
     {
         AppLocator.SetLocator(Instance);
-        _disposeAction = () => AppLocator.SetLocator(new ModernDependencyResolver());
+        _disposeAction = () => AppLocator.SetLocator(new InstanceGenericFirstDependencyResolver());
     }
 
     /// <summary>
     /// Gets the dependency resolver.
     /// </summary>
-    public IDependencyResolver Instance { get; } = new ModernDependencyResolver();
+    public IDependencyResolver Instance { get; } = new InstanceGenericFirstDependencyResolver();
 
     /// <inheritdoc/>
     [SuppressMessage("Design", "CA1065: Do not raise exceptions in properties", Justification = "Very rare scenario")]
@@ -57,10 +57,6 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     public IContainerRegistry RegisterManySingleton(Type type, params Type[] serviceTypes) => throw new NotSupportedException();
 
     /// <inheritdoc/>
-#if NET6_0_OR_GREATER
-    [RequiresUnreferencedCode("Uses Activator.CreateInstance which may be trimmed")]
-    [RequiresDynamicCode("Uses Activator.CreateInstance which requires dynamic code generation")]
-#endif
     public IContainerRegistry Register(Type from, Type to)
     {
         _types[(from, null)] = to;
@@ -188,14 +184,14 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     public IContainerRegistry RegisterSingleton(Type from, Type to, string name, Func<object> defaultCreationFunc)
     {
         _types[(from, name)] = to;
-        Instance.RegisterLazySingleton(defaultCreationFunc, from);
+        Instance.RegisterLazySingleton(defaultCreationFunc, from, name);
         return this;
     }
 
     /// <inheritdoc/>
     public IContainerRegistry RegisterSingleton(Type from, Type to, string name)
     {
-        _types[(from, null)] = to;
+        _types[(from, name)] = to;
         Instance.RegisterLazySingleton(() => Activator.CreateInstance(to) ?? throw new InvalidOperationException("Could not create type"), from, name);
         return this;
     }

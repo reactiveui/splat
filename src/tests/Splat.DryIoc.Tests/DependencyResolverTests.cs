@@ -12,7 +12,7 @@ namespace Splat.DryIoc.Tests;
 [NotInParallel]
 public class DependencyResolverTests
 {
-/// <summary>
+    /// <summary>
     /// Shoulds the resolve nulls.
     /// </summary>
     [Test] //// (Ignore("Further investigation required"))]
@@ -22,7 +22,7 @@ public class DependencyResolverTests
         builder.UseDryIocDependencyResolver();
 
         const int foo = 5;
-        Assert.Throws<ArgumentNullException>(() => AppLocator.CurrentMutable.Register(() => foo, null));
+        Assert.Throws<ArgumentNullException>(() => AppLocator.CurrentMutable.Register(() => foo, serviceType: null, contract: null));
 
         // Tests skipped as functionality removed.
 #if SKIP_TEST

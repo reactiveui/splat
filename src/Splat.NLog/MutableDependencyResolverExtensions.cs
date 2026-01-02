@@ -26,6 +26,8 @@ public static class MutableDependencyResolverExtensions
     /// </example>
     public static void UseNLogWithWrappingFullLogger(this IMutableDependencyResolver instance)
     {
+        ArgumentExceptionHelper.ThrowIfNull(instance);
+
         var funcLogManager = new FuncLogManager(type => new NLogLogger(LogResolver.Resolve(type)));
 
         instance.Register<ILogManager>(() => funcLogManager);

@@ -3,6 +3,7 @@
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using Splat.Common.Test;
 using Splat.Tests.Mocks;
 
 namespace Splat.Tests;
@@ -10,6 +11,24 @@ namespace Splat.Tests;
 [NotInParallel]
 public class LocatorSerialRegisterTests
 {
+    private InternalLocatorScope? _locatorScope;
+
+    /// <summary>
+    /// Setup method to initialize InternalLocatorScope before each test.
+    /// </summary>
+    [Before(HookType.Test)]
+    public void SetUpLocatorScope() => _locatorScope = new();
+
+    /// <summary>
+    /// Teardown method to dispose InternalLocatorScope after each test.
+    /// </summary>
+    [After(HookType.Test)]
+    public void TearDownLocatorScope()
+    {
+        _locatorScope?.Dispose();
+        _locatorScope = null;
+    }
+
     /// <summary>
     /// Tests if the registrations are not empty on no external registrations.
     /// </summary>
@@ -19,8 +38,9 @@ public class LocatorSerialRegisterTests
     {
         // this is using the internal constructor
         var testLocator = new InternalLocator();
-        var logManager = testLocator.Current.GetService(typeof(ILogManager));
-        var logger = testLocator.Current.GetService(typeof(ILogger));
+        testLocator.CurrentMutable.InitializeSplat();
+        var logManager = testLocator.Current.GetService<ILogManager>();
+        var logger = testLocator.Current.GetService<ILogger>();
 
         using (Assert.Multiple())
         {
@@ -43,8 +63,8 @@ public class LocatorSerialRegisterTests
     public async Task InitializeSplat_ContractRegistrationsNullNoRegistration()
     {
         var testLocator = new InternalLocator();
-        var logManager = testLocator.Current.GetService(typeof(ILogManager), "test");
-        var logger = testLocator.Current.GetService(typeof(ILogger), "test");
+        var logManager = testLocator.Current.GetService<ILogManager>("test");
+        var logger = testLocator.Current.GetService<ILogger>("test");
 
         using (Assert.Multiple())
         {
@@ -61,6 +81,7 @@ public class LocatorSerialRegisterTests
     public async Task InitializeSplat_ExtensionMethodsNotNull()
     {
         var testLocator = new InternalLocator();
+        testLocator.CurrentMutable.InitializeSplat();
         var logManager = testLocator.Current.GetService<ILogManager>();
         var logger = testLocator.Current.GetService<ILogger>();
 

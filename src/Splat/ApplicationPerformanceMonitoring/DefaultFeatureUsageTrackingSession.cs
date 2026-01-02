@@ -44,9 +44,9 @@ public sealed class DefaultFeatureUsageTrackingSession : IFeatureUsageTrackingSe
 
     /// <inheritdoc />
     public void OnException(Exception exception) =>
-        this.Log().InfoException(
-            () => "Feature Usage Tracking Exception",
-            exception);
+        this.Log().Info(
+            exception,
+            () => "Feature Usage Tracking Exception");
 
     /// <inheritdoc/>
     public void Dispose() => this.Log().Info(() => $"Feature Finish: {FeatureReference}");

@@ -34,7 +34,7 @@ public partial struct SplatColor : IEquatable<SplatColor>
 
     // The specs also indicate that all three of these properties are true
     // if created with FromKnownColor or FromNamedColor, false otherwise (FromARGB).
-    // Per Microsoft and ECMA specs these varibles are set by which constructor is used, not by their values.
+    // Per Microsoft and ECMA specs these variables are set by which constructor is used, not by their values.
     [Flags]
     internal enum ColorType : short
     {
@@ -82,42 +82,28 @@ public partial struct SplatColor : IEquatable<SplatColor>
     {
         get
         {
-#if NET_2_0_ONCE_MONO_BUG_324144_IS_FIXED
-    if (IsNamedColor)
-      return KnownColors.GetName (knownColor);
-    else
-      return String.Format ("{0:x}", ToArgb ());
-#else
             // name is required for serialization under 1.x, but not under 2.0
             // Can happen with stuff deserialized from MS
             _name ??= IsNamedColor ? KnownColors.GetName(_knownColor) : $"{ToArgb():x}";
 
             return _name;
-#endif
         }
     }
 
     /// <summary>
     /// Gets a value indicating whether the color is part of the <see cref="ColorType.Known"/> group.
     /// </summary>
-    public readonly bool IsKnownColor => (_state & ((short)ColorType.Known)) != 0;
+    public readonly bool IsKnownColor => (_state & (short)ColorType.Known) != 0;
 
     /// <summary>
     /// Gets a value indicating whether the color is part of the <see cref="ColorType.System"/> group.
     /// </summary>
-    public readonly bool IsSystemColor => (_state & ((short)ColorType.System)) != 0;
+    public readonly bool IsSystemColor => (_state & (short)ColorType.System) != 0;
 
     /// <summary>
     /// Gets a value indicating whether the color is par tof the <see cref="ColorType.Known"/> or <see cref="ColorType.Named"/> groups.
     /// </summary>
     public readonly bool IsNamedColor => (_state & (short)(ColorType.Known | ColorType.Named)) != 0;
-
-#if TARGET_JVM
-    /// <summary>
-    /// Gets the java native object of the color.
-    /// </summary>
-    internal java.awt.SplatColor NativeObject => return new java.awt.SplatColor (R, G, B, A);
-#endif
 
     /// <summary>
     /// Gets or sets the value of the color.
@@ -214,7 +200,7 @@ public partial struct SplatColor : IEquatable<SplatColor>
     {
         var n = (short)color;
         SplatColor c;
-        if ((n <= 0) || (n >= KnownColors.ArgbValues.Length))
+        if (n <= 0 || n >= KnownColors.ArgbValues.Length)
         {
             // This is what it returns!
             c = Empty;
@@ -390,24 +376,6 @@ public partial struct SplatColor : IEquatable<SplatColor>
         // Use the property here, not the field.
         return IsNamedColor ? "SplatColor [" + Name + "]" : $"SplatColor [A={A}, R={R}, G={G}, B={B}]";
     }
-
-#if TARGET_JVM
-internal static SplatColor FromArgbNamed (int alpha, int red, int green, int blue, string name, KnownColor knownColor)
-{
-  SplatColor color = FromArgb (alpha, red, green, blue);
-  color.state = (short) (ColorType.Known|ColorType.Named);
-  color.name = KnownColors.GetName (knownColor);
-  color.knownColor = (short) knownColor;
-  return color;
-}
-
-internal static SplatColor FromArgbSystem (int alpha, int red, int green, int blue, string name, KnownColor knownColor)
-{
-  SplatColor color = FromArgbNamed (alpha, red, green, blue, name, knownColor);
-  color.state |= (short) ColorType.System;
-  return color;
-}
-#endif
 
     private static void CheckRGBValues(int red, int green, int blue)
     {

@@ -27,7 +27,7 @@ public static class ServiceLocationInitialization
 
     private static void RegisterApplicationPerformanceMonitoring(IMutableDependencyResolver resolver)
     {
-        if (!resolver.HasRegistration(typeof(IFeatureUsageTrackingManager)))
+        if (!resolver.HasRegistration<IFeatureUsageTrackingManager>())
         {
             resolver.RegisterConstant<IFeatureUsageTrackingManager>(new DefaultFeatureUsageTrackingManager());
         }
@@ -35,7 +35,7 @@ public static class ServiceLocationInitialization
 
     private static void RegisterDefaultLogManager(IMutableDependencyResolver resolver)
     {
-        if (!resolver.HasRegistration(typeof(ILogManager)))
+        if (!resolver.HasRegistration<ILogManager>())
         {
             resolver.Register<ILogManager>(() => new DefaultLogManager(AppLocator.Current));
         }
@@ -43,7 +43,7 @@ public static class ServiceLocationInitialization
 
     private static void RegisterLogger(IMutableDependencyResolver resolver)
     {
-        if (!resolver.HasRegistration(typeof(ILogger)))
+        if (!resolver.HasRegistration<ILogger>())
         {
             resolver.RegisterConstant<ILogger>(new DebugLogger());
         }

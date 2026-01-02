@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Splat" />
+    <InternalsVisibleTo Include="Splat.Logging.Tests" />
     <InternalsVisibleTo Include="Splat.Tests" />
     <InternalsVisibleTo Include="Splat.Drawing" />
     <InternalsVisibleTo Include="Splat.Drawing.Tests" />

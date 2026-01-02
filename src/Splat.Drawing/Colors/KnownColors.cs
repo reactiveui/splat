@@ -246,7 +246,7 @@ internal static class KnownColors
         // Valid if value is within the defined enum range.
         // Update the upper bound if you add new enum members.
         const short MaxKnown = (short)KnownColor.MenuHighlight; // 174
-        return (kc >= 0 && kc <= MaxKnown) ? ((KnownColor)kc).ToString() : string.Empty;
+        return kc >= 0 && kc <= MaxKnown ? ((KnownColor)kc).ToString() : string.Empty;
     }
 
     /// <summary>

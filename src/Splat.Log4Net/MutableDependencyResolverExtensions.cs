@@ -26,6 +26,7 @@ public static class MutableDependencyResolverExtensions
     /// </example>
     public static void UseLog4NetWithWrappingFullLogger(this IMutableDependencyResolver instance)
     {
+        ArgumentExceptionHelper.ThrowIfNull(instance);
         var funcLogManager = new FuncLogManager(type => new WrappingFullLogger(new Log4NetLogger(LogResolver.Resolve(type))));
 
         instance.RegisterConstant<ILogManager>(funcLogManager);

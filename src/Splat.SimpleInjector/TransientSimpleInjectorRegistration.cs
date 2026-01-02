@@ -4,6 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.Linq.Expressions;
+
 using SimpleInjector;
 
 namespace Splat.SimpleInjector;

@@ -1,0 +1,106 @@
+// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Licensed to ReactiveUI under one or more agreements.
+// ReactiveUI licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using Splat.Common.Test;
+
+namespace Splat.Tests.ServiceLocation;
+
+/// <summary>
+/// Tests for the InstanceGenericFirstDependencyResolver.
+/// Verifies that the instance-scoped generic-first resolver with ConditionalWeakTable
+/// properly implements all IDependencyResolver functionality with per-resolver isolation.
+/// </summary>
+[InheritsTests]
+public sealed class InstanceGenericFirstDependencyResolverTests : BaseDependencyResolverTests<InstanceGenericFirstDependencyResolver>
+{
+    /// <summary>
+    /// Test constructor with configure parameter registers services.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Constructor_WithConfigure_RegistersServices()
+    {
+        var resolver = new InstanceGenericFirstDependencyResolver(r =>
+        {
+            r.Register<IViewModelOne>(() => new ViewModelOne());
+            r.RegisterConstant(new ViewModelOne());
+        });
+
+        var result1 = resolver.GetService<IViewModelOne>();
+        var result2 = resolver.GetService<ViewModelOne>();
+
+        await Assert.That(result1).IsNotNull();
+        await Assert.That(result2).IsNotNull();
+    }
+
+    /// <summary>
+    /// Test constructor with null configure parameter does not throw.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Constructor_WithNullConfigure_DoesNotThrow() =>
+        await Assert.That(() =>
+        {
+            _ = new InstanceGenericFirstDependencyResolver(null);
+            return Task.CompletedTask;
+        }).ThrowsNothing();
+
+    /// <summary>
+    /// Test Dispose method disposes resolver properly.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Dispose_DisposesResolver()
+    {
+        var resolver = new InstanceGenericFirstDependencyResolver();
+        resolver.Register(() => new ViewModelOne());
+
+        resolver.Dispose();
+
+        await Assert.That(() =>
+        {
+            resolver.Register(() => new ViewModelOne());
+            return Task.CompletedTask;
+        }).Throws<ObjectDisposedException>();
+    }
+
+    /// <summary>
+    /// Test operations after disposal throw ObjectDisposedException.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task AfterDispose_Operations_ThrowObjectDisposedException()
+    {
+        var resolver = new InstanceGenericFirstDependencyResolver();
+        resolver.Dispose();
+
+        await Assert.That(() =>
+        {
+            resolver.Register(() => new ViewModelOne());
+            return Task.CompletedTask;
+        }).Throws<ObjectDisposedException>();
+
+        await Assert.That(() =>
+        {
+            resolver.Register(() => new ViewModelOne(), "contract");
+            return Task.CompletedTask;
+        }).Throws<ObjectDisposedException>();
+
+        await Assert.That(() =>
+        {
+            resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+            return Task.CompletedTask;
+        }).Throws<ObjectDisposedException>();
+
+        await Assert.That(() =>
+        {
+            resolver.Register<IViewModelOne, ViewModelOne>();
+            return Task.CompletedTask;
+        }).Throws<ObjectDisposedException>();
+    }
+
+    /// <inheritdoc />
+    protected override InstanceGenericFirstDependencyResolver GetDependencyResolver() => new();
+}

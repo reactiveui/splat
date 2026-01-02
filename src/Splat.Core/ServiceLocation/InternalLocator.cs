@@ -8,14 +8,14 @@ namespace Splat;
 internal class InternalLocator : IDisposable
 {
     // this has been done to have a default single instance. but allow isolation in unit tests.B
-    private readonly List<Action> _resolverChanged = [];
+    private readonly List<Action> _resolverChanged = new(4);
     private readonly IDisposable _resolverChangedNotification;
     private volatile int _resolverChangedNotificationSuspendCount;
     private bool _disposedValue;
 
     internal InternalLocator()
     {
-        Internal = new ModernDependencyResolver();
+        Internal = new InstanceGenericFirstDependencyResolver();
 
         _resolverChangedNotification = RegisterResolverCallbackChanged(() =>
         {
@@ -45,7 +45,7 @@ internal class InternalLocator : IDisposable
     /// </summary>
     public IMutableDependencyResolver CurrentMutable => Internal;
 
-    internal IDependencyResolver Internal { get; private set; }
+    internal IDependencyResolver Internal { get; set; }
 
     /// <summary>
     /// Releases unmanaged and - optionally - managed resources.
@@ -67,7 +67,7 @@ internal class InternalLocator : IDisposable
 
         if (AreResolverCallbackChangedNotificationsEnabled())
         {
-            var currentCallbacks = default(Action[]);
+            Action[] currentCallbacks;
             lock (_resolverChanged)
             {
                 // NB: Prevent deadlocks should we reenter this setter from

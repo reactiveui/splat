@@ -18,7 +18,7 @@ public sealed class SplatLogManagerModule(IReadonlyDependencyResolver current) :
     {
         ArgumentExceptionHelper.ThrowIfNull(resolver);
 
-        if (!resolver.HasRegistration(typeof(ILogManager)))
+        if (!resolver.HasRegistration<ILogManager>())
         {
             resolver.Register<ILogManager>(() => new DefaultLogManager(current));
         }

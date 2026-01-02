@@ -19,7 +19,7 @@ public sealed class SplatLoggerModule() : IModule
     {
         ArgumentExceptionHelper.ThrowIfNull(resolver);
 
-        if (!resolver.HasRegistration(typeof(ILogger)))
+        if (!resolver.HasRegistration<ILogger>())
         {
             var debugLogger = new DebugLogger();
             resolver.Register<ILogger>(() => debugLogger);

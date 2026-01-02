@@ -4,17 +4,13 @@
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Common.Test;
-using TUnit.Assertions;
-using TUnit.Assertions.Extensions;
-using TUnit.Core;
-using static TUnit.Assertions.Assert;
 
 namespace Splat.Prism.Tests;
 
 [NotInParallel]
 public class DependencyResolverTests
 {
-/// <summary>
+    /// <summary>
     /// Tracks CreateScope not being implemented in case it's changed in future.
     /// </summary>
     [Test]
@@ -135,8 +131,8 @@ public class DependencyResolverTests
         container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne));
         container.Register(typeof(IViewFor<ViewModelTwo>), typeof(ViewTwo));
 
-        var viewOne = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
-        var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
+        var viewOne = AppLocator.Current.GetService<IViewFor<ViewModelOne>>();
+        var viewTwo = AppLocator.Current.GetService<IViewFor<ViewModelTwo>>();
 
         await Assert.That(viewOne).IsNotNull();
         using (Assert.Multiple())
@@ -158,7 +154,7 @@ public class DependencyResolverTests
         using var container = new SplatContainerExtension();
         container.Register(typeof(IViewFor<ViewModelTwo>), typeof(ViewTwo), "Other");
 
-        var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>), "Other");
+        var viewTwo = AppLocator.Current.GetService<IViewFor<ViewModelTwo>>("Other");
 
         await Assert.That(viewTwo).IsNotNull();
         await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
@@ -214,7 +210,7 @@ public class DependencyResolverTests
 
         await Assert.That(AppLocator.Current.GetService<IScreen>()).IsNotNull();
 
-        AppLocator.CurrentMutable.UnregisterCurrent(typeof(IScreen));
+        AppLocator.CurrentMutable.UnregisterCurrent<IScreen>();
 
         await Assert.That(AppLocator.Current.GetService<IScreen>()).IsNull();
     }
@@ -231,7 +227,7 @@ public class DependencyResolverTests
 
         await Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen))).IsNotNull();
 
-        AppLocator.CurrentMutable.UnregisterCurrent(typeof(IScreen), nameof(MockScreen));
+        AppLocator.CurrentMutable.UnregisterCurrent<IScreen>(nameof(MockScreen));
 
         await Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen))).IsNull();
     }
@@ -248,7 +244,7 @@ public class DependencyResolverTests
 
         await Assert.That(AppLocator.Current.GetService<IScreen>()).IsNotNull();
 
-        AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen));
+        AppLocator.CurrentMutable.UnregisterAll<IScreen>();
 
         await Assert.That(AppLocator.Current.GetService<IScreen>()).IsNull();
     }
@@ -265,7 +261,7 @@ public class DependencyResolverTests
 
         await Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen))).IsNotNull();
 
-        AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen), nameof(MockScreen));
+        AppLocator.CurrentMutable.UnregisterAll<IScreen>(nameof(MockScreen));
 
         await Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen))).IsNull();
     }

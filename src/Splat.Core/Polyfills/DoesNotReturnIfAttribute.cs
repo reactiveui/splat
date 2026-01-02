@@ -3,36 +3,42 @@
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-#if !NET5_0_OR_GREATER
+// Polyfill implementation adapted from SimonCropp/Polyfill
+// https://github.com/SimonCropp/Polyfill
+#if !NETCOREAPP3_0_OR_GREATER && !NETSTANDARD2_1_OR_GREATER
 
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 
 namespace System.Diagnostics.CodeAnalysis;
 
 /// <summary>
-/// Indicates that a parameter captures the expression passed for another parameter as a string.
-/// Modification of Using SimonCropp's polyfill's library.
+/// Specifies that the method will not return if the associated <see cref="bool"/>
+/// parameter is passed the specified value.
 /// </summary>
 [ExcludeFromCodeCoverage]
 [DebuggerNonUserCode]
 [AttributeUsage(AttributeTargets.Parameter)]
 internal sealed class DoesNotReturnIfAttribute : Attribute
 {
-    /// <summary>Initializes a new instance of the <see cref="DoesNotReturnIfAttribute"/> class..</summary>
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DoesNotReturnIfAttribute"/>
+    /// class with the specified parameter value.
+    /// </summary>
     /// <param name="parameterValue">
-    /// The condition parameter value. Code after the method will be considered unreachable by diagnostics if the argument to
-    /// the associated parameter matches this value.
+    /// The condition parameter value. Code after the method is considered unreachable
+    /// by diagnostics if the argument to the associated parameter matches this value.
     /// </param>
-    public DoesNotReturnIfAttribute(bool parameterValue) => ParameterValue = parameterValue;
+    public DoesNotReturnIfAttribute(bool parameterValue) =>
+        ParameterValue = parameterValue;
 
-    /// <summary>Gets a value indicating whether the condition parameter value.</summary>
+    /// <summary>
+    /// Gets a value indicating whether code after the method is considered unreachable
+    /// by diagnostics if the argument to the associated parameter matches this value.
+    /// </summary>
     public bool ParameterValue { get; }
 }
-
 #else
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-[assembly: TypeForwardedTo(typeof(DoesNotReturnIfAttribute))]
+[assembly: TypeForwardedTo(typeof(System.Diagnostics.CodeAnalysis.DoesNotReturnIfAttribute))]
 #endif

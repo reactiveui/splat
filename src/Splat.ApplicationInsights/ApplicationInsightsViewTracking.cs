@@ -5,6 +5,7 @@
 
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
+
 using Splat.ApplicationPerformanceMonitoring;
 
 namespace Splat;
@@ -18,13 +19,11 @@ namespace Splat;
 /// <param name="telemetryClient">The Application Insights telemetry client instance to use.</param>
 public sealed class ApplicationInsightsViewTracking(TelemetryClient telemetryClient) : IViewTracking
 {
-    private readonly TelemetryClient _telemetryClient = telemetryClient;
-
     /// <summary>
     /// Track a view navigation using just a name.
     /// </summary>
     /// <param name="name">Name of the view.</param>
-    public void OnViewNavigation(string name) => _telemetryClient.TrackPageView(name);
+    public void OnViewNavigation(string name) => telemetryClient.TrackPageView(name);
 
     /// <summary>
     /// Track a View Navigation with Extended Data.
@@ -33,7 +32,7 @@ public sealed class ApplicationInsightsViewTracking(TelemetryClient telemetryCli
     public void OnViewNavigation(PageViewTelemetry telemetry)
     {
         _ = GetPageViewTelemetry();
-        _telemetryClient.TrackPageView(telemetry);
+        telemetryClient.TrackPageView(telemetry);
     }
 
     internal static PageViewTelemetry GetPageViewTelemetry() => new();

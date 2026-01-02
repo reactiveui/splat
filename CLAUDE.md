@@ -41,15 +41,19 @@ dotnet clean Splat.slnx
 
 The working folder must be `./src` folder. These commands won't function properly without the correct working folder.
 
+**IMPORTANT:**
+- Do NOT use `--no-build` flag when running tests. Always build before testing to ensure all code changes (including test changes) are compiled. Using `--no-build` can cause tests to run against stale binaries and produce misleading results.
+- Use `--output Detailed` to see Console.WriteLine output from tests. This must be placed BEFORE any `--` separator:
+  ```powershell
+  dotnet test --output Detailed -- --treenode-filter "..."
+  ```
+
 ```powershell
 # Run all tests in the solution
 dotnet test --solution Splat.slnx -c Release
 
-# Run all tests without building first (faster when code hasn't changed)
-dotnet test --solution Splat.slnx -c Release --no-build
-
 # Run all tests in a specific project
-dotnet test --project tests/Splat.Tests/Splat.Tests.csproj
+dotnet test --project tests/Splat.Tests/Splat.Tests.csproj -c Release
 
 # Run a single test method using treenode-filter
 # Syntax: /{AssemblyName}/{Namespace}/{ClassName}/{TestMethodName}

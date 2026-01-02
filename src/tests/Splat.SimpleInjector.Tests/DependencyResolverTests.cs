@@ -13,7 +13,7 @@ namespace Splat.Simplnjector;
 [NotInParallel]
 public class DependencyResolverTests
 {
-/// <summary>
+    /// <summary>
     /// Simples the injector dependency resolver should resolve a view model.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -24,7 +24,7 @@ public class DependencyResolverTests
         container.Register<ViewModelOne>();
         container.UseSimpleInjectorDependencyResolver(new());
 
-        var viewModel = AppLocator.Current.GetService(typeof(ViewModelOne));
+        var viewModel = AppLocator.Current.GetService<ViewModelOne>();
 
         await Assert.That(viewModel).IsNotNull();
         await Assert.That(viewModel).IsTypeOf<ViewModelOne>();
@@ -57,7 +57,7 @@ public class DependencyResolverTests
         container.Register<IViewFor<ViewModelOne>, ViewOne>();
         container.UseSimpleInjectorDependencyResolver(new());
 
-        var view = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
+        var view = AppLocator.Current.GetService<IViewFor<ViewModelOne>>();
 
         await Assert.That(view).IsNotNull();
         await Assert.That(view).IsTypeOf<ViewOne>();
@@ -74,7 +74,7 @@ public class DependencyResolverTests
         container.RegisterSingleton<IScreen, MockScreen>();
         container.UseSimpleInjectorDependencyResolver(new());
 
-        var screen = AppLocator.Current.GetService(typeof(IScreen));
+        var screen = AppLocator.Current.GetService<IScreen>();
 
         await Assert.That(screen).IsNotNull();
         await Assert.That(screen).IsTypeOf<MockScreen>();
@@ -108,7 +108,7 @@ public class DependencyResolverTests
         AppLocator.CurrentMutable.InitializeSplat();
         container.UseSimpleInjectorDependencyResolver(initializer);
 
-        var dependency = AppLocator.Current.GetService(typeof(ILogger)) as ILogger;
+        var dependency = AppLocator.Current.GetService<ILogger>() as ILogger;
         await Assert.That(dependency).IsNotNull();
     }
 
@@ -122,7 +122,7 @@ public class DependencyResolverTests
         var container = new Container();
         container.UseSimpleInjectorDependencyResolver(new());
 
-        var views = AppLocator.Current.GetServices(typeof(ViewOne));
+        var views = AppLocator.Current.GetServices<ViewOne>();
         await Assert.That(views).IsNotNull();
     }
 }

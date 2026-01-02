@@ -5,6 +5,7 @@
 
 using System.Collections.Immutable;
 using System.Diagnostics;
+
 using Exceptionless;
 
 namespace Splat.Exceptionless;
@@ -21,8 +22,7 @@ public sealed class ExceptionlessSplatLogger : ILogger
         new(LogLevel.Info, global::Exceptionless.Logging.LogLevel.Info),
         new(LogLevel.Warn, global::Exceptionless.Logging.LogLevel.Warn),
         new(LogLevel.Error, global::Exceptionless.Logging.LogLevel.Error),
-        new(LogLevel.Fatal, global::Exceptionless.Logging.LogLevel.Fatal),
-    ];
+        new(LogLevel.Fatal, global::Exceptionless.Logging.LogLevel.Fatal)];
 
     private static readonly ImmutableDictionary<LogLevel, global::Exceptionless.Logging.LogLevel> _mappingsDictionary = _mappings.ToImmutableDictionary();
 

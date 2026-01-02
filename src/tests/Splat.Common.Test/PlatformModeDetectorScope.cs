@@ -36,8 +36,5 @@ public sealed class PlatformModeDetectorScope : IDisposable
     /// <summary>
     /// Restores the PlatformModeDetector to its previous state.
     /// </summary>
-    public void Dispose()
-    {
-        PlatformModeDetector.RestoreState(_savedState);
-    }
+    public void Dispose() => PlatformModeDetector.RestoreState(_savedState);
 }

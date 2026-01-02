@@ -57,10 +57,10 @@ public static class PointMathExtensions
     /// </summary>
     /// <param name="value">The point value to use for the calculation.</param>
     /// <returns>The normalized point.</returns>
-    public static PointF Normalize(this PointF value) => (float)value.Length() switch
+    public static PointF Normalize(this PointF value) => value.Length() switch
     {
         0.0f => value,
-        _ => new(value.X / (float)value.Length(), value.Y / (float)value.Length())
+        _ => new(value.X / value.Length(), value.Y / value.Length())
     };
 
     /// <summary>

@@ -13,7 +13,7 @@ namespace Splat.Microsoft.Extensions.DependencyInjection.Tests;
 [NotInParallel]
 public class DependencyResolverTests
 {
-/// <summary>
+    /// <summary>
     /// Should resolve views.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -27,8 +27,8 @@ public class DependencyResolverTests
 
         wrapper.BuildAndUse();
 
-        var viewOne = AppLocator.Current.GetService(typeof(IViewFor<ViewModelOne>));
-        var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
+        var viewOne = AppLocator.Current.GetService<IViewFor<ViewModelOne>>();
+        var viewTwo = AppLocator.Current.GetService<IViewFor<ViewModelTwo>>();
 
         await Assert.That(viewOne).IsNotNull();
         using (Assert.Multiple())
@@ -53,7 +53,7 @@ public class DependencyResolverTests
 
         wrapper.BuildAndUse();
 
-        var viewTwo = AppLocator.Current.GetService(typeof(IViewFor<ViewModelTwo>));
+        var viewTwo = AppLocator.Current.GetService<IViewFor<ViewModelTwo>>();
 
         await Assert.That(viewTwo).IsNotNull();
         await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
@@ -114,9 +114,9 @@ public class DependencyResolverTests
 
         services.AddSingleton<IScreen>(new MockScreen());
 
-        await Assert.That(AppLocator.CurrentMutable.HasRegistration(typeof(IScreen))).IsTrue();
+        await Assert.That(AppLocator.CurrentMutable.HasRegistration<IScreen>()).IsTrue();
 
-        AppLocator.CurrentMutable.UnregisterAll(typeof(IScreen));
+        AppLocator.CurrentMutable.UnregisterAll<IScreen>();
 
         var result = AppLocator.Current.GetService<IScreen>();
         await Assert.That(result).IsNull();

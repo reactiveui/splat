@@ -17,8 +17,7 @@ internal sealed class TizenBitmap : IBitmap
         new JpegDecoder(),
         new PngDecoder(),
         new BmpDecoder(),
-        new GifDecoder(),
-    ];
+        new GifDecoder()];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TizenBitmap"/> class.
@@ -99,8 +98,13 @@ internal sealed class TizenBitmap : IBitmap
         {
             try
             {
-                result = decoder.DecodeAsync(imageBuffer).Result.First();
-                break;
+                var frames = decoder.DecodeAsync(imageBuffer).Result;
+                using var enumerator = frames.GetEnumerator();
+                if (enumerator.MoveNext())
+                {
+                    result = enumerator.Current;
+                    break;
+                }
             }
             catch (Tizen.Multimedia.FileFormatException)
             {

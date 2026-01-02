@@ -15,6 +15,11 @@ namespace Splat;
 public class NullServiceType(Func<object?> factory)
 {
     /// <summary>
+    /// Cached Type instance for NullServiceType to avoid repeated typeof() calls.
+    /// </summary>
+    public static readonly Type CachedType = typeof(NullServiceType);
+
+    /// <summary>
     /// Gets the Factory.
     /// </summary>
     public Func<object?> Factory { get; } = factory;
