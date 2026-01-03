@@ -9,7 +9,7 @@ assignees: ''
 
 Please note although we can't commit to any timeline, priority will be given to those who are [Contributors](https://github.com/reactiveui/splat#contribute ) to the project.
 
-If this is a question please ask on [StackOverflow](https://stackoverflow.com/questions/tagged/splat).
+If this is a question please ask on [Discussions](https://github.com/reactiveui/splat/discussions).
 
 **Describe the bug**
 A clear and concise description of what the bug is.
