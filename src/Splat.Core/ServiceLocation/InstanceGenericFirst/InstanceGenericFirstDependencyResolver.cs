@@ -514,13 +514,34 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         var lazy = new Lazy<T?>(valueFactory, LazyThreadSafetyMode.ExecutionAndPublication);
 
+        // Wrap lazy value access to dispose and throw if resolver was disposed during construction.
         var container = ContainerCache<T>.Get(_state);
-        container.Add(() => lazy.Value);
+        container.Add(() =>
+        {
+            var value = lazy.Value;
+            if (Volatile.Read(ref _disposed) != 0)
+            {
+                (value as IDisposable)?.Dispose();
+                ObjectDisposedExceptionHelper.ThrowIf(true, this);
+            }
+
+            return value;
+        });
 
         AddLazyDisposal(lazy);
 
         var registry = ServiceTypeRegistryCache.Get(_state);
-        registry.Register(TypeCache<T>.Type, () => lazy.Value);
+        registry.Register(TypeCache<T>.Type, () =>
+        {
+            var value = lazy.Value;
+            if (Volatile.Read(ref _disposed) != 0)
+            {
+                (value as IDisposable)?.Dispose();
+                ObjectDisposedExceptionHelper.ThrowIf(true, this);
+            }
+
+            return value;
+        });
 
         NotifyCallbackChanged();
     }
@@ -542,13 +563,39 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         var lazy = new Lazy<T?>(valueFactory, LazyThreadSafetyMode.ExecutionAndPublication);
 
+        // Wrap lazy value access to dispose and throw if resolver was disposed during construction.
         var contractContainer = ContractContainerCache<T>.Get(_state);
-        contractContainer.Add(() => lazy.Value, contract);
+        contractContainer.Add(
+            () =>
+            {
+                var value = lazy.Value;
+                if (Volatile.Read(ref _disposed) != 0)
+                {
+                    (value as IDisposable)?.Dispose();
+                    ObjectDisposedExceptionHelper.ThrowIf(true, this);
+                }
+
+                return value;
+            },
+            contract);
 
         AddLazyDisposal(lazy);
 
         var registry = ServiceTypeRegistryCache.Get(_state);
-        registry.Register(TypeCache<T>.Type, () => lazy.Value, contract);
+        registry.Register(
+            TypeCache<T>.Type,
+            () =>
+            {
+                var value = lazy.Value;
+                if (Volatile.Read(ref _disposed) != 0)
+                {
+                    (value as IDisposable)?.Dispose();
+                    ObjectDisposedExceptionHelper.ThrowIf(true, this);
+                }
+
+                return value;
+            },
+            contract);
 
         NotifyCallbackChanged();
     }

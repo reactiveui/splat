@@ -1381,6 +1381,95 @@ public abstract class BaseDependencyResolverTests<T>
     }
 
     /// <summary>
+    /// Test that when a resolver is disposed while a lazy singleton is under construction,
+    /// the service should be disposed after construction and ObjectDisposedException should be thrown to caller.
+    /// This matches Microsoft.Extensions.DependencyInjection behavior.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public virtual async Task Dispose_WhileLazySingletonUnderConstruction_DisposesServiceAndThrowsException()
+    {
+        var resolver = GetDependencyResolver();
+
+        // Register a slow service that takes 3 seconds to construct
+        resolver.RegisterLazySingleton<SlowDisposableService>(() => new SlowDisposableService());
+
+        // Register a fast service for comparison
+        resolver.RegisterLazySingleton<FastDisposableService>(() => new FastDisposableService());
+
+        // Start constructing the slow service in a background task
+        var slowTask = Task.Run(() => resolver.GetService<SlowDisposableService>());
+
+        // Wait for construction to start
+        await Task.Delay(TimeSpan.FromSeconds(1));
+
+        // Start constructing the fast service in a background task
+        var fastTask = Task.Run(() => resolver.GetService<FastDisposableService>());
+
+        // Wait a bit to ensure fast service is constructed
+        await Task.Delay(TimeSpan.FromSeconds(1));
+
+        // Dispose the resolver while slow service is still being constructed
+        resolver.Dispose();
+
+        // The fast service should have been disposed during resolver disposal
+        FastDisposableService? fastService = null;
+        try
+        {
+            fastService = await fastTask;
+
+            // If we get the service, it should be disposed
+            if (fastService is not null)
+            {
+                await Assert.That(fastService.IsDisposed).IsTrue();
+            }
+        }
+        catch (ObjectDisposedException)
+        {
+            // This is also acceptable - throwing ObjectDisposedException
+        }
+
+        // The slow service construction should complete, then be disposed,
+        // and an ObjectDisposedException should be thrown to the caller
+        SlowDisposableService? slowService = null;
+        var exceptionThrown = false;
+
+        try
+        {
+            slowService = await slowTask;
+
+            // If we got a service instance back, it MUST be disposed
+            // (Microsoft DI behavior: construct, dispose, then throw)
+            if (slowService is not null)
+            {
+                await Assert.That(slowService.IsDisposed).IsTrue();
+
+                // Getting a disposed service is not ideal, but if we do,
+                // subsequent calls should throw ObjectDisposedException
+                await Assert.That(() => resolver.GetService<SlowDisposableService>())
+                    .Throws<ObjectDisposedException>();
+            }
+        }
+        catch (ObjectDisposedException)
+        {
+            exceptionThrown = true;
+        }
+
+        // Ideally, we should either:
+        // 1. Get the service back but it must be disposed, OR
+        // 2. Get an ObjectDisposedException
+        // The current bug is that we get the service back and it's NOT disposed
+        if (slowService is not null)
+        {
+            await Assert.That(slowService.IsDisposed).IsTrue();
+        }
+        else
+        {
+            await Assert.That(exceptionThrown).IsTrue();
+        }
+    }
+
+    /// <summary>
     /// Gets an instance of a dependency resolver to test.
     /// </summary>
     /// <returns>Dependency Resolver.</returns>
@@ -1402,5 +1491,36 @@ public abstract class BaseDependencyResolverTests<T>
     protected sealed class ThrowingDisposableService : IDisposable
     {
         public void Dispose() => throw new InvalidOperationException("Disposal exception");
+    }
+
+    /// <summary>
+    /// Disposable test service that takes time to construct.
+    /// </summary>
+    protected sealed class SlowDisposableService : IDisposable
+    {
+        public SlowDisposableService()
+        {
+            ConstructionStarted = true;
+            Thread.Sleep(TimeSpan.FromSeconds(3));
+            ConstructionCompleted = true;
+        }
+
+        public bool IsDisposed { get; private set; }
+
+        public bool ConstructionStarted { get; private set; }
+
+        public bool ConstructionCompleted { get; private set; }
+
+        public void Dispose() => IsDisposed = true;
+    }
+
+    /// <summary>
+    /// Disposable test service that constructs quickly.
+    /// </summary>
+    protected sealed class FastDisposableService : IDisposable
+    {
+        public bool IsDisposed { get; private set; }
+
+        public void Dispose() => IsDisposed = true;
     }
 }

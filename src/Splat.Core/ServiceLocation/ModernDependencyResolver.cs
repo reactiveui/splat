@@ -76,8 +76,9 @@ public class ModernDependencyResolver : IDependencyResolver
     /// </summary>
     /// <remarks>
     /// Used to reject registrations after disposal and to prevent double dispose.
+    /// Uses int instead of bool for thread-safe Interlocked operations (0 = not disposed, 1 = disposed).
     /// </remarks>
-    private bool _isDisposed;
+    private int _isDisposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ModernDependencyResolver"/> class.
@@ -156,7 +157,7 @@ public class ModernDependencyResolver : IDependencyResolver
     public void Register(Func<object?> factory, Type? serviceType, string? contract)
     {
         ArgumentExceptionHelper.ThrowIfNull(factory);
-        ObjectDisposedExceptionHelper.ThrowIf(_isDisposed, this);
+        ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
 
         var isNull = serviceType is null;
         serviceType ??= NullServiceType.CachedType;
@@ -167,7 +168,7 @@ public class ModernDependencyResolver : IDependencyResolver
 
         lock (_gate)
         {
-            ObjectDisposedExceptionHelper.ThrowIf(_isDisposed, this);
+            ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
 
             var snap = _snapshot;
             if (snap is null)
@@ -215,14 +216,14 @@ public class ModernDependencyResolver : IDependencyResolver
     public void Register<T>(Func<T?> factory, string? contract)
     {
         ArgumentExceptionHelper.ThrowIfNull(factory);
-        ObjectDisposedExceptionHelper.ThrowIf(_isDisposed, this);
+        ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
 
         var pair = GetKey(typeof(T), contract);
         List<Action<IDisposable>>? callbacksToRun = null;
 
         lock (_gate)
         {
-            ObjectDisposedExceptionHelper.ThrowIf(_isDisposed, this);
+            ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
 
             var snap = _snapshot;
             if (snap is null)
@@ -271,6 +272,8 @@ public class ModernDependencyResolver : IDependencyResolver
         var snap = Volatile.Read(ref _snapshot);
         if (snap is null)
         {
+            // Resolver has been disposed
+            ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
             return default;
         }
 
@@ -286,7 +289,12 @@ public class ModernDependencyResolver : IDependencyResolver
             return default;
         }
 
-        return Unwrap(factory(), allowNullServiceTypeUnwrap: true);
+        var result = factory();
+
+        // Check again after factory execution as disposal may have occurred during construction
+        ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
+
+        return Unwrap(result, allowNullServiceTypeUnwrap: true);
     }
 
     /// <inheritdoc />
@@ -298,6 +306,8 @@ public class ModernDependencyResolver : IDependencyResolver
         var snap = Volatile.Read(ref _snapshot);
         if (snap is null)
         {
+            // Resolver has been disposed
+            ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
             return default;
         }
 
@@ -313,8 +323,13 @@ public class ModernDependencyResolver : IDependencyResolver
             return default;
         }
 
+        var result = factory();
+
+        // Check again after factory execution as disposal may have occurred during construction
+        ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
+
         // For generic resolutions we still honor lazy and null-type wrappers to preserve behavior.
-        return (T?)Unwrap(factory(), allowNullServiceTypeUnwrap: true);
+        return (T?)Unwrap(result, allowNullServiceTypeUnwrap: true);
     }
 
     /// <inheritdoc />
@@ -328,6 +343,8 @@ public class ModernDependencyResolver : IDependencyResolver
         var snap = Volatile.Read(ref _snapshot);
         if (snap is null)
         {
+            // Resolver has been disposed
+            ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
             return [];
         }
 
@@ -345,6 +362,9 @@ public class ModernDependencyResolver : IDependencyResolver
             results.Add(Unwrap(list[i](), allowNullServiceTypeUnwrap: true)!);
         }
 
+        // Check again after factory execution as disposal may have occurred during construction
+        ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
+
         return results;
     }
 
@@ -357,6 +377,8 @@ public class ModernDependencyResolver : IDependencyResolver
         var snap = Volatile.Read(ref _snapshot);
         if (snap is null)
         {
+            // Resolver has been disposed
+            ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
             return [];
         }
 
@@ -373,6 +395,9 @@ public class ModernDependencyResolver : IDependencyResolver
             results.Add((T)Unwrap(list[i](), allowNullServiceTypeUnwrap: true)!);
         }
 
+        // Check again after factory execution as disposal may have occurred during construction
+        ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
+
         return results;
     }
 
@@ -382,14 +407,14 @@ public class ModernDependencyResolver : IDependencyResolver
     /// <inheritdoc />
     public void UnregisterCurrent(Type? serviceType, string? contract)
     {
-        ObjectDisposedExceptionHelper.ThrowIf(_isDisposed, this);
+        ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
 
         serviceType ??= NullServiceType.CachedType;
         var pair = GetKey(serviceType, contract);
 
         lock (_gate)
         {
-            ObjectDisposedExceptionHelper.ThrowIf(_isDisposed, this);
+            ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
 
             var snap = _snapshot;
             if (snap is null)
@@ -417,13 +442,13 @@ public class ModernDependencyResolver : IDependencyResolver
     /// <inheritdoc />
     public void UnregisterCurrent<T>(string? contract)
     {
-        ObjectDisposedExceptionHelper.ThrowIf(_isDisposed, this);
+        ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
 
         var pair = GetKey(typeof(T), contract);
 
         lock (_gate)
         {
-            ObjectDisposedExceptionHelper.ThrowIf(_isDisposed, this);
+            ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
 
             var snap = _snapshot;
             if (snap is null)
@@ -451,14 +476,14 @@ public class ModernDependencyResolver : IDependencyResolver
     /// <inheritdoc />
     public void UnregisterAll(Type? serviceType, string? contract)
     {
-        ObjectDisposedExceptionHelper.ThrowIf(_isDisposed, this);
+        ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
 
         serviceType ??= NullServiceType.CachedType;
         var pair = GetKey(serviceType, contract);
 
         lock (_gate)
         {
-            ObjectDisposedExceptionHelper.ThrowIf(_isDisposed, this);
+            ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
 
             var snap = _snapshot;
             if (snap is null)
@@ -478,13 +503,13 @@ public class ModernDependencyResolver : IDependencyResolver
     /// <inheritdoc />
     public void UnregisterAll<T>(string? contract)
     {
-        ObjectDisposedExceptionHelper.ThrowIf(_isDisposed, this);
+        ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
 
         var pair = GetKey(typeof(T), contract);
 
         lock (_gate)
         {
-            ObjectDisposedExceptionHelper.ThrowIf(_isDisposed, this);
+            ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
 
             var snap = _snapshot;
             if (snap is null)
@@ -717,7 +742,7 @@ public class ModernDependencyResolver : IDependencyResolver
     /// <param name="isDisposing">If we are currently disposing managed resources.</param>
     protected virtual void Dispose(bool isDisposing)
     {
-        if (_isDisposed)
+        if (Volatile.Read(ref _isDisposed) != 0)
         {
             return;
         }
@@ -731,10 +756,15 @@ public class ModernDependencyResolver : IDependencyResolver
 
             lock (_gate)
             {
-                if (_isDisposed)
+                // Use Interlocked to atomically set disposed flag and prevent double dispose
+                var wasDisposed = Interlocked.Exchange(ref _isDisposed, 1);
+                if (wasDisposed != 0)
                 {
                     return;
                 }
+
+                // Set disposed flag BEFORE clearing snapshot to ensure GetService throws
+                // (already set by Interlocked.Exchange above)
 
                 // Atomically prevent any further operations on the registry.
                 _ = Interlocked.Exchange(ref _snapshot, null);
@@ -779,6 +809,10 @@ public class ModernDependencyResolver : IDependencyResolver
                         // Lazy wrapper from RegisterLazySingleton.
                         if (item is Lazy<object?> lazy)
                         {
+                            // Only dispose if value was already created.
+                            // Don't force creation just to dispose it.
+                            // Services constructed during disposal are handled by the
+                            // post-construction check in GetService/Unwrap.
                             if (lazy.IsValueCreated && lazy.Value is IDisposable disposable)
                             {
                                 disposable.Dispose();
@@ -797,8 +831,6 @@ public class ModernDependencyResolver : IDependencyResolver
                 }
             }
         }
-
-        _isDisposed = true;
     }
 
     /// <summary>
@@ -872,11 +904,22 @@ public class ModernDependencyResolver : IDependencyResolver
     /// </list>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static object? Unwrap(object? value, bool allowNullServiceTypeUnwrap)
+    private object? Unwrap(object? value, bool allowNullServiceTypeUnwrap)
     {
         if (value is Lazy<object?> lazy)
         {
-            return lazy.Value;
+            var result = lazy.Value;
+
+            // If resolver was disposed during lazy construction, dispose the value and throw.
+            // This matches Microsoft.Extensions.DependencyInjection behavior.
+            // Use volatile read to ensure visibility across threads without locking.
+            if (Volatile.Read(ref _isDisposed) != 0)
+            {
+                (result as IDisposable)?.Dispose();
+                ObjectDisposedExceptionHelper.ThrowIf(true, this);
+            }
+
+            return result;
         }
 
         if (allowNullServiceTypeUnwrap && value is NullServiceType nst)

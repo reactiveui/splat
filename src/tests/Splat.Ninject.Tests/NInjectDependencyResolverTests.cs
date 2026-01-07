@@ -230,6 +230,17 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Ninject manages disposal of services under construction itself.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public override Task Dispose_WhileLazySingletonUnderConstruction_DisposesServiceAndThrowsException()
+    {
+        // Ninject manages its own service disposal lifecycle including services under construction
+        return Task.CompletedTask;
+    }
+
     /// <inheritdoc />
     protected override NinjectDependencyResolver GetDependencyResolver() => new(new StandardKernel());
 }

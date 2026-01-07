@@ -147,19 +147,18 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
     }
 
     /// <summary>
-    /// Test GetService returns null after disposal.
+    /// Test GetService throws ObjectDisposedException after disposal.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task AfterDispose_GetService_ReturnsNull()
+    public async Task AfterDispose_GetService_ThrowsObjectDisposedException()
     {
         var resolver = new ModernDependencyResolver();
         resolver.Register(() => new ViewModelOne());
         resolver.Dispose();
 
-        var result = resolver.GetService<ViewModelOne>();
-
-        await Assert.That(result).IsNull();
+        await Assert.That(() => resolver.GetService<ViewModelOne>())
+            .Throws<ObjectDisposedException>();
     }
 
     /// <summary>

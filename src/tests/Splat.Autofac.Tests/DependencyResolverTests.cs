@@ -586,6 +586,17 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
     }
 
     /// <summary>
+    /// Autofac manages disposal of services under construction itself.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public override Task Dispose_WhileLazySingletonUnderConstruction_DisposesServiceAndThrowsException()
+    {
+        // Autofac manages its own service disposal lifecycle including services under construction
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
     /// Verifies GetService with null type.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
