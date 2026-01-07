@@ -496,10 +496,31 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
 
         var lazy = new Lazy<T?>(valueFactory, LazyThreadSafetyMode.ExecutionAndPublication);
 
-        Container<T>.Add(() => lazy.Value);
+        // Wrap lazy value access to dispose and throw if resolver was disposed during construction.
+        Container<T>.Add(() =>
+        {
+            var value = lazy.Value;
+            if (Volatile.Read(ref _disposed) != 0)
+            {
+                (value as IDisposable)?.Dispose();
+                ObjectDisposedExceptionHelper.ThrowIf(true, this);
+            }
+
+            return value;
+        });
         AddLazyDisposal(lazy);
 
-        ServiceTypeRegistry.Register(TypeCache<T>.Type, () => lazy.Value);
+        ServiceTypeRegistry.Register(TypeCache<T>.Type, () =>
+        {
+            var value = lazy.Value;
+            if (Volatile.Read(ref _disposed) != 0)
+            {
+                (value as IDisposable)?.Dispose();
+                ObjectDisposedExceptionHelper.ThrowIf(true, this);
+            }
+
+            return value;
+        });
 
         NotifyCallbackChanged();
     }
@@ -521,10 +542,36 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
 
         var lazy = new Lazy<T?>(valueFactory, LazyThreadSafetyMode.ExecutionAndPublication);
 
-        ContractContainer<T>.Add(() => lazy.Value, contract);
+        // Wrap lazy value access to dispose and throw if resolver was disposed during construction.
+        ContractContainer<T>.Add(
+            () =>
+            {
+                var value = lazy.Value;
+                if (Volatile.Read(ref _disposed) != 0)
+                {
+                    (value as IDisposable)?.Dispose();
+                    ObjectDisposedExceptionHelper.ThrowIf(true, this);
+                }
+
+                return value;
+            },
+            contract);
         AddLazyDisposal(lazy);
 
-        ServiceTypeRegistry.Register(TypeCache<T>.Type, () => lazy.Value, contract);
+        ServiceTypeRegistry.Register(
+            TypeCache<T>.Type,
+            () =>
+            {
+                var value = lazy.Value;
+                if (Volatile.Read(ref _disposed) != 0)
+                {
+                    (value as IDisposable)?.Dispose();
+                    ObjectDisposedExceptionHelper.ThrowIf(true, this);
+                }
+
+                return value;
+            },
+            contract);
 
         NotifyCallbackChanged();
     }

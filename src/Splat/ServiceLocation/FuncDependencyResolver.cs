@@ -589,6 +589,20 @@ public class FuncDependencyResolver(
             }
         });
 
-        Register(() => lazy.Value, typeof(T), contract);
+        // Wrap lazy value access to dispose and throw if resolver was disposed during construction.
+        Register(
+            () =>
+            {
+                var value = lazy.Value;
+                if (Volatile.Read(ref _isDisposed))
+                {
+                    (value as IDisposable)?.Dispose();
+                    ObjectDisposedExceptionHelper.ThrowIf(true, this);
+                }
+
+                return value;
+            },
+            typeof(T),
+            contract);
     }
 }

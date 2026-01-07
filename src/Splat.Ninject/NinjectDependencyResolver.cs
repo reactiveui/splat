@@ -19,13 +19,21 @@ namespace Splat.Ninject;
 /// <param name="kernel">The kernel.</param>
 public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 {
-    /// <inheritdoc />
-    public virtual object? GetService(Type? serviceType) =>
-        GetServices(serviceType).LastOrDefault()!;
+    private int _isDisposed;
 
     /// <inheritdoc />
-    public virtual object? GetService(Type? serviceType, string? contract) =>
-        GetServices(serviceType, contract).LastOrDefault()!;
+    public virtual object? GetService(Type? serviceType)
+    {
+        ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
+        return GetServices(serviceType).LastOrDefault()!;
+    }
+
+    /// <inheritdoc />
+    public virtual object? GetService(Type? serviceType, string? contract)
+    {
+        ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
+        return GetServices(serviceType, contract).LastOrDefault()!;
+    }
 
     /// <inheritdoc />
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We provide a different registration instead")]
@@ -481,7 +489,12 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         if (disposing)
         {
-            kernel?.Dispose();
+            // Use Interlocked.Exchange for thread-safe disposal flag setting
+            var wasDisposed = Interlocked.Exchange(ref _isDisposed, 1);
+            if (wasDisposed == 0)
+            {
+                kernel?.Dispose();
+            }
         }
     }
 

@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\Splat.Tests\ServiceLocation\BaseDependencyResolverTests.cs" Link="BaseDependencyResolverTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />
     <ProjectReference Include="..\..\Splat.DryIoc\Splat.DryIoc.csproj" />
     <ProjectReference Include="..\..\Splat\Splat.csproj" />

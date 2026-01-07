@@ -325,7 +325,7 @@ public class LocatorTests
     }
 
     /// <summary>
-    /// Nullables the type.
+    /// Test that GetService throws ObjectDisposedException after disposal.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -334,8 +334,9 @@ public class LocatorTests
         var currentMutable = new ModernDependencyResolver();
         currentMutable.Register<DummyObjectClass1?>(() => new());
         currentMutable.Dispose();
-        var doc = currentMutable.GetService<DummyObjectClass1?>();
-        await Assert.That(doc).IsNull();
+
+        await Assert.That(() => currentMutable.GetService<DummyObjectClass1?>())
+            .Throws<ObjectDisposedException>();
     }
 
     /// <summary>
