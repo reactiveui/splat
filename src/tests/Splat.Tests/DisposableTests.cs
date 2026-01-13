@@ -136,6 +136,19 @@ public class DisposableTests
     }
 
     /// <summary>
+    /// Test CompositeDisposable with zero capacity constructor.
+    /// </summary>
+    [Test]
+    public void CompositeDisposable_ZeroCapacityConstructor_Works()
+    {
+        // Arrange & Act
+        var disposable = new CompositeDisposable(0);
+
+        // Assert - should not throw
+        disposable.Dispose();
+    }
+
+    /// <summary>
     /// Test CompositeDisposable with negative capacity throws ArgumentOutOfRangeException.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -172,6 +185,39 @@ public class DisposableTests
     }
 
     /// <summary>
+    /// Test CompositeDisposable with empty array constructor.
+    /// </summary>
+    [Test]
+    public void CompositeDisposable_EmptyArrayConstructor_Works()
+    {
+        // Arrange & Act
+        var disposable = new CompositeDisposable(Array.Empty<IDisposable>());
+
+        // Assert - should not throw
+        disposable.Dispose();
+    }
+
+    /// <summary>
+    /// Test CompositeDisposable with single item array constructor.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task CompositeDisposable_SingleItemArrayConstructor_DisposesItem()
+    {
+        // Arrange
+        var disposed = false;
+        var action = new ActionDisposable(() => disposed = true);
+
+        var disposable = new CompositeDisposable(action);
+
+        // Act
+        disposable.Dispose();
+
+        // Assert
+        await Assert.That(disposed).IsTrue();
+    }
+
+    /// <summary>
     /// Test CompositeDisposable with enumerable constructor.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -201,6 +247,96 @@ public class DisposableTests
             await Assert.That(disposed2).IsTrue();
             await Assert.That(disposed3).IsTrue();
         }
+    }
+
+    /// <summary>
+    /// Test CompositeDisposable with enumerable constructor passing array as IEnumerable.
+    /// This tests the array fast path in the IEnumerable constructor.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task CompositeDisposable_EnumerableConstructorWithArray_DisposesAllItems()
+    {
+        // Arrange
+        var disposed1 = false;
+        var disposed2 = false;
+        IEnumerable<IDisposable> disposables = new IDisposable[]
+        {
+            new ActionDisposable(() => disposed1 = true),
+            new ActionDisposable(() => disposed2 = true)
+        };
+
+        var compositeDisposable = new CompositeDisposable(disposables);
+
+        // Act
+        compositeDisposable.Dispose();
+
+        using (Assert.Multiple())
+        {
+            // Assert
+            await Assert.That(disposed1).IsTrue();
+            await Assert.That(disposed2).IsTrue();
+        }
+    }
+
+    /// <summary>
+    /// Test CompositeDisposable with non-collection enumerable (yield return).
+    /// This tests the default case branch that uses DefaultCapacity.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task CompositeDisposable_NonCollectionEnumerable_DisposesAllItems()
+    {
+        // Arrange
+        var disposed1 = false;
+        var disposed2 = false;
+        var disposed3 = false;
+
+        static IEnumerable<IDisposable> CreateDisposables(
+            Action setDisposed1,
+            Action setDisposed2,
+            Action setDisposed3)
+        {
+            yield return new ActionDisposable(setDisposed1);
+            yield return new ActionDisposable(setDisposed2);
+            yield return new ActionDisposable(setDisposed3);
+        }
+
+        var compositeDisposable = new CompositeDisposable(
+            CreateDisposables(
+                () => disposed1 = true,
+                () => disposed2 = true,
+                () => disposed3 = true));
+
+        // Act
+        compositeDisposable.Dispose();
+
+        using (Assert.Multiple())
+        {
+            // Assert
+            await Assert.That(disposed1).IsTrue();
+            await Assert.That(disposed2).IsTrue();
+            await Assert.That(disposed3).IsTrue();
+        }
+    }
+
+    /// <summary>
+    /// Test CompositeDisposable with empty non-collection enumerable.
+    /// </summary>
+    [Test]
+    public void CompositeDisposable_EmptyNonCollectionEnumerable_Works()
+    {
+        // Arrange
+        static IEnumerable<IDisposable> CreateEmptyDisposables()
+        {
+            yield break;
+        }
+
+        // Act
+        var disposable = new CompositeDisposable(CreateEmptyDisposables());
+
+        // Assert - should not throw
+        disposable.Dispose();
     }
 
     /// <summary>
@@ -248,6 +384,34 @@ public class DisposableTests
     }
 
     /// <summary>
+    /// Test CompositeDisposable throws for null item in non-collection enumerable.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task CompositeDisposable_NullItemInNonCollectionEnumerable_ThrowsArgumentException()
+    {
+        // Arrange
+        static IEnumerable<IDisposable> CreateDisposablesWithNull()
+        {
+            yield return new ActionDisposable(() => { });
+            yield return null!;
+        }
+
+        // Act & Assert
+        await Assert.That(() => _ = new CompositeDisposable(CreateDisposablesWithNull())).Throws<ArgumentNullException>();
+    }
+
+    /// <summary>
+    /// Test CompositeDisposable throws for null as first item in array.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task CompositeDisposable_NullAsFirstItemInArray_ThrowsArgumentException() =>
+
+        // Act & Assert
+        await Assert.That(() => _ = new CompositeDisposable(null!, new ActionDisposable(() => { }))).Throws<ArgumentNullException>();
+
+    /// <summary>
     /// Test CompositeDisposable multiple dispose calls are safe.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -276,6 +440,118 @@ public class DisposableTests
     {
         // Arrange & Act
         var disposable = new CompositeDisposable(new List<IDisposable>());
+
+        // Assert - should not throw
+        disposable.Dispose();
+    }
+
+    /// <summary>
+    /// Test CompositeDisposable concurrent dispose calls from multiple threads.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task CompositeDisposable_ConcurrentDispose_DisposesOnlyOnce()
+    {
+        // Arrange
+        var executionCount = 0;
+        var action = new ActionDisposable(() => Interlocked.Increment(ref executionCount));
+        var disposable = new CompositeDisposable(action);
+
+        // Act - dispose from multiple threads concurrently
+        var tasks = new Task[10];
+        for (var i = 0; i < tasks.Length; i++)
+        {
+            tasks[i] = Task.Run(() => disposable.Dispose());
+        }
+
+        await Task.WhenAll(tasks);
+
+        // Assert - should only be disposed once despite concurrent calls
+        await Assert.That(executionCount).IsEqualTo(1);
+    }
+
+    /// <summary>
+    /// Test CompositeDisposable with many items disposes all.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task CompositeDisposable_ManyItems_DisposesAll()
+    {
+        // Arrange
+        const int itemCount = 100;
+        var disposedCount = 0;
+        var disposables = new IDisposable[itemCount];
+
+        for (var i = 0; i < itemCount; i++)
+        {
+            disposables[i] = new ActionDisposable(() => Interlocked.Increment(ref disposedCount));
+        }
+
+        var compositeDisposable = new CompositeDisposable(disposables);
+
+        // Act
+        compositeDisposable.Dispose();
+
+        // Assert
+        await Assert.That(disposedCount).IsEqualTo(itemCount);
+    }
+
+    /// <summary>
+    /// Test CompositeDisposable with many items via enumerable disposes all.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task CompositeDisposable_ManyItemsViaEnumerable_DisposesAll()
+    {
+        // Arrange
+        const int itemCount = 100;
+        var disposedCount = 0;
+        var disposables = new List<IDisposable>();
+
+        for (var i = 0; i < itemCount; i++)
+        {
+            disposables.Add(new ActionDisposable(() => Interlocked.Increment(ref disposedCount)));
+        }
+
+        var compositeDisposable = new CompositeDisposable(disposables);
+
+        // Act
+        compositeDisposable.Dispose();
+
+        // Assert
+        await Assert.That(disposedCount).IsEqualTo(itemCount);
+    }
+
+    /// <summary>
+    /// Test CompositeDisposable disposes items in order.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task CompositeDisposable_DisposesItemsInOrder()
+    {
+        // Arrange
+        var disposeOrder = new List<int>();
+        var disposable1 = new ActionDisposable(() => disposeOrder.Add(1));
+        var disposable2 = new ActionDisposable(() => disposeOrder.Add(2));
+        var disposable3 = new ActionDisposable(() => disposeOrder.Add(3));
+
+        var compositeDisposable = new CompositeDisposable(disposable1, disposable2, disposable3);
+
+        // Act
+        compositeDisposable.Dispose();
+
+        // Assert
+        await Assert.That(disposeOrder).IsEquivalentTo(new[] { 1, 2, 3 });
+    }
+
+    /// <summary>
+    /// Test CompositeDisposable with large capacity constructor.
+    /// </summary>
+    [Test]
+    public void CompositeDisposable_LargeCapacityConstructor_Works()
+    {
+        // Arrange & Act
+        var disposable = new CompositeDisposable(1000);
 
         // Assert - should not throw
         disposable.Dispose();

@@ -22,8 +22,11 @@ internal sealed class CompositeDisposable : IDisposable
     // Default initial capacity of the _disposables list in case
     // The number of items is not known upfront
     private const int DefaultCapacity = 16;
-
+#if NET9_0_OR_GREATER
+    private readonly Lock _lock = new();
+#else
     private readonly object _lock = new();
+#endif
     private List<IDisposable>? _disposables;
     private volatile bool _disposed;
 
