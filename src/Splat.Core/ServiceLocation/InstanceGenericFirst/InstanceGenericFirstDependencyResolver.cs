@@ -2,10 +2,11 @@
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
-// Instance-scoped implementation using ConditionalWeakTable for per-resolver state
+
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
+// Instance-scoped implementation using ConditionalWeakTable for per-resolver state
 namespace Splat;
 
 /// <summary>

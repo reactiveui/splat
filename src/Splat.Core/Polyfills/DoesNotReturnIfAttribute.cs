@@ -2,6 +2,7 @@
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
+
 // Polyfill implementation adapted from SimonCropp/Polyfill
 // https://github.com/SimonCropp/Polyfill
 #if !NETCOREAPP3_0_OR_GREATER && !NETSTANDARD2_1_OR_GREATER
