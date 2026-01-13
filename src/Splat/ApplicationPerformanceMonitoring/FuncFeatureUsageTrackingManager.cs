@@ -6,8 +6,10 @@
 namespace Splat.ApplicationPerformanceMonitoring;
 
 /// <summary>
-/// Func based Feature Usage Tracking Manager.
+/// Provides a feature usage tracking manager that creates tracking sessions using a supplied factory function.
 /// </summary>
+/// <remarks>This implementation allows customization of feature usage tracking session creation by accepting a
+/// factory delegate. It is useful when session instantiation logic needs to be injected or varied at runtime.</remarks>
 public class FuncFeatureUsageTrackingManager : IFeatureUsageTrackingManager
 {
     private readonly Func<string, IFeatureUsageTrackingSession> _featureUsageTrackingSessionFunc;

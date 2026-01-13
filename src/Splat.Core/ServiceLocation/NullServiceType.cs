@@ -6,21 +6,22 @@
 namespace Splat;
 
 /// <summary>
-/// Represents a placeholder service type for null service registrations.
+/// Represents a service type that always returns null when resolved. Used as a placeholder or marker in dependency
+/// injection scenarios where a service is intentionally absent.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="NullServiceType"/> class.
-/// </remarks>
-/// <param name="factory">The value factory.</param>
+/// <param name="factory">A delegate that produces the service instance. The delegate should return null to indicate the absence of a service.</param>
 public class NullServiceType(Func<object?> factory)
 {
     /// <summary>
-    /// Cached Type instance for NullServiceType to avoid repeated typeof() calls.
+    /// Gets the cached <see cref="Type"/> instance representing the <see cref="NullServiceType"/> type.
     /// </summary>
+    /// <remarks>This field can be used to avoid repeated calls to <see cref="Type.GetType"/> or <see
+    /// langword="typeof"/> for <see cref="NullServiceType"/>. It is intended for scenarios where a reference to the
+    /// <see cref="NullServiceType"/> type is needed multiple times.</remarks>
     public static readonly Type CachedType = typeof(NullServiceType);
 
     /// <summary>
-    /// Gets the Factory.
+    /// Gets the function used to create an instance of the associated object.
     /// </summary>
     public Func<object?> Factory { get; } = factory;
 }

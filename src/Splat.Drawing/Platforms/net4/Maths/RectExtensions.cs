@@ -8,8 +8,12 @@ using System.Windows;
 namespace Splat;
 
 /// <summary>
-/// A set of extension methods which will convert between System.Drawing rectangle's and a native rectangle classes.
+/// Provides extension methods for converting between <see cref="System.Drawing.Rectangle"/> types and the Android native Rect
+/// structure.
 /// </summary>
+/// <remarks>These methods enable seamless interoperability between .NET drawing types and Android graphics by
+/// allowing direct conversion without manual mapping of fields. All methods are static and intended to be used as
+/// extension methods for convenience.</remarks>
 public static class RectExtensions
 {
     /// <summary>

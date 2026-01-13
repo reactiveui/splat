@@ -8,7 +8,8 @@ using Exceptionless;
 namespace Splat.Exceptionless;
 
 /// <summary>
-/// Exceptionless specific extensions for the Mutable Dependency Resolver.
+/// Provides extension methods for registering Exceptionless integration with Splat using a wrapping full logger
+/// pattern.
 /// </summary>
 public static class MutableDependencyResolverExtensions
 {

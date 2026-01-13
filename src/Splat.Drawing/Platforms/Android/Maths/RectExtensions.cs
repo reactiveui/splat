@@ -8,8 +8,11 @@ using Android.Graphics;
 namespace Splat;
 
 /// <summary>
-/// A set of extension methods which will convert between System.Drawing rectangle's and a native rectangle classes.
+/// Provides extension methods for converting between <see cref="System.Drawing.Rectangle"/> types and Android native rectangle types.
 /// </summary>
+/// <remarks>These methods enable seamless interoperability between .NET drawing rectangles and Android's native
+/// Rect and RectF structures. All methods are static and intended to be used as extension methods for convenient syntax
+/// when working with rectangle conversions in cross-platform scenarios.</remarks>
 public static class RectExtensions
 {
     /// <summary>

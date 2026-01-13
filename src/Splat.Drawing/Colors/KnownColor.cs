@@ -6,12 +6,16 @@
 namespace Splat;
 
 /// <summary>
-/// Well-known color names supported by <c>Splat</c>.
-/// The underlying numeric value of each member indexes into the ARGB table
-/// used by <c>KnownColors</c> (ARGB format is <c>0xAARRGGBB</c>).
+/// Specifies a set of predefined colors that are recognized by name and can be used in color-related APIs. (ARGB format is <c>0xAARRGGBB</c>).
 /// </summary>
 /// <remarks>
-/// Historical attribution (preserved from earlier sources):
+/// <para>
+/// The KnownColor enumeration includes both system colors (such as window backgrounds and control
+/// highlights) and standard named colors defined by web and platform standards. These values can be used to create
+/// colors by name or to identify colors in serialization and interoperability scenarios. Some colors may have the same
+/// RGB values but different names (for example, Aqua and Cyan).
+/// </para>
+/// <para>Historical attribution (preserved from earlier sources):</para>
 /// <para>Author: Dennis Hayes (dennish@raytek.com), Ben Houston (ben@exocortex.org).</para>
 /// <para>(C) 2002 Dennis Hayes.</para>
 /// <para>Copyright (C) 2004,2006 Novell, Inc (http://www.novell.com).</para>

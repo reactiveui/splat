@@ -8,10 +8,17 @@ using System.Runtime.InteropServices;
 namespace Splat;
 
 /// <summary>
-/// "Implement" this interface in your class to get access to the Log()
-/// Mixin, which will give you a Logger that includes the class name in the
-/// log.
+/// Marks a class as eligible for logger injection by supporting frameworks or libraries.
 /// </summary>
+/// <remarks><para>
+/// Implement this interface in your class to get access to the Log() Mixin,
+/// which will give you a Logger that includes the class name in the log,
+/// indicating that a type can participate in logging infrastructure that
+/// relies on marker interfaces.
+/// </para>
+/// <para>
+/// This interface does not define any members and serves only as a marker for logger
+/// enablement.
+/// </para></remarks>
 [ComVisible(false)]
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Avoid empty interfaces", Justification = "Used as a marker")]
 public interface IEnableLogger;

@@ -8,7 +8,7 @@ using DryIoc;
 namespace Splat.DryIoc;
 
 /// <summary>
-/// Extension methods for the DryIoc adapter.
+/// Provides extension methods for integrating DryIoc as the dependency resolver within Splat-based applications.
 /// </summary>
 public static class SplatDryIocExtensions
 {

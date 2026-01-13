@@ -6,13 +6,13 @@
 namespace Splat.ApplicationPerformanceMonitoring;
 
 /// <summary>
-/// Base interface for tracking view usage.
+/// Defines a contract for tracking view navigation events by name.
 /// </summary>
 public interface IViewTracking
 {
     /// <summary>
-    /// Track a view navigation using just a name.
+    /// Handles navigation to a view identified by the specified name.
     /// </summary>
-    /// <param name="name">Name of the view.</param>
+    /// <param name="name">The name of the view to navigate to. Cannot be null or empty.</param>
     void OnViewNavigation(string name);
 }

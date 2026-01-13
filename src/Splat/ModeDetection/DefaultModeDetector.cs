@@ -9,13 +9,14 @@ using System.Diagnostics.CodeAnalysis;
 namespace Splat;
 
 /// <summary>
-/// Provides a mechanism to detect if the current execution context is a unit test using
-/// various heuristics such as environment signals, process names, and legacy assembly scans.
+/// Provides a default implementation for detecting whether the current process is running within a unit test
+/// environment.
 /// </summary>
-/// <remarks>
-/// Implements the <see cref="IModeDetector"/> interface to define mode detection functionality.
-/// Implements the <see cref="IEnableLogger"/> interface to enable logging capabilities.
-/// </remarks>
+/// <remarks>This class uses a combination of environment variable checks, process name heuristics, and assembly
+/// scanning to determine if the application is executing under a known test runner. It is intended for use in scenarios
+/// where behavior should change when running under test conditions, such as enabling test-specific features or
+/// diagnostics. The detection logic prioritizes explicit signals and is designed to minimize performance impact by
+/// avoiding unnecessary allocations and expensive operations where possible.</remarks>
 [SuppressMessage("ReSharper", "ForCanBeConvertedToForeach", Justification = "Performance")]
 [SuppressMessage("ReSharper", "LoopCanBeConvertedToQuery", Justification = "Performance")]
 public class DefaultModeDetector : IModeDetector, IEnableLogger

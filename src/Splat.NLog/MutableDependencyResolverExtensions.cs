@@ -6,7 +6,7 @@
 namespace Splat.NLog;
 
 /// <summary>
-/// NLog specific extensions for the Mutable Dependency Resolver.
+/// Provides extension methods for registering NLog integration with Splat using a mutable dependency resolver.
 /// </summary>
 public static class MutableDependencyResolverExtensions
 {

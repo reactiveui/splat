@@ -6,8 +6,14 @@
 namespace Splat.SimpleInjector;
 
 /// <summary>
-/// Initializer for SimpleInjector dependency resolver.
+/// Provides a simple dependency resolver implementation using a factory-based registration model compatible with Simple
+/// Injector patterns.
 /// </summary>
+/// <remarks>This class enables registration and resolution of services by type, supporting multiple factories per
+/// service. Contract-based registrations are not supported; contract parameters are ignored. Thread safety is ensured
+/// for all registration and resolution operations. This implementation is suitable for scenarios where lightweight,
+/// in-memory dependency resolution is required without advanced features such as scopes or contract-based
+/// resolution.</remarks>
 public class SimpleInjectorInitializer : IDependencyResolver
 {
     private readonly object _lockObject = new();

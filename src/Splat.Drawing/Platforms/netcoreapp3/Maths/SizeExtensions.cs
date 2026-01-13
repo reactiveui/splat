@@ -8,8 +8,12 @@ using System.Windows;
 namespace Splat
 {
     /// <summary>
-    /// A set of extension methods which will convert between System.Drawing size's and a native size classes.
+    /// Provides extension methods for converting between System.Drawing.Size, System.Drawing.SizeF, and the Android
+    /// native Size structure.
     /// </summary>
+    /// <remarks>These methods simplify interoperability between .NET drawing types and Android's native size
+    /// representation. They are intended for use in cross-platform scenarios where size values need to be converted
+    /// between different frameworks.</remarks>
     public static class SizeExtensions
     {
         /// <summary>

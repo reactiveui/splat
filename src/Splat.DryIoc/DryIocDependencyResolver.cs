@@ -12,14 +12,14 @@ using DryIoc;
 namespace Splat.DryIoc;
 
 /// <summary>
-/// DryIoc implementation for <see cref="IMutableDependencyResolver"/>.
+/// Provides an implementation of the IDependencyResolver interface using a DryIoc container for dependency resolution
+/// and registration.
 /// https://bitbucket.org/dadhi/dryioc/wiki/Home.
 /// </summary>
-/// <seealso cref="IDependencyResolver" />
-/// <remarks>
-/// Initializes a new instance of the <see cref="DryIocDependencyResolver" /> class.
-/// </remarks>
-/// <param name="container">The container.</param>
+/// <remarks>This resolver enables integration with DryIoc for managing service lifetimes and contracts. If no
+/// container is supplied, the resolver creates and manages its own internal container instance. Thread safety and
+/// disposal of the underlying container are managed by this class.</remarks>
+/// <param name="container">The DryIoc container to use for service resolution and registration. If null, a new container instance is created.</param>
 public class DryIocDependencyResolver(IContainer? container = null) : IDependencyResolver
 {
     private readonly IContainer _container = container ?? new Container();

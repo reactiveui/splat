@@ -9,10 +9,11 @@ using System.Runtime.CompilerServices;
 namespace Splat;
 
 /// <summary>
-/// Provides helper methods for disposal validation.
-/// These methods serve as polyfills for ObjectDisposedException.ThrowIf methods
-/// that are only available in .NET 8 and later.
+/// Provides helper methods for throwing an ObjectDisposedException when an object or type has been disposed.
 /// </summary>
+/// <remarks>These methods are intended to simplify and standardize the pattern of throwing
+/// ObjectDisposedException based on a condition. On .NET 8 or later, the built-in ObjectDisposedException.ThrowIf
+/// method is used; on earlier versions, equivalent behavior is provided.</remarks>
 [ExcludeFromCodeCoverage]
 internal static class ObjectDisposedExceptionHelper
 {

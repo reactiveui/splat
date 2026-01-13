@@ -8,24 +8,35 @@ using System.Drawing;
 namespace Splat;
 
 /// <summary>
-/// Extension methods to help with operations associated with the <see cref="RectangleF"/> struct.
+/// Provides extension methods for performing advanced mathematical and geometric operations on <see cref="RectangleF"/>
+/// instances.
 /// </summary>
+/// <remarks>This static class includes methods for calculating the center point, dividing rectangles (with or
+/// without padding), inverting rectangles within a containing rectangle, and creating modified copies of rectangles.
+/// These utilities are intended to simplify common rectangle manipulations in graphical and layout scenarios.</remarks>
 public static class RectangleMathExtensions
 {
     /// <summary>
-    /// Determine the center of a Rectangle.
+    /// Calculates the center point of the specified rectangle.
     /// </summary>
-    /// <param name="value">The rectangle to perform the calculation against.</param>
-    /// <returns>The point of the center of the rectangle.</returns>
+    /// <param name="value">The rectangle for which to determine the center point.</param>
+    /// <returns>A <see cref="PointF"/> representing the center of the specified rectangle.</returns>
     public static PointF Center(this RectangleF value) => new(value.X + (value.Width / 2.0f), value.Y + (value.Height / 2.0f));
 
     /// <summary>
-    /// Divide the specified Rectangle into two component rectangles.
+    /// Divides the specified rectangle into two rectangles by splitting off a region of the given size from one edge.
     /// </summary>
-    /// <param name="value">The rectangle to perform the calculation against.</param>
-    /// <param name="amount">Amount to move away from the given edge.</param>
-    /// <param name="fromEdge">The edge to create the slice from.</param>
-    /// <returns>The set of rectangles that are generated.</returns>
+    /// <remarks>If the specified amount is zero, the first rectangle will have zero width or height,
+    /// depending on the edge, and the second rectangle will be equal to the original. If the amount equals the
+    /// rectangle's width or height (as appropriate), the second rectangle will have zero width or height. Throws an
+    /// exception if the amount is negative or exceeds the rectangle's dimension along the specified edge.</remarks>
+    /// <param name="value">The rectangle to divide.</param>
+    /// <param name="amount">The size, in the same units as the rectangle, of the region to split from the specified edge. Must be
+    /// non-negative and less than or equal to the corresponding dimension of the rectangle.</param>
+    /// <param name="fromEdge">The edge from which to split the region. Specifies which side of the rectangle the split is performed from.</param>
+    /// <returns>A tuple containing two rectangles: the first is the region split from the specified edge with the given size,
+    /// and the second is the remainder of the original rectangle. The sum of their areas equals the area of the
+    /// original rectangle.</returns>
     public static Tuple<RectangleF, RectangleF> Divide(this RectangleF value, float amount, RectEdge fromEdge)
     {
         switch (fromEdge)
@@ -53,14 +64,19 @@ public static class RectangleMathExtensions
     }
 
     /// <summary>
-    /// Divide the specified Rectangle into two component rectangles, adding
-    /// a padding between them.
+    /// Divides the specified rectangle into two regions along the given edge, separating them by a specified padding.
     /// </summary>
-    /// <param name="value">The rectangle to perform the calculation against.</param>
-    /// <param name="sliceAmount">Amount to move away from the given edge.</param>
-    /// <param name="padding">The amount of padding that is in neither rectangle.</param>
-    /// <param name="fromEdge">The edge to create the slice from.</param>
-    /// <returns>The set of rectangles that are generated.</returns>
+    /// <remarks>If the sum of sliceAmount and padding exceeds the corresponding dimension of the rectangle,
+    /// the resulting rectangles may have zero or negative size. The method does not modify the original
+    /// rectangle.</remarks>
+    /// <param name="value">The rectangle to be divided.</param>
+    /// <param name="sliceAmount">The size, in the same units as the rectangle, of the first region to slice from the specified edge. Must be
+    /// non-negative.</param>
+    /// <param name="padding">The size, in the same units as the rectangle, of the padding to insert between the two resulting regions. Must
+    /// be non-negative.</param>
+    /// <param name="fromEdge">The edge of the rectangle from which to perform the division.</param>
+    /// <returns>A tuple containing two rectangles: the first is the sliced region, and the second is the remaining region after
+    /// the slice and padding have been removed.</returns>
     public static Tuple<RectangleF, RectangleF> DivideWithPadding(this RectangleF value, float sliceAmount, float padding, RectEdge fromEdge)
     {
         var slice = value.Divide(sliceAmount, fromEdge);
@@ -69,34 +85,38 @@ public static class RectangleMathExtensions
     }
 
     /// <summary>
-    /// <para>Vertically inverts the coordinates of the rectangle within containingRect.</para>
-    /// <para>
-    /// This can effectively be used to change the coordinate system of a rectangle.
-    /// For example, if `rect` is defined for a coordinate system starting at the
-    /// top-left, the result will be a rectangle relative to the bottom-left.
-    /// </para>
+    /// Returns a new rectangle that is vertically inverted within the specified containing rectangle.
     /// </summary>
-    /// <param name="value">The rectangle to perform the calculation against.</param>
-    /// <param name="containingRect">The containing rectangle.</param>
-    /// <returns>The inverted rectangle.</returns>
+    /// <remarks>The method inverts the Y-coordinate of the rectangle so that its position is mirrored
+    /// vertically within the containing rectangle. This is commonly used to convert between coordinate systems with
+    /// different vertical origins.</remarks>
+    /// <param name="value">The rectangle to invert within the containing rectangle.</param>
+    /// <param name="containingRect">The rectangle that defines the bounds within which to invert the position of <paramref name="value"/>.</param>
+    /// <returns>A <see cref="RectangleF"/> representing the vertically inverted position of <paramref name="value"/> within
+    /// <paramref name="containingRect"/>. The size of the rectangle remains unchanged.</returns>
     public static RectangleF InvertWithin(this RectangleF value, RectangleF containingRect) =>
         value with { Y = containingRect.Height - value.Bottom };
 
     /// <summary>
-    /// <para>Creates a new RectangleF as a Copy of an existing one.</para>
-    /// <para>
-    /// This is useful when you have a rectangle that is almost what you
-    /// want, but you just want to change a couple properties.
-    /// </para>
+    /// Creates a copy of the specified rectangle, optionally overriding one or more of its position or size components.
     /// </summary>
-    /// <param name="value">The rectangle to perform the calculation against.</param>
-    /// <param name="x">Optional new x coordinate of the rectangle to use.</param>
-    /// <param name="y">Optional new y coordinate of the rectangle to use.</param>
-    /// <param name="width">Optional new width of the rectangle to use.</param>
-    /// <param name="height">Optional new height of the rectangle to use.</param>
-    /// <param name="top">Optional new top of the rectangle to use.</param>
-    /// <param name="bottom">Optional new bottom of the rectangle to use.</param>
-    /// <returns>The copied rectangle.</returns>
+    /// <remarks>If both <paramref name="y"/> and <paramref name="top"/> are specified, or both <paramref
+    /// name="height"/> and <paramref name="bottom"/> are specified, an exception is thrown due to conflicting
+    /// arguments.</remarks>
+    /// <param name="value">The rectangle to copy.</param>
+    /// <param name="x">The value to use for the X coordinate of the new rectangle. If null, the original X value is used. Cannot be
+    /// specified together with <paramref name="top"/>.</param>
+    /// <param name="y">The value to use for the Y coordinate of the new rectangle. If null, the original Y value is used. Cannot be
+    /// specified together with <paramref name="top"/>.</param>
+    /// <param name="width">The value to use for the width of the new rectangle. If null, the original width is used. Cannot be specified
+    /// together with <paramref name="bottom"/>.</param>
+    /// <param name="height">The value to use for the height of the new rectangle. If null, the original height is used. Cannot be specified
+    /// together with <paramref name="bottom"/>.</param>
+    /// <param name="top">The value to use for the top (Y coordinate) of the new rectangle. If specified, <paramref name="y"/> must be
+    /// null.</param>
+    /// <param name="bottom">The value to use for the bottom edge of the new rectangle, relative to the Y coordinate. If specified, <paramref
+    /// name="height"/> must be null.</param>
+    /// <returns>A new <see cref="RectangleF"/> instance with the specified components replaced as provided.</returns>
     public static RectangleF Copy(
         this RectangleF value,
         float? x = null,

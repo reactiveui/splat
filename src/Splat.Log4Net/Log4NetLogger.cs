@@ -8,8 +8,13 @@ using System.Diagnostics;
 namespace Splat.Log4Net;
 
 /// <summary>
-/// Splat logger implementation that wraps Log4Net functionality.
+/// Provides an implementation of the ILogger interface that writes log messages using a wrapped Log4Net logger
+/// instance.
 /// </summary>
+/// <remarks>This class enables integration of Log4Net logging with components that consume the ILogger
+/// abstraction. The effective log level is determined from the underlying Log4Net configuration and is updated
+/// automatically if the configuration changes. Instances of this class are not thread-safe for disposal; ensure that
+/// Dispose is not called concurrently with logging operations.</remarks>
 [DebuggerDisplay("Name={_inner.Logger.Name} Level={Level}")]
 public sealed class Log4NetLogger : ILogger, IDisposable
 {

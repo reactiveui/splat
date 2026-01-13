@@ -6,8 +6,12 @@
 namespace Splat.ApplicationPerformanceMonitoring;
 
 /// <summary>
-/// Default implementation of the Feature Usage Tracking Manager.
+/// Provides the default implementation of a feature usage tracking manager that creates tracking sessions for features
+/// using the standard session type.
 /// </summary>
+/// <remarks>This class is typically used when no custom tracking behavior is required. It creates a new <see
+/// cref="DefaultFeatureUsageTrackingSession"/> for each feature name provided. The class is sealed and cannot be
+/// inherited.</remarks>
 public sealed class DefaultFeatureUsageTrackingManager : FuncFeatureUsageTrackingManager
 {
     /// <summary>

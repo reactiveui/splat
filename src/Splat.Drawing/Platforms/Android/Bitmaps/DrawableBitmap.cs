@@ -8,9 +8,12 @@ using Android.Graphics.Drawables;
 namespace Splat;
 
 /// <summary>
-/// Initializes a new instance of the <see cref="DrawableBitmap"/> class.
+/// Provides a bitmap implementation that wraps an existing Drawable object for rendering operations.
 /// </summary>
-/// <param name="inner">The drawable bitmap to wrap.</param>
+/// <remarks>This class is intended for internal use where a Drawable needs to be presented as an IBitmap. The
+/// wrapped Drawable is disposed when this object is disposed. Saving the bitmap is not supported and will throw a
+/// NotSupportedException.</remarks>
+/// <param name="inner">The Drawable instance to be wrapped and exposed as a bitmap. Cannot be null.</param>
 internal sealed class DrawableBitmap(Drawable inner) : IBitmap
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Is Disposed using Interlocked method")]

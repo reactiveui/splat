@@ -8,13 +8,13 @@ using System.ComponentModel;
 namespace Splat;
 
 /// <summary>
-/// A prefix logger which wraps a <see cref="ILogger"/>.
+/// Provides an ILogger implementation that prefixes log messages with their log level before delegating to an inner
+/// logger.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="WrappingLogLevelLogger"/> class.
-/// Placeholder.
-/// </remarks>
-/// <param name="inner">The <see cref="ILogger"/> to wrap in this class.</param>
+/// <remarks>This logger wraps another ILogger and automatically prepends the log level to each message. It is
+/// useful for scenarios where the inner logger does not include log level information in its output. All logging
+/// operations are delegated to the specified inner logger.</remarks>
+/// <param name="inner">The underlying ILogger instance to which log messages are forwarded. Cannot be null.</param>
 public class WrappingLogLevelLogger(ILogger inner) : ILogger
 {
     private readonly ILogger _inner = inner;

@@ -18,12 +18,12 @@ using UIImage = AppKit.NSImage;
 namespace Splat;
 
 /// <summary>
-/// Wraps a cocoa native bitmap into the splat <see cref="IBitmap"/>.
+/// Represents a bitmap image backed by a native Cocoa UIImage instance.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="CocoaBitmap"/> class.
-/// </remarks>
-/// <param name="inner">The native image we are wrapping.</param>
+/// <remarks>This class provides a platform-specific implementation of the IBitmap interface for Cocoa-based
+/// environments. It manages the lifetime of the underlying UIImage and ensures proper disposal. Instances of this class
+/// are not thread-safe.</remarks>
+/// <param name="inner">The native UIImage that provides the underlying image data for the bitmap. Cannot be null.</param>
 internal sealed class CocoaBitmap(UIImage inner) : IBitmap
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Is Disposed using Interlocked method")]

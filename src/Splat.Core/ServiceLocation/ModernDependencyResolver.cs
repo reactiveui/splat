@@ -44,12 +44,11 @@ public class ModernDependencyResolver : IDependencyResolver
 #endif
 
     /// <summary>
-    /// Stores all registration callbacks keyed by (service type, contract).
+    /// Stores registered callback actions associated with each service type and contract combination.
     /// </summary>
-    /// <remarks>
-    /// Callbacks are invoked when a registration is added for the associated key.
-    /// Callbacks may dispose the provided token to indicate they should be removed (one-shot semantics).
-    /// </remarks>
+    /// <remarks>Each entry maps a tuple of service type and optional contract name to a list of actions to be
+    /// invoked when the corresponding IDisposable instance is available. This registry enables tracking and invocation
+    /// of callbacks for specific service registrations.</remarks>
     private readonly Dictionary<(Type serviceType, string? contract), List<Action<IDisposable>>> _callbackRegistry;
 
     /// <summary>

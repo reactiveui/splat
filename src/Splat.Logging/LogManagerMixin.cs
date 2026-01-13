@@ -10,7 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Splat;
 
 /// <summary>
-/// Extension methods associated with the logging module.
+/// Provides extension methods for obtaining loggers from an ILogManager instance.
 /// </summary>
 public static class LogManagerMixin
 {

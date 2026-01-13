@@ -10,8 +10,11 @@ using Splat.Autofac;
 namespace Splat.Builder;
 
 /// <summary>
-/// Splat module for configuring the Autofac dependency resolver.
+/// Provides an Autofac module that integrates Autofac with Splat's dependency resolver system.
 /// </summary>
+/// <remarks>This module enables the use of Autofac as the dependency resolver for Splat-based applications. It is
+/// typically used to configure dependency injection in applications that leverage both Autofac and Splat. The module
+/// should be initialized with a valid Autofac ContainerBuilder instance before configuring the resolver.</remarks>
 public sealed class AutofacSplatModule : IModule
 {
     private readonly ContainerBuilder _builder;

@@ -6,10 +6,12 @@
 namespace Splat;
 
 /// <summary>
-/// The default log manager provided by splat.
-/// This log manager will cache the loggers for each type,
-/// This will use the default registered <see cref="ILogger"/> inside the <see cref="IReadonlyDependencyResolver"/>.
+/// Provides the default implementation of the <see cref="ILogManager"/> interface for creating and managing loggers by
+/// type.
 /// </summary>
+/// <remarks>This class retrieves loggers using a dependency resolver and caches them for efficient reuse. It is
+/// typically used as the standard log manager in applications that require logging support. Thread safety is ensured
+/// for logger retrieval operations.</remarks>
 public sealed class DefaultLogManager : ILogManager
 {
     private static readonly IFullLogger _nullLogger = new WrappingFullLogger(new NullLogger());

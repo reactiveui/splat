@@ -12,8 +12,11 @@ using UIImage = AppKit.NSImage;
 namespace Splat;
 
 /// <summary>
-/// Extension methods to assist with dealing with Bitmaps.
+/// Provides extension methods for converting between IBitmap and native UIImage types.
 /// </summary>
+/// <remarks>These methods enable interoperability between platform-agnostic bitmap representations and native iOS
+/// image types. They are intended for use in scenarios where image data needs to be transferred between cross-platform
+/// and platform-specific components.</remarks>
 public static class BitmapMixins
 {
     /// <summary>

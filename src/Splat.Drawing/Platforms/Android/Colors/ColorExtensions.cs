@@ -8,8 +8,11 @@ using Android.Graphics;
 namespace Splat;
 
 /// <summary>
-/// Provides extension methods for interacting with colors, to and from the android colors.
+/// Provides extension methods for converting between System.Drawing.Color and native Android color representations.
 /// </summary>
+/// <remarks>These methods enable seamless interoperability between .NET color types and Android's native color
+/// structures when developing cross-platform applications. All methods are static and intended for use as extension
+/// methods.</remarks>
 public static class ColorExtensions
 {
     /// <summary>

@@ -6,8 +6,14 @@
 namespace Splat;
 
 /// <summary>
-/// An interface for interacting with a dependency resolver in a read-only fashion.
+/// Defines a read-only contract for resolving service instances and collections by type and optional contract
+/// identifier.
 /// </summary>
+/// <remarks>This interface provides methods to retrieve single or multiple service instances from a dependency
+/// resolver without allowing registration or modification of services. Implementations must not throw exceptions or
+/// return null when a service is unavailable; instead, they should return null for single-instance methods and an empty
+/// collection for multi-instance methods. This interface is typically used to access services in a decoupled manner,
+/// supporting scenarios such as dependency injection, plugin architectures, or service location patterns.</remarks>
 public interface IReadonlyDependencyResolver
 {
     /// <summary>

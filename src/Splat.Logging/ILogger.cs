@@ -8,8 +8,12 @@ using System.ComponentModel;
 namespace Splat;
 
 /// <summary>
-/// Represents a log target where messages can be written to.
+/// Defines a contract for logging messages with varying severity levels and contextual information.
 /// </summary>
+/// <remarks>Implementations of this interface allow applications to record diagnostic or operational messages,
+/// optionally including exception details and type context. The interface supports logging at different levels of
+/// severity, enabling filtering and categorization of log output. Thread safety and message formatting behavior depend
+/// on the specific implementation.</remarks>
 public interface ILogger
 {
     /// <summary>

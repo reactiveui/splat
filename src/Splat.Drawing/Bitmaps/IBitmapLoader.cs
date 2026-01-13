@@ -8,9 +8,12 @@ using System.IO;
 namespace Splat;
 
 /// <summary>
-/// Represents the platform-specific image loader class. Unless you are
-/// testing image loading, you don't usually need to implement this.
+/// Defines methods for loading and creating bitmap images from various sources.
+/// Unless you are testing image loading, you don't usually need to implement this.
 /// </summary>
+/// <remarks>Implementations of this interface provide functionality to load bitmap images from streams,
+/// application resources, or to create new empty bitmaps. The specific image formats supported and resource resolution
+/// behavior may vary depending on the platform and implementation.</remarks>
 public interface IBitmapLoader
 {
     /// <summary>

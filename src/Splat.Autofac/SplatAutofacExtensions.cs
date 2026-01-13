@@ -8,7 +8,7 @@ using Autofac;
 namespace Splat.Autofac;
 
 /// <summary>
-/// Extension methods for the Autofac adapter.
+/// Provides extension methods for integrating Autofac with Splat's dependency resolution system.
 /// </summary>
 public static class SplatAutofacExtensions
 {

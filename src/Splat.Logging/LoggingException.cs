@@ -6,8 +6,11 @@
 namespace Splat;
 
 /// <summary>
-/// A exception that occurs when there is a problem using the logging module.
+/// Represents errors that occur during logging operations.
 /// </summary>
+/// <remarks>Use this exception to indicate failures related to logging, such as issues writing to a log file or
+/// logging infrastructure errors. This exception is typically thrown by logging components to signal that a logging
+/// operation could not be completed successfully.</remarks>
 [Serializable]
 public class LoggingException : Exception
 {

@@ -9,8 +9,14 @@ using System.Globalization;
 namespace Splat.NLog;
 
 /// <summary>
-/// Splat logger implementation that wraps NLog functionality.
+/// Provides an implementation of the <see cref="IFullLogger"/> interface that writes log events using the NLog logging
+/// framework.
 /// </summary>
+/// <remarks>This class acts as an adapter, allowing code that depends on <see cref="IFullLogger"/> to log
+/// messages through NLog. It supports all standard log levels and message formats, and automatically tracks changes to
+/// the underlying NLog logger's configuration. Instances of <see cref="NLogLogger"/> are not thread-affine and can be
+/// used concurrently from multiple threads. Disposing the logger detaches internal event handlers but does not dispose
+/// the underlying NLog logger.</remarks>
 [DebuggerDisplay("Name={_inner.Name} Level={Level}")]
 public sealed class NLogLogger : IFullLogger, IDisposable
 {

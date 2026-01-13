@@ -10,8 +10,12 @@ using System.Diagnostics.CodeAnalysis;
 namespace Splat;
 
 /// <summary>
-/// Detects properties about the current platform.
+/// Provides a mechanism for determining whether the current process is running within a graphical user interface (GUI)
+/// design environment.
 /// </summary>
+/// <remarks>Implementations of this interface can be used to adapt application behavior when running in design
+/// mode, such as within a visual designer or IDE. This is useful for components or controls that need to distinguish
+/// between design-time and run-time execution.</remarks>
 public interface IPlatformModeDetector
 {
     /// <summary>

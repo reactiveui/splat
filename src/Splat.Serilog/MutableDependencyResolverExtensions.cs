@@ -6,8 +6,13 @@
 namespace Splat.Serilog;
 
 /// <summary>
-/// Serilog specific extensions for the Mutable Dependency Resolver.
+/// Provides extension methods for registering Serilog as the logging implementation within Splat using the Wrapping
+/// Full Logger.
 /// </summary>
+/// <remarks>These extension methods allow you to configure Splat to use Serilog for logging by registering the
+/// appropriate logger implementation with an IMutableDependencyResolver. Serilog should be configured before invoking
+/// these methods. These helpers are intended to simplify integration of Serilog with Splat's logging
+/// infrastructure.</remarks>
 public static class MutableDependencyResolverExtensions
 {
     /// <summary>

@@ -10,13 +10,14 @@ using Ninject;
 namespace Splat.Ninject;
 
 /// <summary>
-/// Ninject implementation for <see cref="IMutableDependencyResolver"/>.
+/// Provides an implementation of the IDependencyResolver interface using the Ninject IoC container. Enables
+/// registration, resolution, and management of service dependencies within an application.
 /// </summary>
-/// <seealso cref="IMutableDependencyResolver" />
-/// <remarks>
-/// Initializes a new instance of the <see cref="NinjectDependencyResolver"/> class.
-/// </remarks>
-/// <param name="kernel">The kernel.</param>
+/// <remarks>This resolver integrates Ninject's binding and resolution capabilities with a standard dependency
+/// resolver interface, allowing for flexible service registration and retrieval. Thread safety is ensured for disposal
+/// operations, but individual service factories should be thread-safe if used in multi-threaded scenarios. Disposing
+/// the resolver will also dispose the underlying Ninject kernel, releasing all managed resources.</remarks>
+/// <param name="kernel">The Ninject kernel instance used to manage service bindings and resolve dependencies. Cannot be null.</param>
 public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 {
     private int _isDisposed;

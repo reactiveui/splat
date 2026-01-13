@@ -8,14 +8,15 @@ using System.ComponentModel;
 namespace Splat;
 
 /// <summary>
-/// A prefix logger which wraps a <see cref="ILogger"/>.
+/// Provides an ILogger implementation that prefixes all log messages with the name of a specified type, enabling easier
+/// identification of log sources.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="WrappingPrefixLogger"/> class.
-/// Placeholder.
-/// </remarks>
-/// <param name="inner">The <see cref="ILogger"/> to wrap in this class.</param>
-/// <param name="callingType">The type which will be calling this logger.</param>
+/// <remarks>This logger is useful for scenarios where log output should be clearly associated with a particular
+/// class or component. All log messages written through this logger are automatically prefixed with the name of the
+/// provided type, followed by a colon and a space. This can help distinguish log entries in applications with multiple
+/// components sharing a common logging infrastructure.</remarks>
+/// <param name="inner">The underlying ILogger instance to which log messages are forwarded. Cannot be null.</param>
+/// <param name="callingType">The type whose name is used as a prefix for all log messages. Cannot be null.</param>
 public class WrappingPrefixLogger(ILogger inner, Type callingType) : ILogger
 {
     private readonly ILogger _inner = inner;

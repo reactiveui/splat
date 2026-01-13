@@ -6,7 +6,7 @@
 namespace Splat;
 
 /// <summary>
-/// Provides service location for the Splat.Drawing packages.
+/// Provides methods for initializing platform-specific bitmap loader services for service location.
 /// </summary>
 public static class ServiceLocationDrawingInitialization
 {

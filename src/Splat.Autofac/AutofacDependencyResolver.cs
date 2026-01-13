@@ -11,8 +11,16 @@ using Autofac;
 namespace Splat.Autofac;
 
 /// <summary>
-/// Autofac implementation for <see cref="IDependencyResolver"/>.
+/// Provides an Autofac-based implementation of the IDependencyResolver interface for resolving services and managing
+/// registrations within ReactiveUI applications.
 /// </summary>
+/// <remarks>This resolver integrates Autofac's container and lifetime scope management with ReactiveUI's
+/// dependency resolution system. It is designed to support the initialization and service resolution needs of
+/// ReactiveUI, including contract-based and generic service lookups. Due to Autofac 5+ containers being immutable,
+/// registration and unregistration methods are intended for internal use during initialization and should not be used
+/// by end-users after the container is built. To override default registrations, register your services after calling
+/// InitializeReactiveUI. Thread safety is ensured for all public operations. Disposing the resolver will release
+/// Autofac container resources.</remarks>
 public class AutofacDependencyResolver : IDependencyResolver
 {
     private readonly object _lockObject = new();

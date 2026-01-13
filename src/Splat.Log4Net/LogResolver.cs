@@ -6,8 +6,10 @@
 namespace Splat.Log4Net;
 
 /// <summary>
-/// Caching resolver that creates Log4Net logger instances for types.
+/// Provides methods for resolving log4net logger instances for specified types.
 /// </summary>
+/// <remarks>This class uses an internal cache to improve performance when retrieving logger instances. It is
+/// intended for internal use and is not thread-safe for external modification.</remarks>
 internal static class LogResolver
 {
     private const int MaxCacheSize = 16;

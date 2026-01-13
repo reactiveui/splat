@@ -12,8 +12,11 @@ using System.Windows.Media.Imaging;
 namespace Splat
 {
     /// <summary>
-    /// A XAML based platform bitmap loader which will load our bitmaps for us.
+    /// Provides platform-specific functionality for loading and creating bitmap images.
     /// </summary>
+    /// <remarks>This class implements the IBitmapLoader interface to support loading bitmaps from streams and
+    /// resources, as well as creating new bitmap instances. It is intended for use in environments where
+    /// platform-specific bitmap handling is required.</remarks>
     public class PlatformBitmapLoader : IBitmapLoader
     {
         /// <inheritdoc />

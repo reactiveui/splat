@@ -6,7 +6,9 @@
 namespace Splat;
 
 /// <summary>
-/// Represents a dependency resolver, a service to look up global class
-/// instances or types.
+/// Represents a dependency resolver that supports both read-only and mutable operations, as well as resource cleanup.
 /// </summary>
+/// <remarks>IDependencyResolver combines the capabilities of IReadonlyDependencyResolver and
+/// IMutableDependencyResolver, allowing for both retrieval and registration of dependencies. Implementations should
+/// ensure proper disposal of resources when no longer needed by implementing IDisposable.</remarks>
 public interface IDependencyResolver : IReadonlyDependencyResolver, IMutableDependencyResolver, IDisposable;

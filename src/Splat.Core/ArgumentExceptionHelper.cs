@@ -9,18 +9,24 @@ using System.Runtime.CompilerServices;
 namespace Splat;
 
 /// <summary>
-/// Provides helper methods for argument validation.
-/// These methods serve as polyfills for ArgumentNullException.ThrowIfNull and related methods
-/// that are only available in newer .NET versions.
+/// Provides utility methods for validating method arguments and throwing appropriate exceptions when argument values do
+/// not meet expected conditions.
 /// </summary>
+/// <remarks>This static helper class centralizes common argument validation patterns, such as checking for null,
+/// empty, or out-of-range values, and throws standard .NET exceptions (such as ArgumentNullException,
+/// ArgumentException, and ArgumentOutOfRangeException) when validation fails. These methods are intended to simplify
+/// and standardize argument checking in internal code. All methods are intended for use within the assembly and are not
+/// designed for public API consumption.</remarks>
 [ExcludeFromCodeCoverage]
 internal static class ArgumentExceptionHelper
 {
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> if <paramref name="argument"/> is null.
+    /// Throws an exception if the specified argument is null.
     /// </summary>
-    /// <param name="argument">The reference type argument to validate as non-null.</param>
-    /// <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
+    /// <param name="argument">The object to validate for null. If this value is null, an exception is thrown.</param>
+    /// <param name="paramName">The name of the parameter to include in the exception message. This value is typically provided automatically
+    /// and can be omitted.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="argument"/> is null.</exception>
     public static void ThrowIfNull([NotNull] object? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
     {
         if (argument is null)
@@ -30,11 +36,14 @@ internal static class ArgumentExceptionHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> if <paramref name="argument"/> is null.
+    /// Throws an ArgumentNullException if the specified argument is null, using the provided message and parameter
+    /// name.
     /// </summary>
-    /// <param name="argument">The reference type argument to validate as non-null.</param>
-    /// <param name="message">The exception message.</param>
-    /// <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
+    /// <param name="argument">The object to validate as non-null. If this value is null, an exception is thrown.</param>
+    /// <param name="message">The message to include in the exception if the argument is null.</param>
+    /// <param name="paramName">The name of the parameter to include in the exception. This is automatically supplied by the compiler and should
+    /// not typically be specified manually.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="argument"/> is null.</exception>
     public static void ThrowIfNullWithMessage([NotNull] object? argument, string message, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
     {
         if (argument is null)
@@ -44,12 +53,13 @@ internal static class ArgumentExceptionHelper
     }
 
     /// <summary>
-    /// Throws an exception if <paramref name="argument"/> is null or empty.
+    /// Throws an exception if the specified string argument is null or an empty string.
     /// </summary>
-    /// <param name="argument">The string argument to validate as non-null and non-empty.</param>
-    /// <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="argument"/> is null.</exception>
-    /// <exception cref="ArgumentException"><paramref name="argument"/> is empty.</exception>
+    /// <param name="argument">The string argument to validate. Cannot be null or an empty string.</param>
+    /// <param name="paramName">The name of the parameter to include in the exception message. This value is typically provided automatically
+    /// and should not be set explicitly in most cases.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="argument"/> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="argument"/> is an empty string.</exception>
     public static void ThrowIfNullOrEmpty([NotNull] string? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
     {
         if (argument is null)
@@ -64,12 +74,13 @@ internal static class ArgumentExceptionHelper
     }
 
     /// <summary>
-    /// Throws an exception if <paramref name="argument"/> is null, empty, or consists only of white-space characters.
+    /// Throws an exception if the specified string argument is null, empty, or consists only of white-space characters.
     /// </summary>
-    /// <param name="argument">The string argument to validate.</param>
-    /// <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="argument"/> is null.</exception>
-    /// <exception cref="ArgumentException"><paramref name="argument"/> is empty or consists only of white-space characters.</exception>
+    /// <param name="argument">The string value to validate. Cannot be null, empty, or consist only of white-space characters.</param>
+    /// <param name="paramName">The name of the parameter to include in the exception message. This value is typically provided automatically
+    /// and should not be set manually.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="argument"/> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="argument"/> is an empty string or consists only of white-space characters.</exception>
     public static void ThrowIfNullOrWhiteSpace([NotNull] string? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
     {
         if (argument is null)
@@ -84,10 +95,11 @@ internal static class ArgumentExceptionHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is negative.
+    /// Throws an exception if the specified value is negative.
     /// </summary>
-    /// <param name="value">The argument to validate as non-negative.</param>
-    /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+    /// <param name="value">The integer value to validate. Must be zero or positive.</param>
+    /// <param name="paramName">The name of the parameter being validated. This value is used in the exception message. Optional.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is less than zero.</exception>
     public static void ThrowIfNegative(int value, [CallerArgumentExpression(nameof(value))] string? paramName = null)
     {
         if (value < 0)
@@ -97,11 +109,14 @@ internal static class ArgumentExceptionHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is less than or equal to <paramref name="other"/>.
+    /// Throws an exception if the specified value is less than or equal to the given comparison value.
     /// </summary>
-    /// <param name="value">The argument to validate.</param>
-    /// <param name="other">The value to compare with.</param>
-    /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+    /// <param name="value">The value to validate against the comparison value.</param>
+    /// <param name="other">The value to compare against. If <paramref name="value"/> is less than or equal to this value, an exception is
+    /// thrown.</param>
+    /// <param name="paramName">The name of the parameter representing the value being validated. This is used in the exception message.
+    /// Optional.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is less than or equal to <paramref name="other"/>.</exception>
     public static void ThrowIfLessThanOrEqual(int value, int other, [CallerArgumentExpression(nameof(value))] string? paramName = null)
     {
         if (value <= other)
@@ -111,11 +126,13 @@ internal static class ArgumentExceptionHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentException"/> if <paramref name="condition"/> is true.
+    /// Throws an ArgumentException if the specified condition is true.
     /// </summary>
-    /// <param name="condition">The condition to evaluate.</param>
-    /// <param name="message">The exception message.</param>
-    /// <param name="paramName">The name of the parameter with which <paramref name="condition"/> corresponds.</param>
+    /// <param name="condition">The condition to evaluate. If <see langword="true"/>, an exception is thrown.</param>
+    /// <param name="message">The message to include in the exception if the condition is true.</param>
+    /// <param name="paramName">The name of the parameter that caused the exception. This value is typically provided automatically by the
+    /// compiler.</param>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="condition"/> is <see langword="true"/>.</exception>
     public static void ThrowIf([DoesNotReturnIf(true)] bool condition, string message, [CallerArgumentExpression(nameof(condition))] string? paramName = null)
     {
         if (condition)
@@ -125,10 +142,12 @@ internal static class ArgumentExceptionHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is zero.
+    /// Throws an exception if the specified value is zero.
     /// </summary>
-    /// <param name="value">The argument to validate.</param>
-    /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+    /// <param name="value">The integer value to validate. Must not be zero.</param>
+    /// <param name="paramName">The name of the parameter being validated. This value is typically provided automatically and is used in the
+    /// exception message.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is zero.</exception>
     public static void ThrowIfZero(int value, [CallerArgumentExpression(nameof(value))] string? paramName = null)
     {
         if (value == 0)
@@ -138,10 +157,11 @@ internal static class ArgumentExceptionHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is negative or zero.
+    /// Throws an exception if the specified value is negative or zero.
     /// </summary>
-    /// <param name="value">The argument to validate.</param>
-    /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+    /// <param name="value">The integer value to validate. Must be greater than zero.</param>
+    /// <param name="paramName">The name of the parameter being validated. This value is used in the exception message. Optional.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is less than or equal to zero.</exception>
     public static void ThrowIfNegativeOrZero(int value, [CallerArgumentExpression(nameof(value))] string? paramName = null)
     {
         if (value <= 0)
@@ -151,11 +171,14 @@ internal static class ArgumentExceptionHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is equal to <paramref name="other"/>.
+    /// Throws an ArgumentOutOfRangeException if the specified value is equal to the provided comparison value.
     /// </summary>
-    /// <param name="value">The argument to validate.</param>
-    /// <param name="other">The value to compare with.</param>
-    /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+    /// <typeparam name="T">The type of the values to compare. Must implement <see cref="IEquatable{T}"/>.</typeparam>
+    /// <param name="value">The value to test for equality against the comparison value.</param>
+    /// <param name="other">The value to compare with the specified value.</param>
+    /// <param name="paramName">The name of the parameter that caused the exception. This value is typically provided automatically and should
+    /// not be set manually.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if value is equal to other.</exception>
     public static void ThrowIfEqual<T>(T value, T other, [CallerArgumentExpression(nameof(value))] string? paramName = null)
         where T : IEquatable<T>
     {
@@ -166,11 +189,14 @@ internal static class ArgumentExceptionHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is not equal to <paramref name="other"/>.
+    /// Throws an exception if the specified value is not equal to the expected value.
     /// </summary>
-    /// <param name="value">The argument to validate.</param>
-    /// <param name="other">The value to compare with.</param>
-    /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+    /// <typeparam name="T">The type of the values to compare. Must implement <see cref="IEquatable{T}"/>.</typeparam>
+    /// <param name="value">The value to validate for equality.</param>
+    /// <param name="other">The value to compare against.</param>
+    /// <param name="paramName">The name of the parameter that caused the exception. This value is typically provided automatically and should
+    /// not be set explicitly.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is not equal to <paramref name="other"/>.</exception>
     public static void ThrowIfNotEqual<T>(T value, T other, [CallerArgumentExpression(nameof(value))] string? paramName = null)
         where T : IEquatable<T>
     {
@@ -181,11 +207,14 @@ internal static class ArgumentExceptionHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is greater than <paramref name="other"/>.
+    /// Throws an ArgumentOutOfRangeException if the specified value is greater than the given comparison value.
     /// </summary>
-    /// <param name="value">The argument to validate.</param>
-    /// <param name="other">The value to compare with.</param>
-    /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+    /// <typeparam name="T">The type of the values to compare. Must implement <see cref="IComparable{T}"/>.</typeparam>
+    /// <param name="value">The value to validate against the comparison value.</param>
+    /// <param name="other">The value to compare against. If value is greater than this, an exception is thrown.</param>
+    /// <param name="paramName">The name of the parameter that caused the exception. This value is optional and is automatically provided by the
+    /// compiler.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if value is greater than other.</exception>
     public static void ThrowIfGreaterThan<T>(T value, T other, [CallerArgumentExpression(nameof(value))] string? paramName = null)
         where T : IComparable<T>
     {
@@ -196,11 +225,14 @@ internal static class ArgumentExceptionHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is greater than or equal to <paramref name="other"/>.
+    /// Throws an exception if the specified value is greater than or equal to a given comparison value.
     /// </summary>
-    /// <param name="value">The argument to validate.</param>
-    /// <param name="other">The value to compare with.</param>
-    /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+    /// <typeparam name="T">The type of the values to compare. Must implement <see cref="IComparable{T}"/>.</typeparam>
+    /// <param name="value">The value to validate against the comparison value.</param>
+    /// <param name="other">The value to compare with <paramref name="value"/>.</param>
+    /// <param name="paramName">The name of the parameter that caused the exception. This value is optional and is automatically provided by the
+    /// compiler.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is greater than or equal to <paramref name="other"/>.</exception>
     public static void ThrowIfGreaterThanOrEqual<T>(T value, T other, [CallerArgumentExpression(nameof(value))] string? paramName = null)
         where T : IComparable<T>
     {
@@ -211,11 +243,14 @@ internal static class ArgumentExceptionHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is less than <paramref name="other"/>.
+    /// Throws an exception if a specified value is less than a given minimum value.
     /// </summary>
-    /// <param name="value">The argument to validate.</param>
-    /// <param name="other">The value to compare with.</param>
-    /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+    /// <typeparam name="T">The type of the values to compare. Must implement <see cref="IComparable{T}"/>.</typeparam>
+    /// <param name="value">The value to validate against the minimum value.</param>
+    /// <param name="other">The minimum allowable value. If <paramref name="value"/> is less than this value, an exception is thrown.</param>
+    /// <param name="paramName">The name of the parameter that caused the exception. This value is typically provided automatically and should
+    /// not be set manually.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is less than <paramref name="other"/>.</exception>
     public static void ThrowIfLessThan<T>(T value, T other, [CallerArgumentExpression(nameof(value))] string? paramName = null)
         where T : IComparable<T>
     {
@@ -226,11 +261,14 @@ internal static class ArgumentExceptionHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is less than or equal to <paramref name="other"/>.
+    /// Throws an ArgumentOutOfRangeException if the specified value is less than or equal to the comparison value.
     /// </summary>
-    /// <param name="value">The argument to validate.</param>
-    /// <param name="other">The value to compare with.</param>
-    /// <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+    /// <typeparam name="T">The type of the values to compare. Must implement <see cref="IComparable{T}"/>.</typeparam>
+    /// <param name="value">The value to validate.</param>
+    /// <param name="other">The value to compare against.</param>
+    /// <param name="paramName">The name of the parameter representing the value being validated. This is automatically provided by the
+    /// compiler.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if value is less than or equal to other.</exception>
     public static void ThrowIfLessThanOrEqual<T>(T value, T other, [CallerArgumentExpression(nameof(value))] string? paramName = null)
         where T : IComparable<T>
     {
