@@ -6,12 +6,11 @@
 namespace Splat;
 
 /// <summary>
-/// A log manager which will generate the <see cref="IFullLogger"/> by using the specified Func.
+/// Provides an implementation of <see cref="ILogManager"/> that retrieves loggers using a supplied delegate.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="FuncLogManager"/> class.
-/// </remarks>
-/// <param name="getLoggerFunc">The function which will be used to generate the <see cref="IFullLogger"/>.</param>
+/// <remarks>Use this class to integrate custom logger retrieval logic, such as dependency injection or factory
+/// patterns, by supplying an appropriate delegate.</remarks>
+/// <param name="getLoggerFunc">A function that returns an <see cref="IFullLogger"/> instance for a given <see cref="Type"/>. Cannot be null.</param>
 public class FuncLogManager(Func<Type, IFullLogger> getLoggerFunc) : ILogManager
 {
     private readonly Func<Type, IFullLogger> _inner = getLoggerFunc;

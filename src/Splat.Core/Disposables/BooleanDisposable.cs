@@ -6,9 +6,11 @@
 namespace Splat;
 
 /// <summary>
-/// Represents a disposable resource that can be checked for disposal status.
-/// Based on the System.Reactive.Disposable class.
+/// Represents a disposable object that signals whether it has been disposed.
 /// </summary>
+/// <remarks>This type is typically used to provide a simple, thread-safe disposable flag for resource management
+/// scenarios. Once disposed, the state is observable through the IsDisposed property. This class is not intended for
+/// use with unmanaged resources.</remarks>
 internal sealed class BooleanDisposable() : IDisposable
 {
     private volatile bool _isDisposed;

@@ -9,10 +9,16 @@ using System.Diagnostics.CodeAnalysis;
 namespace Splat;
 
 /// <summary>
-/// A full logger which wraps all the possible logging methods available.
-/// Often not needed for your own loggers.
-/// A <see cref="WrappingFullLogger"/> will wrap simple loggers into a full logger.
+/// Defines a comprehensive logging interface that provides methods for emitting log messages at various severity
+/// levels, including Debug, Info, Warn, Error, and Fatal. Supports structured, formatted, and exception-based logging,
+/// as well as deferred message evaluation for performance optimization.
 /// </summary>
+/// <remarks>The IFullLogger interface extends IAllocationFreeLogger and is designed to support a wide range of
+/// logging scenarios, including structured logging, localization control, and efficient message generation. It provides
+/// overloads for logging messages with or without exceptions, with formatting arguments, and with deferred execution
+/// via delegates. Implementations should ensure that deferred message delegates are only evaluated if the corresponding
+/// log level is enabled, to avoid unnecessary computation. This interface is suitable for applications that require
+/// detailed and flexible logging capabilities across different log levels.</remarks>
 [SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Existing API")]
 public interface IFullLogger : IAllocationFreeLogger
 {

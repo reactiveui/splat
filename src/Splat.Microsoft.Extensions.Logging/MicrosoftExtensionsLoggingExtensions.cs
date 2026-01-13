@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace Splat.Microsoft.Extensions.Logging;
 
 /// <summary>
-/// Microsoft.Extensions.Logging specific extensions for the Mutable Dependency Resolver.
+/// Provides extension methods for integrating Splat logging with Microsoft.Extensions.Logging.
 /// </summary>
 public static class MicrosoftExtensionsLoggingExtensions
 {

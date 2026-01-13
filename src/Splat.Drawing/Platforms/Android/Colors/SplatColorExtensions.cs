@@ -8,7 +8,7 @@ using Android.Graphics;
 namespace Splat;
 
 /// <summary>
-/// Extension methods associated with the <see cref="SplatColor"/> struct.
+/// Provides extension methods for converting between <see cref="SplatColor"/> and the Android native Color type.
 /// </summary>
 public static class SplatColorExtensions
 {

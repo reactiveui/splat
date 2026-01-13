@@ -6,8 +6,13 @@
 namespace Splat.ApplicationPerformanceMonitoring;
 
 /// <summary>
-/// Default Feature Usage Tracking Session. Used for output when a dev chooses not to override.
+/// Provides a default implementation of a feature usage tracking session, enabling tracking and logging of feature
+/// usage events within an application.
 /// </summary>
+/// <remarks>This class creates a new tracking session for a specified feature and supports hierarchical tracking
+/// by allowing sub-feature sessions. It logs session start, exceptions, and session completion events for diagnostic
+/// purposes. Instances are intended to be disposed when tracking is complete to ensure proper logging of session
+/// end.</remarks>
 public sealed class DefaultFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>, IEnableLogger
 {
     /// <summary>

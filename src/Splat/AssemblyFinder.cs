@@ -8,14 +8,24 @@ using System.Reflection;
 
 namespace Splat;
 
+/// <summary>
+/// Provides methods for locating and instantiating types from assemblies at runtime using reflection.
+/// </summary>
+/// <remarks>This class is intended for internal use and supports dynamic type loading scenarios where types may
+/// not be statically referenced. Methods in this class may not be compatible with ahead-of-time (AOT) compilation
+/// environments due to their reliance on reflection.</remarks>
 internal static class AssemblyFinder
 {
     /// <summary>
-    /// Attempt to find the type based on the specified string.
+    /// Attempts to load a type by its fully qualified name and create an instance of it, returning the instance if
+    /// successful.
     /// </summary>
-    /// <typeparam name="T">The type to cast the value to if we find it.</typeparam>
-    /// <param name="fullTypeName">The name of the full type.</param>
-    /// <returns>The created object or the default value.</returns>
+    /// <remarks>This method uses reflection to dynamically load types from the current assembly or its
+    /// portable variant. It is not compatible with ahead-of-time (AOT) compilation and may not work in environments
+    /// where reflection is restricted. The method returns null if the type cannot be found or instantiated.</remarks>
+    /// <typeparam name="T">The type to instantiate. Must have a public parameterless constructor.</typeparam>
+    /// <param name="fullTypeName">The fully qualified name of the type to load, including its namespace.</param>
+    /// <returns>An instance of type T if the type is found and instantiated successfully; otherwise, null.</returns>
     [RequiresUnreferencedCode("This method uses reflection to dynamically load types and cannot be made AOT-compatible.")]
     public static T? AttemptToLoadType<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(string fullTypeName)
     {

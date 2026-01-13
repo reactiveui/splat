@@ -8,8 +8,11 @@ using System.Windows.Media;
 namespace Splat;
 
 /// <summary>
-/// Provides extension methods for interacting with colors, to and from the XAML colors.
+/// Provides extension methods for converting between System.Drawing.Color and XAML color types.
 /// </summary>
+/// <remarks>These methods enable interoperability between System.Drawing.Color and XAML color representations,
+/// such as Color and SolidColorBrush. They are useful when working with APIs or libraries that require different color
+/// types across platforms or frameworks.</remarks>
 public static class ColorExtensions
 {
     /// <summary>

@@ -10,19 +10,24 @@ using Splat.ApplicationPerformanceMonitoring;
 namespace Splat;
 
 /// <summary>
-/// Feature Usage Tracking integration for Raygun.
+/// Represents a feature usage tracking session that reports feature usage events to Raygun.
 /// </summary>
+/// <remarks>This class is used to track the usage of a specific feature within an application and send usage
+/// events to Raygun for monitoring and analytics. Each session is associated with a unique feature reference and can be
+/// used to create sub-feature tracking sessions. Instances of this class are intended to be short-lived and disposed of
+/// when tracking is complete.</remarks>
 public sealed class RaygunFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
 {
     private readonly RaygunClient _raygunClient;
     private readonly RaygunSettings _raygunSettings;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RaygunFeatureUsageTrackingSession"/> class.
+    /// Initializes a new instance of the <see cref="RaygunFeatureUsageTrackingSession"/> class for tracking usage of a specific.
+    /// feature.
     /// </summary>
-    /// <param name="featureName">Name of the feature.</param>
-    /// <param name="raygunClient">Raygun client instance.</param>
-    /// <param name="raygunSettings">Raygun settings instance.</param>
+    /// <param name="featureName">The name of the feature to be tracked. Cannot be null or empty.</param>
+    /// <param name="raygunClient">The RaygunClient instance used to send feature usage data. Cannot be null.</param>
+    /// <param name="raygunSettings">The RaygunSettings instance that configures feature usage tracking. Cannot be null.</param>
     public RaygunFeatureUsageTrackingSession(
         string featureName,
         RaygunClient raygunClient,

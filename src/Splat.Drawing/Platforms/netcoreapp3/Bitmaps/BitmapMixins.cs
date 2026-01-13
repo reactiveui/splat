@@ -9,8 +9,12 @@ using System.Windows.Media.Imaging;
 namespace Splat
 {
     /// <summary>
-    /// Extension methods to assist with dealing with Bitmaps.
+    /// Provides extension methods for converting between platform-native bitmap types and the cross-platform IBitmap
+    /// interface.
     /// </summary>
+    /// <remarks>These methods enable interoperability between WPF's BitmapSource and the IBitmap abstraction
+    /// used in cross-platform scenarios. They are intended to simplify bitmap conversions when working with image
+    /// processing or rendering code that targets multiple platforms.</remarks>
     public static class BitmapMixins
     {
         /// <summary>

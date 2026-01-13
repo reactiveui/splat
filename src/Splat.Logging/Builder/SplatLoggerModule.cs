@@ -6,12 +6,13 @@
 namespace Splat.Builder;
 
 /// <summary>
-/// Splat module for configuring the Splat Logger.
+/// Provides a dependency injection module that registers a default debug logger for use with Splat if no logger is
+/// already registered.
 /// </summary>
-/// <seealso cref="IModule" />
-/// <remarks>
-/// Initializes a new instance of the <see cref="SplatLoggerModule"/> class.
-/// </remarks>
+/// <remarks>This module is intended for use with dependency injection frameworks that support Splat's logging
+/// infrastructure. It ensures that an implementation of ILogger is available by registering a DebugLogger if one has
+/// not already been registered. This is typically used to enable logging in applications that use Splat without
+/// requiring explicit logger configuration.</remarks>
 public sealed class SplatLoggerModule() : IModule
 {
     /// <inheritdoc />

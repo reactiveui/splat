@@ -8,8 +8,11 @@ using Ninject;
 namespace Splat.Ninject;
 
 /// <summary>
-/// Extension methods for the Ninject adapter.
+/// Provides extension methods for integrating Ninject with Splat by configuring the dependency resolver.
 /// </summary>
+/// <remarks>This class enables the use of Ninject as the dependency resolver within Splat-based applications. It
+/// is intended to be used in application startup code to replace the default dependency resolution mechanism with one
+/// backed by a Ninject kernel.</remarks>
 public static class SplatNinjectExtensions
 {
     /// <summary>

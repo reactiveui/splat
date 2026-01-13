@@ -8,8 +8,13 @@ using System.Diagnostics.CodeAnalysis;
 namespace Splat;
 
 /// <summary>
-/// Detects various properties about a platform.
+/// Provides methods to detect whether the application is running in design mode, such as within a GUI design editor.
+/// Allows overriding the platform mode detection logic for customization or testing purposes.
 /// </summary>
+/// <remarks>This class is intended for use in scenarios where it is necessary to distinguish between design-time
+/// and run-time environments, such as when developing custom controls or components. The detection logic can be
+/// overridden to support different platforms or testing requirements. All members are thread-safe for typical usage
+/// patterns.</remarks>
 public static class PlatformModeDetector
 {
     private static bool? _cachedInDesignModeResult;
@@ -17,6 +22,8 @@ public static class PlatformModeDetector
     /// <summary>
     /// Initializes static members of the <see cref="PlatformModeDetector"/> class.
     /// </summary>
+    /// <remarks>This static constructor assigns a default implementation to the Current property. It is
+    /// invoked automatically before any static members are accessed or any instances are created.</remarks>
     static PlatformModeDetector() => Current = new DefaultPlatformModeDetector();
 
     /// <summary>

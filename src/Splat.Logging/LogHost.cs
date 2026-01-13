@@ -8,8 +8,13 @@ using System.Diagnostics.CodeAnalysis;
 namespace Splat;
 
 /// <summary>
-/// Contains helper methods to get access to the Default <see cref="IFullLogger"/>.
+/// Provides access to logging facilities and helpers for obtaining loggers associated with specific types or the
+/// application as a whole.
 /// </summary>
+/// <remarks>The LogHost class serves as a central entry point for acquiring loggers in applications that use
+/// dependency injection and logging abstractions. It enables consistent logger retrieval for classes implementing
+/// IEnableLogger and provides a default static logger for general use. All members are static and
+/// thread-safe.</remarks>
 public static class LogHost
 {
     /// <summary>

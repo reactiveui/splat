@@ -6,7 +6,7 @@
 namespace Splat;
 
 /// <summary>
-/// Specifies that compressed bitmap format.
+/// Specifies the available formats for storing a compressed bitmap image.
 /// </summary>
 public enum CompressedBitmapFormat
 {

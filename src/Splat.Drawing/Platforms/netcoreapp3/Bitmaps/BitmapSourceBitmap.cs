@@ -10,8 +10,10 @@ using System.Windows.Media.Imaging;
 namespace Splat
 {
     /// <summary>
-    /// A bitmap that wraps a <see cref="BitmapSourceBitmap"/>.
+    /// Provides an implementation of the IBitmap interface that wraps a WPF BitmapSource object.
     /// </summary>
+    /// <remarks>This class enables interoperability between platform-agnostic bitmap operations and WPF's
+    /// BitmapSource. It is intended for internal use within the application and is not thread-safe.</remarks>
     internal sealed class BitmapSourceBitmap : IBitmap
     {
         /// <summary>

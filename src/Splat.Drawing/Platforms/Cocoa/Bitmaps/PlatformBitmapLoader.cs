@@ -17,8 +17,12 @@ using UIImage = AppKit.NSImage;
 namespace Splat;
 
 /// <summary>
-/// A <see cref="IBitmapLoader"/> which will load Cocoa based bitmaps.
+/// Provides platform-specific functionality for loading and creating bitmap images.
 /// </summary>
+/// <remarks>This class implements the <see cref="IBitmapLoader"/> interface to support loading bitmaps from streams and
+/// resources on the current platform. It is intended for internal use by image handling components that require
+/// platform abstraction. Thread safety and performance characteristics may vary depending on the underlying platform
+/// implementation.</remarks>
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Existing API")]
 public class PlatformBitmapLoader : IBitmapLoader
 {

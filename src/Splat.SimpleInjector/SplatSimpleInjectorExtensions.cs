@@ -8,7 +8,7 @@ using SimpleInjector;
 namespace Splat.SimpleInjector;
 
 /// <summary>
-/// Extension methods for the SimpleInjector adapter.
+/// Provides extension methods for integrating Simple Injector with Splat's dependency resolution system.
 /// </summary>
 public static class SplatSimpleInjectorExtensions
 {

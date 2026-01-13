@@ -6,14 +6,18 @@
 namespace Splat.ApplicationPerformanceMonitoring;
 
 /// <summary>
-/// A manager which will generate a <see cref="IFeatureUsageTrackingSession"/> for the specified type.
+/// Defines a contract for creating feature usage tracking sessions for specified features.
 /// </summary>
 public interface IFeatureUsageTrackingManager
 {
     /// <summary>
-    /// Generate a <see cref="IFeatureUsageTrackingSession"/> for the specified type.
+    /// Creates a new session for tracking usage of the specified feature.
     /// </summary>
-    /// <param name="featureName">The name of the feature.</param>
-    /// <returns>The <see cref="IFeatureUsageTrackingSession"/>.</returns>
+    /// <remarks>Use the returned session to record feature usage events. Disposing the session typically
+    /// finalizes and submits the usage data. Multiple sessions can be created for different features as
+    /// needed.</remarks>
+    /// <param name="featureName">The name of the feature to track. Cannot be null or empty.</param>
+    /// <returns>An object representing the feature usage tracking session. The caller is responsible for disposing the session
+    /// when tracking is complete.</returns>
     IFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName);
 }

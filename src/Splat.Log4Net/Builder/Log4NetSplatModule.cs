@@ -8,11 +8,11 @@ using Splat.Log4Net;
 namespace Splat.Builder;
 
 /// <summary>
-/// Splat module for configuring the Log4Net logger.
+/// Provides a Splat module that configures logging to use log4net with full logger wrapping.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="Log4NetSplatModule"/> class.
-/// </remarks>
+/// <remarks>This module is intended for use with Splat's dependency resolver infrastructure. Register this module
+/// to enable log4net-based logging throughout your application. This module is typically used in applications that
+/// require integration between Splat and log4net for consistent logging behavior.</remarks>
 public sealed class Log4NetSplatModule() : IModule
 {
     /// <inheritdoc />

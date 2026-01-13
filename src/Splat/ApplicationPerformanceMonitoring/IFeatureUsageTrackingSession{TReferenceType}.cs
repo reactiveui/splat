@@ -6,9 +6,11 @@
 namespace Splat.ApplicationPerformanceMonitoring;
 
 /// <summary>
-/// Generic interface for a Feature Usage Tracking Session.
+/// Defines a contract for a feature usage tracking session that exposes unique references for the current session and
+/// its parent session.
 /// </summary>
-/// <typeparam name="TReferenceType">The Type for the Unique Tracking References.</typeparam>
+/// <typeparam name="TReferenceType">The type of the unique reference used to identify the feature usage tracking session and its parent. This type must
+/// be reference type compatible.</typeparam>
 public interface IFeatureUsageTrackingSession<out TReferenceType> : IFeatureUsageTrackingSession
 {
     /// <summary>

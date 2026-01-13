@@ -11,12 +11,12 @@ using Splat.ApplicationPerformanceMonitoring;
 namespace Splat;
 
 /// <summary>
-/// View Tracking integration for Application Insights.
+/// Provides view tracking functionality that records page view navigation events using Application Insights telemetry.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="ApplicationInsightsViewTracking"/> class.
-/// </remarks>
-/// <param name="telemetryClient">The Application Insights telemetry client instance to use.</param>
+/// <remarks>This class is typically used to integrate view navigation tracking into applications that utilize
+/// Application Insights for telemetry. It implements the IViewTracking interface to standardize view tracking across
+/// different telemetry providers.</remarks>
+/// <param name="telemetryClient">The Application Insights telemetry client used to send page view tracking data. Cannot be null.</param>
 public sealed class ApplicationInsightsViewTracking(TelemetryClient telemetryClient) : IViewTracking
 {
     /// <summary>

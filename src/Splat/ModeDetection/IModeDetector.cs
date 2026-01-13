@@ -11,8 +11,12 @@ namespace Splat;
 public interface IModeDetector
 {
     /// <summary>
-    /// Gets a value indicating whether the current library or application is running through a unit test.
+    /// Determines whether the current process is running within a recognized unit test runner environment.
     /// </summary>
-    /// <returns>If we are currently running in a unit test.</returns>
+    /// <remarks>This method can be used to alter behavior when running under test conditions, such as
+    /// skipping certain operations or enabling test-specific logic. The result may be null if the environment cannot be
+    /// reliably detected, so callers should account for this possibility.</remarks>
+    /// <returns>true if the process is running under a supported unit test runner; false if it is not; or null if the detection
+    /// could not be performed.</returns>
     bool? InUnitTestRunner();
 }

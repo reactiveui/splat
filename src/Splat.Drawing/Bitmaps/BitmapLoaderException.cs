@@ -6,8 +6,11 @@
 namespace Splat;
 
 /// <summary>
-/// A exception that occurs when there is a problem using or retrieving the <see cref="IBitmapLoader"/>.
+/// Represents errors that occur during bitmap loading operations.
 /// </summary>
+/// <remarks>This exception is thrown when a bitmap cannot be loaded due to invalid data, unsupported formats, or
+/// other failures encountered during the loading process. Catch this exception to handle bitmap loading errors
+/// specifically, rather than general exceptions.</remarks>
 [Serializable]
 public class BitmapLoaderException : Exception
 {

@@ -6,11 +6,10 @@
 namespace Splat.Builder;
 
 /// <summary>
-/// Splat module for configuring the Splat Log Manager.
+/// Provides a dependency injection module that registers a default implementation of the ILogManager interface using
+/// the specified dependency resolver context.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="SplatLogManagerModule"/> class.
-/// </remarks>
+/// <param name="current">The dependency resolver used to resolve dependencies when creating the default ILogManager instance. Cannot be null.</param>
 public sealed class SplatLogManagerModule(IReadonlyDependencyResolver current) : IModule
 {
     /// <inheritdoc />

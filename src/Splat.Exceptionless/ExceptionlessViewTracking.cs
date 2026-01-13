@@ -10,7 +10,7 @@ using Splat.ApplicationPerformanceMonitoring;
 namespace Splat;
 
 /// <summary>
-/// Exceptionless View Tracking integration.
+/// Provides view tracking functionality by recording view navigation events using an Exceptionless client.
 /// </summary>
 public sealed class ExceptionlessViewTracking : IViewTracking
 {

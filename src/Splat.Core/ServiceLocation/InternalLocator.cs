@@ -5,6 +5,14 @@
 
 namespace Splat;
 
+/// <summary>
+/// Provides an internal mechanism for managing dependency resolver instances and notifications within the application.
+/// Supports registering callbacks for resolver changes and allows controlled suppression of change notifications.
+/// </summary>
+/// <remarks>This class is intended for internal use to coordinate dependency resolution and notification logic.
+/// It enables libraries to react to resolver changes and supports isolation for testing scenarios. Thread safety is
+/// maintained for callback registration and notification suppression. Dispose the instance to release associated
+/// resources when no longer needed.</remarks>
 internal class InternalLocator : IDisposable
 {
     // this has been done to have a default single instance. but allow isolation in unit tests.B
@@ -13,6 +21,9 @@ internal class InternalLocator : IDisposable
     private volatile int _resolverChangedNotificationSuspendCount;
     private bool _disposedValue;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="InternalLocator"/> class.
+    /// </summary>
     internal InternalLocator()
     {
         Internal = new InstanceGenericFirstDependencyResolver();
@@ -45,6 +56,9 @@ internal class InternalLocator : IDisposable
     /// </summary>
     public IMutableDependencyResolver CurrentMutable => Internal;
 
+    /// <summary>
+    /// Gets or sets the dependency resolver used internally by the component.
+    /// </summary>
     internal IDependencyResolver Internal { get; set; }
 
     /// <summary>
@@ -135,6 +149,13 @@ internal class InternalLocator : IDisposable
     /// <returns>A value indicating whether the notifications are happening.</returns>
     public bool AreResolverCallbackChangedNotificationsEnabled() => _resolverChangedNotificationSuspendCount == 0;
 
+    /// <summary>
+    /// Releases the unmanaged resources used by the object and optionally releases the managed resources.
+    /// </summary>
+    /// <remarks>This method is called by public Dispose methods and the finalizer. When disposing is true,
+    /// this method releases all resources held by managed objects. When disposing is false, only unmanaged resources
+    /// are released. Override this method to release additional resources in a derived class.</remarks>
+    /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
     protected virtual void Dispose(bool disposing)
     {
         if (!_disposedValue)

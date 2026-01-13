@@ -8,8 +8,11 @@ using System.Windows.Media;
 namespace Splat;
 
 /// <summary>
-/// Extension methods associated with the <see cref="SplatColor"/> struct.
+/// Provides extension methods for converting between SplatColor and XAML color types such as Color and SolidColorBrush.
 /// </summary>
+/// <remarks>These methods enable seamless interoperability between SplatColor and XAML color representations,
+/// allowing for easy conversion when working with different UI frameworks. All methods are static and can be called as
+/// extension methods on the relevant types.</remarks>
 public static class SplatColorExtensions
 {
     /// <summary>

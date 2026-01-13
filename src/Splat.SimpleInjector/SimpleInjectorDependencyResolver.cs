@@ -10,9 +10,15 @@ using SimpleInjector;
 namespace Splat.SimpleInjector;
 
 /// <summary>
-/// Simple Injector implementation for <see cref="IMutableDependencyResolver"/>.
+/// Provides an implementation of the IDependencyResolver interface using a SimpleInjector container for dependency
+/// resolution.
 /// </summary>
-/// <seealso cref="IDependencyResolver" />
+/// <remarks>This resolver adapts a SimpleInjector Container to the IDependencyResolver abstraction, enabling
+/// integration with frameworks or components that expect this interface. Contract-based resolution is not natively
+/// supported by SimpleInjector; contract parameters are ignored and treated as standard resolution requests. Service
+/// unregistration and registration callbacks are not supported, as SimpleInjector does not provide mechanisms for
+/// removing registrations or observing registration events after initial configuration. The resolver manages the
+/// lifetime of the underlying container and disposes it when the resolver is disposed.</remarks>
 public class SimpleInjectorDependencyResolver : IDependencyResolver
 {
     private readonly Container _container;

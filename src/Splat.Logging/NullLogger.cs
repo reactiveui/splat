@@ -8,8 +8,11 @@ using System.ComponentModel;
 namespace Splat;
 
 /// <summary>
-/// A logger which will never emit any value.
+/// Provides a logger implementation that performs no logging operations.
 /// </summary>
+/// <remarks>Use this class when logging is optional or should be disabled. All logging methods are no-ops, and no
+/// messages are recorded or output. This can be useful for testing or to suppress logging in production environments
+/// where logging is not required.</remarks>
 public class NullLogger : ILogger
 {
     /// <inheritdoc />

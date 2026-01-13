@@ -6,35 +6,41 @@
 namespace Splat;
 
 /// <summary>
-/// A Locator which will host the container for dependency injection based operations.
+/// Provides access to the application's dependency resolver and related functionality for service location and
+/// registration.
 /// This is now a wrapper around <see cref="AppLocator"/> which is the actual implementation.
-/// The static constructor also ensures that Splat registrations are done which is the key addition compared with AppLocator.
 /// </summary>
+/// <remarks>The Locator class exposes static members to retrieve or set the application's dependency resolver, as
+/// well as to register callbacks for resolver changes. Most applications should use the default resolver provided by
+/// this class. Advanced scenarios, such as library development or custom dependency resolution, may require interacting
+/// with the mutable resolver or registering for resolver change notifications.</remarks>
 public static class Locator
 {
     static Locator() => AppLocator.ReInit = resolver => resolver.InitializeSplat();
 
     /// <summary>
-    /// Gets the read only dependency resolver. This class is used throughout
-    /// libraries for many internal operations as well as for general use
-    /// by applications. If this isn't assigned on startup, a default, highly
-    /// capable implementation will be used, and it is advised for most people
-    /// to simply use the default implementation.
+    /// Gets the current dependency resolver used by the application.
     /// </summary>
-    /// <value>The dependency resolver.</value>
+    /// <remarks>Use this property to resolve application services and dependencies at runtime. The value is
+    /// typically set during application startup and remains constant for the application's lifetime.
+    /// If this isn't assigned on startup, a default, highly
+    /// capable implementation will be used, and it is advised for most people to simply use the default implementation.</remarks>
     public static IReadonlyDependencyResolver Current => AppLocator.Current;
 
     /// <summary>
-    /// Gets the mutable dependency resolver.
-    /// The default resolver is also a mutable resolver, so this will be non-null.
-    /// Use this to register new types on startup if you are using the default resolver.
+    /// Gets the current mutable dependency resolver for the application.
     /// </summary>
+    /// <remarks>Use this property to register or override service implementations at runtime. Changes made to
+    /// the resolver affect dependency resolution for the lifetime of the application. This property is typically used
+    /// during application startup or for testing scenarios where services need to be replaced.</remarks>
     public static IMutableDependencyResolver CurrentMutable => AppLocator.CurrentMutable;
 
     /// <summary>
-    /// Allows setting the dependency resolver.
+    /// Sets the dependency resolver to be used by the application for resolving service dependencies.
     /// </summary>
-    /// <param name="dependencyResolver">The dependency resolver to set.</param>
+    /// <remarks>Call this method during application startup to configure the global dependency resolution
+    /// strategy. Subsequent service resolutions will use the specified resolver until it is replaced.</remarks>
+    /// <param name="dependencyResolver">The dependency resolver instance that provides service resolution for the application. Cannot be null.</param>
     public static void SetLocator(IDependencyResolver dependencyResolver) => AppLocator.SetLocator(dependencyResolver);
 
     /// <summary>
@@ -63,16 +69,17 @@ public static class Locator
     }
 
     /// <summary>
-    /// This method will prevent resolver changed notifications from happening until
-    /// the returned <see cref="IDisposable"/> is disposed.
+    /// Temporarily suppresses notifications for resolver callback changes until the returned object is disposed.
     /// </summary>
-    /// <returns>A disposable which when disposed will indicate the change
-    /// notification is no longer needed.</returns>
+    /// <remarks>Use this method to prevent resolver callback change notifications from being raised during a
+    /// batch of operations. Notifications will resume automatically when the returned object is disposed. This method
+    /// is thread-safe.</remarks>
+    /// <returns>An <see cref="IDisposable"/> that, when disposed, restores resolver callback change notifications.</returns>
     public static IDisposable SuppressResolverCallbackChangedNotifications() => AppLocator.SuppressResolverCallbackChangedNotifications();
 
     /// <summary>
-    /// Indicates if the we are notifying external classes of updates to the resolver being changed.
+    /// Determines whether notifications are enabled when the resolver callback changes.
     /// </summary>
-    /// <returns>A value indicating whether the notifications are happening.</returns>
+    /// <returns>true if resolver callback changed notifications are enabled; otherwise, false.</returns>
     public static bool AreResolverCallbackChangedNotificationsEnabled() => AppLocator.AreResolverCallbackChangedNotificationsEnabled();
 }

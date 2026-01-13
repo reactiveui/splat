@@ -6,7 +6,7 @@
 namespace Splat.Log4Net;
 
 /// <summary>
-/// Log4net specific extensions for the Mutable Dependency Resolver.
+/// Provides extension methods for registering Log4Net integration with Splat using the wrapping full logger pattern.
 /// </summary>
 public static class MutableDependencyResolverExtensions
 {

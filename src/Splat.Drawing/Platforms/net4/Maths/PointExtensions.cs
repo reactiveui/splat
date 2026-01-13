@@ -8,8 +8,11 @@ using System.Windows;
 namespace Splat;
 
 /// <summary>
-/// A set of extension methods which will convert between System.Drawing point's and a native point classes.
+/// Provides extension methods for converting between <see cref="System.Drawing.Point"/> types and the Android native Point type.
 /// </summary>
+/// <remarks>These methods enable seamless conversion between <see cref="System.Drawing.Point"/>, <see cref="System.Drawing.PointF"/>, and the
+/// Android native Point structure. They are intended to simplify interoperability when working with graphics or UI code
+/// that uses both .NET and Android types.</remarks>
 public static class PointExtensions
 {
     /// <summary>

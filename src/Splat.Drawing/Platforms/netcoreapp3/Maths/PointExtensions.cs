@@ -8,7 +8,7 @@ using System.Windows;
 namespace Splat
 {
     /// <summary>
-    /// A set of extension methods which will convert between System.Drawing point's and a native point classes.
+    /// Provides extension methods for converting between System.Drawing point types and Android native Point types.
     /// </summary>
     public static class PointExtensions
     {

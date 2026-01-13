@@ -12,8 +12,11 @@ using AppKit;
 namespace Splat;
 
 /// <summary>
-/// Extension methods associated with the <see cref="SplatColor"/> struct.
+/// Provides extension methods for converting between <see cref="SplatColor"/> and native Cocoa color types.
 /// </summary>
+/// <remarks>These methods enable seamless interoperability between SplatColor and platform-specific color
+/// representations, such as UIColor on iOS or NSColor on macOS. Use these extensions to convert colors when working
+/// with native UI frameworks.</remarks>
 public static class SplatColorExtensions
 {
 #if UIKIT
