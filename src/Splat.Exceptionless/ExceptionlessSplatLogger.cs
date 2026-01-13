@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -11,8 +11,13 @@ using Exceptionless;
 namespace Splat.Exceptionless;
 
 /// <summary>
-/// Splat logger implementation that wraps Exceptionless functionality.
+/// Provides an implementation of the ILogger interface that writes log messages to Exceptionless using the specified
+/// source type and client configuration.
 /// </summary>
+/// <remarks>This logger maps Splat log levels to Exceptionless log levels and respects the current Exceptionless
+/// configuration for log filtering. The effective log level is determined from the Exceptionless client settings and is
+/// updated automatically when the configuration changes. Instances of this logger are typically created per source type
+/// to provide contextual logging.</remarks>
 [DebuggerDisplay("Name={_sourceType} Level={Level}")]
 public sealed class ExceptionlessSplatLogger : ILogger
 {

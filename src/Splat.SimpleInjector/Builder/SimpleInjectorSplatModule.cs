@@ -1,4 +1,4 @@
-// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -10,9 +10,12 @@ using Splat.SimpleInjector;
 namespace Splat.Builder;
 
 /// <summary>
-/// Splat module for configuring the SimpleInjector dependency resolver.
+/// Provides a module for integrating SimpleInjector with Splat's dependency resolver infrastructure.
 /// </summary>
-/// <seealso cref="IModule" />
+/// <remarks>This module enables the use of a SimpleInjector container as the backing implementation for Splat's
+/// dependency resolution. It is typically used to configure dependency injection in applications that leverage both
+/// SimpleInjector and Splat. Thread safety and container lifetime management are determined by the provided
+/// SimpleInjector container.</remarks>
 public sealed class SimpleInjectorSplatModule : IModule
 {
     private readonly Container _container;

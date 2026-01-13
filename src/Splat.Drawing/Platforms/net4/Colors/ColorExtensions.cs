@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -8,8 +8,12 @@ using System.Windows.Media;
 namespace Splat;
 
 /// <summary>
-/// Provides extension methods for interacting with colors, to and from the XAML colors.
+/// Provides extension methods for converting between System.Drawing.Color and XAML color types, including Color and
+/// SolidColorBrush.
 /// </summary>
+/// <remarks>These methods facilitate interoperability between System.Drawing and XAML-based color
+/// representations, enabling seamless conversion when working with graphics or UI elements across different
+/// frameworks.</remarks>
 public static class ColorExtensions
 {
     /// <summary>

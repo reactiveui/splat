@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -8,9 +8,12 @@ using System.Diagnostics.CodeAnalysis;
 namespace Splat;
 
 /// <summary>
-/// This class loads and creates bitmap resources in a platform-independent.
-/// way.
+/// Provides access to the current bitmap loader used for loading bitmap images within the application.
 /// </summary>
+/// <remarks>The bitmap loader is responsible for resolving and loading bitmap resources. The default
+/// implementation is obtained from the application's dependency resolver. This class is typically used to configure or
+/// retrieve the global bitmap loader instance. Changing the current loader affects all subsequent bitmap loading
+/// operations that rely on this static context.</remarks>
 public static class BitmapLoader
 {
     // TODO: This needs to be improved once we move the "Detect in Unit Test
@@ -18,9 +21,12 @@ public static class BitmapLoader
     private static IBitmapLoader? _current = AppLocator.Current.GetService<IBitmapLoader>();
 
     /// <summary>
-    /// Gets or sets the current bitmap loader.
+    /// Gets or sets the current default bitmap loader instance used by the application.
     /// </summary>
-    /// <exception cref="BitmapLoaderException">When there is no exception loader having been found.</exception>
+    /// <remarks>This property provides access to the global bitmap loader implementation. Setting this
+    /// property replaces the current default loader for all subsequent bitmap loading operations. Typically, this is
+    /// configured during application startup and should not be changed at runtime unless reconfiguring the dependency
+    /// resolver.</remarks>
     [SuppressMessage("Design", "CA1065: Do not raise exceptions in properties", Justification = "Very rare scenario")]
     public static IBitmapLoader Current
     {
@@ -37,19 +43,22 @@ public static class BitmapLoader
     }
 
     /// <summary>
-    /// Gets the current state for test isolation. Used by test scopes.
+    /// Gets the current bitmap loader state, if available. Used by test scopes.
     /// </summary>
-    /// <returns>The current bitmap loader.</returns>
+    /// <returns>The current <see cref="IBitmapLoader"/> instance representing the loader state, or <see langword="null"/> if no
+    /// state is set.</returns>
     internal static IBitmapLoader? GetState() => _current;
 
     /// <summary>
-    /// Restores the state for test isolation. Used by test scopes.
+    /// Restores the current bitmap loader state to the specified value. Used by test scopes.
     /// </summary>
-    /// <param name="state">The state to restore.</param>
+    /// <param name="state">The bitmap loader state to restore. Can be null to clear the current state.</param>
     internal static void RestoreState(IBitmapLoader? state) => _current = state;
 
     /// <summary>
-    /// Resets the state to default for test isolation. Used by test scopes.
+    /// Resets the internal bitmap loader state to use the current application service instance. Used by test scopes.
     /// </summary>
+    /// <remarks>This method is intended for internal use to reinitialize the bitmap loader, typically after
+    /// application service changes. It should not be called directly by application code.</remarks>
     internal static void ResetState() => _current = AppLocator.Current.GetService<IBitmapLoader>();
 }

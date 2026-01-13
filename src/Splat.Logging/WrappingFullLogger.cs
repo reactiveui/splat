@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -9,8 +9,14 @@ using System.Reflection;
 namespace Splat;
 
 /// <summary>
-/// A full logger which wraps a <see cref="ILogger"/>.
+/// Provides a logger implementation that wraps an existing <see cref="ILogger"/> and exposes the full logging API
+/// defined by <see cref="IFullLogger"/>. Supports logging messages at various severity levels with formatting and
+/// exception support.
 /// </summary>
+/// <remarks>This class delegates all logging operations to the wrapped <see cref="ILogger"/> instance, adding
+/// convenience overloads and formatting capabilities as defined by <see cref="IFullLogger"/>. It enables
+/// allocation-free logging patterns and supports structured and formatted messages. Thread safety and performance
+/// characteristics depend on the underlying <see cref="ILogger"/> implementation.</remarks>
 public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
 {
     private readonly ILogger _inner;

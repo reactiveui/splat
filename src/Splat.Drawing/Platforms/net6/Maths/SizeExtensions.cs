@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -8,8 +8,11 @@ using System.Windows;
 namespace Splat;
 
 /// <summary>
-/// A set of extension methods which will convert between System.Drawing size's and a native size classes.
+/// Provides extension methods for converting between <see cref="System.Drawing.Size"/>, <see
+/// cref="System.Drawing.SizeF"/>, and the Android native <see cref="Size"/> structure.
 /// </summary>
+/// <remarks>These methods simplify interoperability between .NET drawing types and Android's native size
+/// representation. Use these extensions to convert size values when working across different graphics APIs.</remarks>
 public static class SizeExtensions
 {
     /// <summary>

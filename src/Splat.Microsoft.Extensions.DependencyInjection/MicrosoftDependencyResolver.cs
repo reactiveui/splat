@@ -1,4 +1,4 @@
-// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -11,9 +11,15 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Splat.Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
-/// Microsoft DI implementation for <see cref="IDependencyResolver"/>.
+/// Provides an implementation of the dependency resolver pattern using Microsoft.Extensions.DependencyInjection.
+/// Supports registration, resolution, and management of services with optional contract-based (keyed) registrations.
 /// </summary>
-/// <seealso cref="IDependencyResolver" />
+/// <remarks>This class enables integration with the Microsoft dependency injection container, allowing for both
+/// programmatic and externally provided service collections or providers. Once the container is built from an
+/// IServiceProvider, further modifications are not permitted. Thread safety is ensured for all registration and
+/// resolution operations. Contract-based (keyed) registrations are supported if the underlying service provider
+/// implements IKeyedServiceProvider. This resolver is suitable for scenarios requiring dynamic service registration and
+/// resolution, as well as integration with existing Microsoft.Extensions.DependencyInjection infrastructure.</remarks>
 public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
 {
     private const string ImmutableExceptionMessage = "This container has already been built and cannot be modified.";

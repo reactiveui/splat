@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -8,8 +8,13 @@ using System.Runtime.Serialization;
 namespace Splat;
 
 /// <summary>
-/// A platform independent color structure.
+/// Represents an ARGB color value with support for known, named, and system colors, as well as utility methods for
+/// color manipulation and comparison.
 /// </summary>
+/// <remarks>The SplatColor struct provides methods to create colors from ARGB values, known color names, or
+/// predefined color constants. It supports comparison, conversion to and from known colors, and exposes properties for
+/// individual color components. SplatColor is immutable and suitable for use in graphics, UI, and serialization
+/// scenarios. Thread safety is guaranteed for read operations, as the struct is immutable after creation.</remarks>
 [DataContract]
 public partial struct SplatColor : IEquatable<SplatColor>
 {
@@ -24,6 +29,14 @@ public partial struct SplatColor : IEquatable<SplatColor>
     // however it's bad to keep a string (reference) in a struct
     private string _name;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SplatColor"/> struct with the specified color value, state, known color
+    /// identifier, and name.
+    /// </summary>
+    /// <param name="value">The packed ARGB color value represented as an unsigned integer.</param>
+    /// <param name="state">A value indicating the state or flags associated with the color.</param>
+    /// <param name="knownColor">An identifier for a known color, or a value indicating that the color is not a known color.</param>
+    /// <param name="name">The name of the color. Can be null or empty if the color does not have a name.</param>
     internal SplatColor(uint value, short state, short knownColor, string name)
     {
         Value = value;
@@ -32,9 +45,20 @@ public partial struct SplatColor : IEquatable<SplatColor>
         _name = name;
     }
 
-    // The specs also indicate that all three of these properties are true
-    // if created with FromKnownColor or FromNamedColor, false otherwise (FromARGB).
-    // Per Microsoft and ECMA specs these variables are set by which constructor is used, not by their values.
+    /// <summary>
+    /// Specifies the type or characteristics of a color value.
+    /// </summary>
+    /// <remarks><para>
+    /// This enumeration supports bitwise combination of its values to represent multiple color
+    /// characteristics. It is typically used to indicate how a color is defined or categorized, such as whether it is a
+    /// known color, an ARGB value, a named color, or a system color.
+    /// </para>
+    /// <para>
+    /// The specs also indicate that all three of these properties are true
+    /// if created with FromKnownColor or FromNamedColor, false otherwise (FromARGB).
+    /// Per Microsoft and ECMA specs these variables are set by which constructor is used, not by their values.
+    /// </para>
+    /// </remarks>
     [Flags]
     internal enum ColorType : short
     {
@@ -46,7 +70,7 @@ public partial struct SplatColor : IEquatable<SplatColor>
     }
 
     /// <summary>
-    /// Gets a full empty which is fully transparent.
+    /// Gets an instance of SplatColor that represents an uninitialized or empty color value (transparent).
     /// </summary>
     public static SplatColor Empty { get; }
 

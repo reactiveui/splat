@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -10,8 +10,12 @@ using Microsoft.Extensions.Logging;
 namespace Splat.Microsoft.Extensions.Logging;
 
 /// <summary>
-/// Splat logger implementation that wraps Microsoft.Extensions.Logging functionality.
+/// Provides an adapter that wraps a Microsoft.Extensions.Logging.ILogger instance for use with the ILogger interface.
 /// </summary>
+/// <remarks>This class enables integration between components expecting an ILogger implementation and the
+/// Microsoft.Extensions.Logging infrastructure. It delegates all logging operations to the underlying
+/// Microsoft.Extensions.Logging.ILogger instance supplied at construction. Thread safety and log level filtering are
+/// determined by the behavior of the wrapped logger.</remarks>
 [DebuggerDisplay("Name={_inner.GetType()} Level={Level}")]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1848:Use the LoggerMessage delegates", Justification = "API limitation we can't use structured. TODO fix")]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2254:Template should be a static expression", Justification = "API limitation we can't use structured. TODO fix")]

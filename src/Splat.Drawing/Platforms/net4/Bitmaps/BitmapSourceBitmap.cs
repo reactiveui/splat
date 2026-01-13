@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -9,12 +9,12 @@ using System.Windows.Media.Imaging;
 namespace Splat;
 
 /// <summary>
-/// A bitmap that wraps a <see cref="BitmapSourceBitmap"/>.
+/// Provides an implementation of the IBitmap interface that wraps a WPF BitmapSource.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="BitmapSourceBitmap"/> class.
-/// </remarks>
-/// <param name="bitmap">The platform native bitmap we are wrapping.</param>
+/// <remarks>This class enables interoperability with WPF imaging APIs by exposing a BitmapSource as an IBitmap.
+/// The wrapped BitmapSource can be accessed via the Inner property. After disposal, the Inner property is set to null
+/// and the instance should not be used.</remarks>
+/// <param name="bitmap">The platform-specific BitmapSource to wrap. Cannot be null.</param>
 internal sealed class BitmapSourceBitmap(BitmapSource bitmap) : IBitmap
 {
     /// <inheritdoc />

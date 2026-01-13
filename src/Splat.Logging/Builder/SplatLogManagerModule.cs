@@ -1,4 +1,4 @@
-// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -6,11 +6,10 @@
 namespace Splat.Builder;
 
 /// <summary>
-/// Splat module for configuring the Splat Log Manager.
+/// Provides a dependency injection module that registers a default implementation of the ILogManager interface using
+/// the specified dependency resolver context.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="SplatLogManagerModule"/> class.
-/// </remarks>
+/// <param name="current">The dependency resolver used to resolve dependencies when creating the default ILogManager instance. Cannot be null.</param>
 public sealed class SplatLogManagerModule(IReadonlyDependencyResolver current) : IModule
 {
     /// <inheritdoc />

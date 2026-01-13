@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -8,7 +8,7 @@ using Android.Graphics;
 namespace Splat;
 
 /// <summary>
-/// Extension methods associated with the <see cref="SplatColor"/> struct.
+/// Provides extension methods for converting between <see cref="SplatColor"/> and the Android native Color type.
 /// </summary>
 public static class SplatColorExtensions
 {

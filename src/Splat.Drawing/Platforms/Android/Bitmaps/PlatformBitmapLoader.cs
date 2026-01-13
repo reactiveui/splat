@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -10,8 +10,13 @@ using System.Text;
 namespace Splat;
 
 /// <summary>
-/// A android based platform bitmap loader which will load our bitmaps for us.
+/// Provides platform-specific functionality for loading bitmap images from streams or drawable resources, with support
+/// for AOT-friendly resource registration in MAUI applications.
 /// </summary>
+/// <remarks>To ensure compatibility with ahead-of-time (AOT) compilation, register a drawable resolver function
+/// using RegisterDrawableResolver or a Resource.Drawable type using <see cref="RegisterDrawables{TDrawable}"/> before creating
+/// instances of this class. If neither is registered, the loader will fall back to reflection-based assembly scanning,
+/// which is not AOT-compatible. For full AOT compatibility, consider using <see cref="PlatformBitmapLoader"/> instead.</remarks>
 public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
 {
     private static Func<string, int>? _drawableResolver;

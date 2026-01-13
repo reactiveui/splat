@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -12,11 +12,12 @@ namespace Splat.ApplicationPerformanceMonitoring;
 public static class EnableFeatureUsageTrackingExtensions
 {
     /// <summary>
-    /// Gets a Feature Usage Tracking Session.
+    /// Creates a session for tracking usage of a specified feature on the given instance.
     /// </summary>
-    /// <param name="instance">instance of class that uses IEnableFeatureUsageTracking.</param>
-    /// <param name="featureName">Name of the feature.</param>
-    /// <returns>Feature Usage Tracking Session.</returns>
+    /// <param name="instance">The object that enables feature usage tracking. Must not be null.</param>
+    /// <param name="featureName">The name of the feature to track. Cannot be null or empty.</param>
+    /// <returns>An <see cref="IFeatureUsageTrackingSession"/> instance for tracking usage of the specified feature.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the feature usage tracking manager service is not available.</exception>
     public static IFeatureUsageTrackingSession FeatureUsageTrackingSession(
         this IEnableFeatureUsageTracking instance,
         string featureName)

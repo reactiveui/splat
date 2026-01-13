@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -10,8 +10,16 @@ using System.Runtime.CompilerServices;
 namespace Splat;
 
 /// <summary>
-/// Represents the logging interface for the Static Default Logger.
+/// Defines a contract for a static logger that supports writing log messages at various severity levels, including
+/// Debug, Info, Warn, Error, and Fatal. Provides methods for logging messages, exceptions, and formatted output, as
+/// well as for specifying the log level and capturing caller context information.
 /// </summary>
+/// <remarks>Implementations of this interface enable structured and level-based logging for applications,
+/// allowing messages and exceptions to be recorded with contextual information such as the calling member name. The
+/// interface supports both simple and formatted messages, with overloads for including exception details and type
+/// information. All log messages are intended to be non-localizable. The logger's behavior may depend on the configured
+/// log level, and messages below the current level may be ignored. Thread safety and message delivery guarantees depend
+/// on the specific implementation.</remarks>
 [SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Existing API")]
 public interface IStaticFullLogger
 {

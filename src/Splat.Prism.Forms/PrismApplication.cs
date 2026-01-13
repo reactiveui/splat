@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -8,12 +8,12 @@
 namespace Splat.Prism.Forms;
 
 /// <summary>
-/// A application instance which supports Prism types.
+/// Provides a base class for Prism applications using the Splat dependency injection container.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="PrismApplication"/> class.
-/// </remarks>
-/// <param name="initializer">An initializer for initializing the platform.</param>
+/// <remarks>This class integrates the Splat container with the Prism application framework. Inherit from this
+/// class to create a Prism application that uses Splat for dependency injection.</remarks>
+/// <param name="initializer">An optional platform-specific initializer that can be used to register platform services or perform
+/// platform-specific setup. May be null if no platform-specific initialization is required.</param>
 public abstract class PrismApplication(IPlatformInitializer? initializer = null) : PrismApplicationBase(initializer)
 {
     /// <inheritdoc/>

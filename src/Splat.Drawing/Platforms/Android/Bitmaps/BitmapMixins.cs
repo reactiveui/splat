@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -10,8 +10,12 @@ using Android.Graphics.Drawables;
 namespace Splat;
 
 /// <summary>
-/// Extension methods to assist with dealing with Bitmaps.
+/// Provides extension methods for converting between platform-native bitmap types and the cross-platform IBitmap
+/// interface.
 /// </summary>
+/// <remarks>These methods enable interoperability between Android native bitmap representations and the IBitmap
+/// abstraction used in cross-platform code. They are intended to simplify conversion scenarios when working with image
+/// data in applications targeting Android.</remarks>
 public static class BitmapMixins
 {
     /// <summary>

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -8,8 +8,11 @@ using System.Windows.Media;
 namespace Splat;
 
 /// <summary>
-/// Extension methods associated with the <see cref="SplatColor"/> struct.
+/// Provides extension methods for converting between <see cref="SplatColor"/> and XAML color types such as <see cref="Color"/> and <see cref="SolidColorBrush"/>.
 /// </summary>
+/// <remarks>These methods enable seamless interoperability between <see cref="SplatColor"/> and XAML color representations,
+/// allowing for easy conversion when working with different UI frameworks. All methods are static and intended to be
+/// used as extension methods on <see cref="SplatColor"/> and <see cref="Color"/> instances.</remarks>
 public static class SplatColorExtensions
 {
     /// <summary>

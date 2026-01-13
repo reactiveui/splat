@@ -1,4 +1,4 @@
-// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -10,9 +10,12 @@ using Splat.Microsoft.Extensions.DependencyInjection;
 namespace Splat.Builder;
 
 /// <summary>
-/// Splat module for configuring the Microsoft dependency resolver.
+/// Provides a module that configures dependency resolution using the Microsoft.Extensions.DependencyInjection service
+/// collection.
 /// </summary>
-/// <seealso cref="IModule" />
+/// <remarks>This module enables integration of Microsoft.Extensions.DependencyInjection with dependency resolver
+/// frameworks that support modules. It is typically used to bridge third-party or legacy dependency resolution systems
+/// with the Microsoft DI container.</remarks>
 public sealed class MicrosoftDependencyResolverModule : IModule
 {
     private readonly IServiceCollection _container;

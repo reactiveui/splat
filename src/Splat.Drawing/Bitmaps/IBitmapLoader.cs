@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -8,9 +8,12 @@ using System.IO;
 namespace Splat;
 
 /// <summary>
-/// Represents the platform-specific image loader class. Unless you are
-/// testing image loading, you don't usually need to implement this.
+/// Defines methods for loading and creating bitmap images from various sources.
+/// Unless you are testing image loading, you don't usually need to implement this.
 /// </summary>
+/// <remarks>Implementations of this interface provide functionality to load bitmap images from streams,
+/// application resources, or to create new empty bitmaps. The specific image formats supported and resource resolution
+/// behavior may vary depending on the platform and implementation.</remarks>
 public interface IBitmapLoader
 {
     /// <summary>

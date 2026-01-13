@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -6,8 +6,14 @@
 namespace Splat;
 
 /// <summary>
-/// A platform independent color structure.
+/// Represents an immutable color value, providing a set of predefined named colors and methods for color manipulation
+/// and comparison.
 /// </summary>
+/// <remarks>The SplatColor struct offers a comprehensive set of standard named colors, similar to those defined
+/// in web and system color specifications. These named colors can be used for consistent color selection in graphics,
+/// UI, or drawing operations. SplatColor instances are immutable and can be compared for equality. Additional methods
+/// may be available for creating custom colors or converting between color representations, depending on the full API
+/// surface.</remarks>
 public partial struct SplatColor
 {
     /// <summary>

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -10,12 +10,12 @@ using Serilog.Events;
 namespace Splat;
 
 /// <summary>
-/// A full wrapping logger over Serilog.
+/// Provides a full-featured logger implementation that writes log events to Serilog using the IFullLogger interface.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="SerilogFullLogger"/> class.
-/// </remarks>
-/// <param name="logger">The logger we are wrapping.</param>
+/// <remarks>This class adapts the IFullLogger interface to Serilog, enabling structured logging and support for
+/// multiple log levels, message formatting, and exception logging. All log methods delegate to the underlying
+/// Serilog.ILogger instance. Thread safety and configuration are determined by the provided Serilog logger.</remarks>
+/// <param name="logger">The Serilog logger instance used to write log events. Cannot be null.</param>
 public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
 {
     /// <inheritdoc />

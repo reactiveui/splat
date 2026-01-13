@@ -8,8 +8,12 @@ using Tizen.Multimedia.Util;
 namespace Splat;
 
 /// <summary>
-/// Extension methods to assist with dealing with Bitmaps.
+/// Provides extension methods for converting between <see cref="BitmapFrame"/> and <see cref="IBitmap"/>
+/// representations.
 /// </summary>
+/// <remarks>These methods enable seamless interoperability between platform-specific bitmap types and the <see
+/// cref="IBitmap"/> abstraction. They are intended to simplify bitmap conversions when working with image processing or
+/// rendering APIs that require different bitmap formats.</remarks>
 public static class BitmapMixins
 {
     /// <summary>

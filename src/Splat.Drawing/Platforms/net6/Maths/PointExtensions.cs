@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -8,8 +8,12 @@ using System.Windows;
 namespace Splat;
 
 /// <summary>
-/// A set of extension methods which will convert between System.Drawing point's and a native point classes.
+/// Provides extension methods for converting between <see cref="System.Drawing.Point"/>, <see
+/// cref="System.Drawing.PointF"/>, and the Android native <see cref="Point"/> type.
 /// </summary>
+/// <remarks>These methods simplify interoperability between .NET drawing types and Android's native point
+/// representation. They are intended for use in cross-platform scenarios where conversion between these types is
+/// required.</remarks>
 public static class PointExtensions
 {
     /// <summary>

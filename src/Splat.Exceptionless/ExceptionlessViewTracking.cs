@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -10,7 +10,7 @@ using Splat.ApplicationPerformanceMonitoring;
 namespace Splat;
 
 /// <summary>
-/// Exceptionless View Tracking integration.
+/// Provides view tracking functionality by recording view navigation events using an Exceptionless client.
 /// </summary>
 public sealed class ExceptionlessViewTracking : IViewTracking
 {

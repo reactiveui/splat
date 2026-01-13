@@ -1,4 +1,4 @@
-// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -8,11 +8,11 @@ using Splat.Log4Net;
 namespace Splat.Builder;
 
 /// <summary>
-/// Splat module for configuring the Log4Net logger.
+/// Provides a Splat module that configures logging to use log4net with full logger wrapping.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="Log4NetSplatModule"/> class.
-/// </remarks>
+/// <remarks>This module is intended for use with Splat's dependency resolver infrastructure. Register this module
+/// to enable log4net-based logging throughout your application. This module is typically used in applications that
+/// require integration between Splat and log4net for consistent logging behavior.</remarks>
 public sealed class Log4NetSplatModule() : IModule
 {
     /// <inheritdoc />

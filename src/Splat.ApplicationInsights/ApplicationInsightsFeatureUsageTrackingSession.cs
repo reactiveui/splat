@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -11,8 +11,13 @@ using Splat.ApplicationPerformanceMonitoring;
 namespace Splat.ApplicationInsights;
 
 /// <summary>
-/// Feature Usage Tracking Client for Application Insights.
+/// Provides a feature usage tracking session that records feature usage events and exceptions to Azure Application
+/// Insights using a specified telemetry client.
 /// </summary>
+/// <remarks>This class is typically used to track the start and end of feature usage, as well as any exceptions
+/// that occur during the session. Feature usage events are sent to Application Insights when the session is created and
+/// disposed. Sub-features can be tracked by creating nested sessions. This class is not thread-safe; each instance
+/// should be used on a single thread.</remarks>
 public sealed class ApplicationInsightsFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
 {
     private readonly TelemetryClient _telemetryClient;

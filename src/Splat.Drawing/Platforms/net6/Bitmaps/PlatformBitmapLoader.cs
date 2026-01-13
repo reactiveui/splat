@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -10,8 +10,11 @@ using System.Windows.Media.Imaging;
 namespace Splat;
 
 /// <summary>
-/// A XAML based platform bitmap loader which will load our bitmaps for us.
+/// Provides methods for loading and creating bitmap images from streams and resources on the current platform.
 /// </summary>
+/// <remarks>This class implements the IBitmapLoader interface to support platform-specific bitmap loading and
+/// creation. It enables loading bitmaps from data streams or resource identifiers, with optional resizing. All methods
+/// are thread-safe and return bitmaps suitable for use in platform graphics APIs.</remarks>
 public class PlatformBitmapLoader : IBitmapLoader
 {
     /// <inheritdoc />

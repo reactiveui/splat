@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -8,8 +8,11 @@ using System.Windows.Media.Imaging;
 namespace Splat;
 
 /// <summary>
-/// Extension methods to assist with dealing with Bitmaps.
+/// Provides extension methods for converting between <see cref="IBitmap"/> and native <see cref="BitmapSource"/> types.
 /// </summary>
+/// <remarks>These methods enable interoperability between platform-agnostic bitmap representations and native WPF
+/// bitmap types. They are intended to simplify conversion scenarios when working with image data across different
+/// frameworks.</remarks>
 public static class BitmapMixins
 {
     /// <summary>

@@ -8,8 +8,12 @@ using Tizen.Multimedia.Util;
 namespace Splat;
 
 /// <summary>
-/// Wraps a tizen native bitmap into the splat <see cref="IBitmap"/>.
+/// Represents a bitmap image for the Tizen platform, providing access to image dimensions and the ability to save the
+/// image in various compressed formats.
 /// </summary>
+/// <remarks>This class is intended for internal use to wrap native bitmap resources on Tizen devices. It supports
+/// loading images from byte arrays or resource names and provides methods for saving the bitmap in different formats.
+/// The class implements the IBitmap interface and manages the underlying native resources automatically.</remarks>
 internal sealed class TizenBitmap : IBitmap
 {
     private static readonly ImageDecoder[] _decoderList =

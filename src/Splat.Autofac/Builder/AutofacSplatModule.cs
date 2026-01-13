@@ -1,4 +1,4 @@
-// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -10,8 +10,11 @@ using Splat.Autofac;
 namespace Splat.Builder;
 
 /// <summary>
-/// Splat module for configuring the Autofac dependency resolver.
+/// Provides an Autofac module that integrates Autofac with Splat's dependency resolver system.
 /// </summary>
+/// <remarks>This module enables the use of Autofac as the dependency resolver for Splat-based applications. It is
+/// typically used to configure dependency injection in applications that leverage both Autofac and Splat. The module
+/// should be initialized with a valid Autofac ContainerBuilder instance before configuring the resolver.</remarks>
 public sealed class AutofacSplatModule : IModule
 {
     private readonly ContainerBuilder _builder;

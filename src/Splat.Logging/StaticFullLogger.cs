@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -9,8 +9,13 @@ using System.Runtime.CompilerServices;
 namespace Splat;
 
 /// <summary>
-/// A full logger which used by the default static logger to allow capture of .NET framework caller data. Wraps a <see cref="IFullLogger"/>.
+/// Provides a sealed implementation of <see cref="IStaticFullLogger"/> that wraps an <see cref="IFullLogger"/> instance
+/// for static logging scenarios.
 /// </summary>
+/// <remarks>This class enables static-style logging by delegating all logging operations to the provided <see
+/// cref="IFullLogger"/> instance. It is typically used to facilitate logging in static contexts where dependency
+/// injection is not available. All log messages are automatically suffixed with the caller member name to aid in
+/// tracing log origins.</remarks>
 public sealed class StaticFullLogger : IStaticFullLogger
 {
     private readonly IFullLogger _fullLogger;

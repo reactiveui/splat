@@ -1,4 +1,4 @@
-// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -8,8 +8,13 @@ using Microsoft.Extensions.Logging;
 namespace Splat.Microsoft.Extensions.Logging;
 
 /// <summary>
-/// Provider that bridges Microsoft.Extensions.Logging to Splat's logging system.
+/// Provides an implementation of the ILoggerProvider interface that integrates Splat logging with
+/// Microsoft.Extensions.Logging.
 /// </summary>
+/// <remarks>This provider enables applications using Microsoft.Extensions.Logging to route log messages through
+/// the Splat logging infrastructure. It is typically used to bridge logging between libraries or frameworks that rely
+/// on different logging abstractions. Instances of this class are intended to be registered with a logging factory or
+/// dependency injection container.</remarks>
 public sealed class MicrosoftExtensionsLogProvider : ILoggerProvider
 {
     /// <inheritdoc />

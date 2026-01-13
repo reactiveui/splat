@@ -1,4 +1,4 @@
-// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -8,8 +8,11 @@ using System.Windows;
 namespace Splat;
 
 /// <summary>
-/// A set of extension methods which will convert between System.Drawing rectangle's and a native rectangle classes.
+/// Provides extension methods for converting between System.Drawing rectangle types and Android native Rect structures.
 /// </summary>
+/// <remarks>These methods facilitate interoperability between .NET drawing types and Android graphics by enabling
+/// direct conversion of rectangle and point structures. All methods are static and intended for use as extension
+/// methods.</remarks>
 public static class RectExtensions
 {
     /// <summary>

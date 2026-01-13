@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -9,8 +9,14 @@ using System.Diagnostics.CodeAnalysis;
 namespace Splat.Prism;
 
 /// <summary>
-/// A container for the Prism application.
+/// Provides an implementation of the Prism container extension using the Splat dependency resolver. Enables
+/// registration and resolution of services and types for dependency injection within Prism applications.
 /// </summary>
+/// <remarks>This extension integrates the Splat dependency resolver with the Prism container abstraction,
+/// allowing Prism-based applications to use Splat for service registration and resolution. Most scoped and advanced
+/// registration features are not supported and will throw exceptions if used. The container is primarily intended for
+/// simple singleton and transient registrations. Thread safety is provided for registration mappings. Disposing the
+/// extension resets the global Splat locator to its default state.</remarks>
 public class SplatContainerExtension : IContainerExtension<IDependencyResolver>, IDisposable
 {
     private readonly ConcurrentDictionary<(Type type, string? contract), Type> _types = new();

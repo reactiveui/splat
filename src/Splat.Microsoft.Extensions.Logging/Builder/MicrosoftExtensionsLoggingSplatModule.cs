@@ -1,4 +1,4 @@
-// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -10,12 +10,13 @@ using Splat.Microsoft.Extensions.Logging;
 namespace Splat.Builder;
 
 /// <summary>
-/// Splat module for configuring the Microsoft Extensions Logging logger.
+/// Provides a Splat module that configures logging using Microsoft.Extensions.Logging and wraps loggers for Splat
+/// compatibility.
 /// </summary>
-/// <remarks>
-/// Initializes a new instance of the <see cref="MicrosoftExtensionsLoggingSplatModule" /> class.
-/// </remarks>
-/// <seealso cref="IModule" />
+/// <remarks>This module enables integration of Microsoft.Extensions.Logging with Splat's logging infrastructure.
+/// Register this module with your dependency resolver to enable logging through Microsoft.Extensions.Logging in
+/// Splat-based applications.</remarks>
+/// <param name="loggerFactory">The Microsoft.Extensions.Logging.ILoggerFactory instance to use for creating loggers.</param>
 public sealed class MicrosoftExtensionsLoggingSplatModule(ILoggerFactory loggerFactory) : IModule
 {
     /// <inheritdoc />

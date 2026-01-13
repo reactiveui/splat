@@ -1,4 +1,4 @@
-// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -10,8 +10,13 @@ using System.Reflection;
 namespace Splat;
 
 /// <summary>
-/// Detects if we are in design mode or unit test mode based on the current platform.
+/// Provides a default implementation for detecting whether the application is running in design mode across supported
+/// platforms.
 /// </summary>
+/// <remarks>This class is typically used to determine if code is executing within a designer environment, such as
+/// Visual Studio or Blend, to enable or disable design-time specific logic. It supports multiple platforms and design
+/// environments, including WPF, Silverlight, and UWP, by checking for known design mode indicators. The detection
+/// result may be cached for performance. Thread safety is not guaranteed.</remarks>
 public class DefaultPlatformModeDetector : IPlatformModeDetector
 {
 #if !NETFX_CORE

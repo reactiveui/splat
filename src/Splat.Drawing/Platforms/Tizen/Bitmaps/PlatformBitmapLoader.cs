@@ -6,8 +6,11 @@
 namespace Splat;
 
 /// <summary>
-/// A <see cref="IBitmapLoader"/> which will load Tizen based bitmaps.
+/// Provides platform-specific functionality for loading and creating bitmap images on Tizen devices.
 /// </summary>
+/// <remarks>This class implements the IBitmapLoader interface to support bitmap operations in environments where
+/// an empty image object is not natively available, such as Tizen. It supplies a default 100x100 pixel image as a
+/// placeholder when necessary.</remarks>
 public class PlatformBitmapLoader : IBitmapLoader
 {
     /// <summary>

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -6,8 +6,14 @@
 namespace Splat;
 
 /// <summary>
-/// A Locator which will host the container for dependency injection based operations.
+/// Provides a global access point for dependency resolution within the application, allowing services and types to be
+/// registered and retrieved at runtime.
 /// </summary>
+/// <remarks>AppLocator exposes static members for resolving and registering dependencies using a default or
+/// custom dependency resolver. It is intended for use by both application code and libraries that require service
+/// location. In most scenarios, the default resolver is sufficient and should be used unless advanced customization or
+/// testing scenarios require replacing it. Thread safety and resolver change notifications are managed internally. For
+/// most applications, use the Current and CurrentMutable properties to access the dependency resolver.</remarks>
 public static class AppLocator
 {
     static AppLocator() => InternalLocator = new();
@@ -35,19 +41,29 @@ public static class AppLocator
     /// </summary>
     internal static InternalLocator InternalLocator { get; set; }
 
+    /// <summary>
+    /// Gets or sets the action used to reinitialize the dependency resolver.
+    /// </summary>
+    /// <remarks>This property is intended for internal use to allow resetting or reconfiguring the dependency
+    /// resolver during application lifetime. Modifying this property may affect how dependencies are resolved within
+    /// the application.</remarks>
     internal static Action<IMutableDependencyResolver> ReInit { get; set; } = _ => { };
 
     /// <summary>
-    /// Allows setting the dependency resolver.
+    /// Sets the dependency resolver to be used by the application.
     /// </summary>
-    /// <param name="dependencyResolver">The dependency resolver to set.</param>
+    /// <remarks>Call this method at application startup to configure the global dependency resolver.
+    /// Subsequent calls will replace the existing resolver.</remarks>
+    /// <param name="dependencyResolver">The dependency resolver instance that provides service resolution for the application. Cannot be null.</param>
     public static void SetLocator(IDependencyResolver dependencyResolver) => InternalLocator.SetLocator(dependencyResolver);
 
     /// <summary>
-    /// Gets the full locator.
-    /// Note you should use <see cref="Current"/> or <see cref="CurrentMutable"/> in most situations.
+    /// Gets the current dependency resolver instance used by the application.
     /// </summary>
-    /// <returns>The locator.</returns>
+    /// <remarks>The returned resolver provides access to registered services and dependencies. The same
+    /// instance is returned on each call. This method is intended for advanced scenarios where direct access to the
+    /// dependency resolver is required.</remarks>
+    /// <returns>An <see cref="IDependencyResolver"/> representing the application's current dependency resolver.</returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1024:Use properties where appropriate", Justification = "Existing API")]
     public static IDependencyResolver GetLocator() => InternalLocator.Internal;
 

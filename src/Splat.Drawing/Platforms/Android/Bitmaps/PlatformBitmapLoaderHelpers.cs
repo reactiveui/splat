@@ -1,4 +1,4 @@
-// Copyright (c) 2025 ReactiveUI. All rights reserved.
+// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -9,8 +9,13 @@ using Android.Graphics;
 namespace Splat;
 
 /// <summary>
-/// Internal helper methods shared between PlatformBitmapLoader implementations.
+/// Provides helper methods for loading and creating bitmaps from streams, drawable resources, and Android drawables on
+/// the current platform.
 /// </summary>
+/// <remarks>This class is intended for internal use to facilitate bitmap operations in platform-specific
+/// scenarios, such as decoding images from streams or resources and handling stream termination issues that may arise
+/// with certain image formats. All methods are static and thread safety depends on the usage of the provided streams
+/// and resources.</remarks>
 internal static class PlatformBitmapLoaderHelpers
 {
     /// <summary>

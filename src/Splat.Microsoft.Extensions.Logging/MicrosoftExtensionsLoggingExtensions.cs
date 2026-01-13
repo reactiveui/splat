@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace Splat.Microsoft.Extensions.Logging;
 
 /// <summary>
-/// Microsoft.Extensions.Logging specific extensions for the Mutable Dependency Resolver.
+/// Provides extension methods for integrating Splat logging with Microsoft.Extensions.Logging.
 /// </summary>
 public static class MicrosoftExtensionsLoggingExtensions
 {

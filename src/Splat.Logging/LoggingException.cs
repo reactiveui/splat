@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -6,8 +6,11 @@
 namespace Splat;
 
 /// <summary>
-/// A exception that occurs when there is a problem using the logging module.
+/// Represents errors that occur during logging operations.
 /// </summary>
+/// <remarks>Use this exception to indicate failures related to logging, such as issues writing to a log file or
+/// logging infrastructure errors. This exception is typically thrown by logging components to signal that a logging
+/// operation could not be completed successfully.</remarks>
 [Serializable]
 public class LoggingException : Exception
 {

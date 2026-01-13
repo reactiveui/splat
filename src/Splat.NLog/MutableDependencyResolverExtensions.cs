@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -6,7 +6,7 @@
 namespace Splat.NLog;
 
 /// <summary>
-/// NLog specific extensions for the Mutable Dependency Resolver.
+/// Provides extension methods for registering NLog integration with Splat using a mutable dependency resolver.
 /// </summary>
 public static class MutableDependencyResolverExtensions
 {

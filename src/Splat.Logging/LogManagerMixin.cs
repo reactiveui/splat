@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI. All rights reserved.
+﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
 // Licensed to ReactiveUI under one or more agreements.
 // ReactiveUI licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -10,7 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Splat;
 
 /// <summary>
-/// Extension methods associated with the logging module.
+/// Provides extension methods for obtaining loggers from an ILogManager instance.
 /// </summary>
 public static class LogManagerMixin
 {
