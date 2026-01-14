@@ -15,21 +15,15 @@ namespace Splat;
 /// </summary>
 /// <remarks>This class is typically used to determine if code is executing within a designer environment, such as
 /// Visual Studio or Blend, to enable or disable design-time specific logic. It supports multiple platforms and design
-/// environments, including WPF, Silverlight, and UWP, by checking for known design mode indicators. The detection
-/// result may be cached for performance. Thread safety is not guaranteed.</remarks>
+/// environments, including WPF and WinForms, by checking for known design mode indicators. The detection
+/// result is cached by the PlatformModeDetector class for performance. Thread safety is not guaranteed.</remarks>
 public class DefaultPlatformModeDetector : IPlatformModeDetector
 {
 #if !NETFX_CORE
-    private const string XamlDesignPropertiesType = "System.ComponentModel.DesignerProperties, System.Windows, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e";
-    private const string XamlControlBorderType = "System.Windows.Controls.Border, System.Windows, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e";
-    private const string XamlDesignPropertiesDesignModeMethodName = "GetIsInDesignMode";
     private const string WpfDesignerPropertiesType = "System.ComponentModel.DesignerProperties, PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
-    private const string WpfDesignerPropertiesDesignModeMethod = "GetIsInDesignMode";
-    private const string WpfDependencyPropertyType = "System.Windows.DependencyObject, WindowsBase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
-    private const string WinFormsDesignerPropertiesType = "Windows.ApplicationModel.DesignMode, Windows, ContentType=WindowsRuntime";
-    private const string WinFormsDesignerPropertiesDesignModeMethod = "DesignModeEnabled";
-
-    private static bool? _cachedInDesignModeResult;
+    private const string WpfDesignerPropertiesDesignModeProperty = "IsInDesignTool";
+    private const string LicenseManagerType = "System.ComponentModel.LicenseManager, System.ComponentModel.TypeConverter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a";
+    private const string LicenseUsageModeProperty = "UsageMode";
 #endif
 
     /// <inheritdoc />
@@ -38,68 +32,60 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
 #if NETFX_CORE
         return false;
 #else
-        if (_cachedInDesignModeResult.HasValue)
-        {
-            return _cachedInDesignModeResult.Value;
-        }
-
-        // Check Silverlight / WP8 Design Mode
-        var type = Type.GetType(XamlDesignPropertiesType, false);
+        // Check WPF Design Mode - use static IsInDesignTool property instead of GetIsInDesignMode
+        // This properly detects design mode for nested UserControls
+        var type = Type.GetType(WpfDesignerPropertiesType, false);
         if (type is not null)
         {
-            var mInfo = type.GetMethod(XamlDesignPropertiesDesignModeMethodName);
-            var dependencyObject = Type.GetType(XamlControlBorderType, false);
-
-            if (mInfo is not null && dependencyObject is not null)
+            var propInfo = type.GetProperty(WpfDesignerPropertiesDesignModeProperty, BindingFlags.Public | BindingFlags.Static);
+            if (propInfo is not null)
             {
-                _cachedInDesignModeResult = (bool)(mInfo.Invoke(null, [Activator.CreateInstance(dependencyObject)]) ?? false);
+                return (bool)(propInfo.GetValue(null) ?? false);
             }
         }
-        else if ((type = Type.GetType(WpfDesignerPropertiesType, false)) is not null)
-        {
-            // loaded the assembly, could be .net
-            var mInfo = type.GetMethod(WpfDesignerPropertiesDesignModeMethod);
-            var dependencyObject = Type.GetType(WpfDependencyPropertyType, false);
-            if (mInfo is not null && dependencyObject is not null)
-            {
-                _cachedInDesignModeResult = (bool)(mInfo.Invoke(null, [Activator.CreateInstance(dependencyObject)]) ?? false);
-            }
-        }
-        else if ((type = Type.GetType(WinFormsDesignerPropertiesType, false)) is not null)
-        {
-            // check WinRT next
-            _cachedInDesignModeResult = (bool)(type.GetProperty(WinFormsDesignerPropertiesDesignModeMethod)?.GetMethod?.Invoke(null, null) ?? false);
-        }
-        else
-        {
-            var designEnvironments = new[] { "BLEND.EXE", "XDESPROC.EXE" };
-#if NETFRAMEWORK || TIZEN
-            var entry = Assembly.GetEntryAssembly()?.Location;
-#else
-            var entry = System.AppContext.BaseDirectory;
-#endif
-            if (entry is not null)
-            {
-                var exeName = new FileInfo(entry).Name;
 
-                foreach (var designEnv in designEnvironments)
+        // Fallback: Check LicenseManager.UsageMode for broader compatibility
+        // This handles WinForms and other scenarios where platform-specific design mode detection isn't available
+        if ((type = Type.GetType(LicenseManagerType, false)) is not null)
+        {
+            var propInfo = type.GetProperty(LicenseUsageModeProperty, BindingFlags.Public | BindingFlags.Static);
+            if (propInfo is not null)
+            {
+                var usageMode = propInfo.GetValue(null);
+                // LicenseUsageMode.Designtime = 1
+                if (usageMode is not null && (int)usageMode == 1)
                 {
-#if NETFRAMEWORK || TIZEN
-                    if (designEnv.IndexOf(exeName, StringComparison.InvariantCultureIgnoreCase) != -1)
-#else
-                    if (designEnv.Contains(exeName, StringComparison.InvariantCultureIgnoreCase))
-#endif
-                    {
-                        _cachedInDesignModeResult = true;
-                        break;
-                    }
+                    return true;
                 }
             }
         }
 
-        _cachedInDesignModeResult = false;
+        // Fallback: Check process name for known designers
+        var designEnvironments = new[] { "DEVENV.EXE", "XDESSPROC.EXE", "BLEND.EXE", "XDESPROC.EXE" };
+#if NETFRAMEWORK || TIZEN
+        var entry = Assembly.GetEntryAssembly()?.Location;
+#else
+        var entry = System.AppContext.BaseDirectory;
+#endif
+        if (entry is not null)
+        {
+            var exeName = new FileInfo(entry).Name;
 
-        return _cachedInDesignModeResult;
+            foreach (var designEnv in designEnvironments)
+            {
+#if NETFRAMEWORK || TIZEN
+                if (designEnv.IndexOf(exeName, StringComparison.InvariantCultureIgnoreCase) != -1)
+#else
+                if (designEnv.Contains(exeName, StringComparison.InvariantCultureIgnoreCase))
+#endif
+                {
+                    return true;
+                }
+            }
+        }
+
+        // No design mode detected
+        return false;
 #endif
     }
 }
