@@ -45,13 +45,14 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
         }
 
         // Fallback: Check LicenseManager.UsageMode for broader compatibility
-        // This handles WinForms and other scenarios where platform-specific design mode detection isn't available
+        // This is a general .NET design-time detection mechanism used by WinForms and other frameworks
         if ((type = Type.GetType(LicenseManagerType, false)) is not null)
         {
             var propInfo = type.GetProperty(LicenseUsageModeProperty, BindingFlags.Public | BindingFlags.Static);
             if (propInfo is not null)
             {
                 var usageMode = propInfo.GetValue(null);
+
                 // LicenseUsageMode.Designtime = 1
                 if (usageMode is not null && (int)usageMode == 1)
                 {
