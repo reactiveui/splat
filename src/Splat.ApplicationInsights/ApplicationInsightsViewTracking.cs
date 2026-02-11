@@ -16,6 +16,7 @@ namespace Splat;
 /// This class uses OpenTelemetry Activities with ActivityKind.Server to track view navigation in Application Insights v3.
 /// Activities appear as requests in Application Insights, with the duration automatically tracked from activity start to stop.
 /// The implementation follows semantic conventions for HTTP requests while adding custom tags for view-specific filtering.
+/// This class is not thread-safe; each instance should be used on a single thread.
 /// </remarks>
 /// <param name="activitySource">The OpenTelemetry ActivitySource used to create activities for tracking page views. Cannot be null.</param>
 public sealed class ApplicationInsightsViewTracking(ActivitySource activitySource) : IViewTracking
