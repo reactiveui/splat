@@ -16,12 +16,11 @@ namespace Splat;
 /// This class uses OpenTelemetry Activities with ActivityKind.Server to track view navigation in Application Insights v3.
 /// Activities appear as requests in Application Insights, with the duration automatically tracked from activity start to stop.
 /// The implementation follows semantic conventions for HTTP requests while adding custom tags for view-specific filtering.
-/// This class is not thread-safe; each instance should be used on a single thread.
 /// </remarks>
 /// <param name="activitySource">The OpenTelemetry ActivitySource used to create activities for tracking page views. Cannot be null.</param>
 public sealed class ApplicationInsightsViewTracking(ActivitySource activitySource) : IViewTracking
 {
-    private Activity? _currentPageActivity;
+    private readonly ActivitySource _activitySource = activitySource ?? throw new ArgumentNullException(nameof(activitySource));
 
     /// <summary>
     /// Track a view navigation using just a name.
@@ -29,27 +28,24 @@ public sealed class ApplicationInsightsViewTracking(ActivitySource activitySourc
     /// <param name="name">Name of the view.</param>
     public void OnViewNavigation(string name)
     {
-        // Stop the previous page view activity if one exists
-        _currentPageActivity?.Stop();
+        var tags = new KeyValuePair<string, object?>[]
+        {
+            new("http.url", $"view://{name}"),
+            new("http.method", "GET"),
+            new("http.scheme", "view"),
+            new("url.scheme", "view"),
+            new("url.path", $"/{name}"),
+            new("view.name", name),
+            new("view.type", "page")
+        };
 
         // Start a new activity for the current page view
         // ActivityKind.Server ensures it appears as a request in Application Insights
-        _currentPageActivity = activitySource.StartActivity(
-            name: $"PageView: {name}",
-            kind: ActivityKind.Server);
+        var activity = _activitySource.StartActivity(
+            kind: ActivityKind.Server,
+            tags: tags,
+            name: $"PageView: {name}");
 
-        if (_currentPageActivity is not null)
-        {
-            // Add standard HTTP semantic convention tags
-            _currentPageActivity.SetTag("http.url", $"view://{name}")
-                .SetTag("http.method", "GET")
-                .SetTag("http.scheme", "view")
-                .SetTag("url.scheme", "view")
-                .SetTag("url.path", $"/{name}")
-
-                // Add custom tags for filtering and analysis
-                .SetTag("view.name", name)
-                .SetTag("view.type", "page");
-        }
+        activity?.Stop();
     }
 }
