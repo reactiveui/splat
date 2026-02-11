@@ -10,7 +10,7 @@
     <PackageVersion Include="log4net" Version="3.2.0" />
     <PackageVersion Include="Microsoft.AppCenter.Analytics" Version="5.0.7" />
     <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="5.0.7" />
-    <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.23.0" />
+    <PackageVersion Include="Microsoft.ApplicationInsights" Version="3.0.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.2" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
