@@ -11,8 +11,8 @@
     <PackageVersion Include="Microsoft.AppCenter.Analytics" Version="5.0.7" />
     <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="5.0.7" />
     <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.23.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.3" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="11.2.5" />
     <PackageVersion Include="Nerdbank.GitVersioning" Version="3.9.50" />
@@ -39,13 +39,13 @@
 
   <!-- Pinned transitive dependencies for compatibility -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="10.0.3" />
   </ItemGroup>
 
   <!-- Latest versions for modern TFMs (net8.0+) -->
   <ItemGroup>
-    <PackageVersion Include="System.Collections.Immutable" Version="10.0.2" />
-    <PackageVersion Include="System.Text.Json" Version="10.0.2" />
+    <PackageVersion Include="System.Collections.Immutable" Version="10.0.3" />
+    <PackageVersion Include="System.Text.Json" Version="10.0.3" />
   </ItemGroup>
 
   <!-- System.Runtime.Serialization.Formatters: TFM-specific versioning -->
@@ -58,7 +58,7 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="10.0.2" />
+        <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="10.0.3" />
       </ItemGroup>
     </Otherwise>
   </Choose>
