@@ -69,7 +69,7 @@ public sealed class RaygunFeatureUsageTrackingSession : IFeatureUsageTrackingSes
             .SetEnvironmentDetails()
             .SetUserCustomData(userCustomData);
         var raygunMessage = messageBuilder.Build();
-        _ = _raygunClient.SendInBackground(raygunMessage);
+        ObserveBackgroundSend(_raygunClient.SendInBackground(raygunMessage));
     }
 
     /// <inheritdoc />
@@ -90,10 +90,24 @@ public sealed class RaygunFeatureUsageTrackingSession : IFeatureUsageTrackingSes
             _raygunSettings);
 
     /// <inheritdoc />
-    public void OnException(Exception exception) => _raygunClient.SendInBackground(exception);
+    public void OnException(Exception exception) => ObserveBackgroundSend(_raygunClient.SendInBackground(exception));
 
     /// <inheritdoc />
     public void Dispose()
     {
+    }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1075:Avoid empty catch clause that catches System.Exception", Justification = "Intentionally suppressing fire-and-forget task exceptions to prevent unobserved task exceptions during process cleanup.")]
+    private static async void ObserveBackgroundSend(Task sendTask)
+    {
+        try
+        {
+            await sendTask.ConfigureAwait(false);
+        }
+        catch (Exception)
+        {
+            // Suppress exceptions from fire-and-forget background sends
+            // to prevent unobserved task exceptions during process cleanup.
+        }
     }
 }
