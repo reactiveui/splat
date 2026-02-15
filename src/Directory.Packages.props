@@ -11,8 +11,8 @@
     <PackageVersion Include="Microsoft.AppCenter.Analytics" Version="5.0.7" />
     <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="5.0.7" />
     <PackageVersion Include="Microsoft.ApplicationInsights" Version="3.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.3" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="11.2.5" />
     <PackageVersion Include="Nerdbank.GitVersioning" Version="3.9.50" />
@@ -21,31 +21,31 @@
     <PackageVersion Include="Prism.Core" Version="9.0.537" />
     <PackageVersion Include="Prism.Forms" Version="9.0.537" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.15.0" />
-    <PackageVersion Include="Serilog" Version="4.3.0" />
+    <PackageVersion Include="Serilog" Version="4.3.1" />
     <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
     <PackageVersion Include="SimpleInjector" Version="5.5.0" />
     <PackageVersion Include="stylecop.analyzers" Version="1.2.0-beta.556" />
     <PackageVersion Include="System.Net.Http" Version="4.3.4" />
     <PackageVersion Include="System.Reactive" Version="6.1.0" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
-    <PackageVersion Include="TUnit" Version="1.12.125" />
-    <PackageVersion Include="Verify.TUnit" Version="31.11.0" />
+    <PackageVersion Include="TUnit" Version="1.13.51" />
+    <PackageVersion Include="Verify.TUnit" Version="31.12.5" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageVersion Include="Microsoft.Reactive.Testing" Version="6.1.0" />
     <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.4.1" />
-    <PackageVersion Include="Microsoft.Testing.Platform.MSBuild" Version="2.0.2" />
+    <PackageVersion Include="Microsoft.Testing.Platform.MSBuild" Version="2.1.0" />
     <PackageVersion Include="PublicApiGenerator" Version="11.5.4" />
   </ItemGroup>
 
   <!-- Pinned transitive dependencies for compatibility -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="10.0.3" />
   </ItemGroup>
 
   <!-- Latest versions for modern TFMs (net8.0+) -->
   <ItemGroup>
-    <PackageVersion Include="System.Collections.Immutable" Version="10.0.2" />
-    <PackageVersion Include="System.Text.Json" Version="10.0.2" />
+    <PackageVersion Include="System.Collections.Immutable" Version="10.0.3" />
+    <PackageVersion Include="System.Text.Json" Version="10.0.3" />
   </ItemGroup>
 
   <!-- System.Runtime.Serialization.Formatters: TFM-specific versioning -->
@@ -58,7 +58,7 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="10.0.2" />
+        <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="10.0.3" />
       </ItemGroup>
     </Otherwise>
   </Choose>

@@ -18,12 +18,19 @@ namespace Splat;
 /// when tracking is complete.</remarks>
 public sealed class RaygunFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
 {
+    /// <summary>
+    /// The Raygun client used to send feature usage events.
+    /// </summary>
     private readonly RaygunClient _raygunClient;
+
+    /// <summary>
+    /// The Raygun settings used to configure message building.
+    /// </summary>
     private readonly RaygunSettings _raygunSettings;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RaygunFeatureUsageTrackingSession"/> class for tracking usage of a specific.
-    /// feature.
+    /// Initializes a new instance of the <see cref="RaygunFeatureUsageTrackingSession"/> class
+    /// for tracking usage of a specific feature as a root-level session.
     /// </summary>
     /// <param name="featureName">The name of the feature to be tracked. Cannot be null or empty.</param>
     /// <param name="raygunClient">The RaygunClient instance used to send feature usage data. Cannot be null.</param>
@@ -40,6 +47,14 @@ public sealed class RaygunFeatureUsageTrackingSession : IFeatureUsageTrackingSes
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RaygunFeatureUsageTrackingSession"/> class
+    /// with a specified parent reference for sub-feature tracking.
+    /// </summary>
+    /// <param name="featureName">The name of the feature to be tracked. Cannot be null or empty.</param>
+    /// <param name="parentReference">The unique identifier of the parent feature session, or <see cref="Guid.Empty"/> for root sessions.</param>
+    /// <param name="raygunClient">The RaygunClient instance used to send feature usage data. Cannot be null.</param>
+    /// <param name="raygunSettings">The RaygunSettings instance that configures feature usage tracking. Cannot be null.</param>
     internal RaygunFeatureUsageTrackingSession(
         string featureName,
         Guid parentReference,
@@ -62,14 +77,15 @@ public sealed class RaygunFeatureUsageTrackingSession : IFeatureUsageTrackingSes
             { "ParentReference", parentReference.ToString() },
         };
 
-        // keep an eye on
-        // https://raygun.com/forums/thread/92182
+        // Raygun does not yet have a dedicated feature-usage event API, so we send a
+        // custom message with user data as a workaround. Track progress on first-class
+        // support: https://raygun.com/forums/thread/92182
         var messageBuilder = RaygunMessageBuilder.New(raygunSettings)
             .SetClientDetails()
             .SetEnvironmentDetails()
             .SetUserCustomData(userCustomData);
         var raygunMessage = messageBuilder.Build();
-        _ = _raygunClient.SendInBackground(raygunMessage);
+        ObserveBackgroundSend(_raygunClient.SendInBackground(raygunMessage));
     }
 
     /// <inheritdoc />
@@ -90,10 +106,25 @@ public sealed class RaygunFeatureUsageTrackingSession : IFeatureUsageTrackingSes
             _raygunSettings);
 
     /// <inheritdoc />
-    public void OnException(Exception exception) => _raygunClient.SendInBackground(exception);
+    public void OnException(Exception exception) => ObserveBackgroundSend(_raygunClient.SendInBackground(exception));
 
     /// <inheritdoc />
     public void Dispose()
     {
     }
+
+    /// <summary>
+    /// Observes exceptions from a fire-and-forget background send task to prevent
+    /// unobserved task exceptions from crashing the host process during cleanup.
+    /// </summary>
+    /// <remarks>Uses a synchronous fault-only continuation so the exception is marked
+    /// as observed immediately on the completing thread, without relying on thread pool
+    /// work items that may not execute during process shutdown.</remarks>
+    /// <param name="sendTask">The background send task to observe.</param>
+    private static void ObserveBackgroundSend(Task sendTask) =>
+        sendTask.ContinueWith(
+            static t => _ = t.Exception,
+            CancellationToken.None,
+            TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously,
+            TaskScheduler.Default);
 }
