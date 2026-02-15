@@ -97,17 +97,18 @@ public sealed class RaygunFeatureUsageTrackingSession : IFeatureUsageTrackingSes
     {
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1075:Avoid empty catch clause that catches System.Exception", Justification = "Intentionally suppressing fire-and-forget task exceptions to prevent unobserved task exceptions during process cleanup.")]
-    private static async void ObserveBackgroundSend(Task sendTask)
-    {
-        try
-        {
-            await sendTask.ConfigureAwait(false);
-        }
-        catch (Exception)
-        {
-            // Suppress exceptions from fire-and-forget background sends
-            // to prevent unobserved task exceptions during process cleanup.
-        }
-    }
+    /// <summary>
+    /// Observes exceptions from a fire-and-forget background send task to prevent
+    /// unobserved task exceptions from crashing the host process during cleanup.
+    /// </summary>
+    /// <remarks>Uses a synchronous fault-only continuation so the exception is marked
+    /// as observed immediately on the completing thread, without relying on thread pool
+    /// work items that may not execute during process shutdown.</remarks>
+    /// <param name="sendTask">The background send task to observe.</param>
+    private static void ObserveBackgroundSend(Task sendTask) =>
+        sendTask.ContinueWith(
+            static t => _ = t.Exception,
+            CancellationToken.None,
+            TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously,
+            TaskScheduler.Default);
 }
