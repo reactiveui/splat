@@ -26,5 +26,5 @@ public sealed class ApplicationInsightsViewTracking(TelemetryClient telemetryCli
     public void OnViewNavigation(string name) =>
         telemetryClient.TrackEvent(
             "PageView",
-            new Dictionary<string, string?> { ["Name"] = name });
+            new Dictionary<string, string> { ["Name"] = name });
 }
