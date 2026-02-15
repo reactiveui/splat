@@ -18,12 +18,19 @@ namespace Splat;
 /// when tracking is complete.</remarks>
 public sealed class RaygunFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
 {
+    /// <summary>
+    /// The Raygun client used to send feature usage events.
+    /// </summary>
     private readonly RaygunClient _raygunClient;
+
+    /// <summary>
+    /// The Raygun settings used to configure message building.
+    /// </summary>
     private readonly RaygunSettings _raygunSettings;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RaygunFeatureUsageTrackingSession"/> class for tracking usage of a specific.
-    /// feature.
+    /// Initializes a new instance of the <see cref="RaygunFeatureUsageTrackingSession"/> class
+    /// for tracking usage of a specific feature as a root-level session.
     /// </summary>
     /// <param name="featureName">The name of the feature to be tracked. Cannot be null or empty.</param>
     /// <param name="raygunClient">The RaygunClient instance used to send feature usage data. Cannot be null.</param>
@@ -40,6 +47,14 @@ public sealed class RaygunFeatureUsageTrackingSession : IFeatureUsageTrackingSes
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RaygunFeatureUsageTrackingSession"/> class
+    /// with a specified parent reference for sub-feature tracking.
+    /// </summary>
+    /// <param name="featureName">The name of the feature to be tracked. Cannot be null or empty.</param>
+    /// <param name="parentReference">The unique identifier of the parent feature session, or <see cref="Guid.Empty"/> for root sessions.</param>
+    /// <param name="raygunClient">The RaygunClient instance used to send feature usage data. Cannot be null.</param>
+    /// <param name="raygunSettings">The RaygunSettings instance that configures feature usage tracking. Cannot be null.</param>
     internal RaygunFeatureUsageTrackingSession(
         string featureName,
         Guid parentReference,
@@ -62,8 +77,9 @@ public sealed class RaygunFeatureUsageTrackingSession : IFeatureUsageTrackingSes
             { "ParentReference", parentReference.ToString() },
         };
 
-        // keep an eye on
-        // https://raygun.com/forums/thread/92182
+        // Raygun does not yet have a dedicated feature-usage event API, so we send a
+        // custom message with user data as a workaround. Track progress on first-class
+        // support: https://raygun.com/forums/thread/92182
         var messageBuilder = RaygunMessageBuilder.New(raygunSettings)
             .SetClientDetails()
             .SetEnvironmentDetails()
