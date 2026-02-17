@@ -23,8 +23,29 @@ public sealed class ApplicationInsightsViewTracking(TelemetryClient telemetryCli
     /// Track a view navigation using just a name.
     /// </summary>
     /// <param name="name">Name of the view.</param>
-    public void OnViewNavigation(string name) =>
+    public void OnViewNavigation(string name) => OnViewNavigation(
+        name,
+        new Dictionary<string, string>());
+
+    /// <summary>
+    /// Track a view navigation using name and extended properties.
+    /// </summary>
+    /// <remarks>
+    /// See https://github.com/microsoft/ApplicationInsights-dotnet/tree/main/BASE#tracking-page-views for details on underlying usage.
+    /// </remarks>
+    /// <param name="name">Name of the view.</param>
+    /// <param name="extendedProperties">Set of extended properties to send with the event. NOTE: if you set PageName in the collection, it will be overridden using <see cref="name"/>.</param>
+    public void OnViewNavigation(
+        string name,
+        IDictionary<string, string> extendedProperties)
+    {
+        // need to look at whether the standard properties of the Javascript SDK are supported in the .NET SDK (or rather the Azure Monitor when it rewrites the payload), but for now we'll just leave as minimal and allow injection by caller.
+        // reference: https://github.com/microsoft/ApplicationInsights-JS/blob/b6de144e27629b2d50e05ceb3885ee51b4fa0e2b/API-reference.md
+        extendedProperties ??= new Dictionary<string, string>();
+        extendedProperties["PageName"] = name;
+
         telemetryClient.TrackEvent(
             "PageView",
-            new Dictionary<string, string> { ["Name"] = name });
+            extendedProperties);
+    }
 }
