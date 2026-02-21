@@ -20,13 +20,16 @@ namespace Splat.ApplicationInsights;
 /// should be used on a single thread.</remarks>
 public sealed class ApplicationInsightsFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
 {
+    /// <summary>
+    /// The Application Insights telemetry client used to send events and exceptions.
+    /// </summary>
     private readonly TelemetryClient _telemetryClient;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ApplicationInsightsFeatureUsageTrackingSession"/> class.
     /// </summary>
-    /// <param name="featureName">The name of the feature.</param>
-    /// <param name="telemetryClient">The Application Insights telemetry client instance to use.</param>
+    /// <param name="featureName">The name of the feature being tracked.</param>
+    /// <param name="telemetryClient">The Application Insights telemetry client instance to use for sending telemetry data.</param>
     public ApplicationInsightsFeatureUsageTrackingSession(
         string featureName,
         TelemetryClient telemetryClient)
@@ -34,6 +37,13 @@ public sealed class ApplicationInsightsFeatureUsageTrackingSession : IFeatureUsa
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ApplicationInsightsFeatureUsageTrackingSession"/> class
+    /// with a parent reference for sub-feature tracking.
+    /// </summary>
+    /// <param name="featureName">The name of the feature being tracked.</param>
+    /// <param name="parentReference">The unique identifier of the parent feature session, or <see cref="Guid.Empty"/> if this is a top-level session.</param>
+    /// <param name="telemetryClient">The Application Insights telemetry client instance to use for sending telemetry data.</param>
     internal ApplicationInsightsFeatureUsageTrackingSession(
         string featureName,
         Guid parentReference,
@@ -75,6 +85,10 @@ public sealed class ApplicationInsightsFeatureUsageTrackingSession : IFeatureUsa
         _telemetryClient.TrackException(telemetry);
     }
 
+    /// <summary>
+    /// Tracks a feature usage event with the specified event name to Application Insights.
+    /// </summary>
+    /// <param name="eventName">The name of the event to track (e.g., "Feature Usage Start" or "Feature Usage End").</param>
     private void TrackEvent(string eventName)
     {
         var eventTelemetry = new EventTelemetry(eventName);
@@ -83,6 +97,11 @@ public sealed class ApplicationInsightsFeatureUsageTrackingSession : IFeatureUsa
         _telemetryClient.TrackEvent(eventTelemetry);
     }
 
+    /// <summary>
+    /// Populates the standard feature tracking properties on a telemetry item.
+    /// </summary>
+    /// <typeparam name="TTelemetry">The type of telemetry item that supports custom properties.</typeparam>
+    /// <param name="eventTelemetry">The telemetry item to populate with feature name, reference, and optional parent reference properties.</param>
     private void PrepareEventData<TTelemetry>(TTelemetry eventTelemetry)
         where TTelemetry : ISupportProperties
     {

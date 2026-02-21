@@ -25,6 +25,7 @@ public static class ApplicationInsightsFeatureUsageTrackingSessionTests
             var telemetryConfiguration = new TelemetryConfiguration
             {
                 DisableTelemetry = true,
+                ConnectionString = "InstrumentationKey=00000000-0000-0000-0000-000000000000",
             };
             var telemetryClient = new TelemetryClient(telemetryConfiguration);
 
@@ -42,6 +43,7 @@ public static class ApplicationInsightsFeatureUsageTrackingSessionTests
             var telemetryConfiguration = new TelemetryConfiguration
             {
                 DisableTelemetry = true,
+                ConnectionString = "InstrumentationKey=00000000-0000-0000-0000-000000000000",
             };
             var telemetryClient = new TelemetryClient(telemetryConfiguration);
 
