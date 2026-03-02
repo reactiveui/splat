@@ -32,7 +32,7 @@
     <PackageVersion Include="Verify.TUnit" Version="31.13.2" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
     <PackageVersion Include="Microsoft.Reactive.Testing" Version="6.1.0" />
-    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.4.1" />
+    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.5.1" />
     <PackageVersion Include="Microsoft.Testing.Platform.MSBuild" Version="2.1.0" />
     <PackageVersion Include="PublicApiGenerator" Version="11.5.4" />
   </ItemGroup>
