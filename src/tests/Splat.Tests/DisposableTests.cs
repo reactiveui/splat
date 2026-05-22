@@ -7,6 +7,8 @@ namespace Splat.Tests;
 
 public class DisposableTests
 {
+    private static readonly int[] _expectedDisposeOrder = [1, 2, 3];
+
     /// <summary>
     /// Test BooleanDisposable initial state.
     /// </summary>
@@ -541,7 +543,7 @@ public class DisposableTests
         compositeDisposable.Dispose();
 
         // Assert
-        await Assert.That(disposeOrder).IsEquivalentTo(new[] { 1, 2, 3 });
+        await Assert.That(disposeOrder).IsEquivalentTo(_expectedDisposeOrder);
     }
 
     /// <summary>

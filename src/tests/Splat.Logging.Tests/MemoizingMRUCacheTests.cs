@@ -96,6 +96,29 @@ public class MemoizingMRUCacheTests
     }
 
     /// <summary>
+    /// Test that cache eviction releases default values.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Cache_EvictsDefaultValues_WhenMaxSizeReached()
+    {
+        List<int> released = [];
+        var instance = new MemoizingMRUCache<string, int>(
+            (_, _) => 0,
+            1,
+            released.Add);
+
+        _ = instance.Get("key1");
+        _ = instance.Get("key2");
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(released).Count().IsEqualTo(1);
+            await Assert.That(released[0]).IsEqualTo(0);
+        }
+    }
+
+    /// <summary>
     /// Test that InvalidateAll with aggregateReleaseExceptions handles exceptions.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>

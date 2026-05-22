@@ -4,7 +4,6 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.Globalization;
-using System.Reflection;
 
 namespace Splat;
 
@@ -20,7 +19,6 @@ namespace Splat;
 public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
 {
     private readonly ILogger _inner;
-    private readonly MethodInfo _stringFormat = typeof(string).GetMethod("Format", [typeof(IFormatProvider), typeof(string), typeof(object[])]) ?? throw new InvalidOperationException("Cannot find the Format method which is required.");
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WrappingFullLogger"/> class.
@@ -554,12 +552,8 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
         }
     }
 
-    private string InvokeStringFormat(IFormatProvider formatProvider, string message, object[] args)
+    private static string InvokeStringFormat(IFormatProvider formatProvider, string message, object[] args)
     {
-        var sfArgs = new object?[3];
-        sfArgs[0] = formatProvider;
-        sfArgs[1] = message;
-        sfArgs[2] = args;
-        return (string?)_stringFormat.Invoke(null, sfArgs) ?? "(null)";
+        return string.Format(formatProvider, message, args);
     }
 }

@@ -107,12 +107,46 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     }
 
     /// <inheritdoc />
-    public virtual object? GetService(Type? serviceType) =>
-        GetServices(serviceType).LastOrDefault();
+    public virtual object? GetService(Type? serviceType)
+    {
+        if (ServiceProvider is null)
+        {
+            throw new InvalidOperationException("The ServiceProvider is null.");
+        }
+
+        var isNull = serviceType is null;
+        serviceType ??= NullServiceType.CachedType;
+
+        var service = ServiceProvider.GetService(serviceType);
+        return isNull && service is NullServiceType nullServiceType
+            ? nullServiceType.Factory()
+            : service;
+    }
 
     /// <inheritdoc />
-    public virtual object? GetService(Type? serviceType, string? contract) =>
-        GetServices(serviceType, contract).LastOrDefault();
+    public virtual object? GetService(Type? serviceType, string? contract)
+    {
+        if (contract is null)
+        {
+            return GetService(serviceType);
+        }
+
+        if (ServiceProvider is null)
+        {
+            throw new InvalidOperationException("The ServiceProvider is null.");
+        }
+
+        var isNull = serviceType is null;
+        serviceType ??= NullServiceType.CachedType;
+
+        var service = ServiceProvider is IKeyedServiceProvider serviceProvider
+            ? serviceProvider.GetKeyedService(serviceType, contract)
+            : null;
+
+        return isNull && service is NullServiceType nullServiceType
+            ? nullServiceType.Factory()
+            : service;
+    }
 
     /// <inheritdoc />
     public virtual IEnumerable<object> GetServices(Type? serviceType)
@@ -405,18 +439,46 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     }
 
     /// <inheritdoc/>
-    public T? GetService<T>() => (T?)GetService(typeof(T));
+    public T? GetService<T>() => ServiceProvider is null
+        ? throw new InvalidOperationException("The ServiceProvider is null.")
+        : ServiceProvider.GetService<T>();
 
     /// <inheritdoc/>
-    public T? GetService<T>(string? contract) =>
-        (T?)GetService(typeof(T), contract);
+    public T? GetService<T>(string? contract)
+    {
+        if (contract is null)
+        {
+            return GetService<T>();
+        }
+
+        return ServiceProvider switch
+        {
+            null => throw new InvalidOperationException("The ServiceProvider is null."),
+            IKeyedServiceProvider keyedServiceProvider => keyedServiceProvider.GetKeyedService<T>(contract),
+            _ => default
+        };
+    }
 
     /// <inheritdoc/>
-    public IEnumerable<T> GetServices<T>() => GetServices(typeof(T)).Cast<T>();
+    public IEnumerable<T> GetServices<T>() => ServiceProvider is null
+        ? throw new InvalidOperationException("The ServiceProvider is null.")
+        : ServiceProvider.GetServices<T>();
 
     /// <inheritdoc/>
-    public IEnumerable<T> GetServices<T>(string? contract) =>
-        GetServices(typeof(T), contract).Cast<T>();
+    public IEnumerable<T> GetServices<T>(string? contract)
+    {
+        if (contract is null)
+        {
+            return GetServices<T>();
+        }
+
+        return ServiceProvider switch
+        {
+            null => throw new InvalidOperationException("The ServiceProvider is null."),
+            IKeyedServiceProvider keyedServiceProvider => keyedServiceProvider.GetKeyedServices<T>(contract),
+            _ => []
+        };
+    }
 
     /// <inheritdoc/>
     public bool HasRegistration<T>() => HasRegistration(typeof(T));
@@ -467,7 +529,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
 
         lock (_syncLock)
         {
-            _serviceCollection?.AddTransient<TService, TImplementation>();
+            _serviceCollection?.AddTransient<TService>(static _ => new TImplementation());
 
             // required so that it gets rebuilt if not injected externally.
             DisposeServiceProvider(_serviceProvider);
@@ -493,7 +555,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
 
         lock (_syncLock)
         {
-            _serviceCollection?.AddKeyedTransient<TService, TImplementation>(contract);
+            _serviceCollection?.AddKeyedTransient<TService>(contract, static (_, _) => new TImplementation());
 
             // required so that it gets rebuilt if not injected externally.
             DisposeServiceProvider(_serviceProvider);

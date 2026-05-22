@@ -29,6 +29,7 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
     private const string WinFormsDesignerPropertiesType = "Windows.ApplicationModel.DesignMode, Windows, ContentType=WindowsRuntime";
     private const string WinFormsDesignerPropertiesDesignModeMethod = "DesignModeEnabled";
 
+    private static readonly string[] _designEnvironments = ["BLEND.EXE", "XDESPROC.EXE"];
     private static bool? _cachedInDesignModeResult;
 #endif
 
@@ -72,7 +73,6 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
         }
         else
         {
-            var designEnvironments = new[] { "BLEND.EXE", "XDESPROC.EXE" };
 #if NETFRAMEWORK || TIZEN
             var entry = Assembly.GetEntryAssembly()?.Location;
 #else
@@ -82,7 +82,7 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
             {
                 var exeName = new FileInfo(entry).Name;
 
-                foreach (var designEnv in designEnvironments)
+                foreach (var designEnv in _designEnvironments)
                 {
 #if NETFRAMEWORK || TIZEN
                     if (designEnv.IndexOf(exeName, StringComparison.InvariantCultureIgnoreCase) != -1)

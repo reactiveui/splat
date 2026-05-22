@@ -438,11 +438,11 @@ public class AutofacDependencyResolver : IDependencyResolver
             }
 
             // Register to both the application-wide container and internal lifetime
-            _builder.RegisterType<TImplementation>()
+            _builder.Register(static _ => new TImplementation())
                 .As<TService>()
                 .AsImplementedInterfaces();
             _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(internalBuilder =>
-                internalBuilder.RegisterType<TImplementation>()
+                internalBuilder.Register(static _ => new TImplementation())
                     .As<TService>()
                     .AsImplementedInterfaces());
         }
@@ -463,16 +463,16 @@ public class AutofacDependencyResolver : IDependencyResolver
 
             if (string.IsNullOrWhiteSpace(contract))
             {
-               Register<TService, TImplementation>();
+                Register<TService, TImplementation>();
             }
             else
             {
                 // Register to both the application-wide container and internal lifetime
-                _builder.RegisterType<TImplementation>()
+                _builder.Register(static _ => new TImplementation())
                     .Named<TService>(contract!)
                     .AsImplementedInterfaces();
                 _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(internalBuilder =>
-                    internalBuilder.RegisterType<TImplementation>()
+                    internalBuilder.Register(static _ => new TImplementation())
                         .Named<TService>(contract!)
                         .AsImplementedInterfaces());
             }

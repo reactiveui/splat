@@ -100,8 +100,7 @@ internal static class PlatformBitmapLoaderHelpers
     /// <returns>Whether the termination is correct.</returns>
     internal static bool HasCorrectStreamEnd(Stream sourceStream)
     {
-        // 0-based and go back 2.
-        sourceStream.Position = sourceStream.Length - 3;
+        sourceStream.Position = sourceStream.Length - 2;
         return sourceStream.ReadByte() == 0xFF
                && sourceStream.ReadByte() == 0xD9;
     }

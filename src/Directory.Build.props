@@ -81,10 +81,7 @@
 
     <PackageReference Include="TUnit"/>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="Verify.TUnit"/>
     <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
-    <PackageReference Include="Microsoft.Reactive.Testing" />
-    <PackageReference Include="PublicApiGenerator" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(IsTestProject)' != 'true'">

@@ -15,7 +15,7 @@ public class NullServiceType(Func<object?> factory)
     /// <summary>
     /// Gets the cached <see cref="Type"/> instance representing the <see cref="NullServiceType"/> type.
     /// </summary>
-    /// <remarks>This field can be used to avoid repeated calls to <see cref="Type.GetType"/> or <see
+    /// <remarks>This field can be used to avoid repeated calls to <see cref="Type.GetType(string)"/> or <see
     /// langword="typeof"/> for <see cref="NullServiceType"/>. It is intended for scenarios where a reference to the
     /// <see cref="NullServiceType"/> type is needed multiple times.</remarks>
     public static readonly Type CachedType = typeof(NullServiceType);
