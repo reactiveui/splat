@@ -7,45 +7,45 @@
     <PackageVersion Include="Autofac" Version="9.1.0" />
     <PackageVersion Include="DryIoc.Dll" Version="5.4.3" />
     <PackageVersion Include="Exceptionless" Version="6.1.0" />
-    <PackageVersion Include="log4net" Version="3.3.0" />
+    <PackageVersion Include="log4net" Version="3.3.1" />
     <PackageVersion Include="Microsoft.AppCenter.Analytics" Version="5.0.7" />
     <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="5.0.7" />
     <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.23.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.5" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.5" />
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.300" />
     <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="11.2.5" />
     <PackageVersion Include="Nerdbank.GitVersioning" Version="3.9.50" />
     <PackageVersion Include="Ninject" Version="3.3.6" />
-    <PackageVersion Include="NLog" Version="6.1.1" />
+    <PackageVersion Include="NLog" Version="6.1.3" />
     <PackageVersion Include="Prism.Core" Version="9.0.537" />
     <PackageVersion Include="Prism.Forms" Version="9.0.537" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.15.0" />
     <PackageVersion Include="Serilog" Version="4.3.1" />
     <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
-    <PackageVersion Include="SimpleInjector" Version="5.5.0" />
+    <PackageVersion Include="SimpleInjector" Version="5.5.2" />
     <PackageVersion Include="stylecop.analyzers" Version="1.2.0-beta.556" />
     <PackageVersion Include="System.Net.Http" Version="4.3.4" />
     <PackageVersion Include="System.Reactive" Version="6.1.0" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
-    <PackageVersion Include="TUnit" Version="1.22.6" />
-    <PackageVersion Include="Verify.TUnit" Version="31.13.5" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
+    <PackageVersion Include="TUnit" Version="1.45.8" />
+    <PackageVersion Include="Verify.TUnit" Version="31.16.3" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
     <PackageVersion Include="Microsoft.Reactive.Testing" Version="6.1.0" />
-    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.5.2" />
-    <PackageVersion Include="Microsoft.Testing.Platform.MSBuild" Version="2.1.0" />
+    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.7.0" />
+    <PackageVersion Include="Microsoft.Testing.Platform.MSBuild" Version="2.2.3" />
     <PackageVersion Include="PublicApiGenerator" Version="11.5.4" />
   </ItemGroup>
 
   <!-- Pinned transitive dependencies for compatibility -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="10.0.8" />
   </ItemGroup>
 
   <!-- Latest versions for modern TFMs (net8.0+) -->
   <ItemGroup>
-    <PackageVersion Include="System.Collections.Immutable" Version="10.0.5" />
-    <PackageVersion Include="System.Text.Json" Version="10.0.5" />
+    <PackageVersion Include="System.Collections.Immutable" Version="10.0.8" />
+    <PackageVersion Include="System.Text.Json" Version="10.0.8" />
   </ItemGroup>
 
   <!-- System.Runtime.Serialization.Formatters: TFM-specific versioning -->
@@ -58,7 +58,7 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="10.0.5" />
+        <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="10.0.8" />
       </ItemGroup>
     </Otherwise>
   </Choose>
