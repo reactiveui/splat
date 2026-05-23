@@ -22,6 +22,8 @@ jobs:
     with:
       solutionFile: Splat.slnx
       installWorkloads: true
+      versioningTool: minver
+      minverMinimumMajorMinor: '19.3'
       bump: ${{ inputs.bump }}
     secrets:
       CERTUM_USER_ID: ${{ secrets.CERTUM_USER_ID }}
