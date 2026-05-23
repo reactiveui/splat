@@ -37,12 +37,14 @@
     <!-- Include PDB in the built .nupkg -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <NoWarn>$(NoWarn);IDE1006</NoWarn>
+    <!-- Enable building the .NET Framework targets on non-Windows platforms (reference-only compile). -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
 
   <PropertyGroup>
     <SplatModernTargets>net8.0;net9.0;net10.0</SplatModernTargets>
 
-    <SplatLegacyTargets Condition="$([MSBuild]::IsOsPlatform('Windows'))">net462;net472;net481</SplatLegacyTargets>
+    <SplatLegacyTargets>net462;net472;net481</SplatLegacyTargets>
 
     <SplatCoreTargets>$(SplatModernTargets)</SplatCoreTargets>
     <SplatCoreTargets Condition=" '$(SplatLegacyTargets)' != '' ">$(SplatCoreTargets);$(SplatLegacyTargets)</SplatCoreTargets>
@@ -50,15 +52,12 @@
     <SplatAndroidTargets>net9.0-android;net10.0-android</SplatAndroidTargets>
     <SplatWindowsTargets>net8.0-windows10.0.17763.0;net9.0-windows10.0.17763.0;net10.0-windows10.0.17763.0;net8.0-windows10.0.19041.0;net9.0-windows10.0.19041.0;net10.0-windows10.0.19041.0</SplatWindowsTargets>
     <SplatAppleTargets>net9.0-ios;net9.0-macos;net9.0-maccatalyst;net9.0-tvos;net10.0-ios;net10.0-macos;net10.0-maccatalyst;net10.0-tvos</SplatAppleTargets>
-    <SplatUiFinalTargetFrameworks>$(SplatCoreTargets);$(SplatAndroidTargets)</SplatUiFinalTargetFrameworks>
+    <SplatUiFinalTargetFrameworks>$(SplatCoreTargets);$(SplatAndroidTargets);$(SplatWindowsTargets)</SplatUiFinalTargetFrameworks>
   </PropertyGroup>
 
-  <PropertyGroup Condition="$([MSBuild]::IsOsPlatform('OSX'))">
+  <!-- Apple TFMs: only buildable on Windows or macOS. -->
+  <PropertyGroup Condition="$([MSBuild]::IsOsPlatform('Windows')) or $([MSBuild]::IsOsPlatform('OSX'))">
     <SplatUiFinalTargetFrameworks>$(SplatUiFinalTargetFrameworks);$(SplatAppleTargets)</SplatUiFinalTargetFrameworks>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="$([MSBuild]::IsOsPlatform('Windows'))">
-    <SplatUiFinalTargetFrameworks>$(SplatUiFinalTargetFrameworks);$(SplatWindowsTargets);$(SplatAppleTargets)</SplatUiFinalTargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(IsTestProject) != 'true'">
