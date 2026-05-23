@@ -50,7 +50,7 @@
   <ItemGroup Condition="$(TargetFramework.EndsWith('0-macos'))">
     <Compile Include="Platforms\Cocoa\**\*.cs"/>
   </ItemGroup>
-  <ItemGroup Condition=" $(TargetFramework.EndsWith('0-android'))">
+  <ItemGroup Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
     <Compile Include="Platforms\Android\**\*.cs"/>
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs"/>
     <Compile Include="Resources\**\*.cs"/>
