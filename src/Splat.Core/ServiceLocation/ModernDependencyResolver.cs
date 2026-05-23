@@ -534,7 +534,7 @@ public class ModernDependencyResolver : IDependencyResolver
 
         if (Volatile.Read(ref _snapshot) is null)
         {
-            return new ActionDisposable(() => { });
+            return ActionDisposable.Empty;
         }
 
         var pair = GetKey(serviceType, contract);
@@ -543,7 +543,7 @@ public class ModernDependencyResolver : IDependencyResolver
         {
             if (Volatile.Read(ref _snapshot) is null)
             {
-                return new ActionDisposable(() => { });
+                return ActionDisposable.Empty;
             }
 
             if (!_callbackRegistry.TryGetValue(pair, out var list))
@@ -592,7 +592,7 @@ public class ModernDependencyResolver : IDependencyResolver
 
         if (Volatile.Read(ref _snapshot) is null)
         {
-            return new ActionDisposable(() => { });
+            return ActionDisposable.Empty;
         }
 
         var pair = GetKey(typeof(T), contract);
@@ -601,7 +601,7 @@ public class ModernDependencyResolver : IDependencyResolver
         {
             if (Volatile.Read(ref _snapshot) is null)
             {
-                return new ActionDisposable(() => { });
+                return ActionDisposable.Empty;
             }
 
             if (!_callbackRegistry.TryGetValue(pair, out var list))

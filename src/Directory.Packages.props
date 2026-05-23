@@ -26,12 +26,10 @@
     <PackageVersion Include="SimpleInjector" Version="5.5.2" />
     <PackageVersion Include="stylecop.analyzers" Version="1.2.0-beta.556" />
     <PackageVersion Include="System.Net.Http" Version="4.3.4" />
-    <PackageVersion Include="System.Reactive" Version="6.1.0" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageVersion Include="TUnit" Version="1.45.8" />
     <PackageVersion Include="Verify.TUnit" Version="31.16.3" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
-    <PackageVersion Include="Microsoft.Reactive.Testing" Version="6.1.0" />
     <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.7.0" />
     <PackageVersion Include="Microsoft.Testing.Platform.MSBuild" Version="2.2.3" />
     <PackageVersion Include="PublicApiGenerator" Version="11.5.4" />
@@ -93,9 +91,5 @@
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net46'))">
     <PackageVersion Include="System.ValueTuple" Version="4.6.2" />
-  </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework.StartsWith('netstandard'))">
-    <PackageVersion Include="System.Diagnostics.Contracts" Version="4.3.0" />
-    <PackageVersion Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
   </ItemGroup>
 </Project>

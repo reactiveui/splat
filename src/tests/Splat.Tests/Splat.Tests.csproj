@@ -6,6 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="PublicApiGenerator" />
+    <PackageReference Include="Verify.TUnit" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\Splat.Core\Splat.Core.csproj" />
     <ProjectReference Include="..\..\Splat\Splat.csproj" />
     <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />

@@ -27,7 +27,7 @@ internal sealed class ActionDisposable : IDisposable
     /// </summary>
     /// <remarks>This property can be used when an IDisposable implementation is required but no cleanup is
     /// necessary. The returned object is safe to dispose multiple times.</remarks>
-    public static IDisposable Empty => new ActionDisposable(() => { });
+    public static IDisposable Empty { get; } = new ActionDisposable(() => { });
 
     /// <inheritdoc />
     public void Dispose() => Interlocked.Exchange(ref _block, () => { })();

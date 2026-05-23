@@ -174,6 +174,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
 
         // Insert under the gate (double-check in case another thread filled it).
         TVal? evictedToRelease = default;
+        var hasEvictedToRelease = false;
         List<TVal>? evictedBatch = null;
 
         lock (_gate)
@@ -191,7 +192,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
             // Maintain size under lock, but do not invoke release under lock.
             if (_entries.Count > _maxCacheSize)
             {
-                EvictToSize_NoThrow(ref evictedToRelease, ref evictedBatch);
+                EvictToSize_NoThrow(ref evictedToRelease, ref hasEvictedToRelease, ref evictedBatch);
             }
         }
 
@@ -205,7 +206,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
                     _releaseFunction(evictedBatch[i]);
                 }
             }
-            else if (!EqualityComparer<TVal>.Default.Equals(evictedToRelease!, default!))
+            else if (hasEvictedToRelease)
             {
                 _releaseFunction(evictedToRelease!);
             }
@@ -365,11 +366,12 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     /// </summary>
     /// <param name="value">The value that was evicted.</param>
     /// <param name="singleEvicted">Single-value slot.</param>
+    /// <param name="hasSingleEvicted">Whether the single-value slot contains a value.</param>
     /// <param name="batchEvicted">Batch list for multiple evictions.</param>
 #if NET8_0_OR_GREATER
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    private static void RecordEvictedValueNoThrow(TVal value, ref TVal? singleEvicted, ref List<TVal>? batchEvicted)
+    private static void RecordEvictedValueNoThrow(TVal value, ref TVal? singleEvicted, ref bool hasSingleEvicted, ref List<TVal>? batchEvicted)
     {
         if (batchEvicted is not null)
         {
@@ -378,15 +380,17 @@ public sealed class MemoizingMRUCache<TParam, TVal>
         }
 
         // First eviction goes to the single slot.
-        if (EqualityComparer<TVal>.Default.Equals(singleEvicted!, default!))
+        if (!hasSingleEvicted)
         {
             singleEvicted = value;
+            hasSingleEvicted = true;
             return;
         }
 
         // Second eviction upgrades to a list.
         batchEvicted = new(capacity: 4) { singleEvicted!, value };
         singleEvicted = default;
+        hasSingleEvicted = false;
     }
 
     /// <summary>
@@ -412,6 +416,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     /// Evicts least-recently-used entries until the cache size is within <see cref="_maxCacheSize"/>.
     /// </summary>
     /// <param name="singleEvicted">Receives a single evicted value when exactly one eviction occurs.</param>
+    /// <param name="hasSingleEvicted">Receives whether a single evicted value was recorded.</param>
     /// <param name="batchEvicted">Receives evicted values when multiple evictions occur.</param>
     /// <remarks>
     /// Caller must hold <c>lock(_gate)</c>. This method does not invoke the release callback.
@@ -419,7 +424,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
 #if NET8_0_OR_GREATER
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    private void EvictToSize_NoThrow(ref TVal? singleEvicted, ref List<TVal>? batchEvicted)
+    private void EvictToSize_NoThrow(ref TVal? singleEvicted, ref bool hasSingleEvicted, ref List<TVal>? batchEvicted)
     {
         while (_entries.Count > _maxCacheSize)
         {
@@ -435,10 +440,10 @@ public sealed class MemoizingMRUCache<TParam, TVal>
             ref var entry = ref CollectionsMarshal.GetValueRefOrNullRef(_entries, key);
             if (!Unsafe.IsNullRef(ref entry))
             {
-                RecordEvictedValueNoThrow(entry.value, ref singleEvicted, ref batchEvicted);
+                RecordEvictedValueNoThrow(entry.value, ref singleEvicted, ref hasSingleEvicted, ref batchEvicted);
             }
 #else
-            RecordEvictedValueNoThrow(_entries[key].value, ref singleEvicted, ref batchEvicted);
+            RecordEvictedValueNoThrow(_entries[key].value, ref singleEvicted, ref hasSingleEvicted, ref batchEvicted);
 #endif
 
             _ = _entries.Remove(key);

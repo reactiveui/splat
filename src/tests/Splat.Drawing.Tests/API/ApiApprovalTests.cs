@@ -19,7 +19,7 @@ public class ApiApprovalTests
     /// <returns>The task.</returns>
     [Test]
     public Task SplatUIProject() =>
-#if WINDOWS
+#if WINDOWS && !SPLAT_DUPLICATE_WINDOWS_API_APPROVAL_TARGET
         typeof(IPlatformModeDetector).Assembly.CheckApproval(["Splat"]);
 #else
         Task.CompletedTask;
