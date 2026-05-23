@@ -149,6 +149,9 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     }
 
     /// <inheritdoc />
+#if NET7_0_OR_GREATER
+    [UnconditionalSuppressMessage("AOT", "IL3050:RequiresDynamicCode", Justification = "The non-generic Microsoft DI API requires runtime IEnumerable<T> native code; generic GetServices<T>() is the AOT-safe path.")]
+#endif
     public virtual IEnumerable<object> GetServices(Type? serviceType)
     {
         if (ServiceProvider is null)
@@ -175,6 +178,9 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     }
 
     /// <inheritdoc />
+#if NET7_0_OR_GREATER
+    [UnconditionalSuppressMessage("AOT", "IL3050:RequiresDynamicCode", Justification = "The non-generic Microsoft DI API requires runtime IEnumerable<T> native code; generic GetServices<T>(string?) is the AOT-safe path.")]
+#endif
     public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract)
     {
         if (ServiceProvider is null)

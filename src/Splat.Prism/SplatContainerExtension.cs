@@ -63,6 +63,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     public IContainerRegistry RegisterManySingleton(Type type, params Type[] serviceTypes) => throw new NotSupportedException();
 
     /// <inheritdoc/>
+    [UnconditionalSuppressMessage("Trimming", "IL2067:RequiresUnreferencedCode", Justification = "Prism exposes Type-based registration; factory overloads are the trim-safe path.")]
     public IContainerRegistry Register(Type from, Type to)
     {
         _types[(from, null)] = to;
@@ -85,6 +86,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     }
 
     /// <inheritdoc/>
+    [UnconditionalSuppressMessage("Trimming", "IL2067:RequiresUnreferencedCode", Justification = "Prism exposes Type-based registration; factory overloads are the trim-safe path.")]
     public IContainerRegistry Register(Type from, Type to, string name)
     {
         _types[(from, name)] = to;
@@ -107,6 +109,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     }
 
     /// <inheritdoc/>
+    [UnconditionalSuppressMessage("Trimming", "IL2067:RequiresUnreferencedCode", Justification = "Prism exposes Type-based registration; factory overloads are the trim-safe path.")]
     public IContainerRegistry RegisterMany(Type type, params Type[] serviceTypes)
     {
         if (serviceTypes is null)
@@ -158,6 +161,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     }
 
     /// <inheritdoc/>
+    [UnconditionalSuppressMessage("Trimming", "IL2067:RequiresUnreferencedCode", Justification = "Prism exposes Type-based registration; factory overloads are the trim-safe path.")]
     public IContainerRegistry RegisterSingleton(Type from, Type to)
     {
         _types[(from, null)] = to;
@@ -195,6 +199,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     }
 
     /// <inheritdoc/>
+    [UnconditionalSuppressMessage("Trimming", "IL2067:RequiresUnreferencedCode", Justification = "Prism exposes Type-based registration; factory overloads are the trim-safe path.")]
     public IContainerRegistry RegisterSingleton(Type from, Type to, string name)
     {
         _types[(from, name)] = to;
@@ -213,6 +218,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
 
     /// <inheritdoc/>
     [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Existing API")]
+    [UnconditionalSuppressMessage("Trimming", "IL2067:RequiresUnreferencedCode", Justification = "Prism exposes Type-based resolution; resolver/factory overloads are the trim-safe path.")]
     public object Resolve(Type type, params (Type Type, object Instance)[] parameters) =>
         (_types.TryGetValue((type, null), out var resolvedType)
             ? Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance)) ?? throw new InvalidOperationException("Could not create type")
@@ -223,6 +229,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
 
     /// <inheritdoc/>
     [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Existing API")]
+    [UnconditionalSuppressMessage("Trimming", "IL2067:RequiresUnreferencedCode", Justification = "Prism exposes Type-based resolution; resolver/factory overloads are the trim-safe path.")]
     public object Resolve(Type type, string name, params (Type Type, object Instance)[] parameters) =>
         (!_types.TryGetValue((type, name), out var resolvedType)
             ? resolvedType switch

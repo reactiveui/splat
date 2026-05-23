@@ -106,6 +106,9 @@ public class AutofacDependencyResolver : IDependencyResolver
     }
 
     /// <inheritdoc />
+#if NET6_0_OR_GREATER
+    [UnconditionalSuppressMessage("AOT", "IL3050:RequiresDynamicCode", Justification = "The non-generic Autofac API builds IEnumerable<T> for a runtime Type; generic GetServices<T>() is the AOT-safe path.")]
+#endif
     public virtual IEnumerable<object> GetServices(Type? serviceType)
     {
         var isNull = serviceType is null;
@@ -136,6 +139,9 @@ public class AutofacDependencyResolver : IDependencyResolver
     }
 
     /// <inheritdoc />
+#if NET6_0_OR_GREATER
+    [UnconditionalSuppressMessage("AOT", "IL3050:RequiresDynamicCode", Justification = "The non-generic Autofac API builds IEnumerable<T> for a runtime Type; generic GetServices<T>(string?) is the AOT-safe path.")]
+#endif
     public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract)
     {
         var isNull = serviceType is null;

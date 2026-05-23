@@ -34,6 +34,10 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
 #endif
 
     /// <inheritdoc />
+#if NET6_0_OR_GREATER
+    [RequiresDynamicCode("Uses Activator.CreateInstance and reflection which require dynamic code generation")]
+    [RequiresUnreferencedCode("Uses Type.GetType and Activator.CreateInstance which may be trimmed")]
+#endif
     public bool? InDesignMode()
     {
 #if NETFX_CORE
