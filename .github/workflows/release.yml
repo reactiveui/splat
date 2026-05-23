@@ -23,7 +23,6 @@ jobs:
     with:
       solutionFile: Splat.slnx
       installWorkloads: true
-      versioningTool: minver
       minverMinimumMajorMinor: '19.3'
       bump: ${{ inputs.bump }}
     secrets:
