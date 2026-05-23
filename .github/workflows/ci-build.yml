@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   build:
-    uses: reactiveui/actions-common/.github/workflows/workflow-common-setup-and-build.yml@main
+    uses: reactiveui/actions-common/.github/workflows/workflow-common-setup-and-build.yml@4a1a5f6a413a8de27f324109dc17f2fc659dbcfd # main
     with:
       productNamespacePrefix: Splat
       installWorkloads: true

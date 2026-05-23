@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   release:
-    uses: reactiveui/actions-common/.github/workflows/workflow-common-release.yml@main
+    uses: reactiveui/actions-common/.github/workflows/workflow-common-release.yml@4a1a5f6a413a8de27f324109dc17f2fc659dbcfd # main
     with:
       solutionFile: Splat.slnx
       installWorkloads: true
@@ -61,7 +61,7 @@ jobs:
 
   create-release:
     needs: [release, publish-nuget]
-    uses: reactiveui/actions-common/.github/workflows/workflow-common-create-release.yml@main
+    uses: reactiveui/actions-common/.github/workflows/workflow-common-create-release.yml@4a1a5f6a413a8de27f324109dc17f2fc659dbcfd # main
     with:
       version: ${{ needs.release.outputs.semver2 }}
       tag: ${{ needs.release.outputs.tag }}
