@@ -7,9 +7,6 @@
   <PropertyGroup Condition="$(TargetFramework.StartsWith('net4'))">
     <DefineConstants>$(DefineConstants);NET_45;XAML</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="$(TargetFramework.StartsWith('tizen'))">
-    <DefineConstants>$(DefineConstants);TIZEN</DefineConstants>
-  </PropertyGroup>
   <PropertyGroup Condition="$(TargetFramework.EndsWith('0-ios'))">
     <DefineConstants>$(DefineConstants);MONO;UIKIT;COCOA;IOS</DefineConstants>
   </PropertyGroup>

@@ -19,7 +19,6 @@ namespace Splat;
 /// result may be cached for performance. Thread safety is not guaranteed.</remarks>
 public class DefaultPlatformModeDetector : IPlatformModeDetector
 {
-#if !NETFX_CORE
     private const string XamlDesignPropertiesType = "System.ComponentModel.DesignerProperties, System.Windows, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e";
     private const string XamlControlBorderType = "System.Windows.Controls.Border, System.Windows, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e";
     private const string XamlDesignPropertiesDesignModeMethodName = "GetIsInDesignMode";
@@ -31,14 +30,10 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
 
     private static readonly string[] _designEnvironments = ["BLEND.EXE", "XDESPROC.EXE"];
     private static bool? _cachedInDesignModeResult;
-#endif
 
     /// <inheritdoc />
     public bool? InDesignMode()
     {
-#if NETFX_CORE
-        return false;
-#else
         if (_cachedInDesignModeResult.HasValue)
         {
             return _cachedInDesignModeResult.Value;
@@ -73,7 +68,7 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
         }
         else
         {
-#if NETFRAMEWORK || TIZEN
+#if NETFRAMEWORK
             var entry = Assembly.GetEntryAssembly()?.Location;
 #else
             var entry = System.AppContext.BaseDirectory;
@@ -84,7 +79,7 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
 
                 foreach (var designEnv in _designEnvironments)
                 {
-#if NETFRAMEWORK || TIZEN
+#if NETFRAMEWORK
                     if (designEnv.IndexOf(exeName, StringComparison.InvariantCultureIgnoreCase) != -1)
 #else
                     if (designEnv.Contains(exeName, StringComparison.InvariantCultureIgnoreCase))
@@ -100,6 +95,5 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
         _cachedInDesignModeResult = false;
 
         return _cachedInDesignModeResult;
-#endif
     }
 }

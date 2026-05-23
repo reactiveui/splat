@@ -55,9 +55,6 @@
     <Compile Include="Platforms\TypeForwardedSystemDrawing.cs"/>
     <Compile Include="Resources\**\*.cs"/>
   </ItemGroup>
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('tizen')) ">
-    <Compile Include="Platforms\Tizen\**\*.cs"/>
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Splat\Splat.csproj"/>
   </ItemGroup>
