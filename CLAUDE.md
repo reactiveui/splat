@@ -214,8 +214,8 @@ The project uses granular target framework definitions in `Directory.Build.props
 - `SplatLegacyTargets` - net462, net472, net481 (Windows-only legacy .NET Framework)
 - `SplatCoreTargets` - Combines modern + legacy targets for core libraries
 - `SplatWindowsTargets` - net8.0/9.0/10.0-windows10.0.17763.0 and windows10.0.19041.0
-- `SplatAndroidTargets` - net9.0-android, net10.0-android
-- `SplatAppleTargets` - iOS, tvOS, macOS, Mac Catalyst
+- `SplatAndroidTargets` - net10.0-android (the .NET 9 mobile target was dropped when .NET MAUI 9 went out of support on 2026-05-12)
+- `SplatAppleTargets` - net10.0-ios, net10.0-macos, net10.0-maccatalyst, net10.0-tvos (the .NET 9 Apple targets were dropped when .NET MAUI 9 went out of support on 2026-05-12)
 - `SplatUiFinalTargetFrameworks` - OS-aware composition for UI projects
 
 **OS-Aware Builds:** The build system automatically selects appropriate target frameworks based on the host OS:
