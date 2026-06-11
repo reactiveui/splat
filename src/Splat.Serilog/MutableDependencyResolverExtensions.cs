@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.Serilog;
@@ -15,50 +14,49 @@ namespace Splat.Serilog;
 /// infrastructure.</remarks>
 public static class MutableDependencyResolverExtensions
 {
-    /// <summary>
-    /// Simple helper to initialize Serilog within Splat with the Wrapping Full Logger.
-    /// </summary>
-    /// <remarks>
-    /// You should configure Serilog prior to calling this method.
-    /// </remarks>
+    /// <summary>Extension members for <see cref="IMutableDependencyResolver"/>.</summary>
     /// <param name="instance">An instance of Mutable Dependency Resolver.</param>
-    /// <example>
-    /// <code>
-    /// AppLocator.CurrentMutable.UseSerilogWithWrappingFullLogger();
-    /// </code>
-    /// </example>
-    public static void UseSerilogFullLogger(this IMutableDependencyResolver instance)
+    extension(IMutableDependencyResolver instance)
     {
-        ArgumentExceptionHelper.ThrowIfNull(instance);
-
-        var funcLogManager = new FuncLogManager(type =>
+        /// <summary>Simple helper to initialize Serilog within Splat with the Wrapping Full Logger.</summary>
+        /// <remarks>
+        /// You should configure Serilog prior to calling this method.
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// AppLocator.CurrentMutable.UseSerilogWithWrappingFullLogger();
+        /// </code>
+        /// </example>
+        public void UseSerilogFullLogger()
         {
-            var actualLogger = global::Serilog.Log.ForContext(type);
-            return new SerilogFullLogger(actualLogger);
-        });
+            ArgumentExceptionHelper.ThrowIfNull(instance);
 
-        instance.Register<ILogManager>(() => funcLogManager);
-    }
+            var funcLogManager = new FuncLogManager(type =>
+            {
+                var actualLogger = global::Serilog.Log.ForContext(type);
+                return new SerilogFullLogger(actualLogger);
+            });
 
-    /// <summary>
-    /// Simple helper to initialize Serilog within Splat with the Wrapping Full Logger.
-    /// </summary>
-    /// <remarks>
-    /// You should configure Serilog prior to calling this method.
-    /// </remarks>
-    /// <param name="instance">An instance of Mutable Dependency Resolver.</param>
-    /// <param name="actualLogger">The serilog logger to register.</param>
-    /// <example>
-    /// <code>
-    /// AppLocator.CurrentMutable.UseSerilogWithWrappingFullLogger();
-    /// </code>
-    /// </example>
-    public static void UseSerilogFullLogger(this IMutableDependencyResolver instance, global::Serilog.ILogger actualLogger)
-    {
-        ArgumentExceptionHelper.ThrowIfNull(instance);
+            instance.Register<ILogManager>(() => funcLogManager);
+        }
 
-        var funcLogManager = new FuncLogManager(type => new SerilogFullLogger(actualLogger.ForContext(type)));
+        /// <summary>Simple helper to initialize Serilog within Splat with the Wrapping Full Logger.</summary>
+        /// <remarks>
+        /// You should configure Serilog prior to calling this method.
+        /// </remarks>
+        /// <param name="actualLogger">The serilog logger to register.</param>
+        /// <example>
+        /// <code>
+        /// AppLocator.CurrentMutable.UseSerilogWithWrappingFullLogger();
+        /// </code>
+        /// </example>
+        public void UseSerilogFullLogger(global::Serilog.ILogger actualLogger)
+        {
+            ArgumentExceptionHelper.ThrowIfNull(instance);
 
-        instance.Register<ILogManager>(() => funcLogManager);
+            var funcLogManager = new FuncLogManager(type => new SerilogFullLogger(actualLogger.ForContext(type)));
+
+            instance.Register<ILogManager>(() => funcLogManager);
+        }
     }
 }

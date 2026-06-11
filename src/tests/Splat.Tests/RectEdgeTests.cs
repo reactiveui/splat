@@ -1,17 +1,15 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Drawing;
 
 namespace Splat.Tests;
 
+/// <summary>Tests for the <see cref="RectEdge"/> enumeration.</summary>
 public class RectEdgeTests
 {
-    /// <summary>
-    /// Test that all RectEdge values work with Divide method.
-    /// </summary>
+    /// <summary>Test that all RectEdge values work with Divide method.</summary>
     /// <param name="edge">The edge to test.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -25,7 +23,8 @@ public class RectEdgeTests
         var rect = new RectangleF(0.0f, 0.0f, 100.0f, 100.0f);
 
         // Act & Assert - should not throw
-        RectangleF slice = default, remainder = default;
+        RectangleF slice = default;
+        RectangleF remainder = default;
         await Assert.That(() =>
         {
             var result = rect.Divide(25.0f, edge);
@@ -42,9 +41,7 @@ public class RectEdgeTests
         }
     }
 
-    /// <summary>
-    /// Test that RectEdge enum has expected values.
-    /// </summary>
+    /// <summary>Test that RectEdge enum has expected values.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "TUnitAssertions0005:Assert.That(...) should not be used with a constant value", Justification = "Deliberately checking constant value")]
@@ -59,9 +56,7 @@ public class RectEdgeTests
         }
     }
 
-    /// <summary>
-    /// Test that RectEdge enum has all expected names.
-    /// </summary>
+    /// <summary>Test that RectEdge enum has all expected names.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RectEdge_HasAllExpectedNames()
@@ -83,9 +78,7 @@ public class RectEdgeTests
         }
     }
 
-    /// <summary>
-    /// Test that each RectEdge value can be parsed from string.
-    /// </summary>
+    /// <summary>Test that each RectEdge value can be parsed from string.</summary>
     /// <param name="edgeName">The name of the edge to parse.</param>
     /// <param name="expectedEdge">The expected edge value.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -104,9 +97,7 @@ public class RectEdgeTests
         await Assert.That(parsed).IsEqualTo(expectedEdge);
     }
 
-    /// <summary>
-    /// Test that each RectEdge value produces different results with Divide.
-    /// </summary>
+    /// <summary>Test that each RectEdge value produces different results with Divide.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RectEdge_ProducesDifferentResultsWithDivide()

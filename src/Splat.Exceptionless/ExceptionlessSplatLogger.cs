@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Collections.Immutable;
@@ -32,11 +31,10 @@ public sealed class ExceptionlessSplatLogger : ILogger
     private static readonly ImmutableDictionary<LogLevel, global::Exceptionless.Logging.LogLevel> _mappingsDictionary = _mappings.ToImmutableDictionary();
 
     private readonly string _sourceType;
+
     private readonly ExceptionlessClient _exceptionlessClient;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ExceptionlessSplatLogger"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="ExceptionlessSplatLogger"/> class.</summary>
     /// <param name="sourceType">The type that this logger will represent.</param>
     /// <param name="exceptionlessClient">The Exceptionless client instance to use.</param>
     public ExceptionlessSplatLogger(
@@ -45,7 +43,7 @@ public sealed class ExceptionlessSplatLogger : ILogger
     {
         ArgumentExceptionHelper.ThrowIfNull(sourceType);
 
-        ArgumentExceptionHelper.ThrowIfNullWithMessage(sourceType.FullName, "Cannot find the source type name");
+        ArgumentGuard.ThrowIfNullWithMessage(sourceType.FullName, "Cannot find the source type name");
         _sourceType = sourceType.FullName!;
         ArgumentExceptionHelper.ThrowIfNull(exceptionlessClient);
         _exceptionlessClient = exceptionlessClient;
@@ -104,13 +102,29 @@ public sealed class ExceptionlessSplatLogger : ILogger
         CreateLog(exception, type.FullName ?? "(unknown)", message, _mappingsDictionary[logLevel]);
     }
 
+    /// <summary>Submits a log entry for the logger's source type.</summary>
+    /// <param name="message">The log message to submit.</param>
+    /// <param name="level">The Exceptionless log level to submit the message at.</param>
     private void CreateLog(string message, global::Exceptionless.Logging.LogLevel level) => CreateLog(_sourceType, message, level);
 
+    /// <summary>Submits a log entry for the specified source type.</summary>
+    /// <param name="type">The source type name to associate with the log entry.</param>
+    /// <param name="message">The log message to submit.</param>
+    /// <param name="level">The Exceptionless log level to submit the message at.</param>
     private void CreateLog(string type, string message, global::Exceptionless.Logging.LogLevel level) =>
         _exceptionlessClient.SubmitLog(type, message, level);
 
+    /// <summary>Submits a log entry with an associated exception for the logger's source type.</summary>
+    /// <param name="exception">The exception to attach to the log entry.</param>
+    /// <param name="message">The log message to submit.</param>
+    /// <param name="level">The Exceptionless log level to submit the message at.</param>
     private void CreateLog(Exception exception, string message, global::Exceptionless.Logging.LogLevel level) => CreateLog(exception, _sourceType, message, level);
 
+    /// <summary>Submits a log entry with an associated exception for the specified source type.</summary>
+    /// <param name="exception">The exception to attach to the log entry.</param>
+    /// <param name="type">The source type name to associate with the log entry.</param>
+    /// <param name="message">The log message to submit.</param>
+    /// <param name="level">The Exceptionless log level to submit the message at.</param>
     private void CreateLog(Exception exception, string type, string message, global::Exceptionless.Logging.LogLevel level) =>
         _exceptionlessClient.CreateLog(
             type,
@@ -119,9 +133,7 @@ public sealed class ExceptionlessSplatLogger : ILogger
             .SetException(exception)
             .Submit();
 
-    /// <summary>
-    /// Determines the current effective log level based on Exceptionless configuration.
-    /// </summary>
+    /// <summary>Determines the current effective log level based on Exceptionless configuration.</summary>
     /// <remarks>
     /// This optimization avoids re-evaluating the log level on each Write method call.
     /// </remarks>
@@ -139,5 +151,8 @@ public sealed class ExceptionlessSplatLogger : ILogger
         }
     }
 
+    /// <summary>Handles the Exceptionless configuration changed event by recalculating the effective log level.</summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The event data.</param>
     private void OnInnerLoggerReconfigured(object? sender, EventArgs e) => SetLogLevel();
 }

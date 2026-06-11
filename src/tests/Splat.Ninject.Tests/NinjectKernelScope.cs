@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Ninject;
@@ -16,24 +15,19 @@ namespace Splat.Ninject.Tests;
 public sealed class NinjectKernelScope : IDisposable
 {
     private readonly AppLocatorScope _appLocatorScope;
+
     private readonly List<IKernel> _kernels = [];
+
     private bool _disposed;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="NinjectKernelScope"/> class.
-    /// Creates a fresh AppLocator state for the test.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="NinjectKernelScope"/> class. Creates a fresh AppLocator state for the test.</summary>
     public NinjectKernelScope() => _appLocatorScope = new();
 
-    /// <summary>
-    /// Tracks a kernel for disposal at the end of the test.
-    /// </summary>
+    /// <summary>Tracks a kernel for disposal at the end of the test.</summary>
     /// <param name="kernel">The kernel to track.</param>
     public void TrackKernel(IKernel kernel) => _kernels.Add(kernel);
 
-    /// <summary>
-    /// Disposes all tracked kernels and restores AppLocator state.
-    /// </summary>
+    /// <summary>Disposes all tracked kernels and restores AppLocator state.</summary>
     public void Dispose()
     {
         if (_disposed)

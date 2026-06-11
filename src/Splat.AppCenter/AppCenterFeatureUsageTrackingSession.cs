@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Splat.ApplicationPerformanceMonitoring;
@@ -17,19 +16,14 @@ namespace Splat;
 /// thread-safe.</remarks>
 public sealed class AppCenterFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AppCenterFeatureUsageTrackingSession"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="AppCenterFeatureUsageTrackingSession"/> class.</summary>
     /// <param name="featureName">The name of the feature.</param>
     public AppCenterFeatureUsageTrackingSession(string featureName)
         : this(featureName, Guid.Empty)
     {
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AppCenterFeatureUsageTrackingSession"/> class to track usage of a specified.
-    /// feature within the application.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="AppCenterFeatureUsageTrackingSession"/> class to track usage of a specified. feature within the application.</summary>
     /// <param name="featureName">The name of the feature to be tracked. Cannot be null or empty.</param>
     /// <param name="parentReference">The unique identifier of the parent session or context to which this feature usage is related.</param>
     internal AppCenterFeatureUsageTrackingSession(string featureName, Guid parentReference)
@@ -63,6 +57,8 @@ public sealed class AppCenterFeatureUsageTrackingSession : IFeatureUsageTracking
         Microsoft.AppCenter.Crashes.Crashes.TrackError(exception, properties);
     }
 
+    /// <summary>Builds the set of App Center properties describing the current feature usage session.</summary>
+    /// <returns>A dictionary containing the feature name, reference, and optional parent reference.</returns>
     private Dictionary<string, string> GetProperties()
     {
         var properties = new Dictionary<string, string>
@@ -79,6 +75,8 @@ public sealed class AppCenterFeatureUsageTrackingSession : IFeatureUsageTracking
         return properties;
     }
 
+    /// <summary>Tracks the specified event in App Center Analytics together with the current session properties.</summary>
+    /// <param name="eventName">The name of the event to track.</param>
     private void TrackEvent(string eventName)
     {
         var properties = GetProperties();

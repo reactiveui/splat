@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.SimpleInjector;
@@ -16,11 +15,9 @@ namespace Splat.SimpleInjector;
 /// resolution.</remarks>
 public class SimpleInjectorInitializer : IDependencyResolver
 {
-    private readonly object _lockObject = new();
+    private readonly Lock _lockObject = new();
 
-    /// <summary>
-    /// Gets dictionary of registered factories.
-    /// </summary>
+    /// <summary>Gets dictionary of registered factories.</summary>
     public Dictionary<Type, List<Func<object?>>> RegisteredFactories { get; }
         = [];
 
@@ -106,10 +103,10 @@ public class SimpleInjectorInitializer : IDependencyResolver
         Register(factory, serviceType);
 
     /// <inheritdoc />
-    public void UnregisterCurrent(Type? serviceType) => throw new NotImplementedException();
+    public void UnregisterCurrent(Type? serviceType) => throw new NotSupportedException();
 
     /// <inheritdoc />
-    public void UnregisterCurrent(Type? serviceType, string? contract) => throw new NotImplementedException();
+    public void UnregisterCurrent(Type? serviceType, string? contract) => throw new NotSupportedException();
 
     /// <inheritdoc />
     public void UnregisterAll(Type? serviceType)
@@ -129,10 +126,10 @@ public class SimpleInjectorInitializer : IDependencyResolver
         UnregisterAll(serviceType);
 
     /// <inheritdoc />
-    public IDisposable ServiceRegistrationCallback(Type serviceType, Action<IDisposable> callback) => throw new NotImplementedException();
+    public IDisposable ServiceRegistrationCallback(Type serviceType, Action<IDisposable> callback) => throw new NotSupportedException();
 
     /// <inheritdoc />
-    public IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) => throw new NotImplementedException();
+    public IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) => throw new NotSupportedException();
 
     /// <inheritdoc/>
     public T? GetService<T>()
@@ -145,7 +142,7 @@ public class SimpleInjectorInitializer : IDependencyResolver
             }
 
             var fact = factories.LastOrDefault();
-            return fact != null ? (T?)fact.Invoke() : default;
+            return fact is not null ? (T?)fact.Invoke() : default;
         }
     }
 
@@ -162,7 +159,7 @@ public class SimpleInjectorInitializer : IDependencyResolver
         {
             if (!RegisteredFactories.TryGetValue(typeof(T), out var factories))
             {
-                return Enumerable.Empty<T>();
+                return [];
             }
 
             return factories.Select(factory => (T)factory()!);
@@ -215,10 +212,10 @@ public class SimpleInjectorInitializer : IDependencyResolver
         Register(factory);
 
     /// <inheritdoc/>
-    public void UnregisterCurrent<T>() => throw new NotImplementedException();
+    public void UnregisterCurrent<T>() => throw new NotSupportedException();
 
     /// <inheritdoc/>
-    public void UnregisterCurrent<T>(string? contract) => throw new NotImplementedException();
+    public void UnregisterCurrent<T>(string? contract) => throw new NotSupportedException();
 
     /// <inheritdoc/>
     public void UnregisterAll<T>()
@@ -236,10 +233,10 @@ public class SimpleInjectorInitializer : IDependencyResolver
         UnregisterAll<T>();
 
     /// <inheritdoc/>
-    public IDisposable ServiceRegistrationCallback<T>(Action<IDisposable> callback) => throw new NotImplementedException("Simple Injector does not support the Service Registration Callbacks");
+    public IDisposable ServiceRegistrationCallback<T>(Action<IDisposable> callback) => throw new NotSupportedException("Simple Injector does not support the Service Registration Callbacks");
 
     /// <inheritdoc/>
-    public IDisposable ServiceRegistrationCallback<T>(string? contract, Action<IDisposable> callback) => throw new NotImplementedException("Simple Injector does not support the Service Registration Callbacks");
+    public IDisposable ServiceRegistrationCallback<T>(string? contract, Action<IDisposable> callback) => throw new NotSupportedException("Simple Injector does not support the Service Registration Callbacks");
 
     /// <inheritdoc/>
     public void Register<TService, TImplementation>()
@@ -325,9 +322,7 @@ public class SimpleInjectorInitializer : IDependencyResolver
         GC.SuppressFinalize(this);
     }
 
-    /// <summary>
-    /// Releases unmanaged and - optionally - managed resources.
-    /// </summary>
+    /// <summary>Releases unmanaged and - optionally - managed resources.</summary>
     /// <param name="isDisposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
     protected virtual void Dispose(bool isDisposing)
     {

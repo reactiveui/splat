@@ -1,15 +1,13 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.Tests;
 
+/// <summary>Tests for <see cref="TargetFrameworkExtensions"/>.</summary>
 public class TargetFrameworkExtensionsTests
 {
-    /// <summary>
-    /// Gets the test source data for Framework names.
-    /// </summary>
+    /// <summary>Gets the test source data for Framework names.</summary>
     public static IEnumerable<object[]> FrameworkNamesTestSource { get; } = new[]
     {
         new object[] { ".NETCoreApp,Version=v2.2", "netcoreapp2.2" },
@@ -41,9 +39,7 @@ public class TargetFrameworkExtensionsTests
         new object[] { ".NETFramework,Version=v1.1", "net11" },
     };
 
-    /// <summary>
-    /// Checks to ensure the framework name is returned.
-    /// </summary>
+    /// <summary>Checks to ensure the framework name is returned.</summary>
     /// <param name="frameworkName">The framework name.</param>
     /// <param name="expected">The expected result.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>

@@ -1,0 +1,26 @@
+#nullable enable
+Splat.Builder.ExceptionlessSplatModule
+Splat.Builder.ExceptionlessSplatModule.Configure(Splat.IMutableDependencyResolver! resolver) -> void
+Splat.Builder.ExceptionlessSplatModule.ExceptionlessSplatModule(Exceptionless.ExceptionlessClient! exceptionlessClient) -> void
+Splat.Exceptionless.ExceptionlessSplatLogger
+Splat.Exceptionless.ExceptionlessSplatLogger.ExceptionlessSplatLogger(System.Type! sourceType, Exceptionless.ExceptionlessClient! exceptionlessClient) -> void
+Splat.Exceptionless.ExceptionlessSplatLogger.Level.get -> Splat.LogLevel
+Splat.Exceptionless.ExceptionlessSplatLogger.Write(System.Exception! exception, string! message, Splat.LogLevel logLevel) -> void
+Splat.Exceptionless.ExceptionlessSplatLogger.Write(System.Exception! exception, string! message, System.Type! type, Splat.LogLevel logLevel) -> void
+Splat.Exceptionless.ExceptionlessSplatLogger.Write(string! message, Splat.LogLevel logLevel) -> void
+Splat.Exceptionless.ExceptionlessSplatLogger.Write(string! message, System.Type! type, Splat.LogLevel logLevel) -> void
+Splat.Exceptionless.MutableDependencyResolverExtensions
+Splat.Exceptionless.MutableDependencyResolverExtensions.extension(Splat.IMutableDependencyResolver!)
+Splat.Exceptionless.MutableDependencyResolverExtensions.extension(Splat.IMutableDependencyResolver!).UseExceptionlessWithWrappingFullLogger(Exceptionless.ExceptionlessClient! exceptionlessClient) -> void
+Splat.ExceptionlessFeatureUsageTrackingSession
+Splat.ExceptionlessFeatureUsageTrackingSession.Dispose() -> void
+Splat.ExceptionlessFeatureUsageTrackingSession.ExceptionlessFeatureUsageTrackingSession(string! featureName) -> void
+Splat.ExceptionlessFeatureUsageTrackingSession.FeatureName.get -> string!
+Splat.ExceptionlessFeatureUsageTrackingSession.FeatureReference.get -> System.Guid
+Splat.ExceptionlessFeatureUsageTrackingSession.OnException(System.Exception! exception) -> void
+Splat.ExceptionlessFeatureUsageTrackingSession.ParentReference.get -> System.Guid
+Splat.ExceptionlessFeatureUsageTrackingSession.SubFeature(string! description) -> Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession!
+Splat.ExceptionlessViewTracking
+Splat.ExceptionlessViewTracking.ExceptionlessViewTracking(Exceptionless.ExceptionlessClient! exceptionlessClient) -> void
+Splat.ExceptionlessViewTracking.OnViewNavigation(string! name) -> void
+static Splat.Exceptionless.MutableDependencyResolverExtensions.UseExceptionlessWithWrappingFullLogger(this Splat.IMutableDependencyResolver! instance, Exceptionless.ExceptionlessClient! exceptionlessClient) -> void

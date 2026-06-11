@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using SimpleInjector;
@@ -10,12 +9,11 @@ using Splat.SimpleInjector;
 
 namespace Splat.Simplnjector;
 
+/// <summary>Tests for the SimpleInjector dependency resolver.</summary>
 [NotInParallel]
 public class DependencyResolverTests
 {
-    /// <summary>
-    /// Simples the injector dependency resolver should resolve a view model.
-    /// </summary>
+    /// <summary>Simples the injector dependency resolver should resolve a view model.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task SimpleInjectorDependencyResolver_Should_Resolve_View_Model()
@@ -30,9 +28,7 @@ public class DependencyResolverTests
         await Assert.That(viewModel).IsTypeOf<ViewModelOne>();
     }
 
-    /// <summary>
-    /// Simples the injector dependency resolver should resolve a view model.
-    /// </summary>
+    /// <summary>Simples the injector dependency resolver should resolve a view model.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task SimpleInjectorDependencyResolver_Should_Resolve_View_Model_Directly()
@@ -46,9 +42,7 @@ public class DependencyResolverTests
         await Assert.That(viewModel).IsTypeOf<ViewModelOne>();
     }
 
-    /// <summary>
-    /// Simples the injector dependency resolver should resolve a view.
-    /// </summary>
+    /// <summary>Simples the injector dependency resolver should resolve a view.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task SimpleInjectorDependencyResolver_Should_Resolve_View()
@@ -63,9 +57,7 @@ public class DependencyResolverTests
         await Assert.That(view).IsTypeOf<ViewOne>();
     }
 
-    /// <summary>
-    /// Simples the injector dependency resolver should resolve the screen.
-    /// </summary>
+    /// <summary>Simples the injector dependency resolver should resolve the screen.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task SimpleInjectorDependencyResolver_Should_Resolve_Screen()
@@ -80,9 +72,7 @@ public class DependencyResolverTests
         await Assert.That(screen).IsTypeOf<MockScreen>();
     }
 
-    /// <summary>
-    /// Should not throw during initialization of ReactiveUI.
-    /// </summary>
+    /// <summary>Should not throw during initialization of ReactiveUI.</summary>
     [Test]
     public void SimpleInjectorDependencyResolver_Splat_Initialization_ShouldNotThrow()
     {
@@ -94,9 +84,7 @@ public class DependencyResolverTests
         container.UseSimpleInjectorDependencyResolver(initializer);
     }
 
-    /// <summary>
-    /// Should resolve dependency registered during Splat initialization.
-    /// </summary>
+    /// <summary>Should resolve dependency registered during Splat initialization.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task SimpleInjectorDependencyResolver_ShouldResolveSplatRegisteredDependency()
@@ -108,13 +96,11 @@ public class DependencyResolverTests
         AppLocator.CurrentMutable.InitializeSplat();
         container.UseSimpleInjectorDependencyResolver(initializer);
 
-        var dependency = AppLocator.Current.GetService<ILogger>() as ILogger;
+        var dependency = AppLocator.Current.GetService<ILogger>();
         await Assert.That(dependency).IsNotNull();
     }
 
-    /// <summary>
-    /// Should resolve dependency registered during Splat initialization.
-    /// </summary>
+    /// <summary>Should resolve dependency registered during Splat initialization.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task SimpleInjectorDependencyResolver_CollectionShouldNeverReturnNull()

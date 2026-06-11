@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 #if UIKIT
@@ -16,9 +15,7 @@ using UIImage = AppKit.NSImage;
 
 namespace Splat;
 
-/// <summary>
-/// Provides platform-specific functionality for loading and creating bitmap images.
-/// </summary>
+/// <summary>Provides platform-specific functionality for loading and creating bitmap images.</summary>
 /// <remarks>This class implements the <see cref="IBitmapLoader"/> interface to support loading bitmaps from streams and
 /// resources on the current platform. It is intended for internal use by image handling components that require
 /// platform abstraction. Thread safety and performance characteristics may vary depending on the underlying platform
@@ -115,5 +112,5 @@ public class PlatformBitmapLoader : IBitmapLoader
     }
 
     /// <inheritdoc />
-    public IBitmap Create(float width, float height) => throw new NotImplementedException();
+    public IBitmap Create(float width, float height) => throw new NotSupportedException("Creating an empty bitmap is not supported by the Cocoa platform bitmap loader.");
 }

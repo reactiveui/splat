@@ -1,26 +1,25 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Autofac;
 
 namespace Splat.Autofac;
 
-/// <summary>
-/// Provides extension methods for integrating Autofac with Splat's dependency resolution system.
-/// </summary>
+/// <summary>Provides extension methods for integrating Autofac with Splat's dependency resolution system.</summary>
 public static class SplatAutofacExtensions
 {
-    /// <summary>
-    /// Initializes an instance of <see cref="AutofacDependencyResolver"/> that overrides the default <see cref="AppLocator"/>.
-    /// </summary>
-    /// <param name="builder">Autofac container builder.</param>
-    /// <returns>The Autofac dependency resolver.</returns>
-    public static AutofacDependencyResolver UseAutofacDependencyResolver(this ContainerBuilder builder)
+    /// <summary>Extension members for <see cref="ContainerBuilder"/>.</summary>
+    /// <param name="builder">The Autofac container builder the extension members operate on.</param>
+    extension(ContainerBuilder builder)
     {
-        var autofacResolver = new AutofacDependencyResolver(builder);
-        AppLocator.SetLocator(autofacResolver);
-        return autofacResolver;
+        /// <summary>Initializes an instance of <see cref="AutofacDependencyResolver"/> that overrides the default <see cref="AppLocator"/>.</summary>
+        /// <returns>The Autofac dependency resolver.</returns>
+        public AutofacDependencyResolver UseAutofacDependencyResolver()
+        {
+            var autofacResolver = new AutofacDependencyResolver(builder);
+            AppLocator.SetLocator(autofacResolver);
+            return autofacResolver;
+        }
     }
 }

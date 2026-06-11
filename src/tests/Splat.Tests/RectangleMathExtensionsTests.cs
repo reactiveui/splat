@@ -1,17 +1,15 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Drawing;
 
 namespace Splat.Tests;
 
+/// <summary>Tests for the rectangle math extension methods.</summary>
 public class RectangleMathExtensionsTests
 {
-    /// <summary>
-    /// Test that Center method calculates correctly.
-    /// </summary>
+    /// <summary>Test that Center method calculates correctly.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Center_CalculatesCorrectly()
@@ -30,9 +28,7 @@ public class RectangleMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test Divide method from left edge.
-    /// </summary>
+    /// <summary>Test Divide method from left edge.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Divide_FromLeftEdge_WorksCorrectly()
@@ -53,9 +49,7 @@ public class RectangleMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test Divide method from right edge.
-    /// </summary>
+    /// <summary>Test Divide method from right edge.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Divide_FromRightEdge_WorksCorrectly()
@@ -76,9 +70,7 @@ public class RectangleMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test Divide method from top edge.
-    /// </summary>
+    /// <summary>Test Divide method from top edge.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Divide_FromTopEdge_WorksCorrectly()
@@ -99,9 +91,7 @@ public class RectangleMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test Divide method from bottom edge.
-    /// </summary>
+    /// <summary>Test Divide method from bottom edge.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Divide_FromBottomEdge_WorksCorrectly()
@@ -122,9 +112,7 @@ public class RectangleMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test DivideWithPadding method.
-    /// </summary>
+    /// <summary>Test DivideWithPadding method.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DivideWithPadding_WorksCorrectly()
@@ -145,9 +133,7 @@ public class RectangleMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test InvertWithin method.
-    /// </summary>
+    /// <summary>Test InvertWithin method.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task InvertWithin_WorksCorrectly()
@@ -169,9 +155,7 @@ public class RectangleMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test Copy method with all parameters.
-    /// </summary>
+    /// <summary>Test Copy method with all parameters.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Copy_WithAllParameters_WorksCorrectly()
@@ -192,9 +176,7 @@ public class RectangleMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test Copy method with partial parameters.
-    /// </summary>
+    /// <summary>Test Copy method with partial parameters.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Copy_WithPartialParameters_WorksCorrectly()
@@ -215,9 +197,7 @@ public class RectangleMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test Copy method with top parameter.
-    /// </summary>
+    /// <summary>Test Copy method with top parameter.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Copy_WithTopParameter_WorksCorrectly()
@@ -238,9 +218,7 @@ public class RectangleMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test Copy method with bottom parameter.
-    /// </summary>
+    /// <summary>Test Copy method with bottom parameter.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Copy_WithBottomParameter_WorksCorrectly()
@@ -261,9 +239,7 @@ public class RectangleMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test Copy method throws when Y and Top are both specified.
-    /// </summary>
+    /// <summary>Test Copy method throws when Y and Top are both specified.</summary>
     [Test]
     public void Copy_WithYAndTop_ThrowsArgumentException()
     {
@@ -274,9 +250,7 @@ public class RectangleMathExtensionsTests
         Assert.Throws<ArgumentException>(() => rect.Copy(y: 25.0f, top: 5.0f));
     }
 
-    /// <summary>
-    /// Test Copy method throws when Height and Bottom are both specified.
-    /// </summary>
+    /// <summary>Test Copy method throws when Height and Bottom are both specified.</summary>
     [Test]
     public void Copy_WithHeightAndBottom_ThrowsArgumentException()
     {
@@ -287,9 +261,7 @@ public class RectangleMathExtensionsTests
         Assert.Throws<ArgumentException>(() => rect.Copy(height: 50.0f, bottom: 80.0f));
     }
 
-    /// <summary>
-    /// Test Divide with invalid edge throws ArgumentException.
-    /// </summary>
+    /// <summary>Test Divide with invalid edge throws ArgumentException.</summary>
     [Test]
     public void Divide_WithInvalidEdge_ThrowsArgumentException()
     {

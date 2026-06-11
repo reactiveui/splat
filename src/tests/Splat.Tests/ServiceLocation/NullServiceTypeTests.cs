@@ -1,15 +1,14 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.Tests.ServiceLocation;
 
-/// <summary>
-/// Tests for the <see cref="NullServiceType"/> class.
-/// </summary>
+/// <summary>Tests for the <see cref="NullServiceType"/> class.</summary>
 public sealed class NullServiceTypeTests
 {
+    /// <summary>Verifies that the constructor preserves the supplied factory.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Constructor_ShouldPreserveFactory()
     {
@@ -22,6 +21,8 @@ public sealed class NullServiceTypeTests
         await Assert.That(result).IsEqualTo(expected);
     }
 
+    /// <summary>Verifies that the Factory delegate can be invoked.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Factory_ShouldBeInvokable()
     {
@@ -34,6 +35,8 @@ public sealed class NullServiceTypeTests
         await Assert.That(result).IsEqualTo(expected);
     }
 
+    /// <summary>Verifies that the Factory delegate may return null.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Factory_CanReturnNull()
     {
@@ -45,6 +48,8 @@ public sealed class NullServiceTypeTests
         await Assert.That(result).IsNull();
     }
 
+    /// <summary>Verifies that CachedType is the NullServiceType type.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task CachedType_ShouldBeNullServiceType()
     {
@@ -53,6 +58,8 @@ public sealed class NullServiceTypeTests
         await Assert.That(cachedType).IsEqualTo(typeof(NullServiceType));
     }
 
+    /// <summary>Verifies that CachedType returns the same instance on repeated access.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task CachedType_ShouldBeSameInstance()
     {
@@ -63,11 +70,13 @@ public sealed class NullServiceTypeTests
         await Assert.That(ReferenceEquals(firstAccess, secondAccess)).IsTrue();
     }
 
+    /// <summary>Verifies that separate instances retain independent factories.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task MultipleInstances_CanHaveDifferentFactories()
     {
-        var value1 = "first";
-        var value2 = "second";
+        const string value1 = "first";
+        const string value2 = "second";
 
         var instance1 = new NullServiceType(() => value1);
         var instance2 = new NullServiceType(() => value2);
@@ -76,6 +85,8 @@ public sealed class NullServiceTypeTests
         await Assert.That(instance2.Factory()).IsEqualTo(value2);
     }
 
+    /// <summary>Verifies that the Factory delegate can capture closure state.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Factory_CanBeClosure()
     {

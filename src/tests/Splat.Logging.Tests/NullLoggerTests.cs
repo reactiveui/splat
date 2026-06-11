@@ -1,18 +1,13 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.Tests.Logging;
 
-/// <summary>
-/// Tests for the <see cref="NullLogger"/> class.
-/// </summary>
+/// <summary>Tests for the <see cref="NullLogger"/> class.</summary>
 public class NullLoggerTests
 {
-    /// <summary>
-    /// Test that NullLogger doesn't throw when writing.
-    /// </summary>
+    /// <summary>Test that NullLogger doesn't throw when writing.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2201:Do not raise reserved exception types", Justification = "Deliberate usage of Exception")]
@@ -30,9 +25,7 @@ public class NullLoggerTests
         }).ThrowsNothing();
     }
 
-    /// <summary>
-    /// Test that Level property can be set and retrieved.
-    /// </summary>
+    /// <summary>Test that Level property can be set and retrieved.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Level_Should_Be_Settable()

@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Linq.Expressions;
@@ -9,9 +8,7 @@ using SimpleInjector;
 
 namespace Splat.SimpleInjector;
 
-/// <summary>
-/// Represents a transient registration for a service type in a Simple Injector container.
-/// </summary>
+/// <summary>Represents a transient registration for a service type in a Simple Injector container.</summary>
 /// <remarks>This registration ensures that a new instance of the implementation type is created each time the
 /// service is requested from the container. Use this class when you want transient lifestyle behavior for a service in
 /// Simple Injector.</remarks>

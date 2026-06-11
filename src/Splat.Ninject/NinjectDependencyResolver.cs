@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
@@ -37,7 +36,6 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     }
 
     /// <inheritdoc />
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We provide a different registration instead")]
     public virtual IEnumerable<object> GetServices(Type? serviceType)
     {
         serviceType ??= NullServiceType.CachedType;
@@ -66,7 +64,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
                         results.Add(instance);
                     }
                 }
-                catch
+                catch (ActivationException)
                 {
                     // Skip bindings that can't be resolved
                 }
@@ -74,14 +72,13 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
             return results;
         }
-        catch
+        catch (ActivationException)
         {
             return [];
         }
     }
 
     /// <inheritdoc />
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We provide a different registration instead")]
     public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract)
     {
         serviceType ??= NullServiceType.CachedType;
@@ -110,7 +107,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
                         results.Add(instance);
                     }
                 }
-                catch
+                catch (ActivationException)
                 {
                     // Skip bindings that can't be resolved
                 }
@@ -118,7 +115,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
             return results;
         }
-        catch
+        catch (ActivationException)
         {
             return [];
         }
@@ -259,11 +256,11 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
     /// <inheritdoc />
     public virtual IDisposable ServiceRegistrationCallback(Type serviceType, Action<IDisposable> callback) =>
-        throw new NotImplementedException("ServiceRegistrationCallback is not supported by the NInject framework");
+        throw new NotSupportedException("ServiceRegistrationCallback is not supported by the NInject framework");
 
     /// <inheritdoc />
     public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) =>
-        throw new NotImplementedException("ServiceRegistrationCallback is not supported by the NInject framework");
+        throw new NotSupportedException("ServiceRegistrationCallback is not supported by the NInject framework");
 
     /// <inheritdoc/>
     public T? GetService<T>() =>
@@ -300,7 +297,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
                         results.Add(instance);
                     }
                 }
-                catch
+                catch (ActivationException)
                 {
                     // Skip bindings that can't be resolved
                 }
@@ -308,7 +305,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
             return results;
         }
-        catch
+        catch (ActivationException)
         {
             return [];
         }
@@ -341,7 +338,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
                         results.Add(instance);
                     }
                 }
-                catch
+                catch (ActivationException)
                 {
                     // Skip bindings that can't be resolved
                 }
@@ -349,7 +346,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
             return results;
         }
-        catch
+        catch (ActivationException)
         {
             return [];
         }
@@ -482,23 +479,29 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
         GC.SuppressFinalize(this);
     }
 
-    /// <summary>
-    /// Disposes of the instance.
-    /// </summary>
+    /// <summary>Disposes of the instance.</summary>
     /// <param name="disposing">Whether or not the instance is disposing.</param>
     protected virtual void Dispose(bool disposing)
     {
-        if (disposing)
+        if (!disposing)
         {
-            // Use Interlocked.Exchange for thread-safe disposal flag setting
-            var wasDisposed = Interlocked.Exchange(ref _isDisposed, 1);
-            if (wasDisposed == 0)
-            {
-                kernel?.Dispose();
-            }
+            return;
         }
+
+        // Use Interlocked.Exchange for thread-safe disposal flag setting
+        var wasDisposed = Interlocked.Exchange(ref _isDisposed, 1);
+        if (wasDisposed != 0)
+        {
+            return;
+        }
+
+        kernel?.Dispose();
     }
 
+    /// <summary>Determines whether the supplied binding metadata matches the requested contract.</summary>
+    /// <param name="metadata">The binding metadata to inspect.</param>
+    /// <param name="contract">The contract name to match, or <see langword="null"/> for the default contract.</param>
+    /// <returns><see langword="true"/> if the metadata matches the contract; otherwise, <see langword="false"/>.</returns>
     private static bool IsCorrectMetadata(global::Ninject.Planning.Bindings.IBindingMetadata metadata, string? contract) =>
         (metadata?.Name is null && string.IsNullOrWhiteSpace(contract))
         || (metadata?.Name is not null && metadata.Name.Equals(contract, StringComparison.OrdinalIgnoreCase));

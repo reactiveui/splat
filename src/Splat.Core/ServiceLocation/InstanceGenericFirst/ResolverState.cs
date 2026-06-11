@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Runtime.CompilerServices;
@@ -8,9 +7,7 @@ using System.Threading;
 
 namespace Splat;
 
-/// <summary>
-/// Per-resolver state object for the instance-scoped GenericFirst dependency resolver.
-/// </summary>
+/// <summary>Per-resolver state object for the instance-scoped GenericFirst dependency resolver.</summary>
 /// <remarks>
 /// <para>
 /// Each resolver instance owns exactly one <see cref="ResolverState"/>.
@@ -35,42 +32,29 @@ namespace Splat;
 /// </remarks>
 internal sealed class ResolverState
 {
-    /// <summary>
-    /// Indicates whether this resolver has ever had at least one registration.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// Values:
-    /// <list type="bullet">
-    ///   <item><description><c>0</c> — No registrations have ever been added.</description></item>
-    ///   <item><description><c>1</c> — At least one registration has been added.</description></item>
-    /// </list>
-    /// </para>
-    /// <para>
-    /// This field is written once (transition from 0 → 1) and read frequently on hot paths
-    /// to provide a fast exit when no services are registered.
-    /// </para>
-    /// <para>
-    /// An <see cref="int"/> is used to allow Volatile read and write without locking.
-    /// </para>
-    /// </remarks>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "StyleCop.CSharp.MaintainabilityRules",
-        "SA1401:Fields should be private",
-        Justification = "Accessed using Volatile operations for hot-path performance.")]
-    public int HasAnyRegistrations;
-
-    /// <summary>
-    /// Monotonically increasing identifier source.
-    /// </summary>
+    /// <summary>Monotonically increasing identifier source.</summary>
     /// <remarks>
     /// Used only to generate <see cref="Id"/> values for diagnostics and tracing.
     /// </remarks>
     private static long _nextId;
 
-    /// <summary>
-    /// Gets a unique identifier for this resolver state instance.
-    /// </summary>
+    /// <summary>Backing flag for <see cref="HasAnyRegistrations"/>; <c>0</c> = none added, <c>1</c> = at least one added.</summary>
+    private int _hasAnyRegistrations;
+
+    /// <summary>Gets a value indicating whether this resolver has ever had at least one registration.</summary>
+    /// <remarks>
+    /// <para>
+    /// The flag is written once (transition from <see langword="false"/> to <see langword="true"/>) and read frequently
+    /// on hot paths to provide a fast exit when no services are registered.
+    /// </para>
+    /// <para>
+    /// Backed by an <see cref="int"/> so the read and the one-way transition use lock-free
+    /// <see cref="Volatile"/> / <see cref="Interlocked"/> operations.
+    /// </para>
+    /// </remarks>
+    public bool HasAnyRegistrations => Volatile.Read(ref _hasAnyRegistrations) != 0;
+
+    /// <summary>Gets a unique identifier for this resolver state instance.</summary>
     /// <remarks>
     /// <para>
     /// This identifier is intended for diagnostics, logging, and debugging only.
@@ -82,4 +66,8 @@ internal sealed class ResolverState
     /// </para>
     /// </remarks>
     public long Id { get; } = Interlocked.Increment(ref _nextId);
+
+    /// <summary>Marks that at least one registration has been added (one-way <c>false</c> → <c>true</c> transition).</summary>
+    /// <returns><see langword="true"/> if this call performed the transition; otherwise <see langword="false"/>.</returns>
+    public bool MarkHasRegistrations() => Interlocked.CompareExchange(ref _hasAnyRegistrations, 1, 0) == 0;
 }

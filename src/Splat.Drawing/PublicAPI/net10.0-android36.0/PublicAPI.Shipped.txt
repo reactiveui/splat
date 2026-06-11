@@ -1,0 +1,995 @@
+#nullable enable
+Splat.BitmapLoader
+Splat.BitmapLoaderException
+Splat.BitmapLoaderException.BitmapLoaderException() -> void
+Splat.BitmapLoaderException.BitmapLoaderException(string! message) -> void
+Splat.BitmapLoaderException.BitmapLoaderException(string! message, System.Exception! innerException) -> void
+Splat.BitmapMixins
+Splat.BitmapMixins.extension(Android.Graphics.Bitmap!)
+Splat.BitmapMixins.extension(Android.Graphics.Bitmap!).FromNative(bool copy = false) -> Splat.IBitmap!
+Splat.BitmapMixins.extension(Android.Graphics.Drawables.Drawable!)
+Splat.BitmapMixins.extension(Android.Graphics.Drawables.Drawable!).FromNative() -> Splat.IBitmap!
+Splat.BitmapMixins.extension(Splat.IBitmap!)
+Splat.BitmapMixins.extension(Splat.IBitmap!).ToNative() -> Android.Graphics.Drawables.Drawable!
+Splat.ColorExtensions
+Splat.ColorExtensions.extension(Android.Graphics.Color)
+Splat.ColorExtensions.extension(Android.Graphics.Color).FromNative() -> System.Drawing.Color
+Splat.ColorExtensions.extension(System.Drawing.Color)
+Splat.ColorExtensions.extension(System.Drawing.Color).ToNative() -> Android.Graphics.Color
+Splat.CompressedBitmapFormat
+Splat.CompressedBitmapFormat.Jpeg = 1 -> Splat.CompressedBitmapFormat
+Splat.CompressedBitmapFormat.Png = 0 -> Splat.CompressedBitmapFormat
+Splat.DefaultPlatformModeDetector
+Splat.DefaultPlatformModeDetector.DefaultPlatformModeDetector() -> void
+Splat.DefaultPlatformModeDetector.InDesignMode() -> bool?
+Splat.IBitmap
+Splat.IBitmap.Height.get -> float
+Splat.IBitmap.Save(Splat.CompressedBitmapFormat format, float quality, System.IO.Stream! target) -> System.Threading.Tasks.Task!
+Splat.IBitmap.Width.get -> float
+Splat.IBitmapLoader
+Splat.IBitmapLoader.Create(float width, float height) -> Splat.IBitmap?
+Splat.IBitmapLoader.Load(System.IO.Stream! sourceStream, float? desiredWidth, float? desiredHeight) -> System.Threading.Tasks.Task<Splat.IBitmap?>!
+Splat.IBitmapLoader.LoadFromResource(string! source, float? desiredWidth, float? desiredHeight) -> System.Threading.Tasks.Task<Splat.IBitmap?>!
+Splat.IPlatformModeDetector
+Splat.IPlatformModeDetector.InDesignMode() -> bool?
+Splat.KnownColor
+Splat.KnownColor.ActiveBorder = 1 -> Splat.KnownColor
+Splat.KnownColor.ActiveCaption = 2 -> Splat.KnownColor
+Splat.KnownColor.ActiveCaptionText = 3 -> Splat.KnownColor
+Splat.KnownColor.AliceBlue = 28 -> Splat.KnownColor
+Splat.KnownColor.AntiqueWhite = 29 -> Splat.KnownColor
+Splat.KnownColor.AppWorkspace = 4 -> Splat.KnownColor
+Splat.KnownColor.Aqua = 30 -> Splat.KnownColor
+Splat.KnownColor.Aquamarine = 31 -> Splat.KnownColor
+Splat.KnownColor.Azure = 32 -> Splat.KnownColor
+Splat.KnownColor.Beige = 33 -> Splat.KnownColor
+Splat.KnownColor.Bisque = 34 -> Splat.KnownColor
+Splat.KnownColor.Black = 35 -> Splat.KnownColor
+Splat.KnownColor.BlanchedAlmond = 36 -> Splat.KnownColor
+Splat.KnownColor.Blue = 37 -> Splat.KnownColor
+Splat.KnownColor.BlueViolet = 38 -> Splat.KnownColor
+Splat.KnownColor.Brown = 39 -> Splat.KnownColor
+Splat.KnownColor.BurlyWood = 40 -> Splat.KnownColor
+Splat.KnownColor.ButtonFace = 168 -> Splat.KnownColor
+Splat.KnownColor.ButtonHighlight = 169 -> Splat.KnownColor
+Splat.KnownColor.ButtonShadow = 170 -> Splat.KnownColor
+Splat.KnownColor.CadetBlue = 41 -> Splat.KnownColor
+Splat.KnownColor.Chartreuse = 42 -> Splat.KnownColor
+Splat.KnownColor.Chocolate = 43 -> Splat.KnownColor
+Splat.KnownColor.Control = 5 -> Splat.KnownColor
+Splat.KnownColor.ControlDark = 6 -> Splat.KnownColor
+Splat.KnownColor.ControlDarkDark = 7 -> Splat.KnownColor
+Splat.KnownColor.ControlLight = 8 -> Splat.KnownColor
+Splat.KnownColor.ControlLightLight = 9 -> Splat.KnownColor
+Splat.KnownColor.ControlText = 10 -> Splat.KnownColor
+Splat.KnownColor.Coral = 44 -> Splat.KnownColor
+Splat.KnownColor.CornflowerBlue = 45 -> Splat.KnownColor
+Splat.KnownColor.Cornsilk = 46 -> Splat.KnownColor
+Splat.KnownColor.Crimson = 47 -> Splat.KnownColor
+Splat.KnownColor.Cyan = 48 -> Splat.KnownColor
+Splat.KnownColor.DarkBlue = 49 -> Splat.KnownColor
+Splat.KnownColor.DarkCyan = 50 -> Splat.KnownColor
+Splat.KnownColor.DarkGoldenrod = 51 -> Splat.KnownColor
+Splat.KnownColor.DarkGray = 52 -> Splat.KnownColor
+Splat.KnownColor.DarkGreen = 53 -> Splat.KnownColor
+Splat.KnownColor.DarkKhaki = 54 -> Splat.KnownColor
+Splat.KnownColor.DarkMagenta = 55 -> Splat.KnownColor
+Splat.KnownColor.DarkOliveGreen = 56 -> Splat.KnownColor
+Splat.KnownColor.DarkOrange = 57 -> Splat.KnownColor
+Splat.KnownColor.DarkOrchid = 58 -> Splat.KnownColor
+Splat.KnownColor.DarkRed = 59 -> Splat.KnownColor
+Splat.KnownColor.DarkSalmon = 60 -> Splat.KnownColor
+Splat.KnownColor.DarkSeaGreen = 61 -> Splat.KnownColor
+Splat.KnownColor.DarkSlateBlue = 62 -> Splat.KnownColor
+Splat.KnownColor.DarkSlateGray = 63 -> Splat.KnownColor
+Splat.KnownColor.DarkTurquoise = 64 -> Splat.KnownColor
+Splat.KnownColor.DarkViolet = 65 -> Splat.KnownColor
+Splat.KnownColor.DeepPink = 66 -> Splat.KnownColor
+Splat.KnownColor.DeepSkyBlue = 67 -> Splat.KnownColor
+Splat.KnownColor.Desktop = 11 -> Splat.KnownColor
+Splat.KnownColor.DimGray = 68 -> Splat.KnownColor
+Splat.KnownColor.DodgerBlue = 69 -> Splat.KnownColor
+Splat.KnownColor.Empty = 0 -> Splat.KnownColor
+Splat.KnownColor.Firebrick = 70 -> Splat.KnownColor
+Splat.KnownColor.FloralWhite = 71 -> Splat.KnownColor
+Splat.KnownColor.ForestGreen = 72 -> Splat.KnownColor
+Splat.KnownColor.Fuchsia = 73 -> Splat.KnownColor
+Splat.KnownColor.Gainsboro = 74 -> Splat.KnownColor
+Splat.KnownColor.GhostWhite = 75 -> Splat.KnownColor
+Splat.KnownColor.Gold = 76 -> Splat.KnownColor
+Splat.KnownColor.Goldenrod = 77 -> Splat.KnownColor
+Splat.KnownColor.GradientActiveCaption = 171 -> Splat.KnownColor
+Splat.KnownColor.GradientInactiveCaption = 172 -> Splat.KnownColor
+Splat.KnownColor.Gray = 78 -> Splat.KnownColor
+Splat.KnownColor.GrayText = 12 -> Splat.KnownColor
+Splat.KnownColor.Green = 79 -> Splat.KnownColor
+Splat.KnownColor.GreenYellow = 80 -> Splat.KnownColor
+Splat.KnownColor.Highlight = 13 -> Splat.KnownColor
+Splat.KnownColor.HighlightText = 14 -> Splat.KnownColor
+Splat.KnownColor.Honeydew = 81 -> Splat.KnownColor
+Splat.KnownColor.HotPink = 82 -> Splat.KnownColor
+Splat.KnownColor.HotTrack = 15 -> Splat.KnownColor
+Splat.KnownColor.InactiveBorder = 16 -> Splat.KnownColor
+Splat.KnownColor.InactiveCaption = 17 -> Splat.KnownColor
+Splat.KnownColor.InactiveCaptionText = 18 -> Splat.KnownColor
+Splat.KnownColor.IndianRed = 83 -> Splat.KnownColor
+Splat.KnownColor.Indigo = 84 -> Splat.KnownColor
+Splat.KnownColor.Info = 19 -> Splat.KnownColor
+Splat.KnownColor.InfoText = 20 -> Splat.KnownColor
+Splat.KnownColor.Ivory = 85 -> Splat.KnownColor
+Splat.KnownColor.Khaki = 86 -> Splat.KnownColor
+Splat.KnownColor.Lavender = 87 -> Splat.KnownColor
+Splat.KnownColor.LavenderBlush = 88 -> Splat.KnownColor
+Splat.KnownColor.LawnGreen = 89 -> Splat.KnownColor
+Splat.KnownColor.LemonChiffon = 90 -> Splat.KnownColor
+Splat.KnownColor.LightBlue = 91 -> Splat.KnownColor
+Splat.KnownColor.LightCoral = 92 -> Splat.KnownColor
+Splat.KnownColor.LightCyan = 93 -> Splat.KnownColor
+Splat.KnownColor.LightGoldenrodYellow = 94 -> Splat.KnownColor
+Splat.KnownColor.LightGray = 95 -> Splat.KnownColor
+Splat.KnownColor.LightGreen = 96 -> Splat.KnownColor
+Splat.KnownColor.LightPink = 97 -> Splat.KnownColor
+Splat.KnownColor.LightSalmon = 98 -> Splat.KnownColor
+Splat.KnownColor.LightSeaGreen = 99 -> Splat.KnownColor
+Splat.KnownColor.LightSkyBlue = 100 -> Splat.KnownColor
+Splat.KnownColor.LightSlateGray = 101 -> Splat.KnownColor
+Splat.KnownColor.LightSteelBlue = 102 -> Splat.KnownColor
+Splat.KnownColor.LightYellow = 103 -> Splat.KnownColor
+Splat.KnownColor.Lime = 104 -> Splat.KnownColor
+Splat.KnownColor.LimeGreen = 105 -> Splat.KnownColor
+Splat.KnownColor.Linen = 106 -> Splat.KnownColor
+Splat.KnownColor.Magenta = 107 -> Splat.KnownColor
+Splat.KnownColor.Maroon = 108 -> Splat.KnownColor
+Splat.KnownColor.MediumAquamarine = 109 -> Splat.KnownColor
+Splat.KnownColor.MediumBlue = 110 -> Splat.KnownColor
+Splat.KnownColor.MediumOrchid = 111 -> Splat.KnownColor
+Splat.KnownColor.MediumPurple = 112 -> Splat.KnownColor
+Splat.KnownColor.MediumSeaGreen = 113 -> Splat.KnownColor
+Splat.KnownColor.MediumSlateBlue = 114 -> Splat.KnownColor
+Splat.KnownColor.MediumSpringGreen = 115 -> Splat.KnownColor
+Splat.KnownColor.MediumTurquoise = 116 -> Splat.KnownColor
+Splat.KnownColor.MediumVioletRed = 117 -> Splat.KnownColor
+Splat.KnownColor.Menu = 21 -> Splat.KnownColor
+Splat.KnownColor.MenuBar = 173 -> Splat.KnownColor
+Splat.KnownColor.MenuHighlight = 174 -> Splat.KnownColor
+Splat.KnownColor.MenuText = 22 -> Splat.KnownColor
+Splat.KnownColor.MidnightBlue = 118 -> Splat.KnownColor
+Splat.KnownColor.MintCream = 119 -> Splat.KnownColor
+Splat.KnownColor.MistyRose = 120 -> Splat.KnownColor
+Splat.KnownColor.Moccasin = 121 -> Splat.KnownColor
+Splat.KnownColor.NavajoWhite = 122 -> Splat.KnownColor
+Splat.KnownColor.Navy = 123 -> Splat.KnownColor
+Splat.KnownColor.OldLace = 124 -> Splat.KnownColor
+Splat.KnownColor.Olive = 125 -> Splat.KnownColor
+Splat.KnownColor.OliveDrab = 126 -> Splat.KnownColor
+Splat.KnownColor.Orange = 127 -> Splat.KnownColor
+Splat.KnownColor.OrangeRed = 128 -> Splat.KnownColor
+Splat.KnownColor.Orchid = 129 -> Splat.KnownColor
+Splat.KnownColor.PaleGoldenrod = 130 -> Splat.KnownColor
+Splat.KnownColor.PaleGreen = 131 -> Splat.KnownColor
+Splat.KnownColor.PaleTurquoise = 132 -> Splat.KnownColor
+Splat.KnownColor.PaleVioletRed = 133 -> Splat.KnownColor
+Splat.KnownColor.PapayaWhip = 134 -> Splat.KnownColor
+Splat.KnownColor.PeachPuff = 135 -> Splat.KnownColor
+Splat.KnownColor.Peru = 136 -> Splat.KnownColor
+Splat.KnownColor.Pink = 137 -> Splat.KnownColor
+Splat.KnownColor.Plum = 138 -> Splat.KnownColor
+Splat.KnownColor.PowderBlue = 139 -> Splat.KnownColor
+Splat.KnownColor.Purple = 140 -> Splat.KnownColor
+Splat.KnownColor.Red = 141 -> Splat.KnownColor
+Splat.KnownColor.RosyBrown = 142 -> Splat.KnownColor
+Splat.KnownColor.RoyalBlue = 143 -> Splat.KnownColor
+Splat.KnownColor.SaddleBrown = 144 -> Splat.KnownColor
+Splat.KnownColor.Salmon = 145 -> Splat.KnownColor
+Splat.KnownColor.SandyBrown = 146 -> Splat.KnownColor
+Splat.KnownColor.ScrollBar = 23 -> Splat.KnownColor
+Splat.KnownColor.SeaGreen = 147 -> Splat.KnownColor
+Splat.KnownColor.SeaShell = 148 -> Splat.KnownColor
+Splat.KnownColor.Sienna = 149 -> Splat.KnownColor
+Splat.KnownColor.Silver = 150 -> Splat.KnownColor
+Splat.KnownColor.SkyBlue = 151 -> Splat.KnownColor
+Splat.KnownColor.SlateBlue = 152 -> Splat.KnownColor
+Splat.KnownColor.SlateGray = 153 -> Splat.KnownColor
+Splat.KnownColor.Snow = 154 -> Splat.KnownColor
+Splat.KnownColor.SpringGreen = 155 -> Splat.KnownColor
+Splat.KnownColor.SteelBlue = 156 -> Splat.KnownColor
+Splat.KnownColor.Tan = 157 -> Splat.KnownColor
+Splat.KnownColor.Teal = 158 -> Splat.KnownColor
+Splat.KnownColor.Thistle = 159 -> Splat.KnownColor
+Splat.KnownColor.Tomato = 160 -> Splat.KnownColor
+Splat.KnownColor.Transparent = 27 -> Splat.KnownColor
+Splat.KnownColor.Turquoise = 161 -> Splat.KnownColor
+Splat.KnownColor.Violet = 162 -> Splat.KnownColor
+Splat.KnownColor.Wheat = 163 -> Splat.KnownColor
+Splat.KnownColor.White = 164 -> Splat.KnownColor
+Splat.KnownColor.WhiteSmoke = 165 -> Splat.KnownColor
+Splat.KnownColor.Window = 24 -> Splat.KnownColor
+Splat.KnownColor.WindowFrame = 25 -> Splat.KnownColor
+Splat.KnownColor.WindowText = 26 -> Splat.KnownColor
+Splat.KnownColor.Yellow = 166 -> Splat.KnownColor
+Splat.KnownColor.YellowGreen = 167 -> Splat.KnownColor
+Splat.PlatformBitmapLoader
+Splat.PlatformBitmapLoader.Create(float width, float height) -> Splat.IBitmap?
+Splat.PlatformBitmapLoader.Load(System.IO.Stream! sourceStream, float? desiredWidth, float? desiredHeight) -> System.Threading.Tasks.Task<Splat.IBitmap?>!
+Splat.PlatformBitmapLoader.LoadFromResource(string! source, float? desiredWidth, float? desiredHeight) -> System.Threading.Tasks.Task<Splat.IBitmap?>!
+Splat.PlatformBitmapLoader.PlatformBitmapLoader() -> void
+Splat.PlatformBitmapLoader<TDrawable>
+Splat.PlatformBitmapLoader<TDrawable>.Create(float width, float height) -> Splat.IBitmap?
+Splat.PlatformBitmapLoader<TDrawable>.Load(System.IO.Stream! sourceStream, float? desiredWidth, float? desiredHeight) -> System.Threading.Tasks.Task<Splat.IBitmap?>!
+Splat.PlatformBitmapLoader<TDrawable>.LoadFromResource(string! source, float? desiredWidth, float? desiredHeight) -> System.Threading.Tasks.Task<Splat.IBitmap?>!
+Splat.PlatformBitmapLoader<TDrawable>.PlatformBitmapLoader(System.Func<string!, int>! drawableResolver) -> void
+Splat.PlatformModeDetector
+Splat.PointExtensions
+Splat.PointExtensions.extension(Android.Graphics.Point!)
+Splat.PointExtensions.extension(Android.Graphics.Point!).FromNative() -> System.Drawing.Point
+Splat.PointExtensions.extension(Android.Graphics.PointF!)
+Splat.PointExtensions.extension(Android.Graphics.PointF!).FromNative() -> System.Drawing.PointF
+Splat.PointExtensions.extension(System.Drawing.Point)
+Splat.PointExtensions.extension(System.Drawing.Point).ToNative() -> Android.Graphics.Point!
+Splat.PointExtensions.extension(System.Drawing.PointF)
+Splat.PointExtensions.extension(System.Drawing.PointF).ToNative() -> Android.Graphics.PointF!
+Splat.RectExtensions
+Splat.RectExtensions.extension(Android.Graphics.Rect!)
+Splat.RectExtensions.extension(Android.Graphics.Rect!).FromNative() -> System.Drawing.Rectangle
+Splat.RectExtensions.extension(Android.Graphics.RectF!)
+Splat.RectExtensions.extension(Android.Graphics.RectF!).FromNative() -> System.Drawing.RectangleF
+Splat.RectExtensions.extension(System.Drawing.Rectangle)
+Splat.RectExtensions.extension(System.Drawing.Rectangle).ToNative() -> Android.Graphics.Rect!
+Splat.RectExtensions.extension(System.Drawing.RectangleF)
+Splat.RectExtensions.extension(System.Drawing.RectangleF).ToNative() -> Android.Graphics.RectF!
+Splat.Resource
+Splat.Resource.Resource() -> void
+Splat.ServiceLocationDrawingInitializationExtensions
+Splat.ServiceLocationDrawingInitializationExtensions.extension(Splat.IMutableDependencyResolver!)
+Splat.ServiceLocationDrawingInitializationExtensions.extension(Splat.IMutableDependencyResolver!).RegisterPlatformBitmapLoader() -> void
+Splat.SplatColor
+Splat.SplatColor.A.get -> byte
+Splat.SplatColor.B.get -> byte
+Splat.SplatColor.Equals(Splat.SplatColor other) -> bool
+Splat.SplatColor.G.get -> byte
+Splat.SplatColor.GetBrightness() -> float
+Splat.SplatColor.GetHue() -> float
+Splat.SplatColor.GetSaturation() -> float
+Splat.SplatColor.IsEmpty.get -> bool
+Splat.SplatColor.IsKnownColor.get -> bool
+Splat.SplatColor.IsNamedColor.get -> bool
+Splat.SplatColor.IsSystemColor.get -> bool
+Splat.SplatColor.Name.get -> string!
+Splat.SplatColor.R.get -> byte
+Splat.SplatColor.SplatColor() -> void
+Splat.SplatColor.ToArgb() -> uint
+Splat.SplatColor.ToKnownColor() -> Splat.KnownColor
+Splat.SplatColorExtensions
+Splat.SplatColorExtensions.extension(Android.Graphics.Color)
+Splat.SplatColorExtensions.extension(Android.Graphics.Color).FromNative() -> Splat.SplatColor
+Splat.SplatColorExtensions.extension(Splat.SplatColor)
+Splat.SplatColorExtensions.extension(Splat.SplatColor).ToNative() -> Android.Graphics.Color
+System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Color.A.get -> byte (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Color.B.get -> byte (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Color.Color() -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Color.Equals(System.Drawing.Color other) -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Color.G.get -> byte (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Color.GetBrightness() -> float (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Color.GetHue() -> float (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Color.GetSaturation() -> float (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Color.IsEmpty.get -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Color.IsKnownColor.get -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Color.IsNamedColor.get -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Color.IsSystemColor.get -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Color.Name.get -> string! (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Color.R.get -> byte (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Color.ToArgb() -> int (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Color.ToKnownColor() -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.ActiveBorder = 1 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.ActiveCaption = 2 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.ActiveCaptionText = 3 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.AliceBlue = 28 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.AntiqueWhite = 29 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.AppWorkspace = 4 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Aqua = 30 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Aquamarine = 31 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Azure = 32 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Beige = 33 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Bisque = 34 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Black = 35 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.BlanchedAlmond = 36 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Blue = 37 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.BlueViolet = 38 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Brown = 39 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.BurlyWood = 40 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.ButtonFace = 168 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.ButtonHighlight = 169 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.ButtonShadow = 170 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.CadetBlue = 41 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Chartreuse = 42 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Chocolate = 43 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Control = 5 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.ControlDark = 6 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.ControlDarkDark = 7 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.ControlLight = 8 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.ControlLightLight = 9 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.ControlText = 10 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Coral = 44 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.CornflowerBlue = 45 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Cornsilk = 46 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Crimson = 47 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Cyan = 48 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DarkBlue = 49 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DarkCyan = 50 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DarkGoldenrod = 51 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DarkGray = 52 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DarkGreen = 53 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DarkKhaki = 54 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DarkMagenta = 55 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DarkOliveGreen = 56 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DarkOrange = 57 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DarkOrchid = 58 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DarkRed = 59 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DarkSalmon = 60 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DarkSeaGreen = 61 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DarkSlateBlue = 62 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DarkSlateGray = 63 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DarkTurquoise = 64 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DarkViolet = 65 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DeepPink = 66 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DeepSkyBlue = 67 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Desktop = 11 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DimGray = 68 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.DodgerBlue = 69 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Firebrick = 70 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.FloralWhite = 71 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.ForestGreen = 72 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Fuchsia = 73 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Gainsboro = 74 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.GhostWhite = 75 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Gold = 76 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Goldenrod = 77 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.GradientActiveCaption = 171 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.GradientInactiveCaption = 172 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Gray = 78 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.GrayText = 12 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Green = 79 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.GreenYellow = 80 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Highlight = 13 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.HighlightText = 14 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Honeydew = 81 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.HotPink = 82 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.HotTrack = 15 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.InactiveBorder = 16 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.InactiveCaption = 17 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.InactiveCaptionText = 18 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.IndianRed = 83 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Indigo = 84 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Info = 19 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.InfoText = 20 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Ivory = 85 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Khaki = 86 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Lavender = 87 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.LavenderBlush = 88 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.LawnGreen = 89 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.LemonChiffon = 90 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.LightBlue = 91 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.LightCoral = 92 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.LightCyan = 93 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.LightGoldenrodYellow = 94 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.LightGray = 95 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.LightGreen = 96 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.LightPink = 97 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.LightSalmon = 98 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.LightSeaGreen = 99 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.LightSkyBlue = 100 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.LightSlateGray = 101 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.LightSteelBlue = 102 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.LightYellow = 103 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Lime = 104 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.LimeGreen = 105 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Linen = 106 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Magenta = 107 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Maroon = 108 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.MediumAquamarine = 109 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.MediumBlue = 110 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.MediumOrchid = 111 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.MediumPurple = 112 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.MediumSeaGreen = 113 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.MediumSlateBlue = 114 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.MediumSpringGreen = 115 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.MediumTurquoise = 116 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.MediumVioletRed = 117 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Menu = 21 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.MenuBar = 173 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.MenuHighlight = 174 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.MenuText = 22 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.MidnightBlue = 118 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.MintCream = 119 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.MistyRose = 120 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Moccasin = 121 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.NavajoWhite = 122 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Navy = 123 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.OldLace = 124 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Olive = 125 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.OliveDrab = 126 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Orange = 127 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.OrangeRed = 128 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Orchid = 129 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.PaleGoldenrod = 130 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.PaleGreen = 131 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.PaleTurquoise = 132 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.PaleVioletRed = 133 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.PapayaWhip = 134 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.PeachPuff = 135 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Peru = 136 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Pink = 137 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Plum = 138 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.PowderBlue = 139 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Purple = 140 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.RebeccaPurple = 175 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Red = 141 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.RosyBrown = 142 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.RoyalBlue = 143 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.SaddleBrown = 144 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Salmon = 145 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.SandyBrown = 146 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.ScrollBar = 23 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.SeaGreen = 147 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.SeaShell = 148 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Sienna = 149 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Silver = 150 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.SkyBlue = 151 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.SlateBlue = 152 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.SlateGray = 153 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Snow = 154 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.SpringGreen = 155 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.SteelBlue = 156 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Tan = 157 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Teal = 158 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Thistle = 159 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Tomato = 160 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Transparent = 27 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Turquoise = 161 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Violet = 162 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Wheat = 163 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.White = 164 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.WhiteSmoke = 165 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Window = 24 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.WindowFrame = 25 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.WindowText = 26 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.Yellow = 166 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.KnownColor.YellowGreen = 167 -> System.Drawing.KnownColor (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Point (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Point.Equals(System.Drawing.Point other) -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Point.IsEmpty.get -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Point.Offset(System.Drawing.Point p) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Point.Offset(int dx, int dy) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Point.Point() -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Point.Point(System.Drawing.Size sz) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Point.Point(int dw) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Point.Point(int x, int y) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Point.X.get -> int (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Point.X.set -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Point.Y.get -> int (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Point.Y.set -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.PointF (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.PointF.Equals(System.Drawing.PointF other) -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.PointF.IsEmpty.get -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.PointF.PointF() -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.PointF.PointF(System.Numerics.Vector2 vector) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.PointF.PointF(float x, float y) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.PointF.ToVector2() -> System.Numerics.Vector2 (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.PointF.X.get -> float (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.PointF.X.set -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.PointF.Y.get -> float (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.PointF.Y.set -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Bottom.get -> int (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Contains(System.Drawing.Point pt) -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Contains(System.Drawing.Rectangle rect) -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Contains(int x, int y) -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Equals(System.Drawing.Rectangle other) -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Height.get -> int (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Height.set -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Inflate(System.Drawing.Size size) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Inflate(int width, int height) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Intersect(System.Drawing.Rectangle rect) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.IntersectsWith(System.Drawing.Rectangle rect) -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.IsEmpty.get -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Left.get -> int (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Location.get -> System.Drawing.Point (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Location.set -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Offset(System.Drawing.Point pos) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Offset(int x, int y) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Rectangle() -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Rectangle(System.Drawing.Point location, System.Drawing.Size size) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Rectangle(int x, int y, int width, int height) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Right.get -> int (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Size.get -> System.Drawing.Size (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Size.set -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Top.get -> int (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Width.get -> int (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Width.set -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.X.get -> int (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.X.set -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Y.get -> int (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Rectangle.Y.set -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Bottom.get -> float (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Contains(System.Drawing.PointF pt) -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Contains(System.Drawing.RectangleF rect) -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Contains(float x, float y) -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Equals(System.Drawing.RectangleF other) -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Height.get -> float (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Height.set -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Inflate(System.Drawing.SizeF size) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Inflate(float x, float y) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Intersect(System.Drawing.RectangleF rect) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.IntersectsWith(System.Drawing.RectangleF rect) -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.IsEmpty.get -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Left.get -> float (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Location.get -> System.Drawing.PointF (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Location.set -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Offset(System.Drawing.PointF pos) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Offset(float x, float y) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.RectangleF() -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.RectangleF(System.Drawing.PointF location, System.Drawing.SizeF size) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.RectangleF(System.Numerics.Vector4 vector) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.RectangleF(float x, float y, float width, float height) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Right.get -> float (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Size.get -> System.Drawing.SizeF (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Size.set -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.ToVector4() -> System.Numerics.Vector4 (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Top.get -> float (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Width.get -> float (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Width.set -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.X.get -> float (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.X.set -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Y.get -> float (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.RectangleF.Y.set -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Size (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Size.Equals(System.Drawing.Size other) -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Size.Height.get -> int (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Size.Height.set -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Size.IsEmpty.get -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Size.Size() -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Size.Size(System.Drawing.Point pt) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Size.Size(int width, int height) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Size.Width.get -> int (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.Size.Width.set -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.SizeF (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.SizeF.Equals(System.Drawing.SizeF other) -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.SizeF.Height.get -> float (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.SizeF.Height.set -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.SizeF.IsEmpty.get -> bool (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.SizeF.SizeF() -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.SizeF.SizeF(System.Drawing.PointF pt) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.SizeF.SizeF(System.Drawing.SizeF size) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.SizeF.SizeF(System.Numerics.Vector2 vector) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.SizeF.SizeF(float width, float height) -> void (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.SizeF.ToPointF() -> System.Drawing.PointF (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.SizeF.ToSize() -> System.Drawing.Size (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.SizeF.ToVector2() -> System.Numerics.Vector2 (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.SizeF.Width.get -> float (forwarded, contained in System.Drawing.Primitives)
+System.Drawing.SizeF.Width.set -> void (forwarded, contained in System.Drawing.Primitives)
+override Splat.SplatColor.Equals(object? obj) -> bool
+override Splat.SplatColor.GetHashCode() -> int
+override Splat.SplatColor.ToString() -> string!
+override System.Drawing.Color.Equals(object? obj) -> bool (forwarded, contained in System.Drawing.Primitives)
+override System.Drawing.Color.GetHashCode() -> int (forwarded, contained in System.Drawing.Primitives)
+override System.Drawing.Color.ToString() -> string! (forwarded, contained in System.Drawing.Primitives)
+override System.Drawing.Point.Equals(object? obj) -> bool (forwarded, contained in System.Drawing.Primitives)
+override System.Drawing.Point.GetHashCode() -> int (forwarded, contained in System.Drawing.Primitives)
+override System.Drawing.Point.ToString() -> string! (forwarded, contained in System.Drawing.Primitives)
+override System.Drawing.PointF.Equals(object? obj) -> bool (forwarded, contained in System.Drawing.Primitives)
+override System.Drawing.PointF.GetHashCode() -> int (forwarded, contained in System.Drawing.Primitives)
+override System.Drawing.PointF.ToString() -> string! (forwarded, contained in System.Drawing.Primitives)
+override System.Drawing.Rectangle.Equals(object? obj) -> bool (forwarded, contained in System.Drawing.Primitives)
+override System.Drawing.Rectangle.GetHashCode() -> int (forwarded, contained in System.Drawing.Primitives)
+override System.Drawing.Rectangle.ToString() -> string! (forwarded, contained in System.Drawing.Primitives)
+override System.Drawing.RectangleF.Equals(object? obj) -> bool (forwarded, contained in System.Drawing.Primitives)
+override System.Drawing.RectangleF.GetHashCode() -> int (forwarded, contained in System.Drawing.Primitives)
+override System.Drawing.RectangleF.ToString() -> string! (forwarded, contained in System.Drawing.Primitives)
+override System.Drawing.Size.Equals(object? obj) -> bool (forwarded, contained in System.Drawing.Primitives)
+override System.Drawing.Size.GetHashCode() -> int (forwarded, contained in System.Drawing.Primitives)
+override System.Drawing.Size.ToString() -> string! (forwarded, contained in System.Drawing.Primitives)
+override System.Drawing.SizeF.Equals(object? obj) -> bool (forwarded, contained in System.Drawing.Primitives)
+override System.Drawing.SizeF.GetHashCode() -> int (forwarded, contained in System.Drawing.Primitives)
+override System.Drawing.SizeF.ToString() -> string! (forwarded, contained in System.Drawing.Primitives)
+static Splat.BitmapLoader.Current.get -> Splat.IBitmapLoader!
+static Splat.BitmapLoader.Current.set -> void
+static Splat.BitmapMixins.FromNative(this Android.Graphics.Bitmap! value, bool copy = false) -> Splat.IBitmap!
+static Splat.BitmapMixins.FromNative(this Android.Graphics.Drawables.Drawable! value) -> Splat.IBitmap!
+static Splat.BitmapMixins.ToNative(this Splat.IBitmap! value) -> Android.Graphics.Drawables.Drawable!
+static Splat.ColorExtensions.FromNative(this Android.Graphics.Color other) -> System.Drawing.Color
+static Splat.ColorExtensions.ToNative(this System.Drawing.Color other) -> Android.Graphics.Color
+static Splat.PlatformBitmapLoader.RegisterDrawableResolver(System.Func<string!, int>! resolver) -> void
+static Splat.PlatformBitmapLoader.RegisterDrawables<TDrawable>() -> void
+static Splat.PlatformModeDetector.InDesignMode() -> bool
+static Splat.PlatformModeDetector.OverrideModeDetector(Splat.IPlatformModeDetector! modeDetector) -> void
+static Splat.PointExtensions.FromNative(this Android.Graphics.Point! value) -> System.Drawing.Point
+static Splat.PointExtensions.FromNative(this Android.Graphics.PointF! value) -> System.Drawing.PointF
+static Splat.PointExtensions.ToNative(this System.Drawing.Point value) -> Android.Graphics.Point!
+static Splat.PointExtensions.ToNative(this System.Drawing.PointF value) -> Android.Graphics.PointF!
+static Splat.RectExtensions.FromNative(this Android.Graphics.Rect! value) -> System.Drawing.Rectangle
+static Splat.RectExtensions.FromNative(this Android.Graphics.RectF! value) -> System.Drawing.RectangleF
+static Splat.RectExtensions.ToNative(this System.Drawing.Rectangle value) -> Android.Graphics.Rect!
+static Splat.RectExtensions.ToNative(this System.Drawing.RectangleF value) -> Android.Graphics.RectF!
+static Splat.ServiceLocationDrawingInitializationExtensions.RegisterPlatformBitmapLoader(this Splat.IMutableDependencyResolver! resolver) -> void
+static Splat.SplatColor.AliceBlue.get -> Splat.SplatColor
+static Splat.SplatColor.AntiqueWhite.get -> Splat.SplatColor
+static Splat.SplatColor.Aqua.get -> Splat.SplatColor
+static Splat.SplatColor.Aquamarine.get -> Splat.SplatColor
+static Splat.SplatColor.Azure.get -> Splat.SplatColor
+static Splat.SplatColor.Beige.get -> Splat.SplatColor
+static Splat.SplatColor.Bisque.get -> Splat.SplatColor
+static Splat.SplatColor.Black.get -> Splat.SplatColor
+static Splat.SplatColor.BlanchedAlmond.get -> Splat.SplatColor
+static Splat.SplatColor.Blue.get -> Splat.SplatColor
+static Splat.SplatColor.BlueViolet.get -> Splat.SplatColor
+static Splat.SplatColor.Brown.get -> Splat.SplatColor
+static Splat.SplatColor.BurlyWood.get -> Splat.SplatColor
+static Splat.SplatColor.CadetBlue.get -> Splat.SplatColor
+static Splat.SplatColor.Chartreuse.get -> Splat.SplatColor
+static Splat.SplatColor.Chocolate.get -> Splat.SplatColor
+static Splat.SplatColor.Coral.get -> Splat.SplatColor
+static Splat.SplatColor.CornflowerBlue.get -> Splat.SplatColor
+static Splat.SplatColor.Cornsilk.get -> Splat.SplatColor
+static Splat.SplatColor.Crimson.get -> Splat.SplatColor
+static Splat.SplatColor.Cyan.get -> Splat.SplatColor
+static Splat.SplatColor.DarkBlue.get -> Splat.SplatColor
+static Splat.SplatColor.DarkCyan.get -> Splat.SplatColor
+static Splat.SplatColor.DarkGoldenrod.get -> Splat.SplatColor
+static Splat.SplatColor.DarkGray.get -> Splat.SplatColor
+static Splat.SplatColor.DarkGreen.get -> Splat.SplatColor
+static Splat.SplatColor.DarkKhaki.get -> Splat.SplatColor
+static Splat.SplatColor.DarkMagenta.get -> Splat.SplatColor
+static Splat.SplatColor.DarkOliveGreen.get -> Splat.SplatColor
+static Splat.SplatColor.DarkOrange.get -> Splat.SplatColor
+static Splat.SplatColor.DarkOrchid.get -> Splat.SplatColor
+static Splat.SplatColor.DarkRed.get -> Splat.SplatColor
+static Splat.SplatColor.DarkSalmon.get -> Splat.SplatColor
+static Splat.SplatColor.DarkSeaGreen.get -> Splat.SplatColor
+static Splat.SplatColor.DarkSlateBlue.get -> Splat.SplatColor
+static Splat.SplatColor.DarkSlateGray.get -> Splat.SplatColor
+static Splat.SplatColor.DarkTurquoise.get -> Splat.SplatColor
+static Splat.SplatColor.DarkViolet.get -> Splat.SplatColor
+static Splat.SplatColor.DeepPink.get -> Splat.SplatColor
+static Splat.SplatColor.DeepSkyBlue.get -> Splat.SplatColor
+static Splat.SplatColor.DimGray.get -> Splat.SplatColor
+static Splat.SplatColor.DodgerBlue.get -> Splat.SplatColor
+static Splat.SplatColor.Empty.get -> Splat.SplatColor
+static Splat.SplatColor.Firebrick.get -> Splat.SplatColor
+static Splat.SplatColor.FloralWhite.get -> Splat.SplatColor
+static Splat.SplatColor.ForestGreen.get -> Splat.SplatColor
+static Splat.SplatColor.FromArgb(int alpha, Splat.SplatColor baseColor) -> Splat.SplatColor
+static Splat.SplatColor.FromArgb(int alpha, int red, int green, int blue) -> Splat.SplatColor
+static Splat.SplatColor.FromArgb(int red, int green, int blue) -> Splat.SplatColor
+static Splat.SplatColor.FromArgb(uint argb) -> Splat.SplatColor
+static Splat.SplatColor.FromKnownColor(Splat.KnownColor color) -> Splat.SplatColor
+static Splat.SplatColor.FromName(string! name) -> Splat.SplatColor
+static Splat.SplatColor.Fuchsia.get -> Splat.SplatColor
+static Splat.SplatColor.Gainsboro.get -> Splat.SplatColor
+static Splat.SplatColor.GhostWhite.get -> Splat.SplatColor
+static Splat.SplatColor.Gold.get -> Splat.SplatColor
+static Splat.SplatColor.Goldenrod.get -> Splat.SplatColor
+static Splat.SplatColor.Gray.get -> Splat.SplatColor
+static Splat.SplatColor.Green.get -> Splat.SplatColor
+static Splat.SplatColor.GreenYellow.get -> Splat.SplatColor
+static Splat.SplatColor.Honeydew.get -> Splat.SplatColor
+static Splat.SplatColor.HotPink.get -> Splat.SplatColor
+static Splat.SplatColor.IndianRed.get -> Splat.SplatColor
+static Splat.SplatColor.Indigo.get -> Splat.SplatColor
+static Splat.SplatColor.Ivory.get -> Splat.SplatColor
+static Splat.SplatColor.Khaki.get -> Splat.SplatColor
+static Splat.SplatColor.Lavender.get -> Splat.SplatColor
+static Splat.SplatColor.LavenderBlush.get -> Splat.SplatColor
+static Splat.SplatColor.LawnGreen.get -> Splat.SplatColor
+static Splat.SplatColor.LemonChiffon.get -> Splat.SplatColor
+static Splat.SplatColor.LightBlue.get -> Splat.SplatColor
+static Splat.SplatColor.LightCoral.get -> Splat.SplatColor
+static Splat.SplatColor.LightCyan.get -> Splat.SplatColor
+static Splat.SplatColor.LightGoldenrodYellow.get -> Splat.SplatColor
+static Splat.SplatColor.LightGray.get -> Splat.SplatColor
+static Splat.SplatColor.LightGreen.get -> Splat.SplatColor
+static Splat.SplatColor.LightPink.get -> Splat.SplatColor
+static Splat.SplatColor.LightSalmon.get -> Splat.SplatColor
+static Splat.SplatColor.LightSeaGreen.get -> Splat.SplatColor
+static Splat.SplatColor.LightSkyBlue.get -> Splat.SplatColor
+static Splat.SplatColor.LightSlateGray.get -> Splat.SplatColor
+static Splat.SplatColor.LightSteelBlue.get -> Splat.SplatColor
+static Splat.SplatColor.LightYellow.get -> Splat.SplatColor
+static Splat.SplatColor.Lime.get -> Splat.SplatColor
+static Splat.SplatColor.LimeGreen.get -> Splat.SplatColor
+static Splat.SplatColor.Linen.get -> Splat.SplatColor
+static Splat.SplatColor.Magenta.get -> Splat.SplatColor
+static Splat.SplatColor.Maroon.get -> Splat.SplatColor
+static Splat.SplatColor.MediumAquamarine.get -> Splat.SplatColor
+static Splat.SplatColor.MediumBlue.get -> Splat.SplatColor
+static Splat.SplatColor.MediumOrchid.get -> Splat.SplatColor
+static Splat.SplatColor.MediumPurple.get -> Splat.SplatColor
+static Splat.SplatColor.MediumSeaGreen.get -> Splat.SplatColor
+static Splat.SplatColor.MediumSlateBlue.get -> Splat.SplatColor
+static Splat.SplatColor.MediumSpringGreen.get -> Splat.SplatColor
+static Splat.SplatColor.MediumTurquoise.get -> Splat.SplatColor
+static Splat.SplatColor.MediumVioletRed.get -> Splat.SplatColor
+static Splat.SplatColor.MidnightBlue.get -> Splat.SplatColor
+static Splat.SplatColor.MintCream.get -> Splat.SplatColor
+static Splat.SplatColor.MistyRose.get -> Splat.SplatColor
+static Splat.SplatColor.Moccasin.get -> Splat.SplatColor
+static Splat.SplatColor.NavajoWhite.get -> Splat.SplatColor
+static Splat.SplatColor.Navy.get -> Splat.SplatColor
+static Splat.SplatColor.OldLace.get -> Splat.SplatColor
+static Splat.SplatColor.Olive.get -> Splat.SplatColor
+static Splat.SplatColor.OliveDrab.get -> Splat.SplatColor
+static Splat.SplatColor.Orange.get -> Splat.SplatColor
+static Splat.SplatColor.OrangeRed.get -> Splat.SplatColor
+static Splat.SplatColor.Orchid.get -> Splat.SplatColor
+static Splat.SplatColor.PaleGoldenrod.get -> Splat.SplatColor
+static Splat.SplatColor.PaleGreen.get -> Splat.SplatColor
+static Splat.SplatColor.PaleTurquoise.get -> Splat.SplatColor
+static Splat.SplatColor.PaleVioletRed.get -> Splat.SplatColor
+static Splat.SplatColor.PapayaWhip.get -> Splat.SplatColor
+static Splat.SplatColor.PeachPuff.get -> Splat.SplatColor
+static Splat.SplatColor.Peru.get -> Splat.SplatColor
+static Splat.SplatColor.Pink.get -> Splat.SplatColor
+static Splat.SplatColor.Plum.get -> Splat.SplatColor
+static Splat.SplatColor.PowderBlue.get -> Splat.SplatColor
+static Splat.SplatColor.Purple.get -> Splat.SplatColor
+static Splat.SplatColor.Red.get -> Splat.SplatColor
+static Splat.SplatColor.RosyBrown.get -> Splat.SplatColor
+static Splat.SplatColor.RoyalBlue.get -> Splat.SplatColor
+static Splat.SplatColor.SaddleBrown.get -> Splat.SplatColor
+static Splat.SplatColor.Salmon.get -> Splat.SplatColor
+static Splat.SplatColor.SandyBrown.get -> Splat.SplatColor
+static Splat.SplatColor.SeaGreen.get -> Splat.SplatColor
+static Splat.SplatColor.SeaShell.get -> Splat.SplatColor
+static Splat.SplatColor.Sienna.get -> Splat.SplatColor
+static Splat.SplatColor.Silver.get -> Splat.SplatColor
+static Splat.SplatColor.SkyBlue.get -> Splat.SplatColor
+static Splat.SplatColor.SlateBlue.get -> Splat.SplatColor
+static Splat.SplatColor.SlateGray.get -> Splat.SplatColor
+static Splat.SplatColor.Snow.get -> Splat.SplatColor
+static Splat.SplatColor.SpringGreen.get -> Splat.SplatColor
+static Splat.SplatColor.SteelBlue.get -> Splat.SplatColor
+static Splat.SplatColor.Tan.get -> Splat.SplatColor
+static Splat.SplatColor.Teal.get -> Splat.SplatColor
+static Splat.SplatColor.Thistle.get -> Splat.SplatColor
+static Splat.SplatColor.Tomato.get -> Splat.SplatColor
+static Splat.SplatColor.Transparent.get -> Splat.SplatColor
+static Splat.SplatColor.Turquoise.get -> Splat.SplatColor
+static Splat.SplatColor.Violet.get -> Splat.SplatColor
+static Splat.SplatColor.Wheat.get -> Splat.SplatColor
+static Splat.SplatColor.White.get -> Splat.SplatColor
+static Splat.SplatColor.WhiteSmoke.get -> Splat.SplatColor
+static Splat.SplatColor.Yellow.get -> Splat.SplatColor
+static Splat.SplatColor.YellowGreen.get -> Splat.SplatColor
+static Splat.SplatColor.operator !=(Splat.SplatColor left, Splat.SplatColor right) -> bool
+static Splat.SplatColor.operator ==(Splat.SplatColor left, Splat.SplatColor right) -> bool
+static Splat.SplatColorExtensions.FromNative(this Android.Graphics.Color value) -> Splat.SplatColor
+static Splat.SplatColorExtensions.ToNative(this Splat.SplatColor value) -> Android.Graphics.Color
+static System.Drawing.Color.AliceBlue.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.AntiqueWhite.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Aqua.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Aquamarine.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Azure.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Beige.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Bisque.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Black.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.BlanchedAlmond.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Blue.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.BlueViolet.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Brown.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.BurlyWood.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.CadetBlue.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Chartreuse.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Chocolate.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Coral.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.CornflowerBlue.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Cornsilk.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Crimson.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Cyan.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DarkBlue.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DarkCyan.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DarkGoldenrod.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DarkGray.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DarkGreen.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DarkKhaki.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DarkMagenta.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DarkOliveGreen.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DarkOrange.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DarkOrchid.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DarkRed.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DarkSalmon.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DarkSeaGreen.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DarkSlateBlue.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DarkSlateGray.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DarkTurquoise.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DarkViolet.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DeepPink.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DeepSkyBlue.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DimGray.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.DodgerBlue.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Firebrick.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.FloralWhite.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.ForestGreen.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.FromArgb(int alpha, System.Drawing.Color baseColor) -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.FromArgb(int alpha, int red, int green, int blue) -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.FromArgb(int argb) -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.FromArgb(int red, int green, int blue) -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor color) -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.FromName(string! name) -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Fuchsia.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Gainsboro.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.GhostWhite.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Gold.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Goldenrod.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Gray.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Green.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.GreenYellow.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Honeydew.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.HotPink.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.IndianRed.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Indigo.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Ivory.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Khaki.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Lavender.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.LavenderBlush.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.LawnGreen.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.LemonChiffon.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.LightBlue.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.LightCoral.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.LightCyan.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.LightGoldenrodYellow.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.LightGray.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.LightGreen.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.LightPink.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.LightSalmon.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.LightSeaGreen.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.LightSkyBlue.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.LightSlateGray.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.LightSteelBlue.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.LightYellow.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Lime.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.LimeGreen.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Linen.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Magenta.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Maroon.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.MediumAquamarine.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.MediumBlue.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.MediumOrchid.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.MediumPurple.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.MediumSeaGreen.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.MediumSlateBlue.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.MediumSpringGreen.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.MediumTurquoise.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.MediumVioletRed.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.MidnightBlue.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.MintCream.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.MistyRose.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Moccasin.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.NavajoWhite.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Navy.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.OldLace.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Olive.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.OliveDrab.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Orange.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.OrangeRed.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Orchid.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.PaleGoldenrod.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.PaleGreen.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.PaleTurquoise.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.PaleVioletRed.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.PapayaWhip.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.PeachPuff.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Peru.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Pink.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Plum.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.PowderBlue.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Purple.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.RebeccaPurple.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Red.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.RosyBrown.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.RoyalBlue.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.SaddleBrown.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Salmon.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.SandyBrown.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.SeaGreen.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.SeaShell.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Sienna.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Silver.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.SkyBlue.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.SlateBlue.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.SlateGray.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Snow.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.SpringGreen.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.SteelBlue.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Tan.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Teal.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Thistle.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Tomato.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Transparent.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Turquoise.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Violet.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Wheat.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.White.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.WhiteSmoke.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.Yellow.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.YellowGreen.get -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.operator !=(System.Drawing.Color left, System.Drawing.Color right) -> bool (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Color.operator ==(System.Drawing.Color left, System.Drawing.Color right) -> bool (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Point.Add(System.Drawing.Point pt, System.Drawing.Size sz) -> System.Drawing.Point (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Point.Ceiling(System.Drawing.PointF value) -> System.Drawing.Point (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Point.Round(System.Drawing.PointF value) -> System.Drawing.Point (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Point.Subtract(System.Drawing.Point pt, System.Drawing.Size sz) -> System.Drawing.Point (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Point.Truncate(System.Drawing.PointF value) -> System.Drawing.Point (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Point.explicit operator System.Drawing.Size(System.Drawing.Point p) -> System.Drawing.Size (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Point.implicit operator System.Drawing.PointF(System.Drawing.Point p) -> System.Drawing.PointF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Point.operator !=(System.Drawing.Point left, System.Drawing.Point right) -> bool (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Point.operator +(System.Drawing.Point pt, System.Drawing.Size sz) -> System.Drawing.Point (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Point.operator -(System.Drawing.Point pt, System.Drawing.Size sz) -> System.Drawing.Point (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Point.operator ==(System.Drawing.Point left, System.Drawing.Point right) -> bool (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.PointF.Add(System.Drawing.PointF pt, System.Drawing.Size sz) -> System.Drawing.PointF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.PointF.Add(System.Drawing.PointF pt, System.Drawing.SizeF sz) -> System.Drawing.PointF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.PointF.Subtract(System.Drawing.PointF pt, System.Drawing.Size sz) -> System.Drawing.PointF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.PointF.Subtract(System.Drawing.PointF pt, System.Drawing.SizeF sz) -> System.Drawing.PointF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.PointF.explicit operator System.Drawing.PointF(System.Numerics.Vector2 vector) -> System.Drawing.PointF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.PointF.explicit operator System.Numerics.Vector2(System.Drawing.PointF point) -> System.Numerics.Vector2 (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.PointF.operator !=(System.Drawing.PointF left, System.Drawing.PointF right) -> bool (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.PointF.operator +(System.Drawing.PointF pt, System.Drawing.Size sz) -> System.Drawing.PointF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.PointF.operator +(System.Drawing.PointF pt, System.Drawing.SizeF sz) -> System.Drawing.PointF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.PointF.operator -(System.Drawing.PointF pt, System.Drawing.Size sz) -> System.Drawing.PointF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.PointF.operator -(System.Drawing.PointF pt, System.Drawing.SizeF sz) -> System.Drawing.PointF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.PointF.operator ==(System.Drawing.PointF left, System.Drawing.PointF right) -> bool (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Rectangle.Ceiling(System.Drawing.RectangleF value) -> System.Drawing.Rectangle (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Rectangle.FromLTRB(int left, int top, int right, int bottom) -> System.Drawing.Rectangle (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Rectangle.Inflate(System.Drawing.Rectangle rect, int x, int y) -> System.Drawing.Rectangle (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Rectangle.Intersect(System.Drawing.Rectangle a, System.Drawing.Rectangle b) -> System.Drawing.Rectangle (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Rectangle.Round(System.Drawing.RectangleF value) -> System.Drawing.Rectangle (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Rectangle.Truncate(System.Drawing.RectangleF value) -> System.Drawing.Rectangle (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Rectangle.Union(System.Drawing.Rectangle a, System.Drawing.Rectangle b) -> System.Drawing.Rectangle (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Rectangle.operator !=(System.Drawing.Rectangle left, System.Drawing.Rectangle right) -> bool (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Rectangle.operator ==(System.Drawing.Rectangle left, System.Drawing.Rectangle right) -> bool (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.RectangleF.FromLTRB(float left, float top, float right, float bottom) -> System.Drawing.RectangleF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.RectangleF.Inflate(System.Drawing.RectangleF rect, float x, float y) -> System.Drawing.RectangleF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.RectangleF.Intersect(System.Drawing.RectangleF a, System.Drawing.RectangleF b) -> System.Drawing.RectangleF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.RectangleF.Union(System.Drawing.RectangleF a, System.Drawing.RectangleF b) -> System.Drawing.RectangleF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.RectangleF.explicit operator System.Drawing.RectangleF(System.Numerics.Vector4 vector) -> System.Drawing.RectangleF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.RectangleF.explicit operator System.Numerics.Vector4(System.Drawing.RectangleF rectangle) -> System.Numerics.Vector4 (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.RectangleF.implicit operator System.Drawing.RectangleF(System.Drawing.Rectangle r) -> System.Drawing.RectangleF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.RectangleF.operator !=(System.Drawing.RectangleF left, System.Drawing.RectangleF right) -> bool (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.RectangleF.operator ==(System.Drawing.RectangleF left, System.Drawing.RectangleF right) -> bool (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Size.Add(System.Drawing.Size sz1, System.Drawing.Size sz2) -> System.Drawing.Size (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Size.Ceiling(System.Drawing.SizeF value) -> System.Drawing.Size (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Size.Round(System.Drawing.SizeF value) -> System.Drawing.Size (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Size.Subtract(System.Drawing.Size sz1, System.Drawing.Size sz2) -> System.Drawing.Size (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Size.Truncate(System.Drawing.SizeF value) -> System.Drawing.Size (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Size.explicit operator System.Drawing.Point(System.Drawing.Size size) -> System.Drawing.Point (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Size.implicit operator System.Drawing.SizeF(System.Drawing.Size p) -> System.Drawing.SizeF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Size.operator !=(System.Drawing.Size sz1, System.Drawing.Size sz2) -> bool (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Size.operator *(System.Drawing.Size left, float right) -> System.Drawing.SizeF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Size.operator *(System.Drawing.Size left, int right) -> System.Drawing.Size (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Size.operator *(float left, System.Drawing.Size right) -> System.Drawing.SizeF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Size.operator *(int left, System.Drawing.Size right) -> System.Drawing.Size (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Size.operator +(System.Drawing.Size sz1, System.Drawing.Size sz2) -> System.Drawing.Size (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Size.operator -(System.Drawing.Size sz1, System.Drawing.Size sz2) -> System.Drawing.Size (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Size.operator /(System.Drawing.Size left, float right) -> System.Drawing.SizeF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Size.operator /(System.Drawing.Size left, int right) -> System.Drawing.Size (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.Size.operator ==(System.Drawing.Size sz1, System.Drawing.Size sz2) -> bool (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.SizeF.Add(System.Drawing.SizeF sz1, System.Drawing.SizeF sz2) -> System.Drawing.SizeF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.SizeF.Subtract(System.Drawing.SizeF sz1, System.Drawing.SizeF sz2) -> System.Drawing.SizeF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.SizeF.explicit operator System.Drawing.PointF(System.Drawing.SizeF size) -> System.Drawing.PointF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.SizeF.explicit operator System.Drawing.SizeF(System.Numerics.Vector2 vector) -> System.Drawing.SizeF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.SizeF.explicit operator System.Numerics.Vector2(System.Drawing.SizeF size) -> System.Numerics.Vector2 (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.SizeF.operator !=(System.Drawing.SizeF sz1, System.Drawing.SizeF sz2) -> bool (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.SizeF.operator *(System.Drawing.SizeF left, float right) -> System.Drawing.SizeF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.SizeF.operator *(float left, System.Drawing.SizeF right) -> System.Drawing.SizeF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.SizeF.operator +(System.Drawing.SizeF sz1, System.Drawing.SizeF sz2) -> System.Drawing.SizeF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.SizeF.operator -(System.Drawing.SizeF sz1, System.Drawing.SizeF sz2) -> System.Drawing.SizeF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.SizeF.operator /(System.Drawing.SizeF left, float right) -> System.Drawing.SizeF (forwarded, contained in System.Drawing.Primitives)
+static System.Drawing.SizeF.operator ==(System.Drawing.SizeF sz1, System.Drawing.SizeF sz2) -> bool (forwarded, contained in System.Drawing.Primitives)
+static readonly System.Drawing.Color.Empty -> System.Drawing.Color (forwarded, contained in System.Drawing.Primitives)
+static readonly System.Drawing.Point.Empty -> System.Drawing.Point (forwarded, contained in System.Drawing.Primitives)
+static readonly System.Drawing.PointF.Empty -> System.Drawing.PointF (forwarded, contained in System.Drawing.Primitives)
+static readonly System.Drawing.Rectangle.Empty -> System.Drawing.Rectangle (forwarded, contained in System.Drawing.Primitives)
+static readonly System.Drawing.RectangleF.Empty -> System.Drawing.RectangleF (forwarded, contained in System.Drawing.Primitives)
+static readonly System.Drawing.Size.Empty -> System.Drawing.Size (forwarded, contained in System.Drawing.Primitives)
+static readonly System.Drawing.SizeF.Empty -> System.Drawing.SizeF (forwarded, contained in System.Drawing.Primitives)

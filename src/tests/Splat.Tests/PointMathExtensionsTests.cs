@@ -1,19 +1,18 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Drawing;
 
 namespace Splat.Tests;
 
+/// <summary>Tests for the point math extension methods.</summary>
 public class PointMathExtensionsTests
 {
+    /// <summary>The epsilon tolerance used for floating-point comparisons.</summary>
     private const float Eps = 1e-5f;
 
-    /// <summary>
-    /// Test that Floor method correctly floors point values.
-    /// </summary>
+    /// <summary>Test that Floor method correctly floors point values.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Floor_CorrectlyFloorsPoint()
@@ -29,9 +28,7 @@ public class PointMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test that Floor method handles negative values.
-    /// </summary>
+    /// <summary>Test that Floor method handles negative values.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Floor_HandlesNegativeValues()
@@ -47,9 +44,7 @@ public class PointMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test that WithinEpsilonOf returns true when points are within epsilon.
-    /// </summary>
+    /// <summary>Test that WithinEpsilonOf returns true when points are within epsilon.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task WithinEpsilonOf_ReturnsTrue_WhenPointsAreWithinEpsilon()
@@ -63,9 +58,7 @@ public class PointMathExtensionsTests
         await Assert.That(result).IsTrue();
     }
 
-    /// <summary>
-    /// Test that WithinEpsilonOf returns false when points are not within epsilon.
-    /// </summary>
+    /// <summary>Test that WithinEpsilonOf returns false when points are not within epsilon.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task WithinEpsilonOf_ReturnsFalse_WhenPointsAreNotWithinEpsilon()
@@ -79,9 +72,7 @@ public class PointMathExtensionsTests
         await Assert.That(result).IsFalse();
     }
 
-    /// <summary>
-    /// Test that WithinEpsilonOf handles identical points.
-    /// </summary>
+    /// <summary>Test that WithinEpsilonOf handles identical points.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task WithinEpsilonOf_HandlesIdenticalPoints()
@@ -94,9 +85,7 @@ public class PointMathExtensionsTests
         await Assert.That(result).IsTrue();
     }
 
-    /// <summary>
-    /// Test that DotProduct calculates correctly.
-    /// </summary>
+    /// <summary>Test that DotProduct calculates correctly.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DotProduct_CalculatesCorrectly()
@@ -109,9 +98,7 @@ public class PointMathExtensionsTests
         await Assert.That(result).IsEqualTo(10.0f).Within(Eps); // (3*2) + (4*1) = 10
     }
 
-    /// <summary>
-    /// Test that DotProduct handles zero vectors.
-    /// </summary>
+    /// <summary>Test that DotProduct handles zero vectors.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DotProduct_HandlesZeroVectors()
@@ -124,9 +111,7 @@ public class PointMathExtensionsTests
         await Assert.That(result).IsEqualTo(0);
     }
 
-    /// <summary>
-    /// Test that ScaledBy scales point correctly.
-    /// </summary>
+    /// <summary>Test that ScaledBy scales point correctly.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ScaledBy_ScalesPointCorrectly()
@@ -143,9 +128,7 @@ public class PointMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test that ScaledBy handles zero factor.
-    /// </summary>
+    /// <summary>Test that ScaledBy handles zero factor.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ScaledBy_HandlesZeroFactor()
@@ -162,9 +145,7 @@ public class PointMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test that ScaledBy handles negative factor.
-    /// </summary>
+    /// <summary>Test that ScaledBy handles negative factor.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ScaledBy_HandlesNegativeFactor()
@@ -181,9 +162,7 @@ public class PointMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test that Length calculates magnitude correctly.
-    /// </summary>
+    /// <summary>Test that Length calculates magnitude correctly.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Length_CalculatesMagnitudeCorrectly()
@@ -195,9 +174,7 @@ public class PointMathExtensionsTests
         await Assert.That(result).IsEqualTo(5.0f).Within(Eps);
     }
 
-    /// <summary>
-    /// Test that Length handles zero vector.
-    /// </summary>
+    /// <summary>Test that Length handles zero vector.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Length_HandlesZeroVector()
@@ -209,9 +186,7 @@ public class PointMathExtensionsTests
         await Assert.That(result).IsEqualTo(0);
     }
 
-    /// <summary>
-    /// Test that Normalize creates unit vector correctly.
-    /// </summary>
+    /// <summary>Test that Normalize creates unit vector correctly.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Normalize_CreatesUnitVectorCorrectly()
@@ -228,9 +203,7 @@ public class PointMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test that Normalize handles zero vector correctly.
-    /// </summary>
+    /// <summary>Test that Normalize handles zero vector correctly.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Normalize_HandlesZeroVectorCorrectly()
@@ -246,9 +219,7 @@ public class PointMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test that AngleInDegrees calculates angle correctly.
-    /// </summary>
+    /// <summary>Test that AngleInDegrees calculates angle correctly.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AngleInDegrees_CalculatesAngleCorrectly()
@@ -260,9 +231,7 @@ public class PointMathExtensionsTests
         await Assert.That(result).IsEqualTo(45.0f).Within(1.0f);
     }
 
-    /// <summary>
-    /// Test that AngleInDegrees handles negative coordinates.
-    /// </summary>
+    /// <summary>Test that AngleInDegrees handles negative coordinates.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AngleInDegrees_HandlesNegativeCoordinates()
@@ -274,9 +243,7 @@ public class PointMathExtensionsTests
         await Assert.That(result).IsEqualTo(135.0f).Within(1.0f);
     }
 
-    /// <summary>
-    /// Test that AngleInDegrees handles zero vector.
-    /// </summary>
+    /// <summary>Test that AngleInDegrees handles zero vector.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AngleInDegrees_HandlesZeroVector()
@@ -288,9 +255,7 @@ public class PointMathExtensionsTests
         await Assert.That(result).IsEqualTo(0);
     }
 
-    /// <summary>
-    /// Test that ProjectAlong projects correctly.
-    /// </summary>
+    /// <summary>Test that ProjectAlong projects correctly.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ProjectAlong_ProjectsCorrectly()
@@ -307,9 +272,7 @@ public class PointMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test that ProjectAlong handles zero direction vector.
-    /// </summary>
+    /// <summary>Test that ProjectAlong handles zero direction vector.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ProjectAlong_HandlesZeroDirection()
@@ -327,9 +290,7 @@ public class PointMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test that ProjectAlongAngle projects correctly.
-    /// </summary>
+    /// <summary>Test that ProjectAlongAngle projects correctly.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ProjectAlongAngle_ProjectsCorrectly()
@@ -346,9 +307,7 @@ public class PointMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test that ProjectAlongAngle works with different angles.
-    /// </summary>
+    /// <summary>Test that ProjectAlongAngle works with different angles.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ProjectAlongAngle_WorksWithDifferentAngles()
@@ -365,9 +324,7 @@ public class PointMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test that DistanceTo calculates distance correctly.
-    /// </summary>
+    /// <summary>Test that DistanceTo calculates distance correctly.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DistanceTo_CalculatesDistanceCorrectly()
@@ -380,9 +337,7 @@ public class PointMathExtensionsTests
         await Assert.That(result).IsEqualTo(5.0f).Within(Eps);
     }
 
-    /// <summary>
-    /// Test that DistanceTo handles same points.
-    /// </summary>
+    /// <summary>Test that DistanceTo handles same points.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DistanceTo_HandlesSamePoints()
@@ -394,9 +349,7 @@ public class PointMathExtensionsTests
         await Assert.That(result).IsEqualTo(0);
     }
 
-    /// <summary>
-    /// Test that DistanceTo is symmetric.
-    /// </summary>
+    /// <summary>Test that DistanceTo is symmetric.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DistanceTo_IsSymmetric()

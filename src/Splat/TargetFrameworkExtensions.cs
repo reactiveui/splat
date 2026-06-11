@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Reflection;
@@ -8,30 +7,33 @@ using System.Runtime.Versioning;
 
 namespace Splat;
 
-/// <summary>
-/// Provides extension methods for retrieving target framework information from assemblies.
-/// </summary>
+/// <summary>Provides extension methods for retrieving target framework information from assemblies.</summary>
 /// <remarks>This class contains static methods that extend the functionality of the <see
 /// cref="System.Reflection.Assembly"/> type, enabling callers to determine the target framework an assembly was built
 /// against. These methods are useful for scenarios where runtime inspection of assembly metadata is required, such as
 /// diagnostics, tooling, or compatibility checks.</remarks>
 public static class TargetFrameworkExtensions
 {
-    /// <summary>
-    /// Retrieves the target framework name specified for the given assembly, if available.
-    /// </summary>
-    /// <remarks>The target framework name is typically defined by the TargetFrameworkAttribute applied to the
-    /// assembly. If the attribute is not present, this method returns null.</remarks>
-    /// <param name="assembly">The assembly from which to obtain the target framework name. Cannot be null.</param>
-    /// <returns>A string containing the target framework name (for example, ".NETCoreApp,Version=v8.0"), or null if the assembly
-    /// does not specify a target framework.</returns>
-    public static string? GetTargetFrameworkName(this Assembly assembly)
+    /// <summary>Extension members for retrieving target framework information from an <see cref="Assembly"/>.</summary>
+    /// <param name="assembly">The assembly the extension members operate on.</param>
+    extension(Assembly assembly)
     {
-        var targetFrameworkAttribute = assembly.GetCustomAttribute<TargetFrameworkAttribute>();
+        /// <summary>Retrieves the target framework name specified for the given assembly, if available.</summary>
+        /// <remarks>The target framework name is typically defined by the TargetFrameworkAttribute applied to the
+        /// assembly. If the attribute is not present, this method returns null.</remarks>
+        /// <returns>A string containing the target framework name (for example, ".NETCoreApp,Version=v8.0"), or null if the assembly
+        /// does not specify a target framework.</returns>
+        public string? GetTargetFrameworkName()
+        {
+            var targetFrameworkAttribute = assembly.GetCustomAttribute<TargetFrameworkAttribute>();
 
-        return GetTargetFrameworkName(targetFrameworkAttribute?.FrameworkName);
+            return TargetFrameworkExtensions.GetTargetFrameworkName(targetFrameworkAttribute?.FrameworkName);
+        }
     }
 
+    /// <summary>Maps a full framework moniker (for example, ".NETCoreApp,Version=v8.0") to its short TFM (for example, "net8.0").</summary>
+    /// <param name="frameworkName">The full framework name, or <see langword="null"/>.</param>
+    /// <returns>The short target framework moniker, or <see langword="null"/> when the framework is unknown.</returns>
     internal static string? GetTargetFrameworkName(string? frameworkName) =>
         frameworkName switch
         {

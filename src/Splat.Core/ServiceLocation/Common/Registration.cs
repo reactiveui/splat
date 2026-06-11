@@ -1,15 +1,12 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
 
 namespace Splat;
 
-/// <summary>
-/// Represents a service registration that is either a constant instance or a factory delegate.
-/// </summary>
+/// <summary>Represents a service registration that is either a constant instance or a factory delegate.</summary>
 /// <remarks>
 /// <para>
 /// This type is intentionally small and allocation-free:
@@ -30,19 +27,13 @@ namespace Splat;
 /// <typeparam name="T">The registered service type.</typeparam>
 internal readonly record struct Registration<T>
 {
-    /// <summary>
-    /// Stored instance for instance-mode registrations; otherwise <see langword="null"/>.
-    /// </summary>
+    /// <summary>Stored instance for instance-mode registrations; otherwise <see langword="null"/>.</summary>
     private readonly T? _instance;
 
-    /// <summary>
-    /// Stored delegate for factory-mode registrations; otherwise <see langword="null"/>.
-    /// </summary>
+    /// <summary>Stored delegate for factory-mode registrations; otherwise <see langword="null"/>.</summary>
     private readonly Func<T?>? _factory;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Registration{T}"/> struct.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="Registration{T}"/> struct.</summary>
     /// <param name="instance">Instance for instance-mode registrations; otherwise <see langword="null"/>.</param>
     /// <param name="factory">Factory for factory-mode registrations; otherwise <see langword="null"/>.</param>
     /// <param name="isFactory"><see langword="true"/> for factory-mode; <see langword="false"/> for instance-mode.</param>
@@ -53,24 +44,18 @@ internal readonly record struct Registration<T>
         IsFactory = isFactory;
     }
 
-    /// <summary>
-    /// Gets a value indicating whether this registration stores a factory delegate.
-    /// </summary>
+    /// <summary>Gets a value indicating whether this registration stores a factory delegate.</summary>
     /// <value>
     /// <see langword="true"/> if this registration is a factory; <see langword="false"/> if it is a constant instance.
     /// </value>
     public bool IsFactory { get; }
 
-    /// <summary>
-    /// Creates a registration that stores a constant instance.
-    /// </summary>
+    /// <summary>Creates a registration that stores a constant instance.</summary>
     /// <param name="instance">The instance to register. May be <see langword="null"/>.</param>
     /// <returns>A registration in instance mode.</returns>
     public static Registration<T> FromInstance(T? instance) => new(instance, null, isFactory: false);
 
-    /// <summary>
-    /// Creates a registration that stores a factory delegate.
-    /// </summary>
+    /// <summary>Creates a registration that stores a factory delegate.</summary>
     /// <param name="factory">The factory delegate to register.</param>
     /// <returns>A registration in factory mode.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> is <see langword="null"/>.</exception>
@@ -80,9 +65,7 @@ internal readonly record struct Registration<T>
         return new(default, factory, isFactory: true);
     }
 
-    /// <summary>
-    /// Gets the stored instance.
-    /// </summary>
+    /// <summary>Gets the stored instance.</summary>
     /// <returns>The stored instance.</returns>
     /// <remarks>
     /// This method is intended to be used only when <see cref="IsFactory"/> is <see langword="false"/>.
@@ -90,9 +73,7 @@ internal readonly record struct Registration<T>
     /// </remarks>
     public T? GetInstance() => IsFactory ? default : _instance;
 
-    /// <summary>
-    /// Gets the stored factory delegate.
-    /// </summary>
+    /// <summary>Gets the stored factory delegate.</summary>
     /// <returns>The stored factory delegate.</returns>
     /// <remarks>
     /// This method is intended to be used only when <see cref="IsFactory"/> is <see langword="true"/>.
@@ -100,9 +81,7 @@ internal readonly record struct Registration<T>
     /// </remarks>
     public Func<T?>? GetFactory() => IsFactory ? _factory! : null;
 
-    /// <summary>
-    /// Attempts to retrieve the stored instance when in instance mode.
-    /// </summary>
+    /// <summary>Attempts to retrieve the stored instance when in instance mode.</summary>
     /// <param name="instance">Receives the instance when available.</param>
     /// <returns><see langword="true"/> if this registration is in instance mode; otherwise <see langword="false"/>.</returns>
     public bool TryGetInstance([MaybeNullWhen(false)] out T instance)
@@ -117,9 +96,7 @@ internal readonly record struct Registration<T>
         return false;
     }
 
-    /// <summary>
-    /// Attempts to retrieve the stored factory when in factory mode.
-    /// </summary>
+    /// <summary>Attempts to retrieve the stored factory when in factory mode.</summary>
     /// <param name="factory">Receives the factory delegate when available.</param>
     /// <returns><see langword="true"/> if this registration is in factory mode; otherwise <see langword="false"/>.</returns>
     public bool TryGetFactory([MaybeNullWhen(false)] out Func<T?> factory)
@@ -130,7 +107,7 @@ internal readonly record struct Registration<T>
             return true;
         }
 
-        factory = default;
+        factory = null;
         return false;
     }
 }

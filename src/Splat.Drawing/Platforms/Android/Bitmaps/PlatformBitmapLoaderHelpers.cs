@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Android.App;
@@ -18,15 +17,18 @@ namespace Splat;
 /// and resources.</remarks>
 internal static class PlatformBitmapLoaderHelpers
 {
-    /// <summary>
-    /// Loads a bitmap from a stream with optional desired dimensions.
-    /// </summary>
+    /// <summary>Loads a bitmap from a stream with optional desired dimensions.</summary>
+    /// <param name="sourceStream">The stream to decode the bitmap from.</param>
+    /// <param name="desiredWidth">The desired width of the bitmap, or <see langword="null"/> to use the source width.</param>
+    /// <param name="desiredHeight">The desired height of the bitmap, or <see langword="null"/> to use the source height.</param>
+    /// <param name="logger">The logger used to report any stream correction warnings, or <see langword="null"/> to suppress logging.</param>
+    /// <returns>A task that resolves to the loaded <see cref="IBitmap"/>.</returns>
     internal static async Task<IBitmap?> LoadFromStream(Stream sourceStream, float? desiredWidth, float? desiredHeight, IEnableLogger? logger)
     {
         ArgumentExceptionHelper.ThrowIfNull(sourceStream);
 
         // this is a rough check to do with the termination check for #479
-        ArgumentExceptionHelper.ThrowIf(sourceStream.Length < 2, "The source stream is not a valid image file.", nameof(sourceStream));
+        ArgumentGuard.ThrowIf(sourceStream.Length < 2, "The source stream is not a valid image file.", nameof(sourceStream));
 
         if (!HasCorrectStreamEnd(sourceStream))
         {
@@ -59,9 +61,9 @@ internal static class PlatformBitmapLoaderHelpers
         };
     }
 
-    /// <summary>
-    /// Loads a bitmap from a drawable resource ID.
-    /// </summary>
+    /// <summary>Loads a bitmap from a drawable resource ID.</summary>
+    /// <param name="resourceId">The integer resource ID of the drawable to load.</param>
+    /// <returns>The loaded <see cref="IBitmap"/>, or <see langword="null"/> if the drawable could not be resolved.</returns>
     internal static IBitmap? LoadFromDrawableId(int resourceId)
     {
         var res = Application.Context.Resources;
@@ -75,18 +77,19 @@ internal static class PlatformBitmapLoaderHelpers
         return GetFromDrawable(res.GetDrawable(resourceId, theme));
     }
 
-    /// <summary>
-    /// Creates a new bitmap with the specified dimensions.
-    /// </summary>
+    /// <summary>Creates a new bitmap with the specified dimensions.</summary>
+    /// <param name="width">The width of the bitmap to create, in pixels.</param>
+    /// <param name="height">The height of the bitmap to create, in pixels.</param>
+    /// <returns>The newly created <see cref="IBitmap"/>.</returns>
     internal static IBitmap? CreateBitmap(float width, float height)
     {
         var config = Bitmap.Config.Argb8888 ?? throw new InvalidOperationException("The ARGB8888 bitmap format is unavailable");
         return Bitmap.CreateBitmap((int)width, (int)height, config).FromNative();
     }
 
-    /// <summary>
-    /// Converts an Android drawable to a Splat bitmap.
-    /// </summary>
+    /// <summary>Converts an Android drawable to a Splat bitmap.</summary>
+    /// <param name="drawable">The Android drawable to wrap, or <see langword="null"/>.</param>
+    /// <returns>A <see cref="DrawableBitmap"/> wrapping the drawable, or <see langword="null"/> if <paramref name="drawable"/> is <see langword="null"/>.</returns>
     internal static DrawableBitmap? GetFromDrawable(Android.Graphics.Drawables.Drawable? drawable) =>
         drawable is null ? null : new DrawableBitmap(drawable);
 
@@ -105,9 +108,9 @@ internal static class PlatformBitmapLoaderHelpers
                && sourceStream.ReadByte() == 0xD9;
     }
 
-    /// <summary>
-    /// Attempts to correct stream byte termination if possible.
-    /// </summary>
+    /// <summary>Attempts to correct stream byte termination if possible.</summary>
+    /// <param name="sourceStream">The stream to inspect and, if writable, correct.</param>
+    /// <param name="logger">Optional logger used to report when the stream cannot be corrected.</param>
     internal static void AttemptStreamByteCorrection(Stream sourceStream, IEnableLogger? logger)
     {
         if (!sourceStream.CanWrite)

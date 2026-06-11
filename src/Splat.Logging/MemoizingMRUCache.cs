@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
@@ -13,9 +12,7 @@ using System.Runtime.InteropServices;
 
 namespace Splat;
 
-/// <summary>
-/// Represents a memoizing Most-Recently-Used (MRU) cache.
-/// </summary>
+/// <summary>Represents a memoizing Most-Recently-Used (MRU) cache.</summary>
 /// <remarks>
 /// <para>
 /// This cache memoizes a calculation function: given the same key, it returns the cached value without recomputing.
@@ -32,51 +29,28 @@ namespace Splat;
 public sealed class MemoizingMRUCache<TParam, TVal>
     where TParam : notnull
 {
-#if NET9_0_OR_GREATER
-    /// <summary>
-    /// Synchronization gate for all mutations of the MRU list and cache dictionary.
-    /// </summary>
+    /// <summary>Synchronization gate for all mutations of the MRU list and cache dictionary.</summary>
     private readonly Lock _gate = new();
-#else
-    /// <summary>
-    /// Synchronization gate for all mutations of the MRU list and cache dictionary.
-    /// </summary>
-    private readonly object _gate = new();
-#endif
 
-    /// <summary>
-    /// The calculation function used to produce values for missing keys.
-    /// </summary>
+    /// <summary>The calculation function used to produce values for missing keys.</summary>
     private readonly Func<TParam, object?, TVal> _calculationFunction;
 
-    /// <summary>
-    /// Optional callback invoked when an entry is evicted or explicitly invalidated.
-    /// </summary>
+    /// <summary>Optional callback invoked when an entry is evicted or explicitly invalidated.</summary>
     private readonly Action<TVal>? _releaseFunction;
 
-    /// <summary>
-    /// Maximum number of entries retained in the cache.
-    /// </summary>
+    /// <summary>Maximum number of entries retained in the cache.</summary>
     private readonly int _maxCacheSize;
 
-    /// <summary>
-    /// Equality comparer for keys.
-    /// </summary>
+    /// <summary>Equality comparer for keys.</summary>
     private readonly IEqualityComparer<TParam> _comparer;
 
-    /// <summary>
-    /// MRU list of keys. Head is most-recently-used; tail is least-recently-used.
-    /// </summary>
+    /// <summary>MRU list of keys. Head is most-recently-used; tail is least-recently-used.</summary>
     private LinkedList<TParam> _mruList;
 
-    /// <summary>
-    /// Dictionary from key to its MRU node and cached value.
-    /// </summary>
+    /// <summary>Dictionary from key to its MRU node and cached value.</summary>
     private Dictionary<TParam, (LinkedListNode<TParam> node, TVal value)> _entries;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.</summary>
     /// <param name="calculationFunc">The calculation function used to produce values for missing keys.</param>
     /// <param name="maxSize">The maximum number of entries retained in the cache. Must be &gt; 0.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="calculationFunc"/> is <see langword="null"/>.</exception>
@@ -86,9 +60,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     {
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.</summary>
     /// <param name="calculationFunc">The calculation function used to produce values for missing keys.</param>
     /// <param name="maxSize">The maximum number of entries retained in the cache. Must be &gt; 0.</param>
     /// <param name="onRelease">Callback invoked when an entry is evicted or invalidated.</param>
@@ -99,9 +71,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     {
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.</summary>
     /// <param name="calculationFunc">The calculation function used to produce values for missing keys.</param>
     /// <param name="maxSize">The maximum number of entries retained in the cache. Must be &gt; 0.</param>
     /// <param name="paramComparer">Equality comparer for keys.</param>
@@ -112,9 +82,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     {
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.</summary>
     /// <param name="calculationFunc">The calculation function used to produce values for missing keys.</param>
     /// <param name="maxSize">The maximum number of entries retained in the cache. Must be &gt; 0.</param>
     /// <param name="onRelease">Optional callback invoked when an entry is evicted or invalidated.</param>
@@ -127,7 +95,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
         Action<TVal>? onRelease,
         IEqualityComparer<TParam> paramComparer)
     {
-        ArgumentExceptionHelper.ThrowIfLessThanOrEqual(maxSize, 0);
+        ArgumentOutOfRangeExceptionHelper.ThrowIfLessThanOrEqual(maxSize, 0);
         ArgumentExceptionHelper.ThrowIfNull(calculationFunc);
         ArgumentExceptionHelper.ThrowIfNull(paramComparer);
 
@@ -140,17 +108,13 @@ public sealed class MemoizingMRUCache<TParam, TVal>
         _entries = new(_comparer);
     }
 
-    /// <summary>
-    /// Gets the cached value for <paramref name="key"/>, computing and caching it if necessary.
-    /// </summary>
+    /// <summary>Gets the cached value for <paramref name="key"/>, computing and caching it if necessary.</summary>
     /// <param name="key">The cache key.</param>
     /// <returns>The cached or computed value.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
     public TVal Get(TParam key) => Get(key, context: null);
 
-    /// <summary>
-    /// Gets the cached value for <paramref name="key"/>, computing and caching it if necessary.
-    /// </summary>
+    /// <summary>Gets the cached value for <paramref name="key"/>, computing and caching it if necessary.</summary>
     /// <param name="key">The cache key.</param>
     /// <param name="context">Optional context passed to the calculation function.</param>
     /// <returns>The cached or computed value.</returns>
@@ -215,9 +179,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
         return computed;
     }
 
-    /// <summary>
-    /// Attempts to get the cached value without computing it.
-    /// </summary>
+    /// <summary>Attempts to get the cached value without computing it.</summary>
     /// <param name="key">The cache key.</param>
     /// <param name="result">Receives the cached value when available; otherwise the default value.</param>
     /// <returns><see langword="true"/> if the key was cached; otherwise <see langword="false"/>.</returns>
@@ -240,9 +202,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
         return false;
     }
 
-    /// <summary>
-    /// Ensures that the next time this key is queried, the calculation function will be called.
-    /// </summary>
+    /// <summary>Ensures that the next time this key is queried, the calculation function will be called.</summary>
     /// <param name="key">The key to invalidate.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
     public void Invalidate(TParam key)
@@ -270,15 +230,15 @@ public sealed class MemoizingMRUCache<TParam, TVal>
         }
 
         // Release outside lock.
-        if (hasRelease)
+        if (!hasRelease)
         {
-            _releaseFunction!.Invoke(toRelease!);
+            return;
         }
+
+        _releaseFunction!.Invoke(toRelease!);
     }
 
-    /// <summary>
-    /// Invalidates all items in the cache.
-    /// </summary>
+    /// <summary>Invalidates all items in the cache.</summary>
     /// <param name="aggregateReleaseExceptions">
     /// When <see langword="true"/>, release exceptions are collected and rethrown as an <see cref="AggregateException"/>
     /// after all entries have been processed.
@@ -326,19 +286,19 @@ public sealed class MemoizingMRUCache<TParam, TVal>
             }
             catch (Exception e)
             {
-                (exceptions ??= new()).Add(e);
+                (exceptions ??= []).Add(e);
             }
         }
 
-        if (exceptions is not null && exceptions.Count != 0)
+        if (exceptions is null || exceptions.Count == 0)
         {
-            throw new AggregateException("Exceptions thrown during MRU Cache InvalidateAll item release.", exceptions);
+            return;
         }
+
+        throw new AggregateException("Exceptions thrown during MRU Cache InvalidateAll item release.", exceptions);
     }
 
-    /// <summary>
-    /// Returns a snapshot of all values currently in the cache.
-    /// </summary>
+    /// <summary>Returns a snapshot of all values currently in the cache.</summary>
     /// <returns>An immutable snapshot of cached values.</returns>
     public IEnumerable<TVal> CachedValues()
     {
@@ -361,9 +321,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
         }
     }
 
-    /// <summary>
-    /// Records an evicted value into either the single slot or a batch list.
-    /// </summary>
+    /// <summary>Records an evicted value into either the single slot or a batch list.</summary>
     /// <param name="value">The value that was evicted.</param>
     /// <param name="singleEvicted">Single-value slot.</param>
     /// <param name="hasSingleEvicted">Whether the single-value slot contains a value.</param>
@@ -393,9 +351,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
         hasSingleEvicted = false;
     }
 
-    /// <summary>
-    /// Moves a node to the front of the MRU list.
-    /// </summary>
+    /// <summary>Moves a node to the front of the MRU list.</summary>
     /// <param name="node">The node to refresh.</param>
 #if NET8_0_OR_GREATER
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -412,9 +368,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
         _mruList.AddFirst(node);
     }
 
-    /// <summary>
-    /// Evicts least-recently-used entries until the cache size is within <see cref="_maxCacheSize"/>.
-    /// </summary>
+    /// <summary>Evicts least-recently-used entries until the cache size is within <see cref="_maxCacheSize"/>.</summary>
     /// <param name="singleEvicted">Receives a single evicted value when exactly one eviction occurs.</param>
     /// <param name="hasSingleEvicted">Receives whether a single evicted value was recorded.</param>
     /// <param name="batchEvicted">Receives evicted values when multiple evictions occur.</param>
@@ -451,9 +405,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
         }
     }
 
-    /// <summary>
-    /// Ensures cache invariants are maintained.
-    /// </summary>
+    /// <summary>Ensures cache invariants are maintained.</summary>
     [ContractInvariantMethod]
     private void Invariants()
     {

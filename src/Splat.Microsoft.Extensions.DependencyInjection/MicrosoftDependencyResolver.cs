@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
@@ -23,28 +22,25 @@ namespace Splat.Microsoft.Extensions.DependencyInjection;
 public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
 {
     private const string ImmutableExceptionMessage = "This container has already been built and cannot be modified.";
-    private readonly object _syncLock = new();
+
+    private readonly Lock _syncLock = new();
+
     private IServiceCollection? _serviceCollection;
+
     private bool _isImmutable;
+
     private IServiceProvider? _serviceProvider;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MicrosoftDependencyResolver" /> class with an <see cref="IServiceCollection"/>.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="MicrosoftDependencyResolver" /> class with an <see cref="IServiceCollection"/>.</summary>
     /// <param name="services">An instance of <see cref="IServiceCollection"/>.</param>
     public MicrosoftDependencyResolver(IServiceCollection? services = null) => _serviceCollection = services ?? new ServiceCollection();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MicrosoftDependencyResolver" /> class with a configured service Provider.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="MicrosoftDependencyResolver" /> class with a configured service Provider.</summary>
     /// <param name="serviceProvider">A ready to use service provider.</param>
     public MicrosoftDependencyResolver(IServiceProvider serviceProvider) =>
         UpdateContainer(serviceProvider);
 
-    /// <summary>
-    /// Gets the internal Microsoft container,
-    /// or builds a new one if this instance was not initialized with one.
-    /// </summary>
+    /// <summary>Gets the internal Microsoft container, or builds a new one if this instance was not initialized with one.</summary>
     protected virtual IServiceProvider? ServiceProvider
     {
         get
@@ -58,9 +54,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
         }
     }
 
-    /// <summary>
-    /// Updates this instance with a collection of configured services.
-    /// </summary>
+    /// <summary>Updates this instance with a collection of configured services.</summary>
     /// <param name="services">An instance of <see cref="IServiceCollection"/>.</param>
     public void UpdateContainer(IServiceCollection services)
     {
@@ -83,9 +77,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
         }
     }
 
-    /// <summary>
-    /// Updates this instance with a configured service Provider.
-    /// </summary>
+    /// <summary>Updates this instance with a configured service Provider.</summary>
     /// <param name="serviceProvider">A ready to use service provider.</param>
     public void UpdateContainer(IServiceProvider serviceProvider)
     {
@@ -394,11 +386,11 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
 
     /// <inheritdoc />
     public virtual IDisposable ServiceRegistrationCallback(Type serviceType, Action<IDisposable> callback) =>
-        throw new NotImplementedException("ServiceRegistrationCallback without contract is not implemented in the Microsoft dependency resolver.");
+        throw new NotSupportedException("ServiceRegistrationCallback without contract is not implemented in the Microsoft dependency resolver.");
 
     /// <inheritdoc />
     public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) =>
-        throw new NotImplementedException("ServiceRegistrationCallback is not implemented in the Microsoft dependency resolver.");
+        throw new NotSupportedException("ServiceRegistrationCallback is not implemented in the Microsoft dependency resolver.");
 
     /// <inheritdoc/>
     public virtual bool HasRegistration(Type? serviceType)
@@ -672,26 +664,35 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
         GC.SuppressFinalize(this);
     }
 
-    /// <summary>
-    /// Disposes of the instance.
-    /// </summary>
+    /// <summary>Disposes of the instance.</summary>
     /// <param name="disposing">Whether or not the instance is disposing.</param>
     protected virtual void Dispose(bool disposing)
     {
-        if (disposing)
+        if (!disposing)
         {
-            DisposeServiceProvider(_serviceProvider);
+            return;
         }
+
+        DisposeServiceProvider(_serviceProvider);
     }
 
+    /// <summary>Disposes the supplied service provider if it implements <see cref="IDisposable"/>.</summary>
+    /// <param name="sp">The service provider to dispose, or <see langword="null"/> to do nothing.</param>
     private static void DisposeServiceProvider(IServiceProvider? sp)
     {
-        if (sp is IDisposable d)
+        if (sp is not IDisposable d)
         {
-            d.Dispose();
+            return;
         }
+
+        d.Dispose();
     }
 
+    /// <summary>Determines whether the supplied service descriptor is a keyed registration matching the service type and contract.</summary>
+    /// <param name="serviceType">The service type to match.</param>
+    /// <param name="contract">The contract (service key) to match.</param>
+    /// <param name="sd">The service descriptor to test.</param>
+    /// <returns><see langword="true"/> if the descriptor is keyed and matches both the service type and contract; otherwise, <see langword="false"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool MatchesKeyedContract(Type? serviceType, string? contract, ServiceDescriptor sd) =>
         sd.ServiceType == serviceType

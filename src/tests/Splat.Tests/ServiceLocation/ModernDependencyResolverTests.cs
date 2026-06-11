@@ -1,19 +1,17 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Common.Test;
 
 namespace Splat.Tests.ServiceLocation;
 
+/// <summary>Tests for the <see cref="ModernDependencyResolver"/> class.</summary>
 [NotInParallel]
 [InheritsTests]
 public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<ModernDependencyResolver>
 {
-    /// <summary>
-    /// Test ServiceRegistrationCallback with null service type throws.
-    /// </summary>
+    /// <summary>Test ServiceRegistrationCallback with null service type throws.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ServiceRegistrationCallback_NullServiceType_Throws()
@@ -24,9 +22,7 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
             .Throws<ArgumentNullException>();
     }
 
-    /// <summary>
-    /// Test ServiceRegistrationCallback invoked once per existing registration.
-    /// </summary>
+    /// <summary>Test ServiceRegistrationCallback invoked once per existing registration.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ServiceRegistrationCallback_InvokedOncePerExistingRegistration()
@@ -38,17 +34,12 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
 
         var callbackCount = 0;
 
-        using var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(_ =>
-        {
-            callbackCount++;
-        });
+        using var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(_ => callbackCount++);
 
         await Assert.That(callbackCount).IsEqualTo(3); // Called once for each existing registration
     }
 
-    /// <summary>
-    /// Test ServiceRegistrationCallback after resolver disposal returns empty disposable.
-    /// </summary>
+    /// <summary>Test ServiceRegistrationCallback after resolver disposal returns empty disposable.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ServiceRegistrationCallback_AfterDisposal_ReturnsEmptyDisposable()
@@ -60,10 +51,7 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
 
         await Assert.That(() =>
         {
-            var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(_ =>
-            {
-                callbackInvoked = true;
-            });
+            var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(_ => callbackInvoked = true);
             subscription.Dispose();
             return Task.CompletedTask;
         }).ThrowsNothing();
@@ -71,9 +59,7 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
         await Assert.That(callbackInvoked).IsFalse();
     }
 
-    /// <summary>
-    /// Test Dispose method disposes resolver properly.
-    /// </summary>
+    /// <summary>Test Dispose method disposes resolver properly.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Dispose_DisposesResolver()
@@ -88,9 +74,7 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
         }).ThrowsNothing();
     }
 
-    /// <summary>
-    /// Test Duplicate method creates a copy with same registrations.
-    /// </summary>
+    /// <summary>Test Duplicate method creates a copy with same registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Duplicate_CreatesResolverWithSameRegistrations()
@@ -109,9 +93,7 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
         await Assert.That(result2).IsNotNull();
     }
 
-    /// <summary>
-    /// Test Duplicate of disposed resolver returns empty resolver.
-    /// </summary>
+    /// <summary>Test Duplicate of disposed resolver returns empty resolver.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Duplicate_OfDisposedResolver_ReturnsEmptyResolver()
@@ -125,9 +107,7 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
         await Assert.That(duplicate.HasRegistration<ViewModelOne>()).IsFalse();
     }
 
-    /// <summary>
-    /// Test Duplicate creates independent resolver.
-    /// </summary>
+    /// <summary>Test Duplicate creates independent resolver.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Duplicate_CreatesIndependentResolver()
@@ -146,9 +126,7 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
         await Assert.That(duplicateServices).Count().IsEqualTo(2);
     }
 
-    /// <summary>
-    /// Test GetService throws ObjectDisposedException after disposal.
-    /// </summary>
+    /// <summary>Test GetService throws ObjectDisposedException after disposal.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AfterDispose_GetService_ThrowsObjectDisposedException()
@@ -161,9 +139,7 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
             .Throws<ObjectDisposedException>();
     }
 
-    /// <summary>
-    /// Test HasRegistration returns false after disposal.
-    /// </summary>
+    /// <summary>Test HasRegistration returns false after disposal.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AfterDispose_HasRegistration_ReturnsFalse()

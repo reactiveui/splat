@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.ApplicationPerformanceMonitoring;
@@ -15,14 +14,10 @@ namespace Splat.ApplicationPerformanceMonitoring;
 /// operations within the main feature session.</remarks>
 public interface IFeatureUsageTrackingSession : IDisposable
 {
-    /// <summary>
-    /// Gets the name of the Feature being tracked.
-    /// </summary>
+    /// <summary>Gets the name of the Feature being tracked.</summary>
     string FeatureName { get; }
 
-    /// <summary>
-    /// Creates a new sub-feature tracking session with the specified description.
-    /// </summary>
+    /// <summary>Creates a new sub-feature tracking session with the specified description.</summary>
     /// <remarks>Use sub-feature tracking sessions to record usage metrics for distinct operations or
     /// components within a larger feature. Each sub-feature session is independent and should be disposed when tracking
     /// is complete.</remarks>
@@ -30,9 +25,7 @@ public interface IFeatureUsageTrackingSession : IDisposable
     /// <returns>An <see cref="IFeatureUsageTrackingSession"/> instance for tracking usage of the specified sub-feature.</returns>
     IFeatureUsageTrackingSession SubFeature(string description);
 
-    /// <summary>
-    /// Notify the APM toolset an exception has occurred in the current tracking session.
-    /// </summary>
+    /// <summary>Notify the APM toolset an exception has occurred in the current tracking session.</summary>
     /// <param name="exception">The exception that occurred.</param>
     void OnException(Exception exception);
 }

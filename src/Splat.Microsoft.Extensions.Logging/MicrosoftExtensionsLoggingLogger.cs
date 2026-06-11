@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
@@ -9,9 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Splat.Microsoft.Extensions.Logging;
 
-/// <summary>
-/// Provides an adapter that wraps a Microsoft.Extensions.Logging.ILogger instance for use with the ILogger interface.
-/// </summary>
+/// <summary>Provides an adapter that wraps a Microsoft.Extensions.Logging.ILogger instance for use with the ILogger interface.</summary>
 /// <remarks>This class enables integration between components expecting an ILogger implementation and the
 /// Microsoft.Extensions.Logging infrastructure. It delegates all logging operations to the underlying
 /// Microsoft.Extensions.Logging.ILogger instance supplied at construction. Thread safety and log level filtering are
@@ -23,9 +20,7 @@ public sealed class MicrosoftExtensionsLoggingLogger : ILogger
 {
     private readonly global::Microsoft.Extensions.Logging.ILogger _inner;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MicrosoftExtensionsLoggingLogger"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="MicrosoftExtensionsLoggingLogger"/> class.</summary>
     /// <param name="inner">The Microsoft.Extensions.Logging logger instance to wrap.</param>
     public MicrosoftExtensionsLoggingLogger(global::Microsoft.Extensions.Logging.ILogger inner)
     {

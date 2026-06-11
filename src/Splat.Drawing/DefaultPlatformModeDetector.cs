@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
@@ -20,15 +19,23 @@ namespace Splat;
 public class DefaultPlatformModeDetector : IPlatformModeDetector
 {
     private const string XamlDesignPropertiesType = "System.ComponentModel.DesignerProperties, System.Windows, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e";
+
     private const string XamlControlBorderType = "System.Windows.Controls.Border, System.Windows, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e";
+
     private const string XamlDesignPropertiesDesignModeMethodName = "GetIsInDesignMode";
+
     private const string WpfDesignerPropertiesType = "System.ComponentModel.DesignerProperties, PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
+
     private const string WpfDesignerPropertiesDesignModeMethod = "GetIsInDesignMode";
+
     private const string WpfDependencyPropertyType = "System.Windows.DependencyObject, WindowsBase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
+
     private const string WinFormsDesignerPropertiesType = "Windows.ApplicationModel.DesignMode, Windows, ContentType=WindowsRuntime";
+
     private const string WinFormsDesignerPropertiesDesignModeMethod = "DesignModeEnabled";
 
     private static readonly string[] _designEnvironments = ["BLEND.EXE", "XDESPROC.EXE"];
+
     private static bool? _cachedInDesignModeResult;
 
     /// <inheritdoc />
@@ -71,7 +78,7 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
 #if NETFRAMEWORK
             var entry = Assembly.GetEntryAssembly()?.Location;
 #else
-            var entry = System.AppContext.BaseDirectory;
+            var entry = AppContext.BaseDirectory;
 #endif
             if (entry is not null)
             {

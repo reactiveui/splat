@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.ApplicationPerformanceMonitoring;
@@ -15,15 +14,16 @@ namespace Splat.ApplicationPerformanceMonitoring;
 /// end.</remarks>
 public sealed class DefaultFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>, IEnableLogger
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DefaultFeatureUsageTrackingSession"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="DefaultFeatureUsageTrackingSession"/> class.</summary>
     /// <param name="featureName">The name of the feature.</param>
     public DefaultFeatureUsageTrackingSession(string featureName)
         : this(featureName, Guid.Empty)
     {
     }
 
+    /// <summary>Initializes a new instance of the <see cref="DefaultFeatureUsageTrackingSession"/> class.</summary>
+    /// <param name="featureName">The name of the feature being tracked.</param>
+    /// <param name="parentReference">The reference of the parent feature, or <see cref="Guid.Empty"/> when there is no parent.</param>
     internal DefaultFeatureUsageTrackingSession(string featureName, Guid parentReference)
     {
         ArgumentExceptionHelper.ThrowIfNullOrWhiteSpace(featureName);
@@ -56,6 +56,8 @@ public sealed class DefaultFeatureUsageTrackingSession : IFeatureUsageTrackingSe
     /// <inheritdoc/>
     public void Dispose() => this.Log().Info(() => $"Feature Finish: {FeatureReference}");
 
+    /// <summary>Builds the log message written when a feature usage tracking session starts.</summary>
+    /// <returns>The session-start log message, including the parent reference when present.</returns>
     private string GetSessionStartLogMessage()
     {
         var message = $"Feature Start. Reference={FeatureReference}";

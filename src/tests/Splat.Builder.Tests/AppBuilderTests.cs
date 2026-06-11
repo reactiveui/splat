@@ -1,42 +1,34 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Common.Test;
 
 namespace Splat.Builder.Tests;
 
+/// <summary>Unit tests for the <see cref="AppBuilder"/> class.</summary>
 [NotInParallel]
 public class AppBuilderTests
 {
     private AppBuilderScope? _appBuilderScope;
 
-    /// <summary>
-    /// Setup method to initialize AppBuilderScope before each test.
-    /// </summary>
-    [Before(HookType.Test)]
+    /// <summary>Setup method to initialize AppBuilderScope before each test.</summary>
+    [Before(Test)]
     public void SetUpAppBuilderScope() => _appBuilderScope = new();
 
-    /// <summary>
-    /// Teardown method to dispose AppBuilderScope after each test.
-    /// </summary>
-    [After(HookType.Test)]
+    /// <summary>Teardown method to dispose AppBuilderScope after each test.</summary>
+    [After(Test)]
     public void TearDownAppBuilderScope()
     {
         _appBuilderScope?.Dispose();
         _appBuilderScope = null;
     }
 
-    /// <summary>
-    /// Constructors the throws on null resolver.
-    /// </summary>
+    /// <summary>Constructors the throws on null resolver.</summary>
     [Test]
     public void ConstructorThrowsOnNullResolver() => Assert.Throws<ArgumentNullException>(() => _ = new AppBuilder(null!));
 
-    /// <summary>
-    /// Constructors the sets using builder true.
-    /// </summary>
+    /// <summary>Constructors the sets using builder true.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ConstructorSetsUsingBuilderTrue()
@@ -47,9 +39,7 @@ public class AppBuilderTests
         resolver.Dispose();
     }
 
-    /// <summary>
-    /// Creates the splat builder returns builder.
-    /// </summary>
+    /// <summary>Creates the splat builder returns builder.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task CreateSplatBuilderReturnsBuilder()
@@ -58,9 +48,7 @@ public class AppBuilderTests
         await Assert.That(builder).IsNotNull();
     }
 
-    /// <summary>
-    /// Resets the state of the builder state for tests resets static.
-    /// </summary>
+    /// <summary>Resets the state of the builder state for tests resets static.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ResetBuilderStateForTestsResetsStaticState()
@@ -73,9 +61,7 @@ public class AppBuilderTests
         }
     }
 
-    /// <summary>
-    /// Uses the current splat locator changes resolver provider.
-    /// </summary>
+    /// <summary>Uses the current splat locator changes resolver provider.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task UseCurrentSplatLocatorChangesResolverProvider()
@@ -87,9 +73,7 @@ public class AppBuilderTests
         resolver.Dispose();
     }
 
-    /// <summary>
-    /// Usings the module throws on null module.
-    /// </summary>
+    /// <summary>Usings the module throws on null module.</summary>
     [Test]
     public void UsingModuleThrowsOnNullModule()
     {
@@ -99,9 +83,7 @@ public class AppBuilderTests
         resolver.Dispose();
     }
 
-    /// <summary>
-    /// Usings the module adds module.
-    /// </summary>
+    /// <summary>Usings the module adds module.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task UsingModuleAddsModule()
@@ -113,9 +95,7 @@ public class AppBuilderTests
         resolver.Dispose();
     }
 
-    /// <summary>
-    /// Withes the custom registration throws on null action.
-    /// </summary>
+    /// <summary>Withes the custom registration throws on null action.</summary>
     [Test]
     public void WithCustomRegistrationThrowsOnNullAction()
     {
@@ -126,9 +106,7 @@ public class AppBuilderTests
         resolver.Dispose();
     }
 
-    /// <summary>
-    /// Withes the custom registration adds action.
-    /// </summary>
+    /// <summary>Withes the custom registration adds action.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task WithCustomRegistrationAddsAction()
@@ -140,9 +118,7 @@ public class AppBuilderTests
         resolver.Dispose();
     }
 
-    /// <summary>
-    /// Withes the core services returns self.
-    /// </summary>
+    /// <summary>Withes the core services returns self.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task WithCoreServicesReturnsSelf()
@@ -154,9 +130,7 @@ public class AppBuilderTests
         resolver.Dispose();
     }
 
-    /// <summary>
-    /// Builds the applies registrations.
-    /// </summary>
+    /// <summary>Builds the applies registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task BuildAppliesRegistrations()
@@ -170,9 +144,7 @@ public class AppBuilderTests
         resolver.Dispose();
     }
 
-    /// <summary>
-    /// Builds the does nothing if already built.
-    /// </summary>
+    /// <summary>Builds the does nothing if already built.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task BuildDoesNothingIfAlreadyBuilt()

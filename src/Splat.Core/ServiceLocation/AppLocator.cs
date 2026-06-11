@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat;
@@ -16,6 +15,7 @@ namespace Splat;
 /// most applications, use the Current and CurrentMutable properties to access the dependency resolver.</remarks>
 public static class AppLocator
 {
+    /// <summary>Initializes static members of the <see cref="AppLocator"/> class.</summary>
     static AppLocator() => InternalLocator = new();
 
     /// <summary>
@@ -35,31 +35,33 @@ public static class AppLocator
     /// </summary>
     public static IMutableDependencyResolver CurrentMutable => InternalLocator.CurrentMutable;
 
-    /// <summary>
-    /// Gets or sets the current locator instance.
-    /// Used mostly for testing purposes.
-    /// </summary>
+    /// <summary>Gets or sets the current locator instance. Used mostly for testing purposes.</summary>
     internal static InternalLocator InternalLocator { get; set; }
 
-    /// <summary>
-    /// Gets or sets the action used to reinitialize the dependency resolver.
-    /// </summary>
+    /// <summary>Gets or sets the action used to reinitialize the dependency resolver.</summary>
     /// <remarks>This property is intended for internal use to allow resetting or reconfiguring the dependency
     /// resolver during application lifetime. Modifying this property may affect how dependencies are resolved within
     /// the application.</remarks>
     internal static Action<IMutableDependencyResolver> ReInit { get; set; } = _ => { };
 
-    /// <summary>
-    /// Sets the dependency resolver to be used by the application.
-    /// </summary>
+    /// <summary>Registers the action that initializes each resolver as it is set or reset for the application.</summary>
+    /// <remarks>This is the hook Splat (and libraries built on it) use to re-register their services against every
+    /// new resolver. Most applications never need to call this directly.</remarks>
+    /// <param name="initializer">The action invoked with each newly set mutable resolver.</param>
+    public static void RegisterResolverInitializer(Action<IMutableDependencyResolver> initializer)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(initializer);
+
+        ReInit = initializer;
+    }
+
+    /// <summary>Sets the dependency resolver to be used by the application.</summary>
     /// <remarks>Call this method at application startup to configure the global dependency resolver.
     /// Subsequent calls will replace the existing resolver.</remarks>
     /// <param name="dependencyResolver">The dependency resolver instance that provides service resolution for the application. Cannot be null.</param>
     public static void SetLocator(IDependencyResolver dependencyResolver) => InternalLocator.SetLocator(dependencyResolver);
 
-    /// <summary>
-    /// Gets the current dependency resolver instance used by the application.
-    /// </summary>
+    /// <summary>Gets the current dependency resolver instance used by the application.</summary>
     /// <remarks>The returned resolver provides access to registered services and dependencies. The same
     /// instance is returned on each call. This method is intended for advanced scenarios where direct access to the
     /// dependency resolver is required.</remarks>
@@ -85,34 +87,21 @@ public static class AppLocator
         return InternalLocator.RegisterResolverCallbackChanged(callback);
     }
 
-    /// <summary>
-    /// This method will prevent resolver changed notifications from happening until
-    /// the returned <see cref="IDisposable"/> is disposed.
-    /// </summary>
+    /// <summary>This method will prevent resolver changed notifications from happening until the returned <see cref="IDisposable"/> is disposed.</summary>
     /// <returns>A disposable which when disposed will indicate the change
     /// notification is no longer needed.</returns>
     public static IDisposable SuppressResolverCallbackChangedNotifications() => InternalLocator.SuppressResolverCallbackChangedNotifications();
 
-    /// <summary>
-    /// Indicates if the we are notifying external classes of updates to the resolver being changed.
-    /// </summary>
+    /// <summary>Indicates if the we are notifying external classes of updates to the resolver being changed.</summary>
     /// <returns>A value indicating whether the notifications are happening.</returns>
     public static bool AreResolverCallbackChangedNotificationsEnabled() => InternalLocator.AreResolverCallbackChangedNotificationsEnabled();
 
-    // Generic-first service resolution methods for AOT compatibility
-
-    /// <summary>
-    /// Gets an instance of the given service type. Must return <c>null</c>
-    /// if the service is not available (must not throw).
-    /// </summary>
+    /// <summary>Gets an instance of the given service type. Must return <c>null</c> if the service is not available (must not throw).</summary>
     /// <typeparam name="T">The object type.</typeparam>
     /// <returns>The requested object, if found; <c>null</c> otherwise.</returns>
     public static T? GetService<T>() => Current.GetService<T>();
 
-    /// <summary>
-    /// Gets an instance of the given service type. Must return <c>null</c>
-    /// if the service is not available (must not throw).
-    /// </summary>
+    /// <summary>Gets an instance of the given service type. Must return <c>null</c> if the service is not available (must not throw).</summary>
     /// <typeparam name="T">The object type.</typeparam>
     /// <param name="contract">A value which will retrieve only a object registered with the same contract.</param>
     /// <returns>The requested object, if found; <c>null</c> otherwise.</returns>
@@ -137,49 +126,35 @@ public static class AppLocator
     /// should be empty (not <c>null</c>) if no objects of the given type are available.</returns>
     public static IEnumerable<T> GetServices<T>(string contract) => Current.GetServices<T>(contract);
 
-    /// <summary>
-    /// Check to see if a resolver has a registration for a type.
-    /// </summary>
+    /// <summary>Check to see if a resolver has a registration for a type.</summary>
     /// <typeparam name="T">The type to check for registration.</typeparam>
     /// <returns>Whether there is a registration for the type.</returns>
     public static bool HasRegistration<T>() => CurrentMutable.HasRegistration<T>();
 
-    /// <summary>
-    /// Check to see if a resolver has a registration for a type.
-    /// </summary>
+    /// <summary>Check to see if a resolver has a registration for a type.</summary>
     /// <typeparam name="T">The type to check for registration.</typeparam>
     /// <param name="contract">A contract value which will indicates to only check for the registration if this contract is specified.</param>
     /// <returns>Whether there is a registration for the type.</returns>
     public static bool HasRegistration<T>(string contract) => CurrentMutable.HasRegistration<T>(contract);
 
-    /// <summary>
-    /// Register a function with the resolver which will generate an object
-    /// for the specified service type.
-    /// </summary>
+    /// <summary>Register a function with the resolver which will generate an object for the specified service type.</summary>
     /// <typeparam name="T">The type which is used for the registration.</typeparam>
     /// <param name="factory">The factory function which generates our object.</param>
     public static void Register<T>(Func<T?> factory) => CurrentMutable.Register(factory);
 
-    /// <summary>
-    /// Register a function with the resolver which will generate an object
-    /// for the specified service type.
-    /// </summary>
+    /// <summary>Register a function with the resolver which will generate an object for the specified service type.</summary>
     /// <typeparam name="T">The type which is used for the registration.</typeparam>
     /// <param name="factory">The factory function which generates our object.</param>
     /// <param name="contract">A contract value which will indicates to only generate the value if this contract is specified.</param>
     public static void Register<T>(Func<T?> factory, string contract) => CurrentMutable.Register(factory, contract);
 
-    /// <summary>
-    /// Registers a constant value which will always return the specified object instance.
-    /// </summary>
+    /// <summary>Registers a constant value which will always return the specified object instance.</summary>
     /// <typeparam name="T">The service type to register for (must be a reference type).</typeparam>
     /// <param name="value">The specified instance to always return.</param>
     public static void RegisterConstant<T>(T? value)
         where T : class => CurrentMutable.RegisterConstant(value);
 
-    /// <summary>
-    /// Registers a constant value which will always return the specified object instance.
-    /// </summary>
+    /// <summary>Registers a constant value which will always return the specified object instance.</summary>
     /// <typeparam name="T">The service type to register for (must be a reference type).</typeparam>
     /// <param name="value">The specified instance to always return.</param>
     /// <param name="contract">A contract value which will indicates to only return the value if this contract is specified.</param>
@@ -207,28 +182,20 @@ public static class AppLocator
         where T : class =>
         CurrentMutable.RegisterLazySingleton(valueFactory, contract);
 
-    /// <summary>
-    /// Unregisters the current the value for the specified type and the optional contract.
-    /// </summary>
+    /// <summary>Unregisters the current the value for the specified type and the optional contract.</summary>
     /// <typeparam name="T">The type of item to unregister.</typeparam>
     public static void UnregisterCurrent<T>() => CurrentMutable.UnregisterCurrent<T>();
 
-    /// <summary>
-    /// Unregisters the current the value for the specified type and the optional contract.
-    /// </summary>
+    /// <summary>Unregisters the current the value for the specified type and the optional contract.</summary>
     /// <typeparam name="T">The type of item to unregister.</typeparam>
     /// <param name="contract">A contract which indicates to only removed the item registered with this contract.</param>
     public static void UnregisterCurrent<T>(string contract) => CurrentMutable.UnregisterCurrent<T>(contract);
 
-    /// <summary>
-    /// Unregisters the all the values for the specified type and the optional contract.
-    /// </summary>
+    /// <summary>Unregisters the all the values for the specified type and the optional contract.</summary>
     /// <typeparam name="T">The type of items to unregister.</typeparam>
     public static void UnregisterAll<T>() => CurrentMutable.UnregisterAll<T>();
 
-    /// <summary>
-    /// Unregisters the all the values for the specified type and the optional contract.
-    /// </summary>
+    /// <summary>Unregisters the all the values for the specified type and the optional contract.</summary>
     /// <typeparam name="T">The type of items to unregister.</typeparam>
     /// <param name="contract">A contract which indicates to only removed those items registered with this contract.</param>
     public static void UnregisterAll<T>(string contract) => CurrentMutable.UnregisterAll<T>(contract);

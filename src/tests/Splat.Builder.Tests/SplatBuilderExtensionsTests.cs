@@ -1,26 +1,22 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Common.Test;
 
 namespace Splat.Builder.Tests;
 
+/// <summary>Unit tests for the <see cref="SplatBuilderExtensions"/> class.</summary>
 [NotInParallel]
 public class SplatBuilderExtensionsTests
 {
     private AppBuilderScope? _appBuilderScope;
 
-    /// <summary>
-    /// Setup method to initialize AppBuilderScope before each test.
-    /// </summary>
+    /// <summary>Setup method to initialize AppBuilderScope before each test.</summary>
     [Before(HookType.Test)]
     public void SetUpAppBuilderScope() => _appBuilderScope = new();
 
-    /// <summary>
-    /// Teardown method to dispose AppBuilderScope after each test.
-    /// </summary>
+    /// <summary>Teardown method to dispose AppBuilderScope after each test.</summary>
     [After(HookType.Test)]
     public void TearDownAppBuilderScope()
     {
@@ -28,9 +24,7 @@ public class SplatBuilderExtensionsTests
         _appBuilderScope = null;
     }
 
-    /// <summary>
-    /// Applies the throws on null module.
-    /// </summary>
+    /// <summary>Applies the throws on null module.</summary>
     [Test]
     public void ApplyThrowsOnNullModule()
     {
@@ -38,9 +32,7 @@ public class SplatBuilderExtensionsTests
         Assert.Throws<ArgumentNullException>(() => module.Apply());
     }
 
-    /// <summary>
-    /// Creates the splat builder throws on null resolver.
-    /// </summary>
+    /// <summary>Creates the splat builder throws on null resolver.</summary>
     [Test]
     public void CreateSplatBuilderThrowsOnNullResolver()
     {
@@ -48,9 +40,7 @@ public class SplatBuilderExtensionsTests
         Assert.Throws<ArgumentNullException>(() => resolver.CreateSplatBuilder());
     }
 
-    /// <summary>
-    /// Creates the splat builder returns application builder.
-    /// </summary>
+    /// <summary>Creates the splat builder returns application builder.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task CreateSplatBuilderReturnsAppBuilder()
@@ -61,9 +51,7 @@ public class SplatBuilderExtensionsTests
         resolver.Dispose();
     }
 
-    /// <summary>
-    /// Creates the splat builder with configure action throws on null resolver.
-    /// </summary>
+    /// <summary>Creates the splat builder with configure action throws on null resolver.</summary>
     [Test]
     public void CreateSplatBuilderWithConfigureActionThrowsOnNullResolver()
     {
@@ -71,9 +59,7 @@ public class SplatBuilderExtensionsTests
         Assert.Throws<ArgumentNullException>(() => resolver.CreateSplatBuilder(_ => { }));
     }
 
-    /// <summary>
-    /// Creates the splat builder with configure action returns application builder.
-    /// </summary>
+    /// <summary>Creates the splat builder with configure action returns application builder.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task CreateSplatBuilderWithConfigureActionReturnsAppBuilder()
@@ -87,9 +73,7 @@ public class SplatBuilderExtensionsTests
         resolver.Dispose();
     }
 
-    /// <summary>
-    /// Creates the splat builder with configure action returns application builder.
-    /// </summary>
+    /// <summary>Creates the splat builder with configure action returns application builder.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task CreateSplatBuilderWithConfigureActionReturnsAppBuilderNonGeneric()

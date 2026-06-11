@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.Common.Test;
@@ -36,14 +35,10 @@ internal sealed class InternalLocatorScope : IDisposable
         AppLocator.InternalLocator = Locator;
     }
 
-    /// <summary>
-    /// Gets the InternalLocator instance for this scope.
-    /// </summary>
+    /// <summary>Gets the InternalLocator instance for this scope.</summary>
     public InternalLocator Locator { get; }
 
-    /// <summary>
-    /// Restores the AppLocator.InternalLocator to its previous state.
-    /// </summary>
+    /// <summary>Restores the AppLocator.InternalLocator to its previous state.</summary>
     public void Dispose()
     {
         Locator.Dispose();

@@ -1,0 +1,16 @@
+#nullable enable
+Splat.Builder.Log4NetSplatModule
+Splat.Builder.Log4NetSplatModule.Configure(Splat.IMutableDependencyResolver! resolver) -> void
+Splat.Builder.Log4NetSplatModule.Log4NetSplatModule() -> void
+Splat.Log4Net.Log4NetLogger
+Splat.Log4Net.Log4NetLogger.Dispose() -> void
+Splat.Log4Net.Log4NetLogger.Level.get -> Splat.LogLevel
+Splat.Log4Net.Log4NetLogger.Log4NetLogger(log4net.ILog! inner) -> void
+Splat.Log4Net.Log4NetLogger.Write(System.Exception! exception, string! message, Splat.LogLevel logLevel) -> void
+Splat.Log4Net.Log4NetLogger.Write(System.Exception! exception, string! message, System.Type! type, Splat.LogLevel logLevel) -> void
+Splat.Log4Net.Log4NetLogger.Write(string! message, Splat.LogLevel logLevel) -> void
+Splat.Log4Net.Log4NetLogger.Write(string! message, System.Type! type, Splat.LogLevel logLevel) -> void
+Splat.Log4Net.MutableDependencyResolverExtensions
+Splat.Log4Net.MutableDependencyResolverExtensions.extension(Splat.IMutableDependencyResolver!)
+Splat.Log4Net.MutableDependencyResolverExtensions.extension(Splat.IMutableDependencyResolver!).UseLog4NetWithWrappingFullLogger() -> void
+static Splat.Log4Net.MutableDependencyResolverExtensions.UseLog4NetWithWrappingFullLogger(this Splat.IMutableDependencyResolver! instance) -> void

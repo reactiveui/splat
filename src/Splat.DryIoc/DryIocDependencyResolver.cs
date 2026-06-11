@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
@@ -37,8 +36,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
             // Get all bindings that aren't tuple keys (which means they're either DefaultKey or null)
             var bindingsWithDefaultKey = _container.GetServiceRegistrations()
                 .Where(x => x.ServiceType == serviceType &&
-                           (x.OptionalServiceKey is null ||
-                            x.OptionalServiceKey.ToString()!.StartsWith("DefaultKey", StringComparison.Ordinal)))
+                           x.OptionalServiceKey?.ToString()?.StartsWith("DefaultKey", StringComparison.Ordinal) == true)
                 .ToList();
 
             if (bindingsWithDefaultKey.Count == 0)
@@ -61,8 +59,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
         }
 
         // When contract is provided, resolve with the contract as the service key
-        var registeredWithContract = _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray, serviceKey: contract);
-        return registeredWithContract;
+        return _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray, serviceKey: contract);
     }
 
     /// <inheritdoc />
@@ -79,8 +76,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
 
             if (contract is null)
             {
-                return x.OptionalServiceKey is null ||
-                       x.OptionalServiceKey.ToString()!.StartsWith("DefaultKey", StringComparison.Ordinal);
+                return x.OptionalServiceKey?.ToString()?.StartsWith("DefaultKey", StringComparison.Ordinal) == true;
             }
 
             return x.OptionalServiceKey is string serviceKeyAsString &&
@@ -98,7 +94,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
         {
             _container.RegisterDelegate(
                 serviceType,
-                _ => CreateThenConvert(serviceType!, factory),
+                _ => CreateThenConvert(serviceType, factory),
                 ifAlreadyRegistered: IfAlreadyRegistered.AppendNewImplementation);
 
             return;
@@ -106,7 +102,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
 
         _container.RegisterDelegate(
             serviceType,
-            _ => CreateThenConvert(serviceType!, factory),
+            _ => CreateThenConvert(serviceType, factory),
             ifAlreadyRegistered: IfAlreadyRegistered.Replace,
             serviceKey: contract);
     }
@@ -125,25 +121,26 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
 
                 if (contract is null)
                 {
-                    return x.OptionalServiceKey is null ||
-                           x.OptionalServiceKey.ToString()!.StartsWith("DefaultKey", StringComparison.Ordinal);
+                    return (x.OptionalServiceKey?.ToString())?.StartsWith("DefaultKey", StringComparison.Ordinal) == true;
                 }
 
                 return x.OptionalServiceKey is string serviceKeyAsString &&
                        contract.Equals(serviceKeyAsString, StringComparison.Ordinal);
             });
 
-        if (!matchingBinding.Equals(default(ServiceRegistrationInfo)))
+        if (matchingBinding.Equals(default(ServiceRegistrationInfo)))
         {
-            // Unregister using the specific binding's key
-            if (matchingBinding.OptionalServiceKey is not null)
-            {
-                _container.Unregister(serviceType, matchingBinding.OptionalServiceKey);
-            }
-            else
-            {
-                _container.Unregister(serviceType);
-            }
+            return;
+        }
+
+        // Unregister using the specific binding's key
+        if (matchingBinding.OptionalServiceKey is not null)
+        {
+            _container.Unregister(serviceType, matchingBinding.OptionalServiceKey);
+        }
+        else
+        {
+            _container.Unregister(serviceType);
         }
     }
 
@@ -161,8 +158,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
 
                 if (contract is null)
                 {
-                    return x.OptionalServiceKey is null ||
-                           x.OptionalServiceKey.ToString()!.StartsWith("DefaultKey", StringComparison.Ordinal);
+                    return (x.OptionalServiceKey?.ToString())!.StartsWith("DefaultKey", StringComparison.Ordinal);
                 }
 
                 return x.OptionalServiceKey is string serviceKeyAsString &&
@@ -178,7 +174,8 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
     }
 
     /// <inheritdoc />
-    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) => throw new NotImplementedException();
+    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback)
+        => throw new NotSupportedException("ServiceRegistrationCallback is not supported by the DryIocDependencyResolver.");
 
     /// <inheritdoc/>
     public object? GetService(Type? serviceType) =>
@@ -294,7 +291,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
         ArgumentExceptionHelper.ThrowIfNull(value);
 
         _container.RegisterInstance<T>(
-            value!,
+            value,
             ifAlreadyRegistered: IfAlreadyRegistered.AppendNewImplementation);
     }
 
@@ -307,13 +304,13 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
         if (string.IsNullOrEmpty(contract))
         {
             _container.RegisterInstance<T>(
-                value!,
+                value,
                 ifAlreadyRegistered: IfAlreadyRegistered.AppendNewImplementation);
             return;
         }
 
         _container.RegisterInstance<T>(
-            value!,
+            value,
             ifAlreadyRegistered: IfAlreadyRegistered.Replace,
             serviceKey: contract);
     }
@@ -359,34 +356,42 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
         GC.SuppressFinalize(this);
     }
 
-    /// <summary>
-    /// Disposes of the instance.
-    /// </summary>
+    /// <summary>Disposes of the instance.</summary>
     /// <param name="disposing">Whether or not the instance is disposing.</param>
     protected virtual void Dispose(bool disposing)
     {
-        if (disposing)
+        if (!disposing)
         {
-            try
-            {
-                _container?.Dispose();
-            }
-            catch
-            {
-                // Suppress exceptions from service disposal
-            }
+            return;
+        }
+
+        try
+        {
+            _container?.Dispose();
+        }
+        catch
+        {
+            // Suppress exceptions from service disposal
         }
     }
 
+    /// <summary>Invokes the factory and converts the produced instance to the requested service type.</summary>
+    /// <param name="serviceType">The service type the instance should be converted to.</param>
+    /// <param name="factory">The factory that creates the instance.</param>
+    /// <returns>The created instance converted to <paramref name="serviceType"/>, or <see langword="null"/> if the factory returned <see langword="null"/>.</returns>
     private static object? CreateThenConvert(Type serviceType, Func<object?> factory)
     {
         // we need to cast because we pass an object back and dryioc wants it explicitly cast.
         // alternative (happy to be proven wrong) is to break the interface and add a Register<T>(...) method?
         var instance = factory();
 
-        return instance != null ? Cast(serviceType, instance) : null;
+        return instance is not null ? Cast(serviceType, instance) : null;
     }
 
+    /// <summary>Casts the supplied data to the specified type using a compiled expression.</summary>
+    /// <param name="type">The target type to cast the data to.</param>
+    /// <param name="data">The data instance to cast.</param>
+    /// <returns>The data cast to <paramref name="type"/>.</returns>
     private static object? Cast(Type type, object data)
     {
         // based upon https://stackoverflow.com/a/27584212

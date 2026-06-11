@@ -1,0 +1,275 @@
+#nullable enable
+Splat.AppLocator
+Splat.Builder.IAppBuilder
+Splat.Builder.IAppBuilder.Build() -> Splat.Builder.IAppInstance!
+Splat.Builder.IAppBuilder.UseCurrentSplatLocator() -> Splat.Builder.IAppBuilder!
+Splat.Builder.IAppBuilder.UsingModule<T>(T registrationModule) -> Splat.Builder.IAppBuilder!
+Splat.Builder.IAppBuilder.WithCoreServices() -> Splat.Builder.IAppBuilder!
+Splat.Builder.IAppBuilder.WithCustomRegistration(System.Action<Splat.IMutableDependencyResolver!>! configureAction) -> Splat.Builder.IAppBuilder!
+Splat.Builder.IAppInstance
+Splat.Builder.IAppInstance.Current.get -> Splat.IReadonlyDependencyResolver?
+Splat.Builder.IAppInstance.CurrentMutable.get -> Splat.IMutableDependencyResolver!
+Splat.Builder.IModule
+Splat.Builder.IModule.Configure(Splat.IMutableDependencyResolver! resolver) -> void
+Splat.DependencyResolverMixins
+Splat.DependencyResolverMixins.extension(Splat.IDependencyResolver!)
+Splat.DependencyResolverMixins.extension(Splat.IDependencyResolver!).WithResolver(bool suppressResolverCallback = true) -> System.IDisposable!
+Splat.DependencyResolverMixins.extension(Splat.IMutableDependencyResolver!)
+Splat.DependencyResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterConstant(object? value, System.Type! serviceType) -> void
+Splat.DependencyResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterConstant(object? value, System.Type! serviceType, string! contract) -> void
+Splat.DependencyResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterLazySingleton(System.Func<object?>! valueFactory, System.Type! serviceType) -> void
+Splat.DependencyResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterLazySingleton(System.Func<object?>! valueFactory, System.Type! serviceType, string! contract) -> void
+Splat.GlobalGenericFirstDependencyResolver
+Splat.GlobalGenericFirstDependencyResolver.Dispose() -> void
+Splat.GlobalGenericFirstDependencyResolver.GetService(System.Type? serviceType) -> object?
+Splat.GlobalGenericFirstDependencyResolver.GetService(System.Type? serviceType, string? contract) -> object?
+Splat.GlobalGenericFirstDependencyResolver.GetService<T>() -> T?
+Splat.GlobalGenericFirstDependencyResolver.GetService<T>(string? contract) -> T?
+Splat.GlobalGenericFirstDependencyResolver.GetServices(System.Type? serviceType) -> System.Collections.Generic.IEnumerable<object!>!
+Splat.GlobalGenericFirstDependencyResolver.GetServices(System.Type? serviceType, string? contract) -> System.Collections.Generic.IEnumerable<object!>!
+Splat.GlobalGenericFirstDependencyResolver.GetServices<T>() -> System.Collections.Generic.IEnumerable<T>!
+Splat.GlobalGenericFirstDependencyResolver.GetServices<T>(string? contract) -> System.Collections.Generic.IEnumerable<T>!
+Splat.GlobalGenericFirstDependencyResolver.GlobalGenericFirstDependencyResolver() -> void
+Splat.GlobalGenericFirstDependencyResolver.GlobalGenericFirstDependencyResolver(System.Action<Splat.IMutableDependencyResolver!>? configure) -> void
+Splat.GlobalGenericFirstDependencyResolver.HasRegistration(System.Type? serviceType) -> bool
+Splat.GlobalGenericFirstDependencyResolver.HasRegistration(System.Type? serviceType, string? contract) -> bool
+Splat.GlobalGenericFirstDependencyResolver.HasRegistration<T>() -> bool
+Splat.GlobalGenericFirstDependencyResolver.HasRegistration<T>(string? contract) -> bool
+Splat.GlobalGenericFirstDependencyResolver.Register(System.Func<object?>! factory, System.Type? serviceType) -> void
+Splat.GlobalGenericFirstDependencyResolver.Register(System.Func<object?>! factory, System.Type? serviceType, string? contract) -> void
+Splat.GlobalGenericFirstDependencyResolver.Register<T>(System.Func<T?>! factory) -> void
+Splat.GlobalGenericFirstDependencyResolver.Register<T>(System.Func<T?>! factory, string? contract) -> void
+Splat.GlobalGenericFirstDependencyResolver.Register<TService, TImplementation>() -> void
+Splat.GlobalGenericFirstDependencyResolver.Register<TService, TImplementation>(string? contract) -> void
+Splat.GlobalGenericFirstDependencyResolver.RegisterConstant<T>(T? value) -> void
+Splat.GlobalGenericFirstDependencyResolver.RegisterConstant<T>(T? value, string? contract) -> void
+Splat.GlobalGenericFirstDependencyResolver.RegisterLazySingleton<T>(System.Func<T?>! valueFactory) -> void
+Splat.GlobalGenericFirstDependencyResolver.RegisterLazySingleton<T>(System.Func<T?>! valueFactory, string? contract) -> void
+Splat.GlobalGenericFirstDependencyResolver.ServiceRegistrationCallback(System.Type! serviceType, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.GlobalGenericFirstDependencyResolver.ServiceRegistrationCallback(System.Type! serviceType, string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.GlobalGenericFirstDependencyResolver.ServiceRegistrationCallback<T>(System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.GlobalGenericFirstDependencyResolver.ServiceRegistrationCallback<T>(string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.GlobalGenericFirstDependencyResolver.UnregisterAll(System.Type? serviceType) -> void
+Splat.GlobalGenericFirstDependencyResolver.UnregisterAll(System.Type? serviceType, string? contract) -> void
+Splat.GlobalGenericFirstDependencyResolver.UnregisterAll<T>() -> void
+Splat.GlobalGenericFirstDependencyResolver.UnregisterAll<T>(string? contract) -> void
+Splat.GlobalGenericFirstDependencyResolver.UnregisterCurrent(System.Type? serviceType) -> void
+Splat.GlobalGenericFirstDependencyResolver.UnregisterCurrent(System.Type? serviceType, string? contract) -> void
+Splat.GlobalGenericFirstDependencyResolver.UnregisterCurrent<T>() -> void
+Splat.GlobalGenericFirstDependencyResolver.UnregisterCurrent<T>(string? contract) -> void
+Splat.IDependencyResolver
+Splat.IMutableDependencyResolver
+Splat.IMutableDependencyResolver.HasRegistration(System.Type? serviceType) -> bool
+Splat.IMutableDependencyResolver.HasRegistration(System.Type? serviceType, string? contract) -> bool
+Splat.IMutableDependencyResolver.HasRegistration<T>() -> bool
+Splat.IMutableDependencyResolver.HasRegistration<T>(string? contract) -> bool
+Splat.IMutableDependencyResolver.Register(System.Func<object?>! factory, System.Type? serviceType) -> void
+Splat.IMutableDependencyResolver.Register(System.Func<object?>! factory, System.Type? serviceType, string? contract) -> void
+Splat.IMutableDependencyResolver.Register<T>(System.Func<T?>! factory) -> void
+Splat.IMutableDependencyResolver.Register<T>(System.Func<T?>! factory, string? contract) -> void
+Splat.IMutableDependencyResolver.Register<TService, TImplementation>() -> void
+Splat.IMutableDependencyResolver.Register<TService, TImplementation>(string? contract) -> void
+Splat.IMutableDependencyResolver.RegisterConstant<T>(T? value) -> void
+Splat.IMutableDependencyResolver.RegisterConstant<T>(T? value, string? contract) -> void
+Splat.IMutableDependencyResolver.RegisterLazySingleton<T>(System.Func<T?>! valueFactory) -> void
+Splat.IMutableDependencyResolver.RegisterLazySingleton<T>(System.Func<T?>! valueFactory, string? contract) -> void
+Splat.IMutableDependencyResolver.ServiceRegistrationCallback(System.Type! serviceType, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.IMutableDependencyResolver.ServiceRegistrationCallback(System.Type! serviceType, string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.IMutableDependencyResolver.ServiceRegistrationCallback<T>(System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.IMutableDependencyResolver.ServiceRegistrationCallback<T>(string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.IMutableDependencyResolver.UnregisterAll(System.Type? serviceType) -> void
+Splat.IMutableDependencyResolver.UnregisterAll(System.Type? serviceType, string? contract) -> void
+Splat.IMutableDependencyResolver.UnregisterAll<T>() -> void
+Splat.IMutableDependencyResolver.UnregisterAll<T>(string? contract) -> void
+Splat.IMutableDependencyResolver.UnregisterCurrent(System.Type? serviceType) -> void
+Splat.IMutableDependencyResolver.UnregisterCurrent(System.Type? serviceType, string? contract) -> void
+Splat.IMutableDependencyResolver.UnregisterCurrent<T>() -> void
+Splat.IMutableDependencyResolver.UnregisterCurrent<T>(string? contract) -> void
+Splat.IReadonlyDependencyResolver
+Splat.IReadonlyDependencyResolver.GetService(System.Type? serviceType) -> object?
+Splat.IReadonlyDependencyResolver.GetService(System.Type? serviceType, string? contract) -> object?
+Splat.IReadonlyDependencyResolver.GetService<T>() -> T?
+Splat.IReadonlyDependencyResolver.GetService<T>(string? contract) -> T?
+Splat.IReadonlyDependencyResolver.GetServices(System.Type? serviceType) -> System.Collections.Generic.IEnumerable<object!>!
+Splat.IReadonlyDependencyResolver.GetServices(System.Type? serviceType, string? contract) -> System.Collections.Generic.IEnumerable<object!>!
+Splat.IReadonlyDependencyResolver.GetServices<T>() -> System.Collections.Generic.IEnumerable<T>!
+Splat.IReadonlyDependencyResolver.GetServices<T>(string? contract) -> System.Collections.Generic.IEnumerable<T>!
+Splat.IServiceLocator
+Splat.IServiceLocator.AddLazySingleton<TContract>(System.Func<TContract!>! instanceFactory) -> void
+Splat.IServiceLocator.AddLazySingleton<TContract>(System.Func<TContract!>! instanceFactory, System.Threading.LazyThreadSafetyMode threadSafetyMode) -> void
+Splat.IServiceLocator.AddLazySingleton<TContract>(System.Func<TContract!>! instanceFactory, string! contract) -> void
+Splat.IServiceLocator.AddLazySingleton<TContract>(System.Func<TContract!>! instanceFactory, string! contract, System.Threading.LazyThreadSafetyMode threadSafetyMode) -> void
+Splat.IServiceLocator.AddLazySingleton<TContract>(System.Lazy<TContract!>! lazy) -> void
+Splat.IServiceLocator.AddLazySingleton<TContract>(System.Lazy<TContract!>! lazy, string! contract) -> void
+Splat.IServiceLocator.AddService<T>(System.Func<T>! instanceFactory) -> void
+Splat.IServiceLocator.AddService<T>(System.Func<T>! instanceFactory, string! contract) -> void
+Splat.IServiceLocator.AddSingleton<TContract>(System.Func<TContract>! instanceFactory) -> void
+Splat.IServiceLocator.AddSingleton<TContract>(System.Func<TContract>! instanceFactory, string! contract) -> void
+Splat.IServiceLocator.AddSingleton<TContract>(TContract! instance) -> void
+Splat.IServiceLocator.AddSingleton<TContract>(TContract! instance, string! contract) -> void
+Splat.IServiceLocator.GetLazyService<T>() -> System.Lazy<T>!
+Splat.IServiceLocator.GetLazyService<T>(string! contract) -> System.Lazy<T>!
+Splat.IServiceLocator.GetService<T>() -> T
+Splat.IServiceLocator.GetService<T>(string! contract) -> T
+Splat.IServiceLocator.GetServices<T>() -> System.Collections.Generic.IEnumerable<T>!
+Splat.IServiceLocator.GetServices<T>(string! contract) -> System.Collections.Generic.IEnumerable<T>!
+Splat.IServiceLocator.HasService<T>() -> bool
+Splat.IServiceLocator.HasService<T>(string! contract) -> bool
+Splat.IServiceLocator.TryGetLazyService<T>(out System.Lazy<T>! service) -> bool
+Splat.IServiceLocator.TryGetLazyService<T>(string! contract, out System.Lazy<T>! service) -> bool
+Splat.IServiceLocator.TryGetService<T>(out T service) -> bool
+Splat.IServiceLocator.TryGetService<T>(string! contract, out T service) -> bool
+Splat.InstanceGenericFirstDependencyResolver
+Splat.InstanceGenericFirstDependencyResolver.Dispose() -> void
+Splat.InstanceGenericFirstDependencyResolver.GetService(System.Type? serviceType) -> object?
+Splat.InstanceGenericFirstDependencyResolver.GetService(System.Type? serviceType, string? contract) -> object?
+Splat.InstanceGenericFirstDependencyResolver.GetService<T>() -> T?
+Splat.InstanceGenericFirstDependencyResolver.GetService<T>(string? contract) -> T?
+Splat.InstanceGenericFirstDependencyResolver.GetServices(System.Type? serviceType) -> System.Collections.Generic.IEnumerable<object!>!
+Splat.InstanceGenericFirstDependencyResolver.GetServices(System.Type? serviceType, string? contract) -> System.Collections.Generic.IEnumerable<object!>!
+Splat.InstanceGenericFirstDependencyResolver.GetServices<T>() -> System.Collections.Generic.IEnumerable<T>!
+Splat.InstanceGenericFirstDependencyResolver.GetServices<T>(string? contract) -> System.Collections.Generic.IEnumerable<T>!
+Splat.InstanceGenericFirstDependencyResolver.HasRegistration(System.Type? serviceType) -> bool
+Splat.InstanceGenericFirstDependencyResolver.HasRegistration(System.Type? serviceType, string? contract) -> bool
+Splat.InstanceGenericFirstDependencyResolver.HasRegistration<T>() -> bool
+Splat.InstanceGenericFirstDependencyResolver.HasRegistration<T>(string? contract) -> bool
+Splat.InstanceGenericFirstDependencyResolver.InstanceGenericFirstDependencyResolver() -> void
+Splat.InstanceGenericFirstDependencyResolver.InstanceGenericFirstDependencyResolver(System.Action<Splat.IMutableDependencyResolver!>? configure) -> void
+Splat.InstanceGenericFirstDependencyResolver.Register(System.Func<object?>! factory, System.Type? serviceType) -> void
+Splat.InstanceGenericFirstDependencyResolver.Register(System.Func<object?>! factory, System.Type? serviceType, string? contract) -> void
+Splat.InstanceGenericFirstDependencyResolver.Register<T>(System.Func<T?>! factory) -> void
+Splat.InstanceGenericFirstDependencyResolver.Register<T>(System.Func<T?>! factory, string? contract) -> void
+Splat.InstanceGenericFirstDependencyResolver.Register<TService, TImplementation>() -> void
+Splat.InstanceGenericFirstDependencyResolver.Register<TService, TImplementation>(string? contract) -> void
+Splat.InstanceGenericFirstDependencyResolver.RegisterConstant<T>(T? value) -> void
+Splat.InstanceGenericFirstDependencyResolver.RegisterConstant<T>(T? value, string? contract) -> void
+Splat.InstanceGenericFirstDependencyResolver.RegisterLazySingleton<T>(System.Func<T?>! valueFactory) -> void
+Splat.InstanceGenericFirstDependencyResolver.RegisterLazySingleton<T>(System.Func<T?>! valueFactory, string? contract) -> void
+Splat.InstanceGenericFirstDependencyResolver.ServiceRegistrationCallback(System.Type! serviceType, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.InstanceGenericFirstDependencyResolver.ServiceRegistrationCallback(System.Type! serviceType, string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.InstanceGenericFirstDependencyResolver.ServiceRegistrationCallback<T>(System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.InstanceGenericFirstDependencyResolver.ServiceRegistrationCallback<T>(string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.InstanceGenericFirstDependencyResolver.UnregisterAll(System.Type? serviceType) -> void
+Splat.InstanceGenericFirstDependencyResolver.UnregisterAll(System.Type? serviceType, string? contract) -> void
+Splat.InstanceGenericFirstDependencyResolver.UnregisterAll<T>() -> void
+Splat.InstanceGenericFirstDependencyResolver.UnregisterAll<T>(string? contract) -> void
+Splat.InstanceGenericFirstDependencyResolver.UnregisterCurrent(System.Type? serviceType) -> void
+Splat.InstanceGenericFirstDependencyResolver.UnregisterCurrent(System.Type? serviceType, string? contract) -> void
+Splat.InstanceGenericFirstDependencyResolver.UnregisterCurrent<T>() -> void
+Splat.InstanceGenericFirstDependencyResolver.UnregisterCurrent<T>(string? contract) -> void
+Splat.ModernDependencyResolver
+Splat.ModernDependencyResolver.Dispose() -> void
+Splat.ModernDependencyResolver.Duplicate() -> Splat.ModernDependencyResolver!
+Splat.ModernDependencyResolver.GetService(System.Type? serviceType) -> object?
+Splat.ModernDependencyResolver.GetService(System.Type? serviceType, string? contract) -> object?
+Splat.ModernDependencyResolver.GetService<T>() -> T?
+Splat.ModernDependencyResolver.GetService<T>(string? contract) -> T?
+Splat.ModernDependencyResolver.GetServices(System.Type? serviceType) -> System.Collections.Generic.IEnumerable<object!>!
+Splat.ModernDependencyResolver.GetServices(System.Type? serviceType, string? contract) -> System.Collections.Generic.IEnumerable<object!>!
+Splat.ModernDependencyResolver.GetServices<T>() -> System.Collections.Generic.IEnumerable<T>!
+Splat.ModernDependencyResolver.GetServices<T>(string? contract) -> System.Collections.Generic.IEnumerable<T>!
+Splat.ModernDependencyResolver.HasRegistration(System.Type? serviceType) -> bool
+Splat.ModernDependencyResolver.HasRegistration(System.Type? serviceType, string? contract) -> bool
+Splat.ModernDependencyResolver.HasRegistration<T>() -> bool
+Splat.ModernDependencyResolver.HasRegistration<T>(string? contract) -> bool
+Splat.ModernDependencyResolver.ModernDependencyResolver() -> void
+Splat.ModernDependencyResolver.ModernDependencyResolver(System.Collections.Generic.Dictionary<(System.Type! serviceType, string? contract), System.Collections.Generic.List<System.Func<object?>!>!>? registry) -> void
+Splat.ModernDependencyResolver.Register(System.Func<object?>! factory, System.Type? serviceType) -> void
+Splat.ModernDependencyResolver.Register(System.Func<object?>! factory, System.Type? serviceType, string? contract) -> void
+Splat.ModernDependencyResolver.Register<T>(System.Func<T?>! factory) -> void
+Splat.ModernDependencyResolver.Register<T>(System.Func<T?>! factory, string? contract) -> void
+Splat.ModernDependencyResolver.Register<TService, TImplementation>() -> void
+Splat.ModernDependencyResolver.Register<TService, TImplementation>(string? contract) -> void
+Splat.ModernDependencyResolver.RegisterConstant<T>(T? value) -> void
+Splat.ModernDependencyResolver.RegisterConstant<T>(T? value, string? contract) -> void
+Splat.ModernDependencyResolver.RegisterLazySingleton<T>(System.Func<T?>! valueFactory) -> void
+Splat.ModernDependencyResolver.RegisterLazySingleton<T>(System.Func<T?>! valueFactory, string? contract) -> void
+Splat.ModernDependencyResolver.ServiceRegistrationCallback(System.Type! serviceType, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.ModernDependencyResolver.ServiceRegistrationCallback(System.Type! serviceType, string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.ModernDependencyResolver.ServiceRegistrationCallback<T>(System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.ModernDependencyResolver.ServiceRegistrationCallback<T>(string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.ModernDependencyResolver.UnregisterAll(System.Type? serviceType) -> void
+Splat.ModernDependencyResolver.UnregisterAll(System.Type? serviceType, string? contract) -> void
+Splat.ModernDependencyResolver.UnregisterAll<T>() -> void
+Splat.ModernDependencyResolver.UnregisterAll<T>(string? contract) -> void
+Splat.ModernDependencyResolver.UnregisterCurrent(System.Type? serviceType) -> void
+Splat.ModernDependencyResolver.UnregisterCurrent(System.Type? serviceType, string? contract) -> void
+Splat.ModernDependencyResolver.UnregisterCurrent<T>() -> void
+Splat.ModernDependencyResolver.UnregisterCurrent<T>(string? contract) -> void
+Splat.NullServiceType
+Splat.NullServiceType.Factory.get -> System.Func<object?>!
+Splat.NullServiceType.NullServiceType(System.Func<object?>! factory) -> void
+Splat.ResolverMixins
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!)
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterAnd<TService, TImplementation>() -> Splat.IMutableDependencyResolver!
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterAnd<TService, TImplementation>(System.Func<TImplementation>! factory) -> Splat.IMutableDependencyResolver!
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterAnd<TService, TImplementation>(System.Func<TImplementation>! factory, string! contract) -> Splat.IMutableDependencyResolver!
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterAnd<TService, TImplementation>(string! contract) -> Splat.IMutableDependencyResolver!
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterAnd<TService>() -> Splat.IMutableDependencyResolver!
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterAnd<TService>(System.Func<TService>! factory) -> Splat.IMutableDependencyResolver!
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterAnd<TService>(System.Func<TService>! factory, string! contract) -> Splat.IMutableDependencyResolver!
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterAnd<TService>(string! contract) -> Splat.IMutableDependencyResolver!
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterConstantAnd(object! value, System.Type! serviceType) -> Splat.IMutableDependencyResolver!
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterConstantAnd(object! value, System.Type! serviceType, string! contract) -> Splat.IMutableDependencyResolver!
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterConstantAnd<TService>() -> Splat.IMutableDependencyResolver!
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterConstantAnd<TService>(TService value) -> Splat.IMutableDependencyResolver!
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterConstantAnd<TService>(TService value, string! contract) -> Splat.IMutableDependencyResolver!
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterConstantAnd<TService>(string! contract) -> Splat.IMutableDependencyResolver!
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterLazySingletonAnd(System.Func<object!>! valueFactory, System.Type! serviceType) -> Splat.IMutableDependencyResolver!
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterLazySingletonAnd(System.Func<object!>! valueFactory, System.Type! serviceType, string! contract) -> Splat.IMutableDependencyResolver!
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterLazySingletonAnd<TService>() -> Splat.IMutableDependencyResolver!
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterLazySingletonAnd<TService>(System.Func<TService>! valueFactory) -> Splat.IMutableDependencyResolver!
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterLazySingletonAnd<TService>(System.Func<TService>! valueFactory, string! contract) -> Splat.IMutableDependencyResolver!
+Splat.ResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterLazySingletonAnd<TService>(string! contract) -> Splat.IMutableDependencyResolver!
+static Splat.AppLocator.AreResolverCallbackChangedNotificationsEnabled() -> bool
+static Splat.AppLocator.Current.get -> Splat.IReadonlyDependencyResolver!
+static Splat.AppLocator.CurrentMutable.get -> Splat.IMutableDependencyResolver!
+static Splat.AppLocator.GetLocator() -> Splat.IDependencyResolver!
+static Splat.AppLocator.GetService<T>() -> T?
+static Splat.AppLocator.GetService<T>(string! contract) -> T?
+static Splat.AppLocator.GetServices<T>() -> System.Collections.Generic.IEnumerable<T>!
+static Splat.AppLocator.GetServices<T>(string! contract) -> System.Collections.Generic.IEnumerable<T>!
+static Splat.AppLocator.HasRegistration<T>() -> bool
+static Splat.AppLocator.HasRegistration<T>(string! contract) -> bool
+static Splat.AppLocator.Register<T>(System.Func<T?>! factory) -> void
+static Splat.AppLocator.Register<T>(System.Func<T?>! factory, string! contract) -> void
+static Splat.AppLocator.RegisterConstant<T>(T? value) -> void
+static Splat.AppLocator.RegisterConstant<T>(T? value, string! contract) -> void
+static Splat.AppLocator.RegisterLazySingleton<T>(System.Func<T?>! valueFactory) -> void
+static Splat.AppLocator.RegisterLazySingleton<T>(System.Func<T?>! valueFactory, string! contract) -> void
+static Splat.AppLocator.RegisterResolverCallbackChanged(System.Action! callback) -> System.IDisposable!
+static Splat.AppLocator.RegisterResolverInitializer(System.Action<Splat.IMutableDependencyResolver!>! initializer) -> void
+static Splat.AppLocator.SetLocator(Splat.IDependencyResolver! dependencyResolver) -> void
+static Splat.AppLocator.SuppressResolverCallbackChangedNotifications() -> System.IDisposable!
+static Splat.AppLocator.UnregisterAll<T>() -> void
+static Splat.AppLocator.UnregisterAll<T>(string! contract) -> void
+static Splat.AppLocator.UnregisterCurrent<T>() -> void
+static Splat.AppLocator.UnregisterCurrent<T>(string! contract) -> void
+static Splat.DependencyResolverMixins.RegisterConstant(this Splat.IMutableDependencyResolver! resolver, object? value, System.Type! serviceType) -> void
+static Splat.DependencyResolverMixins.RegisterConstant(this Splat.IMutableDependencyResolver! resolver, object? value, System.Type! serviceType, string! contract) -> void
+static Splat.DependencyResolverMixins.RegisterLazySingleton(this Splat.IMutableDependencyResolver! resolver, System.Func<object?>! valueFactory, System.Type! serviceType) -> void
+static Splat.DependencyResolverMixins.RegisterLazySingleton(this Splat.IMutableDependencyResolver! resolver, System.Func<object?>! valueFactory, System.Type! serviceType, string! contract) -> void
+static Splat.DependencyResolverMixins.WithResolver(this Splat.IDependencyResolver! resolver, bool suppressResolverCallback = true) -> System.IDisposable!
+static Splat.GlobalGenericFirstDependencyResolver.Clear() -> void
+static Splat.ResolverMixins.RegisterAnd<TService, TImplementation>(this Splat.IMutableDependencyResolver! resolver) -> Splat.IMutableDependencyResolver!
+static Splat.ResolverMixins.RegisterAnd<TService, TImplementation>(this Splat.IMutableDependencyResolver! resolver, System.Func<TImplementation>! factory) -> Splat.IMutableDependencyResolver!
+static Splat.ResolverMixins.RegisterAnd<TService, TImplementation>(this Splat.IMutableDependencyResolver! resolver, System.Func<TImplementation>! factory, string! contract) -> Splat.IMutableDependencyResolver!
+static Splat.ResolverMixins.RegisterAnd<TService, TImplementation>(this Splat.IMutableDependencyResolver! resolver, string! contract) -> Splat.IMutableDependencyResolver!
+static Splat.ResolverMixins.RegisterAnd<TService>(this Splat.IMutableDependencyResolver! resolver) -> Splat.IMutableDependencyResolver!
+static Splat.ResolverMixins.RegisterAnd<TService>(this Splat.IMutableDependencyResolver! resolver, System.Func<TService>! factory) -> Splat.IMutableDependencyResolver!
+static Splat.ResolverMixins.RegisterAnd<TService>(this Splat.IMutableDependencyResolver! resolver, System.Func<TService>! factory, string! contract) -> Splat.IMutableDependencyResolver!
+static Splat.ResolverMixins.RegisterAnd<TService>(this Splat.IMutableDependencyResolver! resolver, string! contract) -> Splat.IMutableDependencyResolver!
+static Splat.ResolverMixins.RegisterConstantAnd(this Splat.IMutableDependencyResolver! resolver, object! value, System.Type! serviceType) -> Splat.IMutableDependencyResolver!
+static Splat.ResolverMixins.RegisterConstantAnd(this Splat.IMutableDependencyResolver! resolver, object! value, System.Type! serviceType, string! contract) -> Splat.IMutableDependencyResolver!
+static Splat.ResolverMixins.RegisterConstantAnd<TService>(this Splat.IMutableDependencyResolver! resolver) -> Splat.IMutableDependencyResolver!
+static Splat.ResolverMixins.RegisterConstantAnd<TService>(this Splat.IMutableDependencyResolver! resolver, TService value) -> Splat.IMutableDependencyResolver!
+static Splat.ResolverMixins.RegisterConstantAnd<TService>(this Splat.IMutableDependencyResolver! resolver, TService value, string! contract) -> Splat.IMutableDependencyResolver!
+static Splat.ResolverMixins.RegisterConstantAnd<TService>(this Splat.IMutableDependencyResolver! resolver, string! contract) -> Splat.IMutableDependencyResolver!
+static Splat.ResolverMixins.RegisterLazySingletonAnd(this Splat.IMutableDependencyResolver! resolver, System.Func<object!>! valueFactory, System.Type! serviceType) -> Splat.IMutableDependencyResolver!
+static Splat.ResolverMixins.RegisterLazySingletonAnd(this Splat.IMutableDependencyResolver! resolver, System.Func<object!>! valueFactory, System.Type! serviceType, string! contract) -> Splat.IMutableDependencyResolver!
+static Splat.ResolverMixins.RegisterLazySingletonAnd<TService>(this Splat.IMutableDependencyResolver! resolver) -> Splat.IMutableDependencyResolver!
+static Splat.ResolverMixins.RegisterLazySingletonAnd<TService>(this Splat.IMutableDependencyResolver! resolver, System.Func<TService>! valueFactory) -> Splat.IMutableDependencyResolver!
+static Splat.ResolverMixins.RegisterLazySingletonAnd<TService>(this Splat.IMutableDependencyResolver! resolver, System.Func<TService>! valueFactory, string! contract) -> Splat.IMutableDependencyResolver!
+static Splat.ResolverMixins.RegisterLazySingletonAnd<TService>(this Splat.IMutableDependencyResolver! resolver, string! contract) -> Splat.IMutableDependencyResolver!
+static readonly Splat.NullServiceType.CachedType -> System.Type!
+virtual Splat.ModernDependencyResolver.Dispose(bool isDisposing) -> void

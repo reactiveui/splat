@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Common.Test;
@@ -15,16 +14,11 @@ namespace Splat.Tests.ServiceLocation;
 [InheritsTests]
 public sealed class GlobalGenericFirstDependencyResolverTests : BaseDependencyResolverTests<GlobalGenericFirstDependencyResolver>
 {
-    /// <summary>
-    /// Teardown method to clear static generic containers after each test.
-    /// Ensures no state leaks between test runs.
-    /// </summary>
-    [After(HookType.Test)]
+    /// <summary>Teardown method to clear static generic containers after each test. Ensures no state leaks between test runs.</summary>
+    [After(Test)]
     public void ClearStaticContainers() => GlobalGenericFirstDependencyResolver.Clear();
 
-    /// <summary>
-    /// Test constructor with configure parameter registers services.
-    /// </summary>
+    /// <summary>Test constructor with configure parameter registers services.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Constructor_WithConfigure_RegistersServices()
@@ -44,9 +38,7 @@ public sealed class GlobalGenericFirstDependencyResolverTests : BaseDependencyRe
         GlobalGenericFirstDependencyResolver.Clear();
     }
 
-    /// <summary>
-    /// Test constructor with null configure parameter does not throw.
-    /// </summary>
+    /// <summary>Test constructor with null configure parameter does not throw.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Constructor_WithNullConfigure_DoesNotThrow() =>
@@ -56,9 +48,7 @@ public sealed class GlobalGenericFirstDependencyResolverTests : BaseDependencyRe
             return Task.CompletedTask;
         }).ThrowsNothing();
 
-    /// <summary>
-    /// Test Clear method removes all registrations.
-    /// </summary>
+    /// <summary>Test Clear method removes all registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Clear_RemovesAllRegistrations()
@@ -76,9 +66,7 @@ public sealed class GlobalGenericFirstDependencyResolverTests : BaseDependencyRe
         await Assert.That(resolver.HasRegistration<ViewModelOne>()).IsFalse();
     }
 
-    /// <summary>
-    /// Test Dispose method disposes resolver properly.
-    /// </summary>
+    /// <summary>Test Dispose method disposes resolver properly.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Dispose_DisposesResolver()
@@ -95,9 +83,7 @@ public sealed class GlobalGenericFirstDependencyResolverTests : BaseDependencyRe
         }).Throws<ObjectDisposedException>();
     }
 
-    /// <summary>
-    /// Test operations after disposal throw ObjectDisposedException.
-    /// </summary>
+    /// <summary>Test operations after disposal throw ObjectDisposedException.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AfterDispose_Operations_ThrowObjectDisposedException()
@@ -130,9 +116,7 @@ public sealed class GlobalGenericFirstDependencyResolverTests : BaseDependencyRe
         }).Throws<ObjectDisposedException>();
     }
 
-    /// <summary>
-    /// Test UnregisterCurrent after disposal throws ObjectDisposedException.
-    /// </summary>
+    /// <summary>Test UnregisterCurrent after disposal throws ObjectDisposedException.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AfterDispose_UnregisterCurrent_ThrowsObjectDisposedException()
@@ -153,9 +137,7 @@ public sealed class GlobalGenericFirstDependencyResolverTests : BaseDependencyRe
         }).Throws<ObjectDisposedException>();
     }
 
-    /// <summary>
-    /// Test UnregisterAll after disposal throws ObjectDisposedException.
-    /// </summary>
+    /// <summary>Test UnregisterAll after disposal throws ObjectDisposedException.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AfterDispose_UnregisterAll_ThrowsObjectDisposedException()

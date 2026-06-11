@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
@@ -8,10 +7,7 @@ using System.Globalization;
 
 namespace Splat.NLog;
 
-/// <summary>
-/// Provides an implementation of the <see cref="IFullLogger"/> interface that writes log events using the NLog logging
-/// framework.
-/// </summary>
+/// <summary>Provides an implementation of the <see cref="IFullLogger"/> interface that writes log events using the NLog logging framework.</summary>
 /// <remarks>This class acts as an adapter, allowing code that depends on <see cref="IFullLogger"/> to log
 /// messages through NLog. It supports all standard log levels and message formats, and automatically tracks changes to
 /// the underlying NLog logger's configuration. Instances of <see cref="NLogLogger"/> are not thread-affine and can be
@@ -27,9 +23,7 @@ public sealed class NLogLogger : IFullLogger, IDisposable
 #endif
     private readonly global::NLog.Logger _inner;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="NLogLogger"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="NLogLogger"/> class.</summary>
     /// <param name="inner">The NLog logger instance to wrap.</param>
     /// <exception cref="ArgumentNullException">Thrown when the NLog logger is null.</exception>
     public NLogLogger(global::NLog.Logger inner)
@@ -243,10 +237,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsDebugEnabled)
+        if (!IsDebugEnabled)
         {
-            _inner.Debug(function.Invoke());
+            return;
         }
+
+        _inner.Debug(function.Invoke());
     }
 
     /// <inheritdoc />
@@ -254,10 +250,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsDebugEnabled)
+        if (!IsDebugEnabled)
         {
-            LogResolver.Resolve(typeof(T)).Debug(function.Invoke());
+            return;
         }
+
+        LogResolver.Resolve(typeof(T)).Debug(function.Invoke());
     }
 
     /// <inheritdoc />
@@ -267,10 +265,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsDebugEnabled)
+        if (!IsDebugEnabled)
         {
-            _inner.Debug(exception, function.Invoke());
+            return;
         }
+
+        _inner.Debug(exception, function.Invoke());
     }
 
     /// <inheritdoc />
@@ -278,10 +278,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsDebugEnabled)
+        if (!IsDebugEnabled)
         {
-            _inner.Debug(exception, function.Invoke());
+            return;
         }
+
+        _inner.Debug(exception, function.Invoke());
     }
 
     /// <inheritdoc/>
@@ -325,10 +327,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsInfoEnabled)
+        if (!IsInfoEnabled)
         {
-            _inner.Info(function.Invoke());
+            return;
         }
+
+        _inner.Info(function.Invoke());
     }
 
     /// <inheritdoc />
@@ -336,10 +340,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsInfoEnabled)
+        if (!IsInfoEnabled)
         {
-            LogResolver.Resolve(typeof(T)).Info(function.Invoke());
+            return;
         }
+
+        LogResolver.Resolve(typeof(T)).Info(function.Invoke());
     }
 
     /// <inheritdoc />
@@ -349,10 +355,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsInfoEnabled)
+        if (!IsInfoEnabled)
         {
-            _inner.Info(exception, function.Invoke());
+            return;
         }
+
+        _inner.Info(exception, function.Invoke());
     }
 
     /// <inheritdoc />
@@ -360,10 +368,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsInfoEnabled)
+        if (!IsInfoEnabled)
         {
-            _inner.Info(exception, function.Invoke());
+            return;
         }
+
+        _inner.Info(exception, function.Invoke());
     }
 
     /// <inheritdoc/>
@@ -407,10 +417,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsWarnEnabled)
+        if (!IsWarnEnabled)
         {
-            _inner.Warn(function.Invoke());
+            return;
         }
+
+        _inner.Warn(function.Invoke());
     }
 
     /// <inheritdoc />
@@ -418,10 +430,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsWarnEnabled)
+        if (!IsWarnEnabled)
         {
-            LogResolver.Resolve(typeof(T)).Warn(function.Invoke());
+            return;
         }
+
+        LogResolver.Resolve(typeof(T)).Warn(function.Invoke());
     }
 
     /// <inheritdoc />
@@ -431,10 +445,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsWarnEnabled)
+        if (!IsWarnEnabled)
         {
-            _inner.Warn(exception, function.Invoke());
+            return;
         }
+
+        _inner.Warn(exception, function.Invoke());
     }
 
     /// <inheritdoc />
@@ -442,10 +458,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsWarnEnabled)
+        if (!IsWarnEnabled)
         {
-            _inner.Warn(exception, function.Invoke());
+            return;
         }
+
+        _inner.Warn(exception, function.Invoke());
     }
 
     /// <inheritdoc/>
@@ -489,10 +507,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsErrorEnabled)
+        if (!IsErrorEnabled)
         {
-            _inner.Error(function.Invoke());
+            return;
         }
+
+        _inner.Error(function.Invoke());
     }
 
     /// <inheritdoc />
@@ -500,10 +520,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsErrorEnabled)
+        if (!IsErrorEnabled)
         {
-            LogResolver.Resolve(typeof(T)).Error(function.Invoke());
+            return;
         }
+
+        LogResolver.Resolve(typeof(T)).Error(function.Invoke());
     }
 
     /// <inheritdoc />
@@ -513,10 +535,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsErrorEnabled)
+        if (!IsErrorEnabled)
         {
-            _inner.Error(exception, function.Invoke());
+            return;
         }
+
+        _inner.Error(exception, function.Invoke());
     }
 
     /// <inheritdoc />
@@ -524,10 +548,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsErrorEnabled)
+        if (!IsErrorEnabled)
         {
-            _inner.Error(exception, function.Invoke());
+            return;
         }
+
+        _inner.Error(exception, function.Invoke());
     }
 
     /// <inheritdoc/>
@@ -571,10 +597,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsFatalEnabled)
+        if (!IsFatalEnabled)
         {
-            _inner.Fatal(function.Invoke());
+            return;
         }
+
+        _inner.Fatal(function.Invoke());
     }
 
     /// <inheritdoc />
@@ -582,10 +610,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsFatalEnabled)
+        if (!IsFatalEnabled)
         {
-            LogResolver.Resolve(typeof(T)).Fatal(function.Invoke());
+            return;
         }
+
+        LogResolver.Resolve(typeof(T)).Fatal(function.Invoke());
     }
 
     /// <inheritdoc />
@@ -595,10 +625,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsFatalEnabled)
+        if (!IsFatalEnabled)
         {
-            _inner.Fatal(exception, function.Invoke());
+            return;
         }
+
+        _inner.Fatal(exception, function.Invoke());
     }
 
     /// <inheritdoc />
@@ -606,10 +638,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsFatalEnabled)
+        if (!IsFatalEnabled)
         {
-            _inner.Fatal(exception, function.Invoke());
+            return;
         }
+
+        _inner.Fatal(exception, function.Invoke());
     }
 
     /// <inheritdoc/>
@@ -786,6 +820,9 @@ public sealed class NLogLogger : IFullLogger, IDisposable
     /// <inheritdoc/>
     public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) => _inner.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10);
 
+    /// <summary>Maps a Splat <see cref="LogLevel"/> to the equivalent NLog log level.</summary>
+    /// <param name="logLevel">The Splat log level to translate.</param>
+    /// <returns>The corresponding <see cref="global::NLog.LogLevel"/>.</returns>
     private static global::NLog.LogLevel ResolveLogLevel(LogLevel logLevel) => logLevel switch
     {
         LogLevel.Debug => global::NLog.LogLevel.Debug,
@@ -796,11 +833,12 @@ public sealed class NLogLogger : IFullLogger, IDisposable
         _ => throw new ArgumentOutOfRangeException(nameof(logLevel), $"Unknown LogLevel {logLevel}"),
     };
 
+    /// <summary>Handles the inner NLog logger being reconfigured by recomputing the cached log level.</summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The event data.</param>
     private void OnInnerLoggerReconfigured(object? sender, EventArgs e) => SetLogLevel();
 
-    /// <summary>
-    /// Determines the current effective log level based on NLog configuration.
-    /// </summary>
+    /// <summary>Determines the current effective log level based on NLog configuration.</summary>
     /// <remarks>
     /// This optimization avoids re-evaluating the log level on each Write method call.
     /// </remarks>

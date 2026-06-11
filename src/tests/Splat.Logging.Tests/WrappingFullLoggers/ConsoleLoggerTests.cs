@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Text;
@@ -9,9 +8,7 @@ using Splat.Tests.Mocks;
 
 namespace Splat.Tests.Logging;
 
-/// <summary>
-/// Tests that verify the <see cref="ConsoleLoggerTests"/> class.
-/// </summary>
+/// <summary>Tests that verify the <see cref="ConsoleLoggerTests"/> class.</summary>
 [InheritsTests]
 [NotInParallel]
 internal sealed class ConsoleLoggerTests : FullLoggerTestBase
@@ -23,12 +20,15 @@ internal sealed class ConsoleLoggerTests : FullLoggerTestBase
         return (new WrappingFullLogger(new WrappingLogLevelLogger(new ConsoleLogger(outputWriter) { Level = minimumLogLevel, ExceptionMessageFormat = "{0} {1}" })), outputWriter);
     }
 
+    /// <summary>A <see cref="TextWriter"/> that captures console log output for assertions.</summary>
     private sealed class ConsoleWriter : TextWriter, IMockLogTarget
     {
         private readonly List<(LogLevel logLevel, string message)> _logs = [];
 
+        /// <inheritdoc/>
         public override Encoding Encoding => Encoding.UTF8;
 
+        /// <inheritdoc/>
         public ICollection<(LogLevel logLevel, string message)> Logs => _logs;
 
         public override void WriteLine(string? value)

@@ -1,16 +1,12 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
 
 namespace Splat.Log4Net;
 
-/// <summary>
-/// Provides an implementation of the ILogger interface that writes log messages using a wrapped Log4Net logger
-/// instance.
-/// </summary>
+/// <summary>Provides an implementation of the ILogger interface that writes log messages using a wrapped Log4Net logger instance.</summary>
 /// <remarks>This class enables integration of Log4Net logging with components that consume the ILogger
 /// abstraction. The effective log level is determined from the underlying Log4Net configuration and is updated
 /// automatically if the configuration changes. Instances of this class are not thread-safe for disposal; ensure that
@@ -20,16 +16,14 @@ public sealed class Log4NetLogger : ILogger, IDisposable
 {
     private readonly log4net.ILog _inner;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Log4NetLogger"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="Log4NetLogger"/> class.</summary>
     /// <param name="inner">The Log4Net logger instance to wrap.</param>
     /// <exception cref="ArgumentNullException">Thrown when the Log4Net logger is null.</exception>
     public Log4NetLogger(log4net.ILog inner)
     {
         ArgumentExceptionHelper.ThrowIfNull(inner);
         _inner = inner;
-        ArgumentExceptionHelper.ThrowIfNullWithMessage(_inner.Logger.Repository, "Log4Net repository is not initialized. Configure Log4Net before using with Splat.", nameof(inner));
+        ArgumentGuard.ThrowIfNullWithMessage(_inner.Logger.Repository, "Log4Net repository is not initialized. Configure Log4Net before using with Splat.", nameof(inner));
 
         SetLogLevel();
         _inner.Logger.Repository.ConfigurationChanged += OnInnerLoggerReconfigured;
@@ -47,29 +41,46 @@ public sealed class Log4NetLogger : ILogger, IDisposable
         switch (logLevel)
         {
             case LogLevel.Debug:
-                _inner.Debug(message);
+                {
+                    _inner.Debug(message);
 
-                break;
+                    break;
+                }
+
             case LogLevel.Info:
-                _inner.Info(message);
+                {
+                    _inner.Info(message);
 
-                break;
+                    break;
+                }
+
             case LogLevel.Warn:
-                _inner.Warn(message);
+                {
+                    _inner.Warn(message);
 
-                break;
+                    break;
+                }
+
             case LogLevel.Error:
-                _inner.Error(message);
+                {
+                    _inner.Error(message);
 
-                break;
+                    break;
+                }
+
             case LogLevel.Fatal:
-                _inner.Fatal(message);
+                {
+                    _inner.Fatal(message);
 
-                break;
+                    break;
+                }
+
             default:
-                _inner.Debug(message);
+                {
+                    _inner.Debug(message);
 
-                break;
+                    break;
+                }
         }
     }
 
@@ -79,28 +90,45 @@ public sealed class Log4NetLogger : ILogger, IDisposable
         switch (logLevel)
         {
             case LogLevel.Debug:
-                _inner.Debug(message, exception);
-                break;
+                {
+                    _inner.Debug(message, exception);
+                    break;
+                }
+
             case LogLevel.Info:
-                _inner.Info(message, exception);
+                {
+                    _inner.Info(message, exception);
 
-                break;
+                    break;
+                }
+
             case LogLevel.Warn:
-                _inner.Warn(message, exception);
+                {
+                    _inner.Warn(message, exception);
 
-                break;
+                    break;
+                }
+
             case LogLevel.Error:
-                _inner.Error(message, exception);
+                {
+                    _inner.Error(message, exception);
 
-                break;
+                    break;
+                }
+
             case LogLevel.Fatal:
-                _inner.Fatal(message, exception);
+                {
+                    _inner.Fatal(message, exception);
 
-                break;
+                    break;
+                }
+
             default:
-                _inner.Debug(message, exception);
+                {
+                    _inner.Debug(message, exception);
 
-                break;
+                    break;
+                }
         }
     }
 
@@ -111,28 +139,45 @@ public sealed class Log4NetLogger : ILogger, IDisposable
         switch (logLevel)
         {
             case LogLevel.Debug:
-                logger.Debug(message);
-                break;
+                {
+                    logger.Debug(message);
+                    break;
+                }
+
             case LogLevel.Info:
-                logger.Info(message);
+                {
+                    logger.Info(message);
 
-                break;
+                    break;
+                }
+
             case LogLevel.Warn:
-                logger.Warn(message);
+                {
+                    logger.Warn(message);
 
-                break;
+                    break;
+                }
+
             case LogLevel.Error:
-                logger.Error(message);
+                {
+                    logger.Error(message);
 
-                break;
+                    break;
+                }
+
             case LogLevel.Fatal:
-                logger.Fatal(message);
+                {
+                    logger.Fatal(message);
 
-                break;
+                    break;
+                }
+
             default:
-                logger.Debug(message);
+                {
+                    logger.Debug(message);
 
-                break;
+                    break;
+                }
         }
     }
 
@@ -143,34 +188,49 @@ public sealed class Log4NetLogger : ILogger, IDisposable
         switch (logLevel)
         {
             case LogLevel.Debug:
-                logger.Debug(message, exception);
-                break;
+                {
+                    logger.Debug(message, exception);
+                    break;
+                }
+
             case LogLevel.Info:
-                logger.Info(message, exception);
+                {
+                    logger.Info(message, exception);
 
-                break;
+                    break;
+                }
+
             case LogLevel.Warn:
-                logger.Warn(message, exception);
+                {
+                    logger.Warn(message, exception);
 
-                break;
+                    break;
+                }
+
             case LogLevel.Error:
-                logger.Error(message, exception);
+                {
+                    logger.Error(message, exception);
 
-                break;
+                    break;
+                }
+
             case LogLevel.Fatal:
-                logger.Fatal(message, exception);
+                {
+                    logger.Fatal(message, exception);
 
-                break;
+                    break;
+                }
+
             default:
-                logger.Debug(message, exception);
+                {
+                    logger.Debug(message, exception);
 
-                break;
+                    break;
+                }
         }
     }
 
-    /// <summary>
-    /// Determines the current effective log level based on Log4Net configuration.
-    /// </summary>
+    /// <summary>Determines the current effective log level based on Log4Net configuration.</summary>
     /// <remarks>
     /// This optimization avoids re-evaluating the log level on each Write method call.
     /// </remarks>
@@ -203,5 +263,8 @@ public sealed class Log4NetLogger : ILogger, IDisposable
         Level = LogLevel.Fatal;
     }
 
+    /// <summary>Handles reconfiguration of the underlying Log4Net repository by recalculating the effective log level.</summary>
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The event data associated with the configuration change.</param>
     private void OnInnerLoggerReconfigured(object sender, EventArgs e) => SetLogLevel();
 }

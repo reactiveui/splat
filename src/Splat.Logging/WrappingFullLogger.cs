@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Globalization;
@@ -20,9 +19,7 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
 {
     private readonly ILogger _inner;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="WrappingFullLogger"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="WrappingFullLogger"/> class.</summary>
     /// <param name="inner">The <see cref="ILogger"/> to wrap in this class.</param>
     public WrappingFullLogger(ILogger inner)
         : base(inner)
@@ -93,10 +90,12 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsDebugEnabled)
+        if (!IsDebugEnabled)
         {
-            _inner.Write(function.Invoke(), LogLevel.Debug);
+            return;
         }
+
+        _inner.Write(function.Invoke(), LogLevel.Debug);
     }
 
     /// <inheritdoc />
@@ -104,10 +103,12 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsDebugEnabled)
+        if (!IsDebugEnabled)
         {
-            _inner.Write(function.Invoke(), typeof(T), LogLevel.Debug);
+            return;
         }
+
+        _inner.Write(function.Invoke(), typeof(T), LogLevel.Debug);
     }
 
     /// <inheritdoc />
@@ -117,12 +118,14 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsDebugEnabled)
+        if (!IsDebugEnabled)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
-            _inner.Write(exception, $"{function.Invoke()}: {exception}", LogLevel.Debug);
+            return;
 #pragma warning restore CS0618 // Type or member is obsolete
         }
+
+#pragma warning disable CS0618 // Type or member is obsolete
+        _inner.Write(exception, $"{function.Invoke()}: {exception}", LogLevel.Debug);
     }
 
     /// <inheritdoc />
@@ -130,10 +133,12 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsDebugEnabled)
+        if (!IsDebugEnabled)
         {
-            _inner.Write(exception, function.Invoke(), LogLevel.Debug);
+            return;
         }
+
+        _inner.Write(exception, function.Invoke(), LogLevel.Debug);
     }
 
     /// <inheritdoc />
@@ -197,10 +202,12 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsInfoEnabled)
+        if (!IsInfoEnabled)
         {
-            _inner.Write(function.Invoke(), LogLevel.Info);
+            return;
         }
+
+        _inner.Write(function.Invoke(), LogLevel.Info);
     }
 
     /// <inheritdoc />
@@ -208,10 +215,12 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsInfoEnabled)
+        if (!IsInfoEnabled)
         {
-            _inner.Write(function.Invoke(), typeof(T), LogLevel.Info);
+            return;
         }
+
+        _inner.Write(function.Invoke(), typeof(T), LogLevel.Info);
     }
 
     /// <inheritdoc />
@@ -221,12 +230,14 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsInfoEnabled)
+        if (!IsInfoEnabled)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
-            _inner.Write(exception, $"{function.Invoke()}: {exception}", LogLevel.Info);
+            return;
 #pragma warning restore CS0618 // Type or member is obsolete
         }
+
+#pragma warning disable CS0618 // Type or member is obsolete
+        _inner.Write(exception, $"{function.Invoke()}: {exception}", LogLevel.Info);
     }
 
     /// <inheritdoc />
@@ -234,10 +245,12 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsInfoEnabled)
+        if (!IsInfoEnabled)
         {
-            _inner.Write(exception, function.Invoke(), LogLevel.Info);
+            return;
         }
+
+        _inner.Write(exception, function.Invoke(), LogLevel.Info);
     }
 
     /// <inheritdoc />
@@ -301,10 +314,12 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsWarnEnabled)
+        if (!IsWarnEnabled)
         {
-            _inner.Write(function.Invoke(), LogLevel.Warn);
+            return;
         }
+
+        _inner.Write(function.Invoke(), LogLevel.Warn);
     }
 
     /// <inheritdoc />
@@ -312,10 +327,12 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsWarnEnabled)
+        if (!IsWarnEnabled)
         {
-            _inner.Write(function.Invoke(), typeof(T), LogLevel.Warn);
+            return;
         }
+
+        _inner.Write(function.Invoke(), typeof(T), LogLevel.Warn);
     }
 
     /// <inheritdoc />
@@ -325,12 +342,14 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsWarnEnabled)
+        if (!IsWarnEnabled)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
-            _inner.Write(exception, $"{function.Invoke()}: {exception}", LogLevel.Warn);
+            return;
 #pragma warning restore CS0618 // Type or member is obsolete
         }
+
+#pragma warning disable CS0618 // Type or member is obsolete
+        _inner.Write(exception, $"{function.Invoke()}: {exception}", LogLevel.Warn);
     }
 
     /// <inheritdoc />
@@ -338,10 +357,12 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsWarnEnabled)
+        if (!IsWarnEnabled)
         {
-            _inner.Write(exception, function.Invoke(), LogLevel.Warn);
+            return;
         }
+
+        _inner.Write(exception, function.Invoke(), LogLevel.Warn);
     }
 
     /// <inheritdoc />
@@ -405,10 +426,12 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsErrorEnabled)
+        if (!IsErrorEnabled)
         {
-            _inner.Write(function.Invoke(), LogLevel.Error);
+            return;
         }
+
+        _inner.Write(function.Invoke(), LogLevel.Error);
     }
 
     /// <inheritdoc />
@@ -416,10 +439,12 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsErrorEnabled)
+        if (!IsErrorEnabled)
         {
-            _inner.Write(function.Invoke(), typeof(T), LogLevel.Error);
+            return;
         }
+
+        _inner.Write(function.Invoke(), typeof(T), LogLevel.Error);
     }
 
     /// <inheritdoc />
@@ -429,12 +454,14 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsErrorEnabled)
+        if (!IsErrorEnabled)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
-            _inner.Write(exception, $"{function.Invoke()}: {exception}", LogLevel.Error);
+            return;
 #pragma warning restore CS0618 // Type or member is obsolete
         }
+
+#pragma warning disable CS0618 // Type or member is obsolete
+        _inner.Write(exception, $"{function.Invoke()}: {exception}", LogLevel.Error);
     }
 
     /// <inheritdoc />
@@ -442,10 +469,12 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsErrorEnabled)
+        if (!IsErrorEnabled)
         {
-            _inner.Write(exception, function.Invoke(), LogLevel.Error);
+            return;
         }
+
+        _inner.Write(exception, function.Invoke(), LogLevel.Error);
     }
 
     /// <inheritdoc />
@@ -509,10 +538,12 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsFatalEnabled)
+        if (!IsFatalEnabled)
         {
-            _inner.Write(function.Invoke(), LogLevel.Fatal);
+            return;
         }
+
+        _inner.Write(function.Invoke(), LogLevel.Fatal);
     }
 
     /// <inheritdoc />
@@ -520,10 +551,12 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsFatalEnabled)
+        if (!IsFatalEnabled)
         {
-            _inner.Write(function.Invoke(), typeof(T), LogLevel.Fatal);
+            return;
         }
+
+        _inner.Write(function.Invoke(), typeof(T), LogLevel.Fatal);
     }
 
     /// <inheritdoc />
@@ -533,12 +566,14 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsFatalEnabled)
+        if (!IsFatalEnabled)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
-            _inner.Write(exception, $"{function.Invoke()}: {exception}", LogLevel.Fatal);
+            return;
 #pragma warning restore CS0618 // Type or member is obsolete
         }
+
+#pragma warning disable CS0618 // Type or member is obsolete
+        _inner.Write(exception, $"{function.Invoke()}: {exception}", LogLevel.Fatal);
     }
 
     /// <inheritdoc />
@@ -546,12 +581,19 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsFatalEnabled)
+        if (!IsFatalEnabled)
         {
-            _inner.Write(exception, function.Invoke(), LogLevel.Fatal);
+            return;
         }
+
+        _inner.Write(exception, function.Invoke(), LogLevel.Fatal);
     }
 
+    /// <summary>Formats a message with the supplied arguments using the given format provider.</summary>
+    /// <param name="formatProvider">The format provider used to format the message.</param>
+    /// <param name="message">The composite format string.</param>
+    /// <param name="args">The arguments to substitute into the format string.</param>
+    /// <returns>The formatted message.</returns>
     private static string InvokeStringFormat(IFormatProvider formatProvider, string message, object[] args)
     {
         return string.Format(formatProvider, message, args);

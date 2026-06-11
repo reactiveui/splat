@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Collections;
@@ -8,10 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Splat;
 
-/// <summary>
-/// Provides a default implementation for detecting whether the current process is running within a unit test
-/// environment.
-/// </summary>
+/// <summary>Provides a default implementation for detecting whether the current process is running within a unit test environment.</summary>
 /// <remarks>This class uses a combination of environment variable checks, process name heuristics, and assembly
 /// scanning to determine if the application is executing under a known test runner. It is intended for use in scenarios
 /// where behavior should change when running under test conditions, such as enabling test-specific features or
@@ -192,8 +188,7 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
             }
 
             // Slower path: enumerate env vars once and check prefixes.
-            var vars = Environment.GetEnvironmentVariables(EnvironmentVariableTarget.Process);
-            foreach (DictionaryEntry kv in vars)
+            foreach (DictionaryEntry kv in Environment.GetEnvironmentVariables(EnvironmentVariableTarget.Process))
             {
                 if (kv.Key is not string key || string.IsNullOrEmpty(key))
                 {

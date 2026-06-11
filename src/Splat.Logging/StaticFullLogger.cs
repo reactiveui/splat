@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.ComponentModel;
@@ -8,10 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace Splat;
 
-/// <summary>
-/// Provides a sealed implementation of <see cref="IStaticFullLogger"/> that wraps an <see cref="IFullLogger"/> instance
-/// for static logging scenarios.
-/// </summary>
+/// <summary>Provides a sealed implementation of <see cref="IStaticFullLogger"/> that wraps an <see cref="IFullLogger"/> instance for static logging scenarios.</summary>
 /// <remarks>This class enables static-style logging by delegating all logging operations to the provided <see
 /// cref="IFullLogger"/> instance. It is typically used to facilitate logging in static contexts where dependency
 /// injection is not available. All log messages are automatically suffixed with the caller member name to aid in
@@ -20,9 +16,7 @@ public sealed class StaticFullLogger : IStaticFullLogger
 {
     private readonly IFullLogger _fullLogger;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="StaticFullLogger"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="StaticFullLogger"/> class.</summary>
     /// <param name="fullLogger">The <see cref="IFullLogger"/> to wrap in this class.</param>
     public StaticFullLogger(IFullLogger fullLogger)
     {
@@ -210,6 +204,10 @@ public sealed class StaticFullLogger : IStaticFullLogger
     /// <inheritdoc/>
     public void Write(Exception exception, [Localizable(false)] string? message, [Localizable(false)] Type type, LogLevel logLevel, [CallerMemberName] string? callerMemberName = null) => _fullLogger.Write(exception, GetSuffixedCallerData(message, callerMemberName), type, logLevel);
 
+    /// <summary>Appends the calling member name to a log message.</summary>
+    /// <param name="message">The log message.</param>
+    /// <param name="callerMemberName">The name of the calling member.</param>
+    /// <returns>The message suffixed with the caller member name.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static string GetSuffixedCallerData(string? message, string? callerMemberName) =>
         $"{message} ({callerMemberName})";

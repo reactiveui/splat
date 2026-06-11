@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 #if !ANDROID
@@ -14,9 +13,7 @@ using Splat.Tests.Mocks;
 
 namespace Splat.Tests.Logging.WrappingFullLoggers;
 
-/// <summary>
-/// Unit tests for the Exceptionless Logger.
-/// </summary>
+/// <summary>Unit tests for the Exceptionless Logger.</summary>
 [InheritsTests]
 public class ExceptionlessLoggerTests : FullLoggerTestBase
 {
@@ -54,8 +51,14 @@ public class ExceptionlessLoggerTests : FullLoggerTestBase
         return (new WrappingFullLogger(inner), logTarget);
     }
 
+    /// <summary>Maps an Exceptionless log level to a Splat log level.</summary>
+    /// <param name="logLevel">The Exceptionless log level.</param>
+    /// <returns>The equivalent Splat log level.</returns>
     private static LogLevel GetSplatLogLevel(global::Exceptionless.Logging.LogLevel logLevel) => _exceptionless2Splat[logLevel];
 
+    /// <summary>Intercepts an Exceptionless event and records it in the mock log target.</summary>
+    /// <param name="obj">The event plugin context.</param>
+    /// <param name="logTarget">The in-memory log target to record the event in.</param>
     private static void PluginAction(EventPluginContext obj, InMemoryExceptionlessLogTarget logTarget)
     {
         obj.Cancel = true;
@@ -72,14 +75,17 @@ public class ExceptionlessLoggerTests : FullLoggerTestBase
         var exception = obj.ContextData.HasException() ? obj.ContextData.GetException() : null;
 
         var exceptionMessageSuffix = exception is not null ? $" {exception}" : string.Empty;
-        (LogLevel logLevel, string message) tuple = (splatLogLevel, $"{obj.Event.Message}{exceptionMessageSuffix}");
+        (LogLevel logLevel, string message) tuple = (splatLogLevel, obj.Event.Message + exceptionMessageSuffix);
         logTarget.Logs.Add(tuple);
     }
 
+    /// <summary>An in-memory <see cref="IMockLogTarget"/> that captures Exceptionless log events.</summary>
     private sealed class InMemoryExceptionlessLogTarget : IMockLogTarget
     {
-        public InMemoryExceptionlessLogTarget() => Logs = new List<(LogLevel logLevel, string message)>();
+        /// <summary>Initializes a new instance of the <see cref="InMemoryExceptionlessLogTarget"/> class.</summary>
+        public InMemoryExceptionlessLogTarget() => Logs = [];
 
+        /// <inheritdoc />
         public ICollection<(LogLevel logLevel, string message)> Logs { get; }
     }
 }

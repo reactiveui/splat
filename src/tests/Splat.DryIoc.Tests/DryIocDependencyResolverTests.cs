@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
@@ -9,9 +8,7 @@ using Splat.Tests.ServiceLocation;
 
 namespace Splat.DryIoc.Tests;
 
-/// <summary>
-/// Unit tests for the DryIocDependencyResolver that verify conformance to the IDependencyResolver contract.
-/// </summary>
+/// <summary>Unit tests for the DryIocDependencyResolver that verify conformance to the IDependencyResolver contract.</summary>
 /// <remarks>
 /// Inherits from BaseDependencyResolverTests to ensure consistent behavior across all resolver implementations.
 /// </remarks>
@@ -19,9 +16,7 @@ namespace Splat.DryIoc.Tests;
 [InheritsTests]
 public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<DryIocDependencyResolver>
 {
-    /// <summary>
-    /// DryIoc does not support ServiceRegistrationCallback.
-    /// </summary>
+    /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -32,9 +27,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support ServiceRegistrationCallback.
-    /// </summary>
+    /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -45,9 +38,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support ServiceRegistrationCallback.
-    /// </summary>
+    /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -58,9 +49,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support ServiceRegistrationCallback.
-    /// </summary>
+    /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -71,9 +60,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support ServiceRegistrationCallback.
-    /// </summary>
+    /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -84,9 +71,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support ServiceRegistrationCallback.
-    /// </summary>
+    /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -97,9 +82,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support ServiceRegistrationCallback.
-    /// </summary>
+    /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -112,9 +95,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
             .Throws<NotImplementedException>();
     }
 
-    /// <summary>
-    /// DryIoc does not support ServiceRegistrationCallback.
-    /// </summary>
+    /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -125,9 +106,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support ServiceRegistrationCallback.
-    /// </summary>
+    /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -138,9 +117,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support ServiceRegistrationCallback.
-    /// </summary>
+    /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -151,9 +128,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not invoke callbacks on disposal.
-    /// </summary>
+    /// <summary>DryIoc does not invoke callbacks on disposal.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -163,9 +138,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc manages disposal of services itself.
-    /// </summary>
+    /// <summary>DryIoc manages disposal of services itself.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -175,9 +148,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support null service types.
-    /// </summary>
+    /// <summary>DryIoc does not support null service types.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -187,9 +158,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support null service types.
-    /// </summary>
+    /// <summary>DryIoc does not support null service types.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -199,9 +168,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support null service types.
-    /// </summary>
+    /// <summary>DryIoc does not support null service types.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -211,9 +178,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support null service types.
-    /// </summary>
+    /// <summary>DryIoc does not support null service types.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -223,9 +188,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support null service types.
-    /// </summary>
+    /// <summary>DryIoc does not support null service types.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -235,9 +198,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc's Unregister implementation has issues with DefaultKey-based registrations.
-    /// </summary>
+    /// <summary>DryIoc's Unregister implementation has issues with DefaultKey-based registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -247,9 +208,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc's Unregister implementation has issues with DefaultKey-based registrations.
-    /// </summary>
+    /// <summary>DryIoc's Unregister implementation has issues with DefaultKey-based registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -259,9 +218,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc's Unregister implementation has issues with DefaultKey-based registrations.
-    /// </summary>
+    /// <summary>DryIoc's Unregister implementation has issues with DefaultKey-based registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -271,9 +228,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc's Unregister implementation has issues with DefaultKey-based registrations.
-    /// </summary>
+    /// <summary>DryIoc's Unregister implementation has issues with DefaultKey-based registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -283,9 +238,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc's Unregister implementation has issues with DefaultKey-based registrations.
-    /// </summary>
+    /// <summary>DryIoc's Unregister implementation has issues with DefaultKey-based registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -295,9 +248,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support multiple registrations with the same contract (Replace mode only).
-    /// </summary>
+    /// <summary>DryIoc does not support multiple registrations with the same contract (Replace mode only).</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -307,9 +258,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support multiple registrations with the same contract (Replace mode only).
-    /// </summary>
+    /// <summary>DryIoc does not support multiple registrations with the same contract (Replace mode only).</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -319,9 +268,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc's UnregisterAll implementation has issues with DefaultKey-based registrations.
-    /// </summary>
+    /// <summary>DryIoc's UnregisterAll implementation has issues with DefaultKey-based registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -331,9 +278,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc's UnregisterAll implementation has issues with DefaultKey-based registrations.
-    /// </summary>
+    /// <summary>DryIoc's UnregisterAll implementation has issues with DefaultKey-based registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]

@@ -1,17 +1,14 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
-
-using System.Collections.Concurrent;
 
 namespace Splat.Tests.ServiceLocation.GenericFirst;
 
-/// <summary>
-/// Tests for the ArrayHelpers class.
-/// </summary>
+/// <summary>Tests for the ArrayHelpers class.</summary>
 public class ArrayHelpersTests
 {
+    /// <summary>Tests that append nullable with null array creates new array with single item.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AppendNullable_WithNullArray_CreatesNewArrayWithSingleItem()
     {
@@ -27,6 +24,8 @@ public class ArrayHelpersTests
         await Assert.That(result[0]).IsEqualTo(item);
     }
 
+    /// <summary>Tests that append nullable with existing array appends item.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AppendNullable_WithExistingArray_AppendsItem()
     {
@@ -44,6 +43,8 @@ public class ArrayHelpersTests
         await Assert.That(result[1]).IsEqualTo(item2);
     }
 
+    /// <summary>Tests that append nullable with multiple items maintains order.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AppendNullable_WithMultipleItems_MaintainsOrder()
     {
@@ -71,6 +72,8 @@ public class ArrayHelpersTests
         }
     }
 
+    /// <summary>Tests that remove last with null array returns empty array.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RemoveLast_WithNullArray_ReturnsEmptyArray()
     {
@@ -82,6 +85,8 @@ public class ArrayHelpersTests
         await Assert.That(result.Length).IsEqualTo(0);
     }
 
+    /// <summary>Tests that remove last with empty array returns empty array.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RemoveLast_WithEmptyArray_ReturnsEmptyArray()
     {
@@ -96,6 +101,8 @@ public class ArrayHelpersTests
         await Assert.That(result.Length).IsEqualTo(0);
     }
 
+    /// <summary>Tests that remove last with single item returns empty array.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RemoveLast_WithSingleItem_ReturnsEmptyArray()
     {
@@ -110,6 +117,8 @@ public class ArrayHelpersTests
         await Assert.That(result.Length).IsEqualTo(0);
     }
 
+    /// <summary>Tests that remove last with multiple items removes last item.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RemoveLast_WithMultipleItems_RemovesLastItem()
     {
@@ -125,6 +134,8 @@ public class ArrayHelpersTests
         await Assert.That(result[1]).IsEqualTo("second");
     }
 
+    /// <summary>Tests that remove last does not modify original array.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RemoveLast_DoesNotModifyOriginalArray()
     {
@@ -140,6 +151,8 @@ public class ArrayHelpersTests
         await Assert.That(array[2]).IsEqualTo(3);
     }
 
+    /// <summary>Tests that materialize registrations with empty array returns empty array.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task MaterializeRegistrations_WithEmptyArray_ReturnsEmptyArray()
     {
@@ -154,6 +167,8 @@ public class ArrayHelpersTests
         await Assert.That(result.Length).IsEqualTo(0);
     }
 
+    /// <summary>Tests that materialize registrations with instance registrations returns instances.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task MaterializeRegistrations_WithInstanceRegistrations_ReturnsInstances()
     {
@@ -175,6 +190,8 @@ public class ArrayHelpersTests
         await Assert.That(result[2]).IsEqualTo("three");
     }
 
+    /// <summary>Tests that materialize registrations with factory registrations invokes factories.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task MaterializeRegistrations_WithFactoryRegistrations_InvokesFactories()
     {
@@ -213,6 +230,8 @@ public class ArrayHelpersTests
         await Assert.That(invocationCount).IsEqualTo(3);
     }
 
+    /// <summary>Tests that materialize registrations with mixed registrations returns all values.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task MaterializeRegistrations_WithMixedRegistrations_ReturnsAllValues()
     {
@@ -234,6 +253,8 @@ public class ArrayHelpersTests
         await Assert.That(result[2]).IsEqualTo("another instance");
     }
 
+    /// <summary>Tests that materialize registrations with null values filters out nulls.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task MaterializeRegistrations_WithNullValues_FiltersOutNulls()
     {
@@ -255,6 +276,8 @@ public class ArrayHelpersTests
         await Assert.That(result[1]).IsEqualTo("another valid");
     }
 
+    /// <summary>Tests that materialize registrations with factory that throws propagates exception.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task MaterializeRegistrations_WithFactoryThatThrows_PropagatesException()
     {
@@ -269,6 +292,8 @@ public class ArrayHelpersTests
             .Throws<InvalidOperationException>();
     }
 
+    /// <summary>Tests that materialize registrations called multiple times invokes factories each time.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task MaterializeRegistrations_CalledMultipleTimes_InvokesFactoriesEachTime()
     {
@@ -294,257 +319,173 @@ public class ArrayHelpersTests
         await Assert.That(result2[0]).IsEqualTo(2);
     }
 
-    /// <summary>
-    /// Verifies that Add creates a new entry when adding to a non-existent key.
-    /// </summary>
-    /// <returns>A task representing the asynchronous test operation.</returns>
+    /// <summary>Tests that entry add increments count and publishes items.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task Add_CreatesEntryAndIncrementsVersion()
+    public async Task Entry_Add_IncrementsCountAndPublishesItems()
     {
         // Arrange
-        var entries = new Dictionary<string, ArrayHelpers.Entry<int>>();
+        var entry = new ArrayHelpers.Entry<int>();
 
         // Act
-        ArrayHelpers.Add(entries, "key1", 42);
+        entry.Add(1);
+        entry.Add(2);
 
         // Assert
-        await Assert.That(entries.ContainsKey("key1")).IsTrue();
-        await Assert.That(entries["key1"].List.Count).IsEqualTo(1);
-        await Assert.That(entries["key1"].List[0]).IsEqualTo(42);
-        await Assert.That(entries["key1"].Version).IsEqualTo(1);
-    }
+        await Assert.That(entry.Count).IsEqualTo(2);
+        await Assert.That(entry.HasItems).IsTrue();
 
-    /// <summary>
-    /// Verifies that Add appends to an existing entry and increments version.
-    /// </summary>
-    /// <returns>A task representing the asynchronous test operation.</returns>
-    [Test]
-    public async Task Add_AppendsToExistingEntry()
-    {
-        // Arrange
-        var entries = new Dictionary<string, ArrayHelpers.Entry<int>>();
-
-        // Act
-        ArrayHelpers.Add(entries, "key1", 1);
-        ArrayHelpers.Add(entries, "key1", 2);
-        ArrayHelpers.Add(entries, "key1", 3);
-
-        // Assert
-        await Assert.That(entries["key1"].List.Count).IsEqualTo(3);
-        await Assert.That(entries["key1"].List[0]).IsEqualTo(1);
-        await Assert.That(entries["key1"].List[1]).IsEqualTo(2);
-        await Assert.That(entries["key1"].List[2]).IsEqualTo(3);
-        await Assert.That(entries["key1"].Version).IsEqualTo(3);
-    }
-
-    /// <summary>
-    /// Verifies that GetSnapshot rebuilds snapshot lazily when version is stale.
-    /// </summary>
-    /// <returns>A task representing the asynchronous test operation.</returns>
-    [Test]
-    public async Task GetSnapshot_RebuildsWhenVersionIsStale()
-    {
-        // Arrange
-        var entries = new Dictionary<string, ArrayHelpers.Entry<int>>();
-        ArrayHelpers.Add(entries, "key1", 1);
-        ArrayHelpers.Add(entries, "key1", 2);
-        ArrayHelpers.Add(entries, "key1", 3);
-
-        // Act
-        var snapshot = ArrayHelpers.GetSnapshot(entries, "key1");
-
-        // Assert
-        await Assert.That(snapshot).IsNotNull();
-        await Assert.That(snapshot.Length).IsEqualTo(3);
+        var snapshot = entry.GetSnapshot();
+        await Assert.That(snapshot.Length).IsEqualTo(2);
         await Assert.That(snapshot[0]).IsEqualTo(1);
         await Assert.That(snapshot[1]).IsEqualTo(2);
-        await Assert.That(snapshot[2]).IsEqualTo(3);
-        await Assert.That(entries["key1"].SnapshotVersion).IsEqualTo(entries["key1"].Version);
     }
 
-    /// <summary>
-    /// Verifies that RemoveCurrent removes the last item and increments version.
-    /// </summary>
-    /// <returns>A task representing the asynchronous test operation.</returns>
+    /// <summary>Tests that entry has items is false when empty.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task RemoveCurrent_RemovesLastItem()
+    public async Task Entry_HasItems_IsFalseWhenEmpty()
     {
         // Arrange
-        var entries = new Dictionary<string, ArrayHelpers.Entry<int>>();
-        ArrayHelpers.Add(entries, "key1", 1);
-        ArrayHelpers.Add(entries, "key1", 2);
-        ArrayHelpers.Add(entries, "key1", 3);
-
-        // Act
-        ArrayHelpers.RemoveCurrent(entries, "key1");
+        var entry = new ArrayHelpers.Entry<int>();
 
         // Assert
-        await Assert.That(entries["key1"].List.Count).IsEqualTo(2);
-        await Assert.That(entries["key1"].List[0]).IsEqualTo(1);
-        await Assert.That(entries["key1"].List[1]).IsEqualTo(2);
-        await Assert.That(entries["key1"].Version).IsEqualTo(4);
+        await Assert.That(entry.HasItems).IsFalse();
+        await Assert.That(entry.Count).IsEqualTo(0);
+        await Assert.That(entry.GetSnapshot().Length).IsEqualTo(0);
     }
 
-    /// <summary>
-    /// Verifies that RemoveCurrent removes the entry from dictionary when the last item is removed.
-    /// </summary>
-    /// <returns>A task representing the asynchronous test operation.</returns>
+    /// <summary>Tests that entry get snapshot returns cached instance when unchanged.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task RemoveCurrent_RemovesEntryWhenLastItemRemoved()
+    public async Task Entry_GetSnapshot_ReturnsCachedInstanceWhenUnchanged()
     {
         // Arrange
-        var entries = new Dictionary<string, ArrayHelpers.Entry<int>>();
-        ArrayHelpers.Add(entries, "key1", 42);
+        var entry = new ArrayHelpers.Entry<int>();
+        entry.Add(1);
 
         // Act
-        ArrayHelpers.RemoveCurrent(entries, "key1");
+        var first = entry.GetSnapshot();
+        var second = entry.GetSnapshot();
 
         // Assert
-        await Assert.That(entries.ContainsKey("key1")).IsFalse();
+        await Assert.That(second).IsSameReferenceAs(first);
     }
 
-    /// <summary>
-    /// Verifies that RemoveCurrent handles removing from a non-existent key gracefully.
-    /// </summary>
-    /// <returns>A task representing the asynchronous test operation.</returns>
+    /// <summary>Tests that entry get snapshot rebuilds after mutation.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task RemoveCurrent_HandlesNonExistentKey()
+    public async Task Entry_GetSnapshot_RebuildsAfterMutation()
     {
         // Arrange
-        var entries = new Dictionary<string, ArrayHelpers.Entry<int>>();
-
-        // Act - should not throw
-        ArrayHelpers.RemoveCurrent(entries, "nonexistent");
-
-        // Assert
-        await Assert.That(entries.ContainsKey("nonexistent")).IsFalse();
-    }
-
-    /// <summary>
-    /// Verifies that RemoveAll removes the entry from the dictionary.
-    /// </summary>
-    /// <returns>A task representing the asynchronous test operation.</returns>
-    [Test]
-    public async Task RemoveAll_RemovesEntry()
-    {
-        // Arrange
-        var entries = new Dictionary<string, ArrayHelpers.Entry<int>>();
-        ArrayHelpers.Add(entries, "key1", 1);
-        ArrayHelpers.Add(entries, "key1", 2);
+        var entry = new ArrayHelpers.Entry<int>();
+        entry.Add(1);
+        var first = entry.GetSnapshot();
 
         // Act
-        ArrayHelpers.RemoveAll(entries, "key1");
+        entry.Add(2);
+        var second = entry.GetSnapshot();
 
         // Assert
-        await Assert.That(entries.ContainsKey("key1")).IsFalse();
+        await Assert.That(first.Length).IsEqualTo(1);
+        await Assert.That(second.Length).IsEqualTo(2);
+        await Assert.That(second).IsNotSameReferenceAs(first);
     }
 
-    /// <summary>
-    /// Verifies that Clear removes all entries from the dictionary.
-    /// </summary>
-    /// <returns>A task representing the asynchronous test operation.</returns>
+    /// <summary>Tests that entry remove current removes last item and reports not empty.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task Clear_RemovesAllEntries()
+    public async Task Entry_RemoveCurrent_RemovesLastItemAndReportsNotEmpty()
     {
         // Arrange
-        var entries = new Dictionary<string, ArrayHelpers.Entry<int>>();
-        ArrayHelpers.Add(entries, "key1", 1);
-        ArrayHelpers.Add(entries, "key2", 2);
-        ArrayHelpers.Add(entries, "key3", 3);
+        var entry = new ArrayHelpers.Entry<int>();
+        entry.Add(1);
+        entry.Add(2);
 
         // Act
-        ArrayHelpers.Clear(entries);
+        var becameEmpty = entry.RemoveCurrent();
 
         // Assert
-        await Assert.That(entries.Count).IsEqualTo(0);
+        await Assert.That(becameEmpty).IsFalse();
+        await Assert.That(entry.Count).IsEqualTo(1);
+
+        var snapshot = entry.GetSnapshot();
+        await Assert.That(snapshot.Length).IsEqualTo(1);
+        await Assert.That(snapshot[0]).IsEqualTo(1);
     }
 
-    /// <summary>
-    /// Verifies that entry-based helpers maintain isolation between different keys.
-    /// </summary>
-    /// <returns>A task representing the asynchronous test operation.</returns>
+    /// <summary>Tests that entry remove current reports empty when last item removed.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task EntryHelpers_WithDifferentKeys_AreIsolated()
+    public async Task Entry_RemoveCurrent_ReportsEmptyWhenLastItemRemoved()
     {
         // Arrange
-        var entries = new Dictionary<string, ArrayHelpers.Entry<int>>();
+        var entry = new ArrayHelpers.Entry<int>();
+        entry.Add(42);
 
         // Act
-        ArrayHelpers.Add(entries, "key1", 10);
-        ArrayHelpers.Add(entries, "key2", 20);
-        ArrayHelpers.Add(entries, "key3", 30);
+        var becameEmpty = entry.RemoveCurrent();
 
         // Assert
-        var snap1 = ArrayHelpers.GetSnapshot(entries, "key1");
-        await Assert.That(snap1).IsNotNull();
-        await Assert.That(snap1[0]).IsEqualTo(10);
-
-        var snap2 = ArrayHelpers.GetSnapshot(entries, "key2");
-        await Assert.That(snap2).IsNotNull();
-        await Assert.That(snap2[0]).IsEqualTo(20);
-
-        var snap3 = ArrayHelpers.GetSnapshot(entries, "key3");
-        await Assert.That(snap3).IsNotNull();
-        await Assert.That(snap3[0]).IsEqualTo(30);
+        await Assert.That(becameEmpty).IsTrue();
+        await Assert.That(entry.HasItems).IsFalse();
+        await Assert.That(entry.GetSnapshot().Length).IsEqualTo(0);
     }
 
-    /// <summary>
-    /// Verifies that GetSnapshot returns cached snapshot when version hasn't changed.
-    /// </summary>
-    /// <returns>A task representing the asynchronous test operation.</returns>
+    /// <summary>Tests that entry remove current on empty entry returns false.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task GetSnapshot_ReturnsCachedSnapshotWhenVersionUnchanged()
+    public async Task Entry_RemoveCurrent_OnEmptyEntry_ReturnsFalse()
     {
         // Arrange
-        var entries = new Dictionary<string, ArrayHelpers.Entry<int>>();
-        ArrayHelpers.Add(entries, "key1", 1);
-        var firstSnapshot = ArrayHelpers.GetSnapshot(entries, "key1");
+        var entry = new ArrayHelpers.Entry<int>();
 
         // Act
-        var secondSnapshot = ArrayHelpers.GetSnapshot(entries, "key1");
-
-        // Assert - Should return the same array reference
-        await Assert.That(ReferenceEquals(firstSnapshot, secondSnapshot)).IsTrue();
-    }
-
-    /// <summary>
-    /// Verifies that GetSnapshot rebuilds snapshot after version changes.
-    /// </summary>
-    /// <returns>A task representing the asynchronous test operation.</returns>
-    [Test]
-    public async Task GetSnapshot_RebuildsSnapshotAfterVersionChanges()
-    {
-        // Arrange
-        var entries = new Dictionary<string, ArrayHelpers.Entry<int>>();
-        ArrayHelpers.Add(entries, "key1", 1);
-        var firstSnapshot = ArrayHelpers.GetSnapshot(entries, "key1");
-
-        // Act - Add more items to change version
-        ArrayHelpers.Add(entries, "key1", 2);
-        var secondSnapshot = ArrayHelpers.GetSnapshot(entries, "key1");
-
-        // Assert - Should return a different array reference with updated content
-        await Assert.That(ReferenceEquals(firstSnapshot, secondSnapshot)).IsFalse();
-        await Assert.That(firstSnapshot.Length).IsEqualTo(1);
-        await Assert.That(secondSnapshot.Length).IsEqualTo(2);
-    }
-
-    /// <summary>
-    /// Verifies that GetSnapshot returns empty array for non-existent key.
-    /// </summary>
-    /// <returns>A task representing the asynchronous test operation.</returns>
-    [Test]
-    public async Task GetSnapshot_ReturnsEmptyArrayForNonExistentKey()
-    {
-        // Arrange
-        var entries = new Dictionary<string, ArrayHelpers.Entry<int>>();
-        ArrayHelpers.Add(entries, "key1", 1);
-
-        // Act
-        var snapshot = ArrayHelpers.GetSnapshot(entries, "nonexistent");
+        var becameEmpty = entry.RemoveCurrent();
 
         // Assert
-        await Assert.That(snapshot).IsNotNull();
-        await Assert.That(snapshot.Length).IsEqualTo(0);
+        await Assert.That(becameEmpty).IsFalse();
+        await Assert.That(entry.Count).IsEqualTo(0);
+    }
+
+    /// <summary>Tests that entry clear removes all items.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Entry_Clear_RemovesAllItems()
+    {
+        // Arrange
+        var entry = new ArrayHelpers.Entry<int>();
+        entry.Add(1);
+        entry.Add(2);
+        entry.Add(3);
+
+        // Act
+        entry.Clear();
+
+        // Assert
+        await Assert.That(entry.HasItems).IsFalse();
+        await Assert.That(entry.Count).IsEqualTo(0);
+        await Assert.That(entry.GetSnapshot().Length).IsEqualTo(0);
+    }
+
+    /// <summary>Tests that entry copy items to appends all items.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Entry_CopyItemsTo_AppendsAllItems()
+    {
+        // Arrange
+        var entry = new ArrayHelpers.Entry<int>();
+        entry.Add(1);
+        entry.Add(2);
+        var destination = new List<int> { 99 };
+
+        // Act
+        entry.CopyItemsTo(destination);
+
+        // Assert
+        await Assert.That(destination.Count).IsEqualTo(3);
+        await Assert.That(destination[0]).IsEqualTo(99);
+        await Assert.That(destination[1]).IsEqualTo(1);
+        await Assert.That(destination[2]).IsEqualTo(2);
     }
 }

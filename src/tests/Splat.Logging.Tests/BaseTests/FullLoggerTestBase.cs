@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Globalization;
@@ -9,15 +8,11 @@ using Splat.Tests.Mocks;
 
 namespace Splat.Tests.Logging;
 
-/// <summary>
-/// A base class for testing full loggers that are available.
-/// </summary>
+/// <summary>A base class for testing full loggers that are available.</summary>
 [InheritsTests]
 public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFullLogger>
 {
-    /// <summary>
-    /// Test to make sure the debug emits nothing when not enabled.
-    /// </summary>
+    /// <summary>Test to make sure the debug emits nothing when not enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Debug_Disabled_Should_Not_Emit()
@@ -39,9 +34,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         }
     }
 
-    /// <summary>
-    /// Test to make sure the debug emits something when enabled.
-    /// </summary>
+    /// <summary>Test to make sure the debug emits something when enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Debug_Enabled_Should_Emit()
@@ -63,9 +56,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         }
     }
 
-    /// <summary>
-    /// Test to make sure the Info emits nothing when not enabled.
-    /// </summary>
+    /// <summary>Test to make sure the Info emits nothing when not enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Info_Disabled_Should_Not_Emit()
@@ -87,9 +78,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         }
     }
 
-    /// <summary>
-    /// Test to make sure the Info emits something when enabled.
-    /// </summary>
+    /// <summary>Test to make sure the Info emits something when enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Info_Enabled_Should_Emit()
@@ -111,9 +100,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         }
     }
 
-    /// <summary>
-    /// Test to make sure the Warn emits nothing when not enabled.
-    /// </summary>
+    /// <summary>Test to make sure the Warn emits nothing when not enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Warn_Disabled_Should_Not_Emit()
@@ -135,9 +122,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         }
     }
 
-    /// <summary>
-    /// Test to make sure the Warn emits something when enabled.
-    /// </summary>
+    /// <summary>Test to make sure the Warn emits something when enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Warn_Enabled_Should_Emit()
@@ -159,9 +144,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         }
     }
 
-    /// <summary>
-    /// Test to make sure the Error emits nothing when not enabled.
-    /// </summary>
+    /// <summary>Test to make sure the Error emits nothing when not enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Error_Disabled_Should_Not_Emit()
@@ -183,9 +166,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         }
     }
 
-    /// <summary>
-    /// Test to make sure the Error emits something when enabled.
-    /// </summary>
+    /// <summary>Test to make sure the Error emits something when enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Error_Enabled_Should_Emit()
@@ -207,9 +188,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         }
     }
 
-    /// <summary>
-    /// Test to make sure the Fatal emits something when enabled.
-    /// </summary>
+    /// <summary>Test to make sure the Fatal emits something when enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Fatal_Enabled_Should_Emit()
@@ -231,9 +210,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         }
     }
 
-    /// <summary>
-    /// Test to make sure the message is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the message is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Debug_With_Generic_Type_Should_Write_Message()
@@ -245,9 +222,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the message is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the message is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Debug_With_Generic_Type_Should_Write_Message_Provided()
@@ -259,9 +234,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the message is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the message is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Info_With_Generic_Type_Should_Write_Message()
@@ -273,9 +246,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the message is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the message is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Info_With_Generic_Type_Should_Write_Message_Provided()
@@ -287,9 +258,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the message is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the message is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Warn_With_Generic_Type_Should_Write_Message()
@@ -301,9 +270,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the message is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the message is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Warn_With_Generic_Type_Should_Write_Message_Provided()
@@ -315,9 +282,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the message is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the message is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Error_With_Generic_Type_Should_Write_Message()
@@ -329,9 +294,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the message is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the message is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Error_With_Generic_Type_Should_Write_Message_Provided()
@@ -343,9 +306,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the message is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the message is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Fatal_With_Generic_Type_Should_Write_Message()
@@ -357,9 +318,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the message is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the message is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Fatal_With_Generic_Type_Should_Write_Message_Provided()
@@ -371,9 +330,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the debug emits something when enabled.
-    /// </summary>
+    /// <summary>Test to make sure the debug emits something when enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Debug_Enabled_FormatProvider_Should_Emit()
@@ -385,9 +342,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure that when enabled debug emits values.
-    /// </summary>
+    /// <summary>Test to make sure that when enabled debug emits values.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Debug_Message_Should_Emit()
@@ -399,9 +354,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure that when enabled debug emits values.
-    /// </summary>
+    /// <summary>Test to make sure that when enabled debug emits values.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Debug_Object_Should_Emit()
@@ -413,9 +366,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(typeof(DummyObjectClass1).ToString());
     }
 
-    /// <summary>
-    /// Test to make sure the debug emits something when enabled.
-    /// </summary>
+    /// <summary>Test to make sure the debug emits something when enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Info_Enabled_FormatProvider_Should_Emit()
@@ -427,9 +378,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure that when enabled debug emits values.
-    /// </summary>
+    /// <summary>Test to make sure that when enabled debug emits values.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Info_Object_Should_Emit()
@@ -441,9 +390,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(typeof(DummyObjectClass1).ToString());
     }
 
-    /// <summary>
-    /// Test to make sure that when enabled debug emits values.
-    /// </summary>
+    /// <summary>Test to make sure that when enabled debug emits values.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Info_Message_Should_Emit()
@@ -455,9 +402,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the debug emits something when enabled.
-    /// </summary>
+    /// <summary>Test to make sure the debug emits something when enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Warn_Enabled_FormatProvider_Should_Emit()
@@ -469,9 +414,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure that when enabled debug emits values.
-    /// </summary>
+    /// <summary>Test to make sure that when enabled debug emits values.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Warn_Message_Should_Emit()
@@ -483,9 +426,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure that when enabled debug emits values.
-    /// </summary>
+    /// <summary>Test to make sure that when enabled debug emits values.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Warn_Object_Should_Emit()
@@ -497,9 +438,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(typeof(DummyObjectClass1).ToString());
     }
 
-    /// <summary>
-    /// Test to make sure the debug emits something when enabled.
-    /// </summary>
+    /// <summary>Test to make sure the debug emits something when enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Error_Enabled_FormatProvider_Should_Emit()
@@ -511,9 +450,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure that when enabled debug emits values.
-    /// </summary>
+    /// <summary>Test to make sure that when enabled debug emits values.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Error_Message_Should_Emit()
@@ -525,9 +462,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure that when enabled debug emits values.
-    /// </summary>
+    /// <summary>Test to make sure that when enabled debug emits values.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Error_Object_Should_Emit()
@@ -539,9 +474,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(typeof(DummyObjectClass1).ToString());
     }
 
-    /// <summary>
-    /// Test to make sure the debug emits something when enabled.
-    /// </summary>
+    /// <summary>Test to make sure the debug emits something when enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Fatal_Enabled_FormatProvider_Should_Emit()
@@ -553,9 +486,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure that when enabled debug emits values.
-    /// </summary>
+    /// <summary>Test to make sure that when enabled debug emits values.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Fatal_Object_Should_Emit()
@@ -567,9 +498,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(typeof(DummyObjectClass1).ToString());
     }
 
-    /// <summary>
-    /// Test to make sure that when enabled debug emits values.
-    /// </summary>
+    /// <summary>Test to make sure that when enabled debug emits values.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Fatal_Message_Should_Emit()
@@ -581,9 +510,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the debug func emits nothing when not enabled.
-    /// </summary>
+    /// <summary>Test to make sure the debug func emits nothing when not enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Debug_Func_Disabled_Should_Not_Emit()
@@ -604,9 +531,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         }
     }
 
-    /// <summary>
-    /// Test to make sure the debug func emits something when enabled.
-    /// </summary>
+    /// <summary>Test to make sure the debug func emits something when enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Debug_Func_Enabled_Should_Emit()
@@ -627,9 +552,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         }
     }
 
-    /// <summary>
-    /// Test to make sure the info func emits nothing when not enabled.
-    /// </summary>
+    /// <summary>Test to make sure the info func emits nothing when not enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Info_Func_Disabled_Should_Not_Emit()
@@ -650,9 +573,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         }
     }
 
-    /// <summary>
-    /// Test to make sure the info func emits something when enabled.
-    /// </summary>
+    /// <summary>Test to make sure the info func emits something when enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Info_Func_Enabled_Should_Emit()
@@ -673,9 +594,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         }
     }
 
-    /// <summary>
-    /// Test to make sure the warn func emits nothing when not enabled.
-    /// </summary>
+    /// <summary>Test to make sure the warn func emits nothing when not enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Warn_Func_Disabled_Should_Not_Emit()
@@ -696,9 +615,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         }
     }
 
-    /// <summary>
-    /// Test to make sure the warn func emits something when enabled.
-    /// </summary>
+    /// <summary>Test to make sure the warn func emits something when enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Warn_Func_Enabled_Should_Emit()
@@ -719,9 +636,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         }
     }
 
-    /// <summary>
-    /// Test to make sure the error func emits nothing when not enabled.
-    /// </summary>
+    /// <summary>Test to make sure the error func emits nothing when not enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Error_Func_Disabled_Should_Not_Emit()
@@ -742,9 +657,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         }
     }
 
-    /// <summary>
-    /// Test to make sure the error func emits something when enabled.
-    /// </summary>
+    /// <summary>Test to make sure the error func emits something when enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Error_Func_Enabled_Should_Emit()
@@ -765,9 +678,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         }
     }
 
-    /// <summary>
-    /// Test to make sure the fatal func emits something when enabled.
-    /// </summary>
+    /// <summary>Test to make sure the fatal func emits something when enabled.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Fatal_Func_Enabled_Should_Emit()

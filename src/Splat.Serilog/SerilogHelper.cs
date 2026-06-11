@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Collections.Immutable;
@@ -9,16 +8,12 @@ using Serilog.Events;
 
 namespace Splat;
 
-/// <summary>
-/// Provides helper members for mapping between Splat log levels and Serilog log event levels.
-/// </summary>
+/// <summary>Provides helper members for mapping between Splat log levels and Serilog log event levels.</summary>
 /// <remarks>This class is intended for internal use to facilitate interoperability between logging frameworks.
 /// All members are static and thread-safe.</remarks>
 internal static class SerilogHelper
 {
-    /// <summary>
-    /// Gets a list of mappings of Serilog levels and equivalent Splat log levels.
-    /// </summary>
+    /// <summary>Gets a list of mappings of Serilog levels and equivalent Splat log levels.</summary>
     public static KeyValuePair<LogLevel, LogEventLevel>[] Mappings { get; } =
     [
         new(LogLevel.Debug, LogEventLevel.Debug),
@@ -27,8 +22,6 @@ internal static class SerilogHelper
         new(LogLevel.Error, LogEventLevel.Error),
         new(LogLevel.Fatal, LogEventLevel.Fatal)];
 
-    /// <summary>
-    /// Gets a dictionary which maps Splat log levels to Serilogs.
-    /// </summary>
+    /// <summary>Gets a dictionary which maps Splat log levels to Serilogs.</summary>
     public static ImmutableDictionary<LogLevel, LogEventLevel> MappingsDictionary { get; } = Mappings.ToImmutableDictionary();
 }

@@ -1,21 +1,15 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Mindscape.Raygun4Net;
 
 namespace Splat.Tests.ApplicationPerformanceMonitoring;
 
-/// <summary>
-/// Unit tests for <see cref="RaygunFeatureUsageTrackingSession"/>.
-/// </summary>
+/// <summary>Unit tests for <see cref="RaygunFeatureUsageTrackingSession"/>.</summary>
 public static class RaygunFeatureUsageTrackingSessionTests
 {
-    /// <summary>
-    /// Creates a <see cref="RaygunFeatureUsageTrackingSession"/> configured with an empty API key
-    /// for testing purposes.
-    /// </summary>
+    /// <summary>Creates a <see cref="RaygunFeatureUsageTrackingSession"/> configured with an empty API key for testing purposes.</summary>
     /// <param name="featureName">The name of the feature to track.</param>
     /// <returns>A new <see cref="RaygunFeatureUsageTrackingSession"/> instance.</returns>
     private static RaygunFeatureUsageTrackingSession GetRaygunFeatureUsageTrackingSession(string featureName)
@@ -31,9 +25,7 @@ public static class RaygunFeatureUsageTrackingSessionTests
         return new(featureName, raygunClient, raygunSettings);
     }
 
-    /// <summary>
-    /// Tests for the <see cref="RaygunFeatureUsageTrackingSession"/> constructor.
-    /// </summary>
+    /// <summary>Tests for the <see cref="RaygunFeatureUsageTrackingSession"/> constructor.</summary>
     [InheritsTests]
     public sealed class ConstructorTests : BaseFeatureUsageTrackingTests.BaseConstructorTests<RaygunFeatureUsageTrackingSession>
     {
@@ -41,9 +33,7 @@ public static class RaygunFeatureUsageTrackingSessionTests
         protected override RaygunFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName) => GetRaygunFeatureUsageTrackingSession(featureName);
     }
 
-    /// <summary>
-    /// Tests for the <see cref="RaygunFeatureUsageTrackingSession.SubFeature(string)"/> method.
-    /// </summary>
+    /// <summary>Tests for the <see cref="RaygunFeatureUsageTrackingSession.SubFeature(string)"/> method.</summary>
     [InheritsTests]
     public sealed class SubFeatureMethodTests : BaseFeatureUsageTrackingTests.BaseSubFeatureMethodTests<RaygunFeatureUsageTrackingSession>
     {

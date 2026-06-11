@@ -1,0 +1,13 @@
+#nullable enable
+Splat.ApplicationInsights.ApplicationInsightsFeatureUsageTrackingSession
+Splat.ApplicationInsights.ApplicationInsightsFeatureUsageTrackingSession.ApplicationInsightsFeatureUsageTrackingSession(string! featureName, Microsoft.ApplicationInsights.TelemetryClient! telemetryClient) -> void
+Splat.ApplicationInsights.ApplicationInsightsFeatureUsageTrackingSession.Dispose() -> void
+Splat.ApplicationInsights.ApplicationInsightsFeatureUsageTrackingSession.FeatureName.get -> string!
+Splat.ApplicationInsights.ApplicationInsightsFeatureUsageTrackingSession.FeatureReference.get -> System.Guid
+Splat.ApplicationInsights.ApplicationInsightsFeatureUsageTrackingSession.OnException(System.Exception! exception) -> void
+Splat.ApplicationInsights.ApplicationInsightsFeatureUsageTrackingSession.ParentReference.get -> System.Guid
+Splat.ApplicationInsights.ApplicationInsightsFeatureUsageTrackingSession.SubFeature(string! description) -> Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession!
+Splat.ApplicationInsightsViewTracking
+Splat.ApplicationInsightsViewTracking.ApplicationInsightsViewTracking(Microsoft.ApplicationInsights.TelemetryClient! telemetryClient) -> void
+Splat.ApplicationInsightsViewTracking.OnViewNavigation(Microsoft.ApplicationInsights.DataContracts.PageViewTelemetry! telemetry) -> void
+Splat.ApplicationInsightsViewTracking.OnViewNavigation(string! name) -> void

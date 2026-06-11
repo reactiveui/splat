@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat;
@@ -28,9 +27,7 @@ public class PlatformBitmapLoader<TDrawable> : IBitmapLoader, IEnableLogger
 {
     private readonly Func<string, int> _drawableResolver;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PlatformBitmapLoader{TDrawable}"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="PlatformBitmapLoader{TDrawable}"/> class.</summary>
     /// <param name="drawableResolver">A function that maps drawable names to resource IDs.
     /// Use a switch expression for AOT-friendly compile-time mapping.</param>
     /// <example>
@@ -70,7 +67,7 @@ public class PlatformBitmapLoader<TDrawable> : IBitmapLoader, IEnableLogger
         }
 
         // Try without extension (Android strips extensions)
-        var nameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(source);
+        var nameWithoutExtension = Path.GetFileNameWithoutExtension(source);
         resourceId = _drawableResolver(nameWithoutExtension);
         if (resourceId != 0)
         {

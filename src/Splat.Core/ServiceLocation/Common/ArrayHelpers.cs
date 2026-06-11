@@ -1,35 +1,25 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace Splat;
 
-/// <summary>
-/// Helper methods for array operations and snapshot-based registration patterns used by GenericFirst resolvers.
-/// </summary>
+/// <summary>Helper methods for array operations and snapshot-based registration patterns used by GenericFirst resolvers.</summary>
 /// <remarks>
 /// <para>
 /// This type centralizes performance-sensitive patterns used throughout the resolver implementation:
 /// <list type="bullet">
 ///   <item><description>Small array mutation helpers for legacy array-based storage.</description></item>
 ///   <item><description>Materialization of <see cref="Registration{T}"/> into concrete instances.</description></item>
-///   <item><description>Snapshotting patterns for O(1) writes and amortized O(n) reads using <see cref="Entry{TValue}"/>.</description></item>
+///   <item><description>The <see cref="Entry{TValue}"/> snapshot primitive for O(1) writes and amortized O(n) reads.</description></item>
 /// </list>
-/// </para>
-/// <para>
-/// Threading: the dictionary-based methods assume the caller holds an appropriate lock for the provided dictionary.
-/// The <see cref="Entry{TValue}.Gate"/> exists for per-entry synchronization when used in concurrent dictionaries.
 /// </para>
 /// </remarks>
 internal static class ArrayHelpers
 {
-    /// <summary>
-    /// Appends a registration to an existing array, creating a new array if the input is <see langword="null"/>.
-    /// </summary>
+    /// <summary>Appends a registration to an existing array, creating a new array if the input is <see langword="null"/>.</summary>
     /// <typeparam name="T">Service type for the registration.</typeparam>
     /// <param name="current">Existing array of registrations, or <see langword="null"/>.</param>
     /// <param name="newItem">Registration to append.</param>
@@ -53,9 +43,7 @@ internal static class ArrayHelpers
         return newArray;
     }
 
-    /// <summary>
-    /// Removes the last element from an array, returning a new array.
-    /// </summary>
+    /// <summary>Removes the last element from an array, returning a new array.</summary>
     /// <typeparam name="T">Element type.</typeparam>
     /// <param name="current">Current array, or <see langword="null"/>.</param>
     /// <returns>
@@ -80,9 +68,7 @@ internal static class ArrayHelpers
         return newArray;
     }
 
-    /// <summary>
-    /// Materializes registrations by invoking factories and collecting non-null results.
-    /// </summary>
+    /// <summary>Materializes registrations by invoking factories and collecting non-null results.</summary>
     /// <typeparam name="T">The service type.</typeparam>
     /// <param name="registrations">Registrations to materialize.</param>
     /// <returns>An array of materialized, non-null instances.</returns>
@@ -158,226 +144,148 @@ internal static class ArrayHelpers
         return result;
     }
 
-    /// <summary>
-    /// Adds an item to an entry's list and increments the version.
-    /// </summary>
-    /// <typeparam name="TKey">Key type.</typeparam>
-    /// <typeparam name="TValue">Value type stored in the entry list.</typeparam>
-    /// <param name="entries">Dictionary of entries.</param>
-    /// <param name="key">Key under which to add the value.</param>
-    /// <param name="value">Value to add.</param>
-    /// <remarks>
-    /// This method assumes the caller holds an appropriate lock for <paramref name="entries"/>.
-    /// The snapshot is not rebuilt; it is rebuilt lazily on read.
-    /// </remarks>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="entries"/> or <paramref name="key"/> is <see langword="null"/>.</exception>
-#if NET8_0_OR_GREATER
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-#else
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    public static void Add<TKey, TValue>(
-        Dictionary<TKey, Entry<TValue>> entries,
-        TKey key,
-        TValue value)
-        where TKey : notnull
-    {
-        ArgumentExceptionHelper.ThrowIfNull(entries);
-        ArgumentExceptionHelper.ThrowIfNull(key);
-
-        if (!entries.TryGetValue(key, out var entry))
-        {
-            entry = new();
-            entries[key] = entry;
-        }
-
-        entry.List.Add(value);
-        entry.Version++;
-    }
-
-    /// <summary>
-    /// Gets the immutable snapshot array for a key, rebuilding it if stale.
-    /// </summary>
-    /// <typeparam name="TKey">Key type.</typeparam>
-    /// <typeparam name="TValue">Value type.</typeparam>
-    /// <param name="entries">Dictionary of entries.</param>
-    /// <param name="key">Key to retrieve.</param>
-    /// <returns>The snapshot array for the key, or an empty array when the key is not present.</returns>
-    /// <remarks>
-    /// This method assumes the caller holds an appropriate lock for <paramref name="entries"/>.
-    /// Snapshot rebuild cost is O(n) but occurs only once per version.
-    /// </remarks>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="entries"/> or <paramref name="key"/> is <see langword="null"/>.</exception>
-#if NET8_0_OR_GREATER
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-#else
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    public static TValue[] GetSnapshot<TKey, TValue>(
-        Dictionary<TKey, Entry<TValue>> entries,
-        TKey key)
-        where TKey : notnull
-    {
-        ArgumentExceptionHelper.ThrowIfNull(entries);
-        ArgumentExceptionHelper.ThrowIfNull(key);
-
-        if (!entries.TryGetValue(key, out var entry))
-        {
-            return [];
-        }
-
-        if (entry.Snapshot is null || entry.SnapshotVersion != entry.Version)
-        {
-            entry.Snapshot = entry.List.Count == 0 ? [] : [.. entry.List];
-            entry.SnapshotVersion = entry.Version;
-        }
-
-        return entry.Snapshot;
-    }
-
-    /// <summary>
-    /// Removes the last item from an entry list for a key. If the list becomes empty, removes the key entry.
-    /// </summary>
-    /// <typeparam name="TKey">Key type.</typeparam>
-    /// <typeparam name="TValue">Value type.</typeparam>
-    /// <param name="entries">Dictionary of entries.</param>
-    /// <param name="key">Key to remove the current registration from.</param>
-    /// <remarks>
-    /// This method assumes the caller holds an appropriate lock for <paramref name="entries"/>.
-    /// Snapshot is not rebuilt; it will be rebuilt lazily on next read.
-    /// </remarks>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="entries"/> or <paramref name="key"/> is <see langword="null"/>.</exception>
-#if NET8_0_OR_GREATER
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-#else
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    public static void RemoveCurrent<TKey, TValue>(
-        Dictionary<TKey, Entry<TValue>> entries,
-        TKey key)
-        where TKey : notnull
-    {
-        ArgumentExceptionHelper.ThrowIfNull(entries);
-        ArgumentExceptionHelper.ThrowIfNull(key);
-
-        if (!entries.TryGetValue(key, out var entry))
-        {
-            return;
-        }
-
-        var list = entry.List;
-        var count = list.Count;
-        if (count == 0)
-        {
-            return;
-        }
-
-        list.RemoveAt(count - 1);
-        entry.Version++;
-
-        if (list.Count == 0)
-        {
-            entries.Remove(key);
-        }
-    }
-
-    /// <summary>
-    /// Removes all registrations for a key by removing the entry entirely.
-    /// </summary>
-    /// <typeparam name="TKey">Key type.</typeparam>
-    /// <typeparam name="TValue">Value type.</typeparam>
-    /// <param name="entries">Dictionary of entries.</param>
-    /// <param name="key">Key to remove.</param>
-    /// <remarks>
-    /// This method assumes the caller holds an appropriate lock for <paramref name="entries"/>.
-    /// </remarks>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="entries"/> or <paramref name="key"/> is <see langword="null"/>.</exception>
-#if NET8_0_OR_GREATER
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-#else
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    public static void RemoveAll<TKey, TValue>(
-        Dictionary<TKey, Entry<TValue>> entries,
-        TKey key)
-        where TKey : notnull
-    {
-        ArgumentExceptionHelper.ThrowIfNull(entries);
-        ArgumentExceptionHelper.ThrowIfNull(key);
-
-        entries.Remove(key);
-    }
-
-    /// <summary>
-    /// Clears all registrations from the entries dictionary.
-    /// </summary>
-    /// <typeparam name="TKey">Key type.</typeparam>
-    /// <typeparam name="TValue">Value type.</typeparam>
-    /// <param name="entries">Dictionary to clear.</param>
-    /// <remarks>
-    /// This method assumes the caller holds an appropriate lock for <paramref name="entries"/>.
-    /// </remarks>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="entries"/> is <see langword="null"/>.</exception>
-#if NET8_0_OR_GREATER
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-#else
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-    public static void Clear<TKey, TValue>(
-        Dictionary<TKey, Entry<TValue>> entries)
-        where TKey : notnull
-    {
-        ArgumentExceptionHelper.ThrowIfNull(entries);
-        entries.Clear();
-    }
-
-    /// <summary>
-    /// Entry that tracks a mutable list with a lazily-updated immutable snapshot.
-    /// </summary>
+    /// <summary>A concurrent, snapshot-backed list used as the per-registration storage primitive.</summary>
     /// <remarks>
     /// <para>
-    /// Writes are O(1): callers append/remove items and increment <see cref="Version"/> under the appropriate synchronization.
-    /// Reads can be O(n) when rebuilding the snapshot, but only once per version.
+    /// Writes (<see cref="Add"/>, <see cref="RemoveCurrent"/>, <see cref="Clear"/>) are O(1) and run under a
+    /// private gate; they invalidate the published snapshot, which is rebuilt lazily on the next read.
+    /// Reads via <see cref="GetSnapshot"/> are lock-free when the snapshot is current.
     /// </para>
     /// <para>
-    /// When used in concurrent containers, <see cref="Gate"/> should be used with <c>lock(Gate)</c>.
-    /// On .NET 9+ the runtime will use fast-locking when <see cref="Gate"/> is a Lock class.
+    /// A volatile count is maintained on every mutation so <see cref="Count"/> and <see cref="HasItems"/>
+    /// answer without materializing a snapshot or taking the gate.
+    /// </para>
+    /// <para>
+    /// The gate is private to this type, so all synchronization is encapsulated here and never shared with callers.
+    /// On .NET 9+ the <c>Lock</c> alias resolves to <c>System.Threading.Lock</c> (fast-path locking);
+    /// on earlier targets it resolves to <see cref="object"/> and the <c>lock</c> statement falls back to <see cref="System.Threading.Monitor"/>.
     /// </para>
     /// </remarks>
     /// <typeparam name="TValue">The value type stored in the entry.</typeparam>
-    [SuppressMessage(
-        "StyleCop.CSharp.MaintainabilityRules",
-        "SA1401:Fields should be private",
-        Justification = "Needed for by-ref and volatile patterns; encapsulation would add overhead.")]
     internal sealed class Entry<TValue>
     {
-        /// <summary>
-        /// Per-entry gate used for synchronizing mutations and snapshot rebuilds.
-        /// </summary>
-#if NET9_0_OR_GREATER
-        public readonly Lock Gate = new();
-#else
-        public readonly object Gate = new();
-#endif
+        private readonly Lock _gate = new();
 
-        /// <summary>
-        /// Mutable list of values. Mutate only under the associated lock.
-        /// </summary>
-        public readonly List<TValue> List = new(4);
+        private readonly List<TValue> _list = new(4);
 
-        /// <summary>
-        /// Immutable snapshot of <see cref="List"/>. May be <see langword="null"/> until first built.
-        /// </summary>
-        public TValue[]? Snapshot;
+        private TValue[]? _snapshot;
 
-        /// <summary>
-        /// Current version, incremented on every mutation.
-        /// </summary>
-        public int Version;
+        private int _version;
 
-        /// <summary>
-        /// Version corresponding to the current <see cref="Snapshot"/>.
-        /// </summary>
-        public int SnapshotVersion;
+        private int _snapshotVersion;
+
+        private int _count;
+
+        /// <summary>Gets the number of committed items.</summary>
+        /// <remarks>Lock-free volatile read; reflects the count after the most recent committed mutation.</remarks>
+        public int Count => Volatile.Read(ref _count);
+
+        /// <summary>Gets a value indicating whether the entry currently holds any items.</summary>
+        /// <remarks>Lock-free volatile read; equivalent to <c><see cref="Count"/> &gt; 0</c>.</remarks>
+        public bool HasItems => Volatile.Read(ref _count) > 0;
+
+        /// <summary>Appends an item, invalidating the snapshot.</summary>
+        /// <param name="value">The value to append.</param>
+        public void Add(TValue value)
+        {
+            lock (_gate)
+            {
+                _list.Add(value);
+                _version++;
+                Volatile.Write(ref _count, _list.Count);
+            }
+        }
+
+        /// <summary>Removes the most recently added item, if any.</summary>
+        /// <returns><see langword="true"/> if the entry became empty as a result; otherwise <see langword="false"/>.</returns>
+        /// <remarks>When the entry drains to empty, an empty snapshot is published so subsequent reads fast-exit.</remarks>
+        public bool RemoveCurrent()
+        {
+            lock (_gate)
+            {
+                var listCount = _list.Count;
+                if (listCount == 0)
+                {
+                    return false;
+                }
+
+                _list.RemoveAt(listCount - 1);
+                _version++;
+
+                var remaining = _list.Count;
+                Volatile.Write(ref _count, remaining);
+
+                if (remaining != 0)
+                {
+                    return false;
+                }
+
+                // Publish an empty snapshot aligned with the new version so readers fast-exit.
+                _snapshot = [];
+                _snapshotVersion = _version;
+                return true;
+            }
+        }
+
+        /// <summary>Removes all items and publishes an empty snapshot.</summary>
+        public void Clear()
+        {
+            lock (_gate)
+            {
+                _list.Clear();
+                _version++;
+                _snapshot = [];
+                _snapshotVersion = _version;
+                Volatile.Write(ref _count, 0);
+            }
+        }
+
+        /// <summary>Returns the current immutable snapshot, rebuilding it if stale.</summary>
+        /// <returns>A snapshot array of the current items; never <see langword="null"/>.</returns>
+        /// <remarks>
+        /// Fast path is lock-free when the published snapshot version matches the list version.
+        /// Otherwise the snapshot is rebuilt under the gate and allocates an array copy of the list.
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TValue[] GetSnapshot()
+        {
+            var version = Volatile.Read(ref _version);
+            var snapshot = Volatile.Read(ref _snapshot);
+
+            if (snapshot is not null && Volatile.Read(ref _snapshotVersion) == version)
+            {
+                return snapshot;
+            }
+
+            lock (_gate)
+            {
+                snapshot = _snapshot;
+                var currentVersion = _version;
+
+                if (snapshot is null || _snapshotVersion != currentVersion)
+                {
+                    TValue[] newSnapshot = _list.Count == 0 ? [] : [.. _list];
+                    _snapshot = newSnapshot;
+                    _snapshotVersion = currentVersion;
+                    return newSnapshot;
+                }
+
+                return snapshot;
+            }
+        }
+
+        /// <summary>Appends all current items to <paramref name="destination"/> under the gate.</summary>
+        /// <param name="destination">The list to append the current items to.</param>
+        /// <remarks>Used by disposal enumeration, which needs every item without invoking factories.</remarks>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="destination"/> is <see langword="null"/>.</exception>
+        public void CopyItemsTo(List<TValue> destination)
+        {
+            ArgumentExceptionHelper.ThrowIfNull(destination);
+
+            lock (_gate)
+            {
+                destination.AddRange(_list);
+            }
+        }
     }
 }

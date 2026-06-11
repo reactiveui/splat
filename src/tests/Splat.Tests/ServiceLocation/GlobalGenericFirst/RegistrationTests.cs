@@ -1,20 +1,19 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.Tests.ServiceLocation.GenericFirst;
 
-/// <summary>
-/// Tests for the Registration&lt;T&gt; struct.
-/// </summary>
+/// <summary>Tests for the Registration&lt;T&gt; struct.</summary>
 public class RegistrationTests
 {
+    /// <summary>Tests that from instance creates instance registration.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task FromInstance_CreatesInstanceRegistration()
     {
         // Arrange
-        var instance = "test";
+        const string instance = "test";
 
         // Act
         var registration = Registration<string>.FromInstance(instance);
@@ -24,6 +23,8 @@ public class RegistrationTests
         await Assert.That(registration.GetInstance()).IsEqualTo(instance);
     }
 
+    /// <summary>Tests that from factory creates factory registration.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task FromFactory_CreatesFactoryRegistration()
     {
@@ -38,11 +39,13 @@ public class RegistrationTests
         await Assert.That(registration.GetFactory() == factory).IsTrue();
     }
 
+    /// <summary>Tests that get instance returns correct instance.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetInstance_ReturnsCorrectInstance()
     {
         // Arrange
-        var instance = 42;
+        const int instance = 42;
         var registration = Registration<int>.FromInstance(instance);
 
         // Act
@@ -52,11 +55,13 @@ public class RegistrationTests
         await Assert.That(result).IsEqualTo(instance);
     }
 
+    /// <summary>Tests that get factory returns correct factory.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetFactory_ReturnsCorrectFactory()
     {
         // Arrange
-        var expectedValue = "factory result";
+        const string expectedValue = "factory result";
         Func<string?> factory = () => expectedValue;
         var registration = Registration<string>.FromFactory(factory);
 
@@ -69,6 +74,8 @@ public class RegistrationTests
         await Assert.That(result).IsEqualTo(expectedValue);
     }
 
+    /// <summary>Tests that instance registration with null value stores null.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task InstanceRegistration_WithNullValue_StoresNull()
     {
@@ -80,6 +87,8 @@ public class RegistrationTests
         await Assert.That(registration.GetInstance()).IsNull();
     }
 
+    /// <summary>Tests that factory registration that returns null works correctly.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task FactoryRegistration_ThatReturnsNull_WorksCorrectly()
     {
@@ -100,11 +109,13 @@ public class RegistrationTests
         await Assert.That(result).IsNull();
     }
 
+    /// <summary>Tests that registration is value type can be compared.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Registration_IsValueType_CanBeCompared()
     {
         // Arrange
-        var instance = "test";
+        const string instance = "test";
         var reg1 = Registration<string>.FromInstance(instance);
         var reg2 = Registration<string>.FromInstance(instance);
 
@@ -112,6 +123,8 @@ public class RegistrationTests
         await Assert.That(reg1.Equals(reg2)).IsTrue();
     }
 
+    /// <summary>Tests that factory registration with different factories are not equal.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task FactoryRegistration_WithDifferentFactories_AreNotEqual()
     {
@@ -125,6 +138,8 @@ public class RegistrationTests
         await Assert.That(reg1.Equals(reg2)).IsFalse();
     }
 
+    /// <summary>Tests that registration with complex type works correctly.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Registration_WithComplexType_WorksCorrectly()
     {
@@ -142,6 +157,8 @@ public class RegistrationTests
         await Assert.That(result.Name).IsEqualTo("Test");
     }
 
+    /// <summary>Tests that factory registration with complex type works correctly.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task FactoryRegistration_WithComplexType_WorksCorrectly()
     {
@@ -160,10 +177,13 @@ public class RegistrationTests
         await Assert.That(result.Name).IsEqualTo("Factory");
     }
 
+    /// <summary>A simple reference type used for testing registrations.</summary>
     private sealed class TestClass
     {
+        /// <summary>Gets or sets the value.</summary>
         public int Value { get; set; }
 
+        /// <summary>Gets or sets the name.</summary>
         public string? Name { get; set; }
     }
 }

@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Common.Test;
@@ -8,20 +7,18 @@ using Splat.Tests.Mocks;
 
 namespace Splat.Tests;
 
+/// <summary>Tests for the <see cref="Locator"/>.</summary>
 [NotInParallel]
 public class LocatorTests
 {
+    /// <summary>The app locator scope used to isolate each test.</summary>
     private AppLocatorScope? _appLocatorScope;
 
-    /// <summary>
-    /// Setup method to initialize AppLocatorScope before each test.
-    /// </summary>
+    /// <summary>Setup method to initialize AppLocatorScope before each test.</summary>
     [Before(HookType.Test)]
     public void SetUpAppLocatorScope() => _appLocatorScope = new();
 
-    /// <summary>
-    /// Teardown method to dispose AppLocatorScope after each test.
-    /// </summary>
+    /// <summary>Teardown method to dispose AppLocatorScope after each test.</summary>
     [After(HookType.Test)]
     public void TearDownAppLocatorScope()
     {
@@ -29,9 +26,7 @@ public class LocatorTests
         _appLocatorScope = null;
     }
 
-    /// <summary>
-    /// Should the resolve nulls.
-    /// </summary>
+    /// <summary>Should the resolve nulls.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Can_Register_And_Resolve_Null_Types()
@@ -77,9 +72,7 @@ public class LocatorTests
         await Assert.That(valuesC.Count()).IsEqualTo(0);
     }
 
-    /// <summary>
-    /// Tests if the registrations are not empty on no external registrations.
-    /// </summary>
+    /// <summary>Tests if the registrations are not empty on no external registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task InitializeSplat_RegistrationsNotEmptyNoRegistrations()
@@ -102,9 +95,7 @@ public class LocatorTests
         }
     }
 
-    /// <summary>
-    /// Tests that if we use a contract it returns null entries for that type.
-    /// </summary>
+    /// <summary>Tests that if we use a contract it returns null entries for that type.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task InitializeSplat_ContractRegistrationsNullNoRegistration()
@@ -120,9 +111,7 @@ public class LocatorTests
         }
     }
 
-    /// <summary>
-    /// Tests that if we use a contract it returns null entries for that type.
-    /// </summary>
+    /// <summary>Tests that if we use a contract it returns null entries for that type.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task InitializeSplat_ContractRegistrationsExtensionMethodsNullNoRegistration()
@@ -138,9 +127,7 @@ public class LocatorTests
         }
     }
 
-    /// <summary>
-    /// Tests using the extension methods that the retrieving of the default InitializeSplat() still work.
-    /// </summary>
+    /// <summary>Tests using the extension methods that the retrieving of the default InitializeSplat() still work.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task InitializeSplat_ExtensionMethodsNotNull()
@@ -162,9 +149,7 @@ public class LocatorTests
         }
     }
 
-    /// <summary>
-    /// Tests to make sure that the locator's fire the resolver changed notifications.
-    /// </summary>
+    /// <summary>Tests to make sure that the locator's fire the resolver changed notifications.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task WithoutSuppress_NotificationsHappen()
@@ -186,9 +171,7 @@ public class LocatorTests
         testLocator.SetLocator(originalLocator);
     }
 
-    /// <summary>
-    /// Tests to make sure that the locator's don't fire the resolver changed notifications if they are suppressed.
-    /// </summary>
+    /// <summary>Tests to make sure that the locator's don't fire the resolver changed notifications if they are suppressed.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task WithSuppression_NotificationsDontHappen()
@@ -212,9 +195,7 @@ public class LocatorTests
         }
     }
 
-    /// <summary>
-    /// Tests to make sure that the locator's don't fire the resolver changed notifications if we use WithResolver().
-    /// </summary>
+    /// <summary>Tests to make sure that the locator's don't fire the resolver changed notifications if we use WithResolver().</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task WithResolver_NotificationsDontHappen()
@@ -225,18 +206,16 @@ public class LocatorTests
         var testLocator = new InternalLocator();
         testLocator.RegisterResolverCallbackChanged(NotificationAction);
 
-        using (testLocator.Internal.WithResolver())
-        using (testLocator.Internal.WithResolver())
-        {
-        }
+        var outerResolver = testLocator.Internal.WithResolver();
+        var innerResolver = testLocator.Internal.WithResolver();
+        innerResolver.Dispose();
+        outerResolver.Dispose();
 
         // 1 due to the fact the callback is called when we register.
         await Assert.That(numberNotifications).IsEqualTo(1);
     }
 
-    /// <summary>
-    /// Tests to make sure that the locator's don't fire the resolver changed notifications if we use WithResolver().
-    /// </summary>
+    /// <summary>Tests to make sure that the locator's don't fire the resolver changed notifications if we use WithResolver().</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task WithResolver_NotificationsNotSuppressedHappen()
@@ -246,10 +225,10 @@ public class LocatorTests
 
         Locator.RegisterResolverCallbackChanged(NotificationAction);
 
-        using (Locator.GetLocator().WithResolver(false))
-        using (Locator.GetLocator().WithResolver(false))
-        {
-        }
+        var outerResolver = Locator.GetLocator().WithResolver(false);
+        var innerResolver = Locator.GetLocator().WithResolver(false);
+        innerResolver.Dispose();
+        outerResolver.Dispose();
 
         // 1 due to the fact the callback is called when we register.
         // 2 for, 1 for change to resolver, 1 for change back
@@ -257,10 +236,7 @@ public class LocatorTests
         await Assert.That(numberNotifications).IsEqualTo(5);
     }
 
-    /// <summary>
-    /// Tests to make sure that the unregister all functions correctly.
-    /// This is a test when there are values registered.
-    /// </summary>
+    /// <summary>Tests to make sure that the unregister all functions correctly. This is a test when there are values registered.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ModernDependencyResolver_UnregisterAll_WithValuesWorks()
@@ -300,9 +276,7 @@ public class LocatorTests
         }
     }
 
-    /// <summary>
-    /// Nullables the type.
-    /// </summary>
+    /// <summary>Nullables the type.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterAndResolveANullableTypeWithValue()
@@ -312,9 +286,7 @@ public class LocatorTests
         await Assert.That(doc).IsTypeOf<DummyObjectClass1>();
     }
 
-    /// <summary>
-    /// Nullables the type.
-    /// </summary>
+    /// <summary>Nullables the type.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterAndResolveANullableTypeWithNull()
@@ -324,9 +296,7 @@ public class LocatorTests
         await Assert.That(doc).IsNull();
     }
 
-    /// <summary>
-    /// Test that GetService throws ObjectDisposedException after disposal.
-    /// </summary>
+    /// <summary>Test that GetService throws ObjectDisposedException after disposal.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterAndResolveANullableTypeWithValueLocatorDisposed()
@@ -339,9 +309,7 @@ public class LocatorTests
             .Throws<ObjectDisposedException>();
     }
 
-    /// <summary>
-    /// Nullables the type.
-    /// </summary>
+    /// <summary>Nullables the type.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterAndResolveANullableTypeWithDefault()
@@ -351,9 +319,7 @@ public class LocatorTests
         await Assert.That(doc).IsNull();
     }
 
-    /// <summary>
-    /// Nullables the type.
-    /// </summary>
+    /// <summary>Nullables the type.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterAndResolveANullableTypeWithNulledInstance()
@@ -364,10 +330,7 @@ public class LocatorTests
         await Assert.That(doc).IsNull();
     }
 
-    /// <summary>
-    /// Tests to make sure that the unregister all functions correctly.
-    /// This is a test when there are values not registered.
-    /// </summary>
+    /// <summary>Tests to make sure that the unregister all functions correctly. This is a test when there are values not registered.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ModernDependencyResolver_UnregisterAll_NoValuesWorks()
@@ -385,10 +348,7 @@ public class LocatorTests
         await Assert.That(items).IsEmpty();
     }
 
-    /// <summary>
-    /// Tests tomake sure that the unregister current functions correctly.
-    /// This is a test when there are values registered.
-    /// </summary>
+    /// <summary>Tests tomake sure that the unregister current functions correctly. This is a test when there are values registered.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ModernDependencyResolver_UnregisterCurrent_WithValuesWorks()
@@ -433,10 +393,7 @@ public class LocatorTests
         }
     }
 
-    /// <summary>
-    /// Tests to make sure that the unregister all functions correctly.
-    /// This is a test when there are values not registered.
-    /// </summary>
+    /// <summary>Tests to make sure that the unregister all functions correctly. This is a test when there are values not registered.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ModernDependencyResolver_UnregisterCurrent_NoValuesWorks()
@@ -453,10 +410,7 @@ public class LocatorTests
         await Assert.That(items).IsEmpty();
     }
 
-    /// <summary>
-    /// Tests to make sure that the unregister all functions correctly.
-    /// This is a test when there are values not registered.
-    /// </summary>
+    /// <summary>Tests to make sure that the unregister all functions correctly. This is a test when there are values not registered.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task FuncDependencyResolver_UnregisterAll()
@@ -493,10 +447,7 @@ public class LocatorTests
         }
     }
 
-    /// <summary>
-    /// Tests tomake sure that the unregister current functions correctly.
-    /// This is a test when there are values registered.
-    /// </summary>
+    /// <summary>Tests tomake sure that the unregister current functions correctly. This is a test when there are values registered.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task FuncDependencyResolver_UnregisterCurrent()

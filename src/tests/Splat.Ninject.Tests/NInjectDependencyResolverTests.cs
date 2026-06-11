@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
@@ -11,6 +10,7 @@ using Splat.Tests.ServiceLocation;
 
 namespace Splat.Ninject.Tests;
 
+/// <summary>Tests that verify the Ninject dependency resolver conforms to the base resolver contract.</summary>
 [NotInParallel]
 [InheritsTests]
 public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests<NinjectDependencyResolver>
@@ -70,110 +70,92 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
         await Assert.That(valuesC.Count()).IsEqualTo(0);
     }
 
-    /// <summary>
-    /// Verifies that ServiceRegistrationCallback throws NotImplementedException for Ninject.
-    /// </summary>
+    /// <summary>Verifies that ServiceRegistrationCallback throws NotSupportedException for Ninject.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task ServiceRegistrationCallback_Generic_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that ServiceRegistrationCallback throws NotImplementedException for Ninject.
-    /// </summary>
+    /// <summary>Verifies that ServiceRegistrationCallback throws NotSupportedException for Ninject.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task ServiceRegistrationCallback_Generic_WithExistingRegistration_InvokesImmediately()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that ServiceRegistrationCallback with contract throws NotImplementedException for Ninject.
-    /// </summary>
+    /// <summary>Verifies that ServiceRegistrationCallback with contract throws NotSupportedException for Ninject.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task ServiceRegistrationCallback_Generic_WithContract_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>("test", _ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>("test", _ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that non-generic ServiceRegistrationCallback throws NotImplementedException for Ninject.
-    /// </summary>
+    /// <summary>Verifies that non-generic ServiceRegistrationCallback throws NotSupportedException for Ninject.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task ServiceRegistrationCallback_NonGeneric_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), _ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), _ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that non-generic ServiceRegistrationCallback with contract throws NotImplementedException for Ninject.
-    /// </summary>
+    /// <summary>Verifies that non-generic ServiceRegistrationCallback with contract throws NotSupportedException for Ninject.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task ServiceRegistrationCallback_NonGeneric_WithContract_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), "test", _ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), "test", _ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that ServiceRegistrationCallback disposal throws NotImplementedException for Ninject.
-    /// </summary>
+    /// <summary>Verifies that ServiceRegistrationCallback disposal throws NotSupportedException for Ninject.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task ServiceRegistrationCallback_Disposal_StopsReceivingNotifications()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that ServiceRegistrationCallback with null callback throws NotImplementedException for Ninject.
-    /// </summary>
+    /// <summary>Verifies that ServiceRegistrationCallback with null callback throws NotSupportedException for Ninject.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override async Task ServiceRegistrationCallback_NullCallback_Throws()
     {
         var resolver = GetDependencyResolver();
 
-        // Ninject throws NotImplementedException before checking for null
+        // Ninject throws NotSupportedException before checking for null
         await Assert.That(() => resolver.ServiceRegistrationCallback<ViewModelOne>(null!))
-            .Throws<NotImplementedException>();
+            .Throws<NotSupportedException>();
 
         await Assert.That(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), null!))
-            .Throws<NotImplementedException>();
+            .Throws<NotSupportedException>();
     }
 
-    /// <summary>
-    /// Verifies that ServiceRegistrationCallback invokes for each throws NotImplementedException for Ninject.
-    /// </summary>
+    /// <summary>Verifies that ServiceRegistrationCallback invokes for each throws NotSupportedException for Ninject.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task ServiceRegistrationCallback_Generic_InvokesForEachExistingRegistration()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that Register after dispose throws NotImplementedException for Ninject (due to callbacks not implemented).
-    /// </summary>
+    /// <summary>Verifies that Register after dispose throws NotSupportedException for Ninject (due to callbacks not implemented).</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task Register_AfterDispose_DoesNotInvokeCallbacks()
@@ -181,36 +163,30 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
         var resolver = GetDependencyResolver();
 
         // Since ServiceRegistrationCallback throws, we verify that instead of the full test flow
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that Dispose suppresses exceptions from callbacks (NotApplicable for Ninject as callbacks throw).
-    /// </summary>
+    /// <summary>Verifies that Dispose suppresses exceptions from callbacks (NotApplicable for Ninject as callbacks throw).</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task Dispose_SuppressesExceptionsFromCallbacks()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Ninject doesn't invoke callbacks on disposal.
-    /// </summary>
+    /// <summary>Ninject doesn't invoke callbacks on disposal.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task Dispose_InvokesCallbacks()
     {
-        // Ninject ServiceRegistrationCallback throws NotImplementedException, so this test doesn't apply
+        // Ninject ServiceRegistrationCallback throws NotSupportedException, so this test doesn't apply
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Ninject manages disposal of registered services itself.
-    /// </summary>
+    /// <summary>Ninject manages disposal of registered services itself.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task Dispose_DisposesRegisteredServices()
@@ -219,9 +195,7 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Ninject handles lazy singletons itself.
-    /// </summary>
+    /// <summary>Ninject handles lazy singletons itself.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task Dispose_WithLazySingleton_DoesNotCreateIfNotAccessed()
@@ -230,9 +204,7 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Ninject manages disposal of services under construction itself.
-    /// </summary>
+    /// <summary>Ninject manages disposal of services under construction itself.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task Dispose_WhileLazySingletonUnderConstruction_DisposesServiceAndThrowsException()

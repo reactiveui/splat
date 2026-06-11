@@ -1,21 +1,19 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.Tests.ServiceLocation;
 
-/// <summary>
-/// Tests for the <see cref="FuncDependencyResolver"/> class.
-/// </summary>
+/// <summary>Tests for the <see cref="FuncDependencyResolver"/> class.</summary>
 [NotInParallel]
 [InheritsTests]
 public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDependencyResolver>
 {
-    private interface ITestInterface
-    {
-    }
+    /// <summary>Marker interface used by the tests.</summary>
+    private interface ITestInterface;
 
+    /// <summary>Verifies that the constructor accepts only the minimal required parameters.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Constructor_ShouldAcceptMinimalParameters()
     {
@@ -26,6 +24,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(resolver).IsNotNull();
     }
 
+    /// <summary>Verifies that the constructor accepts all optional delegates and the disposable.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Constructor_ShouldAcceptAllParameters()
     {
@@ -48,6 +48,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(disposable.IsDisposed).IsTrue();
     }
 
+    /// <summary>Verifies that GetService returns the last service when multiple are registered.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetService_ShouldReturnLastService_WhenMultipleRegistered()
     {
@@ -62,6 +64,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(result).IsEqualTo("third");
     }
 
+    /// <summary>Verifies that GetService returns null when no services are registered.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetService_ShouldReturnNull_WhenNoServicesRegistered()
     {
@@ -75,6 +79,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(result).IsNull();
     }
 
+    /// <summary>Verifies that GetService with a contract returns the last matching service.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetService_WithContract_ShouldReturnLastService()
     {
@@ -90,6 +96,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(result).IsEqualTo("second");
     }
 
+    /// <summary>Verifies that GetServices returns an empty list when the delegate returns null.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetServices_ShouldReturnEmptyList_WhenGetAllServicesReturnsNull()
     {
@@ -103,6 +111,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(result).IsEmpty();
     }
 
+    /// <summary>Verifies that GetServices returns all registered services.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetServices_ShouldReturnAllServices()
     {
@@ -120,6 +130,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(result[2]).IsEqualTo("third");
     }
 
+    /// <summary>Verifies that GetServices passes the contract through to the delegate.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetServices_WithContract_ShouldPassContractToGetAllServices()
     {
@@ -138,6 +150,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(capturedContract).IsEqualTo("mycontract");
     }
 
+    /// <summary>Verifies that GetServices substitutes the null service type when none is supplied.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetServices_WithNullServiceType_ShouldUseNullServiceType()
     {
@@ -156,6 +170,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(capturedType).IsEqualTo(NullServiceType.CachedType);
     }
 
+    /// <summary>Verifies that HasRegistration returns true when the delegate returns a non-null result.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task HasRegistration_ShouldReturnTrue_WhenGetAllServicesReturnsNonNull()
     {
@@ -169,6 +185,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(result).IsTrue();
     }
 
+    /// <summary>Verifies that HasRegistration returns false when the delegate returns null.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task HasRegistration_ShouldReturnFalse_WhenGetAllServicesReturnsNull()
     {
@@ -182,6 +200,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(result).IsFalse();
     }
 
+    /// <summary>Verifies that HasRegistration passes the contract through to the delegate.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task HasRegistration_WithContract_ShouldPassContractToGetAllServices()
     {
@@ -200,18 +220,22 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(capturedContract).IsEqualTo("mycontract");
     }
 
+    /// <summary>Verifies that Register throws NotSupportedException when no register delegate is provided.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task Register_ShouldThrowNotImplementedException_WhenRegisterDelegateIsNull()
+    public async Task Register_ShouldThrowNotSupportedException_WhenRegisterDelegateIsNull()
     {
         // Arrange
         var resolver = new FuncDependencyResolver((_, _) => []);
 
         // Act & Assert
         await Assert.That(() => resolver.Register(() => "test", typeof(string)))
-            .Throws<NotImplementedException>()
-            .WithMessageContaining("Register is not implemented", StringComparison.Ordinal);
+            .Throws<NotSupportedException>()
+            .WithMessageContaining("Register is not supported", StringComparison.Ordinal);
     }
 
+    /// <summary>Verifies that Register invokes the register delegate with the expected arguments.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Register_ShouldCallRegisterDelegate_WhenProvided()
     {
@@ -238,6 +262,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(capturedContract).IsEqualTo(string.Empty);
     }
 
+    /// <summary>Verifies that Register passes the contract through to the register delegate.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Register_WithContract_ShouldPassContractToDelegate()
     {
@@ -246,10 +272,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
 
         var resolver = new FuncDependencyResolver(
             getAllServices: (_, _) => [],
-            register: (factory, type, contract) =>
-            {
-                capturedContract = contract;
-            });
+            register: (factory, type, contract) => capturedContract = contract);
 
         // Act
         resolver.Register(() => "test", typeof(string), "mycontract");
@@ -258,6 +281,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(capturedContract).IsEqualTo("mycontract");
     }
 
+    /// <summary>Verifies that Register wraps a null service type in the null service type.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Register_WithNullServiceType_ShouldWrapInNullServiceType()
     {
@@ -266,10 +291,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
 
         var resolver = new FuncDependencyResolver(
             getAllServices: (_, _) => [],
-            register: (factory, type, contract) =>
-            {
-                capturedValue = factory();
-            });
+            register: (factory, type, contract) => capturedValue = factory());
 
         // Act
         resolver.Register(() => "test", serviceType: null);
@@ -279,6 +301,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(capturedValue).IsTypeOf<NullServiceType>();
     }
 
+    /// <summary>Verifies that the generic Register throws when the factory is null.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Register_Generic_ShouldThrowArgumentNullException_WhenFactoryIsNull()
     {
@@ -292,6 +316,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
             .Throws<ArgumentNullException>();
     }
 
+    /// <summary>Verifies that RegisterConstant registers the supplied value.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterConstant_ShouldRegisterValue()
     {
@@ -300,10 +326,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
 
         var resolver = new FuncDependencyResolver(
             getAllServices: (_, _) => [],
-            register: (factory, type, contract) =>
-            {
-                capturedValue = factory();
-            });
+            register: (factory, type, contract) => capturedValue = factory());
 
         var testValue = new TestClass();
 
@@ -314,6 +337,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(ReferenceEquals(capturedValue, testValue)).IsTrue();
     }
 
+    /// <summary>Verifies that RegisterLazySingleton throws when the factory is null.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterLazySingleton_ShouldThrowArgumentNullException_WhenFactoryIsNull()
     {
@@ -327,6 +352,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
             .Throws<ArgumentNullException>();
     }
 
+    /// <summary>Verifies that RegisterLazySingleton registers a factory that produces a single instance.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterLazySingleton_ShouldRegisterLazyValue()
     {
@@ -336,10 +363,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
 
         var resolver = new FuncDependencyResolver(
             getAllServices: (_, _) => null!, // Return null to avoid triggering factories during registration callbacks
-            register: (factory, type, contract) =>
-            {
-                capturedFactory = factory;
-            });
+            register: (factory, type, contract) => capturedFactory = factory);
 
         // Act
         resolver.RegisterLazySingleton<TestClass>(() =>
@@ -360,18 +384,22 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(ReferenceEquals(value1, value2)).IsTrue();
     }
 
+    /// <summary>Verifies that UnregisterCurrent throws NotSupportedException when no delegate is provided.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task UnregisterCurrent_ShouldThrowNotImplementedException_WhenDelegateIsNull()
+    public async Task UnregisterCurrent_ShouldThrowNotSupportedException_WhenDelegateIsNull()
     {
         // Arrange
         var resolver = new FuncDependencyResolver((_, _) => []);
 
         // Act & Assert
         await Assert.That(() => resolver.UnregisterCurrent<string>())
-            .Throws<NotImplementedException>()
-            .WithMessageContaining("UnregisterCurrent is not implemented", StringComparison.Ordinal);
+            .Throws<NotSupportedException>()
+            .WithMessageContaining("UnregisterCurrent is not supported", StringComparison.Ordinal);
     }
 
+    /// <summary>Verifies that UnregisterCurrent invokes the delegate with the expected arguments.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task UnregisterCurrent_ShouldCallDelegate_WhenProvided()
     {
@@ -395,6 +423,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(capturedContract).IsNull();
     }
 
+    /// <summary>Verifies that UnregisterCurrent passes the contract through to the delegate.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task UnregisterCurrent_WithContract_ShouldPassContractToDelegate()
     {
@@ -403,10 +433,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
 
         var resolver = new FuncDependencyResolver(
             getAllServices: (_, _) => [],
-            unregisterCurrent: (type, contract) =>
-            {
-                capturedContract = contract;
-            });
+            unregisterCurrent: (type, contract) => capturedContract = contract);
 
         // Act
         resolver.UnregisterCurrent<string>("mycontract");
@@ -415,17 +442,21 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(capturedContract).IsEqualTo("mycontract");
     }
 
+    /// <summary>Verifies that UnregisterAll throws NotSupportedException when no delegate is provided.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task UnregisterAll_ShouldThrowNotImplementedException_WhenDelegateIsNull()
+    public async Task UnregisterAll_ShouldThrowNotSupportedException_WhenDelegateIsNull()
     {
         // Arrange
         var resolver = new FuncDependencyResolver((_, _) => []);
 
         // Act & Assert
         await Assert.That(() => resolver.UnregisterAll<string>())
-            .Throws<NotImplementedException>();
+            .Throws<NotSupportedException>();
     }
 
+    /// <summary>Verifies that UnregisterAll invokes the delegate with the expected arguments.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task UnregisterAll_ShouldCallDelegate_WhenProvided()
     {
@@ -449,6 +480,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(capturedContract).IsNull();
     }
 
+    /// <summary>Verifies that UnregisterAll passes the contract through to the delegate.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task UnregisterAll_WithContract_ShouldPassContractToDelegate()
     {
@@ -457,10 +490,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
 
         var resolver = new FuncDependencyResolver(
             getAllServices: (_, _) => [],
-            unregisterAll: (type, contract) =>
-            {
-                capturedContract = contract;
-            });
+            unregisterAll: (type, contract) => capturedContract = contract);
 
         // Act
         resolver.UnregisterAll<string>("mycontract");
@@ -469,6 +499,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(capturedContract).IsEqualTo("mycontract");
     }
 
+    /// <summary>Verifies that ServiceRegistrationCallback registers a callback invoked on registration.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ServiceRegistrationCallback_ShouldRegisterCallback()
     {
@@ -489,6 +521,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(disposable).IsNotNull();
     }
 
+    /// <summary>Verifies that ServiceRegistrationCallback throws when the callback is null.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ServiceRegistrationCallback_ShouldThrowArgumentNullException_WhenCallbackIsNull()
     {
@@ -500,6 +534,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
             .Throws<ArgumentNullException>();
     }
 
+    /// <summary>Verifies that disposing the subscription removes the registration callback.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ServiceRegistrationCallback_Dispose_ShouldRemoveCallback()
     {
@@ -519,6 +555,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(callbackInvoked).IsFalse();
     }
 
+    /// <summary>Verifies that ServiceRegistrationCallback registers a callback for the given contract.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ServiceRegistrationCallback_WithContract_ShouldRegisterCallback()
     {
@@ -536,6 +574,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(callbackInvoked).IsTrue();
     }
 
+    /// <summary>Verifies that the registration callback is not invoked for a different contract.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ServiceRegistrationCallback_ShouldNotInvokeCallback_ForDifferentContract()
     {
@@ -553,6 +593,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(callbackInvoked).IsFalse();
     }
 
+    /// <summary>Verifies that the registration callback is removed after it disposes itself.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ServiceRegistrationCallback_ShouldRemoveCallbackAfterDisposal()
     {
@@ -582,6 +624,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(callbackInvoked).IsFalse();
     }
 
+    /// <summary>Verifies that Dispose disposes the inner disposable.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Dispose_ShouldDisposeInnerDisposable()
     {
@@ -598,6 +642,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(disposable.IsDisposed).IsTrue();
     }
 
+    /// <summary>Verifies that Dispose only disposes the inner disposable once.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Dispose_ShouldBeIdempotent()
     {
@@ -617,6 +663,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(disposeCount).IsEqualTo(1);
     }
 
+    /// <summary>Verifies that Dispose does not throw when there is no inner disposable.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Dispose_ShouldNotThrow_WhenInnerDisposableIsNull()
     {
@@ -638,6 +686,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         // FuncDependencyResolver doesn't track instances, so it can't dispose them
         Task.CompletedTask;
 
+    /// <summary>Verifies that the two-type-parameter Register creates a new instance each time.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Register_TwoTypeParameters_ShouldCreateNewInstance()
     {
@@ -646,10 +696,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
 
         var resolver = new FuncDependencyResolver(
             getAllServices: (_, _) => [],
-            register: (factory, type, contract) =>
-            {
-                capturedFactory = factory;
-            });
+            register: (factory, type, contract) => capturedFactory = factory);
 
         // Act
         resolver.Register<ITestInterface, TestClass>();
@@ -663,6 +710,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(ReferenceEquals(instance1, instance2)).IsFalse();
     }
 
+    /// <summary>Verifies that the two-type-parameter Register passes the contract through.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Register_TwoTypeParametersWithContract_ShouldPassContract()
     {
@@ -671,10 +720,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
 
         var resolver = new FuncDependencyResolver(
             getAllServices: (_, _) => [],
-            register: (factory, type, contract) =>
-            {
-                capturedContract = contract;
-            });
+            register: (factory, type, contract) => capturedContract = contract);
 
         // Act
         resolver.Register<ITestInterface, TestClass>("mycontract");
@@ -724,14 +770,18 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
                 // Normalize contract: null -> string.Empty
                 contract ??= string.Empty;
                 var key = (type, contract);
-                if (services.TryGetValue(key, out var list) && list.Count > 0)
+                if (!services.TryGetValue(key, out var list) || list.Count == 0)
                 {
-                    list.RemoveAt(list.Count - 1);
-                    if (list.Count == 0)
-                    {
-                        services.Remove(key);
-                    }
+                    return;
                 }
+
+                list.RemoveAt(list.Count - 1);
+                if (list.Count != 0)
+                {
+                    return;
+                }
+
+                services.Remove(key);
             },
             unregisterAll: (type, contract) =>
             {
@@ -743,25 +793,31 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
             });
     }
 
-    private sealed class TestClass : ITestInterface
-    {
-    }
+    /// <summary>Concrete implementation used as a test service.</summary>
+    private sealed class TestClass : ITestInterface;
 
+    /// <summary>Disposable test helper that records whether it has been disposed.</summary>
     private sealed class TestDisposable : IDisposable
     {
         private readonly Action? _onDispose;
 
+        /// <summary>Initializes a new instance of the <see cref="TestDisposable"/> class.</summary>
+        /// <param name="onDispose">Optional callback invoked on disposal.</param>
         public TestDisposable(Action? onDispose = null) => _onDispose = onDispose;
 
+        /// <summary>Gets a value indicating whether this instance has been disposed.</summary>
         public bool IsDisposed { get; private set; }
 
+        /// <inheritdoc />
         public void Dispose()
         {
-            if (!IsDisposed)
+            if (IsDisposed)
             {
-                IsDisposed = true;
-                _onDispose?.Invoke();
+                return;
             }
+
+            IsDisposed = true;
+            _onDispose?.Invoke();
         }
     }
 }

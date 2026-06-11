@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
@@ -9,6 +8,7 @@ using Splat.Microsoft.Extensions.DependencyInjection;
 
 namespace Splat.Tests.ServiceLocation;
 
+/// <summary>Tests that verify the Microsoft.Extensions.DependencyInjection dependency resolver conforms to the base resolver contract.</summary>
 [NotInParallel]
 [InheritsTests]
 public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTests<MicrosoftDependencyResolver>
@@ -68,87 +68,73 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
         await Assert.That(valuesC.Count()).IsEqualTo(0);
     }
 
-    /// <summary>
-    /// Verifies that ServiceRegistrationCallback throws NotImplementedException for MS.DI.
-    /// </summary>
+    /// <summary>Verifies that ServiceRegistrationCallback throws NotSupportedException for MS.DI.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
     public override Task ServiceRegistrationCallback_Generic_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that ServiceRegistrationCallback throws NotImplementedException for MS.DI.
-    /// </summary>
+    /// <summary>Verifies that ServiceRegistrationCallback throws NotSupportedException for MS.DI.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
     public override Task ServiceRegistrationCallback_Generic_WithExistingRegistration_InvokesImmediately()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that ServiceRegistrationCallback with contract throws NotImplementedException for MS.DI.
-    /// </summary>
+    /// <summary>Verifies that ServiceRegistrationCallback with contract throws NotSupportedException for MS.DI.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
     public override Task ServiceRegistrationCallback_Generic_WithContract_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>("test", _ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>("test", _ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that non-generic ServiceRegistrationCallback throws NotImplementedException for MS.DI.
-    /// </summary>
+    /// <summary>Verifies that non-generic ServiceRegistrationCallback throws NotSupportedException for MS.DI.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
     public override Task ServiceRegistrationCallback_NonGeneric_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), _ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), _ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that non-generic ServiceRegistrationCallback with contract throws NotImplementedException for MS.DI.
-    /// </summary>
+    /// <summary>Verifies that non-generic ServiceRegistrationCallback with contract throws NotSupportedException for MS.DI.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
     public override Task ServiceRegistrationCallback_NonGeneric_WithContract_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), "test", _ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), "test", _ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that ServiceRegistrationCallback disposal throws NotImplementedException for MS.DI.
-    /// </summary>
+    /// <summary>Verifies that ServiceRegistrationCallback disposal throws NotSupportedException for MS.DI.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
     public override Task ServiceRegistrationCallback_Disposal_StopsReceivingNotifications()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that ServiceRegistrationCallback with null callback throws NotImplementedException for MS.DI.
-    /// </summary>
+    /// <summary>Verifies that ServiceRegistrationCallback with null callback throws NotSupportedException for MS.DI.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -156,30 +142,26 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     {
         var resolver = GetDependencyResolver();
 
-        // MS.DI throws NotImplementedException before checking for null
+        // MS.DI throws NotSupportedException before checking for null
         await Assert.That(() => resolver.ServiceRegistrationCallback<ViewModelOne>(null!))
-            .Throws<NotImplementedException>();
+            .Throws<NotSupportedException>();
 
         await Assert.That(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), null!))
-            .Throws<NotImplementedException>();
+            .Throws<NotSupportedException>();
     }
 
-    /// <summary>
-    /// Verifies that ServiceRegistrationCallback invokes for each throws NotImplementedException for MS.DI.
-    /// </summary>
+    /// <summary>Verifies that ServiceRegistrationCallback invokes for each throws NotSupportedException for MS.DI.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
     public override Task ServiceRegistrationCallback_Generic_InvokesForEachExistingRegistration()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that Register after dispose throws NotImplementedException for MS.DI (due to callbacks not implemented).
-    /// </summary>
+    /// <summary>Verifies that Register after dispose throws NotSupportedException for MS.DI (due to callbacks not implemented).</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -188,38 +170,32 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
         var resolver = GetDependencyResolver();
 
         // Since ServiceRegistrationCallback throws, we verify that instead of the full test flow
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that Dispose suppresses exceptions from callbacks (NotApplicable for MS.DI as callbacks throw).
-    /// </summary>
+    /// <summary>Verifies that Dispose suppresses exceptions from callbacks (NotApplicable for MS.DI as callbacks throw).</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
     public override Task Dispose_SuppressesExceptionsFromCallbacks()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// MS.DI doesn't invoke callbacks on disposal.
-    /// </summary>
+    /// <summary>MS.DI doesn't invoke callbacks on disposal.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
     public override Task Dispose_InvokesCallbacks()
     {
-        // MS.DI ServiceRegistrationCallback throws NotImplementedException, so this test doesn't apply
+        // MS.DI ServiceRegistrationCallback throws NotSupportedException, so this test doesn't apply
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// MS.DI manages disposal of registered services itself.
-    /// </summary>
+    /// <summary>MS.DI manages disposal of registered services itself.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -229,9 +205,7 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// MS.DI handles lazy singletons itself.
-    /// </summary>
+    /// <summary>MS.DI handles lazy singletons itself.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]

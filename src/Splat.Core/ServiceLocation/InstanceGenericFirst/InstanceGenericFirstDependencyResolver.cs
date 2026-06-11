@@ -1,10 +1,10 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using ReactiveUI.Primitives.Disposables;
 
 // Instance-scoped implementation using ConditionalWeakTable for per-resolver state
 namespace Splat;
@@ -44,67 +44,49 @@ namespace Splat;
 /// </remarks>
 public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 {
-    /// <summary>
-    /// Gate protecting <see cref="_callbackChanged"/> and publication of <see cref="_callbackSnapshot"/>.
-    /// </summary>
+    /// <summary>Gate protecting <see cref="_callbackChanged"/> and publication of <see cref="_callbackSnapshot"/>.</summary>
     /// <remarks>
     /// Do not lock on the list instance itself; list mutations (including <c>Clear</c>) would make that pattern fragile.
     /// </remarks>
-    private readonly object _callbackGate = new();
+    private readonly Lock _callbackGate = new();
 
-    /// <summary>
-    /// Registered callbacks notified when registrations change.
-    /// </summary>
+    /// <summary>Registered callbacks notified when registrations change.</summary>
     /// <remarks>
     /// The list is mutated under <see cref="_callbackGate"/> and a snapshot is published to <see cref="_callbackSnapshot"/>
     /// for lock-free invocation.
     /// </remarks>
     private readonly List<Action> _callbackChanged = [];
 
-    /// <summary>
-    /// Gate protecting <see cref="_disposalActions"/> additions/enumeration/clearing.
-    /// </summary>
-    private readonly object _disposalGate = new();
+    /// <summary>Gate protecting <see cref="_disposalActions"/> additions/enumeration/clearing.</summary>
+    private readonly Lock _disposalGate = new();
 
-    /// <summary>
-    /// Actions executed during <see cref="Dispose()"/> to clean up registered disposables (constants and lazy singletons).
-    /// </summary>
+    /// <summary>Actions executed during <see cref="Dispose()"/> to clean up registered disposables (constants and lazy singletons).</summary>
     /// <remarks>
     /// Mutated under <see cref="_disposalGate"/>. Enumerated and cleared during dispose using a snapshot to avoid holding locks while running user code.
     /// </remarks>
     private readonly List<Action> _disposalActions = [];
 
-    /// <summary>
-    /// Resolver-local state used by generic-first caches.
-    /// </summary>
+    /// <summary>Resolver-local state used by generic-first caches.</summary>
     /// <remarks>
     /// During <see cref="Dispose()"/>, this is swapped for a fresh state to allow the previous state to become unreachable.
     /// </remarks>
     private ResolverState _state = new();
 
-    /// <summary>
-    /// Snapshot of callbacks published for lock-free iteration.
-    /// </summary>
+    /// <summary>Snapshot of callbacks published for lock-free iteration.</summary>
     /// <remarks>
     /// Written under <see cref="_callbackGate"/> and read via Volatile Read.
     /// </remarks>
     private Action[] _callbackSnapshot = [];
 
-    /// <summary>
-    /// Disposal flag: 0 = not disposed, 1 = disposed.
-    /// </summary>
+    /// <summary>Disposal flag: 0 = not disposed, 1 = disposed.</summary>
     private int _disposed;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="InstanceGenericFirstDependencyResolver"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="InstanceGenericFirstDependencyResolver"/> class.</summary>
     public InstanceGenericFirstDependencyResolver()
     {
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="InstanceGenericFirstDependencyResolver"/> class with bulk registration support.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="InstanceGenericFirstDependencyResolver"/> class with bulk registration support.</summary>
     /// <param name="configure">
     /// Optional delegate that performs registrations against this instance. Intended for startup-time bulk registration.
     /// </param>
@@ -136,12 +118,12 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         }
 
         var registry = ServiceTypeRegistryCache.Get(_state);
-        if (registry.HasNonGenericRegistrations(TypeCache<T>.Type))
+        if (!registry.HasNonGenericRegistrations(TypeCache<T>.Type))
         {
-            return TryCastAndUnwrap<T>(registry.GetService(TypeCache<T>.Type));
+            return default;
         }
 
-        return default;
+        return TryCastAndUnwrap<T>(registry.GetService(TypeCache<T>.Type));
     }
 
     /// <inheritdoc />
@@ -165,12 +147,12 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         }
 
         var registry = ServiceTypeRegistryCache.Get(_state);
-        if (registry.HasNonGenericRegistrations(TypeCache<T>.Type, contract))
+        if (!registry.HasNonGenericRegistrations(TypeCache<T>.Type, contract))
         {
-            return TryCastAndUnwrap<T>(registry.GetService(TypeCache<T>.Type, contract));
+            return default;
         }
 
-        return default;
+        return TryCastAndUnwrap<T>(registry.GetService(TypeCache<T>.Type, contract));
     }
 
     /// <inheritdoc />
@@ -741,7 +723,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
 
         // Wrap to normalize callback signature; the wrapper is what we store/remove.
-        Action callbackWrapper = () => callback(ActionDisposable.Empty);
+        Action callbackWrapper = () => callback(EmptyDisposable.Instance);
 
         AddCallback(callbackWrapper);
         RefreshCallbackSnapshot();
@@ -780,7 +762,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         ArgumentExceptionHelper.ThrowIfNull(callback);
         ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
 
-        Action callbackWrapper = () => callback(ActionDisposable.Empty);
+        Action callbackWrapper = () => callback(EmptyDisposable.Instance);
 
         AddCallback(callbackWrapper);
         RefreshCallbackSnapshot();
@@ -809,9 +791,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         GC.SuppressFinalize(this);
     }
 
-    /// <summary>
-    /// Unwraps non-generic results and filters out nulls.
-    /// </summary>
+    /// <summary>Unwraps non-generic results and filters out nulls.</summary>
     /// <param name="results">The raw results sequence from the type registry.</param>
     /// <returns>
     /// An array containing unwrapped non-null results. Returning an array avoids iterator allocations.
@@ -893,6 +873,9 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         return list.Count == 0 ? [] : [.. list];
     }
 
+    /// <summary>Unwraps a <see cref="NullServiceType"/> marker by invoking its factory; otherwise returns the value unchanged.</summary>
+    /// <param name="value">The resolved value, possibly a <see cref="NullServiceType"/> marker.</param>
+    /// <returns>The unwrapped value.</returns>
 #if NET8_0_OR_GREATER
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
 #else
@@ -908,6 +891,10 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         return value;
     }
 
+    /// <summary>Unwraps a possible <see cref="NullServiceType"/> marker and casts the result to <typeparamref name="T"/>.</summary>
+    /// <typeparam name="T">The expected service type.</typeparam>
+    /// <param name="value">The resolved value to unwrap and cast.</param>
+    /// <returns>The value cast to <typeparamref name="T"/>, or <see langword="default"/> when it is not compatible.</returns>
 #if NET8_0_OR_GREATER
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
 #else
@@ -973,9 +960,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         return combined;
     }
 
-    /// <summary>
-    /// Releases the unmanaged resources used by the object and, optionally, releases the managed resources.
-    /// </summary>
+    /// <summary>Releases the unmanaged resources used by the object and, optionally, releases the managed resources.</summary>
     /// <remarks>
     /// This method is called by public Dispose methods and finalizers to perform resource cleanup.
     /// When isDisposing is true, the method can safely dispose managed objects. When isDisposing is false, the method
@@ -1048,33 +1033,29 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         registry.Clear();
     }
 
-    /// <summary>
-    /// Returns <see langword="true"/> if the resolver has never had a registration added.
-    /// </summary>
+    /// <summary>Returns <see langword="true"/> if the resolver has never had a registration added.</summary>
     /// <returns>
     /// <see langword="true"/> when no registrations have been added; otherwise <see langword="false"/>.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool HasAnyRegistrations() => Volatile.Read(ref _state.HasAnyRegistrations) == 0;
+    private bool HasAnyRegistrations() => !_state.HasAnyRegistrations;
 
-    /// <summary>
-    /// Marks the resolver as having at least one registration.
-    /// </summary>
+    /// <summary>Marks the resolver as having at least one registration.</summary>
     /// <remarks>
     /// This is an optimization: many hot-path resolve operations can skip cache/registry lookups when the resolver is still "virgin".
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void MarkRegistered()
     {
-        if (_state.HasAnyRegistrations == 0)
+        if (_state.HasAnyRegistrations)
         {
-            _ = Interlocked.CompareExchange(ref _state.HasAnyRegistrations, 1, 0);
+            return;
         }
+
+        _state.MarkHasRegistrations();
     }
 
-    /// <summary>
-    /// Adds a callback to the registration-change callback list.
-    /// </summary>
+    /// <summary>Adds a callback to the registration-change callback list.</summary>
     /// <param name="callback">The callback to add.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     private void AddCallback(Action callback)
@@ -1086,9 +1067,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         }
     }
 
-    /// <summary>
-    /// Removes a callback from the registration-change callback list.
-    /// </summary>
+    /// <summary>Removes a callback from the registration-change callback list.</summary>
     /// <param name="callback">The callback to remove.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     private void RemoveCallback(Action callback)
@@ -1100,9 +1079,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         }
     }
 
-    /// <summary>
-    /// Publishes a fresh snapshot of callbacks for lock-free invocation.
-    /// </summary>
+    /// <summary>Publishes a fresh snapshot of callbacks for lock-free invocation.</summary>
     /// <remarks>
     /// This allocates a new array containing the current callback list.
     /// The array is then published via <see cref="Volatile.Write{T}(ref T, T)"/>.
@@ -1115,9 +1092,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         }
     }
 
-    /// <summary>
-    /// Invokes the current callback snapshot to signal that registrations have changed.
-    /// </summary>
+    /// <summary>Invokes the current callback snapshot to signal that registrations have changed.</summary>
     /// <remarks>
     /// Suppresses exceptions thrown by callbacks. If the resolver is disposed, no callbacks are invoked.
     /// </remarks>
@@ -1142,9 +1117,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         }
     }
 
-    /// <summary>
-    /// Adds a disposal action for a constant registration if it implements <see cref="IDisposable"/>.
-    /// </summary>
+    /// <summary>Adds a disposal action for a constant registration if it implements <see cref="IDisposable"/>.</summary>
     /// <typeparam name="T">The registered service type.</typeparam>
     /// <param name="value">The constant value; may be <see langword="null"/>.</param>
     private void AddDisposableIfNeeded<T>(T? value)
@@ -1171,9 +1144,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         }
     }
 
-    /// <summary>
-    /// Adds a disposal action for a lazy singleton so that the created value is disposed if applicable.
-    /// </summary>
+    /// <summary>Adds a disposal action for a lazy singleton so that the created value is disposed if applicable.</summary>
     /// <typeparam name="T">The lazy singleton value type.</typeparam>
     /// <param name="lazy">The lazy wrapper.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="lazy"/> is <see langword="null"/>.</exception>

@@ -1,15 +1,13 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.Tests;
 
+/// <summary>Tests for the assembly finder helpers.</summary>
 public class AssemblyFinderTests
 {
-    /// <summary>
-    /// Test that AttemptToLoadType returns default for non-existent type.
-    /// </summary>
+    /// <summary>Test that AttemptToLoadType returns default for non-existent type.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AttemptToLoadType_ReturnsDefault_ForNonExistentType()
@@ -21,9 +19,7 @@ public class AssemblyFinderTests
         await Assert.That(result).IsNull();
     }
 
-    /// <summary>
-    /// Test that AttemptToLoadType returns default for invalid type name.
-    /// </summary>
+    /// <summary>Test that AttemptToLoadType returns default for invalid type name.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AttemptToLoadType_ReturnsDefault_ForInvalidTypeName()
@@ -35,9 +31,7 @@ public class AssemblyFinderTests
         await Assert.That(result).IsNull();
     }
 
-    /// <summary>
-    /// Test that AttemptToLoadType works with well-known types.
-    /// </summary>
+    /// <summary>Test that AttemptToLoadType works with well-known types.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AttemptToLoadType_Works_WithWellKnownTypes()
@@ -49,9 +43,7 @@ public class AssemblyFinderTests
         await Assert.That(result).IsNull();
     }
 
-    /// <summary>
-    /// Test that AttemptToLoadType returns default for value types when type doesn't exist.
-    /// </summary>
+    /// <summary>Test that AttemptToLoadType returns default for value types when type doesn't exist.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AttemptToLoadType_ReturnsDefault_ForValueTypes()
@@ -63,9 +55,7 @@ public class AssemblyFinderTests
         await Assert.That(result).IsEqualTo(0); // Default for int
     }
 
-    /// <summary>
-    /// Test that AttemptToLoadType handles empty string gracefully.
-    /// </summary>
+    /// <summary>Test that AttemptToLoadType handles empty string gracefully.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AttemptToLoadType_HandlesEmptyString()
@@ -77,9 +67,7 @@ public class AssemblyFinderTests
         await Assert.That(result).IsNull();
     }
 
-    /// <summary>
-    /// Test that AttemptToLoadType handles null string gracefully.
-    /// </summary>
+    /// <summary>Test that AttemptToLoadType handles null string gracefully.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AttemptToLoadType_HandlesNull()

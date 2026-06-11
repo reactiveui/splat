@@ -1,34 +1,34 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Common.Test;
 
 namespace Splat.Tests.ServiceLocation;
 
-/// <summary>
-/// Tests for the <see cref="AppLocator"/> class.
-/// </summary>
+/// <summary>Tests for the <see cref="AppLocator"/> class.</summary>
 [NotInParallel]
 public sealed class AppLocatorTests
 {
     private AppLocatorScope? _scope;
 
-    private interface ITestService
-    {
-    }
+    /// <summary>Marker service interface used by the tests.</summary>
+    private interface ITestService;
 
-    [Before(HookType.Test)]
+    /// <summary>Creates a fresh locator scope before each test.</summary>
+    [Before(Test)]
     public void SetUp() => _scope = new();
 
-    [After(HookType.Test)]
+    /// <summary>Disposes the locator scope after each test.</summary>
+    [After(Test)]
     public void TearDown()
     {
         _scope?.Dispose();
         _scope = null;
     }
 
+    /// <summary>Verifies that Current returns a non-null read-only resolver.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Current_ShouldReturnReadonlyResolver()
     {
@@ -38,6 +38,8 @@ public sealed class AppLocatorTests
         await Assert.That(resolver).IsTypeOf<InstanceGenericFirstDependencyResolver>();
     }
 
+    /// <summary>Verifies that CurrentMutable returns a non-null mutable resolver.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task CurrentMutable_ShouldReturnMutableResolver()
     {
@@ -47,6 +49,8 @@ public sealed class AppLocatorTests
         await Assert.That(resolver).IsTypeOf<InstanceGenericFirstDependencyResolver>();
     }
 
+    /// <summary>Verifies that GetLocator returns the current resolver.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetLocator_ShouldReturnResolver()
     {
@@ -56,9 +60,13 @@ public sealed class AppLocatorTests
         await Assert.That(resolver).IsTypeOf<InstanceGenericFirstDependencyResolver>();
     }
 
+    /// <summary>Verifies that SetLocator throws when given a null resolver.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task SetLocator_WithNullResolver_ShouldThrow() => await Assert.That(() => AppLocator.SetLocator(null!)).ThrowsExactly<ArgumentNullException>();
 
+    /// <summary>Verifies that SetLocator updates the active resolver.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task SetLocator_ShouldUpdateResolver()
     {
@@ -73,6 +81,8 @@ public sealed class AppLocatorTests
         await Assert.That(AppLocator.GetLocator()).IsEqualTo(newResolver);
     }
 
+    /// <summary>Verifies that Register registers a service factory.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Register_ShouldRegisterService()
     {
@@ -84,6 +94,8 @@ public sealed class AppLocatorTests
         await Assert.That(resolved).IsEqualTo(service);
     }
 
+    /// <summary>Verifies that Register with a contract registers a service factory.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Register_WithContract_ShouldRegisterService()
     {
@@ -95,6 +107,8 @@ public sealed class AppLocatorTests
         await Assert.That(resolved).IsEqualTo(service);
     }
 
+    /// <summary>Verifies that RegisterConstant registers a constant instance.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterConstant_ShouldRegisterInstance()
     {
@@ -106,6 +120,8 @@ public sealed class AppLocatorTests
         await Assert.That(resolved).IsEqualTo(service);
     }
 
+    /// <summary>Verifies that RegisterConstant with a contract registers a constant instance.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterConstant_WithContract_ShouldRegisterInstance()
     {
@@ -117,6 +133,8 @@ public sealed class AppLocatorTests
         await Assert.That(resolved).IsEqualTo(service);
     }
 
+    /// <summary>Verifies that RegisterLazySingleton defers creation until first resolution.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterLazySingleton_ShouldRegisterLazily()
     {
@@ -137,6 +155,8 @@ public sealed class AppLocatorTests
         await Assert.That(service2).IsEqualTo(service1);
     }
 
+    /// <summary>Verifies that RegisterLazySingleton with a contract defers creation until first resolution.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterLazySingleton_WithContract_ShouldRegisterLazily()
     {
@@ -155,6 +175,8 @@ public sealed class AppLocatorTests
         await Assert.That(callCount).IsEqualTo(1);
     }
 
+    /// <summary>Verifies that GetService returns the registered service.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetService_ShouldReturnRegisteredService()
     {
@@ -166,6 +188,8 @@ public sealed class AppLocatorTests
         await Assert.That(resolved).IsEqualTo(service);
     }
 
+    /// <summary>Verifies that GetService with a contract returns the registered service.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetService_WithContract_ShouldReturnRegisteredService()
     {
@@ -177,6 +201,8 @@ public sealed class AppLocatorTests
         await Assert.That(resolved).IsEqualTo(service);
     }
 
+    /// <summary>Verifies that GetService returns null when nothing is registered.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetService_WithNoRegistration_ShouldReturnNull()
     {
@@ -185,6 +211,8 @@ public sealed class AppLocatorTests
         await Assert.That(resolved).IsNull();
     }
 
+    /// <summary>Verifies that GetServices returns all registered services.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetServices_ShouldReturnAllRegisteredServices()
     {
@@ -201,6 +229,8 @@ public sealed class AppLocatorTests
         await Assert.That(serviceList).Contains(service2);
     }
 
+    /// <summary>Verifies that GetServices with a contract returns the registered services.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetServices_WithContract_ShouldReturnRegisteredServices()
     {
@@ -214,6 +244,8 @@ public sealed class AppLocatorTests
         await Assert.That(serviceList[0]).IsEqualTo(service);
     }
 
+    /// <summary>Verifies that HasRegistration returns true when a service is registered.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task HasRegistration_WithRegisteredService_ShouldReturnTrue()
     {
@@ -224,6 +256,8 @@ public sealed class AppLocatorTests
         await Assert.That(hasRegistration).IsTrue();
     }
 
+    /// <summary>Verifies that HasRegistration returns false when nothing is registered.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task HasRegistration_WithNoRegistration_ShouldReturnFalse()
     {
@@ -232,6 +266,8 @@ public sealed class AppLocatorTests
         await Assert.That(hasRegistration).IsFalse();
     }
 
+    /// <summary>Verifies that HasRegistration with a contract returns true when registered.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task HasRegistration_WithContract_ShouldReturnTrue()
     {
@@ -242,6 +278,8 @@ public sealed class AppLocatorTests
         await Assert.That(hasRegistration).IsTrue();
     }
 
+    /// <summary>Verifies that UnregisterCurrent removes the most recent registration.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task UnregisterCurrent_ShouldRemoveLastRegistration()
     {
@@ -256,6 +294,8 @@ public sealed class AppLocatorTests
         await Assert.That(resolved).IsEqualTo(service1);
     }
 
+    /// <summary>Verifies that UnregisterCurrent with a contract removes the most recent registration.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task UnregisterCurrent_WithContract_ShouldRemoveLastRegistration()
     {
@@ -268,6 +308,8 @@ public sealed class AppLocatorTests
         await Assert.That(hasRegistration).IsTrue();
     }
 
+    /// <summary>Verifies that UnregisterAll removes every registration.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task UnregisterAll_ShouldRemoveAllRegistrations()
     {
@@ -280,6 +322,8 @@ public sealed class AppLocatorTests
         await Assert.That(hasRegistration).IsFalse();
     }
 
+    /// <summary>Verifies that UnregisterAll with a contract removes every registration.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task UnregisterAll_WithContract_ShouldRemoveAllRegistrations()
     {
@@ -292,9 +336,13 @@ public sealed class AppLocatorTests
         await Assert.That(hasRegistration).IsFalse();
     }
 
+    /// <summary>Verifies that RegisterResolverCallbackChanged throws when the callback is null.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterResolverCallbackChanged_WithNullCallback_ShouldThrow() => await Assert.That(() => AppLocator.RegisterResolverCallbackChanged(null!)).ThrowsExactly<ArgumentNullException>();
 
+    /// <summary>Verifies that RegisterResolverCallbackChanged invokes the callback immediately.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterResolverCallbackChanged_ShouldInvokeImmediately()
     {
@@ -305,6 +353,8 @@ public sealed class AppLocatorTests
         await Assert.That(callbackInvoked).IsTrue();
     }
 
+    /// <summary>Verifies that SuppressResolverCallbackChangedNotifications suppresses callbacks within the scope.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task SuppressResolverCallbackChangedNotifications_ShouldSuppressCallbacks()
     {
@@ -318,6 +368,8 @@ public sealed class AppLocatorTests
         await Assert.That(AppLocator.AreResolverCallbackChangedNotificationsEnabled()).IsTrue();
     }
 
+    /// <summary>Verifies that resolver callback notifications are enabled by default.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AreResolverCallbackChangedNotificationsEnabled_ByDefault_ShouldBeTrue()
     {
@@ -326,7 +378,6 @@ public sealed class AppLocatorTests
         await Assert.That(enabled).IsTrue();
     }
 
-    private sealed class TestService : ITestService
-    {
-    }
+    /// <summary>Concrete test service implementation.</summary>
+    private sealed class TestService : ITestService;
 }

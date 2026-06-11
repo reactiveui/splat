@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Collections;
@@ -23,7 +22,8 @@ namespace Splat.Autofac;
 /// Autofac container resources.</remarks>
 public class AutofacDependencyResolver : IDependencyResolver
 {
-    private readonly object _lockObject = new();
+    private readonly Lock _lockObject = new();
+
     private readonly ContainerBuilder _builder;
 
     /// <summary>
@@ -43,9 +43,7 @@ public class AutofacDependencyResolver : IDependencyResolver
     /// </summary>
     private bool _lifetimeScopeSet;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AutofacDependencyResolver" /> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="AutofacDependencyResolver" /> class.</summary>
     /// <param name="builder">Autofac container builder.</param>
     public AutofacDependencyResolver(ContainerBuilder builder)
     {
@@ -185,9 +183,9 @@ public class AutofacDependencyResolver : IDependencyResolver
         lock (_lockObject)
         {
             var lifeTimeScope = _lifetimeScope ?? _internalLifetimeScope;
-            return contract is null || string.IsNullOrWhiteSpace(contract) ?
-                lifeTimeScope.IsRegistered(serviceType) :
-                lifeTimeScope.IsRegisteredWithName(contract, serviceType);
+            return contract is null || string.IsNullOrWhiteSpace(contract)
+                ? lifeTimeScope.IsRegistered(serviceType)
+                : lifeTimeScope.IsRegisteredWithName(contract, serviceType);
         }
     }
 
@@ -310,12 +308,12 @@ public class AutofacDependencyResolver : IDependencyResolver
     ///     Instead, simply <see href="https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations">register your service after InitializeReactiveUI</see> to override it.
     /// </summary>
     /// <param name="serviceType">The service type to unregister.</param>
-    /// <exception cref="NotImplementedException">This is not implemented by default.</exception>
+    /// <exception cref="NotSupportedException">This is not implemented by default.</exception>
     /// <inheritdoc />
     [Obsolete("Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore. " +
               "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.")]
     public virtual void UnregisterCurrent(Type? serviceType) =>
-        throw new NotImplementedException("Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore. " +
+        throw new NotSupportedException("Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore. " +
                                           "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.");
 
     /// <summary>
@@ -325,12 +323,12 @@ public class AutofacDependencyResolver : IDependencyResolver
     /// </summary>
     /// <param name="serviceType">The service type to unregister.</param>
     /// <param name="contract">The optional contract value, which will only remove the value associated with the contract.</param>
-    /// <exception cref="NotImplementedException">This is not implemented by default.</exception>
+    /// <exception cref="NotSupportedException">This is not implemented by default.</exception>
     /// <inheritdoc />
     [Obsolete("Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore. " +
               "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.")]
     public virtual void UnregisterCurrent(Type? serviceType, string? contract) =>
-        throw new NotImplementedException("Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore. " +
+        throw new NotSupportedException("Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore. " +
                                           "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.");
 
     /// <summary>
@@ -339,12 +337,12 @@ public class AutofacDependencyResolver : IDependencyResolver
     ///     Instead, simply <see href="https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations">register your service after InitializeReactiveUI</see> to override it.
     /// </summary>
     /// <param name="serviceType">The service type to unregister.</param>
-    /// <exception cref="NotImplementedException">This is not implemented by default.</exception>
+    /// <exception cref="NotSupportedException">This is not implemented by default.</exception>
     /// <inheritdoc />
     [Obsolete("Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore. " +
               "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.")]
     public virtual void UnregisterAll(Type? serviceType) =>
-        throw new NotImplementedException("Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore. " +
+        throw new NotSupportedException("Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore. " +
                                           "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.");
 
     /// <summary>
@@ -354,21 +352,21 @@ public class AutofacDependencyResolver : IDependencyResolver
     /// </summary>
     /// <param name="serviceType">The service type to unregister.</param>
     /// <param name="contract">The optional contract value, which will only remove the value associated with the contract.</param>
-    /// <exception cref="NotImplementedException">This is not implemented by default.</exception>
+    /// <exception cref="NotSupportedException">This is not implemented by default.</exception>
     /// <inheritdoc />
     [Obsolete("Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore. " +
               "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.")]
     public virtual void UnregisterAll(Type? serviceType, string? contract) =>
-        throw new NotImplementedException("Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore. " +
+        throw new NotSupportedException("Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore. " +
                                           "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.");
 
     /// <inheritdoc />
     public virtual IDisposable ServiceRegistrationCallback(Type serviceType, Action<IDisposable> callback) =>
-        throw new NotImplementedException("ServiceRegistrationCallback without contract is not implemented in the Autofac dependency resolver.");
+        throw new NotSupportedException("ServiceRegistrationCallback without contract is not implemented in the Autofac dependency resolver.");
 
     /// <inheritdoc />
     public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) =>
-        throw new NotImplementedException("ServiceRegistrationCallback is not implemented in the Autofac dependency resolver.");
+        throw new NotSupportedException("ServiceRegistrationCallback is not implemented in the Autofac dependency resolver.");
 
     /// <inheritdoc/>
     public T? GetService<T>() => (T?)GetService(typeof(T));
@@ -418,7 +416,7 @@ public class AutofacDependencyResolver : IDependencyResolver
 
     /// <inheritdoc/>
     public IDisposable ServiceRegistrationCallback<T>(Action<IDisposable> callback) =>
-        throw new NotImplementedException("ServiceRegistrationCallback without contract is not implemented in the Autofac dependency resolver.");
+        throw new NotSupportedException("ServiceRegistrationCallback without contract is not implemented in the Autofac dependency resolver.");
 
     /// <inheritdoc/>
     public IDisposable ServiceRegistrationCallback<T>(string? contract, Action<IDisposable> callback) =>
@@ -467,13 +465,15 @@ public class AutofacDependencyResolver : IDependencyResolver
             }
             else
             {
+                var contractName = contract!;
+
                 // Register to both the application-wide container and internal lifetime
                 _builder.Register(static _ => new TImplementation())
-                    .Named<TService>(contract!)
+                    .Named<TService>(contractName)
                     .AsImplementedInterfaces();
                 _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(internalBuilder =>
                     internalBuilder.Register(static _ => new TImplementation())
-                        .Named<TService>(contract!)
+                        .Named<TService>(contractName)
                         .AsImplementedInterfaces());
             }
         }
@@ -520,13 +520,15 @@ public class AutofacDependencyResolver : IDependencyResolver
                 return;
             }
 
+            var contractName = contract!;
+
             // Register as singleton instance to both the application-wide container and internal lifetime
             _builder.RegisterInstance(value!)
-                .Named<T>(contract!)
+                .Named<T>(contractName)
                 .AsImplementedInterfaces();
             _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(internalBuilder =>
                 internalBuilder.RegisterInstance(value!)
-                    .Named<T>(contract!)
+                    .Named<T>(contractName)
                     .AsImplementedInterfaces());
         }
     }
@@ -574,14 +576,16 @@ public class AutofacDependencyResolver : IDependencyResolver
                 return;
             }
 
+            var contractName = contract!;
+
             // Register as singleton with factory to both the application-wide container and internal lifetime
             _builder.Register(_ => valueFactory()!)
-                .Named<T>(contract!)
+                .Named<T>(contractName)
                 .SingleInstance()
                 .AsImplementedInterfaces();
             _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(internalBuilder =>
                 internalBuilder.Register(_ => valueFactory()!)
-                    .Named<T>(contract!)
+                    .Named<T>(contractName)
                     .SingleInstance()
                     .AsImplementedInterfaces());
         }
@@ -594,9 +598,7 @@ public class AutofacDependencyResolver : IDependencyResolver
         GC.SuppressFinalize(this);
     }
 
-    /// <summary>
-    /// Disposes of the instance.
-    /// </summary>
+    /// <summary>Disposes of the instance.</summary>
     /// <param name="disposing">Whether or not the instance is disposing.</param>
     protected virtual void Dispose(bool disposing)
     {
@@ -610,6 +612,9 @@ public class AutofacDependencyResolver : IDependencyResolver
         }
     }
 
+    /// <summary>Resolves a single service instance for the specified type from the active lifetime scope.</summary>
+    /// <param name="serviceType">The type of the service to resolve.</param>
+    /// <returns>The resolved service instance, or <see langword="null"/> if no registration exists.</returns>
     private object? Resolve(Type serviceType)
     {
         object serviceInstance;
@@ -621,6 +626,10 @@ public class AutofacDependencyResolver : IDependencyResolver
         return serviceInstance;
     }
 
+    /// <summary>Resolves a single service instance for the specified type and contract from the active lifetime scope.</summary>
+    /// <param name="serviceType">The type of the service to resolve.</param>
+    /// <param name="contract">The optional contract name used to disambiguate the registration.</param>
+    /// <returns>The resolved service instance, or <see langword="null"/> if no registration exists.</returns>
     private object? Resolve(Type serviceType, string? contract)
     {
         object serviceInstance;

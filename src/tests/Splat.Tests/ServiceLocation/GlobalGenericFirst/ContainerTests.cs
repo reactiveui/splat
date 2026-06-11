@@ -1,17 +1,15 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.Tests.ServiceLocation.GenericFirst;
 
-/// <summary>
-/// Tests for the Container&lt;T&gt; class.
-/// </summary>
+/// <summary>Tests for the Container&lt;T&gt; class.</summary>
 [NotInParallel] // Container<T> is static, tests must run sequentially
 public class ContainerTests
 {
-    [Before(HookType.Test)]
+    /// <summary>Clears the container state before each test.</summary>
+    [Before(Test)]
     public void Setup()
     {
         // Clear the container before each test
@@ -21,7 +19,8 @@ public class ContainerTests
         Container<TestService>.Clear();
     }
 
-    [After(HookType.Test)]
+    /// <summary>Clears the container state after each test.</summary>
+    [After(Test)]
     public void Cleanup()
     {
         // Clear the container after each test
@@ -31,12 +30,16 @@ public class ContainerTests
         Container<TestService>.Clear();
     }
 
+    /// <summary>Tests that has registrations when empty returns false.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task HasRegistrations_WhenEmpty_ReturnsFalse() =>
 
         // Act & Assert
         await Assert.That(Container<string>.HasRegistrations).IsFalse();
 
+    /// <summary>Tests that has registrations after adding returns true.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task HasRegistrations_AfterAdding_ReturnsTrue()
     {
@@ -47,11 +50,13 @@ public class ContainerTests
         await Assert.That(Container<string>.HasRegistrations).IsTrue();
     }
 
+    /// <summary>Tests that add with instance stores instance.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Add_WithInstance_StoresInstance()
     {
         // Arrange
-        var instance = "test value";
+        const string instance = "test value";
 
         // Act
         Container<string>.Add(instance);
@@ -62,11 +67,13 @@ public class ContainerTests
         await Assert.That(result).IsEqualTo(instance);
     }
 
+    /// <summary>Tests that add with factory stores factory.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Add_WithFactory_StoresFactory()
     {
         // Arrange
-        var expectedValue = 42;
+        const int expectedValue = 42;
         Func<int?> factory = () => expectedValue;
 
         // Act
@@ -78,6 +85,8 @@ public class ContainerTests
         await Assert.That(result).IsEqualTo(expectedValue);
     }
 
+    /// <summary>Tests that add multiple instances returns latest.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Add_MultipleInstances_ReturnsLatest()
     {
@@ -93,6 +102,8 @@ public class ContainerTests
         await Assert.That(result).IsEqualTo("third");
     }
 
+    /// <summary>Tests that try get when empty returns false.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task TryGet_WhenEmpty_ReturnsFalse()
     {
@@ -104,6 +115,8 @@ public class ContainerTests
         await Assert.That(result).IsNull();
     }
 
+    /// <summary>Tests that try get with factory returning null returns false.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task TryGet_WithFactoryReturningNull_ReturnsFalse()
     {
@@ -118,6 +131,8 @@ public class ContainerTests
         await Assert.That(result).IsNull();
     }
 
+    /// <summary>Tests that try get invokes factory each time.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task TryGet_InvokesFactoryEachTime()
     {
@@ -139,6 +154,8 @@ public class ContainerTests
         await Assert.That(result2).IsEqualTo(2);
     }
 
+    /// <summary>Tests that get all when empty returns empty array.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetAll_WhenEmpty_ReturnsEmptyArray()
     {
@@ -150,6 +167,8 @@ public class ContainerTests
         await Assert.That(result.Length).IsEqualTo(0);
     }
 
+    /// <summary>Tests that get all with multiple registrations returns all values.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetAll_WithMultipleRegistrations_ReturnsAllValues()
     {
@@ -168,6 +187,8 @@ public class ContainerTests
         await Assert.That(result[2]).IsEqualTo("third");
     }
 
+    /// <summary>Tests that get all with factories invokes all factories.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetAll_WithFactories_InvokesAllFactories()
     {
@@ -200,6 +221,8 @@ public class ContainerTests
         await Assert.That(result[2]).IsEqualTo(3);
     }
 
+    /// <summary>Tests that get all with mixed registrations returns all values.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetAll_WithMixedRegistrations_ReturnsAllValues()
     {
@@ -218,6 +241,8 @@ public class ContainerTests
         await Assert.That(result[2]).IsEqualTo("another instance");
     }
 
+    /// <summary>Tests that remove current when empty does not throw.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RemoveCurrent_WhenEmpty_DoesNotThrow()
     {
@@ -226,6 +251,8 @@ public class ContainerTests
         await Assert.That(Container<string>.HasRegistrations).IsFalse();
     }
 
+    /// <summary>Tests that remove current with single item clears container.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RemoveCurrent_WithSingleItem_ClearsContainer()
     {
@@ -241,6 +268,8 @@ public class ContainerTests
         await Assert.That(success).IsFalse();
     }
 
+    /// <summary>Tests that remove current with multiple items removes latest.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RemoveCurrent_WithMultipleItems_RemovesLatest()
     {
@@ -258,6 +287,8 @@ public class ContainerTests
         await Assert.That(result).IsEqualTo("second");
     }
 
+    /// <summary>Tests that remove current multiple removes in reverse order.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RemoveCurrent_Multiple_RemovesInReverseOrder()
     {
@@ -280,6 +311,8 @@ public class ContainerTests
         await Assert.That(success).IsFalse();
     }
 
+    /// <summary>Tests that clear removes all registrations.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Clear_RemovesAllRegistrations()
     {
@@ -297,6 +330,8 @@ public class ContainerTests
         await Assert.That(result.Length).IsEqualTo(0);
     }
 
+    /// <summary>Tests that clear when empty does not throw.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Clear_WhenEmpty_DoesNotThrow()
     {
@@ -305,6 +340,8 @@ public class ContainerTests
         await Assert.That(Container<string>.HasRegistrations).IsFalse();
     }
 
+    /// <summary>Tests that container with complex type works correctly.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Container_WithComplexType_WorksCorrectly()
     {
@@ -322,12 +359,14 @@ public class ContainerTests
         await Assert.That(result.Name).IsEqualTo("Test");
     }
 
+    /// <summary>Tests that container thread safety concurrent adds.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Container_ThreadSafety_ConcurrentAdds()
     {
         // Arrange
         var tasks = new List<Task>();
-        var itemCount = 100;
+        const int itemCount = 100;
 
         // Act - add items concurrently
         for (int i = 0; i < itemCount; i++)
@@ -344,6 +383,8 @@ public class ContainerTests
         await Assert.That(Container<int>.HasRegistrations).IsTrue();
     }
 
+    /// <summary>Tests that container different types are isolated.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Container_DifferentTypes_AreIsolated()
     {
@@ -359,11 +400,13 @@ public class ContainerTests
         await Assert.That(intResult).IsEqualTo(42);
     }
 
+    /// <summary>Tests that add large number of items maintains performance.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Add_LargeNumberOfItems_MaintainsPerformance()
     {
         // Arrange
-        var itemCount = 1000;
+        const int itemCount = 1000;
 
         // Act
         for (int i = 0; i < itemCount; i++)
@@ -379,10 +422,13 @@ public class ContainerTests
         await Assert.That(result[itemCount - 1]).IsEqualTo(itemCount - 1);
     }
 
+    /// <summary>A simple service type used for testing the container.</summary>
     private sealed class TestService
     {
+        /// <summary>Gets or sets the identifier.</summary>
         public int Id { get; set; }
 
+        /// <summary>Gets or sets the name.</summary>
         public string? Name { get; set; }
     }
 }

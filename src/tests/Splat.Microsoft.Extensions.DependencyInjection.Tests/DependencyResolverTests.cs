@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Microsoft.Extensions.DependencyInjection;
@@ -10,12 +9,11 @@ using Splat.NLog;
 
 namespace Splat.Microsoft.Extensions.DependencyInjection.Tests;
 
+/// <summary>Tests for the Microsoft.Extensions.DependencyInjection dependency resolver.</summary>
 [NotInParallel]
 public class DependencyResolverTests
 {
-    /// <summary>
-    /// Should resolve views.
-    /// </summary>
+    /// <summary>Should resolve views.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task MicrosoftDependencyResolver_Should_Resolve_Views()
@@ -40,9 +38,7 @@ public class DependencyResolverTests
         await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
     }
 
-    /// <summary>
-    /// Should resolve views.
-    /// </summary>
+    /// <summary>Should resolve views.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task MicrosoftDependencyResolver_Should_Resolve_Named_View()
@@ -59,9 +55,7 @@ public class DependencyResolverTests
         await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
     }
 
-    /// <summary>
-    /// Should resolve view models.
-    /// </summary>
+    /// <summary>Should resolve view models.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task MicrosoftDependencyResolver_Should_Resolve_View_Models()
@@ -83,9 +77,7 @@ public class DependencyResolverTests
         }
     }
 
-    /// <summary>
-    /// Should resolve screen.
-    /// </summary>
+    /// <summary>Should resolve screen.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task MicrosoftDependencyResolver_Should_Resolve_Screen()
@@ -102,9 +94,7 @@ public class DependencyResolverTests
         await Assert.That(screen).IsTypeOf<MockScreen>();
     }
 
-    /// <summary>
-    /// Should unregister all.
-    /// </summary>
+    /// <summary>Should unregister all.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task MicrosoftDependencyResolver_Should_UnregisterAll()
@@ -122,22 +112,18 @@ public class DependencyResolverTests
         await Assert.That(result).IsNull();
     }
 
-    /// <summary>
-    /// Should throw an exception if service registration callback is called.
-    /// </summary>
+    /// <summary>Should throw an exception if service registration callback is called.</summary>
     [Test]
     public void MicrosoftDependencyResolver_Should_Throw_If_ServiceRegistrationCallback_Called()
     {
         var wrapper = new ContainerWrapper();
         wrapper.BuildAndUse();
 
-        Assert.Throws<NotImplementedException>(() =>
+        Assert.Throws<NotSupportedException>(() =>
             AppLocator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), _ => { }));
     }
 
-    /// <summary>
-    /// Should throw an exception if trying to register services when the container is registered as immutable.
-    /// </summary>
+    /// <summary>Should throw an exception if trying to register services when the container is registered as immutable.</summary>
     [Test]
     public void MicrosoftDependencyResolver_Should_Throw_If_Attempt_Registration_After_Build()
     {
@@ -148,10 +134,7 @@ public class DependencyResolverTests
             AppLocator.CurrentMutable.Register(() => new ViewOne()));
     }
 
-    /// <summary>
-    /// Tests to ensure NLog registers correctly with different service locators.
-    /// Based on issue reported in #553.
-    /// </summary>
+    /// <summary>Tests to ensure NLog registers correctly with different service locators. Based on issue reported in #553.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ILogManager_Resolvable()

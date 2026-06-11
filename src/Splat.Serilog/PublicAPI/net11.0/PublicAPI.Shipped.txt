@@ -1,0 +1,204 @@
+#nullable enable
+Splat.Builder.SerilogSplatModule
+Splat.Builder.SerilogSplatModule.Configure(Splat.IMutableDependencyResolver! resolver) -> void
+Splat.Builder.SerilogSplatModule.SerilogSplatModule() -> void
+Splat.Builder.SerilogSplatModule.SerilogSplatModule(Serilog.ILogger? actualLogger) -> void
+Splat.Serilog.MutableDependencyResolverExtensions
+Splat.Serilog.MutableDependencyResolverExtensions.extension(Splat.IMutableDependencyResolver!)
+Splat.Serilog.MutableDependencyResolverExtensions.extension(Splat.IMutableDependencyResolver!).UseSerilogFullLogger() -> void
+Splat.Serilog.MutableDependencyResolverExtensions.extension(Splat.IMutableDependencyResolver!).UseSerilogFullLogger(Serilog.ILogger! actualLogger) -> void
+Splat.SerilogFullLogger
+Splat.SerilogFullLogger.Debug(System.Exception! exception, System.Func<string!>! function) -> void
+Splat.SerilogFullLogger.Debug(System.Exception! exception, string? message) -> void
+Splat.SerilogFullLogger.Debug(System.Func<string!>! function) -> void
+Splat.SerilogFullLogger.Debug(System.IFormatProvider! formatProvider, string! message, params object![]! args) -> void
+Splat.SerilogFullLogger.Debug(string! message, params object![]! args) -> void
+Splat.SerilogFullLogger.Debug(string? message) -> void
+Splat.SerilogFullLogger.Debug<T>(System.Func<string!>! function) -> void
+Splat.SerilogFullLogger.Debug<T>(System.IFormatProvider! formatProvider, T value) -> void
+Splat.SerilogFullLogger.Debug<T>(T value) -> void
+Splat.SerilogFullLogger.Debug<T>(string! message, params object![]! args) -> void
+Splat.SerilogFullLogger.Debug<T>(string? message) -> void
+Splat.SerilogFullLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) -> void
+Splat.SerilogFullLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) -> void
+Splat.SerilogFullLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) -> void
+Splat.SerilogFullLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) -> void
+Splat.SerilogFullLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) -> void
+Splat.SerilogFullLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) -> void
+Splat.SerilogFullLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) -> void
+Splat.SerilogFullLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) -> void
+Splat.SerilogFullLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) -> void
+Splat.SerilogFullLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) -> void
+Splat.SerilogFullLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) -> void
+Splat.SerilogFullLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) -> void
+Splat.SerilogFullLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) -> void
+Splat.SerilogFullLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) -> void
+Splat.SerilogFullLogger.Debug<TArgument1, TArgument2, TArgument3>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.SerilogFullLogger.Debug<TArgument1, TArgument2, TArgument3>(System.IFormatProvider! formatProvider, string! message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.SerilogFullLogger.Debug<TArgument1, TArgument2, TArgument3>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.SerilogFullLogger.Debug<TArgument1, TArgument2>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.SerilogFullLogger.Debug<TArgument1, TArgument2>(System.IFormatProvider! formatProvider, string! message, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.SerilogFullLogger.Debug<TArgument1, TArgument2>(string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.SerilogFullLogger.Debug<TArgument>(System.Exception! exception, string! messageFormat, TArgument argument) -> void
+Splat.SerilogFullLogger.Debug<TArgument>(System.IFormatProvider! formatProvider, string! message, TArgument argument) -> void
+Splat.SerilogFullLogger.Debug<TArgument>(string! message, TArgument args) -> void
+Splat.SerilogFullLogger.DebugException(System.Func<string!>! function, System.Exception! exception) -> void
+Splat.SerilogFullLogger.DebugException(string? message, System.Exception! exception) -> void
+Splat.SerilogFullLogger.Error(System.Exception! exception, System.Func<string!>! function) -> void
+Splat.SerilogFullLogger.Error(System.Exception! exception, string? message) -> void
+Splat.SerilogFullLogger.Error(System.Func<string!>! function) -> void
+Splat.SerilogFullLogger.Error(System.IFormatProvider! formatProvider, string! message, params object![]! args) -> void
+Splat.SerilogFullLogger.Error(string! message, params object![]! args) -> void
+Splat.SerilogFullLogger.Error(string? message) -> void
+Splat.SerilogFullLogger.Error<T>(System.Func<string!>! function) -> void
+Splat.SerilogFullLogger.Error<T>(System.IFormatProvider! formatProvider, T value) -> void
+Splat.SerilogFullLogger.Error<T>(T value) -> void
+Splat.SerilogFullLogger.Error<T>(string! message, params object![]! args) -> void
+Splat.SerilogFullLogger.Error<T>(string? message) -> void
+Splat.SerilogFullLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) -> void
+Splat.SerilogFullLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) -> void
+Splat.SerilogFullLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) -> void
+Splat.SerilogFullLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) -> void
+Splat.SerilogFullLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) -> void
+Splat.SerilogFullLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) -> void
+Splat.SerilogFullLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) -> void
+Splat.SerilogFullLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) -> void
+Splat.SerilogFullLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) -> void
+Splat.SerilogFullLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) -> void
+Splat.SerilogFullLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) -> void
+Splat.SerilogFullLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) -> void
+Splat.SerilogFullLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) -> void
+Splat.SerilogFullLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) -> void
+Splat.SerilogFullLogger.Error<TArgument1, TArgument2, TArgument3>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.SerilogFullLogger.Error<TArgument1, TArgument2, TArgument3>(System.IFormatProvider! formatProvider, string! message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.SerilogFullLogger.Error<TArgument1, TArgument2, TArgument3>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.SerilogFullLogger.Error<TArgument1, TArgument2>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.SerilogFullLogger.Error<TArgument1, TArgument2>(System.IFormatProvider! formatProvider, string! message, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.SerilogFullLogger.Error<TArgument1, TArgument2>(string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.SerilogFullLogger.Error<TArgument>(System.Exception! exception, string! messageFormat, TArgument argument) -> void
+Splat.SerilogFullLogger.Error<TArgument>(System.IFormatProvider! formatProvider, string! message, TArgument argument) -> void
+Splat.SerilogFullLogger.Error<TArgument>(string! message, TArgument args) -> void
+Splat.SerilogFullLogger.ErrorException(System.Func<string!>! function, System.Exception! exception) -> void
+Splat.SerilogFullLogger.ErrorException(string? message, System.Exception! exception) -> void
+Splat.SerilogFullLogger.Fatal(System.Exception! exception, System.Func<string!>! function) -> void
+Splat.SerilogFullLogger.Fatal(System.Exception! exception, string? message) -> void
+Splat.SerilogFullLogger.Fatal(System.Func<string!>! function) -> void
+Splat.SerilogFullLogger.Fatal(System.IFormatProvider! formatProvider, string! message, params object![]! args) -> void
+Splat.SerilogFullLogger.Fatal(string! message, params object![]! args) -> void
+Splat.SerilogFullLogger.Fatal(string? message) -> void
+Splat.SerilogFullLogger.Fatal<T>(System.Func<string!>! function) -> void
+Splat.SerilogFullLogger.Fatal<T>(System.IFormatProvider! formatProvider, T value) -> void
+Splat.SerilogFullLogger.Fatal<T>(T value) -> void
+Splat.SerilogFullLogger.Fatal<T>(string! message, params object![]! args) -> void
+Splat.SerilogFullLogger.Fatal<T>(string? message) -> void
+Splat.SerilogFullLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) -> void
+Splat.SerilogFullLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) -> void
+Splat.SerilogFullLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) -> void
+Splat.SerilogFullLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) -> void
+Splat.SerilogFullLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) -> void
+Splat.SerilogFullLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) -> void
+Splat.SerilogFullLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) -> void
+Splat.SerilogFullLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) -> void
+Splat.SerilogFullLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) -> void
+Splat.SerilogFullLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) -> void
+Splat.SerilogFullLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) -> void
+Splat.SerilogFullLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) -> void
+Splat.SerilogFullLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) -> void
+Splat.SerilogFullLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) -> void
+Splat.SerilogFullLogger.Fatal<TArgument1, TArgument2, TArgument3>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.SerilogFullLogger.Fatal<TArgument1, TArgument2, TArgument3>(System.IFormatProvider! formatProvider, string! message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.SerilogFullLogger.Fatal<TArgument1, TArgument2, TArgument3>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.SerilogFullLogger.Fatal<TArgument1, TArgument2>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.SerilogFullLogger.Fatal<TArgument1, TArgument2>(System.IFormatProvider! formatProvider, string! message, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.SerilogFullLogger.Fatal<TArgument1, TArgument2>(string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.SerilogFullLogger.Fatal<TArgument>(System.Exception! exception, string! messageFormat, TArgument argument) -> void
+Splat.SerilogFullLogger.Fatal<TArgument>(System.IFormatProvider! formatProvider, string! message, TArgument argument) -> void
+Splat.SerilogFullLogger.Fatal<TArgument>(string! message, TArgument args) -> void
+Splat.SerilogFullLogger.FatalException(System.Func<string!>! function, System.Exception! exception) -> void
+Splat.SerilogFullLogger.FatalException(string? message, System.Exception! exception) -> void
+Splat.SerilogFullLogger.Info(System.Exception! exception, System.Func<string!>! function) -> void
+Splat.SerilogFullLogger.Info(System.Exception! exception, string? message) -> void
+Splat.SerilogFullLogger.Info(System.Func<string!>! function) -> void
+Splat.SerilogFullLogger.Info(System.IFormatProvider! formatProvider, string! message, params object![]! args) -> void
+Splat.SerilogFullLogger.Info(string! message, params object![]! args) -> void
+Splat.SerilogFullLogger.Info(string? message) -> void
+Splat.SerilogFullLogger.Info<T>(System.Func<string!>! function) -> void
+Splat.SerilogFullLogger.Info<T>(System.IFormatProvider! formatProvider, T value) -> void
+Splat.SerilogFullLogger.Info<T>(T value) -> void
+Splat.SerilogFullLogger.Info<T>(string! message, params object![]! args) -> void
+Splat.SerilogFullLogger.Info<T>(string? message) -> void
+Splat.SerilogFullLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) -> void
+Splat.SerilogFullLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) -> void
+Splat.SerilogFullLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) -> void
+Splat.SerilogFullLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) -> void
+Splat.SerilogFullLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) -> void
+Splat.SerilogFullLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) -> void
+Splat.SerilogFullLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) -> void
+Splat.SerilogFullLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) -> void
+Splat.SerilogFullLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) -> void
+Splat.SerilogFullLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) -> void
+Splat.SerilogFullLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) -> void
+Splat.SerilogFullLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) -> void
+Splat.SerilogFullLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) -> void
+Splat.SerilogFullLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) -> void
+Splat.SerilogFullLogger.Info<TArgument1, TArgument2, TArgument3>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.SerilogFullLogger.Info<TArgument1, TArgument2, TArgument3>(System.IFormatProvider! formatProvider, string! message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.SerilogFullLogger.Info<TArgument1, TArgument2, TArgument3>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.SerilogFullLogger.Info<TArgument1, TArgument2>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.SerilogFullLogger.Info<TArgument1, TArgument2>(System.IFormatProvider! formatProvider, string! message, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.SerilogFullLogger.Info<TArgument1, TArgument2>(string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.SerilogFullLogger.Info<TArgument>(System.Exception! exception, string! messageFormat, TArgument argument) -> void
+Splat.SerilogFullLogger.Info<TArgument>(System.IFormatProvider! formatProvider, string! message, TArgument argument) -> void
+Splat.SerilogFullLogger.Info<TArgument>(string! message, TArgument args) -> void
+Splat.SerilogFullLogger.InfoException(System.Func<string!>! function, System.Exception! exception) -> void
+Splat.SerilogFullLogger.InfoException(string? message, System.Exception! exception) -> void
+Splat.SerilogFullLogger.IsDebugEnabled.get -> bool
+Splat.SerilogFullLogger.IsErrorEnabled.get -> bool
+Splat.SerilogFullLogger.IsFatalEnabled.get -> bool
+Splat.SerilogFullLogger.IsInfoEnabled.get -> bool
+Splat.SerilogFullLogger.IsWarnEnabled.get -> bool
+Splat.SerilogFullLogger.Level.get -> Splat.LogLevel
+Splat.SerilogFullLogger.Level.set -> void
+Splat.SerilogFullLogger.SerilogFullLogger(Serilog.ILogger! logger) -> void
+Splat.SerilogFullLogger.Warn(System.Exception! exception, System.Func<string!>! function) -> void
+Splat.SerilogFullLogger.Warn(System.Exception! exception, string? message) -> void
+Splat.SerilogFullLogger.Warn(System.Func<string!>! function) -> void
+Splat.SerilogFullLogger.Warn(System.IFormatProvider! formatProvider, string! message, params object![]! args) -> void
+Splat.SerilogFullLogger.Warn(string! message, params object![]! args) -> void
+Splat.SerilogFullLogger.Warn(string? message) -> void
+Splat.SerilogFullLogger.Warn<T>(System.Func<string!>! function) -> void
+Splat.SerilogFullLogger.Warn<T>(System.IFormatProvider! formatProvider, T value) -> void
+Splat.SerilogFullLogger.Warn<T>(T value) -> void
+Splat.SerilogFullLogger.Warn<T>(string! message, params object![]! args) -> void
+Splat.SerilogFullLogger.Warn<T>(string? message) -> void
+Splat.SerilogFullLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) -> void
+Splat.SerilogFullLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) -> void
+Splat.SerilogFullLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) -> void
+Splat.SerilogFullLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) -> void
+Splat.SerilogFullLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) -> void
+Splat.SerilogFullLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) -> void
+Splat.SerilogFullLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) -> void
+Splat.SerilogFullLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) -> void
+Splat.SerilogFullLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) -> void
+Splat.SerilogFullLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) -> void
+Splat.SerilogFullLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) -> void
+Splat.SerilogFullLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) -> void
+Splat.SerilogFullLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) -> void
+Splat.SerilogFullLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) -> void
+Splat.SerilogFullLogger.Warn<TArgument1, TArgument2, TArgument3>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.SerilogFullLogger.Warn<TArgument1, TArgument2, TArgument3>(System.IFormatProvider! formatProvider, string! message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.SerilogFullLogger.Warn<TArgument1, TArgument2, TArgument3>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.SerilogFullLogger.Warn<TArgument1, TArgument2>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.SerilogFullLogger.Warn<TArgument1, TArgument2>(System.IFormatProvider! formatProvider, string! message, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.SerilogFullLogger.Warn<TArgument1, TArgument2>(string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.SerilogFullLogger.Warn<TArgument>(System.Exception! exception, string! messageFormat, TArgument argument) -> void
+Splat.SerilogFullLogger.Warn<TArgument>(System.IFormatProvider! formatProvider, string! message, TArgument argument) -> void
+Splat.SerilogFullLogger.Warn<TArgument>(string! message, TArgument args) -> void
+Splat.SerilogFullLogger.WarnException(System.Func<string!>! function, System.Exception! exception) -> void
+Splat.SerilogFullLogger.WarnException(string? message, System.Exception! exception) -> void
+Splat.SerilogFullLogger.Write(System.Exception! exception, string! message, Splat.LogLevel logLevel) -> void
+Splat.SerilogFullLogger.Write(System.Exception! exception, string! message, System.Type! type, Splat.LogLevel logLevel) -> void
+Splat.SerilogFullLogger.Write(string! message, Splat.LogLevel logLevel) -> void
+Splat.SerilogFullLogger.Write(string! message, System.Type! type, Splat.LogLevel logLevel) -> void
+static Splat.Serilog.MutableDependencyResolverExtensions.UseSerilogFullLogger(this Splat.IMutableDependencyResolver! instance) -> void
+static Splat.Serilog.MutableDependencyResolverExtensions.UseSerilogFullLogger(this Splat.IMutableDependencyResolver! instance, Serilog.ILogger! actualLogger) -> void

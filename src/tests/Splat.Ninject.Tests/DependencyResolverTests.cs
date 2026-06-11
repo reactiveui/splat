@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Ninject;
@@ -9,30 +8,25 @@ using Splat.Common.Test;
 
 namespace Splat.Ninject.Tests;
 
+/// <summary>Tests for the Ninject dependency resolver.</summary>
 [NotInParallel]
 public class DependencyResolverTests
 {
     private NinjectKernelScope? _scope;
 
-    /// <summary>
-    /// Setup method to initialize Ninject scope before each test.
-    /// </summary>
-    [Before(HookType.Test)]
+    /// <summary>Setup method to initialize Ninject scope before each test.</summary>
+    [Before(Test)]
     public void SetUp() => _scope = new();
 
-    /// <summary>
-    /// Teardown method to dispose Ninject scope after each test.
-    /// </summary>
-    [After(HookType.Test)]
+    /// <summary>Teardown method to dispose Ninject scope after each test.</summary>
+    [After(Test)]
     public void TearDown()
     {
         _scope?.Dispose();
         _scope = null;
     }
 
-    /// <summary>
-    /// Should resolve views.
-    /// </summary>
+    /// <summary>Should resolve views.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task NinjectDependencyResolver_Should_Resolve_Views()
@@ -56,9 +50,7 @@ public class DependencyResolverTests
         await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
     }
 
-    /// <summary>
-    /// Should return null when no binding exists.
-    /// </summary>
+    /// <summary>Should return null when no binding exists.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task NinjectDependencyResolver_Should_Return_Null()
@@ -72,9 +64,7 @@ public class DependencyResolverTests
         await Assert.That(viewOne).IsNull();
     }
 
-    /// <summary>
-    /// GetServices should return an empty collection when no bindings exist.
-    /// </summary>
+    /// <summary>GetServices should return an empty collection when no bindings exist.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task NinjectDependencyResolver_GetServices_Should_Return_Empty_Collection()
@@ -88,9 +78,7 @@ public class DependencyResolverTests
         await Assert.That(viewOne).IsEmpty();
     }
 
-    /// <summary>
-    /// Should resolve views.
-    /// </summary>
+    /// <summary>Should resolve views.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task NinjectDependencyResolver_Should_Resolve_Named_View()
@@ -106,9 +94,7 @@ public class DependencyResolverTests
         await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
     }
 
-    /// <summary>
-    /// Should resolve view models.
-    /// </summary>
+    /// <summary>Should resolve view models.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task NinjectDependencyResolver_Should_Resolve_View_Models()
@@ -129,9 +115,7 @@ public class DependencyResolverTests
         }
     }
 
-    /// <summary>
-    /// Should resolve screen.
-    /// </summary>
+    /// <summary>Should resolve screen.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task NinjectDependencyResolver_Should_Resolve_Screen()
@@ -147,9 +131,7 @@ public class DependencyResolverTests
         await Assert.That(screen).IsTypeOf<MockScreen>();
     }
 
-    /// <summary>
-    /// Should throw an exception if UnregisterCurrent is called. (Pending verification).
-    /// </summary>
+    /// <summary>Should throw an exception if UnregisterCurrent is called. (Pending verification).</summary>
     [Test]
     [Skip("Further testing required")]
     public void NinjectDependencyResolver_Should_Throw_If_UnregisterCurrent_Called()
@@ -158,13 +140,11 @@ public class DependencyResolverTests
         _scope!.TrackKernel(container);
         container.UseNinjectDependencyResolver();
 
-        Assert.Throws<NotImplementedException>(() =>
+        Assert.Throws<NotSupportedException>(() =>
             AppLocator.CurrentMutable.UnregisterCurrent<IScreen>());
     }
 
-    /// <summary>
-    /// Should unregister all.
-    /// </summary>
+    /// <summary>Should unregister all.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task NinjectDependencyResolver_Should_UnregisterAll()
@@ -185,9 +165,7 @@ public class DependencyResolverTests
         await Assert.That(result).IsNull();
     }
 
-    /// <summary>
-    /// Should throw an exception if service registration callback is called.
-    /// </summary>
+    /// <summary>Should throw an exception if service registration callback is called.</summary>
     [Test]
     public void NinjectDependencyResolver_Should_Throw_If_ServiceRegistionCallback_Called()
     {
@@ -195,7 +173,7 @@ public class DependencyResolverTests
         _scope!.TrackKernel(container);
         container.UseNinjectDependencyResolver();
 
-        Assert.Throws<NotImplementedException>(() =>
+        Assert.Throws<NotSupportedException>(() =>
             AppLocator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), _ => { }));
     }
 }

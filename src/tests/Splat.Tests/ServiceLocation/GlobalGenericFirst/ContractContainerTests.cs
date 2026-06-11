@@ -1,20 +1,19 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.Tests.ServiceLocation.GenericFirst;
 
-/// <summary>
-/// Tests for the ContractContainer&lt;T&gt; class.
-/// </summary>
+/// <summary>Tests for the ContractContainer&lt;T&gt; class.</summary>
 [NotInParallel] // ContractContainer<T> is static, tests must run sequentially
 public class ContractContainerTests
 {
     private const string Contract1 = "Contract1";
+
     private const string Contract2 = "Contract2";
 
-    [Before(HookType.Test)]
+    /// <summary>Clears the container state before each test.</summary>
+    [Before(Test)]
     public void Setup()
     {
         // Clear all contracts before each test
@@ -23,7 +22,8 @@ public class ContractContainerTests
         ContractContainer<int?>.ClearAll();
     }
 
-    [After(HookType.Test)]
+    /// <summary>Clears the container state after each test.</summary>
+    [After(Test)]
     public void Cleanup()
     {
         // Clear all contracts after each test
@@ -32,12 +32,16 @@ public class ContractContainerTests
         ContractContainer<int?>.ClearAll();
     }
 
+    /// <summary>Tests that has registrations when empty returns false.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task HasRegistrations_WhenEmpty_ReturnsFalse() =>
 
         // Act & Assert
         await Assert.That(ContractContainer<string>.HasRegistrations(Contract1)).IsFalse();
 
+    /// <summary>Tests that has registrations after adding returns true.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task HasRegistrations_AfterAdding_ReturnsTrue()
     {
@@ -48,11 +52,13 @@ public class ContractContainerTests
         await Assert.That(ContractContainer<string>.HasRegistrations(Contract1)).IsTrue();
     }
 
+    /// <summary>Tests that add with instance stores instance.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Add_WithInstance_StoresInstance()
     {
         // Arrange
-        var instance = "test value";
+        const string instance = "test value";
 
         // Act
         ContractContainer<string>.Add(instance, Contract1);
@@ -63,11 +69,13 @@ public class ContractContainerTests
         await Assert.That(result).IsEqualTo(instance);
     }
 
+    /// <summary>Tests that add with factory stores factory.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Add_WithFactory_StoresFactory()
     {
         // Arrange
-        var expectedValue = 42;
+        const int expectedValue = 42;
         Func<int?> factory = () => expectedValue;
 
         // Act
@@ -79,6 +87,8 @@ public class ContractContainerTests
         await Assert.That(result).IsEqualTo(expectedValue);
     }
 
+    /// <summary>Tests that add with null contract uses empty string.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Add_WithNullContract_UsesEmptyString()
     {
@@ -91,6 +101,8 @@ public class ContractContainerTests
         await Assert.That(result).IsEqualTo("test");
     }
 
+    /// <summary>Tests that add multiple to same contract returns latest.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Add_MultipleToSameContract_ReturnsLatest()
     {
@@ -106,6 +118,8 @@ public class ContractContainerTests
         await Assert.That(result).IsEqualTo("third");
     }
 
+    /// <summary>Tests that add to different contracts are isolated.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Add_ToDifferentContracts_AreIsolated()
     {
@@ -123,6 +137,8 @@ public class ContractContainerTests
         await Assert.That(result2).IsEqualTo("contract2 value");
     }
 
+    /// <summary>Tests that try get when empty returns false.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task TryGet_WhenEmpty_ReturnsFalse()
     {
@@ -134,6 +150,8 @@ public class ContractContainerTests
         await Assert.That(result).IsNull();
     }
 
+    /// <summary>Tests that try get with wrong contract returns false.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task TryGet_WithWrongContract_ReturnsFalse()
     {
@@ -148,6 +166,8 @@ public class ContractContainerTests
         await Assert.That(result).IsNull();
     }
 
+    /// <summary>Tests that try get with factory returning null returns false.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task TryGet_WithFactoryReturningNull_ReturnsFalse()
     {
@@ -162,6 +182,8 @@ public class ContractContainerTests
         await Assert.That(result).IsNull();
     }
 
+    /// <summary>Tests that try get invokes factory each time.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task TryGet_InvokesFactoryEachTime()
     {
@@ -185,6 +207,8 @@ public class ContractContainerTests
         await Assert.That(result2).IsEqualTo(2);
     }
 
+    /// <summary>Tests that get all when empty returns empty array.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetAll_WhenEmpty_ReturnsEmptyArray()
     {
@@ -196,6 +220,8 @@ public class ContractContainerTests
         await Assert.That(result.Length).IsEqualTo(0);
     }
 
+    /// <summary>Tests that get all with multiple registrations returns all values.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetAll_WithMultipleRegistrations_ReturnsAllValues()
     {
@@ -214,6 +240,8 @@ public class ContractContainerTests
         await Assert.That(result[2]).IsEqualTo("third");
     }
 
+    /// <summary>Tests that get all only returns matching contract.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetAll_OnlyReturnsMatchingContract()
     {
@@ -235,6 +263,8 @@ public class ContractContainerTests
         await Assert.That(result2[0]).IsEqualTo("contract2-1");
     }
 
+    /// <summary>Tests that remove current when empty does not throw.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RemoveCurrent_WhenEmpty_DoesNotThrow()
     {
@@ -243,6 +273,8 @@ public class ContractContainerTests
         await Assert.That(ContractContainer<string>.HasRegistrations(Contract1)).IsFalse();
     }
 
+    /// <summary>Tests that remove current with single item clears contract.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RemoveCurrent_WithSingleItem_ClearsContract()
     {
@@ -258,6 +290,8 @@ public class ContractContainerTests
         await Assert.That(success).IsFalse();
     }
 
+    /// <summary>Tests that remove current with multiple items removes latest.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RemoveCurrent_WithMultipleItems_RemovesLatest()
     {
@@ -275,6 +309,8 @@ public class ContractContainerTests
         await Assert.That(result).IsEqualTo("second");
     }
 
+    /// <summary>Tests that remove current only affects specified contract.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RemoveCurrent_OnlyAffectsSpecifiedContract()
     {
@@ -290,6 +326,8 @@ public class ContractContainerTests
         await Assert.That(ContractContainer<string>.HasRegistrations(Contract2)).IsTrue();
     }
 
+    /// <summary>Tests that clear removes all registrations for contract.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Clear_RemovesAllRegistrationsForContract()
     {
@@ -307,6 +345,8 @@ public class ContractContainerTests
         await Assert.That(result.Length).IsEqualTo(0);
     }
 
+    /// <summary>Tests that clear only affects specified contract.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Clear_OnlyAffectsSpecifiedContract()
     {
@@ -322,6 +362,8 @@ public class ContractContainerTests
         await Assert.That(ContractContainer<string>.HasRegistrations(Contract2)).IsTrue();
     }
 
+    /// <summary>Tests that clear all removes all contracts.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ClearAll_RemovesAllContracts()
     {
@@ -337,12 +379,16 @@ public class ContractContainerTests
         await Assert.That(ContractContainer<string>.HasRegistrations(Contract2)).IsFalse();
     }
 
+    /// <summary>Tests that clear all when empty does not throw.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ClearAll_WhenEmpty_DoesNotThrow() =>
 
         // Act & Assert - should not throw
         ContractContainer<string>.ClearAll();
 
+    /// <summary>Tests that contract container different types are isolated.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ContractContainer_DifferentTypes_AreIsolated()
     {
@@ -358,12 +404,14 @@ public class ContractContainerTests
         await Assert.That(intResult).IsEqualTo(42);
     }
 
+    /// <summary>Tests that contract container thread safety concurrent adds.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ContractContainer_ThreadSafety_ConcurrentAdds()
     {
         // Arrange
         var tasks = new List<Task>();
-        var itemCount = 100;
+        const int itemCount = 100;
 
         // Act - add items concurrently to different contracts
         for (int i = 0; i < itemCount; i++)
@@ -383,11 +431,13 @@ public class ContractContainerTests
         }
     }
 
+    /// <summary>Tests that add with many contracts works correctly.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Add_WithManyContracts_WorksCorrectly()
     {
         // Arrange
-        var contractCount = 50;
+        const int contractCount = 50;
 
         // Act
         for (int i = 0; i < contractCount; i++)

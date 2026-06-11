@@ -1,0 +1,396 @@
+#nullable enable
+override Splat.SplatColor.Equals(object? obj) -> bool
+override Splat.SplatColor.GetHashCode() -> int
+override Splat.SplatColor.ToString() -> string!
+Splat.BitmapLoader
+Splat.BitmapLoaderException
+Splat.BitmapLoaderException.BitmapLoaderException() -> void
+Splat.BitmapLoaderException.BitmapLoaderException(string! message) -> void
+Splat.BitmapLoaderException.BitmapLoaderException(string! message, System.Exception! innerException) -> void
+Splat.BitmapMixins
+Splat.BitmapMixins.extension(AppKit.NSImage!)
+Splat.BitmapMixins.extension(AppKit.NSImage!).FromNative(bool copy = false) -> Splat.IBitmap!
+Splat.BitmapMixins.extension(Splat.IBitmap!)
+Splat.BitmapMixins.extension(Splat.IBitmap!).ToNative() -> AppKit.NSImage!
+Splat.CompressedBitmapFormat
+Splat.CompressedBitmapFormat.Jpeg = 1 -> Splat.CompressedBitmapFormat
+Splat.CompressedBitmapFormat.Png = 0 -> Splat.CompressedBitmapFormat
+Splat.DefaultPlatformModeDetector
+Splat.DefaultPlatformModeDetector.DefaultPlatformModeDetector() -> void
+Splat.DefaultPlatformModeDetector.InDesignMode() -> bool?
+Splat.IBitmap
+Splat.IBitmap.Height.get -> float
+Splat.IBitmap.Save(Splat.CompressedBitmapFormat format, float quality, System.IO.Stream! target) -> System.Threading.Tasks.Task!
+Splat.IBitmap.Width.get -> float
+Splat.IBitmapLoader
+Splat.IBitmapLoader.Create(float width, float height) -> Splat.IBitmap?
+Splat.IBitmapLoader.Load(System.IO.Stream! sourceStream, float? desiredWidth, float? desiredHeight) -> System.Threading.Tasks.Task<Splat.IBitmap?>!
+Splat.IBitmapLoader.LoadFromResource(string! source, float? desiredWidth, float? desiredHeight) -> System.Threading.Tasks.Task<Splat.IBitmap?>!
+Splat.IPlatformModeDetector
+Splat.IPlatformModeDetector.InDesignMode() -> bool?
+Splat.KnownColor
+Splat.KnownColor.ActiveBorder = 1 -> Splat.KnownColor
+Splat.KnownColor.ActiveCaption = 2 -> Splat.KnownColor
+Splat.KnownColor.ActiveCaptionText = 3 -> Splat.KnownColor
+Splat.KnownColor.AliceBlue = 28 -> Splat.KnownColor
+Splat.KnownColor.AntiqueWhite = 29 -> Splat.KnownColor
+Splat.KnownColor.AppWorkspace = 4 -> Splat.KnownColor
+Splat.KnownColor.Aqua = 30 -> Splat.KnownColor
+Splat.KnownColor.Aquamarine = 31 -> Splat.KnownColor
+Splat.KnownColor.Azure = 32 -> Splat.KnownColor
+Splat.KnownColor.Beige = 33 -> Splat.KnownColor
+Splat.KnownColor.Bisque = 34 -> Splat.KnownColor
+Splat.KnownColor.Black = 35 -> Splat.KnownColor
+Splat.KnownColor.BlanchedAlmond = 36 -> Splat.KnownColor
+Splat.KnownColor.Blue = 37 -> Splat.KnownColor
+Splat.KnownColor.BlueViolet = 38 -> Splat.KnownColor
+Splat.KnownColor.Brown = 39 -> Splat.KnownColor
+Splat.KnownColor.BurlyWood = 40 -> Splat.KnownColor
+Splat.KnownColor.ButtonFace = 168 -> Splat.KnownColor
+Splat.KnownColor.ButtonHighlight = 169 -> Splat.KnownColor
+Splat.KnownColor.ButtonShadow = 170 -> Splat.KnownColor
+Splat.KnownColor.CadetBlue = 41 -> Splat.KnownColor
+Splat.KnownColor.Chartreuse = 42 -> Splat.KnownColor
+Splat.KnownColor.Chocolate = 43 -> Splat.KnownColor
+Splat.KnownColor.Control = 5 -> Splat.KnownColor
+Splat.KnownColor.ControlDark = 6 -> Splat.KnownColor
+Splat.KnownColor.ControlDarkDark = 7 -> Splat.KnownColor
+Splat.KnownColor.ControlLight = 8 -> Splat.KnownColor
+Splat.KnownColor.ControlLightLight = 9 -> Splat.KnownColor
+Splat.KnownColor.ControlText = 10 -> Splat.KnownColor
+Splat.KnownColor.Coral = 44 -> Splat.KnownColor
+Splat.KnownColor.CornflowerBlue = 45 -> Splat.KnownColor
+Splat.KnownColor.Cornsilk = 46 -> Splat.KnownColor
+Splat.KnownColor.Crimson = 47 -> Splat.KnownColor
+Splat.KnownColor.Cyan = 48 -> Splat.KnownColor
+Splat.KnownColor.DarkBlue = 49 -> Splat.KnownColor
+Splat.KnownColor.DarkCyan = 50 -> Splat.KnownColor
+Splat.KnownColor.DarkGoldenrod = 51 -> Splat.KnownColor
+Splat.KnownColor.DarkGray = 52 -> Splat.KnownColor
+Splat.KnownColor.DarkGreen = 53 -> Splat.KnownColor
+Splat.KnownColor.DarkKhaki = 54 -> Splat.KnownColor
+Splat.KnownColor.DarkMagenta = 55 -> Splat.KnownColor
+Splat.KnownColor.DarkOliveGreen = 56 -> Splat.KnownColor
+Splat.KnownColor.DarkOrange = 57 -> Splat.KnownColor
+Splat.KnownColor.DarkOrchid = 58 -> Splat.KnownColor
+Splat.KnownColor.DarkRed = 59 -> Splat.KnownColor
+Splat.KnownColor.DarkSalmon = 60 -> Splat.KnownColor
+Splat.KnownColor.DarkSeaGreen = 61 -> Splat.KnownColor
+Splat.KnownColor.DarkSlateBlue = 62 -> Splat.KnownColor
+Splat.KnownColor.DarkSlateGray = 63 -> Splat.KnownColor
+Splat.KnownColor.DarkTurquoise = 64 -> Splat.KnownColor
+Splat.KnownColor.DarkViolet = 65 -> Splat.KnownColor
+Splat.KnownColor.DeepPink = 66 -> Splat.KnownColor
+Splat.KnownColor.DeepSkyBlue = 67 -> Splat.KnownColor
+Splat.KnownColor.Desktop = 11 -> Splat.KnownColor
+Splat.KnownColor.DimGray = 68 -> Splat.KnownColor
+Splat.KnownColor.DodgerBlue = 69 -> Splat.KnownColor
+Splat.KnownColor.Empty = 0 -> Splat.KnownColor
+Splat.KnownColor.Firebrick = 70 -> Splat.KnownColor
+Splat.KnownColor.FloralWhite = 71 -> Splat.KnownColor
+Splat.KnownColor.ForestGreen = 72 -> Splat.KnownColor
+Splat.KnownColor.Fuchsia = 73 -> Splat.KnownColor
+Splat.KnownColor.Gainsboro = 74 -> Splat.KnownColor
+Splat.KnownColor.GhostWhite = 75 -> Splat.KnownColor
+Splat.KnownColor.Gold = 76 -> Splat.KnownColor
+Splat.KnownColor.Goldenrod = 77 -> Splat.KnownColor
+Splat.KnownColor.GradientActiveCaption = 171 -> Splat.KnownColor
+Splat.KnownColor.GradientInactiveCaption = 172 -> Splat.KnownColor
+Splat.KnownColor.Gray = 78 -> Splat.KnownColor
+Splat.KnownColor.GrayText = 12 -> Splat.KnownColor
+Splat.KnownColor.Green = 79 -> Splat.KnownColor
+Splat.KnownColor.GreenYellow = 80 -> Splat.KnownColor
+Splat.KnownColor.Highlight = 13 -> Splat.KnownColor
+Splat.KnownColor.HighlightText = 14 -> Splat.KnownColor
+Splat.KnownColor.Honeydew = 81 -> Splat.KnownColor
+Splat.KnownColor.HotPink = 82 -> Splat.KnownColor
+Splat.KnownColor.HotTrack = 15 -> Splat.KnownColor
+Splat.KnownColor.InactiveBorder = 16 -> Splat.KnownColor
+Splat.KnownColor.InactiveCaption = 17 -> Splat.KnownColor
+Splat.KnownColor.InactiveCaptionText = 18 -> Splat.KnownColor
+Splat.KnownColor.IndianRed = 83 -> Splat.KnownColor
+Splat.KnownColor.Indigo = 84 -> Splat.KnownColor
+Splat.KnownColor.Info = 19 -> Splat.KnownColor
+Splat.KnownColor.InfoText = 20 -> Splat.KnownColor
+Splat.KnownColor.Ivory = 85 -> Splat.KnownColor
+Splat.KnownColor.Khaki = 86 -> Splat.KnownColor
+Splat.KnownColor.Lavender = 87 -> Splat.KnownColor
+Splat.KnownColor.LavenderBlush = 88 -> Splat.KnownColor
+Splat.KnownColor.LawnGreen = 89 -> Splat.KnownColor
+Splat.KnownColor.LemonChiffon = 90 -> Splat.KnownColor
+Splat.KnownColor.LightBlue = 91 -> Splat.KnownColor
+Splat.KnownColor.LightCoral = 92 -> Splat.KnownColor
+Splat.KnownColor.LightCyan = 93 -> Splat.KnownColor
+Splat.KnownColor.LightGoldenrodYellow = 94 -> Splat.KnownColor
+Splat.KnownColor.LightGray = 95 -> Splat.KnownColor
+Splat.KnownColor.LightGreen = 96 -> Splat.KnownColor
+Splat.KnownColor.LightPink = 97 -> Splat.KnownColor
+Splat.KnownColor.LightSalmon = 98 -> Splat.KnownColor
+Splat.KnownColor.LightSeaGreen = 99 -> Splat.KnownColor
+Splat.KnownColor.LightSkyBlue = 100 -> Splat.KnownColor
+Splat.KnownColor.LightSlateGray = 101 -> Splat.KnownColor
+Splat.KnownColor.LightSteelBlue = 102 -> Splat.KnownColor
+Splat.KnownColor.LightYellow = 103 -> Splat.KnownColor
+Splat.KnownColor.Lime = 104 -> Splat.KnownColor
+Splat.KnownColor.LimeGreen = 105 -> Splat.KnownColor
+Splat.KnownColor.Linen = 106 -> Splat.KnownColor
+Splat.KnownColor.Magenta = 107 -> Splat.KnownColor
+Splat.KnownColor.Maroon = 108 -> Splat.KnownColor
+Splat.KnownColor.MediumAquamarine = 109 -> Splat.KnownColor
+Splat.KnownColor.MediumBlue = 110 -> Splat.KnownColor
+Splat.KnownColor.MediumOrchid = 111 -> Splat.KnownColor
+Splat.KnownColor.MediumPurple = 112 -> Splat.KnownColor
+Splat.KnownColor.MediumSeaGreen = 113 -> Splat.KnownColor
+Splat.KnownColor.MediumSlateBlue = 114 -> Splat.KnownColor
+Splat.KnownColor.MediumSpringGreen = 115 -> Splat.KnownColor
+Splat.KnownColor.MediumTurquoise = 116 -> Splat.KnownColor
+Splat.KnownColor.MediumVioletRed = 117 -> Splat.KnownColor
+Splat.KnownColor.Menu = 21 -> Splat.KnownColor
+Splat.KnownColor.MenuBar = 173 -> Splat.KnownColor
+Splat.KnownColor.MenuHighlight = 174 -> Splat.KnownColor
+Splat.KnownColor.MenuText = 22 -> Splat.KnownColor
+Splat.KnownColor.MidnightBlue = 118 -> Splat.KnownColor
+Splat.KnownColor.MintCream = 119 -> Splat.KnownColor
+Splat.KnownColor.MistyRose = 120 -> Splat.KnownColor
+Splat.KnownColor.Moccasin = 121 -> Splat.KnownColor
+Splat.KnownColor.NavajoWhite = 122 -> Splat.KnownColor
+Splat.KnownColor.Navy = 123 -> Splat.KnownColor
+Splat.KnownColor.OldLace = 124 -> Splat.KnownColor
+Splat.KnownColor.Olive = 125 -> Splat.KnownColor
+Splat.KnownColor.OliveDrab = 126 -> Splat.KnownColor
+Splat.KnownColor.Orange = 127 -> Splat.KnownColor
+Splat.KnownColor.OrangeRed = 128 -> Splat.KnownColor
+Splat.KnownColor.Orchid = 129 -> Splat.KnownColor
+Splat.KnownColor.PaleGoldenrod = 130 -> Splat.KnownColor
+Splat.KnownColor.PaleGreen = 131 -> Splat.KnownColor
+Splat.KnownColor.PaleTurquoise = 132 -> Splat.KnownColor
+Splat.KnownColor.PaleVioletRed = 133 -> Splat.KnownColor
+Splat.KnownColor.PapayaWhip = 134 -> Splat.KnownColor
+Splat.KnownColor.PeachPuff = 135 -> Splat.KnownColor
+Splat.KnownColor.Peru = 136 -> Splat.KnownColor
+Splat.KnownColor.Pink = 137 -> Splat.KnownColor
+Splat.KnownColor.Plum = 138 -> Splat.KnownColor
+Splat.KnownColor.PowderBlue = 139 -> Splat.KnownColor
+Splat.KnownColor.Purple = 140 -> Splat.KnownColor
+Splat.KnownColor.Red = 141 -> Splat.KnownColor
+Splat.KnownColor.RosyBrown = 142 -> Splat.KnownColor
+Splat.KnownColor.RoyalBlue = 143 -> Splat.KnownColor
+Splat.KnownColor.SaddleBrown = 144 -> Splat.KnownColor
+Splat.KnownColor.Salmon = 145 -> Splat.KnownColor
+Splat.KnownColor.SandyBrown = 146 -> Splat.KnownColor
+Splat.KnownColor.ScrollBar = 23 -> Splat.KnownColor
+Splat.KnownColor.SeaGreen = 147 -> Splat.KnownColor
+Splat.KnownColor.SeaShell = 148 -> Splat.KnownColor
+Splat.KnownColor.Sienna = 149 -> Splat.KnownColor
+Splat.KnownColor.Silver = 150 -> Splat.KnownColor
+Splat.KnownColor.SkyBlue = 151 -> Splat.KnownColor
+Splat.KnownColor.SlateBlue = 152 -> Splat.KnownColor
+Splat.KnownColor.SlateGray = 153 -> Splat.KnownColor
+Splat.KnownColor.Snow = 154 -> Splat.KnownColor
+Splat.KnownColor.SpringGreen = 155 -> Splat.KnownColor
+Splat.KnownColor.SteelBlue = 156 -> Splat.KnownColor
+Splat.KnownColor.Tan = 157 -> Splat.KnownColor
+Splat.KnownColor.Teal = 158 -> Splat.KnownColor
+Splat.KnownColor.Thistle = 159 -> Splat.KnownColor
+Splat.KnownColor.Tomato = 160 -> Splat.KnownColor
+Splat.KnownColor.Transparent = 27 -> Splat.KnownColor
+Splat.KnownColor.Turquoise = 161 -> Splat.KnownColor
+Splat.KnownColor.Violet = 162 -> Splat.KnownColor
+Splat.KnownColor.Wheat = 163 -> Splat.KnownColor
+Splat.KnownColor.White = 164 -> Splat.KnownColor
+Splat.KnownColor.WhiteSmoke = 165 -> Splat.KnownColor
+Splat.KnownColor.Window = 24 -> Splat.KnownColor
+Splat.KnownColor.WindowFrame = 25 -> Splat.KnownColor
+Splat.KnownColor.WindowText = 26 -> Splat.KnownColor
+Splat.KnownColor.Yellow = 166 -> Splat.KnownColor
+Splat.KnownColor.YellowGreen = 167 -> Splat.KnownColor
+Splat.PlatformBitmapLoader
+Splat.PlatformBitmapLoader.Create(float width, float height) -> Splat.IBitmap!
+Splat.PlatformBitmapLoader.Load(System.IO.Stream! sourceStream, float? desiredWidth, float? desiredHeight) -> System.Threading.Tasks.Task<Splat.IBitmap?>!
+Splat.PlatformBitmapLoader.LoadFromResource(string! source, float? desiredWidth, float? desiredHeight) -> System.Threading.Tasks.Task<Splat.IBitmap?>!
+Splat.PlatformBitmapLoader.PlatformBitmapLoader() -> void
+Splat.PlatformModeDetector
+Splat.ServiceLocationDrawingInitializationExtensions
+Splat.ServiceLocationDrawingInitializationExtensions.extension(Splat.IMutableDependencyResolver!)
+Splat.ServiceLocationDrawingInitializationExtensions.extension(Splat.IMutableDependencyResolver!).RegisterPlatformBitmapLoader() -> void
+Splat.SplatColor
+Splat.SplatColor.A.get -> byte
+Splat.SplatColor.B.get -> byte
+Splat.SplatColor.Equals(Splat.SplatColor other) -> bool
+Splat.SplatColor.G.get -> byte
+Splat.SplatColor.GetBrightness() -> float
+Splat.SplatColor.GetHue() -> float
+Splat.SplatColor.GetSaturation() -> float
+Splat.SplatColor.IsEmpty.get -> bool
+Splat.SplatColor.IsKnownColor.get -> bool
+Splat.SplatColor.IsNamedColor.get -> bool
+Splat.SplatColor.IsSystemColor.get -> bool
+Splat.SplatColor.Name.get -> string!
+Splat.SplatColor.R.get -> byte
+Splat.SplatColor.SplatColor() -> void
+Splat.SplatColor.ToArgb() -> uint
+Splat.SplatColor.ToKnownColor() -> Splat.KnownColor
+Splat.SplatColorExtensions
+Splat.SplatColorExtensions.extension(AppKit.NSColor!)
+Splat.SplatColorExtensions.extension(AppKit.NSColor!).FromNative() -> Splat.SplatColor
+Splat.SplatColorExtensions.extension(Splat.SplatColor)
+Splat.SplatColorExtensions.extension(Splat.SplatColor).ToNative() -> AppKit.NSColor!
+static Splat.BitmapLoader.Current.get -> Splat.IBitmapLoader!
+static Splat.BitmapLoader.Current.set -> void
+static Splat.BitmapMixins.FromNative(this AppKit.NSImage! value, bool copy = false) -> Splat.IBitmap!
+static Splat.BitmapMixins.ToNative(this Splat.IBitmap! value) -> AppKit.NSImage!
+static Splat.PlatformModeDetector.InDesignMode() -> bool
+static Splat.PlatformModeDetector.OverrideModeDetector(Splat.IPlatformModeDetector! modeDetector) -> void
+static Splat.ServiceLocationDrawingInitializationExtensions.RegisterPlatformBitmapLoader(this Splat.IMutableDependencyResolver! resolver) -> void
+static Splat.SplatColor.AliceBlue.get -> Splat.SplatColor
+static Splat.SplatColor.AntiqueWhite.get -> Splat.SplatColor
+static Splat.SplatColor.Aqua.get -> Splat.SplatColor
+static Splat.SplatColor.Aquamarine.get -> Splat.SplatColor
+static Splat.SplatColor.Azure.get -> Splat.SplatColor
+static Splat.SplatColor.Beige.get -> Splat.SplatColor
+static Splat.SplatColor.Bisque.get -> Splat.SplatColor
+static Splat.SplatColor.Black.get -> Splat.SplatColor
+static Splat.SplatColor.BlanchedAlmond.get -> Splat.SplatColor
+static Splat.SplatColor.Blue.get -> Splat.SplatColor
+static Splat.SplatColor.BlueViolet.get -> Splat.SplatColor
+static Splat.SplatColor.Brown.get -> Splat.SplatColor
+static Splat.SplatColor.BurlyWood.get -> Splat.SplatColor
+static Splat.SplatColor.CadetBlue.get -> Splat.SplatColor
+static Splat.SplatColor.Chartreuse.get -> Splat.SplatColor
+static Splat.SplatColor.Chocolate.get -> Splat.SplatColor
+static Splat.SplatColor.Coral.get -> Splat.SplatColor
+static Splat.SplatColor.CornflowerBlue.get -> Splat.SplatColor
+static Splat.SplatColor.Cornsilk.get -> Splat.SplatColor
+static Splat.SplatColor.Crimson.get -> Splat.SplatColor
+static Splat.SplatColor.Cyan.get -> Splat.SplatColor
+static Splat.SplatColor.DarkBlue.get -> Splat.SplatColor
+static Splat.SplatColor.DarkCyan.get -> Splat.SplatColor
+static Splat.SplatColor.DarkGoldenrod.get -> Splat.SplatColor
+static Splat.SplatColor.DarkGray.get -> Splat.SplatColor
+static Splat.SplatColor.DarkGreen.get -> Splat.SplatColor
+static Splat.SplatColor.DarkKhaki.get -> Splat.SplatColor
+static Splat.SplatColor.DarkMagenta.get -> Splat.SplatColor
+static Splat.SplatColor.DarkOliveGreen.get -> Splat.SplatColor
+static Splat.SplatColor.DarkOrange.get -> Splat.SplatColor
+static Splat.SplatColor.DarkOrchid.get -> Splat.SplatColor
+static Splat.SplatColor.DarkRed.get -> Splat.SplatColor
+static Splat.SplatColor.DarkSalmon.get -> Splat.SplatColor
+static Splat.SplatColor.DarkSeaGreen.get -> Splat.SplatColor
+static Splat.SplatColor.DarkSlateBlue.get -> Splat.SplatColor
+static Splat.SplatColor.DarkSlateGray.get -> Splat.SplatColor
+static Splat.SplatColor.DarkTurquoise.get -> Splat.SplatColor
+static Splat.SplatColor.DarkViolet.get -> Splat.SplatColor
+static Splat.SplatColor.DeepPink.get -> Splat.SplatColor
+static Splat.SplatColor.DeepSkyBlue.get -> Splat.SplatColor
+static Splat.SplatColor.DimGray.get -> Splat.SplatColor
+static Splat.SplatColor.DodgerBlue.get -> Splat.SplatColor
+static Splat.SplatColor.Empty.get -> Splat.SplatColor
+static Splat.SplatColor.Firebrick.get -> Splat.SplatColor
+static Splat.SplatColor.FloralWhite.get -> Splat.SplatColor
+static Splat.SplatColor.ForestGreen.get -> Splat.SplatColor
+static Splat.SplatColor.FromArgb(int alpha, int red, int green, int blue) -> Splat.SplatColor
+static Splat.SplatColor.FromArgb(int alpha, Splat.SplatColor baseColor) -> Splat.SplatColor
+static Splat.SplatColor.FromArgb(int red, int green, int blue) -> Splat.SplatColor
+static Splat.SplatColor.FromArgb(uint argb) -> Splat.SplatColor
+static Splat.SplatColor.FromKnownColor(Splat.KnownColor color) -> Splat.SplatColor
+static Splat.SplatColor.FromName(string! name) -> Splat.SplatColor
+static Splat.SplatColor.Fuchsia.get -> Splat.SplatColor
+static Splat.SplatColor.Gainsboro.get -> Splat.SplatColor
+static Splat.SplatColor.GhostWhite.get -> Splat.SplatColor
+static Splat.SplatColor.Gold.get -> Splat.SplatColor
+static Splat.SplatColor.Goldenrod.get -> Splat.SplatColor
+static Splat.SplatColor.Gray.get -> Splat.SplatColor
+static Splat.SplatColor.Green.get -> Splat.SplatColor
+static Splat.SplatColor.GreenYellow.get -> Splat.SplatColor
+static Splat.SplatColor.Honeydew.get -> Splat.SplatColor
+static Splat.SplatColor.HotPink.get -> Splat.SplatColor
+static Splat.SplatColor.IndianRed.get -> Splat.SplatColor
+static Splat.SplatColor.Indigo.get -> Splat.SplatColor
+static Splat.SplatColor.Ivory.get -> Splat.SplatColor
+static Splat.SplatColor.Khaki.get -> Splat.SplatColor
+static Splat.SplatColor.Lavender.get -> Splat.SplatColor
+static Splat.SplatColor.LavenderBlush.get -> Splat.SplatColor
+static Splat.SplatColor.LawnGreen.get -> Splat.SplatColor
+static Splat.SplatColor.LemonChiffon.get -> Splat.SplatColor
+static Splat.SplatColor.LightBlue.get -> Splat.SplatColor
+static Splat.SplatColor.LightCoral.get -> Splat.SplatColor
+static Splat.SplatColor.LightCyan.get -> Splat.SplatColor
+static Splat.SplatColor.LightGoldenrodYellow.get -> Splat.SplatColor
+static Splat.SplatColor.LightGray.get -> Splat.SplatColor
+static Splat.SplatColor.LightGreen.get -> Splat.SplatColor
+static Splat.SplatColor.LightPink.get -> Splat.SplatColor
+static Splat.SplatColor.LightSalmon.get -> Splat.SplatColor
+static Splat.SplatColor.LightSeaGreen.get -> Splat.SplatColor
+static Splat.SplatColor.LightSkyBlue.get -> Splat.SplatColor
+static Splat.SplatColor.LightSlateGray.get -> Splat.SplatColor
+static Splat.SplatColor.LightSteelBlue.get -> Splat.SplatColor
+static Splat.SplatColor.LightYellow.get -> Splat.SplatColor
+static Splat.SplatColor.Lime.get -> Splat.SplatColor
+static Splat.SplatColor.LimeGreen.get -> Splat.SplatColor
+static Splat.SplatColor.Linen.get -> Splat.SplatColor
+static Splat.SplatColor.Magenta.get -> Splat.SplatColor
+static Splat.SplatColor.Maroon.get -> Splat.SplatColor
+static Splat.SplatColor.MediumAquamarine.get -> Splat.SplatColor
+static Splat.SplatColor.MediumBlue.get -> Splat.SplatColor
+static Splat.SplatColor.MediumOrchid.get -> Splat.SplatColor
+static Splat.SplatColor.MediumPurple.get -> Splat.SplatColor
+static Splat.SplatColor.MediumSeaGreen.get -> Splat.SplatColor
+static Splat.SplatColor.MediumSlateBlue.get -> Splat.SplatColor
+static Splat.SplatColor.MediumSpringGreen.get -> Splat.SplatColor
+static Splat.SplatColor.MediumTurquoise.get -> Splat.SplatColor
+static Splat.SplatColor.MediumVioletRed.get -> Splat.SplatColor
+static Splat.SplatColor.MidnightBlue.get -> Splat.SplatColor
+static Splat.SplatColor.MintCream.get -> Splat.SplatColor
+static Splat.SplatColor.MistyRose.get -> Splat.SplatColor
+static Splat.SplatColor.Moccasin.get -> Splat.SplatColor
+static Splat.SplatColor.NavajoWhite.get -> Splat.SplatColor
+static Splat.SplatColor.Navy.get -> Splat.SplatColor
+static Splat.SplatColor.OldLace.get -> Splat.SplatColor
+static Splat.SplatColor.Olive.get -> Splat.SplatColor
+static Splat.SplatColor.OliveDrab.get -> Splat.SplatColor
+static Splat.SplatColor.operator !=(Splat.SplatColor left, Splat.SplatColor right) -> bool
+static Splat.SplatColor.operator ==(Splat.SplatColor left, Splat.SplatColor right) -> bool
+static Splat.SplatColor.Orange.get -> Splat.SplatColor
+static Splat.SplatColor.OrangeRed.get -> Splat.SplatColor
+static Splat.SplatColor.Orchid.get -> Splat.SplatColor
+static Splat.SplatColor.PaleGoldenrod.get -> Splat.SplatColor
+static Splat.SplatColor.PaleGreen.get -> Splat.SplatColor
+static Splat.SplatColor.PaleTurquoise.get -> Splat.SplatColor
+static Splat.SplatColor.PaleVioletRed.get -> Splat.SplatColor
+static Splat.SplatColor.PapayaWhip.get -> Splat.SplatColor
+static Splat.SplatColor.PeachPuff.get -> Splat.SplatColor
+static Splat.SplatColor.Peru.get -> Splat.SplatColor
+static Splat.SplatColor.Pink.get -> Splat.SplatColor
+static Splat.SplatColor.Plum.get -> Splat.SplatColor
+static Splat.SplatColor.PowderBlue.get -> Splat.SplatColor
+static Splat.SplatColor.Purple.get -> Splat.SplatColor
+static Splat.SplatColor.Red.get -> Splat.SplatColor
+static Splat.SplatColor.RosyBrown.get -> Splat.SplatColor
+static Splat.SplatColor.RoyalBlue.get -> Splat.SplatColor
+static Splat.SplatColor.SaddleBrown.get -> Splat.SplatColor
+static Splat.SplatColor.Salmon.get -> Splat.SplatColor
+static Splat.SplatColor.SandyBrown.get -> Splat.SplatColor
+static Splat.SplatColor.SeaGreen.get -> Splat.SplatColor
+static Splat.SplatColor.SeaShell.get -> Splat.SplatColor
+static Splat.SplatColor.Sienna.get -> Splat.SplatColor
+static Splat.SplatColor.Silver.get -> Splat.SplatColor
+static Splat.SplatColor.SkyBlue.get -> Splat.SplatColor
+static Splat.SplatColor.SlateBlue.get -> Splat.SplatColor
+static Splat.SplatColor.SlateGray.get -> Splat.SplatColor
+static Splat.SplatColor.Snow.get -> Splat.SplatColor
+static Splat.SplatColor.SpringGreen.get -> Splat.SplatColor
+static Splat.SplatColor.SteelBlue.get -> Splat.SplatColor
+static Splat.SplatColor.Tan.get -> Splat.SplatColor
+static Splat.SplatColor.Teal.get -> Splat.SplatColor
+static Splat.SplatColor.Thistle.get -> Splat.SplatColor
+static Splat.SplatColor.Tomato.get -> Splat.SplatColor
+static Splat.SplatColor.Transparent.get -> Splat.SplatColor
+static Splat.SplatColor.Turquoise.get -> Splat.SplatColor
+static Splat.SplatColor.Violet.get -> Splat.SplatColor
+static Splat.SplatColor.Wheat.get -> Splat.SplatColor
+static Splat.SplatColor.White.get -> Splat.SplatColor
+static Splat.SplatColor.WhiteSmoke.get -> Splat.SplatColor
+static Splat.SplatColor.Yellow.get -> Splat.SplatColor
+static Splat.SplatColor.YellowGreen.get -> Splat.SplatColor
+static Splat.SplatColorExtensions.FromNative(this AppKit.NSColor! value) -> Splat.SplatColor
+static Splat.SplatColorExtensions.ToNative(this Splat.SplatColor value) -> AppKit.NSColor!

@@ -1,19 +1,18 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Tests.Mocks;
 
 namespace Splat.Tests.Logging;
 
+/// <summary>Unit tests for the <see cref="WrappingPrefixLogger"/> class.</summary>
 public class WrappingPrefixLoggerTests
 {
+    /// <summary>Gets the new line characters for the current environment.</summary>
     private static char[] NewLine => Environment.NewLine.ToCharArray();
 
-    /// <summary>
-    /// Test to make sure the message writes.
-    /// </summary>
+    /// <summary>Test to make sure the message writes.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Write_Should_Write_Message()
@@ -26,9 +25,7 @@ public class WrappingPrefixLoggerTests
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass1)}: This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Write_Should_Write_Message_And_Type()
@@ -41,9 +38,7 @@ public class WrappingPrefixLoggerTests
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass1)}: This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the generic type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Debug_With_Generic_Type_Should_Write_Message_And_Type()
@@ -56,9 +51,7 @@ public class WrappingPrefixLoggerTests
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass1)}: This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the generic type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Debug_With_Generic_Type_Should_Write_Message_And_Type_Provided()
@@ -71,9 +64,7 @@ public class WrappingPrefixLoggerTests
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass2)}: This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the generic type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Info_With_Generic_Type_Should_Write_Message_And_Type()
@@ -86,9 +77,7 @@ public class WrappingPrefixLoggerTests
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass1)}: This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the generic type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Info_With_Generic_Type_Should_Write_Message_And_Type_Provided()
@@ -101,9 +90,7 @@ public class WrappingPrefixLoggerTests
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass2)}: This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the generic type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Warn_With_Generic_Type_Should_Write_Message_And_Type()
@@ -116,9 +103,7 @@ public class WrappingPrefixLoggerTests
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass1)}: This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the generic type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Warn_With_Generic_Type_Should_Write_Message_And_Type_Provided()
@@ -131,9 +116,7 @@ public class WrappingPrefixLoggerTests
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass2)}: This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the generic type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Error_With_Generic_Type_Should_Write_Message_And_Type()
@@ -146,9 +129,7 @@ public class WrappingPrefixLoggerTests
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass1)}: This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the generic type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Error_With_Generic_Type_Should_Write_Message_And_Type_Provided()
@@ -161,9 +142,7 @@ public class WrappingPrefixLoggerTests
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass2)}: This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the generic type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Fatal_With_Generic_Type_Should_Write_Message_And_Type()
@@ -176,9 +155,7 @@ public class WrappingPrefixLoggerTests
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass1)}: This is a test.");
     }
 
-    /// <summary>
-    /// Test to make sure the generic type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Fatal_With_Generic_Type_Should_Write_Message_And_Type_Provided()

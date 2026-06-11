@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.ComponentModel;
@@ -9,9 +8,7 @@ using Serilog.Events;
 
 namespace Splat;
 
-/// <summary>
-/// Provides a full-featured logger implementation that writes log events to Serilog using the IFullLogger interface.
-/// </summary>
+/// <summary>Provides a full-featured logger implementation that writes log events to Serilog using the IFullLogger interface.</summary>
 /// <remarks>This class adapts the IFullLogger interface to Serilog, enabling structured logging and support for
 /// multiple log levels, message formatting, and exception logging. All log methods delegate to the underlying
 /// Serilog.ILogger instance. Thread safety and configuration are determined by the provided Serilog logger.</remarks>
@@ -127,10 +124,12 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsDebugEnabled)
+        if (!IsDebugEnabled)
         {
-            logger.Debug(function.Invoke());
+            return;
         }
+
+        logger.Debug(function.Invoke());
     }
 
     /// <inheritdoc />
@@ -138,10 +137,12 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsDebugEnabled)
+        if (!IsDebugEnabled)
         {
-            logger.ForContext<T>().Debug(function.Invoke());
+            return;
         }
+
+        logger.ForContext<T>().Debug(function.Invoke());
     }
 
     /// <inheritdoc />
@@ -151,10 +152,12 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsDebugEnabled)
+        if (!IsDebugEnabled)
         {
-            logger.Debug(exception, function.Invoke());
+            return;
         }
+
+        logger.Debug(exception, function.Invoke());
     }
 
     /// <inheritdoc />
@@ -162,10 +165,12 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsDebugEnabled)
+        if (!IsDebugEnabled)
         {
-            logger.Debug(exception, function.Invoke());
+            return;
         }
+
+        logger.Debug(exception, function.Invoke());
     }
 
     /// <inheritdoc />
@@ -239,10 +244,12 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsErrorEnabled)
+        if (!IsErrorEnabled)
         {
-            logger.Error(function.Invoke());
+            return;
         }
+
+        logger.Error(function.Invoke());
     }
 
     /// <inheritdoc />
@@ -250,10 +257,12 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsErrorEnabled)
+        if (!IsErrorEnabled)
         {
-            logger.ForContext<T>().Error(function.Invoke());
+            return;
         }
+
+        logger.ForContext<T>().Error(function.Invoke());
     }
 
     /// <inheritdoc />
@@ -263,10 +272,12 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsErrorEnabled)
+        if (!IsErrorEnabled)
         {
-            logger.Error(exception, function.Invoke());
+            return;
         }
+
+        logger.Error(exception, function.Invoke());
     }
 
     /// <inheritdoc />
@@ -274,10 +285,12 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsErrorEnabled)
+        if (!IsErrorEnabled)
         {
-            logger.Error(exception, function.Invoke());
+            return;
         }
+
+        logger.Error(exception, function.Invoke());
     }
 
     /// <inheritdoc />
@@ -351,10 +364,12 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsFatalEnabled)
+        if (!IsFatalEnabled)
         {
-            logger.Fatal(function.Invoke());
+            return;
         }
+
+        logger.Fatal(function.Invoke());
     }
 
     /// <inheritdoc />
@@ -362,10 +377,12 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsFatalEnabled)
+        if (!IsFatalEnabled)
         {
-            logger.ForContext<T>().Fatal(function.Invoke());
+            return;
         }
+
+        logger.ForContext<T>().Fatal(function.Invoke());
     }
 
     /// <inheritdoc />
@@ -375,10 +392,12 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsFatalEnabled)
+        if (!IsFatalEnabled)
         {
-            logger.Fatal(exception, function.Invoke());
+            return;
         }
+
+        logger.Fatal(exception, function.Invoke());
     }
 
     /// <inheritdoc />
@@ -386,10 +405,12 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsFatalEnabled)
+        if (!IsFatalEnabled)
         {
-            logger.Fatal(exception, function.Invoke());
+            return;
         }
+
+        logger.Fatal(exception, function.Invoke());
     }
 
     /// <inheritdoc />
@@ -463,10 +484,12 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsInfoEnabled)
+        if (!IsInfoEnabled)
         {
-            logger.Information(function.Invoke());
+            return;
         }
+
+        logger.Information(function.Invoke());
     }
 
     /// <inheritdoc />
@@ -474,10 +497,12 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsInfoEnabled)
+        if (!IsInfoEnabled)
         {
-            logger.ForContext<T>().Information(function.Invoke());
+            return;
         }
+
+        logger.ForContext<T>().Information(function.Invoke());
     }
 
     /// <inheritdoc />
@@ -487,10 +512,12 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsInfoEnabled)
+        if (!IsInfoEnabled)
         {
-            logger.Information(exception, function.Invoke());
+            return;
         }
+
+        logger.Information(exception, function.Invoke());
     }
 
     /// <inheritdoc />
@@ -498,10 +525,12 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsInfoEnabled)
+        if (!IsInfoEnabled)
         {
-            logger.Information(exception, function.Invoke());
+            return;
         }
+
+        logger.Information(exception, function.Invoke());
     }
 
     /// <inheritdoc />
@@ -575,10 +604,12 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsWarnEnabled)
+        if (!IsWarnEnabled)
         {
-            logger.Warning(function.Invoke());
+            return;
         }
+
+        logger.Warning(function.Invoke());
     }
 
     /// <inheritdoc />
@@ -586,10 +617,12 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsWarnEnabled)
+        if (!IsWarnEnabled)
         {
-            logger.ForContext<T>().Warning(function.Invoke());
+            return;
         }
+
+        logger.ForContext<T>().Warning(function.Invoke());
     }
 
     /// <inheritdoc />
@@ -599,10 +632,12 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsWarnEnabled)
+        if (!IsWarnEnabled)
         {
-            logger.Warning(exception, function.Invoke());
+            return;
         }
+
+        logger.Warning(exception, function.Invoke());
     }
 
     /// <inheritdoc />
@@ -610,10 +645,12 @@ public class SerilogFullLogger(global::Serilog.ILogger logger) : IFullLogger
     {
         ArgumentExceptionHelper.ThrowIfNull(function);
 
-        if (IsWarnEnabled)
+        if (!IsWarnEnabled)
         {
-            logger.Warning(exception, function.Invoke());
+            return;
         }
+
+        logger.Warning(exception, function.Invoke());
     }
 
     /// <inheritdoc />

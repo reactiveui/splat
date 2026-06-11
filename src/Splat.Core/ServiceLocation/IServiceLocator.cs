@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
@@ -18,34 +17,26 @@ namespace Splat;
 /// depend on the specific implementation of the interface.</remarks>
 public interface IServiceLocator
 {
-    /// <summary>
-    /// Gets an instance of the specified service type.
-    /// </summary>
+    /// <summary>Gets an instance of the specified service type.</summary>
     /// <typeparam name="T">The service type to retrieve.</typeparam>
     /// <returns>The service instance.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the service is not registered.</exception>
     T GetService<T>();
 
-    /// <summary>
-    /// Gets an instance of the specified service type with a contract.
-    /// </summary>
+    /// <summary>Gets an instance of the specified service type with a contract.</summary>
     /// <typeparam name="T">The service type to retrieve.</typeparam>
     /// <param name="contract">The contract name.</param>
     /// <returns>The service instance.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the service is not registered.</exception>
     T GetService<T>(string contract);
 
-    /// <summary>
-    /// Gets all registered service instances of the specified type.
-    /// </summary>
+    /// <summary>Gets all registered service instances of the specified type.</summary>
     /// <typeparam name="T">The type of service to retrieve.</typeparam>
     /// <returns>An enumerable collection of service instances of type T. The collection is empty if no services of the specified
     /// type are registered.</returns>
     IEnumerable<T> GetServices<T>();
 
-    /// <summary>
-    /// Gets all registered service instances of the specified type that match the given contract name.
-    /// </summary>
+    /// <summary>Gets all registered service instances of the specified type that match the given contract name.</summary>
     /// <typeparam name="T">The type of service to retrieve.</typeparam>
     /// <param name="contract">The contract name used to filter the services. Only services registered with this contract will be returned.
     /// Cannot be null.</param>
@@ -53,9 +44,7 @@ public interface IServiceLocator
     /// empty if no matching services are found.</returns>
     IEnumerable<T> GetServices<T>(string contract);
 
-    /// <summary>
-    /// Attempts to retrieve a service object of the specified type from the service provider.
-    /// </summary>
+    /// <summary>Attempts to retrieve a service object of the specified type from the service provider.</summary>
     /// <typeparam name="T">The type of service to retrieve.</typeparam>
     /// <param name="service">When this method returns, contains the service object of type <typeparamref name="T"/> if found; otherwise, the
     /// default value for the type.</param>
@@ -63,43 +52,33 @@ public interface IServiceLocator
     /// langword="false"/>.</returns>
     bool TryGetService<T>([MaybeNullWhen(false)] out T service);
 
-    /// <summary>
-    /// Attempts to retrieve a service of the specified type and contract.
-    /// </summary>
+    /// <summary>Attempts to retrieve a service of the specified type and contract.</summary>
     /// <typeparam name="T">The type of service to retrieve.</typeparam>
     /// <param name="contract">The contract name that identifies the service. Cannot be null.</param>
     /// <param name="service">When this method returns, contains the requested service if found; otherwise, the default value for the type.</param>
     /// <returns>true if the service was found and returned in the out parameter; otherwise, false.</returns>
     bool TryGetService<T>(string contract, [MaybeNullWhen(false)] out T service);
 
-    /// <summary>
-    /// Retrieves a lazily initialized instance of the specified service type from the dependency injection container.
-    /// </summary>
+    /// <summary>Retrieves a lazily initialized instance of the specified service type from the dependency injection container.</summary>
     /// <typeparam name="T">The type of the service to retrieve. Must have a public parameterless constructor.</typeparam>
     /// <returns>A <see cref="Lazy{T}"/> that provides access to the requested service instance. The service is created when the
     /// <see cref="Lazy{T}.Value"/> property is first accessed.</returns>
     Lazy<T> GetLazyService<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>();
 
-    /// <summary>
-    /// Retrieves a lazily initialized service of the specified type associated with the given contract name.
-    /// </summary>
+    /// <summary>Retrieves a lazily initialized service of the specified type associated with the given contract name.</summary>
     /// <typeparam name="T">The type of the service to retrieve. Must have a public parameterless constructor.</typeparam>
     /// <param name="contract">The contract name that identifies the service to retrieve. Cannot be null.</param>
     /// <returns>A <see cref="Lazy{T}"/> instance that provides access to the requested service. The service is created when the
     /// <see cref="Lazy{T}.Value"/> property is first accessed.</returns>
     Lazy<T> GetLazyService<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(string contract);
 
-    /// <summary>
-    /// Attempts to retrieve a lazily initialized service of the specified type from the service provider.
-    /// </summary>
+    /// <summary>Attempts to retrieve a lazily initialized service of the specified type from the service provider.</summary>
     /// <typeparam name="T">The type of service to retrieve. Must have a public parameterless constructor.</typeparam>
     /// <param name="service">When this method returns, contains a Lazy{T} instance for the requested service if found; otherwise, null.</param>
     /// <returns>true if the service was found and assigned to the out parameter; otherwise, false.</returns>
     bool TryGetLazyService<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>([MaybeNullWhen(false)] out Lazy<T> service);
 
-    /// <summary>
-    /// Attempts to retrieve a lazily initialized service of the specified type and contract.
-    /// </summary>
+    /// <summary>Attempts to retrieve a lazily initialized service of the specified type and contract.</summary>
     /// <remarks>Use this method to attempt to obtain a service without throwing an exception if the service
     /// is not available. The service is created only when the Lazy{T} is evaluated.</remarks>
     /// <typeparam name="T">The type of the service to retrieve. Must have a public parameterless constructor.</typeparam>
@@ -108,24 +87,18 @@ public interface IServiceLocator
     /// <returns>true if a matching service is found and assigned to the out parameter; otherwise, false.</returns>
     bool TryGetLazyService<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(string contract, [MaybeNullWhen(false)] out Lazy<T> service);
 
-    /// <summary>
-    /// Determines whether a service of the specified type is available from the service provider.
-    /// </summary>
+    /// <summary>Determines whether a service of the specified type is available from the service provider.</summary>
     /// <typeparam name="T">The type of service to check for availability.</typeparam>
     /// <returns>true if a service of type T is available; otherwise, false.</returns>
     bool HasService<T>();
 
-    /// <summary>
-    /// Determines whether a service of the specified type and contract is available from the service provider.
-    /// </summary>
+    /// <summary>Determines whether a service of the specified type and contract is available from the service provider.</summary>
     /// <typeparam name="T">The type of the service to check for.</typeparam>
     /// <param name="contract">The contract name that identifies the service. Cannot be null.</param>
     /// <returns>true if a service of type T with the specified contract is available; otherwise, false.</returns>
     bool HasService<T>(string contract);
 
-    /// <summary>
-    /// Registers a transient service of the specified type using the provided factory function.
-    /// </summary>
+    /// <summary>Registers a transient service of the specified type using the provided factory function.</summary>
     /// <remarks>Use this method to register services that require custom instantiation logic or dependencies
     /// not handled by default constructors. The factory function should not return null.</remarks>
     /// <typeparam name="T">The type of the service to register.</typeparam>
@@ -144,9 +117,7 @@ public interface IServiceLocator
     /// <param name="contract">The contract name under which the service is registered. Cannot be null or empty.</param>
     void AddService<T>(Func<T> instanceFactory, string contract);
 
-    /// <summary>
-    /// Registers the specified instance as a singleton service for the given contract type.
-    /// </summary>
+    /// <summary>Registers the specified instance as a singleton service for the given contract type.</summary>
     /// <remarks>Use this method to provide a specific instance that will be shared across all consumers of
     /// the contract type. The same instance is returned each time the service is requested.</remarks>
     /// <typeparam name="TContract">The contract type of the service to register. Must be a reference type.</typeparam>
@@ -155,9 +126,7 @@ public interface IServiceLocator
     void AddSingleton<TContract>(TContract instance)
         where TContract : class;
 
-    /// <summary>
-    /// Registers the specified instance as a singleton for the given contract type and contract name.
-    /// </summary>
+    /// <summary>Registers the specified instance as a singleton for the given contract type and contract name.</summary>
     /// <remarks>Subsequent requests for the specified contract type and contract name will return the same
     /// instance. This method is typically used to provide a pre-constructed or externally managed singleton to the
     /// dependency injection container.</remarks>
@@ -168,9 +137,7 @@ public interface IServiceLocator
     void AddSingleton<TContract>(TContract instance, string contract)
         where TContract : class;
 
-    /// <summary>
-    /// Registers a singleton service of the specified contract type using the provided factory function.
-    /// </summary>
+    /// <summary>Registers a singleton service of the specified contract type using the provided factory function.</summary>
     /// <remarks>Subsequent requests for the service will return the same instance created by the factory.
     /// This method is typically used to register services that should have a single shared instance for the
     /// application's lifetime.</remarks>
@@ -192,9 +159,7 @@ public interface IServiceLocator
     /// <param name="contract">The name of the contract to associate with the registered singleton service. Cannot be null or empty.</param>
     void AddSingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TContract>(Func<TContract> instanceFactory, string contract);
 
-    /// <summary>
-    /// Registers a lazily initialized singleton instance for the specified contract type.
-    /// </summary>
+    /// <summary>Registers a lazily initialized singleton instance for the specified contract type.</summary>
     /// <remarks>This method allows deferred creation of the singleton instance. The instance will be created
     /// only when first requested from the container. Subsequent requests will return the same instance.</remarks>
     /// <typeparam name="TContract">The contract type to associate with the singleton instance. Must have a public parameterless constructor.</typeparam>
@@ -215,9 +180,7 @@ public interface IServiceLocator
     void AddLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TContract>(Func<TContract> instanceFactory, LazyThreadSafetyMode threadSafetyMode)
         where TContract : class;
 
-    /// <summary>
-    /// Registers a lazily initialized singleton instance for the specified contract type and contract name.
-    /// </summary>
+    /// <summary>Registers a lazily initialized singleton instance for the specified contract type and contract name.</summary>
     /// <remarks>Use this method to register a singleton that is created only when first requested, which can
     /// improve startup performance or defer expensive initialization. Subsequent requests for the contract will return
     /// the same instance.</remarks>
