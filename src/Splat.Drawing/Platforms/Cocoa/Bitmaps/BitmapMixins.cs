@@ -25,7 +25,10 @@ public static class BitmapMixins
         public UIImage ToNative()
         {
             ArgumentExceptionHelper.ThrowIfNull(value);
-            return ((CocoaBitmap)value).Inner;
+
+            return value is CocoaBitmap cocoaBitmap
+                ? cocoaBitmap.Inner
+                : throw new InvalidCastException($"Unable to convert {value.GetType()} to a {nameof(UIImage)}.");
         }
     }
 
@@ -34,12 +37,22 @@ public static class BitmapMixins
     extension(UIImage value)
     {
         /// <summary>Converts a <see cref="UIImage"/> to a splat <see cref="IBitmap"/>.</summary>
-        /// <param name="copy">Whether to copy the android bitmap or not.</param>
         /// <returns>A <see cref="IBitmap"/> bitmap.</returns>
-        public IBitmap FromNative(bool copy = false)
+        public IBitmap FromNative()
         {
             ArgumentExceptionHelper.ThrowIfNull(value);
-            return copy ? new CocoaBitmap((UIImage)value.Copy()) : (IBitmap)new CocoaBitmap(value);
+
+            return new CocoaBitmap(value);
+        }
+
+        /// <summary>Converts a <see cref="UIImage"/> to a splat <see cref="IBitmap"/>.</summary>
+        /// <param name="copy">Whether to copy the native image or not.</param>
+        /// <returns>A <see cref="IBitmap"/> bitmap.</returns>
+        public IBitmap FromNative(bool copy)
+        {
+            ArgumentExceptionHelper.ThrowIfNull(value);
+
+            return copy ? new CocoaBitmap((UIImage)value.Copy()) : new CocoaBitmap(value);
         }
     }
 }

@@ -9,7 +9,8 @@ Splat.BitmapLoaderException.BitmapLoaderException(string! message) -> void
 Splat.BitmapLoaderException.BitmapLoaderException(string! message, System.Exception! innerException) -> void
 Splat.BitmapMixins
 Splat.BitmapMixins.extension(AppKit.NSImage!)
-Splat.BitmapMixins.extension(AppKit.NSImage!).FromNative(bool copy = false) -> Splat.IBitmap!
+Splat.BitmapMixins.extension(AppKit.NSImage!).FromNative() -> Splat.IBitmap!
+Splat.BitmapMixins.extension(AppKit.NSImage!).FromNative(bool copy) -> Splat.IBitmap!
 Splat.BitmapMixins.extension(Splat.IBitmap!)
 Splat.BitmapMixins.extension(Splat.IBitmap!).ToNative() -> AppKit.NSImage!
 Splat.CompressedBitmapFormat
@@ -237,7 +238,8 @@ Splat.SplatColorExtensions.extension(Splat.SplatColor)
 Splat.SplatColorExtensions.extension(Splat.SplatColor).ToNative() -> AppKit.NSColor!
 static Splat.BitmapLoader.Current.get -> Splat.IBitmapLoader!
 static Splat.BitmapLoader.Current.set -> void
-static Splat.BitmapMixins.FromNative(this AppKit.NSImage! value, bool copy = false) -> Splat.IBitmap!
+static Splat.BitmapMixins.FromNative(this AppKit.NSImage! value) -> Splat.IBitmap!
+static Splat.BitmapMixins.FromNative(this AppKit.NSImage! value, bool copy) -> Splat.IBitmap!
 static Splat.BitmapMixins.ToNative(this Splat.IBitmap! value) -> AppKit.NSImage!
 static Splat.PlatformModeDetector.InDesignMode() -> bool
 static Splat.PlatformModeDetector.OverrideModeDetector(Splat.IPlatformModeDetector! modeDetector) -> void

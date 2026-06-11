@@ -16,6 +16,9 @@ namespace Splat;
 /// with native UI frameworks.</remarks>
 public static class SplatColorExtensions
 {
+    /// <summary>The maximum value of a single 8-bit colour component, used to scale between byte and normalized float channels.</summary>
+    private const float ByteComponentMax = 255f;
+
 #if UIKIT
     /// <summary>Extension members for <see cref="SplatColor"/>.</summary>
     /// <param name="value">The value the extension members operate on.</param>
@@ -24,7 +27,7 @@ public static class SplatColorExtensions
         /// <summary>Converts a <see cref="SplatColor"/> into the cocoa native <see cref="UIColor"/>.</summary>
         /// <returns>The <see cref="UIColor"/> generated value.</returns>
         public UIColor ToNative() =>
-            new(value.R / 255.0f, value.G / 255.0f, value.B / 255.0f, value.A / 255.0f);
+            new(value.R / ByteComponentMax, value.G / ByteComponentMax, value.B / ByteComponentMax, value.A / ByteComponentMax);
     }
 
     /// <summary>Extension members for <see cref="UIColor"/>.</summary>
@@ -38,7 +41,7 @@ public static class SplatColorExtensions
             ArgumentExceptionHelper.ThrowIfNull(value);
 
             value.GetRGBA(out var r, out var g, out var b, out var a);
-            return SplatColor.FromArgb((int)(a * 255.0f), (int)(r * 255.0f), (int)(g * 255.0f), (int)(b * 255.0f));
+            return SplatColor.FromArgb((int)(a * ByteComponentMax), (int)(r * ByteComponentMax), (int)(g * ByteComponentMax), (int)(b * ByteComponentMax));
         }
     }
 #else
@@ -49,7 +52,7 @@ public static class SplatColorExtensions
         /// <summary>Converts a <see cref="SplatColor"/> into the cocoa native <see cref="NSColor"/>.</summary>
         /// <returns>The <see cref="NSColor"/> generated.</returns>
         public NSColor ToNative() =>
-            NSColor.FromSrgb(value.R / 255.0f, value.G / 255.0f, value.B / 255.0f, value.A / 255.0f);
+            NSColor.FromSrgb(value.R / ByteComponentMax, value.G / ByteComponentMax, value.B / ByteComponentMax, value.A / ByteComponentMax);
     }
 
     /// <summary>Extension members for <see cref="NSColor"/>.</summary>
@@ -63,7 +66,7 @@ public static class SplatColorExtensions
             ArgumentExceptionHelper.ThrowIfNull(value);
 
             value.GetRgba(out var r, out var g, out var b, out var a);
-            return SplatColor.FromArgb((int)(a * 255.0f), (int)(r * 255.0f), (int)(g * 255.0f), (int)(b * 255.0f));
+            return SplatColor.FromArgb((int)(a * ByteComponentMax), (int)(r * ByteComponentMax), (int)(g * ByteComponentMax), (int)(b * ByteComponentMax));
         }
     }
 #endif

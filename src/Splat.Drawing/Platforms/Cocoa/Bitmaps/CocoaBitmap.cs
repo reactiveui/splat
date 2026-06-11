@@ -23,6 +23,7 @@ namespace Splat;
 /// <param name="inner">The native UIImage that provides the underlying image data for the bitmap. Cannot be null.</param>
 internal sealed class CocoaBitmap(UIImage inner) : IBitmap
 {
+    /// <summary>The native image backing this bitmap; set to <see langword="null"/> once the bitmap is disposed.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Is Disposed using Interlocked method")]
     private UIImage? _inner = inner;
 
