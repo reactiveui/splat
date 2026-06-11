@@ -24,11 +24,18 @@ public class AppBuilder : IAppBuilder, IAppInstance
     /// <summary>Factory that provides the read-only dependency resolver used for resolution.</summary>
     private Func<IReadonlyDependencyResolver?> _serviceProvider;
 
-    /// <summary>Initializes a new instance of the <see cref="AppBuilder"/> class with the specified dependency resolver and an optional. current resolver.</summary>
+    /// <summary>Initializes a new instance of the <see cref="AppBuilder"/> class with the specified dependency resolver.</summary>
     /// <param name="resolver">The dependency resolver to use for registering and resolving services. Cannot be null.</param>
-    /// <param name="current">An optional read-only dependency resolver to use as the current resolver. If null, only the mutable resolver is
+    public AppBuilder(IMutableDependencyResolver resolver)
+        : this(resolver, null)
+    {
+    }
+
+    /// <summary>Initializes a new instance of the <see cref="AppBuilder"/> class with the specified dependency resolver and current resolver.</summary>
+    /// <param name="resolver">The dependency resolver to use for registering and resolving services. Cannot be null.</param>
+    /// <param name="current">A read-only dependency resolver to use as the current resolver. If null, only the mutable resolver is
     /// used.</param>
-    public AppBuilder(IMutableDependencyResolver resolver, IReadonlyDependencyResolver? current = null)
+    public AppBuilder(IMutableDependencyResolver resolver, IReadonlyDependencyResolver? current)
     {
         ArgumentExceptionHelper.ThrowIfNull(resolver);
 
@@ -162,20 +169,16 @@ public class AppBuilder : IAppBuilder, IAppInstance
         (HasBeenBuilt, UsingBuilder);
 
     /// <summary>Restores the internal build state from the specified tuple. Use for test isolation. Used by test scopes.</summary>
-    /// <param name="state">A tuple containing the values to restore for the build state. The first item indicates whether the build has
-    /// been completed; the second item specifies whether the builder pattern is in use.</param>
-    internal static void RestoreState((bool hasBeenBuilt, bool usingBuilder) state)
+    /// <param name="hasBeenBuilt">The value to set for the <see cref="HasBeenBuilt"/> property.</param>
+    /// <param name="usingBuilder">The value to set for the <see cref="UsingBuilder"/> property.</param>
+    internal static void RestoreState(bool hasBeenBuilt, bool usingBuilder)
     {
-        HasBeenBuilt = state.hasBeenBuilt;
-        UsingBuilder = state.usingBuilder;
+        HasBeenBuilt = hasBeenBuilt;
+        UsingBuilder = usingBuilder;
     }
 
     /// <summary>Resets the state to default for test isolation. Used by test scopes.</summary>
     /// <remarks>This method is intended for internal use to reinitialize static state. It should not be
     /// called from external code.</remarks>
-    internal static void ResetState()
-    {
-        HasBeenBuilt = false;
-        UsingBuilder = false;
-    }
+    internal static void ResetState() => RestoreState(false, false);
 }

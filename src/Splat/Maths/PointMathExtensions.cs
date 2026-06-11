@@ -12,6 +12,9 @@ namespace Splat;
 /// computations in graphical or mathematical applications.</remarks>
 public static class PointMathExtensions
 {
+    /// <summary>The number of degrees in half a turn, used to convert radians to degrees (degrees = radians * <see cref="DegreesPerHalfTurn"/> / pi).</summary>
+    private const float DegreesPerHalfTurn = 180.0f;
+
     /// <summary>Extension members for mathematical operations on <see cref="Point"/>.</summary>
     /// <param name="value">The point the extension members operate on.</param>
     extension(Point value)
@@ -71,7 +74,7 @@ public static class PointMathExtensions
         /// indicates a clockwise angle. If this point is (0, 0), the result is 0.</remarks>
         /// <returns>The angle, in degrees, between the positive X-axis and the vector from the origin to this point.
         /// The result is in the range -180 to 180 degrees.</returns>
-        public float AngleInDegrees() => (float)(Math.Atan2(value.Y, value.X) * 180.0f / Math.PI);
+        public float AngleInDegrees() => (float)(Math.Atan2(value.Y, value.X) * DegreesPerHalfTurn / Math.PI);
 
         /// <summary>
         /// Projects the specified point onto the given direction vector, returning the component of the point that lies

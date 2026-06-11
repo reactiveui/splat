@@ -19,6 +19,7 @@ namespace Splat.ApplicationInsights;
 /// should be used on a single thread.</remarks>
 public sealed class ApplicationInsightsFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
 {
+    /// <summary>The Application Insights client that feature-usage telemetry is sent to.</summary>
     private readonly TelemetryClient _telemetryClient;
 
     /// <summary>Initializes a new instance of the <see cref="ApplicationInsightsFeatureUsageTrackingSession"/> class.</summary>

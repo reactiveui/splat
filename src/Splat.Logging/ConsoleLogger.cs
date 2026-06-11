@@ -17,9 +17,15 @@ public class ConsoleLogger : ILogger
     /// <summary>The text writer to write log messages to.</summary>
     private readonly TextWriter _writer;
 
+    /// <summary>Initializes a new instance of the <see cref="ConsoleLogger"/> class that writes to <see cref="Console.Out"/>.</summary>
+    public ConsoleLogger()
+        : this(Console.Out)
+    {
+    }
+
     /// <summary>Initializes a new instance of the <see cref="ConsoleLogger"/> class.</summary>
     /// <param name="writer">The text writer to write log messages to. Defaults to Console.Out if null.</param>
-    public ConsoleLogger(TextWriter? writer = null) => _writer = writer ?? Console.Out;
+    public ConsoleLogger(TextWriter? writer) => _writer = writer ?? Console.Out;
 
     /// <summary>Gets or sets the exception message format. First parameter will be the message, second will be the exception.</summary>
     public string ExceptionMessageFormat { get; set; } = "{0} - {1}";

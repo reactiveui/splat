@@ -17,6 +17,7 @@ namespace Splat.Tests.Logging.WrappingFullLoggers;
 [InheritsTests]
 public class ExceptionlessLoggerTests : FullLoggerTestBase
 {
+    /// <summary>Maps each Exceptionless log level to the equivalent Splat <see cref="LogLevel"/>.</summary>
     private static readonly Dictionary<global::Exceptionless.Logging.LogLevel, LogLevel> _exceptionless2Splat = new()
     {
         { global::Exceptionless.Logging.LogLevel.Debug, LogLevel.Debug },
@@ -26,6 +27,7 @@ public class ExceptionlessLoggerTests : FullLoggerTestBase
         { global::Exceptionless.Logging.LogLevel.Fatal, LogLevel.Fatal },
     };
 
+    /// <summary>Maps each Splat <see cref="LogLevel"/> to the equivalent Exceptionless log level.</summary>
     private static readonly Dictionary<LogLevel, global::Exceptionless.Logging.LogLevel> _splat2Exceptionless = new()
     {
         { LogLevel.Debug, global::Exceptionless.Logging.LogLevel.Debug },

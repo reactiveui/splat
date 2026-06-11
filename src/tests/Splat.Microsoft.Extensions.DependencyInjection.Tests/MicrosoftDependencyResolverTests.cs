@@ -86,6 +86,9 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     public override Task ServiceRegistrationCallback_Generic_WithExistingRegistration_InvokesImmediately()
     {
         var resolver = GetDependencyResolver();
+
+        // Register a service first so the callback would normally fire immediately; MS.DI still throws.
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
         Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
@@ -130,7 +133,9 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     public override Task ServiceRegistrationCallback_Disposal_StopsReceivingNotifications()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+
+        // The subscription disposable is never produced because MS.DI throws before returning it.
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }).Dispose());
         return Task.CompletedTask;
     }
 
@@ -157,6 +162,10 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     public override Task ServiceRegistrationCallback_Generic_InvokesForEachExistingRegistration()
     {
         var resolver = GetDependencyResolver();
+
+        // Register multiple services so the callback would normally fire for each; MS.DI still throws.
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
         Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
@@ -165,24 +174,26 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
-    public override Task Register_AfterDispose_DoesNotInvokeCallbacks()
+    public override async Task Register_AfterDispose_DoesNotInvokeCallbacks()
     {
         var resolver = GetDependencyResolver();
+        await resolver.DisposeAsync();
 
-        // Since ServiceRegistrationCallback throws, we verify that instead of the full test flow
+        // After disposal, ServiceRegistrationCallback still throws NotSupportedException for MS.DI.
         Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
-        return Task.CompletedTask;
     }
 
     /// <summary>Verifies that Dispose suppresses exceptions from callbacks (NotApplicable for MS.DI as callbacks throw).</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
-    public override Task Dispose_SuppressesExceptionsFromCallbacks()
+    public override async Task Dispose_SuppressesExceptionsFromCallbacks()
     {
         var resolver = GetDependencyResolver();
+
+        // Callbacks can never be registered (MS.DI throws), so disposal has nothing to suppress.
         Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
-        return Task.CompletedTask;
+        await resolver.DisposeAsync();
     }
 
     /// <summary>MS.DI doesn't invoke callbacks on disposal.</summary>

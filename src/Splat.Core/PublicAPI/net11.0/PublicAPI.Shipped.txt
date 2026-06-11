@@ -13,7 +13,8 @@ Splat.Builder.IModule
 Splat.Builder.IModule.Configure(Splat.IMutableDependencyResolver! resolver) -> void
 Splat.DependencyResolverMixins
 Splat.DependencyResolverMixins.extension(Splat.IDependencyResolver!)
-Splat.DependencyResolverMixins.extension(Splat.IDependencyResolver!).WithResolver(bool suppressResolverCallback = true) -> System.IDisposable!
+Splat.DependencyResolverMixins.extension(Splat.IDependencyResolver!).WithResolver() -> System.IDisposable!
+Splat.DependencyResolverMixins.extension(Splat.IDependencyResolver!).WithResolver(bool suppressResolverCallback) -> System.IDisposable!
 Splat.DependencyResolverMixins.extension(Splat.IMutableDependencyResolver!)
 Splat.DependencyResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterConstant(object? value, System.Type! serviceType) -> void
 Splat.DependencyResolverMixins.extension(Splat.IMutableDependencyResolver!).RegisterConstant(object? value, System.Type! serviceType, string! contract) -> void
@@ -249,7 +250,8 @@ static Splat.DependencyResolverMixins.RegisterConstant(this Splat.IMutableDepend
 static Splat.DependencyResolverMixins.RegisterConstant(this Splat.IMutableDependencyResolver! resolver, object? value, System.Type! serviceType, string! contract) -> void
 static Splat.DependencyResolverMixins.RegisterLazySingleton(this Splat.IMutableDependencyResolver! resolver, System.Func<object?>! valueFactory, System.Type! serviceType) -> void
 static Splat.DependencyResolverMixins.RegisterLazySingleton(this Splat.IMutableDependencyResolver! resolver, System.Func<object?>! valueFactory, System.Type! serviceType, string! contract) -> void
-static Splat.DependencyResolverMixins.WithResolver(this Splat.IDependencyResolver! resolver, bool suppressResolverCallback = true) -> System.IDisposable!
+static Splat.DependencyResolverMixins.WithResolver(this Splat.IDependencyResolver! resolver) -> System.IDisposable!
+static Splat.DependencyResolverMixins.WithResolver(this Splat.IDependencyResolver! resolver, bool suppressResolverCallback) -> System.IDisposable!
 static Splat.GlobalGenericFirstDependencyResolver.Clear() -> void
 static Splat.ResolverMixins.RegisterAnd<TService, TImplementation>(this Splat.IMutableDependencyResolver! resolver) -> Splat.IMutableDependencyResolver!
 static Splat.ResolverMixins.RegisterAnd<TService, TImplementation>(this Splat.IMutableDependencyResolver! resolver, System.Func<TImplementation>! factory) -> Splat.IMutableDependencyResolver!

@@ -10,7 +10,7 @@ namespace Splat.Builder;
 /// <remarks>This module is intended for use with Splat's dependency resolver infrastructure. Register this module
 /// to enable log4net-based logging throughout your application. This module is typically used in applications that
 /// require integration between Splat and log4net for consistent logging behavior.</remarks>
-public sealed class Log4NetSplatModule() : IModule
+public sealed class Log4NetSplatModule : IModule
 {
     /// <inheritdoc />
     public void Configure(IMutableDependencyResolver resolver) => resolver.UseLog4NetWithWrappingFullLogger();

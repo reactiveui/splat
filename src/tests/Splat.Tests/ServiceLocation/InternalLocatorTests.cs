@@ -10,8 +10,10 @@ namespace Splat.Tests.ServiceLocation;
 [NotInParallel]
 public sealed class InternalLocatorTests
 {
+    /// <summary>The internal locator scope created for the duration of each test.</summary>
     private InternalLocatorScope? _scope;
 
+    /// <summary>The internal locator under test, obtained from the current scope.</summary>
     private InternalLocator _locator = null!;
 
     /// <summary>Marker service interface used by the tests.</summary>

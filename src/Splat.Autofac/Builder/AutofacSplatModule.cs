@@ -14,6 +14,7 @@ namespace Splat.Builder;
 /// should be initialized with a valid Autofac ContainerBuilder instance before configuring the resolver.</remarks>
 public sealed class AutofacSplatModule : IModule
 {
+    /// <summary>The Autofac builder that registrations are applied to when the module runs.</summary>
     private readonly ContainerBuilder _builder;
 
     /// <summary>Initializes a new instance of the <see cref="AutofacSplatModule"/> class.</summary>

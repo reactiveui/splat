@@ -14,6 +14,10 @@ namespace Splat;
 /// values with dependency resolvers. They support both generic and non-generic registrations, as well as contract-based
 /// registrations for advanced scenarios. All methods return the resolver instance to enable fluent chaining of multiple
 /// registrations.</remarks>
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification = "Generic service-location API; the service type is supplied explicitly by callers, so type inference cannot apply by design.")]
 public static class ResolverMixins
 {
     /// <summary>An extension for handling resolvers.</summary>

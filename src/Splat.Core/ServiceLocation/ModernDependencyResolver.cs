@@ -21,8 +21,21 @@ namespace Splat;
 /// a full IoC container.
 /// </para>
 /// </summary>
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification = "Generic service-location API; the service type is supplied explicitly by callers, so type inference cannot apply by design.")]
 public class ModernDependencyResolver : IDependencyResolver
 {
+    /// <summary>Default capacity for the registry when no source registry is supplied.</summary>
+    private const int DefaultRegistryCapacity = 32;
+
+    /// <summary>Default capacity for the callback registry and tracked-disposables collections.</summary>
+    private const int DefaultBookkeepingCapacity = 16;
+
+    /// <summary>Default capacity for a per-key callback list.</summary>
+    private const int DefaultCallbackListCapacity = 4;
+
 #if NET9_0_OR_GREATER
     /// <summary>Synchronization primitive guarding mutations to the resolver's internal state.</summary>
     /// <remarks>
@@ -91,12 +104,12 @@ public class ModernDependencyResolver : IDependencyResolver
         }
         else
         {
-            reg = new(32);
+            reg = new(DefaultRegistryCapacity);
         }
 
         _snapshot = new(reg);
-        _callbackRegistry = new(16);
-        _disposables = new(16);
+        _callbackRegistry = new(DefaultBookkeepingCapacity);
+        _disposables = new(DefaultBookkeepingCapacity);
     }
 
     /// <inheritdoc />
@@ -162,15 +175,7 @@ public class ModernDependencyResolver : IDependencyResolver
             // Copy-on-write update of the registry for this key only.
             var newRegistry = CloneRegistryShallow(snap.Registry);
 
-            if (!newRegistry.TryGetValue(pair, out var list))
-            {
-                list = new(4);
-            }
-            else
-            {
-                // The list is mutable; clone it before mutating.
-                list = [.. list];
-            }
+            List<Func<object?>>? list = !newRegistry.TryGetValue(pair, out list) ? new(4) : [.. list];
 
             // Wrap null-type registrations using NullServiceType.
             list.Add(isNull ? () => new NullServiceType(factory) : factory);
@@ -218,14 +223,7 @@ public class ModernDependencyResolver : IDependencyResolver
 
             var newRegistry = CloneRegistryShallow(snap.Registry);
 
-            if (!newRegistry.TryGetValue(pair, out var list))
-            {
-                list = new(4);
-            }
-            else
-            {
-                list = [.. list];
-            }
+            List<Func<object?>>? list = !newRegistry.TryGetValue(pair, out list) ? new(4) : [.. list];
 
             // Avoid extra closure allocation: store the delegate directly.
             list.Add(() => factory());
@@ -247,6 +245,18 @@ public class ModernDependencyResolver : IDependencyResolver
 
         RunCallbacks(callbacksToRun, pair);
     }
+
+    /// <inheritdoc />
+    public void Register<TService, TImplementation>()
+        where TService : class
+        where TImplementation : class, TService, new() =>
+        Register(static () => new TImplementation(), typeof(TService), null);
+
+    /// <inheritdoc />
+    public void Register<TService, TImplementation>(string? contract)
+        where TService : class
+        where TImplementation : class, TService, new() =>
+        Register(static () => new TImplementation(), typeof(TService), contract);
 
     /// <inheritdoc />
     public object? GetService(Type? serviceType) => GetService(serviceType, null);
@@ -536,7 +546,7 @@ public class ModernDependencyResolver : IDependencyResolver
 
             if (!_callbackRegistry.TryGetValue(pair, out var list))
             {
-                list = new(4);
+                list = new(DefaultCallbackListCapacity);
                 _callbackRegistry[pair] = list;
             }
 
@@ -594,7 +604,7 @@ public class ModernDependencyResolver : IDependencyResolver
 
             if (!_callbackRegistry.TryGetValue(pair, out var list))
             {
-                list = new(4);
+                list = new(DefaultCallbackListCapacity);
                 _callbackRegistry[pair] = list;
             }
 
@@ -626,18 +636,6 @@ public class ModernDependencyResolver : IDependencyResolver
 
         return disp;
     }
-
-    /// <inheritdoc />
-    public void Register<TService, TImplementation>()
-        where TService : class
-        where TImplementation : class, TService, new() =>
-        Register(static () => new TImplementation(), typeof(TService), null);
-
-    /// <inheritdoc />
-    public void Register<TService, TImplementation>(string? contract)
-        where TService : class
-        where TImplementation : class, TService, new() =>
-        Register(static () => new TImplementation(), typeof(TService), contract);
 
     /// <inheritdoc />
     public void RegisterConstant<T>(T? value)
@@ -763,58 +761,74 @@ public class ModernDependencyResolver : IDependencyResolver
             _disposables.Clear();
         }
 
-        // Dispose of all IDisposable callbacks (exceptions suppressed).
-        if (callbacksSnapshot is not null)
+        // Execute user code (callbacks / Dispose) outside the lock; exceptions suppressed.
+        DisposeCallbacks(callbacksSnapshot);
+        DisposeTrackedSingletons(disposablesSnapshot);
+    }
+
+    /// <summary>Invokes each registration callback with a token so one-shot callbacks observe disposal.</summary>
+    /// <param name="callbacksSnapshot">Snapshot of the callback registry taken under the gate.</param>
+    private static void DisposeCallbacks(Dictionary<(Type serviceType, string? contract), List<Action<IDisposable>>>? callbacksSnapshot)
+    {
+        if (callbacksSnapshot is null)
         {
-            foreach (var kvp in callbacksSnapshot)
-            {
-                var list = kvp.Value;
-                for (var i = 0; i < list.Count; i++)
-                {
-                    try
-                    {
-                        using var disp = new BooleanDisposable();
-                        list[i](disp);
-                    }
-                    catch
-                    {
-                        // Ignore exceptions during disposal.
-                    }
-                }
-            }
+            return;
         }
 
-        // Dispose only tracked singletons (exceptions suppressed).
-        if (disposablesSnapshot is not null)
+        foreach (var kvp in callbacksSnapshot)
         {
-            for (var i = 0; i < disposablesSnapshot.Count; i++)
+            var list = kvp.Value;
+            for (var i = 0; i < list.Count; i++)
             {
                 try
                 {
-                    var item = disposablesSnapshot[i];
-
-                    // Lazy wrapper from RegisterLazySingleton.
-                    if (item is Lazy<object?> lazy)
-                    {
-                        // Only dispose if value was already created.
-                        // Don't force creation just to dispose it.
-                        // Services constructed during disposal are handled by the
-                        // post-construction check in GetService/Unwrap.
-                        if (lazy.IsValueCreated && lazy.Value is IDisposable disposable)
-                        {
-                            disposable.Dispose();
-                        }
-
-                        continue;
-                    }
-
-                    // Singleton instance from RegisterConstant.
-                    (item as IDisposable)?.Dispose();
+                    using var disp = new BooleanDisposable();
+                    list[i](disp);
                 }
                 catch
                 {
                     // Ignore exceptions during disposal.
                 }
+            }
+        }
+    }
+
+    /// <summary>Disposes tracked singletons and already-created lazy singletons, suppressing disposal exceptions.</summary>
+    /// <param name="disposablesSnapshot">Snapshot of the tracked-disposables list taken under the gate.</param>
+    private static void DisposeTrackedSingletons(List<object>? disposablesSnapshot)
+    {
+        if (disposablesSnapshot is null)
+        {
+            return;
+        }
+
+        for (var i = 0; i < disposablesSnapshot.Count; i++)
+        {
+            try
+            {
+                var item = disposablesSnapshot[i];
+
+                // Lazy wrapper from RegisterLazySingleton.
+                if (item is Lazy<object?> lazy)
+                {
+                    // Only dispose if value was already created.
+                    // Don't force creation just to dispose it.
+                    // Services constructed during disposal are handled by the
+                    // post-construction check in GetService/Unwrap.
+                    if (lazy.IsValueCreated && lazy.Value is IDisposable disposable)
+                    {
+                        disposable.Dispose();
+                    }
+
+                    continue;
+                }
+
+                // Singleton instance from RegisterConstant.
+                (item as IDisposable)?.Dispose();
+            }
+            catch
+            {
+                // Ignore exceptions during disposal.
             }
         }
     }

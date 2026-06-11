@@ -15,6 +15,7 @@ namespace Splat;
 /// accessing from multiple threads.</remarks>
 public static class ModeDetector
 {
+    /// <summary>Memoizes the unit-test-runner detection result; <see langword="null"/> until first computed.</summary>
     private static bool? _cachedInUnitTestRunnerResult;
 
     /// <summary>Initializes static members of the <see cref="ModeDetector"/> class and sets the default mode detector implementation.</summary>

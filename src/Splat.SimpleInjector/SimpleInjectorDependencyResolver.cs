@@ -18,8 +18,13 @@ namespace Splat.SimpleInjector;
 /// unregistration and registration callbacks are not supported, as SimpleInjector does not provide mechanisms for
 /// removing registrations or observing registration events after initial configuration. The resolver manages the
 /// lifetime of the underlying container and disposes it when the resolver is disposed.</remarks>
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification = "Generic parameter is the caller-supplied service/implementation type for these IDependencyResolver APIs and cannot become a method parameter without changing the contract.")]
 public class SimpleInjectorDependencyResolver : IDependencyResolver
 {
+    /// <summary>The underlying SimpleInjector container used for registration and resolution.</summary>
     private readonly Container _container;
 
     /// <summary>Initializes a new instance of the <see cref="SimpleInjectorDependencyResolver"/> class.</summary>
@@ -61,6 +66,18 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
         // SimpleInjector doesn't natively support contracts, so we treat contract-based calls the same as non-contract
         GetService(serviceType);
 
+    /// <inheritdoc/>
+    public T? GetService<T>() =>
+
+        // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
+        (T?)GetService(typeof(T));
+
+    /// <inheritdoc/>
+    public T? GetService<T>(string? contract) =>
+
+        // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
+        (T?)GetService(typeof(T), contract);
+
     /// <inheritdoc />
     public IEnumerable<object> GetServices(Type? serviceType)
     {
@@ -86,12 +103,24 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
         // SimpleInjector doesn't natively support contracts, so we treat contract-based calls the same as non-contract
         GetServices(serviceType);
 
+    /// <inheritdoc/>
+    public IEnumerable<T> GetServices<T>() =>
+
+        // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
+        GetServices(typeof(T)).Cast<T>();
+
+    /// <inheritdoc/>
+    public IEnumerable<T> GetServices<T>(string? contract) =>
+
+        // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
+        GetServices(typeof(T), contract).Cast<T>();
+
     /// <inheritdoc />
     public bool HasRegistration(Type? serviceType)
     {
         serviceType ??= NullServiceType.CachedType;
 
-        return _container.GetCurrentRegistrations().Any(x => x.ServiceType == serviceType);
+        return Array.Exists(_container.GetCurrentRegistrations(), x => x.ServiceType == serviceType);
     }
 
     /// <inheritdoc />
@@ -99,6 +128,14 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
 
         // SimpleInjector doesn't natively support contracts, so we treat contract-based calls the same as non-contract
         HasRegistration(serviceType);
+
+    /// <inheritdoc/>
+    public bool HasRegistration<T>() =>
+        HasRegistration(typeof(T));
+
+    /// <inheritdoc/>
+    public bool HasRegistration<T>(string? contract) =>
+        HasRegistration(typeof(T), contract);
 
     /// <inheritdoc />
     public void Register(Func<object?> factory, Type? serviceType)
@@ -114,56 +151,6 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
         // Anyway, AppLocator.SetLocator performs some unnecessary registrations.
     }
 
-    /// <inheritdoc />
-    public void UnregisterCurrent(Type? serviceType) => throw new NotSupportedException("UnregisterCurrent is not supported in the SimpleInjector dependency resolver. SimpleInjector does not support removing individual registrations after they have been added.");
-
-    /// <inheritdoc />
-    public void UnregisterCurrent(Type? serviceType, string? contract) => throw new NotSupportedException("UnregisterCurrent with contract is not supported in the SimpleInjector dependency resolver. SimpleInjector does not support contracts or removing individual registrations after they have been added.");
-
-    /// <inheritdoc />
-    public void UnregisterAll(Type? serviceType) => throw new NotSupportedException("UnregisterAll is not supported in the SimpleInjector dependency resolver. SimpleInjector does not support removing registrations after they have been added.");
-
-    /// <inheritdoc />
-    public void UnregisterAll(Type? serviceType, string? contract) => throw new NotSupportedException("UnregisterAll with contract is not supported in the SimpleInjector dependency resolver. SimpleInjector does not support contracts or removing registrations after they have been added.");
-
-    /// <inheritdoc />
-    public IDisposable ServiceRegistrationCallback(Type serviceType, Action<IDisposable> callback) => throw new NotSupportedException("ServiceRegistrationCallback is not supported in the SimpleInjector dependency resolver. SimpleInjector does not provide a mechanism for service registration callbacks.");
-
-    /// <inheritdoc />
-    public IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) => throw new NotSupportedException("ServiceRegistrationCallback with contract is not supported in the SimpleInjector dependency resolver. SimpleInjector does not support contracts or service registration callbacks.");
-
-    /// <inheritdoc/>
-    public T? GetService<T>() =>
-
-        // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
-        (T?)GetService(typeof(T));
-
-    /// <inheritdoc/>
-    public T? GetService<T>(string? contract) =>
-
-        // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
-        (T?)GetService(typeof(T), contract);
-
-    /// <inheritdoc/>
-    public IEnumerable<T> GetServices<T>() =>
-
-        // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
-        GetServices(typeof(T)).Cast<T>();
-
-    /// <inheritdoc/>
-    public IEnumerable<T> GetServices<T>(string? contract) =>
-
-        // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
-        GetServices(typeof(T), contract).Cast<T>();
-
-    /// <inheritdoc/>
-    public bool HasRegistration<T>() =>
-        HasRegistration(typeof(T));
-
-    /// <inheritdoc/>
-    public bool HasRegistration<T>(string? contract) =>
-        HasRegistration(typeof(T), contract);
-
     /// <inheritdoc/>
     public void Register<T>(Func<T?> factory) =>
 
@@ -177,30 +164,6 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
         Register(() => factory(), typeof(T), contract);
 
     /// <inheritdoc/>
-    public void UnregisterCurrent<T>() =>
-        UnregisterCurrent(typeof(T));
-
-    /// <inheritdoc/>
-    public void UnregisterCurrent<T>(string? contract) =>
-        UnregisterCurrent(typeof(T), contract);
-
-    /// <inheritdoc/>
-    public void UnregisterAll<T>() =>
-        UnregisterAll(typeof(T));
-
-    /// <inheritdoc/>
-    public void UnregisterAll<T>(string? contract) =>
-        UnregisterAll(typeof(T), contract);
-
-    /// <inheritdoc/>
-    public IDisposable ServiceRegistrationCallback<T>(Action<IDisposable> callback) =>
-        ServiceRegistrationCallback(typeof(T), callback);
-
-    /// <inheritdoc/>
-    public IDisposable ServiceRegistrationCallback<T>(string? contract, Action<IDisposable> callback) =>
-        ServiceRegistrationCallback(typeof(T), contract, callback);
-
-    /// <inheritdoc/>
     public void Register<TService, TImplementation>()
         where TService : class
         where TImplementation : class, TService, new() =>
@@ -211,6 +174,66 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
         where TService : class
         where TImplementation : class, TService, new() =>
         Register(() => (TService)new TImplementation(), contract);
+
+    /// <inheritdoc />
+    public void UnregisterCurrent(Type? serviceType) =>
+        throw new NotSupportedException(
+            "UnregisterCurrent is not supported in the SimpleInjector dependency resolver. " +
+            "SimpleInjector does not support removing individual registrations after they have been added.");
+
+    /// <inheritdoc />
+    public void UnregisterCurrent(Type? serviceType, string? contract) =>
+        throw new NotSupportedException(
+            "UnregisterCurrent with contract is not supported in the SimpleInjector dependency resolver. " +
+            "SimpleInjector does not support contracts or removing individual registrations after they have been added.");
+
+    /// <inheritdoc/>
+    public void UnregisterCurrent<T>() =>
+        UnregisterCurrent(typeof(T));
+
+    /// <inheritdoc/>
+    public void UnregisterCurrent<T>(string? contract) =>
+        UnregisterCurrent(typeof(T), contract);
+
+    /// <inheritdoc />
+    public void UnregisterAll(Type? serviceType) =>
+        throw new NotSupportedException(
+            "UnregisterAll is not supported in the SimpleInjector dependency resolver. " +
+            "SimpleInjector does not support removing registrations after they have been added.");
+
+    /// <inheritdoc />
+    public void UnregisterAll(Type? serviceType, string? contract) =>
+        throw new NotSupportedException(
+            "UnregisterAll with contract is not supported in the SimpleInjector dependency resolver. " +
+            "SimpleInjector does not support contracts or removing registrations after they have been added.");
+
+    /// <inheritdoc/>
+    public void UnregisterAll<T>() =>
+        UnregisterAll(typeof(T));
+
+    /// <inheritdoc/>
+    public void UnregisterAll<T>(string? contract) =>
+        UnregisterAll(typeof(T), contract);
+
+    /// <inheritdoc />
+    public IDisposable ServiceRegistrationCallback(Type serviceType, Action<IDisposable> callback) =>
+        throw new NotSupportedException(
+            "ServiceRegistrationCallback is not supported in the SimpleInjector dependency resolver. " +
+            "SimpleInjector does not provide a mechanism for service registration callbacks.");
+
+    /// <inheritdoc />
+    public IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) =>
+        throw new NotSupportedException(
+            "ServiceRegistrationCallback with contract is not supported in the SimpleInjector dependency resolver. " +
+            "SimpleInjector does not support contracts or service registration callbacks.");
+
+    /// <inheritdoc/>
+    public IDisposable ServiceRegistrationCallback<T>(Action<IDisposable> callback) =>
+        ServiceRegistrationCallback(typeof(T), callback);
+
+    /// <inheritdoc/>
+    public IDisposable ServiceRegistrationCallback<T>(string? contract, Action<IDisposable> callback) =>
+        ServiceRegistrationCallback(typeof(T), contract, callback);
 
     /// <inheritdoc/>
     public void RegisterConstant<T>(T? value)

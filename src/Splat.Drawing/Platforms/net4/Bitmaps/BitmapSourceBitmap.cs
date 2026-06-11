@@ -30,7 +30,7 @@ internal sealed class BitmapSourceBitmap(BitmapSource bitmap) : IBitmap
         _ => Task.Run(() =>
         {
             var encoder = format == CompressedBitmapFormat.Jpeg
-                ? new JpegBitmapEncoder() { QualityLevel = (int)(quality * 100.0f) }
+                ? new JpegBitmapEncoder { QualityLevel = (int)(quality * 100.0f) }
                 : (BitmapEncoder)new PngBitmapEncoder();
 
             encoder.Frames.Add(BitmapFrame.Create(Inner));

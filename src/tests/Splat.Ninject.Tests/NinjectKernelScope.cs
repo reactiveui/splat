@@ -14,10 +14,13 @@ namespace Splat.Ninject.Tests;
 /// </summary>
 public sealed class NinjectKernelScope : IDisposable
 {
+    /// <summary>The AppLocator scope that isolates global locator state for the test.</summary>
     private readonly AppLocatorScope _appLocatorScope;
 
+    /// <summary>The kernels tracked for disposal at the end of the test.</summary>
     private readonly List<IKernel> _kernels = [];
 
+    /// <summary>A value indicating whether this scope has already been disposed.</summary>
     private bool _disposed;
 
     /// <summary>Initializes a new instance of the <see cref="NinjectKernelScope"/> class. Creates a fresh AppLocator state for the test.</summary>

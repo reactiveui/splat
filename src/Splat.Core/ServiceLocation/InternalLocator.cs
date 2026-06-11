@@ -19,10 +19,13 @@ internal class InternalLocator : IDisposable
     /// <summary>Registration-change callbacks. A process-wide default instance is used, while still allowing isolation in unit tests.</summary>
     private readonly List<Action> _resolverChanged = new(4);
 
+    /// <summary>Subscription that raises registration-change notifications; disposed with this instance.</summary>
     private readonly IDisposable _resolverChangedNotification;
 
+    /// <summary>Reentrancy counter; while greater than zero, change notifications are suppressed.</summary>
     private volatile int _resolverChangedNotificationSuspendCount;
 
+    /// <summary>Guards against running the dispose logic more than once.</summary>
     private bool _disposedValue;
 
     /// <summary>Initializes a new instance of the <see cref="InternalLocator"/> class.</summary>

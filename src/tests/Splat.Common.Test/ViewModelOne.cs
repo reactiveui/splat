@@ -8,10 +8,4 @@ namespace Splat.Common.Test;
 
 /// <summary>View Model One.</summary>
 [ExcludeFromCodeCoverage]
-public class ViewModelOne : IViewModelOne
-{
-    /// <summary>Initializes a new instance of the <see cref="ViewModelOne"/> class.</summary>
-    public ViewModelOne()
-    {
-    }
-}
+public class ViewModelOne : IViewModelOne;

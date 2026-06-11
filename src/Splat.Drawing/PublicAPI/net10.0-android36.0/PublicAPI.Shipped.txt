@@ -6,7 +6,8 @@ Splat.BitmapLoaderException.BitmapLoaderException(string! message) -> void
 Splat.BitmapLoaderException.BitmapLoaderException(string! message, System.Exception! innerException) -> void
 Splat.BitmapMixins
 Splat.BitmapMixins.extension(Android.Graphics.Bitmap!)
-Splat.BitmapMixins.extension(Android.Graphics.Bitmap!).FromNative(bool copy = false) -> Splat.IBitmap!
+Splat.BitmapMixins.extension(Android.Graphics.Bitmap!).FromNative() -> Splat.IBitmap!
+Splat.BitmapMixins.extension(Android.Graphics.Bitmap!).FromNative(bool copy) -> Splat.IBitmap!
 Splat.BitmapMixins.extension(Android.Graphics.Drawables.Drawable!)
 Splat.BitmapMixins.extension(Android.Graphics.Drawables.Drawable!).FromNative() -> Splat.IBitmap!
 Splat.BitmapMixins.extension(Splat.IBitmap!)
@@ -215,6 +216,7 @@ Splat.PlatformBitmapLoader.LoadFromResource(string! source, float? desiredWidth,
 Splat.PlatformBitmapLoader.PlatformBitmapLoader() -> void
 Splat.PlatformBitmapLoader<TDrawable>
 Splat.PlatformBitmapLoader<TDrawable>.Create(float width, float height) -> Splat.IBitmap?
+Splat.PlatformBitmapLoader<TDrawable>.DrawableType.get -> System.Type!
 Splat.PlatformBitmapLoader<TDrawable>.Load(System.IO.Stream! sourceStream, float? desiredWidth, float? desiredHeight) -> System.Threading.Tasks.Task<Splat.IBitmap?>!
 Splat.PlatformBitmapLoader<TDrawable>.LoadFromResource(string! source, float? desiredWidth, float? desiredHeight) -> System.Threading.Tasks.Task<Splat.IBitmap?>!
 Splat.PlatformBitmapLoader<TDrawable>.PlatformBitmapLoader(System.Func<string!, int>! drawableResolver) -> void
@@ -596,7 +598,8 @@ override System.Drawing.SizeF.GetHashCode() -> int (forwarded, contained in Syst
 override System.Drawing.SizeF.ToString() -> string! (forwarded, contained in System.Drawing.Primitives)
 static Splat.BitmapLoader.Current.get -> Splat.IBitmapLoader!
 static Splat.BitmapLoader.Current.set -> void
-static Splat.BitmapMixins.FromNative(this Android.Graphics.Bitmap! value, bool copy = false) -> Splat.IBitmap!
+static Splat.BitmapMixins.FromNative(this Android.Graphics.Bitmap! value) -> Splat.IBitmap!
+static Splat.BitmapMixins.FromNative(this Android.Graphics.Bitmap! value, bool copy) -> Splat.IBitmap!
 static Splat.BitmapMixins.FromNative(this Android.Graphics.Drawables.Drawable! value) -> Splat.IBitmap!
 static Splat.BitmapMixins.ToNative(this Splat.IBitmap! value) -> Android.Graphics.Drawables.Drawable!
 static Splat.ColorExtensions.FromNative(this Android.Graphics.Color other) -> System.Drawing.Color

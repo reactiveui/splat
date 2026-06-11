@@ -21,6 +21,7 @@ namespace Splat.Common.Test;
 /// </example>
 internal sealed class InternalLocatorScope : IDisposable
 {
+    /// <summary>The internal locator captured on construction and restored on dispose.</summary>
     private readonly InternalLocator _savedLocator;
 
     /// <summary>

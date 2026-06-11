@@ -8,9 +8,16 @@ namespace Splat.Drawing.Tests.Colors;
 [NotInParallel] // Uses Locator (global static); keep this fixture serialized.
 public class CoverageColorTests
 {
+    /// <summary>Tolerance used when comparing floating-point color components.</summary>
     private const float Eps = 1e-6f;
 
-    /// <summary>Initialize Splat before each test (matches xUnit ctor-per-test semantics).</summary>
+    /// <summary>The expected brightness of <see cref="KnownColor.DarkBlue"/>.</summary>
+    private const float DarkBlueBrightness = 0.272549033f;
+
+    /// <summary>The expected hue, in degrees, of <see cref="KnownColor.DarkBlue"/>.</summary>
+    private const float DarkBlueHue = 240f;
+
+    /// <summary>Initialize Splat before each test (fresh state per test).</summary>
     [Before(Test)]
     public void SetUp() => Locator.CurrentMutable.InitializeSplat();
 
@@ -42,10 +49,10 @@ public class CoverageColorTests
         await Assert.That(fixture1).IsEqualTo(fixture2);
     }
 
-    /// <summary>ARGBs the color is equal.</summary>
+    /// <summary>Argbs the color is equal.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task ARGBColorIsEqual()
+    public async Task ArgbColorIsEqual()
     {
         var fixture1 = SplatColor.FromArgb(255, 0, 0, 139);
         var fixture2 = SplatColor.FromArgb(0, 0, 139);
@@ -53,10 +60,10 @@ public class CoverageColorTests
         await Assert.That(fixture1).IsEqualTo(fixture2);
     }
 
-    /// <summary>ARGBs the hexadecimal color is equal.</summary>
+    /// <summary>Argbs the hexadecimal color is equal.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task ARGBHexColorIsEqual()
+    public async Task ArgbHexColorIsEqual()
     {
         var fixture1 = SplatColor.FromArgb(0xFF00008B);
         var fixture2 = SplatColor.FromArgb(0, 0, 139);
@@ -64,10 +71,10 @@ public class CoverageColorTests
         await Assert.That(fixture1).IsEqualTo(fixture2);
     }
 
-    /// <summary>ARGBs the and named color is equal.</summary>
+    /// <summary>Argbs the and named color is equal.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task ARGBAndNamedColorIsEqual()
+    public async Task ArgbAndNamedColorIsEqual()
     {
         var fixture1 = SplatColor.FromName("DarkBlue");
         var fixture2 = SplatColor.FromArgb(0, 0, 139);
@@ -75,10 +82,10 @@ public class CoverageColorTests
         await Assert.That(fixture1).IsEqualTo(fixture2);
     }
 
-    /// <summary>ARGBs the based on named color is equal.</summary>
+    /// <summary>Argbs the based on named color is equal.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task ARGBBasedOnNamedColorIsEqual()
+    public async Task ArgbBasedOnNamedColorIsEqual()
     {
         var fixture1 = SplatColor.FromName("DarkBlue");
         var fixture2 = SplatColor.FromArgb(255, fixture1);
@@ -120,7 +127,7 @@ public class CoverageColorTests
         var fixture = SplatColor.FromKnownColor(KnownColor.DarkBlue);
         var brightness = fixture.GetBrightness();
 
-        await Assert.That(brightness).IsEqualTo(0.272549033f).Within(Eps);
+        await Assert.That(brightness).IsEqualTo(DarkBlueBrightness).Within(Eps);
     }
 
     /// <summary>Colors the saturation has correct value.</summary>
@@ -142,7 +149,7 @@ public class CoverageColorTests
         var fixture = SplatColor.FromKnownColor(KnownColor.DarkBlue);
         var hue = fixture.GetHue();
 
-        await Assert.That(hue).IsEqualTo(240f).Within(Eps);
+        await Assert.That(hue).IsEqualTo(DarkBlueHue).Within(Eps);
     }
 
     /// <summary>Colors to known color has correct value.</summary>
@@ -185,37 +192,37 @@ public class CoverageColorTests
         await Assert.That(fixture1.ToString()).IsEqualTo("SplatColor [DarkBlue]");
     }
 
-    /// <summary>ARGBs the color to string gives value.</summary>
+    /// <summary>Argbs the color to string gives value.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task ARGBColorToStringGivesValue()
+    public async Task ArgbColorToStringGivesValue()
     {
         var fixture1 = SplatColor.FromArgb(255, 0, 0, 138);
         await Assert.That(fixture1.ToString()).IsEqualTo("SplatColor [A=255, R=0, G=0, B=138]");
     }
 
-    /// <summary>Invalids the ARGB color A throws.</summary>
+    /// <summary>Invalids the Argb color A throws.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task InvalidARGBColorAThrows()
+    public async Task InvalidArgbColorAThrows()
         => await Assert.That(() => SplatColor.FromArgb(256, 0, 0, 0)).Throws<ArgumentException>();
 
-    /// <summary>Invalids the ARGB color r throws.</summary>
+    /// <summary>Invalids the Argb color r throws.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task InvalidARGBColorRThrows()
+    public async Task InvalidArgbColorRThrows()
         => await Assert.That(() => SplatColor.FromArgb(0, 256, 0, 0)).Throws<ArgumentException>();
 
-    /// <summary>Invalids the ARGB color g throws.</summary>
+    /// <summary>Invalids the Argb color g throws.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task InvalidARGBColorGThrows()
+    public async Task InvalidArgbColorGThrows()
         => await Assert.That(() => SplatColor.FromArgb(0, 0, 256, 0)).Throws<ArgumentException>();
 
-    /// <summary>Invalids the ARGB color b throws.</summary>
+    /// <summary>Invalids the Argb color b throws.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task InvalidARGBColorBThrows()
+    public async Task InvalidArgbColorBThrows()
         => await Assert.That(() => SplatColor.FromArgb(0, 0, 0, 256)).Throws<ArgumentException>();
 
     // Known color static properties tests - each property is tested individually for coverage

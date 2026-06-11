@@ -7,6 +7,30 @@ namespace Splat.Tests.ServiceLocation.GenericFirst;
 /// <summary>Tests for the ArrayHelpers class.</summary>
 public class ArrayHelpersTests
 {
+    /// <summary>The expected array length when two items are present.</summary>
+    private const int TwoItems = 2;
+
+    /// <summary>The expected array length when three items are present.</summary>
+    private const int ThreeItems = 3;
+
+    /// <summary>The value of the first item used in these tests.</summary>
+    private const int FirstValue = 1;
+
+    /// <summary>The value of the second item used in these tests.</summary>
+    private const int SecondValue = 2;
+
+    /// <summary>The value of the third item used in these tests.</summary>
+    private const int ThirdValue = 3;
+
+    /// <summary>A sample value appended to arrays in these tests.</summary>
+    private const int SampleValue = 42;
+
+    /// <summary>A seed value used to pre-populate arrays in these tests.</summary>
+    private const int SeedValue = 99;
+
+    /// <summary>Zero-based index of the third item.</summary>
+    private const int ThirdIndex = 2;
+
     /// <summary>Tests that append nullable with null array creates new array with single item.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -38,7 +62,7 @@ public class ArrayHelpersTests
         var result = ArrayHelpers.AppendNullable(existing, item2);
 
         // Assert
-        await Assert.That(result.Length).IsEqualTo(2);
+        await Assert.That(result.Length).IsEqualTo(TwoItems);
         await Assert.That(result[0]).IsEqualTo(item1);
         await Assert.That(result[1]).IsEqualTo(item2);
     }
@@ -51,9 +75,9 @@ public class ArrayHelpersTests
         // Arrange
         var items = new[]
         {
-            Registration<int>.FromInstance(1),
-            Registration<int>.FromInstance(2),
-            Registration<int>.FromInstance(3)
+            Registration<int>.FromInstance(FirstValue),
+            Registration<int>.FromInstance(SecondValue),
+            Registration<int>.FromInstance(ThirdValue)
         };
 
         // Act
@@ -65,7 +89,7 @@ public class ArrayHelpersTests
 
         // Assert
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Length).IsEqualTo(3);
+        await Assert.That(result!.Length).IsEqualTo(ThreeItems);
         for (int i = 0; i < items.Length; i++)
         {
             await Assert.That(result[i]).IsEqualTo(items[i]);
@@ -129,7 +153,7 @@ public class ArrayHelpersTests
         var result = ArrayHelpers.RemoveLast(array);
 
         // Assert
-        await Assert.That(result.Length).IsEqualTo(2);
+        await Assert.That(result.Length).IsEqualTo(TwoItems);
         await Assert.That(result[0]).IsEqualTo("first");
         await Assert.That(result[1]).IsEqualTo("second");
     }
@@ -140,15 +164,16 @@ public class ArrayHelpersTests
     public async Task RemoveLast_DoesNotModifyOriginalArray()
     {
         // Arrange
-        var array = new[] { 1, 2, 3 };
+        var array = new[] { FirstValue, SecondValue, ThirdValue };
         var originalLength = array.Length;
+        var lastIndex = array.Length - 1;
 
         // Act
-        var result = ArrayHelpers.RemoveLast(array);
+        ArrayHelpers.RemoveLast(array);
 
         // Assert
         await Assert.That(array.Length).IsEqualTo(originalLength);
-        await Assert.That(array[2]).IsEqualTo(3);
+        await Assert.That(array[lastIndex]).IsEqualTo(ThirdValue);
     }
 
     /// <summary>Tests that materialize registrations with empty array returns empty array.</summary>
@@ -184,10 +209,10 @@ public class ArrayHelpersTests
         var result = ArrayHelpers.MaterializeRegistrations(registrations);
 
         // Assert
-        await Assert.That(result.Length).IsEqualTo(3);
+        await Assert.That(result.Length).IsEqualTo(ThreeItems);
         await Assert.That(result[0]).IsEqualTo("one");
         await Assert.That(result[1]).IsEqualTo("two");
-        await Assert.That(result[2]).IsEqualTo("three");
+        await Assert.That(result[ThirdIndex]).IsEqualTo("three");
     }
 
     /// <summary>Tests that materialize registrations with factory registrations invokes factories.</summary>
@@ -203,19 +228,19 @@ public class ArrayHelpersTests
                 () =>
                 {
                     invocationCount++;
-                    return 1;
+                    return FirstValue;
                 }),
             Registration<int>.FromFactory(
                 () =>
                 {
                     invocationCount++;
-                    return 2;
+                    return SecondValue;
                 }),
             Registration<int>.FromFactory(
                 () =>
                 {
                     invocationCount++;
-                    return 3;
+                    return ThirdValue;
                 })
         };
 
@@ -223,11 +248,11 @@ public class ArrayHelpersTests
         var result = ArrayHelpers.MaterializeRegistrations(registrations);
 
         // Assert
-        await Assert.That(result.Length).IsEqualTo(3);
-        await Assert.That(result[0]).IsEqualTo(1);
-        await Assert.That(result[1]).IsEqualTo(2);
-        await Assert.That(result[2]).IsEqualTo(3);
-        await Assert.That(invocationCount).IsEqualTo(3);
+        await Assert.That(result.Length).IsEqualTo(ThreeItems);
+        await Assert.That(result[0]).IsEqualTo(FirstValue);
+        await Assert.That(result[1]).IsEqualTo(SecondValue);
+        await Assert.That(result[ThirdIndex]).IsEqualTo(ThirdValue);
+        await Assert.That(invocationCount).IsEqualTo(ThreeItems);
     }
 
     /// <summary>Tests that materialize registrations with mixed registrations returns all values.</summary>
@@ -247,10 +272,10 @@ public class ArrayHelpersTests
         var result = ArrayHelpers.MaterializeRegistrations(registrations);
 
         // Assert
-        await Assert.That(result.Length).IsEqualTo(3);
+        await Assert.That(result.Length).IsEqualTo(ThreeItems);
         await Assert.That(result[0]).IsEqualTo("instance");
         await Assert.That(result[1]).IsEqualTo("factory");
-        await Assert.That(result[2]).IsEqualTo("another instance");
+        await Assert.That(result[ThirdIndex]).IsEqualTo("another instance");
     }
 
     /// <summary>Tests that materialize registrations with null values filters out nulls.</summary>
@@ -271,7 +296,7 @@ public class ArrayHelpersTests
         var result = ArrayHelpers.MaterializeRegistrations(registrations);
 
         // Assert
-        await Assert.That(result.Length).IsEqualTo(2);
+        await Assert.That(result.Length).IsEqualTo(TwoItems);
         await Assert.That(result[0]).IsEqualTo("valid");
         await Assert.That(result[1]).IsEqualTo("another valid");
     }
@@ -314,9 +339,9 @@ public class ArrayHelpersTests
         var result2 = ArrayHelpers.MaterializeRegistrations(registrations);
 
         // Assert
-        await Assert.That(invocationCount).IsEqualTo(2);
-        await Assert.That(result1[0]).IsEqualTo(1);
-        await Assert.That(result2[0]).IsEqualTo(2);
+        await Assert.That(invocationCount).IsEqualTo(TwoItems);
+        await Assert.That(result1[0]).IsEqualTo(FirstValue);
+        await Assert.That(result2[0]).IsEqualTo(SecondValue);
     }
 
     /// <summary>Tests that entry add increments count and publishes items.</summary>
@@ -328,17 +353,17 @@ public class ArrayHelpersTests
         var entry = new ArrayHelpers.Entry<int>();
 
         // Act
-        entry.Add(1);
-        entry.Add(2);
+        entry.Add(FirstValue);
+        entry.Add(SecondValue);
 
         // Assert
-        await Assert.That(entry.Count).IsEqualTo(2);
+        await Assert.That(entry.Count).IsEqualTo(TwoItems);
         await Assert.That(entry.HasItems).IsTrue();
 
         var snapshot = entry.GetSnapshot();
-        await Assert.That(snapshot.Length).IsEqualTo(2);
-        await Assert.That(snapshot[0]).IsEqualTo(1);
-        await Assert.That(snapshot[1]).IsEqualTo(2);
+        await Assert.That(snapshot.Length).IsEqualTo(TwoItems);
+        await Assert.That(snapshot[0]).IsEqualTo(FirstValue);
+        await Assert.That(snapshot[1]).IsEqualTo(SecondValue);
     }
 
     /// <summary>Tests that entry has items is false when empty.</summary>
@@ -379,16 +404,16 @@ public class ArrayHelpersTests
     {
         // Arrange
         var entry = new ArrayHelpers.Entry<int>();
-        entry.Add(1);
+        entry.Add(FirstValue);
         var first = entry.GetSnapshot();
 
         // Act
-        entry.Add(2);
+        entry.Add(SecondValue);
         var second = entry.GetSnapshot();
 
         // Assert
         await Assert.That(first.Length).IsEqualTo(1);
-        await Assert.That(second.Length).IsEqualTo(2);
+        await Assert.That(second.Length).IsEqualTo(TwoItems);
         await Assert.That(second).IsNotSameReferenceAs(first);
     }
 
@@ -399,8 +424,8 @@ public class ArrayHelpersTests
     {
         // Arrange
         var entry = new ArrayHelpers.Entry<int>();
-        entry.Add(1);
-        entry.Add(2);
+        entry.Add(FirstValue);
+        entry.Add(SecondValue);
 
         // Act
         var becameEmpty = entry.RemoveCurrent();
@@ -411,7 +436,7 @@ public class ArrayHelpersTests
 
         var snapshot = entry.GetSnapshot();
         await Assert.That(snapshot.Length).IsEqualTo(1);
-        await Assert.That(snapshot[0]).IsEqualTo(1);
+        await Assert.That(snapshot[0]).IsEqualTo(FirstValue);
     }
 
     /// <summary>Tests that entry remove current reports empty when last item removed.</summary>
@@ -421,7 +446,7 @@ public class ArrayHelpersTests
     {
         // Arrange
         var entry = new ArrayHelpers.Entry<int>();
-        entry.Add(42);
+        entry.Add(SampleValue);
 
         // Act
         var becameEmpty = entry.RemoveCurrent();
@@ -455,9 +480,9 @@ public class ArrayHelpersTests
     {
         // Arrange
         var entry = new ArrayHelpers.Entry<int>();
-        entry.Add(1);
-        entry.Add(2);
-        entry.Add(3);
+        entry.Add(FirstValue);
+        entry.Add(SecondValue);
+        entry.Add(ThirdValue);
 
         // Act
         entry.Clear();
@@ -475,17 +500,17 @@ public class ArrayHelpersTests
     {
         // Arrange
         var entry = new ArrayHelpers.Entry<int>();
-        entry.Add(1);
-        entry.Add(2);
-        var destination = new List<int> { 99 };
+        entry.Add(FirstValue);
+        entry.Add(SecondValue);
+        var destination = new List<int> { SeedValue };
 
         // Act
         entry.CopyItemsTo(destination);
 
         // Assert
-        await Assert.That(destination.Count).IsEqualTo(3);
-        await Assert.That(destination[0]).IsEqualTo(99);
-        await Assert.That(destination[1]).IsEqualTo(1);
-        await Assert.That(destination[2]).IsEqualTo(2);
+        await Assert.That(destination.Count).IsEqualTo(ThreeItems);
+        await Assert.That(destination[0]).IsEqualTo(SeedValue);
+        await Assert.That(destination[1]).IsEqualTo(FirstValue);
+        await Assert.That(destination[ThirdIndex]).IsEqualTo(SecondValue);
     }
 }

@@ -6,6 +6,8 @@ using System.Globalization;
 
 using Splat.Tests.Mocks;
 
+using static Splat.Tests.Logging.LoggerTestConstants;
+
 namespace Splat.Tests.Logging;
 
 /// <summary>A base class for testing full loggers that are available.</summary>
@@ -24,7 +26,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
             () =>
             {
                 invoked = true;
-                return "This is a test.";
+                return TestMessage;
             });
 
         using (Assert.Multiple())
@@ -46,12 +48,12 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
             () =>
             {
                 invoked = true;
-                return "This is a test.";
+                return TestMessage;
             });
 
         using (Assert.Multiple())
         {
-            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
             await Assert.That(invoked).IsTrue();
         }
     }
@@ -68,7 +70,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
             () =>
             {
                 invoked = true;
-                return "This is a test.";
+                return TestMessage;
             });
 
         using (Assert.Multiple())
@@ -90,12 +92,12 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
             () =>
             {
                 invoked = true;
-                return "This is a test.";
+                return TestMessage;
             });
 
         using (Assert.Multiple())
         {
-            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
             await Assert.That(invoked).IsTrue();
         }
     }
@@ -112,7 +114,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
             () =>
             {
                 invoked = true;
-                return "This is a test.";
+                return TestMessage;
             });
 
         using (Assert.Multiple())
@@ -134,12 +136,12 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
             () =>
             {
                 invoked = true;
-                return "This is a test.";
+                return TestMessage;
             });
 
         using (Assert.Multiple())
         {
-            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
             await Assert.That(invoked).IsTrue();
         }
     }
@@ -156,7 +158,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
             () =>
             {
                 invoked = true;
-                return "This is a test.";
+                return TestMessage;
             });
 
         using (Assert.Multiple())
@@ -178,12 +180,12 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
             () =>
             {
                 invoked = true;
-                return "This is a test.";
+                return TestMessage;
             });
 
         using (Assert.Multiple())
         {
-            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
             await Assert.That(invoked).IsTrue();
         }
     }
@@ -200,12 +202,12 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
             () =>
             {
                 invoked = true;
-                return "This is a test.";
+                return TestMessage;
             });
 
         using (Assert.Multiple())
         {
-            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
             await Assert.That(invoked).IsTrue();
         }
     }
@@ -217,9 +219,9 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
-        logger.Debug<DummyObjectClass1>("This is a test.");
+        logger.Debug<DummyObjectClass1>(TestMessage);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure the message is passed to the logger.</summary>
@@ -229,9 +231,9 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
-        logger.Debug<DummyObjectClass2>("This is a test.");
+        logger.Debug<DummyObjectClass2>(TestMessage);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure the message is passed to the logger.</summary>
@@ -241,9 +243,9 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
-        logger.Info<DummyObjectClass1>("This is a test.");
+        logger.Info<DummyObjectClass1>(TestMessage);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure the message is passed to the logger.</summary>
@@ -253,9 +255,9 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
-        logger.Info<DummyObjectClass2>("This is a test.");
+        logger.Info<DummyObjectClass2>(TestMessage);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure the message is passed to the logger.</summary>
@@ -265,9 +267,9 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
-        logger.Warn<DummyObjectClass1>("This is a test.");
+        logger.Warn<DummyObjectClass1>(TestMessage);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure the message is passed to the logger.</summary>
@@ -277,9 +279,9 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
-        logger.Warn<DummyObjectClass2>("This is a test.");
+        logger.Warn<DummyObjectClass2>(TestMessage);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure the message is passed to the logger.</summary>
@@ -289,9 +291,9 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
-        logger.Error<DummyObjectClass1>("This is a test.");
+        logger.Error<DummyObjectClass1>(TestMessage);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure the message is passed to the logger.</summary>
@@ -301,9 +303,9 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
-        logger.Error<DummyObjectClass2>("This is a test.");
+        logger.Error<DummyObjectClass2>(TestMessage);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure the message is passed to the logger.</summary>
@@ -313,9 +315,9 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
-        logger.Fatal<DummyObjectClass1>("This is a test.");
+        logger.Fatal<DummyObjectClass1>(TestMessage);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure the message is passed to the logger.</summary>
@@ -325,9 +327,9 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
-        logger.Fatal<DummyObjectClass2>("This is a test.");
+        logger.Fatal<DummyObjectClass2>(TestMessage);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure the debug emits something when enabled.</summary>
@@ -337,9 +339,9 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
-        logger.Debug(CultureInfo.InvariantCulture, "This is a test.");
+        logger.Debug(CultureInfo.InvariantCulture, TestMessage);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure that when enabled debug emits values.</summary>
@@ -349,9 +351,9 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
-        logger.Debug("This is a test.");
+        logger.Debug(TestMessage);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure that when enabled debug emits values.</summary>
@@ -373,9 +375,9 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
     {
         var (logger, target) = GetLogger(LogLevel.Info);
 
-        logger.Info(CultureInfo.InvariantCulture, "This is a test.");
+        logger.Info(CultureInfo.InvariantCulture, TestMessage);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure that when enabled debug emits values.</summary>
@@ -397,9 +399,9 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
     {
         var (logger, target) = GetLogger(LogLevel.Info);
 
-        logger.Info("This is a test.");
+        logger.Info(TestMessage);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure the debug emits something when enabled.</summary>
@@ -409,9 +411,9 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
 
-        logger.Warn(CultureInfo.InvariantCulture, "This is a test.");
+        logger.Warn(CultureInfo.InvariantCulture, TestMessage);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure that when enabled debug emits values.</summary>
@@ -421,9 +423,9 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
 
-        logger.Warn("This is a test.");
+        logger.Warn(TestMessage);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure that when enabled debug emits values.</summary>
@@ -445,9 +447,9 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
     {
         var (logger, target) = GetLogger(LogLevel.Error);
 
-        logger.Error(CultureInfo.InvariantCulture, "This is a test.");
+        logger.Error(CultureInfo.InvariantCulture, TestMessage);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure that when enabled debug emits values.</summary>
@@ -457,9 +459,9 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
     {
         var (logger, target) = GetLogger(LogLevel.Error);
 
-        logger.Error("This is a test.");
+        logger.Error(TestMessage);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure that when enabled debug emits values.</summary>
@@ -481,9 +483,9 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
 
-        logger.Fatal(CultureInfo.InvariantCulture, "This is a test.");
+        logger.Fatal(CultureInfo.InvariantCulture, TestMessage);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure that when enabled debug emits values.</summary>
@@ -505,9 +507,9 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
 
-        logger.Fatal("This is a test.");
+        logger.Fatal(TestMessage);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure the debug func emits nothing when not enabled.</summary>
@@ -521,7 +523,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         logger.Debug(() =>
         {
             invoked = true;
-            return "This is a test.";
+            return TestMessage;
         });
 
         using (Assert.Multiple())
@@ -542,12 +544,12 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         logger.Debug(() =>
         {
             invoked = true;
-            return "This is a test.";
+            return TestMessage;
         });
 
         using (Assert.Multiple())
         {
-            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
             await Assert.That(invoked).IsTrue();
         }
     }
@@ -563,7 +565,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         logger.Info(() =>
         {
             invoked = true;
-            return "This is a test.";
+            return TestMessage;
         });
 
         using (Assert.Multiple())
@@ -584,12 +586,12 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         logger.Info(() =>
         {
             invoked = true;
-            return "This is a test.";
+            return TestMessage;
         });
 
         using (Assert.Multiple())
         {
-            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
             await Assert.That(invoked).IsTrue();
         }
     }
@@ -605,7 +607,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         logger.Warn(() =>
         {
             invoked = true;
-            return "This is a test.";
+            return TestMessage;
         });
 
         using (Assert.Multiple())
@@ -626,12 +628,12 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         logger.Warn(() =>
         {
             invoked = true;
-            return "This is a test.";
+            return TestMessage;
         });
 
         using (Assert.Multiple())
         {
-            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
             await Assert.That(invoked).IsTrue();
         }
     }
@@ -647,7 +649,7 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         logger.Error(() =>
         {
             invoked = true;
-            return "This is a test.";
+            return TestMessage;
         });
 
         using (Assert.Multiple())
@@ -668,12 +670,12 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         logger.Error(() =>
         {
             invoked = true;
-            return "This is a test.";
+            return TestMessage;
         });
 
         using (Assert.Multiple())
         {
-            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
             await Assert.That(invoked).IsTrue();
         }
     }
@@ -689,12 +691,12 @@ public abstract class FullLoggerTestBase : AllocationFreeLoggerBaseTestBase<IFul
         logger.Fatal(() =>
         {
             invoked = true;
-            return "This is a test.";
+            return TestMessage;
         });
 
         using (Assert.Multiple())
         {
-            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
             await Assert.That(invoked).IsTrue();
         }
     }

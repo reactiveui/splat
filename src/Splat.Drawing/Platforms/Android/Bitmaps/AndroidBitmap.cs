@@ -13,6 +13,10 @@ namespace Splat;
 /// <param name="inner">The bitmap we are wrapping.</param>
 internal sealed class AndroidBitmap(Bitmap inner) : IBitmap
 {
+    /// <summary>The scale factor used to convert a normalized quality (0-1) into a percentage (0-100).</summary>
+    private const int QualityPercentageScale = 100;
+
+    /// <summary>The wrapped Android bitmap; set to <see langword="null"/> once disposed.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Is Disposed using Interlocked method")]
     private Bitmap? _inner = inner;
 
@@ -34,7 +38,7 @@ internal sealed class AndroidBitmap(Bitmap inner) : IBitmap
         }
 
         var fmt = (format == CompressedBitmapFormat.Jpeg ? Bitmap.CompressFormat.Jpeg : Bitmap.CompressFormat.Png)!;
-        return Task.Run(() => _inner.Compress(fmt, (int)(quality * 100), target));
+        return Task.Run(() => _inner.Compress(fmt, (int)(quality * QualityPercentageScale), target));
     }
 
     /// <inheritdoc />

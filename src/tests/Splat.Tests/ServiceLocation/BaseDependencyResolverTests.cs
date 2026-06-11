@@ -2,6 +2,7 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using Splat.Common.Test;
 
 namespace Splat.Tests.ServiceLocation;
@@ -12,11 +13,21 @@ namespace Splat.Tests.ServiceLocation;
 public abstract class BaseDependencyResolverTests<T>
     where T : IDependencyResolver
 {
+    /// <summary>The contract name used by tests that register a named service.</summary>
+    private const string NamedContract = "named";
+
+    /// <summary>The minimum number of registrations expected when a service is registered more than once.</summary>
+    private const int ExpectedMultipleRegistrationCount = 2;
+
+    /// <summary>The minimum number of registration callback invocations expected.</summary>
+    private const int ExpectedCallbackInvocationCount = 3;
+
+    /// <summary>The locator scope created for the duration of each test.</summary>
     private AppLocatorScope? _appLocatorScope;
 
     /// <summary>Setup method to initialize AppLocatorScope before each test.</summary>
     [Before(Test)]
-    public void SetUpAppLocatorScope() => _appLocatorScope = new AppLocatorScope();
+    public void SetUpAppLocatorScope() => _appLocatorScope = new();
 
     /// <summary>Teardown method to dispose AppLocatorScope after each test.</summary>
     [After(Test)]
@@ -35,7 +46,7 @@ public abstract class BaseDependencyResolverTests<T>
         var type = typeof(ILogManager);
 
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type);
-        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, "named");
+        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, NamedContract);
 
         await Assert.That(() =>
         {
@@ -54,7 +65,7 @@ public abstract class BaseDependencyResolverTests<T>
 
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type);
         resolver.Register(() => new FuncLogManager(_ => new WrappingFullLogger(new DebugLogger())), type);
-        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, "named");
+        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, NamedContract);
 
         var service = resolver.GetService(type);
         await Assert.That(service).IsTypeOf<FuncLogManager>();
@@ -72,7 +83,7 @@ public abstract class BaseDependencyResolverTests<T>
     {
         var resolver = GetDependencyResolver();
         var type = typeof(ILogManager);
-        const string contract = "named";
+        const string contract = NamedContract;
 
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type);
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, contract);
@@ -93,7 +104,7 @@ public abstract class BaseDependencyResolverTests<T>
         var type = typeof(ILogManager);
 
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type);
-        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, "named");
+        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, NamedContract);
 
         await Assert.That(() =>
         {
@@ -109,7 +120,7 @@ public abstract class BaseDependencyResolverTests<T>
     {
         var resolver = GetDependencyResolver();
         var type = typeof(ILogManager);
-        const string contract = "named";
+        const string contract = NamedContract;
 
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type);
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, contract);
@@ -273,7 +284,7 @@ public abstract class BaseDependencyResolverTests<T>
 
         var results = resolver.GetServices<ViewModelOne>().ToList();
 
-        await Assert.That(results).Count().IsGreaterThanOrEqualTo(2);
+        await Assert.That(results).Count().IsGreaterThanOrEqualTo(ExpectedMultipleRegistrationCount);
     }
 
     /// <summary>Test generic GetServices with contract returns only contract services.</summary>
@@ -962,7 +973,7 @@ public abstract class BaseDependencyResolverTests<T>
 
         var results = resolver.GetServices<ViewModelOne>().ToList();
 
-        await Assert.That(results).Count().IsGreaterThanOrEqualTo(2);
+        await Assert.That(results).Count().IsGreaterThanOrEqualTo(ExpectedMultipleRegistrationCount);
     }
 
     /// <summary>Test GetServices with contract combines generic and non-generic registrations.</summary>
@@ -977,7 +988,7 @@ public abstract class BaseDependencyResolverTests<T>
 
         var results = resolver.GetServices<ViewModelOne>(contract).ToList();
 
-        await Assert.That(results).Count().IsGreaterThanOrEqualTo(2);
+        await Assert.That(results).Count().IsGreaterThanOrEqualTo(ExpectedMultipleRegistrationCount);
     }
 
     /// <summary>Test ServiceRegistrationCallback invokes callback for each existing registration.</summary>
@@ -994,7 +1005,7 @@ public abstract class BaseDependencyResolverTests<T>
 
         using var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(_ => callbackCount++);
 
-        await Assert.That(callbackCount).IsGreaterThanOrEqualTo(3);
+        await Assert.That(callbackCount).IsGreaterThanOrEqualTo(ExpectedCallbackInvocationCount);
     }
 
     /// <summary>Test Dispose handles exceptions from callbacks gracefully.</summary>
@@ -1136,7 +1147,7 @@ public abstract class BaseDependencyResolverTests<T>
         });
 
         // Register transient disposable services
-        resolver.Register<DisposableTestService>(() =>
+        resolver.Register(() =>
         {
             disposableCreatedCount++;
             return new DisposableTestService();
@@ -1237,10 +1248,10 @@ public abstract class BaseDependencyResolverTests<T>
         var resolver = GetDependencyResolver();
 
         // Register a slow service that takes 3 seconds to construct
-        resolver.RegisterLazySingleton<SlowDisposableService>(() => new SlowDisposableService());
+        resolver.RegisterLazySingleton<SlowDisposableService>(() => new());
 
         // Register a fast service for comparison
-        resolver.RegisterLazySingleton<FastDisposableService>(() => new FastDisposableService());
+        resolver.RegisterLazySingleton<FastDisposableService>(() => new());
 
         // Start constructing the slow service in a background task
         var slowTask = Task.Run(() => resolver.GetService<SlowDisposableService>());
@@ -1331,6 +1342,7 @@ public abstract class BaseDependencyResolverTests<T>
     protected sealed class ThrowingDisposableService : IDisposable
     {
         /// <inheritdoc />
+        [SuppressMessage("Blocker Code Smell", "S3877:Exceptions should not be thrown from unexpected methods", Justification = "Testing purposes")]
         public void Dispose() => throw new InvalidOperationException("Disposal exception");
     }
 

@@ -12,7 +12,7 @@ namespace Splat.Builder;
 /// infrastructure. It ensures that an implementation of ILogger is available by registering a DebugLogger if one has
 /// not already been registered. This is typically used to enable logging in applications that use Splat without
 /// requiring explicit logger configuration.</remarks>
-public sealed class SplatLoggerModule() : IModule
+public sealed class SplatLoggerModule : IModule
 {
     /// <inheritdoc />
     public void Configure(IMutableDependencyResolver resolver)

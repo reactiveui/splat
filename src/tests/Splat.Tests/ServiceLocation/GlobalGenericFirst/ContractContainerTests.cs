@@ -8,25 +8,50 @@ namespace Splat.Tests.ServiceLocation.GenericFirst;
 [NotInParallel] // ContractContainer<T> is static, tests must run sequentially
 public class ContractContainerTests
 {
+    /// <summary>The first contract name used in these tests.</summary>
     private const string Contract1 = "Contract1";
 
+    /// <summary>The second contract name used in these tests.</summary>
     private const string Contract2 = "Contract2";
 
-    /// <summary>Clears the container state before each test.</summary>
-    [Before(Test)]
-    public void Setup()
-    {
-        // Clear all contracts before each test
-        ContractContainer<string>.ClearAll();
-        ContractContainer<int>.ClearAll();
-        ContractContainer<int?>.ClearAll();
-    }
+    /// <summary>Contract name used for the first registration in these tests.</summary>
+    private const string First = "first";
 
-    /// <summary>Clears the container state after each test.</summary>
+    /// <summary>Contract name used for the second registration in these tests.</summary>
+    private const string Second = "second";
+
+    /// <summary>Contract name used for the third registration in these tests.</summary>
+    private const string Third = "third";
+
+    /// <summary>The expected registration count when two items are present.</summary>
+    private const int TwoItems = 2;
+
+    /// <summary>The expected registration count when three items are present.</summary>
+    private const int ThreeItems = 3;
+
+    /// <summary>A sample value registered in the container during these tests.</summary>
+    private const int SampleValue = 42;
+
+    /// <summary>The value of the first item used in these tests.</summary>
+    private const int FirstValue = 1;
+
+    /// <summary>The value of the second item used in these tests.</summary>
+    private const int SecondValue = 2;
+
+    /// <summary>Zero-based index of the second item.</summary>
+    private const int SecondIndex = 1;
+
+    /// <summary>Zero-based index of the third item.</summary>
+    private const int ThirdIndex = 2;
+
+    /// <summary>The number of contracts created in the multiple-contract tests.</summary>
+    private const int ContractCount = 10;
+
+    /// <summary>Clears all contract container state before and after each test.</summary>
+    [Before(Test)]
     [After(Test)]
-    public void Cleanup()
+    public void ResetContainers()
     {
-        // Clear all contracts after each test
         ContractContainer<string>.ClearAll();
         ContractContainer<int>.ClearAll();
         ContractContainer<int?>.ClearAll();
@@ -107,15 +132,15 @@ public class ContractContainerTests
     public async Task Add_MultipleToSameContract_ReturnsLatest()
     {
         // Act
-        ContractContainer<string>.Add("first", Contract1);
-        ContractContainer<string>.Add("second", Contract1);
-        ContractContainer<string>.Add("third", Contract1);
+        ContractContainer<string>.Add(First, Contract1);
+        ContractContainer<string>.Add(Second, Contract1);
+        ContractContainer<string>.Add(Third, Contract1);
 
         var success = ContractContainer<string>.TryGet(Contract1, out var result);
 
         // Assert
         await Assert.That(success).IsTrue();
-        await Assert.That(result).IsEqualTo("third");
+        await Assert.That(result).IsEqualTo(Third);
     }
 
     /// <summary>Tests that add to different contracts are isolated.</summary>
@@ -202,9 +227,9 @@ public class ContractContainerTests
         ContractContainer<int>.TryGet(Contract1, out var result2);
 
         // Assert
-        await Assert.That(invocationCount).IsEqualTo(2);
-        await Assert.That(result1).IsEqualTo(1);
-        await Assert.That(result2).IsEqualTo(2);
+        await Assert.That(invocationCount).IsEqualTo(TwoItems);
+        await Assert.That(result1).IsEqualTo(FirstValue);
+        await Assert.That(result2).IsEqualTo(SecondValue);
     }
 
     /// <summary>Tests that get all when empty returns empty array.</summary>
@@ -226,18 +251,18 @@ public class ContractContainerTests
     public async Task GetAll_WithMultipleRegistrations_ReturnsAllValues()
     {
         // Arrange
-        ContractContainer<string>.Add("first", Contract1);
-        ContractContainer<string>.Add("second", Contract1);
-        ContractContainer<string>.Add("third", Contract1);
+        ContractContainer<string>.Add(First, Contract1);
+        ContractContainer<string>.Add(Second, Contract1);
+        ContractContainer<string>.Add(Third, Contract1);
 
         // Act
         var result = ContractContainer<string>.GetAll(Contract1);
 
         // Assert
-        await Assert.That(result.Length).IsEqualTo(3);
-        await Assert.That(result[0]).IsEqualTo("first");
-        await Assert.That(result[1]).IsEqualTo("second");
-        await Assert.That(result[2]).IsEqualTo("third");
+        await Assert.That(result.Length).IsEqualTo(ThreeItems);
+        await Assert.That(result[0]).IsEqualTo(First);
+        await Assert.That(result[SecondIndex]).IsEqualTo(Second);
+        await Assert.That(result[ThirdIndex]).IsEqualTo(Third);
     }
 
     /// <summary>Tests that get all only returns matching contract.</summary>
@@ -255,7 +280,7 @@ public class ContractContainerTests
         var result2 = ContractContainer<string>.GetAll(Contract2);
 
         // Assert
-        await Assert.That(result1.Length).IsEqualTo(2);
+        await Assert.That(result1.Length).IsEqualTo(TwoItems);
         await Assert.That(result1[0]).IsEqualTo("contract1-1");
         await Assert.That(result1[1]).IsEqualTo("contract1-2");
 
@@ -296,9 +321,9 @@ public class ContractContainerTests
     public async Task RemoveCurrent_WithMultipleItems_RemovesLatest()
     {
         // Arrange
-        ContractContainer<string>.Add("first", Contract1);
-        ContractContainer<string>.Add("second", Contract1);
-        ContractContainer<string>.Add("third", Contract1);
+        ContractContainer<string>.Add(First, Contract1);
+        ContractContainer<string>.Add(Second, Contract1);
+        ContractContainer<string>.Add(Third, Contract1);
 
         // Act
         ContractContainer<string>.RemoveCurrent(Contract1);
@@ -306,7 +331,7 @@ public class ContractContainerTests
 
         // Assert
         await Assert.That(success).IsTrue();
-        await Assert.That(result).IsEqualTo("second");
+        await Assert.That(result).IsEqualTo(Second);
     }
 
     /// <summary>Tests that remove current only affects specified contract.</summary>
@@ -332,9 +357,9 @@ public class ContractContainerTests
     public async Task Clear_RemovesAllRegistrationsForContract()
     {
         // Arrange
-        ContractContainer<string>.Add("first", Contract1);
-        ContractContainer<string>.Add("second", Contract1);
-        ContractContainer<string>.Add("third", Contract1);
+        ContractContainer<string>.Add(First, Contract1);
+        ContractContainer<string>.Add(Second, Contract1);
+        ContractContainer<string>.Add(Third, Contract1);
 
         // Act
         ContractContainer<string>.Clear(Contract1);
@@ -394,14 +419,14 @@ public class ContractContainerTests
     {
         // Arrange & Act
         ContractContainer<string>.Add("string value", Contract1);
-        ContractContainer<int>.Add(42, Contract1);
+        ContractContainer<int>.Add(SampleValue, Contract1);
 
         // Assert
         ContractContainer<string>.TryGet(Contract1, out var stringResult);
         ContractContainer<int>.TryGet(Contract1, out var intResult);
 
         await Assert.That(stringResult).IsEqualTo("string value");
-        await Assert.That(intResult).IsEqualTo(42);
+        await Assert.That(intResult).IsEqualTo(SampleValue);
     }
 
     /// <summary>Tests that contract container thread safety concurrent adds.</summary>
@@ -417,14 +442,14 @@ public class ContractContainerTests
         for (int i = 0; i < itemCount; i++)
         {
             var value = i;
-            var contract = $"Contract{i % 10}";
+            var contract = $"Contract{i % ContractCount}";
             tasks.Add(Task.Run(() => ContractContainer<int>.Add(value, contract)));
         }
 
         await Task.WhenAll(tasks);
 
         // Assert - verify all contracts have items
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < ContractCount; i++)
         {
             var contract = $"Contract{i}";
             await Assert.That(ContractContainer<int>.HasRegistrations(contract)).IsTrue();

@@ -7,6 +7,9 @@ namespace Splat.Tests.ModeDetection;
 /// <summary>Tests for the <see cref="DefaultModeDetector"/>.</summary>
 public class DefaultModeDetectorTests
 {
+    /// <summary>The environment variable / AppContext key used to flag a test run.</summary>
+    private const string DotnetRunningInTest = "DOTNET_RUNNING_IN_TEST";
+
     /// <summary>Test that DefaultModeDetector can detect unit test runner.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -102,14 +105,14 @@ public class DefaultModeDetectorTests
     {
         // Arrange
         var detector = new DefaultModeDetector();
-        var oldEnv = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_TEST");
-        var oldAppCtx = AppContext.GetData("DOTNET_RUNNING_IN_TEST");
+        var oldEnv = Environment.GetEnvironmentVariable(DotnetRunningInTest);
+        var oldAppCtx = AppContext.GetData(DotnetRunningInTest);
 
         try
         {
             // Prefer explicit env var; clear AppContext override to exercise env path.
-            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", value);
-            AppContext.SetData("DOTNET_RUNNING_IN_TEST", null);
+            Environment.SetEnvironmentVariable(DotnetRunningInTest, value);
+            AppContext.SetData(DotnetRunningInTest, null);
 
             // Act
             var result = detector.InUnitTestRunner();
@@ -124,8 +127,8 @@ public class DefaultModeDetectorTests
         finally
         {
             // Restore prior state
-            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", oldEnv);
-            AppContext.SetData("DOTNET_RUNNING_IN_TEST", oldAppCtx);
+            Environment.SetEnvironmentVariable(DotnetRunningInTest, oldEnv);
+            AppContext.SetData(DotnetRunningInTest, oldAppCtx);
         }
     }
 #endif
@@ -138,14 +141,14 @@ public class DefaultModeDetectorTests
     {
         // Arrange
         var detector = new DefaultModeDetector();
-        var oldEnv = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_TEST");
-        var oldAppCtx = AppContext.GetData("DOTNET_RUNNING_IN_TEST");
+        var oldEnv = Environment.GetEnvironmentVariable(DotnetRunningInTest);
+        var oldAppCtx = AppContext.GetData(DotnetRunningInTest);
 
         try
         {
             // Clear env var and set AppContext data
-            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", null);
-            AppContext.SetData("DOTNET_RUNNING_IN_TEST", "true");
+            Environment.SetEnvironmentVariable(DotnetRunningInTest, null);
+            AppContext.SetData(DotnetRunningInTest, "true");
 
             // Act
             var result = detector.InUnitTestRunner();
@@ -159,8 +162,8 @@ public class DefaultModeDetectorTests
         }
         finally
         {
-            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", oldEnv);
-            AppContext.SetData("DOTNET_RUNNING_IN_TEST", oldAppCtx);
+            Environment.SetEnvironmentVariable(DotnetRunningInTest, oldEnv);
+            AppContext.SetData(DotnetRunningInTest, oldAppCtx);
         }
     }
 #endif
@@ -173,15 +176,15 @@ public class DefaultModeDetectorTests
     {
         // Arrange
         var detector = new DefaultModeDetector();
-        var oldDotnetEnv = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_TEST");
-        var oldAppCtx = AppContext.GetData("DOTNET_RUNNING_IN_TEST");
+        var oldDotnetEnv = Environment.GetEnvironmentVariable(DotnetRunningInTest);
+        var oldAppCtx = AppContext.GetData(DotnetRunningInTest);
         var oldNUnitEnv = Environment.GetEnvironmentVariable("NUNIT_TEST");
 
         try
         {
             // Clear explicit signals to exercise runner env signal path and set NUNIT_TEST.
-            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", null);
-            AppContext.SetData("DOTNET_RUNNING_IN_TEST", null);
+            Environment.SetEnvironmentVariable(DotnetRunningInTest, null);
+            AppContext.SetData(DotnetRunningInTest, null);
             Environment.SetEnvironmentVariable("NUNIT_TEST", "1");
 
             // Act
@@ -196,8 +199,8 @@ public class DefaultModeDetectorTests
         }
         finally
         {
-            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", oldDotnetEnv);
-            AppContext.SetData("DOTNET_RUNNING_IN_TEST", oldAppCtx);
+            Environment.SetEnvironmentVariable(DotnetRunningInTest, oldDotnetEnv);
+            AppContext.SetData(DotnetRunningInTest, oldAppCtx);
             Environment.SetEnvironmentVariable("NUNIT_TEST", oldNUnitEnv);
         }
     }
@@ -211,16 +214,16 @@ public class DefaultModeDetectorTests
     {
         // Arrange
         var detector = new DefaultModeDetector();
-        var oldDotnetEnv = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_TEST");
-        var oldAppCtx = AppContext.GetData("DOTNET_RUNNING_IN_TEST");
+        var oldDotnetEnv = Environment.GetEnvironmentVariable(DotnetRunningInTest);
+        var oldAppCtx = AppContext.GetData(DotnetRunningInTest);
         const string customVarName = "VSTEST_MY_CUSTOM_FLAG";
         var oldCustom = Environment.GetEnvironmentVariable(customVarName);
 
         try
         {
             // Clear explicit signals and set a prefixed env var.
-            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", null);
-            AppContext.SetData("DOTNET_RUNNING_IN_TEST", null);
+            Environment.SetEnvironmentVariable(DotnetRunningInTest, null);
+            AppContext.SetData(DotnetRunningInTest, null);
             Environment.SetEnvironmentVariable(customVarName, "1");
 
             // Act
@@ -235,8 +238,8 @@ public class DefaultModeDetectorTests
         }
         finally
         {
-            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", oldDotnetEnv);
-            AppContext.SetData("DOTNET_RUNNING_IN_TEST", oldAppCtx);
+            Environment.SetEnvironmentVariable(DotnetRunningInTest, oldDotnetEnv);
+            AppContext.SetData(DotnetRunningInTest, oldAppCtx);
             Environment.SetEnvironmentVariable(customVarName, oldCustom);
         }
     }
@@ -298,8 +301,9 @@ public class DefaultModeDetectorTests
         // Arrange & Act
         // Check if any loaded assemblies contain Microsoft.Testing.Platform
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-        var hasMTPAssembly = assemblies.Any(a =>
-            a.FullName?.Contains("Microsoft.Testing.Platform", StringComparison.OrdinalIgnoreCase) == true);
+        var hasMTPAssembly = Array.Exists(
+            assemblies,
+            a => a.FullName?.Contains("Microsoft.Testing.Platform", StringComparison.OrdinalIgnoreCase) == true);
 
         var detector = new DefaultModeDetector();
         var result = detector.InUnitTestRunner();

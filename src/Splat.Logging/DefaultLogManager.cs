@@ -10,8 +10,13 @@ namespace Splat;
 /// for logger retrieval operations.</remarks>
 public sealed class DefaultLogManager : ILogManager
 {
+    /// <summary>Maximum number of loggers retained by the most-recently-used cache.</summary>
+    private const int LoggerCacheSize = 64;
+
+    /// <summary>Logger returned when registration produces a <see langword="null"/> logger.</summary>
     private static readonly IFullLogger _nullLogger = new WrappingFullLogger(new NullLogger());
 
+    /// <summary>Caches the logger created for each type, bounded by <see cref="LoggerCacheSize"/>.</summary>
     private readonly MemoizingMRUCache<Type, IFullLogger> _loggerCache;
 
     /// <summary>Initializes a new instance of the <see cref="DefaultLogManager"/> class.</summary>
@@ -30,7 +35,7 @@ public sealed class DefaultLogManager : ILogManager
                     _ => new WrappingFullLogger(new WrappingPrefixLogger(ret, type))
                 };
             },
-            64);
+            LoggerCacheSize);
     }
 
     /// <inheritdoc />

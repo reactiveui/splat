@@ -2,6 +2,8 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Splat;
 
 /// <summary>
@@ -14,6 +16,10 @@ namespace Splat;
 /// via callbacks. This interface is typically used to extend or modify the set of available services during application
 /// execution, such as in plugin architectures or for testing purposes. Thread safety and registration order semantics
 /// may vary by implementation; consult the specific resolver's documentation for details.</remarks>
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification = "Generic service-location API; the service type is supplied explicitly by callers, so type inference cannot apply by design.")]
 public interface IMutableDependencyResolver
 {
     /// <summary>Determines whether a registration exists for the specified service type.</summary>
@@ -93,6 +99,31 @@ public interface IMutableDependencyResolver
     /// </para>
     /// </remarks>
     void Register<T>(Func<T?> factory, string? contract);
+
+    /// <summary>Registers a service type and its implementation for dependency resolution.</summary>
+    /// <remarks>Subsequent requests for TService will resolve to instances of TImplementation. If the service
+    /// type is already registered, this method may overwrite the existing registration depending on the
+    /// implementation.</remarks>
+    /// <typeparam name="TService">The interface or base class type to register as a service. Must be a reference type.</typeparam>
+    /// <typeparam name="TImplementation">The concrete implementation type to instantiate when resolving the service. Must be a reference type, implement
+    /// TService, and have a public parameterless constructor.</typeparam>
+    void Register<TService, TImplementation>()
+        where TService : class
+        where TImplementation : class, TService, new();
+
+    /// <summary>Registers a service implementation with an optional contract name for dependency resolution.</summary>
+    /// <remarks>Use this method to associate a service interface or base class with a specific
+    /// implementation, optionally under a contract name. This enables resolving different implementations of the same
+    /// service type by contract. If multiple implementations are registered for the same service and contract, the
+    /// behavior may depend on the container's resolution strategy.</remarks>
+    /// <typeparam name="TService">The type of the service to register. Must be a reference type.</typeparam>
+    /// <typeparam name="TImplementation">The concrete implementation type to register for the service. Must be a reference type with a public
+    /// parameterless constructor.</typeparam>
+    /// <param name="contract">An optional contract name that distinguishes this registration from others of the same service type. Specify
+    /// null to register the implementation without a contract.</param>
+    void Register<TService, TImplementation>(string? contract)
+        where TService : class
+        where TImplementation : class, TService, new();
 
     /// <summary>Unregisters the current instance of the specified service type from the context.</summary>
     /// <remarks>If no instance of the specified service type is registered, this method has no
@@ -176,31 +207,6 @@ public interface IMutableDependencyResolver
     /// <returns>An IDisposable that, when disposed, unregisters the callback.</returns>
     IDisposable ServiceRegistrationCallback<T>(string? contract, Action<IDisposable> callback);
 
-    /// <summary>Registers a service type and its implementation for dependency resolution.</summary>
-    /// <remarks>Subsequent requests for TService will resolve to instances of TImplementation. If the service
-    /// type is already registered, this method may overwrite the existing registration depending on the
-    /// implementation.</remarks>
-    /// <typeparam name="TService">The interface or base class type to register as a service. Must be a reference type.</typeparam>
-    /// <typeparam name="TImplementation">The concrete implementation type to instantiate when resolving the service. Must be a reference type, implement
-    /// TService, and have a public parameterless constructor.</typeparam>
-    void Register<TService, TImplementation>()
-        where TService : class
-        where TImplementation : class, TService, new();
-
-    /// <summary>Registers a service implementation with an optional contract name for dependency resolution.</summary>
-    /// <remarks>Use this method to associate a service interface or base class with a specific
-    /// implementation, optionally under a contract name. This enables resolving different implementations of the same
-    /// service type by contract. If multiple implementations are registered for the same service and contract, the
-    /// behavior may depend on the container's resolution strategy.</remarks>
-    /// <typeparam name="TService">The type of the service to register. Must be a reference type.</typeparam>
-    /// <typeparam name="TImplementation">The concrete implementation type to register for the service. Must be a reference type with a public
-    /// parameterless constructor.</typeparam>
-    /// <param name="contract">An optional contract name that distinguishes this registration from others of the same service type. Specify
-    /// null to register the implementation without a contract.</param>
-    void Register<TService, TImplementation>(string? contract)
-        where TService : class
-        where TImplementation : class, TService, new();
-
     /// <summary>Registers a constant value of the specified reference type for later retrieval or use.</summary>
     /// <typeparam name="T">The reference type of the constant value to register.</typeparam>
     /// <param name="value">The constant value to register. Can be null to represent the absence of a value.</param>
@@ -224,7 +230,7 @@ public interface IMutableDependencyResolver
     /// <typeparam name="T">The type of the service to register. Must be a reference type with a public parameterless constructor.</typeparam>
     /// <param name="valueFactory">A function that provides the instance of type T when the service is first requested. The function may return
     /// null if no instance should be registered.</param>
-    void RegisterLazySingleton<[System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory)
+    void RegisterLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory)
         where T : class;
 
     /// <summary>Registers a singleton service of type T that is created lazily using the specified factory method.</summary>
@@ -236,6 +242,6 @@ public interface IMutableDependencyResolver
     /// singleton is desired.</param>
     /// <param name="contract">An optional contract name used to distinguish between multiple registrations of the same service type. If null,
     /// the default contract is used.</param>
-    void RegisterLazySingleton<[System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory, string? contract)
+    void RegisterLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory, string? contract)
         where T : class;
 }

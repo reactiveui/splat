@@ -35,6 +35,10 @@ namespace Splat;
 /// <param name="unregisterCurrent">A func which will unregister the current registered element for a service type and contract.</param>
 /// <param name="unregisterAll">A func which will unregister all the registered elements for a service type and contract.</param>
 /// <param name="toDispose">A optional disposable which is called when this resolver is disposed.</param>
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification = "Resolution/registration APIs whose generic parameter is the caller-supplied service type and cannot appear in the parameter list (e.g. GetService<T>(), Register<TService>()).")]
 public class FuncDependencyResolver(
     Func<Type?, string?, IEnumerable<object>> getAllServices,
     Action<Func<object?>, Type?, string?>? register = null,
@@ -47,6 +51,10 @@ public class FuncDependencyResolver(
     /// When a service is registered via <c>Register*</c>, callbacks registered for that key are invoked.
     /// A callback may dispose the provided token to indicate it should be removed (one-shot semantics).
     /// </remarks>
+    /// <summary>The initial capacity used when creating a callback list for a newly seen registration key.</summary>
+    private const int InitialCallbackListCapacity = 4;
+
+    /// <summary>Maps a (service type, contract) key to the change callbacks registered for it.</summary>
     private readonly Dictionary<(Type? type, string? contract), List<Action<IDisposable>>> _callbackRegistry = new(16);
 
     /// <summary>Stores deferred disposal actions associated with registrations made by this resolver.</summary>
@@ -248,7 +256,7 @@ public class FuncDependencyResolver(
 
         if (!_callbackRegistry.TryGetValue(key, out var callbacks))
         {
-            callbacks = new(4);
+            callbacks = new(InitialCallbackListCapacity);
             _callbackRegistry[key] = callbacks;
         }
 
@@ -298,57 +306,13 @@ public class FuncDependencyResolver(
 
         if (isDisposing)
         {
-            // Signal callbacks (exceptions suppressed by design).
-            foreach (var kvp in _callbackRegistry)
-            {
-                var list = kvp.Value;
-                for (var i = 0; i < list.Count; i++)
-                {
-                    try
-                    {
-                        using var disp = new BooleanDisposable();
-                        list[i](disp);
-                    }
-                    catch
-                    {
-                        // Suppress exceptions during disposal.
-                    }
-                }
-            }
-
+            SignalCallbacksOnDispose();
             _callbackRegistry.Clear();
 
-            // Execute disposal actions for lazy singletons.
-            for (var i = 0; i < _disposalActions.Count; i++)
-            {
-                try
-                {
-                    _disposalActions[i]();
-                }
-                catch
-                {
-                    // Suppress exceptions during disposal.
-                }
-            }
-
+            ExecuteDisposalActions();
             _disposalActions.Clear();
 
-            // Dispose all registered services that are IDisposable (exceptions suppressed by design).
-            var allServices = getAllServices?.Invoke(null, null);
-            if (allServices is not null)
-            {
-                foreach (var service in allServices)
-                {
-                    try
-                    {
-                        (service as IDisposable)?.Dispose();
-                    }
-                    catch
-                    {
-                        // Suppress exceptions during disposal.
-                    }
-                }
-            }
+            DisposeRegisteredServices();
 
             Interlocked.Exchange(ref _inner, EmptyDisposable.Instance).Dispose();
         }
@@ -419,6 +383,36 @@ public class FuncDependencyResolver(
             {
                 yield return (T)o;
             }
+        }
+    }
+
+    /// <summary>Invokes each registration callback once, removing any that dispose their provided token (one-shot semantics).</summary>
+    /// <param name="callbacks">The list of callbacks to invoke for the registered key.</param>
+    private static void InvokeRegistrationCallbacks(List<Action<IDisposable>> callbacks)
+    {
+        // Iterate in forward order to preserve callback invocation order, collecting any
+        // that dispose the provided token for removal afterwards so removals do not disturb iteration.
+        List<int>? toRemove = null;
+        for (var i = 0; i < callbacks.Count; i++)
+        {
+            using var disp = new BooleanDisposable();
+            callbacks[i](disp);
+
+            if (disp.IsDisposed)
+            {
+                (toRemove ??= []).Add(i);
+            }
+        }
+
+        if (toRemove is null)
+        {
+            return;
+        }
+
+        // Remove from highest index to lowest so earlier indices remain valid.
+        for (var j = toRemove.Count - 1; j >= 0; j--)
+        {
+            callbacks.RemoveAt(toRemove[j]);
         }
     }
 
@@ -525,18 +519,7 @@ public class FuncDependencyResolver(
             return;
         }
 
-        // Invoke callbacks; remove any that dispose the provided token (one-shot semantics).
-        for (var i = 0; i < callbacks.Count; i++)
-        {
-            using var disp = new BooleanDisposable();
-            callbacks[i](disp);
-
-            if (disp.IsDisposed)
-            {
-                callbacks.RemoveAt(i);
-                i--;
-            }
-        }
+        InvokeRegistrationCallbacks(callbacks);
     }
 
     /// <summary>Registers a lazy singleton for a service type/contract pair and tracks its disposal if created.</summary>
@@ -590,5 +573,64 @@ public class FuncDependencyResolver(
             },
             typeof(T),
             contract);
+    }
+
+    /// <summary>Signals all registered callbacks during disposal, suppressing any exceptions.</summary>
+    private void SignalCallbacksOnDispose()
+    {
+        foreach (var kvp in _callbackRegistry)
+        {
+            var list = kvp.Value;
+            for (var i = 0; i < list.Count; i++)
+            {
+                try
+                {
+                    using var disp = new BooleanDisposable();
+                    list[i](disp);
+                }
+                catch
+                {
+                    // Suppress exceptions during disposal.
+                }
+            }
+        }
+    }
+
+    /// <summary>Executes the deferred disposal actions for lazy singletons, suppressing any exceptions.</summary>
+    private void ExecuteDisposalActions()
+    {
+        for (var i = 0; i < _disposalActions.Count; i++)
+        {
+            try
+            {
+                _disposalActions[i]();
+            }
+            catch
+            {
+                // Suppress exceptions during disposal.
+            }
+        }
+    }
+
+    /// <summary>Disposes all registered services that implement <see cref="IDisposable"/>, suppressing any exceptions.</summary>
+    private void DisposeRegisteredServices()
+    {
+        var allServices = getAllServices?.Invoke(null, null);
+        if (allServices is null)
+        {
+            return;
+        }
+
+        foreach (var service in allServices)
+        {
+            try
+            {
+                (service as IDisposable)?.Dispose();
+            }
+            catch
+            {
+                // Suppress exceptions during disposal.
+            }
+        }
     }
 }

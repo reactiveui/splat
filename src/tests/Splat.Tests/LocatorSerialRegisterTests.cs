@@ -11,6 +11,12 @@ namespace Splat.Tests;
 [NotInParallel]
 public class LocatorSerialRegisterTests
 {
+    /// <summary>The number of registered dummy services in the multi-registration tests.</summary>
+    private const int RegisteredDummyCount = 3;
+
+    /// <summary>The number of dummy services remaining after one is unregistered.</summary>
+    private const int RemainingDummyCount = 2;
+
     /// <summary>The internal locator scope used to isolate each test.</summary>
     private InternalLocatorScope? _locatorScope;
 
@@ -31,11 +37,11 @@ public class LocatorSerialRegisterTests
     [Test]
     public async Task InitializeSplat_RegistrationsNotEmptyNoRegistrations()
     {
-        // this is using the internal constructor
+        // this is using the internal constructor and the Type-based GetService overload
         var testLocator = new InternalLocator();
         testLocator.CurrentMutable.InitializeSplat();
-        var logManager = testLocator.Current.GetService<ILogManager>();
-        var logger = testLocator.Current.GetService<ILogger>();
+        var logManager = testLocator.Current.GetService(typeof(ILogManager));
+        var logger = testLocator.Current.GetService(typeof(ILogger));
 
         using (Assert.Multiple())
         {
@@ -98,15 +104,17 @@ public class LocatorSerialRegisterTests
         var originalLocator = testLocator.Internal;
 
         var numberNotifications = 0;
-        void NotificationAction() => numberNotifications++;
+        void NotificationAction() => Interlocked.Increment(ref numberNotifications);
 
         testLocator.RegisterResolverCallbackChanged(NotificationAction);
 
         testLocator.SetLocator(new ModernDependencyResolver());
         testLocator.SetLocator(new ModernDependencyResolver());
 
-        // 2 for the changes, 1 for the callback being immediately called.
-        await Assert.That(numberNotifications).IsEqualTo(3);
+        // 1 for the callback being immediately called when registered, plus 2 for the two SetLocator changes.
+        const int immediateCallbackCount = 1;
+        const int setLocatorChangeCount = 2;
+        await Assert.That(numberNotifications).IsEqualTo(immediateCallbackCount + setLocatorChangeCount);
 
         testLocator.SetLocator(originalLocator);
     }
@@ -122,7 +130,7 @@ public class LocatorSerialRegisterTests
         using (testLocator.SuppressResolverCallbackChangedNotifications())
         {
             var numberNotifications = 0;
-            void NotificationAction() => numberNotifications++;
+            void NotificationAction() => Interlocked.Increment(ref numberNotifications);
 
             testLocator.RegisterResolverCallbackChanged(NotificationAction);
 
@@ -141,7 +149,7 @@ public class LocatorSerialRegisterTests
     public async Task WithResolver_NotificationsDontHappen()
     {
         var numberNotifications = 0;
-        void NotificationAction() => numberNotifications++;
+        void NotificationAction() => Interlocked.Increment(ref numberNotifications);
 
         var testLocator = new InternalLocator();
         testLocator.RegisterResolverCallbackChanged(NotificationAction);
@@ -161,7 +169,7 @@ public class LocatorSerialRegisterTests
     public async Task WithResolver_NotificationsNotSuppressedHappen()
     {
         var numberNotifications = 0;
-        void NotificationAction() => numberNotifications++;
+        void NotificationAction() => Interlocked.Increment(ref numberNotifications);
 
         Locator.RegisterResolverCallbackChanged(NotificationAction);
 
@@ -170,10 +178,12 @@ public class LocatorSerialRegisterTests
         innerResolver.Dispose();
         outerResolver.Dispose();
 
-        // 1 due to the fact the callback is called when we register.
-        // 2 for, 1 for change to resolver, 1 for change back
-        // 2 for, 1 for change to resolver, 1 for change back
-        await Assert.That(numberNotifications).IsEqualTo(5);
+        // 1 for the callback being called immediately when we register, then each WithResolver(false)
+        // scope fires twice (once for the change to the resolver and once for the change back).
+        const int immediateCallbackCount = 1;
+        const int notificationsPerScope = 2;
+        const int scopeCount = 2;
+        await Assert.That(numberNotifications).IsEqualTo(immediateCallbackCount + (notificationsPerScope * scopeCount));
     }
 
     /// <summary>Tests to make sure that the unregister all functions correctly. This is a test when there are values registered.</summary>
@@ -202,7 +212,7 @@ public class LocatorSerialRegisterTests
 
             using (Assert.Multiple())
             {
-                await Assert.That(items).Count().IsEqualTo(3);
+                await Assert.That(items).Count().IsEqualTo(RegisteredDummyCount);
                 await Assert.That(items).Contains(dummy1);
                 await Assert.That(items).Contains(dummy2);
                 await Assert.That(items).Contains(dummy3);
@@ -260,7 +270,7 @@ public class LocatorSerialRegisterTests
 
             using (Assert.Multiple())
             {
-                await Assert.That(items).Count().IsEqualTo(3);
+                await Assert.That(items).Count().IsEqualTo(RegisteredDummyCount);
                 await Assert.That(items).Contains(dummy1);
                 await Assert.That(items).Contains(dummy2);
                 await Assert.That(items).Contains(dummy3);
@@ -272,7 +282,7 @@ public class LocatorSerialRegisterTests
 
             using (Assert.Multiple())
             {
-                await Assert.That(items).Count().IsEqualTo(2);
+                await Assert.That(items).Count().IsEqualTo(RemainingDummyCount);
                 await Assert.That(items).Contains(dummy1);
                 await Assert.That(items).Contains(dummy2);
             }
@@ -299,13 +309,13 @@ public class LocatorSerialRegisterTests
         {
             var items = currentMutable.GetServices<IDummyInterface>(testContract).ToList();
 
-            await Assert.That(items).Count().IsEqualTo(3);
+            await Assert.That(items).Count().IsEqualTo(RegisteredDummyCount);
 
             currentMutable.UnregisterCurrent<IDummyInterface>(testContract);
 
             items = [.. currentMutable.GetServices<IDummyInterface>(testContract)];
 
-            await Assert.That(items).Count().IsEqualTo(2);
+            await Assert.That(items).Count().IsEqualTo(RemainingDummyCount);
         }
     }
 

@@ -19,21 +19,39 @@ namespace Splat.Microsoft.Extensions.DependencyInjection;
 /// resolution operations. Contract-based (keyed) registrations are supported if the underlying service provider
 /// implements IKeyedServiceProvider. This resolver is suitable for scenarios requiring dynamic service registration and
 /// resolution, as well as integration with existing Microsoft.Extensions.DependencyInjection infrastructure.</remarks>
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification = "The generic parameter is the caller-supplied service type and cannot appear in the parameter list without breaking the IDependencyResolver resolution/registration contract.")]
 public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
 {
+    /// <summary>Message thrown when a mutation is attempted after the container has been built.</summary>
     private const string ImmutableExceptionMessage = "This container has already been built and cannot be modified.";
 
+    /// <summary>Message thrown when resolution is attempted before a service provider is available.</summary>
+    private const string ServiceProviderNullMessage = "The ServiceProvider is null.";
+
+    /// <summary>Serializes access to the service collection and built provider.</summary>
     private readonly Lock _syncLock = new();
 
+    /// <summary>The mutable service collection used until the provider is built.</summary>
     private IServiceCollection? _serviceCollection;
 
+    /// <summary>Indicates whether the container has been built and can no longer be mutated.</summary>
     private bool _isImmutable;
 
+    /// <summary>The built service provider used for resolution once the container is immutable.</summary>
     private IServiceProvider? _serviceProvider;
+
+    /// <summary>Initializes a new instance of the <see cref="MicrosoftDependencyResolver" /> class with a new <see cref="IServiceCollection"/>.</summary>
+    public MicrosoftDependencyResolver()
+        : this((IServiceCollection?)null)
+    {
+    }
 
     /// <summary>Initializes a new instance of the <see cref="MicrosoftDependencyResolver" /> class with an <see cref="IServiceCollection"/>.</summary>
     /// <param name="services">An instance of <see cref="IServiceCollection"/>.</param>
-    public MicrosoftDependencyResolver(IServiceCollection? services = null) => _serviceCollection = services ?? new ServiceCollection();
+    public MicrosoftDependencyResolver(IServiceCollection? services) => _serviceCollection = services ?? new ServiceCollection();
 
     /// <summary>Initializes a new instance of the <see cref="MicrosoftDependencyResolver" /> class with a configured service Provider.</summary>
     /// <param name="serviceProvider">A ready to use service provider.</param>
@@ -103,7 +121,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     {
         if (ServiceProvider is null)
         {
-            throw new InvalidOperationException("The ServiceProvider is null.");
+            throw new InvalidOperationException(ServiceProviderNullMessage);
         }
 
         var isNull = serviceType is null;
@@ -125,7 +143,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
 
         if (ServiceProvider is null)
         {
-            throw new InvalidOperationException("The ServiceProvider is null.");
+            throw new InvalidOperationException(ServiceProviderNullMessage);
         }
 
         var isNull = serviceType is null;
@@ -140,12 +158,33 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
             : service;
     }
 
+    /// <inheritdoc/>
+    public T? GetService<T>() => ServiceProvider is null
+        ? throw new InvalidOperationException(ServiceProviderNullMessage)
+        : ServiceProvider.GetService<T>();
+
+    /// <inheritdoc/>
+    public T? GetService<T>(string? contract)
+    {
+        if (contract is null)
+        {
+            return GetService<T>();
+        }
+
+        return ServiceProvider switch
+        {
+            null => throw new InvalidOperationException(ServiceProviderNullMessage),
+            IKeyedServiceProvider keyedServiceProvider => keyedServiceProvider.GetKeyedService<T>(contract),
+            _ => default
+        };
+    }
+
     /// <inheritdoc />
     public virtual IEnumerable<object> GetServices(Type? serviceType)
     {
         if (ServiceProvider is null)
         {
-            throw new InvalidOperationException("The ServiceProvider is null.");
+            throw new InvalidOperationException(ServiceProviderNullMessage);
         }
 
         var isNull = serviceType is null;
@@ -171,7 +210,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     {
         if (ServiceProvider is null)
         {
-            throw new InvalidOperationException("The ServiceProvider is null.");
+            throw new InvalidOperationException(ServiceProviderNullMessage);
         }
 
         var isNull = serviceType is null;
@@ -194,6 +233,27 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
         }
 
         return services;
+    }
+
+    /// <inheritdoc/>
+    public IEnumerable<T> GetServices<T>() => ServiceProvider is null
+        ? throw new InvalidOperationException(ServiceProviderNullMessage)
+        : ServiceProvider.GetServices<T>();
+
+    /// <inheritdoc/>
+    public IEnumerable<T> GetServices<T>(string? contract)
+    {
+        if (contract is null)
+        {
+            return GetServices<T>();
+        }
+
+        return ServiceProvider switch
+        {
+            null => throw new InvalidOperationException(ServiceProviderNullMessage),
+            IKeyedServiceProvider keyedServiceProvider => keyedServiceProvider.GetKeyedServices<T>(contract),
+            _ => []
+        };
     }
 
     /// <inheritdoc />
@@ -245,6 +305,60 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
             isNull
             ? new NullServiceType(factory)
             : factory()!);
+
+            // required so that it gets rebuilt if not injected externally.
+            DisposeServiceProvider(_serviceProvider);
+            _serviceProvider = null;
+        }
+    }
+
+    /// <inheritdoc/>
+    public void Register<T>(Func<T?> factory) =>
+        Register(() => factory(), typeof(T));
+
+    /// <inheritdoc/>
+    public void Register<T>(Func<T?> factory, string? contract) =>
+        Register(() => factory(), typeof(T), contract);
+
+    /// <inheritdoc/>
+    public void Register<TService, TImplementation>()
+        where TService : class
+        where TImplementation : class, TService, new()
+    {
+        if (_isImmutable)
+        {
+            throw new InvalidOperationException(ImmutableExceptionMessage);
+        }
+
+        lock (_syncLock)
+        {
+            _serviceCollection?.AddTransient<TService>(static _ => new TImplementation());
+
+            // required so that it gets rebuilt if not injected externally.
+            DisposeServiceProvider(_serviceProvider);
+            _serviceProvider = null;
+        }
+    }
+
+    /// <inheritdoc/>
+    public void Register<TService, TImplementation>(string? contract)
+        where TService : class
+        where TImplementation : class, TService, new()
+    {
+        if (contract is null)
+        {
+            Register<TService, TImplementation>();
+            return;
+        }
+
+        if (_isImmutable)
+        {
+            throw new InvalidOperationException(ImmutableExceptionMessage);
+        }
+
+        lock (_syncLock)
+        {
+            _serviceCollection?.AddKeyedTransient<TService>(contract, static (_, _) => new TImplementation());
 
             // required so that it gets rebuilt if not injected externally.
             DisposeServiceProvider(_serviceProvider);
@@ -305,6 +419,13 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
             _serviceProvider = null;
         }
     }
+
+    /// <inheritdoc/>
+    public void UnregisterCurrent<T>() => UnregisterCurrent(typeof(T));
+
+    /// <inheritdoc/>
+    public void UnregisterCurrent<T>(string? contract) =>
+        UnregisterCurrent(typeof(T), contract);
 
     /// <inheritdoc />
     public virtual void UnregisterAll(Type? serviceType)
@@ -384,6 +505,13 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
         }
     }
 
+    /// <inheritdoc/>
+    public void UnregisterAll<T>() => UnregisterAll(typeof(T));
+
+    /// <inheritdoc/>
+    public void UnregisterAll<T>(string? contract) =>
+        UnregisterAll(typeof(T), contract);
+
     /// <inheritdoc />
     public virtual IDisposable ServiceRegistrationCallback(Type serviceType, Action<IDisposable> callback) =>
         throw new NotSupportedException("ServiceRegistrationCallback without contract is not implemented in the Microsoft dependency resolver.");
@@ -391,6 +519,14 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     /// <inheritdoc />
     public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) =>
         throw new NotSupportedException("ServiceRegistrationCallback is not implemented in the Microsoft dependency resolver.");
+
+    /// <inheritdoc/>
+    public IDisposable ServiceRegistrationCallback<T>(Action<IDisposable> callback) =>
+        ServiceRegistrationCallback(typeof(T), callback);
+
+    /// <inheritdoc/>
+    public IDisposable ServiceRegistrationCallback<T>(string? contract, Action<IDisposable> callback) =>
+        ServiceRegistrationCallback(typeof(T), contract, callback);
 
     /// <inheritdoc/>
     public virtual bool HasRegistration(Type? serviceType)
@@ -431,129 +567,11 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     }
 
     /// <inheritdoc/>
-    public T? GetService<T>() => ServiceProvider is null
-        ? throw new InvalidOperationException("The ServiceProvider is null.")
-        : ServiceProvider.GetService<T>();
-
-    /// <inheritdoc/>
-    public T? GetService<T>(string? contract)
-    {
-        if (contract is null)
-        {
-            return GetService<T>();
-        }
-
-        return ServiceProvider switch
-        {
-            null => throw new InvalidOperationException("The ServiceProvider is null."),
-            IKeyedServiceProvider keyedServiceProvider => keyedServiceProvider.GetKeyedService<T>(contract),
-            _ => default
-        };
-    }
-
-    /// <inheritdoc/>
-    public IEnumerable<T> GetServices<T>() => ServiceProvider is null
-        ? throw new InvalidOperationException("The ServiceProvider is null.")
-        : ServiceProvider.GetServices<T>();
-
-    /// <inheritdoc/>
-    public IEnumerable<T> GetServices<T>(string? contract)
-    {
-        if (contract is null)
-        {
-            return GetServices<T>();
-        }
-
-        return ServiceProvider switch
-        {
-            null => throw new InvalidOperationException("The ServiceProvider is null."),
-            IKeyedServiceProvider keyedServiceProvider => keyedServiceProvider.GetKeyedServices<T>(contract),
-            _ => []
-        };
-    }
-
-    /// <inheritdoc/>
     public bool HasRegistration<T>() => HasRegistration(typeof(T));
 
     /// <inheritdoc/>
     public bool HasRegistration<T>(string? contract) =>
         HasRegistration(typeof(T), contract);
-
-    /// <inheritdoc/>
-    public void Register<T>(Func<T?> factory) =>
-        Register(() => factory(), typeof(T));
-
-    /// <inheritdoc/>
-    public void Register<T>(Func<T?> factory, string? contract) =>
-        Register(() => factory(), typeof(T), contract);
-
-    /// <inheritdoc/>
-    public void UnregisterCurrent<T>() => UnregisterCurrent(typeof(T));
-
-    /// <inheritdoc/>
-    public void UnregisterCurrent<T>(string? contract) =>
-        UnregisterCurrent(typeof(T), contract);
-
-    /// <inheritdoc/>
-    public void UnregisterAll<T>() => UnregisterAll(typeof(T));
-
-    /// <inheritdoc/>
-    public void UnregisterAll<T>(string? contract) =>
-        UnregisterAll(typeof(T), contract);
-
-    /// <inheritdoc/>
-    public IDisposable ServiceRegistrationCallback<T>(Action<IDisposable> callback) =>
-        ServiceRegistrationCallback(typeof(T), callback);
-
-    /// <inheritdoc/>
-    public IDisposable ServiceRegistrationCallback<T>(string? contract, Action<IDisposable> callback) =>
-        ServiceRegistrationCallback(typeof(T), contract, callback);
-
-    /// <inheritdoc/>
-    public void Register<TService, TImplementation>()
-        where TService : class
-        where TImplementation : class, TService, new()
-    {
-        if (_isImmutable)
-        {
-            throw new InvalidOperationException(ImmutableExceptionMessage);
-        }
-
-        lock (_syncLock)
-        {
-            _serviceCollection?.AddTransient<TService>(static _ => new TImplementation());
-
-            // required so that it gets rebuilt if not injected externally.
-            DisposeServiceProvider(_serviceProvider);
-            _serviceProvider = null;
-        }
-    }
-
-    /// <inheritdoc/>
-    public void Register<TService, TImplementation>(string? contract)
-        where TService : class
-        where TImplementation : class, TService, new()
-    {
-        if (contract is null)
-        {
-            Register<TService, TImplementation>();
-            return;
-        }
-
-        if (_isImmutable)
-        {
-            throw new InvalidOperationException(ImmutableExceptionMessage);
-        }
-
-        lock (_syncLock)
-        {
-            _serviceCollection?.AddKeyedTransient<TService>(contract, static (_, _) => new TImplementation());
-
-            // required so that it gets rebuilt if not injected externally.
-            DisposeServiceProvider(_serviceProvider);
-            _serviceProvider = null;
-        }
-    }
 
     /// <inheritdoc/>
     public void RegisterConstant<T>(T? value)

@@ -4,7 +4,6 @@
 
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-
 using Autofac;
 
 namespace Splat.Autofac;
@@ -20,10 +19,39 @@ namespace Splat.Autofac;
 /// by end-users after the container is built. To override default registrations, register your services after calling
 /// InitializeReactiveUI. Thread safety is ensured for all public operations. Disposing the resolver will release
 /// Autofac container resources.</remarks>
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification =
+        "The generic parameter is the caller-supplied service type for these resolution/registration APIs and cannot be a method parameter without breaking the IDependencyResolver API.")]
 public class AutofacDependencyResolver : IDependencyResolver
 {
+    /// <summary>The exception message thrown when an attempt is made to mutate the resolver after the lifetime scope has been set.</summary>
+    private const string ContainerAlreadyBuiltMessage =
+        "Container has already been built and the lifetime scope set, so it is not possible to modify it anymore.";
+
+    /// <summary>The guidance appended to the obsolete unregister messages explaining how to override default registrations.</summary>
+    private const string OverrideRegistrationGuidance =
+        "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.";
+
+    /// <summary>The obsolete message used by the register members, which are kept for backward compatibility.</summary>
+    private const string RegisterObsoleteMessage =
+        "Because Autofac 5+ containers are immutable, this method should not be used by the end-user.";
+
+    /// <summary>The obsolete message used by the unregister-current members, which are kept for backward compatibility.</summary>
+    private const string UnregisterCurrentObsoleteMessage =
+        "Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore. " +
+        OverrideRegistrationGuidance;
+
+    /// <summary>The obsolete message used by the unregister-all members, which are kept for backward compatibility.</summary>
+    private const string UnregisterAllObsoleteMessage =
+        "Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore. " +
+        OverrideRegistrationGuidance;
+
+    /// <summary>Serializes registration and lifetime-scope changes.</summary>
     private readonly Lock _lockObject = new();
 
+    /// <summary>The builder used to accumulate registrations before the container is built.</summary>
     private readonly ContainerBuilder _builder;
 
     /// <summary>
@@ -32,9 +60,14 @@ public class AutofacDependencyResolver : IDependencyResolver
     /// </summary>
     private IContainer _internalContainer;
 
+    /// <summary>The user-supplied lifetime scope from which services are resolved once set.</summary>
     private ILifetimeScope? _lifetimeScope;
 
-    [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "_internalLifetimeScope will be disposed, because it is a child of _internalContainer")]
+    /// <summary>The lifetime scope of <see cref="_internalContainer"/> used until the user supplies their own scope.</summary>
+    [SuppressMessage(
+        "Usage",
+        "CA2213:Disposable fields should be disposed",
+        Justification = "_internalLifetimeScope will be disposed, because it is a child of _internalContainer")]
     private ILifetimeScope _internalLifetimeScope;
 
     /// <summary>
@@ -79,6 +112,66 @@ public class AutofacDependencyResolver : IDependencyResolver
         }
     }
 
+    /// <inheritdoc/>
+    public T? GetService<T>() => (T?)GetService(typeof(T));
+
+    /// <inheritdoc/>
+    public T? GetService<T>(string? contract) =>
+        (T?)GetService(typeof(T), contract);
+
+    /// <inheritdoc />
+    public virtual IEnumerable<object> GetServices(Type? serviceType)
+    {
+        var isNull = serviceType is null;
+        serviceType ??= NullServiceType.CachedType;
+
+        lock (_lockObject)
+        {
+            var enumerableType = typeof(IEnumerable<>).MakeGenericType(serviceType);
+            var instance = Resolve(enumerableType);
+
+            switch (isNull)
+            {
+                case true when instance is IEnumerable<NullServiceType> nullService:
+                    return nullService.Select(item => item.Factory()!);
+                case false when instance is not null:
+                    return ((IEnumerable)instance).Cast<object>();
+            }
+
+            return [];
+        }
+    }
+
+    /// <inheritdoc />
+    public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract)
+    {
+        var isNull = serviceType is null;
+        serviceType ??= NullServiceType.CachedType;
+
+        lock (_lockObject)
+        {
+            var enumerableType = typeof(IEnumerable<>).MakeGenericType(serviceType);
+            var instance = Resolve(enumerableType, contract);
+
+            switch (isNull)
+            {
+                case true when instance is IEnumerable<NullServiceType> nullService:
+                    return nullService.Select(item => item.Factory()!);
+                case false when instance is not null:
+                    return ((IEnumerable)instance).Cast<object>();
+            }
+
+            return [];
+        }
+    }
+
+    /// <inheritdoc/>
+    public IEnumerable<T> GetServices<T>() => GetServices(typeof(T)).Cast<T>();
+
+    /// <inheritdoc/>
+    public IEnumerable<T> GetServices<T>(string? contract) =>
+        GetServices(typeof(T), contract).Cast<T>();
+
     /// <summary>
     ///     Sets the lifetime scope which will be used to resolve ReactiveUI services.
     ///     It should be set after Autofac application-wide container is built.
@@ -100,66 +193,6 @@ public class AutofacDependencyResolver : IDependencyResolver
             _internalContainer.Dispose();
             _internalContainer = new ContainerBuilder().Build();
             _internalLifetimeScope = _internalContainer.BeginLifetimeScope();
-        }
-    }
-
-    /// <inheritdoc />
-    public virtual IEnumerable<object> GetServices(Type? serviceType)
-    {
-        var isNull = serviceType is null;
-        serviceType ??= NullServiceType.CachedType;
-
-        lock (_lockObject)
-        {
-            try
-            {
-                var enumerableType = typeof(IEnumerable<>).MakeGenericType(serviceType);
-                var instance = Resolve(enumerableType);
-
-                switch (isNull)
-                {
-                    case true when instance is IEnumerable<NullServiceType> nullService:
-                        return nullService.Select(item => item.Factory()!);
-                    case false when instance is not null:
-                        return ((IEnumerable)instance).Cast<object>();
-                }
-            }
-            finally
-            {
-                // no op
-            }
-
-            return [];
-        }
-    }
-
-    /// <inheritdoc />
-    public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract)
-    {
-        var isNull = serviceType is null;
-        serviceType ??= NullServiceType.CachedType;
-
-        lock (_lockObject)
-        {
-            try
-            {
-                var enumerableType = typeof(IEnumerable<>).MakeGenericType(serviceType);
-                var instance = Resolve(enumerableType, contract);
-
-                switch (isNull)
-                {
-                    case true when instance is IEnumerable<NullServiceType> nullService:
-                        return nullService.Select(item => item.Factory()!);
-                    case false when instance is not null:
-                        return ((IEnumerable)instance).Cast<object>();
-                }
-            }
-            finally
-            {
-                // no op
-            }
-
-            return [];
         }
     }
 
@@ -206,7 +239,12 @@ public class AutofacDependencyResolver : IDependencyResolver
     /// </summary>
     /// <param name="factory">The factory function which generates our object.</param>
     /// <param name="serviceType">The type which is used for the registration.</param>
-    [Obsolete("Because Autofac 5+ containers are immutable, this method should not be used by the end-user.")]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification =
+            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
+    [Obsolete(RegisterObsoleteMessage)]
     public virtual void Register(Func<object?> factory, Type? serviceType)
     {
         var isNull = serviceType is null;
@@ -216,25 +254,15 @@ public class AutofacDependencyResolver : IDependencyResolver
         {
             if (_lifetimeScopeSet)
             {
-                throw new InvalidOperationException("Container has already been built and the lifetime scope set, so it is not possible to modify it anymore.");
+                throw new InvalidOperationException(ContainerAlreadyBuiltMessage);
             }
 
             // We register every ReactiveUI service twice.
             // First to the application-wide container, which we are still building.
             // Second to child lifetimes in a temporary container, that is used only to satisfy ReactiveUI dependencies.
-            _builder.Register(_ =>
-                isNull
-                    ? new NullServiceType(factory)
-                    : factory()!)
-                .As(serviceType)
-                .AsImplementedInterfaces();
+            RegisterFactory(_builder, factory, serviceType, isNull);
             _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(internalBuilder =>
-                internalBuilder.Register(_ =>
-                    isNull
-                        ? new NullServiceType(factory)
-                        : factory()!)
-                    .As(serviceType)
-                    .AsImplementedInterfaces());
+                RegisterFactory(internalBuilder, factory, serviceType, isNull));
         }
     }
 
@@ -251,7 +279,12 @@ public class AutofacDependencyResolver : IDependencyResolver
     /// <param name="factory">The factory function which generates our object.</param>
     /// <param name="serviceType">The type which is used for the registration.</param>
     /// <param name="contract">A contract value which indicates to only generate the value if this contract is specified.</param>
-    [Obsolete("Because Autofac 5+ containers are immutable, this method should not be used by the end-user.")]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification =
+            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
+    [Obsolete(RegisterObsoleteMessage)]
     public virtual void Register(Func<object?> factory, Type? serviceType, string? contract)
     {
         var isNull = serviceType is null;
@@ -261,169 +294,45 @@ public class AutofacDependencyResolver : IDependencyResolver
         {
             if (_lifetimeScopeSet)
             {
-                throw new InvalidOperationException("Container has already been built and the lifetime scope set, so it is not possible to modify it anymore.");
+                throw new InvalidOperationException(ContainerAlreadyBuiltMessage);
             }
 
             // We register every ReactiveUI service twice.
             // First to the application-wide container, which we are still building.
             // Second to child lifetimes in a temporary container, that is used only to satisfy ReactiveUI dependencies.
-            if (contract is null || string.IsNullOrWhiteSpace(contract))
-            {
-                _builder.Register(_ =>
-                    isNull
-                        ? new NullServiceType(factory)
-                        : factory()!)
-                    .As(serviceType)
-                    .AsImplementedInterfaces();
-                _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(internalBuilder =>
-                    internalBuilder.Register(_ =>
-                        isNull
-                            ? new NullServiceType(factory)
-                            : factory()!)
-                        .As(serviceType)
-                        .AsImplementedInterfaces());
-            }
-            else
-            {
-                _builder.Register(_ =>
-                    isNull
-                        ? new NullServiceType(factory)
-                        : factory()!)
-                    .Named(contract, serviceType)
-                    .AsImplementedInterfaces();
-                _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(internalBuilder =>
-                    internalBuilder.Register(_ =>
-                        isNull
-                            ? new NullServiceType(factory)
-                            : factory()!)
-                        .Named(contract, serviceType)
-                        .AsImplementedInterfaces());
-            }
+            RegisterFactory(_builder, factory, serviceType, isNull, contract);
+            _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(internalBuilder =>
+                RegisterFactory(internalBuilder, factory, serviceType, isNull, contract));
         }
     }
 
-    /// <summary>
-    ///     Because <see href="https://autofaccn.readthedocs.io/en/latest/best-practices/#consider-a-container-as-immutable">Autofac 5+ containers are immutable</see>,
-    ///     UnregisterCurrent method is not available anymore.
-    ///     Instead, simply <see href="https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations">register your service after InitializeReactiveUI</see> to override it.
-    /// </summary>
-    /// <param name="serviceType">The service type to unregister.</param>
-    /// <exception cref="NotSupportedException">This is not implemented by default.</exception>
-    /// <inheritdoc />
-    [Obsolete("Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore. " +
-              "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.")]
-    public virtual void UnregisterCurrent(Type? serviceType) =>
-        throw new NotSupportedException("Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore. " +
-                                          "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.");
-
-    /// <summary>
-    ///     Because <see href="https://autofaccn.readthedocs.io/en/latest/best-practices/#consider-a-container-as-immutable">Autofac 5+ containers are immutable</see>,
-    ///     UnregisterCurrent method is not available anymore.
-    ///     Instead, simply <see href="https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations">register your service after InitializeReactiveUI</see> to override it.
-    /// </summary>
-    /// <param name="serviceType">The service type to unregister.</param>
-    /// <param name="contract">The optional contract value, which will only remove the value associated with the contract.</param>
-    /// <exception cref="NotSupportedException">This is not implemented by default.</exception>
-    /// <inheritdoc />
-    [Obsolete("Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore. " +
-              "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.")]
-    public virtual void UnregisterCurrent(Type? serviceType, string? contract) =>
-        throw new NotSupportedException("Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore. " +
-                                          "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.");
-
-    /// <summary>
-    ///     Because <see href="https://autofaccn.readthedocs.io/en/latest/best-practices/#consider-a-container-as-immutable">Autofac 5+ containers are immutable</see>,
-    ///     UnregisterAll method is not available anymore.
-    ///     Instead, simply <see href="https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations">register your service after InitializeReactiveUI</see> to override it.
-    /// </summary>
-    /// <param name="serviceType">The service type to unregister.</param>
-    /// <exception cref="NotSupportedException">This is not implemented by default.</exception>
-    /// <inheritdoc />
-    [Obsolete("Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore. " +
-              "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.")]
-    public virtual void UnregisterAll(Type? serviceType) =>
-        throw new NotSupportedException("Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore. " +
-                                          "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.");
-
-    /// <summary>
-    ///     Because <see href="https://autofaccn.readthedocs.io/en/latest/best-practices/#consider-a-container-as-immutable">Autofac 5+ containers are immutable</see>,
-    ///     UnregisterAll method is not available anymore.
-    ///     Instead, simply <see href="https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations">register your service after InitializeReactiveUI</see> to override it.
-    /// </summary>
-    /// <param name="serviceType">The service type to unregister.</param>
-    /// <param name="contract">The optional contract value, which will only remove the value associated with the contract.</param>
-    /// <exception cref="NotSupportedException">This is not implemented by default.</exception>
-    /// <inheritdoc />
-    [Obsolete("Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore. " +
-              "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.")]
-    public virtual void UnregisterAll(Type? serviceType, string? contract) =>
-        throw new NotSupportedException("Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore. " +
-                                          "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.");
-
-    /// <inheritdoc />
-    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, Action<IDisposable> callback) =>
-        throw new NotSupportedException("ServiceRegistrationCallback without contract is not implemented in the Autofac dependency resolver.");
-
-    /// <inheritdoc />
-    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) =>
-        throw new NotSupportedException("ServiceRegistrationCallback is not implemented in the Autofac dependency resolver.");
-
     /// <inheritdoc/>
-    public T? GetService<T>() => (T?)GetService(typeof(T));
-
-    /// <inheritdoc/>
-    public T? GetService<T>(string? contract) =>
-        (T?)GetService(typeof(T), contract);
-
-    /// <inheritdoc/>
-    public IEnumerable<T> GetServices<T>() => GetServices(typeof(T)).Cast<T>();
-
-    /// <inheritdoc/>
-    public IEnumerable<T> GetServices<T>(string? contract) =>
-        GetServices(typeof(T), contract).Cast<T>();
-
-    /// <inheritdoc/>
-    [Obsolete("Because Autofac 5+ containers are immutable, this method should not be used by the end-user.")]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification =
+            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
+    [Obsolete(RegisterObsoleteMessage)]
     public void Register<T>(Func<T?> factory) =>
         Register(() => factory(), typeof(T));
 
     /// <inheritdoc/>
-    [Obsolete("Because Autofac 5+ containers are immutable, this method should not be used by the end-user.")]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification =
+            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
+    [Obsolete(RegisterObsoleteMessage)]
     public void Register<T>(Func<T?> factory, string? contract) =>
         Register(() => factory(), typeof(T), contract);
 
     /// <inheritdoc/>
-    [Obsolete("Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore. " +
-              "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.")]
-    public void UnregisterCurrent<T>() => UnregisterCurrent(typeof(T));
-
-    /// <inheritdoc/>
-    [Obsolete("Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore. " +
-              "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.")]
-    public void UnregisterCurrent<T>(string? contract) =>
-        UnregisterCurrent(typeof(T), contract);
-
-    /// <inheritdoc/>
-    [Obsolete("Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore. " +
-              "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.")]
-    public void UnregisterAll<T>() => UnregisterAll(typeof(T));
-
-    /// <inheritdoc/>
-    [Obsolete("Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore. " +
-              "Instead, simply register your service after InitializeReactiveUI to override it https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations.")]
-    public void UnregisterAll<T>(string? contract) =>
-        UnregisterAll(typeof(T), contract);
-
-    /// <inheritdoc/>
-    public IDisposable ServiceRegistrationCallback<T>(Action<IDisposable> callback) =>
-        throw new NotSupportedException("ServiceRegistrationCallback without contract is not implemented in the Autofac dependency resolver.");
-
-    /// <inheritdoc/>
-    public IDisposable ServiceRegistrationCallback<T>(string? contract, Action<IDisposable> callback) =>
-        ServiceRegistrationCallback(typeof(T), contract, callback);
-
-    /// <inheritdoc/>
-    [Obsolete("Because Autofac 5+ containers are immutable, this method should not be used by the end-user.")]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification =
+            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
+    [Obsolete(RegisterObsoleteMessage)]
     public void Register<TService, TImplementation>()
         where TService : class
         where TImplementation : class, TService, new()
@@ -432,7 +341,7 @@ public class AutofacDependencyResolver : IDependencyResolver
         {
             if (_lifetimeScopeSet)
             {
-                throw new InvalidOperationException("Container has already been built and the lifetime scope set, so it is not possible to modify it anymore.");
+                throw new InvalidOperationException(ContainerAlreadyBuiltMessage);
             }
 
             // Register to both the application-wide container and internal lifetime
@@ -447,7 +356,12 @@ public class AutofacDependencyResolver : IDependencyResolver
     }
 
     /// <inheritdoc/>
-    [Obsolete("Because Autofac 5+ containers are immutable, this method should not be used by the end-user.")]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification =
+            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
+    [Obsolete(RegisterObsoleteMessage)]
     public void Register<TService, TImplementation>(string? contract)
         where TService : class
         where TImplementation : class, TService, new()
@@ -456,7 +370,7 @@ public class AutofacDependencyResolver : IDependencyResolver
         {
             if (_lifetimeScopeSet)
             {
-                throw new InvalidOperationException("Container has already been built and the lifetime scope set, so it is not possible to modify it anymore.");
+                throw new InvalidOperationException(ContainerAlreadyBuiltMessage);
             }
 
             if (string.IsNullOrWhiteSpace(contract))
@@ -480,7 +394,12 @@ public class AutofacDependencyResolver : IDependencyResolver
     }
 
     /// <inheritdoc/>
-    [Obsolete("Because Autofac 5+ containers are immutable, this method should not be used by the end-user.")]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification =
+            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
+    [Obsolete(RegisterObsoleteMessage)]
     public void RegisterConstant<T>(T? value)
         where T : class
     {
@@ -488,7 +407,7 @@ public class AutofacDependencyResolver : IDependencyResolver
         {
             if (_lifetimeScopeSet)
             {
-                throw new InvalidOperationException("Container has already been built and the lifetime scope set, so it is not possible to modify it anymore.");
+                throw new InvalidOperationException(ContainerAlreadyBuiltMessage);
             }
 
             // Register as singleton instance to both the application-wide container and internal lifetime
@@ -503,7 +422,12 @@ public class AutofacDependencyResolver : IDependencyResolver
     }
 
     /// <inheritdoc/>
-    [Obsolete("Because Autofac 5+ containers are immutable, this method should not be used by the end-user.")]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification =
+            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
+    [Obsolete(RegisterObsoleteMessage)]
     public void RegisterConstant<T>(T? value, string? contract)
         where T : class
     {
@@ -511,7 +435,7 @@ public class AutofacDependencyResolver : IDependencyResolver
         {
             if (_lifetimeScopeSet)
             {
-                throw new InvalidOperationException("Container has already been built and the lifetime scope set, so it is not possible to modify it anymore.");
+                throw new InvalidOperationException(ContainerAlreadyBuiltMessage);
             }
 
             if (string.IsNullOrWhiteSpace(contract))
@@ -534,15 +458,23 @@ public class AutofacDependencyResolver : IDependencyResolver
     }
 
     /// <inheritdoc/>
-    [Obsolete("Because Autofac 5+ containers are immutable, this method should not be used by the end-user.")]
-    public void RegisterLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory)
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification =
+            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
+    [Obsolete(RegisterObsoleteMessage)]
+    public void RegisterLazySingleton<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
+        T>(
+        Func<T?> valueFactory)
         where T : class
     {
         lock (_lockObject)
         {
             if (_lifetimeScopeSet)
             {
-                throw new InvalidOperationException("Container has already been built and the lifetime scope set, so it is not possible to modify it anymore.");
+                throw new InvalidOperationException(ContainerAlreadyBuiltMessage);
             }
 
             // Register as singleton with factory to both the application-wide container and internal lifetime
@@ -559,15 +491,23 @@ public class AutofacDependencyResolver : IDependencyResolver
     }
 
     /// <inheritdoc/>
-    [Obsolete("Because Autofac 5+ containers are immutable, this method should not be used by the end-user.")]
-    public void RegisterLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory, string? contract)
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
+    [Obsolete(RegisterObsoleteMessage)]
+    public void RegisterLazySingleton<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
+        T>(
+        Func<T?> valueFactory,
+        string? contract)
         where T : class
     {
         lock (_lockObject)
         {
             if (_lifetimeScopeSet)
             {
-                throw new InvalidOperationException("Container has already been built and the lifetime scope set, so it is not possible to modify it anymore.");
+                throw new InvalidOperationException(ContainerAlreadyBuiltMessage);
             }
 
             if (string.IsNullOrWhiteSpace(contract))
@@ -591,6 +531,144 @@ public class AutofacDependencyResolver : IDependencyResolver
         }
     }
 
+    /// <summary>
+    ///     Because <see href="https://autofaccn.readthedocs.io/en/latest/best-practices/#consider-a-container-as-immutable">Autofac 5+ containers are immutable</see>,
+    ///     UnregisterCurrent method is not available anymore.
+    ///     Instead, simply
+    ///     <see href="https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations">register your service after InitializeReactiveUI</see>
+    ///     to override it.
+    /// </summary>
+    /// <param name="serviceType">The service type to unregister.</param>
+    /// <exception cref="NotSupportedException">This is not implemented by default.</exception>
+    /// <inheritdoc />
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification =
+            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
+    [Obsolete(UnregisterCurrentObsoleteMessage)]
+    public virtual void UnregisterCurrent(Type? serviceType) =>
+        throw new NotSupportedException(UnregisterCurrentObsoleteMessage);
+
+    /// <summary>
+    ///     Because <see href="https://autofaccn.readthedocs.io/en/latest/best-practices/#consider-a-container-as-immutable">Autofac 5+ containers are immutable</see>,
+    ///     UnregisterCurrent method is not available anymore.
+    ///     Instead, simply
+    ///     <see href="https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations">register your service after InitializeReactiveUI</see>
+    ///     to override it.
+    /// </summary>
+    /// <param name="serviceType">The service type to unregister.</param>
+    /// <param name="contract">The optional contract value, which will only remove the value associated with the contract.</param>
+    /// <exception cref="NotSupportedException">This is not implemented by default.</exception>
+    /// <inheritdoc />
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification =
+            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
+    [Obsolete(UnregisterCurrentObsoleteMessage)]
+    public virtual void UnregisterCurrent(Type? serviceType, string? contract) =>
+        throw new NotSupportedException(UnregisterCurrentObsoleteMessage);
+
+    /// <inheritdoc/>
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification =
+            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
+    [Obsolete(UnregisterCurrentObsoleteMessage)]
+    public void UnregisterCurrent<T>() => UnregisterCurrent(typeof(T));
+
+    /// <inheritdoc/>
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification =
+            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
+    [Obsolete(UnregisterCurrentObsoleteMessage)]
+    public void UnregisterCurrent<T>(string? contract) =>
+        UnregisterCurrent(typeof(T), contract);
+
+    /// <summary>
+    ///     Because <see href="https://autofaccn.readthedocs.io/en/latest/best-practices/#consider-a-container-as-immutable">Autofac 5+ containers are immutable</see>,
+    ///     UnregisterAll method is not available anymore.
+    ///     Instead, simply
+    ///     <see href="https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations">register your service after InitializeReactiveUI</see>
+    ///     to override it.
+    /// </summary>
+    /// <param name="serviceType">The service type to unregister.</param>
+    /// <exception cref="NotSupportedException">This is not implemented by default.</exception>
+    /// <inheritdoc />
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification =
+            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
+    [Obsolete(UnregisterAllObsoleteMessage)]
+    public virtual void UnregisterAll(Type? serviceType) =>
+        throw new NotSupportedException(UnregisterAllObsoleteMessage);
+
+    /// <summary>
+    ///     Because <see href="https://autofaccn.readthedocs.io/en/latest/best-practices/#consider-a-container-as-immutable">Autofac 5+ containers are immutable</see>,
+    ///     UnregisterAll method is not available anymore.
+    ///     Instead, simply
+    ///     <see href="https://autofaccn.readthedocs.io/en/latest/register/registration.html#default-registrations">register your service after InitializeReactiveUI</see>
+    ///     to override it.
+    /// </summary>
+    /// <param name="serviceType">The service type to unregister.</param>
+    /// <param name="contract">The optional contract value, which will only remove the value associated with the contract.</param>
+    /// <exception cref="NotSupportedException">This is not implemented by default.</exception>
+    /// <inheritdoc />
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification =
+            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
+    [Obsolete(UnregisterAllObsoleteMessage)]
+    public virtual void UnregisterAll(Type? serviceType, string? contract) =>
+        throw new NotSupportedException(UnregisterAllObsoleteMessage);
+
+    /// <inheritdoc/>
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification =
+            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
+    [Obsolete(UnregisterAllObsoleteMessage)]
+    public void UnregisterAll<T>() => UnregisterAll(typeof(T));
+
+    /// <inheritdoc/>
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification =
+            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
+    [Obsolete(UnregisterAllObsoleteMessage)]
+    public void UnregisterAll<T>(string? contract) =>
+        UnregisterAll(typeof(T), contract);
+
+    /// <inheritdoc />
+    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, Action<IDisposable> callback) =>
+        throw new NotSupportedException(
+            "ServiceRegistrationCallback without contract is not implemented in the Autofac dependency resolver.");
+
+    /// <inheritdoc />
+    public virtual IDisposable ServiceRegistrationCallback(
+        Type serviceType,
+        string? contract,
+        Action<IDisposable> callback) =>
+        throw new NotSupportedException(
+            "ServiceRegistrationCallback is not implemented in the Autofac dependency resolver.");
+
+    /// <inheritdoc/>
+    public IDisposable ServiceRegistrationCallback<T>(Action<IDisposable> callback) =>
+        throw new NotSupportedException(
+            "ServiceRegistrationCallback without contract is not implemented in the Autofac dependency resolver.");
+
+    /// <inheritdoc/>
+    public IDisposable ServiceRegistrationCallback<T>(string? contract, Action<IDisposable> callback) =>
+        ServiceRegistrationCallback(typeof(T), contract, callback);
+
     /// <inheritdoc />
     public void Dispose()
     {
@@ -604,11 +682,41 @@ public class AutofacDependencyResolver : IDependencyResolver
     {
         lock (_lockObject)
         {
-            if (disposing)
+            if (!disposing)
             {
-                _lifetimeScope?.ComponentRegistry.Dispose();
-                _internalContainer?.Dispose();
+                return;
             }
+
+            _lifetimeScope?.ComponentRegistry.Dispose();
+            _internalContainer?.Dispose();
+        }
+    }
+
+    /// <summary>Registers the supplied factory against the given builder, optionally using a contract name.</summary>
+    /// <param name="builder">The container builder to register against.</param>
+    /// <param name="factory">The factory function which generates the service instance.</param>
+    /// <param name="serviceType">The type which is used for the registration.</param>
+    /// <param name="isNull">Whether the original service type was <see langword="null"/>.</param>
+    /// <param name="contract">The optional contract name used to disambiguate the registration.</param>
+    private static void RegisterFactory(
+        ContainerBuilder builder,
+        Func<object?> factory,
+        Type serviceType,
+        bool isNull,
+        string? contract = null)
+    {
+        var registration = builder.Register(_ =>
+            isNull
+                ? new NullServiceType(factory)
+                : factory()!);
+
+        if (contract is null || string.IsNullOrWhiteSpace(contract))
+        {
+            registration.As(serviceType).AsImplementedInterfaces();
+        }
+        else
+        {
+            registration.Named(contract, serviceType).AsImplementedInterfaces();
         }
     }
 
@@ -617,11 +725,9 @@ public class AutofacDependencyResolver : IDependencyResolver
     /// <returns>The resolved service instance, or <see langword="null"/> if no registration exists.</returns>
     private object? Resolve(Type serviceType)
     {
-        object serviceInstance;
-
         var lifeTimeScope = _lifetimeScope ?? _internalLifetimeScope;
 
-        lifeTimeScope.TryResolve(serviceType, out serviceInstance!);
+        lifeTimeScope.TryResolve(serviceType, out var serviceInstance);
 
         return serviceInstance;
     }
@@ -632,12 +738,10 @@ public class AutofacDependencyResolver : IDependencyResolver
     /// <returns>The resolved service instance, or <see langword="null"/> if no registration exists.</returns>
     private object? Resolve(Type serviceType, string? contract)
     {
-        object serviceInstance;
-
         var lifeTimeScope = _lifetimeScope ?? _internalLifetimeScope;
 
         _ = contract is null || string.IsNullOrWhiteSpace(contract)
-            ? lifeTimeScope.TryResolve(serviceType, out serviceInstance!)
+            ? lifeTimeScope.TryResolve(serviceType, out var serviceInstance)
             : lifeTimeScope.TryResolveNamed(contract, serviceType, out serviceInstance!);
 
         return serviceInstance;

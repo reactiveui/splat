@@ -12,13 +12,16 @@ namespace Splat;
 /// These utilities are intended to simplify common rectangle manipulations in graphical and layout scenarios.</remarks>
 public static class RectangleMathExtensions
 {
+    /// <summary>The divisor used to obtain the midpoint of a dimension when locating a rectangle's center.</summary>
+    private const float CenterDivisor = 2.0f;
+
     /// <summary>Extension members for mathematical and geometric operations on <see cref="RectangleF"/>.</summary>
     /// <param name="value">The rectangle the extension members operate on.</param>
     extension(RectangleF value)
     {
         /// <summary>Calculates the center point of the specified rectangle.</summary>
         /// <returns>A <see cref="PointF"/> representing the center of the specified rectangle.</returns>
-        public PointF Center() => new(value.X + (value.Width / 2.0f), value.Y + (value.Height / 2.0f));
+        public PointF Center() => new(value.X + (value.Width / CenterDivisor), value.Y + (value.Height / CenterDivisor));
 
         /// <summary>Divides the specified rectangle into two rectangles by splitting off a region of the given size from one edge.</summary>
         /// <remarks>If the specified amount is zero, the first rectangle will have zero width or height,
@@ -37,25 +40,22 @@ public static class RectangleMathExtensions
             {
                 case RectEdge.Left:
                     return Tuple.Create(
-                        value.Copy(width: amount),
-                        value.Copy(x: value.Left + amount, width: value.Width - amount));
+                        value.Copy(new() { Width = amount }),
+                        value.Copy(new() { X = value.Left + amount, Width = value.Width - amount }));
                 case RectEdge.Top:
                     return Tuple.Create(
-                        value.Copy(height: amount),
-                        value.Copy(y: value.Top + amount, height: value.Height - amount));
+                        value.Copy(new() { Height = amount }),
+                        value.Copy(new() { Y = value.Top + amount, Height = value.Height - amount }));
                 case RectEdge.Right:
                     return Tuple.Create(
-                        value.Copy(x: value.Right - amount, width: amount),
-                        value.Copy(width: value.Width - amount));
+                        value.Copy(new() { X = value.Right - amount, Width = amount }),
+                        value.Copy(new() { Width = value.Width - amount }));
                 case RectEdge.Bottom:
                     return Tuple.Create(
-                        value.Copy(y: value.Bottom - amount, height: amount),
-                        value.Copy(height: value.Height - amount));
+                        value.Copy(new() { Y = value.Bottom - amount, Height = amount }),
+                        value.Copy(new() { Height = value.Height - amount }));
                 default:
-                    {
-                        ArgumentGuard.ThrowIf(true, $"Invalid edge: {fromEdge}", nameof(fromEdge));
-                        return null!; // unreachable
-                    }
+                    throw new ArgumentException($"Invalid edge: {fromEdge}", nameof(fromEdge));
             }
         }
 
@@ -88,67 +88,50 @@ public static class RectangleMathExtensions
             value with { Y = containingRect.Height - value.Bottom };
 
         /// <summary>Creates a copy of the specified rectangle, optionally overriding one or more of its position or size components.</summary>
-        /// <remarks>If both <paramref name="y"/> and <paramref name="top"/> are specified, or both <paramref
-        /// name="height"/> and <paramref name="bottom"/> are specified, an exception is thrown due to conflicting
-        /// arguments.</remarks>
-        /// <param name="x">The value to use for the X coordinate of the new rectangle. If null, the original X value is used. Cannot be
-        /// specified together with <paramref name="top"/>.</param>
-        /// <param name="y">The value to use for the Y coordinate of the new rectangle. If null, the original Y value is used. Cannot be
-        /// specified together with <paramref name="top"/>.</param>
-        /// <param name="width">The value to use for the width of the new rectangle. If null, the original width is used. Cannot be specified
-        /// together with <paramref name="bottom"/>.</param>
-        /// <param name="height">The value to use for the height of the new rectangle. If null, the original height is used. Cannot be specified
-        /// together with <paramref name="bottom"/>.</param>
-        /// <param name="top">The value to use for the top (Y coordinate) of the new rectangle. If specified, <paramref name="y"/> must be
-        /// null.</param>
-        /// <param name="bottom">The value to use for the bottom edge of the new rectangle, relative to the Y coordinate. If specified, <paramref
-        /// name="height"/> must be null.</param>
+        /// <remarks>If both <see cref="RectangleCopyOptions.Y"/> and <see cref="RectangleCopyOptions.Top"/> are specified, or both
+        /// <see cref="RectangleCopyOptions.Height"/> and <see cref="RectangleCopyOptions.Bottom"/> are specified, an exception is thrown
+        /// due to conflicting overrides.</remarks>
+        /// <param name="options">The set of component overrides to apply. Any component left <see langword="null"/> keeps the original value.</param>
         /// <returns>A new <see cref="RectangleF"/> instance with the specified components replaced as provided.</returns>
-        public RectangleF Copy(
-            float? x = null,
-            float? y = null,
-            float? width = null,
-            float? height = null,
-            float? top = null,
-            float? bottom = null)
+        public RectangleF Copy(RectangleCopyOptions options)
         {
-        var newRect = new RectangleF(value.Location, value.Size);
+            var newRect = new RectangleF(value.Location, value.Size);
 
-        if (x.HasValue)
-        {
-            newRect.X = x.Value;
-        }
+            if (options.X.HasValue)
+            {
+                newRect.X = options.X.Value;
+            }
 
-        if (y.HasValue)
-        {
-            newRect.Y = y.Value;
-        }
+            if (options.Y.HasValue)
+            {
+                newRect.Y = options.Y.Value;
+            }
 
-        if (width.HasValue)
-        {
-            newRect.Width = width.Value;
-        }
+            if (options.Width.HasValue)
+            {
+                newRect.Width = options.Width.Value;
+            }
 
-        if (height.HasValue)
-        {
-            newRect.Height = height.Value;
-        }
+            if (options.Height.HasValue)
+            {
+                newRect.Height = options.Height.Value;
+            }
 
-        if (top.HasValue)
-        {
-            ArgumentGuard.ThrowIf(y.HasValue, "Conflicting Copy arguments Y and Top");
+            if (options.Top.HasValue)
+            {
+                ArgumentGuard.ThrowIf(options.Y.HasValue, "Conflicting Copy arguments Y and Top");
 
-            newRect.Y = top.Value;
-        }
+                newRect.Y = options.Top.Value;
+            }
 
-        if (bottom.HasValue)
-        {
-            ArgumentGuard.ThrowIf(height.HasValue, "Conflicting Copy arguments Height and Bottom");
+            if (options.Bottom.HasValue)
+            {
+                ArgumentGuard.ThrowIf(options.Height.HasValue, "Conflicting Copy arguments Height and Bottom");
 
-            newRect.Height = newRect.Y + bottom.Value;
-        }
+                newRect.Height = newRect.Y + options.Bottom.Value;
+            }
 
-        return newRect;
+            return newRect;
         }
     }
 }

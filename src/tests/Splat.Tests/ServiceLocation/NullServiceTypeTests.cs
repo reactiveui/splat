@@ -16,9 +16,9 @@ public sealed class NullServiceTypeTests
         Func<object?> factory = () => expected;
 
         var nullServiceType = new NullServiceType(factory);
-        var result = nullServiceType.Factory();
 
-        await Assert.That(result).IsEqualTo(expected);
+        // The constructor should store the exact same delegate instance that was supplied.
+        await Assert.That(ReferenceEquals(nullServiceType.Factory, factory)).IsTrue();
     }
 
     /// <summary>Verifies that the Factory delegate can be invoked.</summary>
@@ -100,7 +100,9 @@ public sealed class NullServiceTypeTests
         var result1 = nullServiceType.Factory();
         var result2 = nullServiceType.Factory();
 
-        await Assert.That(result1).IsEqualTo(1);
-        await Assert.That(result2).IsEqualTo(2);
+        const int firstInvocationCount = 1;
+        const int secondInvocationCount = 2;
+        await Assert.That(result1).IsEqualTo(firstInvocationCount);
+        await Assert.That(result2).IsEqualTo(secondInvocationCount);
     }
 }

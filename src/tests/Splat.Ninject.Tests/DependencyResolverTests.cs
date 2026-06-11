@@ -12,6 +12,7 @@ namespace Splat.Ninject.Tests;
 [NotInParallel]
 public class DependencyResolverTests
 {
+    /// <summary>The Ninject kernel scope managing kernel and AppLocator state for the current test.</summary>
     private NinjectKernelScope? _scope;
 
     /// <summary>Setup method to initialize Ninject scope before each test.</summary>

@@ -13,6 +13,10 @@ namespace System.Diagnostics.CodeAnalysis;
 /// bitwise combination of its member values.
 /// </summary>
 [Flags]
+[SuppressMessage(
+    "Major Code Smell",
+    "S4070:Non-flags enums should not be marked with FlagsAttribute",
+    Justification = "Faithful mirror of the BCL DynamicallyAccessedMemberTypes; FlagsAttribute and its composite values are intentional.")]
 internal enum DynamicallyAccessedMemberTypes
 {
     /// <summary>Specifies no members.</summary>
@@ -22,7 +26,10 @@ internal enum DynamicallyAccessedMemberTypes
     PublicParameterlessConstructor = 0x0001,
 
     /// <summary>Specifies all public constructors.</summary>
-    [SuppressMessage("Roslynator", "RCS1157:Composite enum value contains undefined flag", Justification = "Mirrors the BCL DynamicallyAccessedMemberTypes definition verbatim; the 0x0002 bit has no standalone named member by design.")]
+    [SuppressMessage(
+        "Roslynator",
+        "RCS1157:Composite enum value contains undefined flag",
+        Justification = "Mirrors the BCL DynamicallyAccessedMemberTypes definition verbatim; the 0x0002 bit has no standalone named member by design.")]
     PublicConstructors = 0x0002 | PublicParameterlessConstructor,
 
     /// <summary>Specifies all non-public constructors.</summary>

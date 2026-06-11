@@ -30,7 +30,8 @@ public static class BitmapMixins
             return value switch
             {
                 AndroidBitmap androidBitmap => new BitmapDrawable(Application.Context.Resources, androidBitmap.Inner),
-                _ => ((DrawableBitmap)value).Inner,
+                DrawableBitmap drawableBitmap => drawableBitmap.Inner,
+                _ => throw new InvalidCastException($"Unable to convert {value.GetType()} to a {nameof(Drawable)}."),
             };
         }
     }
@@ -40,19 +41,28 @@ public static class BitmapMixins
     extension(Bitmap value)
     {
         /// <summary>Converts a <see cref="Bitmap"/> to a splat <see cref="IBitmap"/>.</summary>
-        /// <param name="copy">Whether to copy the android bitmap or not.</param>
         /// <returns>A <see cref="IBitmap"/> bitmap.</returns>
-        public IBitmap FromNative(bool copy = false)
+        public IBitmap FromNative()
         {
             ArgumentExceptionHelper.ThrowIfNull(value);
 
-            if (copy)
+            return new AndroidBitmap(value);
+        }
+
+        /// <summary>Converts a <see cref="Bitmap"/> to a splat <see cref="IBitmap"/>.</summary>
+        /// <param name="copy">Whether to copy the android bitmap or not.</param>
+        /// <returns>A <see cref="IBitmap"/> bitmap.</returns>
+        public IBitmap FromNative(bool copy)
+        {
+            ArgumentExceptionHelper.ThrowIfNull(value);
+
+            if (!copy)
             {
-                var copiedBitmap = value.Copy(value.GetConfig(), true) ?? throw new InvalidOperationException("The bitmap does not have a valid reference.");
-                return new AndroidBitmap(copiedBitmap);
+                return new AndroidBitmap(value);
             }
 
-            return new AndroidBitmap(value);
+            var copiedBitmap = value.Copy(value.GetConfig(), true) ?? throw new InvalidOperationException("The bitmap does not have a valid reference.");
+            return new AndroidBitmap(copiedBitmap);
         }
     }
 

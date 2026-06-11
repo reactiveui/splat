@@ -10,7 +10,7 @@ namespace Splat.Builder;
 /// <remarks>This module enables integration of NLog with Splat by registering the necessary logging services. Add
 /// this module to your dependency injection container to ensure that Splat uses NLog for logging throughout the
 /// application.</remarks>
-public sealed class NLogSplatModule() : IModule
+public sealed class NLogSplatModule : IModule
 {
     /// <inheritdoc />
     public void Configure(IMutableDependencyResolver resolver) => resolver.UseNLogWithWrappingFullLogger();

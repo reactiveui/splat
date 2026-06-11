@@ -15,6 +15,10 @@ namespace Splat;
 /// safe, non-throwing attempts to resolve services. This interface is commonly used to decouple service consumers from
 /// concrete implementations and to facilitate dependency injection patterns. Thread safety and lifetime management
 /// depend on the specific implementation of the interface.</remarks>
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification = "Generic service-location API; the service type is supplied explicitly by callers, so type inference cannot apply by design.")]
 public interface IServiceLocator
 {
     /// <summary>Gets an instance of the specified service type.</summary>
@@ -201,7 +205,10 @@ public interface IServiceLocator
     /// <param name="instanceFactory">A delegate that creates an instance of the contract type when the singleton is first requested. Cannot be null.</param>
     /// <param name="contract">The unique contract name used to identify the singleton registration. Cannot be null or empty.</param>
     /// <param name="threadSafetyMode">Specifies the thread safety mode to use when creating the singleton instance.</param>
-    void AddLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TContract>(Func<TContract> instanceFactory, string contract, LazyThreadSafetyMode threadSafetyMode)
+    void AddLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TContract>(
+        Func<TContract> instanceFactory,
+        string contract,
+        LazyThreadSafetyMode threadSafetyMode)
         where TContract : class;
 
     /// <summary>

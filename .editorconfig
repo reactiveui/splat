@@ -1126,6 +1126,7 @@ stylesharp.summary_single_line_max_length = 120
 stylesharp.document_exposed_elements = true
 stylesharp.document_internal_elements = true
 stylesharp.document_private_elements = true
+stylesharp.document_private_fields = true
 stylesharp.document_interfaces = all
 
 # Spacing

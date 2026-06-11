@@ -11,6 +11,12 @@ namespace Splat.Tests.ServiceLocation;
 [InheritsTests]
 public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<ModernDependencyResolver>
 {
+    /// <summary>The number of existing registrations expected before the callback runs.</summary>
+    private const int ExistingRegistrationCount = 3;
+
+    /// <summary>The number of registrations expected when a duplicate is registered.</summary>
+    private const int DuplicatedRegistrationCount = 2;
+
     /// <summary>Test ServiceRegistrationCallback with null service type throws.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -36,7 +42,7 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
 
         using var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(_ => callbackCount++);
 
-        await Assert.That(callbackCount).IsEqualTo(3); // Called once for each existing registration
+        await Assert.That(callbackCount).IsEqualTo(ExistingRegistrationCount); // Called once for each existing registration
     }
 
     /// <summary>Test ServiceRegistrationCallback after resolver disposal returns empty disposable.</summary>
@@ -123,7 +129,7 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
         var duplicateServices = duplicate.GetServices<ViewModelOne>().ToList();
 
         await Assert.That(originalServices).Count().IsEqualTo(1);
-        await Assert.That(duplicateServices).Count().IsEqualTo(2);
+        await Assert.That(duplicateServices).Count().IsEqualTo(DuplicatedRegistrationCount);
     }
 
     /// <summary>Test GetService throws ObjectDisposedException after disposal.</summary>

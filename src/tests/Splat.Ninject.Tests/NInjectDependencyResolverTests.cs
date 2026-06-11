@@ -2,7 +2,6 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System.Diagnostics.CodeAnalysis;
 using Ninject;
 
 using Splat.Common.Test;
@@ -86,6 +85,9 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
     public override Task ServiceRegistrationCallback_Generic_WithExistingRegistration_InvokesImmediately()
     {
         var resolver = GetDependencyResolver();
+
+        // Register a service first so the callback would normally fire immediately; Ninject still throws.
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
         Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
@@ -126,7 +128,9 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
     public override Task ServiceRegistrationCallback_Disposal_StopsReceivingNotifications()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+
+        // The subscription disposable is never produced because Ninject throws before returning it.
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }).Dispose());
         return Task.CompletedTask;
     }
 
@@ -151,6 +155,10 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
     public override Task ServiceRegistrationCallback_Generic_InvokesForEachExistingRegistration()
     {
         var resolver = GetDependencyResolver();
+
+        // Register multiple services so the callback would normally fire for each; Ninject still throws.
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
         Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
@@ -161,8 +169,9 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
     public override Task Register_AfterDispose_DoesNotInvokeCallbacks()
     {
         var resolver = GetDependencyResolver();
+        resolver.Dispose();
 
-        // Since ServiceRegistrationCallback throws, we verify that instead of the full test flow
+        // After disposal, ServiceRegistrationCallback still throws NotSupportedException for Ninject.
         Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
@@ -173,7 +182,10 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
     public override Task Dispose_SuppressesExceptionsFromCallbacks()
     {
         var resolver = GetDependencyResolver();
+
+        // Callbacks can never be registered (Ninject throws), so disposal has nothing to suppress.
         Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        resolver.Dispose();
         return Task.CompletedTask;
     }
 

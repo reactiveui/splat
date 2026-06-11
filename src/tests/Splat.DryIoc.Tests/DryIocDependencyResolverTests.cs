@@ -34,6 +34,9 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
     public override Task ServiceRegistrationCallback_Generic_WithExistingRegistration_InvokesImmediately()
     {
         var resolver = GetDependencyResolver();
+
+        // Register a service first so the callback would normally fire immediately; DryIoc still throws.
+        resolver.Register(() => new Common.Test.ViewModelOne(), typeof(Common.Test.ViewModelOne));
         Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
@@ -78,7 +81,9 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
     public override Task ServiceRegistrationCallback_Disposal_StopsReceivingNotifications()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
+
+        // The subscription disposable is never produced because DryIoc throws before returning it.
+        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }).Dispose());
         return Task.CompletedTask;
     }
 
@@ -102,6 +107,10 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
     public override Task ServiceRegistrationCallback_Generic_InvokesForEachExistingRegistration()
     {
         var resolver = GetDependencyResolver();
+
+        // Register multiple services so the callback would normally fire for each; DryIoc still throws.
+        resolver.Register(() => new Common.Test.ViewModelOne(), typeof(Common.Test.ViewModelOne));
+        resolver.Register(() => new Common.Test.ViewModelOne(), typeof(Common.Test.ViewModelOne));
         Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
@@ -113,6 +122,9 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
     public override Task Register_AfterDispose_DoesNotInvokeCallbacks()
     {
         var resolver = GetDependencyResolver();
+        resolver.Dispose();
+
+        // After disposal, ServiceRegistrationCallback still throws NotImplementedException for DryIoc.
         Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
@@ -124,7 +136,10 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
     public override Task Dispose_SuppressesExceptionsFromCallbacks()
     {
         var resolver = GetDependencyResolver();
+
+        // Callbacks can never be registered (DryIoc throws), so disposal has nothing to suppress.
         Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
+        resolver.Dispose();
         return Task.CompletedTask;
     }
 

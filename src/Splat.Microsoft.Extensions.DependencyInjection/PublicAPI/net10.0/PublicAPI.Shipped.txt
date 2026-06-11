@@ -11,7 +11,8 @@ Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.GetSe
 Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.GetServices<T>(string? contract) -> System.Collections.Generic.IEnumerable<T>!
 Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.HasRegistration<T>() -> bool
 Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.HasRegistration<T>(string? contract) -> bool
-Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.MicrosoftDependencyResolver(Microsoft.Extensions.DependencyInjection.IServiceCollection? services = null) -> void
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.MicrosoftDependencyResolver() -> void
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.MicrosoftDependencyResolver(Microsoft.Extensions.DependencyInjection.IServiceCollection? services) -> void
 Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.MicrosoftDependencyResolver(System.IServiceProvider! serviceProvider) -> void
 Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.Register<T>(System.Func<T?>! factory) -> void
 Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.Register<T>(System.Func<T?>! factory, string? contract) -> void

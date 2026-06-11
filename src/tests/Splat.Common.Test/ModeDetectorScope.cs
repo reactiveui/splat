@@ -20,6 +20,7 @@ namespace Splat.Common.Test;
 /// </example>
 public sealed class ModeDetectorScope : IDisposable
 {
+    /// <summary>The mode detector and cached result captured on construction and restored on dispose.</summary>
     private readonly (IModeDetector detector, bool? cachedResult) _savedState;
 
     /// <summary>Initializes a new instance of the <see cref="ModeDetectorScope"/> class. Saves the current ModeDetector state and resets it to default.</summary>

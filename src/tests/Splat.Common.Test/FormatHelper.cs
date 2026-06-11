@@ -7,8 +7,8 @@ namespace Splat.Tests.Logging;
 /// <summary>Contains help with formatting.</summary>
 public static class FormatHelper
 {
-    /// <summary>A constant for the new lines.</summary>
-    public static readonly char[] NewLine = Environment.NewLine.ToCharArray();
+    /// <summary>Gets the characters that make up the environment new line, as a fresh array on each access.</summary>
+    public static char[] NewLine => Environment.NewLine.ToCharArray();
 
     /// <summary>Gets an exception for testing.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2201:Do not raise reserved exception types", Justification = "Deliberate for test")]

@@ -13,6 +13,7 @@ namespace Splat;
 /// <param name="inner">The Drawable instance to be wrapped and exposed as a bitmap. Cannot be null.</param>
 internal sealed class DrawableBitmap(Drawable inner) : IBitmap
 {
+    /// <summary>The wrapped Android drawable; set to <see langword="null"/> once disposed.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Is Disposed using Interlocked method")]
     private Drawable? _inner = inner;
 

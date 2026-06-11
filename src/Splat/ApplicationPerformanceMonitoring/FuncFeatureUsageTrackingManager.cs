@@ -9,6 +9,7 @@ namespace Splat.ApplicationPerformanceMonitoring;
 /// factory delegate. It is useful when session instantiation logic needs to be injected or varied at runtime.</remarks>
 public class FuncFeatureUsageTrackingManager : IFeatureUsageTrackingManager
 {
+    /// <summary>Factory invoked to create a tracking session for a given feature name.</summary>
     private readonly Func<string, IFeatureUsageTrackingSession> _featureUsageTrackingSessionFunc;
 
     /// <summary>Initializes a new instance of the <see cref="FuncFeatureUsageTrackingManager"/> class.</summary>

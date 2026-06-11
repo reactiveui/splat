@@ -16,7 +16,11 @@ namespace Splat.SimpleInjector;
 /// <param name="implementationType">The concrete type that will be instantiated for each request. Cannot be null.</param>
 /// <param name="instanceCreator">An optional delegate used to create instances of the implementation type. If null, the container will use its
 /// default instantiation mechanism.</param>
-internal sealed class TransientSimpleInjectorRegistration(Container container, Type implementationType, Func<object?>? instanceCreator = null) : Registration(Lifestyle.Transient, container, implementationType, instanceCreator!)
+internal sealed class TransientSimpleInjectorRegistration(
+    Container container,
+    Type implementationType,
+    Func<object?>? instanceCreator = null)
+    : Registration(Lifestyle.Transient, container, implementationType, instanceCreator!)
 {
     public override Expression BuildExpression() => BuildTransientExpression();
 }

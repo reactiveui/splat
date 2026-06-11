@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\Splat.Logging.Tests\BaseTests\LoggerTestConstants.cs" Link="BaseTests\LoggerTestConstants.cs" />
     <Compile Include="..\Splat.Logging.Tests\BaseTests\LoggerBase.cs" Link="BaseTests\LoggerBase.cs" />
     <Compile Include="..\Splat.Logging.Tests\BaseTests\WrappingFullLoggerTestBase.cs" Link="BaseTests\WrappingFullLoggerTestBase.cs" />
     <Compile Include="..\Splat.Logging.Tests\BaseTests\FullLoggerTestBase.cs" Link="BaseTests\FullLoggerTestBase.cs" />

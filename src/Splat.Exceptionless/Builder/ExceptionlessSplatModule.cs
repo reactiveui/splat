@@ -4,7 +4,6 @@
 
 using Exceptionless;
 
-using Splat;
 using Splat.Exceptionless;
 
 namespace Splat.Builder;
@@ -15,6 +14,7 @@ namespace Splat.Builder;
 /// route log messages to Exceptionless.</remarks>
 public sealed class ExceptionlessSplatModule : IModule
 {
+    /// <summary>The Exceptionless client that the registered logger is configured against.</summary>
     private readonly ExceptionlessClient _container;
 
     /// <summary>Initializes a new instance of the <see cref="ExceptionlessSplatModule"/> class.</summary>

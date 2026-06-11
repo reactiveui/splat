@@ -2,6 +2,7 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 using Splat.Common.Test;
@@ -10,11 +11,39 @@ namespace Splat.Tests.Aot;
 
 /// <summary>AOT compatibility tests for core Splat functionality.</summary>
 [NotInParallel] // Uses Locator/AppLocator and resolver scopes; keep serialized to avoid cross-fixture interference.
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Testing Purposes")]
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2263:Prefer generic overload when type is known", Justification = "Testing purposes")]
-[System.Diagnostics.CodeAnalysis.SuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.", Justification = "Testing Purposes")]
+[SuppressMessage(
+    "Trimming",
+    "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+    Justification = "Testing Purposes")]
+[SuppressMessage("Usage", "CA2263:Prefer generic overload when type is known", Justification = "Testing purposes")]
+[SuppressMessage(
+    "AOT",
+    "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.",
+    Justification = "Testing Purposes")]
 public class CoreAotCompatibilityTests
 {
+    /// <summary>The contract name used when registering a service via a factory delegate.</summary>
+    private const string FactoryContract = "factory";
+
+    /// <summary>The format string for a log message with a single argument.</summary>
+    private const string SimpleMessageFormat = "Simple message {0}";
+
+    /// <summary>The format string for a log message with two arguments.</summary>
+    private const string TwoArgsFormat = "Two args: {0} {1}";
+
+    /// <summary>The format string for a log message with three arguments.</summary>
+    private const string ThreeArgsFormat = "Three args: {0} {1} {2}";
+
+    /// <summary>The expected number of registrations when two services are registered.</summary>
+    private const int ExpectedTwoRegistrations = 2;
+
+    /// <summary>The number of resolution iterations performed by each task in the concurrency test.</summary>
+    private const int ConcurrentIterationsPerTask = 100;
+
+    /// <summary>The lock guarding access to the shared exception list during concurrent execution.</summary>
+    private readonly Lock _exceptionsLock = new();
+
+    /// <summary>The scope that isolates the <see cref="AppLocator"/> state for each test.</summary>
     private AppLocatorScope? _appLocatorScope;
 
     /// <summary>Interface for testing dependency injection.</summary>
@@ -229,7 +258,7 @@ public class CoreAotCompatibilityTests
 
         using (Assert.Multiple())
         {
-            await Assert.That(services).Count().IsEqualTo(2);
+            await Assert.That(services).Count().IsEqualTo(ExpectedTwoRegistrations);
             await Assert.That(services).Any(s => s is TestImplementation);
             await Assert.That(services).Any(s => s is AlternateTestImplementation);
         }
@@ -400,21 +429,21 @@ public class CoreAotCompatibilityTests
 
         await Assert.That(() =>
         {
-            logger!.Debug(CultureInfo.InvariantCulture, "Simple message {0}", "arg1");
-            logger.Debug(CultureInfo.InvariantCulture, "Two args: {0} {1}", "arg1", "arg2");
-            logger.Debug(CultureInfo.InvariantCulture, "Three args: {0} {1} {2}", "arg1", "arg2", "arg3");
+            logger!.Debug(CultureInfo.InvariantCulture, SimpleMessageFormat, "arg1");
+            logger.Debug(CultureInfo.InvariantCulture, TwoArgsFormat, "arg1", "arg2");
+            logger.Debug(CultureInfo.InvariantCulture, ThreeArgsFormat, "arg1", "arg2", "arg3");
 
-            logger.Info(CultureInfo.InvariantCulture, "Simple message {0}", "arg1");
-            logger.Info(CultureInfo.InvariantCulture, "Two args: {0} {1}", "arg1", "arg2");
-            logger.Info(CultureInfo.InvariantCulture, "Three args: {0} {1} {2}", "arg1", "arg2", "arg3");
+            logger.Info(CultureInfo.InvariantCulture, SimpleMessageFormat, "arg1");
+            logger.Info(CultureInfo.InvariantCulture, TwoArgsFormat, "arg1", "arg2");
+            logger.Info(CultureInfo.InvariantCulture, ThreeArgsFormat, "arg1", "arg2", "arg3");
 
-            logger.Warn(CultureInfo.InvariantCulture, "Simple message {0}", "arg1");
-            logger.Warn(CultureInfo.InvariantCulture, "Two args: {0} {1}", "arg1", "arg2");
-            logger.Warn(CultureInfo.InvariantCulture, "Three args: {0} {1} {2}", "arg1", "arg2", "arg3");
+            logger.Warn(CultureInfo.InvariantCulture, SimpleMessageFormat, "arg1");
+            logger.Warn(CultureInfo.InvariantCulture, TwoArgsFormat, "arg1", "arg2");
+            logger.Warn(CultureInfo.InvariantCulture, ThreeArgsFormat, "arg1", "arg2", "arg3");
 
-            logger.Error(CultureInfo.InvariantCulture, "Simple message {0}", "arg1");
-            logger.Error(CultureInfo.InvariantCulture, "Two args: {0} {1}", "arg1", "arg2");
-            logger.Error(CultureInfo.InvariantCulture, "Three args: {0} {1} {2}", "arg1", "arg2", "arg3");
+            logger.Error(CultureInfo.InvariantCulture, SimpleMessageFormat, "arg1");
+            logger.Error(CultureInfo.InvariantCulture, TwoArgsFormat, "arg1", "arg2");
+            logger.Error(CultureInfo.InvariantCulture, ThreeArgsFormat, "arg1", "arg2", "arg3");
 
             // Higher-arity
             logger.Debug(CultureInfo.InvariantCulture, "Four args: {0} {1} {2} {3}", "arg1", "arg2", "arg3", "arg4");
@@ -538,14 +567,14 @@ public class CoreAotCompatibilityTests
         // Register multiple services
         resolver.RegisterConstant<ITestInterface>(new TestImplementation());
         resolver.RegisterConstant<ITestInterface>(new AlternateTestImplementation(), contract);
-        resolver.Register<ITestInterface>(() => new TestImplementation(), "factory");
+        resolver.Register<ITestInterface>(() => new TestImplementation(), FactoryContract);
 
         // Verify initial registrations
         using (Assert.Multiple())
         {
             await Assert.That(resolver.HasRegistration(typeof(ITestInterface))).IsTrue();
             await Assert.That(resolver.HasRegistration(typeof(ITestInterface), contract)).IsTrue();
-            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), "factory")).IsTrue();
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), FactoryContract)).IsTrue();
         }
 
         // Unregister current (default contract)
@@ -561,7 +590,7 @@ public class CoreAotCompatibilityTests
         using (Assert.Multiple())
         {
             await Assert.That(resolver.HasRegistration(typeof(ITestInterface), contract)).IsFalse();
-            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), "factory")).IsTrue();
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), FactoryContract)).IsTrue();
         }
 
         // Unregister all (default contract only)
@@ -573,7 +602,7 @@ public class CoreAotCompatibilityTests
         using (Assert.Multiple())
         {
             await Assert.That(resolver.HasRegistration(typeof(ITestInterface))).IsFalse();
-            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), "factory")).IsTrue();
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), FactoryContract)).IsTrue();
         }
     }
 
@@ -742,7 +771,7 @@ public class CoreAotCompatibilityTests
             await Assert.That(enumerable).IsNotNull();
             await Assert.That(factory).IsNotNull();
             await Assert.That(lazy).IsNotNull();
-            await Assert.That(enumerable!.Count()).IsEqualTo(2);
+            await Assert.That(enumerable!.Count()).IsEqualTo(ExpectedTwoRegistrations);
             await Assert.That(factory()).IsNotNull();
             await Assert.That(lazy!.Value).IsTypeOf<DebugLogger>();
         }
@@ -766,7 +795,7 @@ public class CoreAotCompatibilityTests
             {
                 try
                 {
-                    for (var j = 0; j < 100; j++)
+                    for (var j = 0; j < ConcurrentIterationsPerTask; j++)
                     {
                         var logger = resolver.GetService<ILogger>();
                         await Assert.That(logger).IsNotNull();
@@ -780,7 +809,7 @@ public class CoreAotCompatibilityTests
                 }
                 catch (Exception ex)
                 {
-                    lock (exceptions)
+                    lock (_exceptionsLock)
                     {
                         exceptions.Add(ex);
                     }
@@ -849,8 +878,10 @@ public class CoreAotCompatibilityTests
         using (Assert.Multiple())
         {
             await Assert.That(service).IsTypeOf<TestImplementationWithDependency>();
-            var typed = (TestImplementationWithDependency)service!;
-            await Assert.That(typed.Logger).IsTypeOf<DebugLogger>();
+            if (service is TestImplementationWithDependency typed)
+            {
+                await Assert.That(typed.Logger).IsTypeOf<DebugLogger>();
+            }
         }
     }
 

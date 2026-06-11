@@ -2,6 +2,8 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Splat;
 
 /// <summary>
@@ -13,6 +15,10 @@ namespace Splat;
 /// location. In most scenarios, the default resolver is sufficient and should be used unless advanced customization or
 /// testing scenarios require replacing it. Thread safety and resolver change notifications are managed internally. For
 /// most applications, use the Current and CurrentMutable properties to access the dependency resolver.</remarks>
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification = "Generic service-location API; the service type is supplied explicitly by callers, so type inference cannot apply by design.")]
 public static class AppLocator
 {
     /// <summary>Initializes static members of the <see cref="AppLocator"/> class.</summary>
@@ -66,7 +72,7 @@ public static class AppLocator
     /// instance is returned on each call. This method is intended for advanced scenarios where direct access to the
     /// dependency resolver is required.</remarks>
     /// <returns>An <see cref="IDependencyResolver"/> representing the application's current dependency resolver.</returns>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1024:Use properties where appropriate", Justification = "Existing API")]
+    [SuppressMessage("Design", "CA1024:Use properties where appropriate", Justification = "Existing API")]
     public static IDependencyResolver GetLocator() => InternalLocator.Internal;
 
     /// <summary>
@@ -167,7 +173,7 @@ public static class AppLocator
     /// </summary>
     /// <typeparam name="T">The service type to register for (must be a reference type).</typeparam>
     /// <param name="valueFactory">A factory method for generating a object of the specified type.</param>
-    public static void RegisterLazySingleton<[System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory)
+    public static void RegisterLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory)
         where T : class =>
         CurrentMutable.RegisterLazySingleton(valueFactory);
 
@@ -178,7 +184,7 @@ public static class AppLocator
     /// <typeparam name="T">The service type to register for (must be a reference type).</typeparam>
     /// <param name="valueFactory">A factory method for generating a object of the specified type.</param>
     /// <param name="contract">A contract value which will indicates to only return the value if this contract is specified.</param>
-    public static void RegisterLazySingleton<[System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory, string contract)
+    public static void RegisterLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory, string contract)
         where T : class =>
         CurrentMutable.RegisterLazySingleton(valueFactory, contract);
 

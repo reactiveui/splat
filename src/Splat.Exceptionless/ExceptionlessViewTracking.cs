@@ -11,6 +11,7 @@ namespace Splat;
 /// <summary>Provides view tracking functionality by recording view navigation events using an Exceptionless client.</summary>
 public sealed class ExceptionlessViewTracking : IViewTracking
 {
+    /// <summary>The Exceptionless client that view navigation events are submitted to.</summary>
     private readonly ExceptionlessClient _exceptionlessClient;
 
     /// <summary>Initializes a new instance of the <see cref="ExceptionlessViewTracking"/> class.</summary>

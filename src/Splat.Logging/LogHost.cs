@@ -22,14 +22,6 @@ public static class LogHost
     {
         get
         {
-            /*
-             * DV - this will need an extension of the dependency resolver.
-             * RegisterLazy(Func<IReadOnlyDependencyResolver, object> factory);
-             * which will allow a lazy instance of the static logger.
-             *
-             * return AppLocator.Current.GetService<IStaticFullLogger>();
-             */
-
             var factory = AppLocator.Current.GetService<ILogManager>() ?? throw new LoggingException("ILogManager is null. This should never happen, your dependency resolver is broken");
             var fullLogger = factory.GetLogger(typeof(LogHost));
 

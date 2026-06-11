@@ -31,7 +31,12 @@ public static class BitmapMixins
         {
             ArgumentExceptionHelper.ThrowIfNull(value);
 
-            return ((BitmapSourceBitmap)value).Inner ?? throw new InvalidOperationException("The bitmap is not longer valid");
+            if (value is not BitmapSourceBitmap bitmapSourceBitmap)
+            {
+                throw new InvalidCastException($"Unable to convert {value.GetType()} to a {nameof(BitmapSource)}.");
+            }
+
+            return bitmapSourceBitmap.Inner ?? throw new InvalidOperationException("The bitmap is not longer valid");
         }
     }
 }

@@ -123,27 +123,28 @@ public class Log4NetLoggerTests : FullLoggerTestBase
         public log4net.Appender.MemoryAppender MemoryTarget { get; } = memoryTarget;
 
         /// <inheritdoc/>
-        public ICollection<(LogLevel logLevel, string message)> Logs
+        public ICollection<(LogLevel logLevel, string message)> Logs => BuildLogs();
+
+        /// <summary>Flushes the appender and projects its captured events into Splat log entries.</summary>
+        /// <returns>The captured log entries.</returns>
+        private List<(LogLevel logLevel, string message)> BuildLogs()
         {
-            get
+            MemoryTarget.Flush(0);
+            return MemoryTarget.GetEvents().Select(x =>
             {
-                MemoryTarget.Flush(0);
-                return MemoryTarget.GetEvents().Select(x =>
-                {
 #if NET8_0_OR_GREATER
-                    var currentLevel = _log4Net2Splat.GetValueOrDefault(x.Level ?? Level.Debug, LogLevel.Debug);
+                var currentLevel = _log4Net2Splat.GetValueOrDefault(x.Level ?? Level.Debug, LogLevel.Debug);
 #else
-                    var levelKey = x.Level ?? Level.Debug;
-                    var currentLevel = _log4Net2Splat.ContainsKey(levelKey) ? _log4Net2Splat[levelKey] : LogLevel.Debug;
+                var levelKey = x.Level ?? Level.Debug;
+                var currentLevel = _log4Net2Splat.ContainsKey(levelKey) ? _log4Net2Splat[levelKey] : LogLevel.Debug;
 #endif
 
-                    return x.ExceptionObject switch
-                    {
-                        not null => (currentLevel, $"{x.MessageObject} {x.ExceptionObject}"),
-                        _ => (currentLevel, x.MessageObject?.ToString() ?? string.Empty)
-                    };
-                }).ToList();
-            }
+                return x.ExceptionObject switch
+                {
+                    not null => (currentLevel, $"{x.MessageObject} {x.ExceptionObject}"),
+                    _ => (currentLevel, x.MessageObject?.ToString() ?? string.Empty)
+                };
+            }).ToList();
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Splat.Builder.Tests;
 [NotInParallel]
 public class AppBuilderTests
 {
+    /// <summary>The scope that isolates the <see cref="AppBuilder"/> state for each test.</summary>
     private AppBuilderScope? _appBuilderScope;
 
     /// <summary>Setup method to initialize AppBuilderScope before each test.</summary>
@@ -26,7 +27,8 @@ public class AppBuilderTests
 
     /// <summary>Constructors the throws on null resolver.</summary>
     [Test]
-    public void ConstructorThrowsOnNullResolver() => Assert.Throws<ArgumentNullException>(() => _ = new AppBuilder(null!));
+    public void ConstructorThrowsOnNullResolver() =>
+        Assert.Throws<ArgumentNullException>(() => _ = new AppBuilder(null!));
 
     /// <summary>Constructors the sets using builder true.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -34,7 +36,7 @@ public class AppBuilderTests
     public async Task ConstructorSetsUsingBuilderTrue()
     {
         var resolver = new InternalLocator();
-        var builder = new AppBuilder(resolver.CurrentMutable);
+        _ = new AppBuilder(resolver.CurrentMutable);
         await Assert.That(AppBuilder.UsingBuilder).IsTrue();
         resolver.Dispose();
     }

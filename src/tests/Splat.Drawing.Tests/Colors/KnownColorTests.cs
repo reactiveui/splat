@@ -7,6 +7,9 @@ namespace Splat.Tests.Colors;
 /// <summary>Unit tests for the <see cref="KnownColor"/> enumeration and its helpers.</summary>
 public class KnownColorTests
 {
+    /// <summary>The highest <see cref="KnownColor"/> numeric value whose name can be asserted on every target framework.</summary>
+    private const short MaxAssessableKnownColorValue = 167;
+
     /// <summary>Gets all KnownColor enum values for parameterized testing.</summary>
     public static IEnumerable<KnownColor> KnownColorValues => Enum.GetValues<KnownColor>();
 
@@ -18,7 +21,7 @@ public class KnownColorTests
     public async Task GetNameReturnsName(KnownColor knownColor)
     {
 #if !NET_2_0
-        if ((short)knownColor > 167)
+        if ((short)knownColor > MaxAssessableKnownColorValue)
         {
             // Can't assess these legacy values in this target — match original behavior.
             return;

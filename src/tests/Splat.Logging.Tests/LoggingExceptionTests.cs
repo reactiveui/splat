@@ -7,14 +7,17 @@ namespace Splat.Tests.Logging;
 /// <summary>Tests for the <see cref="LoggingException"/> class.</summary>
 public class LoggingExceptionTests
 {
+    /// <summary>The exception message used across the tests.</summary>
+    private const string TestExceptionMessage = "Test message";
+
     /// <summary>Test that LoggingException can be constructed with message.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Constructor_With_Message_Should_Set_Message()
     {
-        var exception = new LoggingException("Test message");
+        var exception = new LoggingException(TestExceptionMessage);
 
-        await Assert.That(exception.Message).IsEqualTo("Test message");
+        await Assert.That(exception.Message).IsEqualTo(TestExceptionMessage);
     }
 
     /// <summary>Test that LoggingException can be constructed with message and inner exception.</summary>
@@ -23,11 +26,11 @@ public class LoggingExceptionTests
     public async Task Constructor_With_Message_And_InnerException_Should_Set_Both()
     {
         var inner = new InvalidOperationException("Inner");
-        var exception = new LoggingException("Test message", inner);
+        var exception = new LoggingException(TestExceptionMessage, inner);
 
         using (Assert.Multiple())
         {
-            await Assert.That(exception.Message).IsEqualTo("Test message");
+            await Assert.That(exception.Message).IsEqualTo(TestExceptionMessage);
             await Assert.That(exception.InnerException).IsSameReferenceAs(inner);
         }
     }

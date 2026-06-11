@@ -23,6 +23,7 @@ internal sealed class ConsoleLoggerTests : FullLoggerTestBase
     /// <summary>A <see cref="TextWriter"/> that captures console log output for assertions.</summary>
     private sealed class ConsoleWriter : TextWriter, IMockLogTarget
     {
+        /// <summary>The captured log entries with their log level and message.</summary>
         private readonly List<(LogLevel logLevel, string message)> _logs = [];
 
         /// <inheritdoc/>

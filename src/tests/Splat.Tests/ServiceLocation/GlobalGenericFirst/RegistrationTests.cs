@@ -144,7 +144,8 @@ public class RegistrationTests
     public async Task Registration_WithComplexType_WorksCorrectly()
     {
         // Arrange
-        var complexObject = new TestClass { Value = 42, Name = "Test" };
+        const int expectedValue = 42;
+        var complexObject = new TestClass { Value = expectedValue, Name = "Test" };
         var registration = Registration<TestClass>.FromInstance(complexObject);
 
         // Act
@@ -153,7 +154,7 @@ public class RegistrationTests
         // Assert
         await Assert.That(result).IsNotNull();
         await Assert.That(result).IsEqualTo(complexObject);
-        await Assert.That(result.Value).IsEqualTo(42);
+        await Assert.That(result.Value).IsEqualTo(expectedValue);
         await Assert.That(result.Name).IsEqualTo("Test");
     }
 
@@ -163,7 +164,8 @@ public class RegistrationTests
     public async Task FactoryRegistration_WithComplexType_WorksCorrectly()
     {
         // Arrange
-        Func<TestClass?> factory = () => new() { Value = 100, Name = "Factory" };
+        const int expectedValue = 100;
+        Func<TestClass?> factory = () => new() { Value = expectedValue, Name = "Factory" };
         var registration = Registration<TestClass>.FromFactory(factory);
 
         // Act
@@ -173,7 +175,7 @@ public class RegistrationTests
 
         // Assert
         await Assert.That(result).IsNotNull();
-        await Assert.That(result!.Value).IsEqualTo(100);
+        await Assert.That(result!.Value).IsEqualTo(expectedValue);
         await Assert.That(result.Name).IsEqualTo("Factory");
     }
 

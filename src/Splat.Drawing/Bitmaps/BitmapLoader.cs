@@ -13,8 +13,10 @@ namespace Splat;
 /// operations that rely on this static context.</remarks>
 public static class BitmapLoader
 {
-    // TODO: This needs to be improved once we move the "Detect in Unit Test
-    // Runner" code into Splat
+    /// <summary>
+    /// The current bitmap loader, resolved eagerly from the locator. This can be refined
+    /// later if the "Detect in Unit Test Runner" detection is moved into Splat.
+    /// </summary>
     private static IBitmapLoader? _current = AppLocator.Current.GetService<IBitmapLoader>();
 
     /// <summary>Gets or sets the current default bitmap loader instance used by the application.</summary>

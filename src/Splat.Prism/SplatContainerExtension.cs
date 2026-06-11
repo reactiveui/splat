@@ -18,8 +18,19 @@ namespace Splat.Prism;
 /// extension resets the global Splat locator to its default state.</remarks>
 public class SplatContainerExtension : IContainerExtension<IDependencyResolver>, IDisposable
 {
+    /// <summary>Message thrown when a scoped-container operation is requested.</summary>
+    private const string ScopedNotSupportedMessage = "Scoped containers are not supported by Prism.";
+
+    /// <summary>Message thrown when a requested type cannot be created.</summary>
+    private const string CouldNotCreateTypeMessage = "Could not create type";
+
+    /// <summary>Message thrown when a supplied value is not valid.</summary>
+    private const string MustBeValidValueMessage = "Must be a valid value";
+
+    /// <summary>Maps a (type, contract) key to the concrete type registered for it.</summary>
     private readonly ConcurrentDictionary<(Type type, string? contract), Type> _types = new();
 
+    /// <summary>Action run on disposal to reset the global Splat locator; <see langword="null"/> once invoked.</summary>
     private Action? _disposeAction;
 
     /// <summary>Initializes a new instance of the <see cref="SplatContainerExtension"/> class.</summary>
@@ -35,11 +46,11 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     /// <inheritdoc/>
     [SuppressMessage("Design", "CA1065: Do not raise exceptions in properties", Justification = "Very rare scenario")]
     public IScopedProvider CurrentScope =>
-        throw new NotSupportedException("Scoped containers are not supported by Prism.");
+        throw new NotSupportedException(ScopedNotSupportedMessage);
 
     /// <inheritdoc/>
     public IScopedProvider CreateScope() =>
-        throw new NotSupportedException("Scoped containers are not supported by Prism.");
+        throw new NotSupportedException(ScopedNotSupportedMessage);
 
     /// <inheritdoc/>
     public void Dispose()
@@ -50,7 +61,15 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
 
     /// <inheritdoc/>
     public IContainerRegistry RegisterScoped(Type type, Func<IContainerProvider, object> factoryMethod) =>
-        throw new NotSupportedException("Scoped containers are not supported by Prism.");
+        throw new NotSupportedException(ScopedNotSupportedMessage);
+
+    /// <inheritdoc/>
+    public IContainerRegistry RegisterScoped(Type from, Type to) =>
+        throw new NotSupportedException(ScopedNotSupportedMessage);
+
+    /// <inheritdoc/>
+    public IContainerRegistry RegisterScoped(Type type, Func<object> factoryMethod) =>
+        throw new NotSupportedException(ScopedNotSupportedMessage);
 
     /// <inheritdoc/>
     public bool IsRegistered(Type type) =>
@@ -68,7 +87,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     public IContainerRegistry Register(Type from, Type to)
     {
         _types[(from, null)] = to;
-        Instance.Register(() => Activator.CreateInstance(to) ?? throw new InvalidOperationException("Could not create type"), from);
+        Instance.Register(() => Activator.CreateInstance(to) ?? throw new InvalidOperationException(CouldNotCreateTypeMessage), from);
         return this;
     }
 
@@ -88,7 +107,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     public IContainerRegistry Register(Type from, Type to, string name)
     {
         _types[(from, name)] = to;
-        Instance.Register(() => Activator.CreateInstance(to) ?? throw new InvalidOperationException("Could not create type"), from, name);
+        Instance.Register(() => Activator.CreateInstance(to) ?? throw new InvalidOperationException(CouldNotCreateTypeMessage), from, name);
         return this;
     }
 
@@ -106,30 +125,6 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
         return this;
     }
 
-    /// <inheritdoc/>
-    public IContainerRegistry RegisterMany(Type type, params Type[] serviceTypes)
-    {
-        if (serviceTypes is null)
-        {
-            return this;
-        }
-
-        foreach (var serviceType in serviceTypes)
-        {
-            Instance.Register(() => Activator.CreateInstance(type) ?? throw new InvalidOperationException("Could not create type"), serviceType);
-        }
-
-        return this;
-    }
-
-    /// <inheritdoc/>
-    public IContainerRegistry RegisterScoped(Type from, Type to) =>
-        throw new NotSupportedException("Scoped containers are not supported by Prism.");
-
-    /// <inheritdoc/>
-    public IContainerRegistry RegisterScoped(Type type, Func<object> factoryMethod) =>
-        throw new NotSupportedException("Scoped containers are not supported by Prism.");
-
     /// <summary>Registers an object with the default registration func.</summary>
     /// <param name="from">The type to transform from.</param>
     /// <param name="to">The type to transform to.</param>
@@ -140,6 +135,22 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     {
         _types[(from, name)] = to;
         Instance.Register(defaultCreationFunc, from, name);
+        return this;
+    }
+
+    /// <inheritdoc/>
+    public IContainerRegistry RegisterMany(Type type, params Type[] serviceTypes)
+    {
+        if (serviceTypes is null)
+        {
+            return this;
+        }
+
+        foreach (var serviceType in serviceTypes)
+        {
+            Instance.Register(() => Activator.CreateInstance(type) ?? throw new InvalidOperationException(CouldNotCreateTypeMessage), serviceType);
+        }
+
         return this;
     }
 
@@ -161,7 +172,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     public IContainerRegistry RegisterSingleton(Type from, Type to)
     {
         _types[(from, null)] = to;
-        Instance.RegisterLazySingleton(() => Activator.CreateInstance(to) ?? throw new InvalidOperationException("Could not create type"), from);
+        Instance.RegisterLazySingleton(() => Activator.CreateInstance(to) ?? throw new InvalidOperationException(CouldNotCreateTypeMessage), from);
         return this;
     }
 
@@ -194,7 +205,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     public IContainerRegistry RegisterSingleton(Type from, Type to, string name)
     {
         _types[(from, name)] = to;
-        Instance.RegisterLazySingleton(() => Activator.CreateInstance(to) ?? throw new InvalidOperationException("Could not create type"), from, name);
+        Instance.RegisterLazySingleton(() => Activator.CreateInstance(to) ?? throw new InvalidOperationException(CouldNotCreateTypeMessage), from, name);
         return this;
     }
 
@@ -207,18 +218,18 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
         throw new NotSupportedException("Singleton registration is not supported by Prism.");
 
     /// <inheritdoc/>
-    public object Resolve(Type type) => Instance.GetService(type) ?? throw new InvalidOperationException("Must be a valid value");
+    public object Resolve(Type type) => Instance.GetService(type) ?? throw new InvalidOperationException(MustBeValidValueMessage);
 
     /// <inheritdoc/>
     [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Existing API")]
     public object Resolve(Type type, params (Type Type, object Instance)[] parameters) =>
         (_types.TryGetValue((type, null), out var resolvedType)
-            ? Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance)) ?? throw new InvalidOperationException("Could not create type")
-            : null) ?? throw new InvalidOperationException("Must be a valid value");
+            ? Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance)) ?? throw new InvalidOperationException(CouldNotCreateTypeMessage)
+            : null) ?? throw new InvalidOperationException(MustBeValidValueMessage);
 
     /// <inheritdoc/>
     public object Resolve(Type type, string name) =>
-        Instance.GetService(type, name) ?? throw new InvalidOperationException("Must be a valid value");
+        Instance.GetService(type, name) ?? throw new InvalidOperationException(MustBeValidValueMessage);
 
     /// <inheritdoc/>
     [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Existing API")]
@@ -229,7 +240,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
                 null => null,
                 _ => Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance))
             }
-            : null) ?? throw new InvalidOperationException("Must be a valid value");
+            : null) ?? throw new InvalidOperationException(MustBeValidValueMessage);
 
     /// <summary>Disposes data associated with the extension.</summary>
     /// <param name="isDisposing">If we are getting called by the Dispose() method rather than a finalizer.</param>

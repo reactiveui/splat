@@ -10,6 +10,7 @@ namespace Splat.Tests.ServiceLocation;
 [NotInParallel]
 public sealed class AppLocatorTests
 {
+    /// <summary>The locator scope created for the duration of each test.</summary>
     private AppLocatorScope? _scope;
 
     /// <summary>Marker service interface used by the tests.</summary>
@@ -181,7 +182,9 @@ public sealed class AppLocatorTests
     public async Task GetService_ShouldReturnRegisteredService()
     {
         var service = new TestService();
-        AppLocator.RegisterConstant<ITestService>(service);
+
+        // Register via a factory (rather than RegisterConstant) to exercise GetService against a factory registration.
+        AppLocator.CurrentMutable.Register(() => service, typeof(ITestService));
 
         var resolved = AppLocator.GetService<ITestService>();
 
@@ -194,7 +197,9 @@ public sealed class AppLocatorTests
     public async Task GetService_WithContract_ShouldReturnRegisteredService()
     {
         var service = new TestService();
-        AppLocator.RegisterConstant<ITestService>(service, "test");
+
+        // Register via a factory (rather than RegisterConstant) to exercise GetService against a factory registration.
+        AppLocator.CurrentMutable.Register(() => service, typeof(ITestService), "test");
 
         var resolved = AppLocator.GetService<ITestService>("test");
 
@@ -224,7 +229,8 @@ public sealed class AppLocatorTests
         var services = AppLocator.GetServices<ITestService>();
         var serviceList = services.ToList();
 
-        await Assert.That(serviceList.Count).IsEqualTo(2);
+        const int expectedServiceCount = 2;
+        await Assert.That(serviceList.Count).IsEqualTo(expectedServiceCount);
         await Assert.That(serviceList).Contains(service1);
         await Assert.That(serviceList).Contains(service2);
     }
@@ -339,7 +345,9 @@ public sealed class AppLocatorTests
     /// <summary>Verifies that RegisterResolverCallbackChanged throws when the callback is null.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task RegisterResolverCallbackChanged_WithNullCallback_ShouldThrow() => await Assert.That(() => AppLocator.RegisterResolverCallbackChanged(null!)).ThrowsExactly<ArgumentNullException>();
+    public async Task RegisterResolverCallbackChanged_WithNullCallback_ShouldThrow() =>
+        await Assert.That(() =>
+            AppLocator.RegisterResolverCallbackChanged(null!)).ThrowsExactly<ArgumentNullException>();
 
     /// <summary>Verifies that RegisterResolverCallbackChanged invokes the callback immediately.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>

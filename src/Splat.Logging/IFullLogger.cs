@@ -19,6 +19,10 @@ namespace Splat;
 /// log level is enabled, to avoid unnecessary computation. This interface is suitable for applications that require
 /// detailed and flexible logging capabilities across different log levels.</remarks>
 [SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Existing API")]
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification = "The generic type parameter is the caller-supplied calling type used only to scope the log entry; it intentionally has no corresponding method parameter and cannot be inferred.")]
 public interface IFullLogger : IAllocationFreeLogger
 {
     /// <summary>Emits a debug log message. This will emit the public contents of the object provided to the log.</summary>
@@ -31,12 +35,6 @@ public interface IFullLogger : IAllocationFreeLogger
     /// <param name="formatProvider">The format provider to use.</param>
     /// <param name="value">The value to emit.</param>
     void Debug<T>(IFormatProvider formatProvider, T value);
-
-    /// <summary>Emits a debug log message. This will emit details about a exception. This type of logging is not able to be localized.</summary>
-    /// <param name="message">A message to emit.</param>
-    /// <param name="exception">The exception which to emit in the log.</param>
-    [Obsolete("Use void Debug(Exception exception, [Localizable(false)] string? message)")]
-    void DebugException([Localizable(false)] string? message, Exception exception);
 
     /// <summary>Emits a debug log message with an exception.</summary>
     /// <param name="exception">The exception.</param>
@@ -106,15 +104,29 @@ public interface IFullLogger : IAllocationFreeLogger
     void Debug<T>(Func<string> function);
 
     /// <summary>Sends the value provided by the provided delegate, only if Debug is enabled.</summary>
-    /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
-    /// <param name="exception">A exception to log about.</param>
-    [Obsolete("Use void Debug(Exception exception, Func<string> function)")]
-    void DebugException(Func<string> function, Exception exception);
-
-    /// <summary>Sends the value provided by the provided delegate, only if Debug is enabled.</summary>
     /// <param name="exception">A exception to log about.</param>
     /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
     void Debug(Exception exception, Func<string> function);
+
+    /// <summary>Emits a debug log message. This will emit details about a exception. This type of logging is not able to be localized.</summary>
+    /// <param name="message">A message to emit.</param>
+    /// <param name="exception">The exception which to emit in the log.</param>
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Public API deprecation retained for backward compatibility; removal would be a breaking change.")]
+    [Obsolete("Use void Debug(Exception exception, [Localizable(false)] string? message)")]
+    void DebugException([Localizable(false)] string? message, Exception exception);
+
+    /// <summary>Sends the value provided by the provided delegate, only if Debug is enabled.</summary>
+    /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
+    /// <param name="exception">A exception to log about.</param>
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Public API deprecation retained for backward compatibility; removal would be a breaking change.")]
+    [Obsolete("Use void Debug(Exception exception, Func<string> function)")]
+    void DebugException(Func<string> function, Exception exception);
 
     /// <summary>Emits a info log message. This will emit the public contents of the object provided to the log.</summary>
     /// <typeparam name="T">The type of object used as the message.</typeparam>
@@ -126,12 +138,6 @@ public interface IFullLogger : IAllocationFreeLogger
     /// <param name="formatProvider">The format provider to use.</param>
     /// <param name="value">The value to emit.</param>
     void Info<T>(IFormatProvider formatProvider, T value);
-
-    /// <summary>Emits a info log message. This will emit details about a exception. This type of logging is not able to be localized.</summary>
-    /// <param name="message">A message to emit.</param>
-    /// <param name="exception">The exception which to emit in the log.</param>
-    [Obsolete("Use void Info(Exception exception, [Localizable(false)] string? message)")]
-    void InfoException([Localizable(false)] string? message, Exception exception);
 
     /// <summary>
     /// Emits a info log message with exception.
@@ -205,15 +211,29 @@ public interface IFullLogger : IAllocationFreeLogger
     void Info<T>(Func<string> function);
 
     /// <summary>Sends the value provided by the provided delegate, only if Info is enabled.</summary>
-    /// <param name="function">The function to evaluate if Info logging is enabled.</param>
-    /// <param name="exception">A exception to log about.</param>
-    [Obsolete("Use void Info(Exception exception, Func<string> function)")]
-    void InfoException(Func<string> function, Exception exception);
-
-    /// <summary>Sends the value provided by the provided delegate, only if Info is enabled.</summary>
     /// <param name="exception">A exception to log about.</param>
     /// <param name="function">The function to evaluate if Info logging is enabled.</param>
     void Info(Exception exception, Func<string> function);
+
+    /// <summary>Emits a info log message. This will emit details about a exception. This type of logging is not able to be localized.</summary>
+    /// <param name="message">A message to emit.</param>
+    /// <param name="exception">The exception which to emit in the log.</param>
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Public API deprecation retained for backward compatibility; removal would be a breaking change.")]
+    [Obsolete("Use void Info(Exception exception, [Localizable(false)] string? message)")]
+    void InfoException([Localizable(false)] string? message, Exception exception);
+
+    /// <summary>Sends the value provided by the provided delegate, only if Info is enabled.</summary>
+    /// <param name="function">The function to evaluate if Info logging is enabled.</param>
+    /// <param name="exception">A exception to log about.</param>
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Public API deprecation retained for backward compatibility; removal would be a breaking change.")]
+    [Obsolete("Use void Info(Exception exception, Func<string> function)")]
+    void InfoException(Func<string> function, Exception exception);
 
     /// <summary>Emits a warning log message. This will emit the public contents of the object provided to the log.</summary>
     /// <typeparam name="T">The type of object used as the message.</typeparam>
@@ -225,16 +245,6 @@ public interface IFullLogger : IAllocationFreeLogger
     /// <param name="formatProvider">The format provider to use.</param>
     /// <param name="value">The value to emit.</param>
     void Warn<T>(IFormatProvider formatProvider, T value);
-
-    /// <summary>
-    /// Emits a warning log message.
-    /// This will emit details about a exception.
-    /// This type of logging is not able to be localized.
-    /// </summary>
-    /// <param name="message">A message to emit.</param>
-    /// <param name="exception">The exception which to emit in the log.</param>
-    [Obsolete("Use void Warn(Exception exception, [Localizable(false)] string? message)")]
-    void WarnException([Localizable(false)] string? message, Exception exception);
 
     /// <summary>
     /// Emits a warning log message with exception.
@@ -308,15 +318,33 @@ public interface IFullLogger : IAllocationFreeLogger
     void Warn<T>(Func<string> function);
 
     /// <summary>Sends the value provided by the provided delegate, only if Warn is enabled.</summary>
-    /// <param name="function">The function to evaluate if Warn logging is enabled.</param>
-    /// <param name="exception">A exception to log about.</param>
-    [Obsolete("Use void Warn(Exception exception, Func<string> function)")]
-    void WarnException(Func<string> function, Exception exception);
-
-    /// <summary>Sends the value provided by the provided delegate, only if Warn is enabled.</summary>
     /// <param name="exception">A exception to log about.</param>
     /// <param name="function">The function to evaluate if Warn logging is enabled.</param>
     void Warn(Exception exception, Func<string> function);
+
+    /// <summary>
+    /// Emits a warning log message.
+    /// This will emit details about a exception.
+    /// This type of logging is not able to be localized.
+    /// </summary>
+    /// <param name="message">A message to emit.</param>
+    /// <param name="exception">The exception which to emit in the log.</param>
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Public API deprecation retained for backward compatibility; removal would be a breaking change.")]
+    [Obsolete("Use void Warn(Exception exception, [Localizable(false)] string? message)")]
+    void WarnException([Localizable(false)] string? message, Exception exception);
+
+    /// <summary>Sends the value provided by the provided delegate, only if Warn is enabled.</summary>
+    /// <param name="function">The function to evaluate if Warn logging is enabled.</param>
+    /// <param name="exception">A exception to log about.</param>
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Public API deprecation retained for backward compatibility; removal would be a breaking change.")]
+    [Obsolete("Use void Warn(Exception exception, Func<string> function)")]
+    void WarnException(Func<string> function, Exception exception);
 
     /// <summary>Emits a error log message. This will emit the public contents of the object provided to the log.</summary>
     /// <typeparam name="T">The type of object used as the message.</typeparam>
@@ -328,12 +356,6 @@ public interface IFullLogger : IAllocationFreeLogger
     /// <param name="formatProvider">The format provider to use.</param>
     /// <param name="value">The value to emit.</param>
     void Error<T>(IFormatProvider formatProvider, T value);
-
-    /// <summary>Emits a error log message. This will emit details about a exception. This type of logging is not able to be localized.</summary>
-    /// <param name="message">A message to emit.</param>
-    /// <param name="exception">The exception which to emit in the log.</param>
-    [Obsolete("Use void Error(Exception exception, [Localizable(false)] string? message)")]
-    void ErrorException([Localizable(false)] string? message, Exception exception);
 
     /// <summary>
     /// Emits a error log message with exception.
@@ -407,15 +429,29 @@ public interface IFullLogger : IAllocationFreeLogger
     void Error<T>(Func<string> function);
 
     /// <summary>Sends the value provided by the provided delegate, only if Error is enabled.</summary>
-    /// <param name="function">The function to evaluate if Error logging is enabled.</param>
-    /// <param name="exception">A exception to log about.</param>
-    [Obsolete("Use void Error(Exception exception, Func<string> function)")]
-    void ErrorException(Func<string> function, Exception exception);
-
-    /// <summary>Sends the value provided by the provided delegate, only if Error is enabled.</summary>
     /// <param name="exception">A exception to log about.</param>
     /// <param name="function">The function to evaluate if Error logging is enabled.</param>
     void Error(Exception exception, Func<string> function);
+
+    /// <summary>Emits a error log message. This will emit details about a exception. This type of logging is not able to be localized.</summary>
+    /// <param name="message">A message to emit.</param>
+    /// <param name="exception">The exception which to emit in the log.</param>
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Public API deprecation retained for backward compatibility; removal would be a breaking change.")]
+    [Obsolete("Use void Error(Exception exception, [Localizable(false)] string? message)")]
+    void ErrorException([Localizable(false)] string? message, Exception exception);
+
+    /// <summary>Sends the value provided by the provided delegate, only if Error is enabled.</summary>
+    /// <param name="function">The function to evaluate if Error logging is enabled.</param>
+    /// <param name="exception">A exception to log about.</param>
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Public API deprecation retained for backward compatibility; removal would be a breaking change.")]
+    [Obsolete("Use void Error(Exception exception, Func<string> function)")]
+    void ErrorException(Func<string> function, Exception exception);
 
     /// <summary>Emits a fatal log message. This will emit the public contents of the object provided to the log.</summary>
     /// <typeparam name="T">The type of object used as the message.</typeparam>
@@ -427,12 +463,6 @@ public interface IFullLogger : IAllocationFreeLogger
     /// <param name="formatProvider">The format provider to use.</param>
     /// <param name="value">The value to emit.</param>
     void Fatal<T>(IFormatProvider formatProvider, T value);
-
-    /// <summary>Emits a fatal log message. This will emit details about a exception. This type of logging is not able to be localized.</summary>
-    /// <param name="message">A message to emit.</param>
-    /// <param name="exception">The exception which to emit in the log.</param>
-    [Obsolete("Use void Fatal(Exception exception, [Localizable(false)] string? message)")]
-    void FatalException([Localizable(false)] string? message, Exception exception);
 
     /// <summary>
     /// Emits a fatal log message with exception.
@@ -506,13 +536,27 @@ public interface IFullLogger : IAllocationFreeLogger
     void Fatal<T>(Func<string> function);
 
     /// <summary>Sends the value provided by the provided delegate, only if Fatal is enabled.</summary>
-    /// <param name="function">The function to evaluate if Fatal logging is enabled.</param>
-    /// <param name="exception">A exception to log about.</param>
-    [Obsolete("Use void Fatal(Exception exception, Func<string> function)")]
-    void FatalException(Func<string> function, Exception exception);
-
-    /// <summary>Sends the value provided by the provided delegate, only if Fatal is enabled.</summary>
     /// <param name="exception">A exception to log about.</param>
     /// <param name="function">The function to evaluate if Fatal logging is enabled.</param>
     void Fatal(Exception exception, Func<string> function);
+
+    /// <summary>Emits a fatal log message. This will emit details about a exception. This type of logging is not able to be localized.</summary>
+    /// <param name="message">A message to emit.</param>
+    /// <param name="exception">The exception which to emit in the log.</param>
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Public API deprecation retained for backward compatibility; removal would be a breaking change.")]
+    [Obsolete("Use void Fatal(Exception exception, [Localizable(false)] string? message)")]
+    void FatalException([Localizable(false)] string? message, Exception exception);
+
+    /// <summary>Sends the value provided by the provided delegate, only if Fatal is enabled.</summary>
+    /// <param name="function">The function to evaluate if Fatal logging is enabled.</param>
+    /// <param name="exception">A exception to log about.</param>
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Public API deprecation retained for backward compatibility; removal would be a breaking change.")]
+    [Obsolete("Use void Fatal(Exception exception, Func<string> function)")]
+    void FatalException(Func<string> function, Exception exception);
 }

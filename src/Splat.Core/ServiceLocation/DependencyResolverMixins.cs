@@ -27,11 +27,21 @@ public static class DependencyResolverMixins
         /// specific scope. This is useful for testing or for scenarios where a different resolver is needed temporarily.
         /// Ensure that the returned IDisposable is properly disposed to avoid leaving the application in an inconsistent
         /// state.</remarks>
-        /// <param name="suppressResolverCallback">true to suppress resolver callback changed notifications while the resolver is replaced; otherwise, false. The
-        /// default is true.</param>
+        /// <returns>An IDisposable that, when disposed, restores the original dependency resolver and re-enables notifications.</returns>
+        public IDisposable WithResolver() => resolver.WithResolver(true);
+
+        /// <summary>
+        /// Temporarily replaces the current application dependency resolver with the specified resolver, restoring the
+        /// original resolver when the returned object is disposed.
+        /// </summary>
+        /// <remarks>Use this method to temporarily override the application's dependency resolver within a
+        /// specific scope. This is useful for testing or for scenarios where a different resolver is needed temporarily.
+        /// Ensure that the returned IDisposable is properly disposed to avoid leaving the application in an inconsistent
+        /// state.</remarks>
+        /// <param name="suppressResolverCallback">true to suppress resolver callback changed notifications while the resolver is replaced; otherwise, false.</param>
         /// <returns>An IDisposable that, when disposed, restores the original dependency resolver and re-enables notifications if
         /// they were suppressed.</returns>
-        public IDisposable WithResolver(bool suppressResolverCallback = true)
+        public IDisposable WithResolver(bool suppressResolverCallback)
         {
             ArgumentExceptionHelper.ThrowIfNull(resolver);
 

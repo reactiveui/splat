@@ -9,13 +9,49 @@ namespace Splat.Tests;
 /// <summary>Tests for the rectangle math extension methods.</summary>
 public class RectangleMathExtensionsTests
 {
+    /// <summary>The X coordinate of the sample test rectangle.</summary>
+    private const float RectX = 10.0f;
+
+    /// <summary>The Y coordinate of the sample test rectangle.</summary>
+    private const float RectY = 20.0f;
+
+    /// <summary>The width of the sample test rectangle.</summary>
+    private const float RectWidth = 30.0f;
+
+    /// <summary>The height of the sample test rectangle.</summary>
+    private const float RectHeight = 40.0f;
+
+    /// <summary>The X coordinate of the origin used for container rectangles.</summary>
+    private const float OriginX = 0.0f;
+
+    /// <summary>The Y coordinate of the origin used for container rectangles.</summary>
+    private const float OriginY = 0.0f;
+
+    /// <summary>The width of the wide rectangle used for divide tests.</summary>
+    private const float WideWidth = 100.0f;
+
+    /// <summary>The height of the wide rectangle used for divide tests.</summary>
+    private const float WideHeight = 50.0f;
+
+    /// <summary>The horizontal amount sliced off in divide tests.</summary>
+    private const float SliceAmount = 30.0f;
+
+    /// <summary>The vertical amount sliced off in divide tests.</summary>
+    private const float VerticalSliceAmount = 20.0f;
+
+    /// <summary>The padding amount applied in divide-with-padding tests.</summary>
+    private const float Padding = 10.0f;
+
+    /// <summary>The divisor used to compute the centre point of a rectangle.</summary>
+    private const float Half = 2.0f;
+
     /// <summary>Test that Center method calculates correctly.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Center_CalculatesCorrectly()
     {
         // Arrange
-        var rect = new RectangleF(10.0f, 20.0f, 30.0f, 40.0f);
+        var rect = new RectangleF(RectX, RectY, RectWidth, RectHeight);
 
         // Act
         var center = rect.Center();
@@ -23,8 +59,8 @@ public class RectangleMathExtensionsTests
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(center.X).IsEqualTo(25.0f); // 10 + 30/2 = 25
-            await Assert.That(center.Y).IsEqualTo(40.0f); // 20 + 40/2 = 40
+            await Assert.That(center.X).IsEqualTo(RectX + (RectWidth / Half));
+            await Assert.That(center.Y).IsEqualTo(RectY + (RectHeight / Half));
         }
     }
 
@@ -34,18 +70,18 @@ public class RectangleMathExtensionsTests
     public async Task Divide_FromLeftEdge_WorksCorrectly()
     {
         // Arrange
-        var rect = new RectangleF(0.0f, 0.0f, 100.0f, 50.0f);
+        var rect = new RectangleF(OriginX, OriginY, WideWidth, WideHeight);
 
         // Act
-        var (slice, remainder) = rect.Divide(30.0f, RectEdge.Left);
+        var (slice, remainder) = rect.Divide(SliceAmount, RectEdge.Left);
 
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(slice.Width).IsEqualTo(30.0f);
-            await Assert.That(slice.X).IsEqualTo(0);
-            await Assert.That(remainder.Width).IsEqualTo(70.0f);
-            await Assert.That(remainder.X).IsEqualTo(30.0f);
+            await Assert.That(slice.Width).IsEqualTo(SliceAmount);
+            await Assert.That(slice.X).IsEqualTo(OriginX);
+            await Assert.That(remainder.Width).IsEqualTo(WideWidth - SliceAmount);
+            await Assert.That(remainder.X).IsEqualTo(SliceAmount);
         }
     }
 
@@ -55,18 +91,18 @@ public class RectangleMathExtensionsTests
     public async Task Divide_FromRightEdge_WorksCorrectly()
     {
         // Arrange
-        var rect = new RectangleF(0.0f, 0.0f, 100.0f, 50.0f);
+        var rect = new RectangleF(OriginX, OriginY, WideWidth, WideHeight);
 
         // Act
-        var (slice, remainder) = rect.Divide(30.0f, RectEdge.Right);
+        var (slice, remainder) = rect.Divide(SliceAmount, RectEdge.Right);
 
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(slice.Width).IsEqualTo(30.0f);
-            await Assert.That(slice.X).IsEqualTo(70.0f);
-            await Assert.That(remainder.Width).IsEqualTo(70.0f);
-            await Assert.That(remainder.X).IsEqualTo(0);
+            await Assert.That(slice.Width).IsEqualTo(SliceAmount);
+            await Assert.That(slice.X).IsEqualTo(WideWidth - SliceAmount);
+            await Assert.That(remainder.Width).IsEqualTo(WideWidth - SliceAmount);
+            await Assert.That(remainder.X).IsEqualTo(OriginX);
         }
     }
 
@@ -76,18 +112,18 @@ public class RectangleMathExtensionsTests
     public async Task Divide_FromTopEdge_WorksCorrectly()
     {
         // Arrange
-        var rect = new RectangleF(0.0f, 0.0f, 100.0f, 50.0f);
+        var rect = new RectangleF(OriginX, OriginY, WideWidth, WideHeight);
 
         // Act
-        var (slice, remainder) = rect.Divide(20.0f, RectEdge.Top);
+        var (slice, remainder) = rect.Divide(VerticalSliceAmount, RectEdge.Top);
 
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(slice.Height).IsEqualTo(20.0f);
-            await Assert.That(slice.Y).IsEqualTo(0);
-            await Assert.That(remainder.Height).IsEqualTo(30.0f);
-            await Assert.That(remainder.Y).IsEqualTo(20.0f);
+            await Assert.That(slice.Height).IsEqualTo(VerticalSliceAmount);
+            await Assert.That(slice.Y).IsEqualTo(OriginY);
+            await Assert.That(remainder.Height).IsEqualTo(WideHeight - VerticalSliceAmount);
+            await Assert.That(remainder.Y).IsEqualTo(VerticalSliceAmount);
         }
     }
 
@@ -97,18 +133,18 @@ public class RectangleMathExtensionsTests
     public async Task Divide_FromBottomEdge_WorksCorrectly()
     {
         // Arrange
-        var rect = new RectangleF(0.0f, 0.0f, 100.0f, 50.0f);
+        var rect = new RectangleF(OriginX, OriginY, WideWidth, WideHeight);
 
         // Act
-        var (slice, remainder) = rect.Divide(20.0f, RectEdge.Bottom);
+        var (slice, remainder) = rect.Divide(VerticalSliceAmount, RectEdge.Bottom);
 
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(slice.Height).IsEqualTo(20.0f);
-            await Assert.That(slice.Y).IsEqualTo(30.0f);
-            await Assert.That(remainder.Height).IsEqualTo(30.0f);
-            await Assert.That(remainder.Y).IsEqualTo(0);
+            await Assert.That(slice.Height).IsEqualTo(VerticalSliceAmount);
+            await Assert.That(slice.Y).IsEqualTo(WideHeight - VerticalSliceAmount);
+            await Assert.That(remainder.Height).IsEqualTo(WideHeight - VerticalSliceAmount);
+            await Assert.That(remainder.Y).IsEqualTo(OriginY);
         }
     }
 
@@ -118,18 +154,18 @@ public class RectangleMathExtensionsTests
     public async Task DivideWithPadding_WorksCorrectly()
     {
         // Arrange
-        var rect = new RectangleF(0.0f, 0.0f, 100.0f, 50.0f);
+        var rect = new RectangleF(OriginX, OriginY, WideWidth, WideHeight);
 
         // Act
-        var (slice, remainder) = rect.DivideWithPadding(30.0f, 10.0f, RectEdge.Left);
+        var (slice, remainder) = rect.DivideWithPadding(SliceAmount, Padding, RectEdge.Left);
 
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(slice.Width).IsEqualTo(30.0f);
-            await Assert.That(slice.X).IsEqualTo(0);
-            await Assert.That(remainder.Width).IsEqualTo(90.0f); // 100 - 10 = 90 (after padding)
-            await Assert.That(remainder.X).IsEqualTo(10.0f); // starts after padding
+            await Assert.That(slice.Width).IsEqualTo(SliceAmount);
+            await Assert.That(slice.X).IsEqualTo(OriginX);
+            await Assert.That(remainder.Width).IsEqualTo(WideWidth - Padding); // remaining width after padding
+            await Assert.That(remainder.X).IsEqualTo(Padding); // starts after padding
         }
     }
 
@@ -139,8 +175,10 @@ public class RectangleMathExtensionsTests
     public async Task InvertWithin_WorksCorrectly()
     {
         // Arrange
-        var rect = new RectangleF(10.0f, 20.0f, 30.0f, 40.0f);
-        var container = new RectangleF(0.0f, 0.0f, 200.0f, 100.0f);
+        var rect = new RectangleF(RectX, RectY, RectWidth, RectHeight);
+        const float containerWidth = 200.0f;
+        const float containerHeight = 100.0f;
+        var container = new RectangleF(OriginX, OriginY, containerWidth, containerHeight);
 
         // Act
         var inverted = rect.InvertWithin(container);
@@ -148,10 +186,10 @@ public class RectangleMathExtensionsTests
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(inverted.X).IsEqualTo(10.0f); // X unchanged
-            await Assert.That(inverted.Y).IsEqualTo(40.0f); // 100 - (20 + 40) = 40
-            await Assert.That(inverted.Width).IsEqualTo(30.0f); // Width unchanged
-            await Assert.That(inverted.Height).IsEqualTo(40.0f); // Height unchanged
+            await Assert.That(inverted.X).IsEqualTo(RectX); // X unchanged
+            await Assert.That(inverted.Y).IsEqualTo(containerHeight - (RectY + RectHeight)); // inverted vertical position
+            await Assert.That(inverted.Width).IsEqualTo(RectWidth); // Width unchanged
+            await Assert.That(inverted.Height).IsEqualTo(RectHeight); // Height unchanged
         }
     }
 
@@ -161,18 +199,22 @@ public class RectangleMathExtensionsTests
     public async Task Copy_WithAllParameters_WorksCorrectly()
     {
         // Arrange
-        var rect = new RectangleF(10.0f, 20.0f, 30.0f, 40.0f);
+        var rect = new RectangleF(RectX, RectY, RectWidth, RectHeight);
+        const float newX = 15.0f;
+        const float newY = 25.0f;
+        const float newWidth = 35.0f;
+        const float newHeight = 45.0f;
 
         // Act
-        var copy = rect.Copy(x: 15.0f, y: 25.0f, width: 35.0f, height: 45.0f);
+        var copy = rect.Copy(new() { X = newX, Y = newY, Width = newWidth, Height = newHeight });
 
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(copy.X).IsEqualTo(15.0f);
-            await Assert.That(copy.Y).IsEqualTo(25.0f);
-            await Assert.That(copy.Width).IsEqualTo(35.0f);
-            await Assert.That(copy.Height).IsEqualTo(45.0f);
+            await Assert.That(copy.X).IsEqualTo(newX);
+            await Assert.That(copy.Y).IsEqualTo(newY);
+            await Assert.That(copy.Width).IsEqualTo(newWidth);
+            await Assert.That(copy.Height).IsEqualTo(newHeight);
         }
     }
 
@@ -182,18 +224,20 @@ public class RectangleMathExtensionsTests
     public async Task Copy_WithPartialParameters_WorksCorrectly()
     {
         // Arrange
-        var rect = new RectangleF(10.0f, 20.0f, 30.0f, 40.0f);
+        var rect = new RectangleF(RectX, RectY, RectWidth, RectHeight);
+        const float newX = 15.0f;
+        const float newHeight = 50.0f;
 
         // Act
-        var copy = rect.Copy(x: 15.0f, height: 50.0f);
+        var copy = rect.Copy(new() { X = newX, Height = newHeight });
 
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(copy.X).IsEqualTo(15.0f);
-            await Assert.That(copy.Y).IsEqualTo(20.0f); // unchanged
-            await Assert.That(copy.Width).IsEqualTo(30.0f); // unchanged
-            await Assert.That(copy.Height).IsEqualTo(50.0f);
+            await Assert.That(copy.X).IsEqualTo(newX);
+            await Assert.That(copy.Y).IsEqualTo(RectY); // unchanged
+            await Assert.That(copy.Width).IsEqualTo(RectWidth); // unchanged
+            await Assert.That(copy.Height).IsEqualTo(newHeight);
         }
     }
 
@@ -203,18 +247,19 @@ public class RectangleMathExtensionsTests
     public async Task Copy_WithTopParameter_WorksCorrectly()
     {
         // Arrange
-        var rect = new RectangleF(10.0f, 20.0f, 30.0f, 40.0f);
+        var rect = new RectangleF(RectX, RectY, RectWidth, RectHeight);
+        const float newTop = 5.0f;
 
         // Act
-        var copy = rect.Copy(top: 5.0f);
+        var copy = rect.Copy(new() { Top = newTop });
 
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(copy.X).IsEqualTo(10.0f); // unchanged
-            await Assert.That(copy.Y).IsEqualTo(5.0f); // set to top value
-            await Assert.That(copy.Width).IsEqualTo(30.0f); // unchanged
-            await Assert.That(copy.Height).IsEqualTo(40.0f); // unchanged
+            await Assert.That(copy.X).IsEqualTo(RectX); // unchanged
+            await Assert.That(copy.Y).IsEqualTo(newTop); // set to top value
+            await Assert.That(copy.Width).IsEqualTo(RectWidth); // unchanged
+            await Assert.That(copy.Height).IsEqualTo(RectHeight); // unchanged
         }
     }
 
@@ -224,18 +269,19 @@ public class RectangleMathExtensionsTests
     public async Task Copy_WithBottomParameter_WorksCorrectly()
     {
         // Arrange
-        var rect = new RectangleF(10.0f, 20.0f, 30.0f, 40.0f);
+        var rect = new RectangleF(RectX, RectY, RectWidth, RectHeight);
+        const float newBottom = 80.0f;
 
         // Act
-        var copy = rect.Copy(bottom: 80.0f);
+        var copy = rect.Copy(new() { Bottom = newBottom });
 
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(copy.X).IsEqualTo(10.0f); // unchanged
-            await Assert.That(copy.Y).IsEqualTo(20.0f); // unchanged
-            await Assert.That(copy.Width).IsEqualTo(30.0f); // unchanged
-            await Assert.That(copy.Height).IsEqualTo(100.0f); // 20 + 80 = 100
+            await Assert.That(copy.X).IsEqualTo(RectX); // unchanged
+            await Assert.That(copy.Y).IsEqualTo(RectY); // unchanged
+            await Assert.That(copy.Width).IsEqualTo(RectWidth); // unchanged
+            await Assert.That(copy.Height).IsEqualTo(RectY + newBottom); // height grows to reach the new bottom
         }
     }
 
@@ -244,10 +290,12 @@ public class RectangleMathExtensionsTests
     public void Copy_WithYAndTop_ThrowsArgumentException()
     {
         // Arrange
-        var rect = new RectangleF(10.0f, 20.0f, 30.0f, 40.0f);
+        var rect = new RectangleF(RectX, RectY, RectWidth, RectHeight);
+        const float newY = 25.0f;
+        const float newTop = 5.0f;
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => rect.Copy(y: 25.0f, top: 5.0f));
+        Assert.Throws<ArgumentException>(() => rect.Copy(new() { Y = newY, Top = newTop }));
     }
 
     /// <summary>Test Copy method throws when Height and Bottom are both specified.</summary>
@@ -255,10 +303,12 @@ public class RectangleMathExtensionsTests
     public void Copy_WithHeightAndBottom_ThrowsArgumentException()
     {
         // Arrange
-        var rect = new RectangleF(10.0f, 20.0f, 30.0f, 40.0f);
+        var rect = new RectangleF(RectX, RectY, RectWidth, RectHeight);
+        const float newHeight = 50.0f;
+        const float newBottom = 80.0f;
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => rect.Copy(height: 50.0f, bottom: 80.0f));
+        Assert.Throws<ArgumentException>(() => rect.Copy(new() { Height = newHeight, Bottom = newBottom }));
     }
 
     /// <summary>Test Divide with invalid edge throws ArgumentException.</summary>
@@ -266,9 +316,10 @@ public class RectangleMathExtensionsTests
     public void Divide_WithInvalidEdge_ThrowsArgumentException()
     {
         // Arrange
-        var rect = new RectangleF(0.0f, 0.0f, 100.0f, 50.0f);
+        var rect = new RectangleF(OriginX, OriginY, WideWidth, WideHeight);
+        const int invalidEdge = 999;
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => rect.Divide(30.0f, (RectEdge)999));
+        Assert.Throws<ArgumentException>(() => rect.Divide(SliceAmount, (RectEdge)invalidEdge));
     }
 }

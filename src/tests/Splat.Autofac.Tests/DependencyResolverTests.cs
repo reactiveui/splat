@@ -2,6 +2,8 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
+
 using Autofac;
 
 using Splat.Common.Test;
@@ -17,6 +19,9 @@ namespace Splat.Autofac.Tests;
 [NotInParallel]
 public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDependencyResolver>
 {
+    /// <summary>The contract name used when exercising contract-based registration APIs.</summary>
+    private const string ContractName = "contract";
+
     /// <summary>Should resolve nulls.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -169,6 +174,10 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
     /// <summary>Verifies that UnregisterCurrent throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Test deliberately overrides and exercises the obsolete UnregisterCurrent API and must keep the [Obsolete] marker to compile.")]
     [Obsolete("Testing obsolete UnregisterCurrent method")]
     public override Task UnregisterCurrent_Doesnt_Throw_When_List_Empty()
     {
@@ -180,10 +189,17 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
     /// <summary>Verifies that UnregisterCurrent throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Test deliberately overrides and exercises the obsolete UnregisterCurrent API and must keep the [Obsolete] marker to compile.")]
     [Obsolete("Testing obsolete UnregisterCurrent method")]
     public override Task UnregisterCurrent_Remove_Last()
     {
         var resolver = GetDependencyResolver();
+
+        // Register a value so the scenario reflects removing the last registration; Autofac still throws.
+        resolver.Register(() => "last", typeof(string));
         Assert.Throws<NotSupportedException>(() => resolver.UnregisterCurrent(typeof(string)));
         return Task.CompletedTask;
     }
@@ -191,17 +207,25 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
     /// <summary>Verifies that UnregisterCurrent with contract throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Test deliberately overrides and exercises the obsolete UnregisterCurrent API and must keep the [Obsolete] marker to compile.")]
     [Obsolete("Testing obsolete UnregisterCurrent method")]
     public override Task UnregisterCurrentByName_Doesnt_Throw_When_List_Empty()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotSupportedException>(() => resolver.UnregisterCurrent(typeof(string), "contract"));
+        Assert.Throws<NotSupportedException>(() => resolver.UnregisterCurrent(typeof(string), ContractName));
         return Task.CompletedTask;
     }
 
     /// <summary>Verifies that UnregisterAll throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Test deliberately overrides and exercises the obsolete UnregisterAll API and must keep the [Obsolete] marker to compile.")]
     [Obsolete("Testing obsolete UnregisterAll method")]
     public override Task UnregisterAll_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
     {
@@ -213,17 +237,25 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
     /// <summary>Verifies that UnregisterAll with contract throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Test deliberately overrides and exercises the obsolete UnregisterAll API and must keep the [Obsolete] marker to compile.")]
     [Obsolete("Testing obsolete UnregisterAll method")]
     public override Task UnregisterAllByContract_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotSupportedException>(() => resolver.UnregisterAll(typeof(string), "contract"));
+        Assert.Throws<NotSupportedException>(() => resolver.UnregisterAll(typeof(string), ContractName));
         return Task.CompletedTask;
     }
 
     /// <summary>Verifies that generic UnregisterCurrent throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Test deliberately overrides and exercises the obsolete generic UnregisterCurrent API and must keep the [Obsolete] marker to compile.")]
     [Obsolete("Testing obsolete UnregisterCurrent method")]
     public override Task UnregisterCurrent_Generic_RemovesLastRegistration()
     {
@@ -235,17 +267,25 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
     /// <summary>Verifies that generic UnregisterCurrent with contract throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Test deliberately overrides and exercises the obsolete generic UnregisterCurrent API and must keep the [Obsolete] marker to compile.")]
     [Obsolete("Testing obsolete UnregisterCurrent method")]
     public override Task UnregisterCurrent_Generic_WithContract_RemovesRegistration()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotSupportedException>(() => resolver.UnregisterCurrent<ViewModelOne>("contract"));
+        Assert.Throws<NotSupportedException>(() => resolver.UnregisterCurrent<ViewModelOne>(ContractName));
         return Task.CompletedTask;
     }
 
     /// <summary>Verifies that generic UnregisterAll throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Test deliberately overrides and exercises the obsolete generic UnregisterAll API and must keep the [Obsolete] marker to compile.")]
     [Obsolete("Testing obsolete UnregisterAll method")]
     public override Task UnregisterAll_Generic_RemovesAllRegistrations()
     {
@@ -257,17 +297,25 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
     /// <summary>Verifies that generic UnregisterAll with contract throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Test deliberately overrides and exercises the obsolete generic UnregisterAll API and must keep the [Obsolete] marker to compile.")]
     [Obsolete("Testing obsolete UnregisterAll method")]
     public override Task UnregisterAll_Generic_WithContract_RemovesAllContractRegistrations()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotSupportedException>(() => resolver.UnregisterAll<ViewModelOne>("contract"));
+        Assert.Throws<NotSupportedException>(() => resolver.UnregisterAll<ViewModelOne>(ContractName));
         return Task.CompletedTask;
     }
 
     /// <summary>Should check registration with and without contracts.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Test deliberately overrides and exercises the obsolete HasRegistration API and must keep the [Obsolete] marker to compile.")]
     [Obsolete("Obsolete")]
 #pragma warning disable CS0809 // Obsolete member overrides non-obsolete member
     public override async Task HasRegistration()
@@ -326,6 +374,9 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
     public override Task ServiceRegistrationCallback_Generic_WithExistingRegistration_InvokesImmediately()
     {
         var resolver = GetDependencyResolver();
+
+        // Register a service first so the callback would normally fire immediately; Autofac still throws.
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
         Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
@@ -366,7 +417,9 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
     public override Task ServiceRegistrationCallback_Disposal_StopsReceivingNotifications()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+
+        // The subscription disposable is never produced because Autofac throws before returning it.
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }).Dispose());
         return Task.CompletedTask;
     }
 
@@ -478,8 +531,9 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
     public override Task Register_AfterDispose_DoesNotInvokeCallbacks()
     {
         var resolver = GetDependencyResolver();
+        resolver.Dispose();
 
-        // Since ServiceRegistrationCallback throws, we verify that instead of the full test flow
+        // After disposal, ServiceRegistrationCallback still throws NotSupportedException for Autofac.
         Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
@@ -490,6 +544,10 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
     public override Task ServiceRegistrationCallback_Generic_InvokesForEachExistingRegistration()
     {
         var resolver = GetDependencyResolver();
+
+        // Register multiple services so the callback would normally fire for each; Autofac still throws.
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
         Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
@@ -500,7 +558,10 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
     public override Task Dispose_SuppressesExceptionsFromCallbacks()
     {
         var resolver = GetDependencyResolver();
+
+        // Callbacks can never be registered (Autofac throws), so disposal has nothing to suppress.
         Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        resolver.Dispose();
         return Task.CompletedTask;
     }
 

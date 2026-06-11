@@ -20,6 +20,7 @@ public sealed class Mode : IModeDetector
     /// <summary>The default implementation of the test mode.</summary>
     public static readonly Mode Test = new(true);
 
+    /// <summary>Whether this mode reports that code is running inside a unit-test runner.</summary>
     private readonly bool _inUnitTestRunner;
 
     /// <summary>Initializes a new instance of the <see cref="Mode"/> class.</summary>

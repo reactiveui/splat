@@ -25,6 +25,7 @@ namespace Splat;
 /// </example>
 public class PlatformBitmapLoader<TDrawable> : IBitmapLoader, IEnableLogger
 {
+    /// <summary>Resolves a drawable resource name to its integer resource id.</summary>
     private readonly Func<string, int> _drawableResolver;
 
     /// <summary>Initializes a new instance of the <see cref="PlatformBitmapLoader{TDrawable}"/> class.</summary>
@@ -45,6 +46,10 @@ public class PlatformBitmapLoader<TDrawable> : IBitmapLoader, IEnableLogger
         ArgumentExceptionHelper.ThrowIfNull(drawableResolver);
         _drawableResolver = drawableResolver;
     }
+
+    /// <summary>Gets the <c>Resource.Drawable</c> type this loader was associated with at compile time.</summary>
+    /// <remarks>Exposed for diagnostics and type-safety; no reflection is performed on this type.</remarks>
+    public Type DrawableType => typeof(TDrawable);
 
     /// <inheritdoc />
     public Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight) =>

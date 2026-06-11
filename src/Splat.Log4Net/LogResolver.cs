@@ -9,8 +9,10 @@ namespace Splat.Log4Net;
 /// intended for internal use and is not thread-safe for external modification.</remarks>
 internal static class LogResolver
 {
+    /// <summary>Maximum number of resolved loggers retained by the cache.</summary>
     private const int MaxCacheSize = 16;
 
+    /// <summary>Caches the log4net logger resolved for each type, bounded by <see cref="MaxCacheSize"/>.</summary>
     private static readonly MemoizingMRUCache<Type, log4net.ILog> _loggerCache = new(
         (type, _) => log4net.LogManager.GetLogger(type),
         MaxCacheSize);

@@ -14,6 +14,7 @@ namespace Splat.Builder;
 /// as the underlying container.</remarks>
 public sealed class DryIocSplatModule : IModule
 {
+    /// <summary>The DryIoc container that registrations are applied to when the module runs.</summary>
     private readonly IContainer _container;
 
     /// <summary>Initializes a new instance of the <see cref="DryIocSplatModule"/> class.</summary>

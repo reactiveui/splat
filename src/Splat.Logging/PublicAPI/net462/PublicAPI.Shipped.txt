@@ -75,7 +75,8 @@ Splat.Builder.SplatLoggerModule
 Splat.Builder.SplatLoggerModule.Configure(Splat.IMutableDependencyResolver! resolver) -> void
 Splat.Builder.SplatLoggerModule.SplatLoggerModule() -> void
 Splat.ConsoleLogger
-Splat.ConsoleLogger.ConsoleLogger(System.IO.TextWriter? writer = null) -> void
+Splat.ConsoleLogger.ConsoleLogger() -> void
+Splat.ConsoleLogger.ConsoleLogger(System.IO.TextWriter? writer) -> void
 Splat.ConsoleLogger.ExceptionMessageFormat.get -> string!
 Splat.ConsoleLogger.ExceptionMessageFormat.set -> void
 Splat.ConsoleLogger.Level.get -> Splat.LogLevel
@@ -351,9 +352,10 @@ Splat.LoggingException.LoggingException(string! message, System.Exception! inner
 Splat.MemoizingMRUCache<TParam, TVal>
 Splat.MemoizingMRUCache<TParam, TVal>.CachedValues() -> System.Collections.Generic.IEnumerable<TVal>!
 Splat.MemoizingMRUCache<TParam, TVal>.Get(TParam key) -> TVal
-Splat.MemoizingMRUCache<TParam, TVal>.Get(TParam key, object? context = null) -> TVal
+Splat.MemoizingMRUCache<TParam, TVal>.Get(TParam key, object? context) -> TVal
 Splat.MemoizingMRUCache<TParam, TVal>.Invalidate(TParam key) -> void
-Splat.MemoizingMRUCache<TParam, TVal>.InvalidateAll(bool aggregateReleaseExceptions = false) -> void
+Splat.MemoizingMRUCache<TParam, TVal>.InvalidateAll() -> void
+Splat.MemoizingMRUCache<TParam, TVal>.InvalidateAll(bool aggregateReleaseExceptions) -> void
 Splat.MemoizingMRUCache<TParam, TVal>.MemoizingMRUCache(System.Func<TParam, object?, TVal>! calculationFunc, int maxSize) -> void
 Splat.MemoizingMRUCache<TParam, TVal>.MemoizingMRUCache(System.Func<TParam, object?, TVal>! calculationFunc, int maxSize, System.Action<TVal>! onRelease) -> void
 Splat.MemoizingMRUCache<TParam, TVal>.MemoizingMRUCache(System.Func<TParam, object?, TVal>! calculationFunc, int maxSize, System.Action<TVal>? onRelease, System.Collections.Generic.IEqualityComparer<TParam>! paramComparer) -> void

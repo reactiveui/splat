@@ -17,6 +17,15 @@ namespace Splat;
 /// and resources.</remarks>
 internal static class PlatformBitmapLoaderHelpers
 {
+    /// <summary>The minimum number of bytes a stream must contain to be considered a valid image.</summary>
+    private const int MinimumImageStreamLength = 2;
+
+    /// <summary>The first byte of the JPEG end-of-image (EOI) marker (0xFF).</summary>
+    private const byte JpegEndOfImageMarkerByte1 = 0xFF;
+
+    /// <summary>The second byte of the JPEG end-of-image (EOI) marker (0xD9).</summary>
+    private const byte JpegEndOfImageMarkerByte2 = 0xD9;
+
     /// <summary>Loads a bitmap from a stream with optional desired dimensions.</summary>
     /// <param name="sourceStream">The stream to decode the bitmap from.</param>
     /// <param name="desiredWidth">The desired width of the bitmap, or <see langword="null"/> to use the source width.</param>
@@ -28,7 +37,10 @@ internal static class PlatformBitmapLoaderHelpers
         ArgumentExceptionHelper.ThrowIfNull(sourceStream);
 
         // this is a rough check to do with the termination check for #479
-        ArgumentGuard.ThrowIf(sourceStream.Length < 2, "The source stream is not a valid image file.", nameof(sourceStream));
+        if (sourceStream.Length < MinimumImageStreamLength)
+        {
+            throw new ArgumentException("The source stream is not a valid image file.", nameof(sourceStream));
+        }
 
         if (!HasCorrectStreamEnd(sourceStream))
         {
@@ -44,7 +56,7 @@ internal static class PlatformBitmapLoaderHelpers
         }
         else
         {
-            using var opts = new BitmapFactory.Options()
+            using var opts = new BitmapFactory.Options
             {
                 OutWidth = (int)desiredWidth.Value,
                 OutHeight = (int)desiredHeight.Value,
@@ -103,9 +115,9 @@ internal static class PlatformBitmapLoaderHelpers
     /// <returns>Whether the termination is correct.</returns>
     internal static bool HasCorrectStreamEnd(Stream sourceStream)
     {
-        sourceStream.Position = sourceStream.Length - 2;
-        return sourceStream.ReadByte() == 0xFF
-               && sourceStream.ReadByte() == 0xD9;
+        sourceStream.Position = sourceStream.Length - MinimumImageStreamLength;
+        return sourceStream.ReadByte() == JpegEndOfImageMarkerByte1
+               && sourceStream.ReadByte() == JpegEndOfImageMarkerByte2;
     }
 
     /// <summary>Attempts to correct stream byte termination if possible.</summary>
@@ -121,7 +133,7 @@ internal static class PlatformBitmapLoaderHelpers
         {
             logger?.Log().Warn("Carrying out source stream byte correction.");
             sourceStream.Position = sourceStream.Length;
-            sourceStream.Write([0xFF, 0xD9]);
+            sourceStream.Write([JpegEndOfImageMarkerByte1, JpegEndOfImageMarkerByte2]);
         }
     }
 }

@@ -46,6 +46,10 @@ namespace Splat;
 /// <see cref="Clear()"/> clears global registrations and static containers for the entire process.
 /// </para>
 /// </remarks>
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification = "Generic service-location API; the service type is supplied explicitly by callers, so type inference cannot apply by design.")]
 public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
 {
     /// <summary>Global clear actions registered by static generic containers.</summary>
@@ -100,7 +104,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
     /// });
     /// </code>
     /// </example>
-    public GlobalGenericFirstDependencyResolver(Action<IMutableDependencyResolver>? configure) => configure?.Invoke(this);
+    public GlobalGenericFirstDependencyResolver(Action<IMutableDependencyResolver>? configure) => ApplyConfiguration(configure);
 
     /// <summary>Clears all global registrations and tracked container instances for the entire process.</summary>
     /// <remarks>
@@ -765,6 +769,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
             }
             catch
             {
+                // Ignore exceptions thrown by callbacks during disposal.
             }
         }
 
@@ -779,6 +784,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
                 }
                 catch
                 {
+                    // Ignore exceptions during disposal.
                 }
             }
         }
@@ -812,53 +818,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
         // Common case: registry returns an array.
         if (results is object[] arr)
         {
-            var count = 0;
-
-            for (var i = 0; i < arr.Length; i++)
-            {
-                if (UnwrapNullServiceType(arr[i]) is not null)
-                {
-                    count++;
-                }
-            }
-
-            if (count == 0)
-            {
-                return [];
-            }
-
-            // Fast path reuse: only when no nulls and no wrapper instances.
-            if (count == arr.Length)
-            {
-                var hasWrapper = false;
-                for (var i = 0; i < arr.Length; i++)
-                {
-                    if (arr[i] is NullServiceType)
-                    {
-                        hasWrapper = true;
-                        break;
-                    }
-                }
-
-                if (!hasWrapper)
-                {
-                    return arr;
-                }
-            }
-
-            var output = new object[count];
-            var idx = 0;
-
-            for (var i = 0; i < arr.Length; i++)
-            {
-                var v = UnwrapNullServiceType(arr[i]);
-                if (v is not null)
-                {
-                    output[idx++] = v;
-                }
-            }
-
-            return output;
+            return UnwrapArray(arr);
         }
 
         var list = new List<object>();
@@ -872,6 +832,70 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
         }
 
         return list.Count == 0 ? [] : [.. list];
+    }
+
+    /// <summary>Unwraps and null-filters an array result, reusing the source array when nothing changes.</summary>
+    /// <param name="arr">The raw array returned by the type registry.</param>
+    /// <returns>An array of unwrapped, non-null objects.</returns>
+    private static object[] UnwrapArray(object[] arr)
+    {
+        var count = CountUnwrapped(arr);
+        if (count == 0)
+        {
+            return [];
+        }
+
+        // Fast path reuse: only when nothing is filtered and there are no wrappers to unwrap.
+        if (count == arr.Length && !ContainsWrapper(arr))
+        {
+            return arr;
+        }
+
+        var output = new object[count];
+        var idx = 0;
+        for (var i = 0; i < arr.Length; i++)
+        {
+            var v = UnwrapNullServiceType(arr[i]);
+            if (v is not null)
+            {
+                output[idx++] = v;
+            }
+        }
+
+        return output;
+    }
+
+    /// <summary>Counts the elements of <paramref name="arr"/> that survive unwrap/null-filtering.</summary>
+    /// <param name="arr">The raw array returned by the type registry.</param>
+    /// <returns>The number of non-null unwrapped elements.</returns>
+    private static int CountUnwrapped(object[] arr)
+    {
+        var count = 0;
+        for (var i = 0; i < arr.Length; i++)
+        {
+            if (UnwrapNullServiceType(arr[i]) is not null)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    /// <summary>Determines whether <paramref name="arr"/> contains any <see cref="NullServiceType"/> wrapper.</summary>
+    /// <param name="arr">The raw array returned by the type registry.</param>
+    /// <returns><see langword="true"/> if a wrapper is present; otherwise <see langword="false"/>.</returns>
+    private static bool ContainsWrapper(object[] arr)
+    {
+        for (var i = 0; i < arr.Length; i++)
+        {
+            if (arr[i] is NullServiceType)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>Unwraps a <see cref="NullServiceType"/> marker by invoking its factory; otherwise returns the value unchanged.</summary>
@@ -998,6 +1022,10 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
         }
     }
 
+    /// <summary>Applies constructor-supplied bulk registrations against this fully-constructed instance.</summary>
+    /// <param name="configure">Optional delegate that performs registrations against this resolver.</param>
+    private void ApplyConfiguration(Action<IMutableDependencyResolver>? configure) => configure?.Invoke(this);
+
     /// <summary>Notifies registered callbacks that the registration set changed.</summary>
     /// <remarks>
     /// Uses a published snapshot and suppresses exceptions thrown by callback implementations.
@@ -1018,6 +1046,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
             }
             catch
             {
+                // Ignore exceptions thrown by callback implementations.
             }
         }
     }
@@ -1043,6 +1072,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
                 }
                 catch
                 {
+                    // Ignore exceptions during disposal.
                 }
             });
         }
@@ -1070,6 +1100,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
                 }
                 catch
                 {
+                    // Ignore exceptions during disposal.
                 }
             });
         }

@@ -4,6 +4,8 @@
 
 using Splat.Tests.Mocks;
 
+using static Splat.Tests.Logging.LoggerTestConstants;
+
 namespace Splat.Tests.Logging;
 
 /// <summary>Contains common tests associated with all loggers.</summary>
@@ -69,9 +71,9 @@ public abstract class LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Debug);
 
-        logger.Write("This is a test.", LogLevel.Debug);
+        logger.Write(TestMessage, LogLevel.Debug);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure the message writes.</summary>
@@ -81,9 +83,9 @@ public abstract class LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Info);
 
-        logger.Write("This is a test.", LogLevel.Info);
+        logger.Write(TestMessage, LogLevel.Info);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure the message writes.</summary>
@@ -93,9 +95,9 @@ public abstract class LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Warn);
 
-        logger.Write("This is a test.", LogLevel.Warn);
+        logger.Write(TestMessage, LogLevel.Warn);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure the message writes.</summary>
@@ -105,9 +107,9 @@ public abstract class LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Error);
 
-        logger.Write("This is a test.", LogLevel.Error);
+        logger.Write(TestMessage, LogLevel.Error);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Test to make sure the message writes.</summary>
@@ -117,9 +119,9 @@ public abstract class LoggerBase<T>
     {
         var (logger, target) = GetLogger(LogLevel.Fatal);
 
-        logger.Write("This is a test.", LogLevel.Fatal);
+        logger.Write(TestMessage, LogLevel.Fatal);
 
-        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo("This is a test.");
+        await Assert.That(target.Logs.Last().message.Trim(FormatHelper.NewLine).Trim()).IsEqualTo(TestMessage);
     }
 
     /// <summary>Tests that the inner logger writes correctly.</summary>

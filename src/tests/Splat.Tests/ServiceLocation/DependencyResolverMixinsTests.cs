@@ -10,6 +10,7 @@ namespace Splat.Tests.ServiceLocation;
 [NotInParallel]
 public sealed class DependencyResolverMixinsTests
 {
+    /// <summary>The locator scope created for the duration of each test.</summary>
     private AppLocatorScope? _scope;
 
     /// <summary>Marker service interface used by the tests.</summary>
@@ -32,7 +33,7 @@ public sealed class DependencyResolverMixinsTests
     [Test]
     public async Task WithResolver_WithNullResolver_ShouldThrow()
     {
-        IDependencyResolver resolver = null!;
+        const IDependencyResolver resolver = null!;
 
         await Assert.That(() => resolver.WithResolver()).ThrowsExactly<ArgumentNullException>();
     }
@@ -96,7 +97,7 @@ public sealed class DependencyResolverMixinsTests
     [Test]
     public async Task RegisterConstant_TypeBased_WithNullResolver_ShouldThrow()
     {
-        IMutableDependencyResolver resolver = null!;
+        const IMutableDependencyResolver resolver = null!;
 
         await Assert.That(() => resolver.RegisterConstant(new TestService(), typeof(ITestService)))
             .ThrowsExactly<ArgumentNullException>();
@@ -135,7 +136,7 @@ public sealed class DependencyResolverMixinsTests
     [Test]
     public async Task RegisterLazySingleton_TypeBased_WithNullResolver_ShouldThrow()
     {
-        IMutableDependencyResolver resolver = null!;
+        const IMutableDependencyResolver resolver = null!;
 
         await Assert.That(() => resolver.RegisterLazySingleton(() => new TestService(), typeof(ITestService)))
             .ThrowsExactly<ArgumentNullException>();
@@ -186,7 +187,7 @@ public sealed class DependencyResolverMixinsTests
 
         await Assert.That(callCount).IsEqualTo(0);
 
-        var service = AppLocator.GetService<ITestService>("test");
+        _ = AppLocator.GetService<ITestService>("test");
         await Assert.That(callCount).IsEqualTo(1);
     }
 

@@ -20,6 +20,7 @@ namespace Splat.Common.Test;
 /// </example>
 public sealed class AppLocatorScope : IDisposable
 {
+    /// <summary>The resolver captured on construction and restored on dispose.</summary>
     private readonly IDependencyResolver _savedResolver;
 
     /// <summary>Initializes a new instance of the <see cref="AppLocatorScope"/> class. Saves the current AppLocator state and creates a new fresh instance.</summary>

@@ -2,7 +2,6 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 
@@ -19,13 +18,33 @@ namespace Splat.DryIoc;
 /// container is supplied, the resolver creates and manages its own internal container instance. Thread safety and
 /// disposal of the underlying container are managed by this class.</remarks>
 /// <param name="container">The DryIoc container to use for service resolution and registration. If null, a new container instance is created.</param>
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification = "The generic parameter is the caller-supplied service type for resolution/registration; it cannot appear in the parameter list without changing the public interface contract.")]
 public class DryIocDependencyResolver(IContainer? container = null) : IDependencyResolver
 {
+    /// <summary>Prefix used to synthesize service keys for registrations made without an explicit contract.</summary>
+    private const string DefaultKeyPrefix = "DefaultKey";
+
+    /// <summary>The underlying DryIoc container used for registration and resolution.</summary>
     private readonly IContainer _container = container ?? new Container();
 
     /// <inheritdoc />
     public virtual object? GetService(Type? serviceType, string? contract) =>
         GetServices(serviceType, contract).LastOrDefault();
+
+    /// <inheritdoc/>
+    public object? GetService(Type? serviceType) =>
+        GetService(serviceType, null);
+
+    /// <inheritdoc/>
+    public T? GetService<T>() =>
+        (T?)GetService(typeof(T), null);
+
+    /// <inheritdoc/>
+    public T? GetService<T>(string? contract) =>
+        (T?)GetService(typeof(T), contract);
 
     /// <inheritdoc />
     public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract)
@@ -36,7 +55,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
             // Get all bindings that aren't tuple keys (which means they're either DefaultKey or null)
             var bindingsWithDefaultKey = _container.GetServiceRegistrations()
                 .Where(x => x.ServiceType == serviceType &&
-                           x.OptionalServiceKey?.ToString()?.StartsWith("DefaultKey", StringComparison.Ordinal) == true)
+                           x.OptionalServiceKey?.ToString()?.StartsWith(DefaultKeyPrefix, StringComparison.Ordinal) == true)
                 .ToList();
 
             if (bindingsWithDefaultKey.Count == 0)
@@ -62,6 +81,18 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
         return _container.ResolveMany(serviceType, behavior: ResolveManyBehavior.AsFixedArray, serviceKey: contract);
     }
 
+    /// <inheritdoc/>
+    public IEnumerable<object> GetServices(Type? serviceType) =>
+        GetServices(serviceType, null);
+
+    /// <inheritdoc/>
+    public IEnumerable<T> GetServices<T>() =>
+        GetServices(typeof(T), null).Cast<T>();
+
+    /// <inheritdoc/>
+    public IEnumerable<T> GetServices<T>(string? contract) =>
+        GetServices(typeof(T), contract).Cast<T>();
+
     /// <inheritdoc />
     public bool HasRegistration(Type? serviceType, string? contract)
     {
@@ -76,13 +107,25 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
 
             if (contract is null)
             {
-                return x.OptionalServiceKey?.ToString()?.StartsWith("DefaultKey", StringComparison.Ordinal) == true;
+                return x.OptionalServiceKey?.ToString()?.StartsWith(DefaultKeyPrefix, StringComparison.Ordinal) == true;
             }
 
             return x.OptionalServiceKey is string serviceKeyAsString &&
                    contract.Equals(serviceKeyAsString, StringComparison.Ordinal);
         });
     }
+
+    /// <inheritdoc/>
+    public bool HasRegistration(Type? serviceType) =>
+        HasRegistration(serviceType, null);
+
+    /// <inheritdoc/>
+    public bool HasRegistration<T>() =>
+        HasRegistration(typeof(T), null);
+
+    /// <inheritdoc/>
+    public bool HasRegistration<T>(string? contract) =>
+        HasRegistration(typeof(T), contract);
 
     /// <inheritdoc />
     public virtual void Register(Func<object?> factory, Type? serviceType, string? contract)
@@ -107,112 +150,6 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
             serviceKey: contract);
     }
 
-    /// <inheritdoc />
-    public virtual void UnregisterCurrent(Type? serviceType, string? contract)
-    {
-        // Find the LAST matching binding (not the first)
-        var matchingBinding = _container.GetServiceRegistrations()
-            .LastOrDefault(x =>
-            {
-                if (x.ServiceType != serviceType)
-                {
-                    return false;
-                }
-
-                if (contract is null)
-                {
-                    return (x.OptionalServiceKey?.ToString())?.StartsWith("DefaultKey", StringComparison.Ordinal) == true;
-                }
-
-                return x.OptionalServiceKey is string serviceKeyAsString &&
-                       contract.Equals(serviceKeyAsString, StringComparison.Ordinal);
-            });
-
-        if (matchingBinding.Equals(default(ServiceRegistrationInfo)))
-        {
-            return;
-        }
-
-        // Unregister using the specific binding's key
-        if (matchingBinding.OptionalServiceKey is not null)
-        {
-            _container.Unregister(serviceType, matchingBinding.OptionalServiceKey);
-        }
-        else
-        {
-            _container.Unregister(serviceType);
-        }
-    }
-
-    /// <inheritdoc />
-    public virtual void UnregisterAll(Type? serviceType, string? contract)
-    {
-        // Collect all registrations to unregister first to avoid modifying collection during iteration
-        var registrationsToUnregister = _container.GetServiceRegistrations()
-            .Where(x =>
-            {
-                if (x.ServiceType != serviceType)
-                {
-                    return false;
-                }
-
-                if (contract is null)
-                {
-                    return (x.OptionalServiceKey?.ToString())!.StartsWith("DefaultKey", StringComparison.Ordinal);
-                }
-
-                return x.OptionalServiceKey is string serviceKeyAsString &&
-                       contract.Equals(serviceKeyAsString, StringComparison.Ordinal);
-            })
-            .ToList();
-
-        // Unregister each collected registration
-        foreach (var registration in registrationsToUnregister)
-        {
-            _container.Unregister(serviceType, registration.OptionalServiceKey);
-        }
-    }
-
-    /// <inheritdoc />
-    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback)
-        => throw new NotSupportedException("ServiceRegistrationCallback is not supported by the DryIocDependencyResolver.");
-
-    /// <inheritdoc/>
-    public object? GetService(Type? serviceType) =>
-        GetService(serviceType, null);
-
-    /// <inheritdoc/>
-    public T? GetService<T>() =>
-        (T?)GetService(typeof(T), null);
-
-    /// <inheritdoc/>
-    public T? GetService<T>(string? contract) =>
-        (T?)GetService(typeof(T), contract);
-
-    /// <inheritdoc/>
-    public IEnumerable<object> GetServices(Type? serviceType) =>
-        GetServices(serviceType, null);
-
-    /// <inheritdoc/>
-    public IEnumerable<T> GetServices<T>() =>
-        GetServices(typeof(T), null).Cast<T>();
-
-    /// <inheritdoc/>
-    public IEnumerable<T> GetServices<T>(string? contract) =>
-        GetServices(typeof(T), contract).Cast<T>();
-
-    /// <inheritdoc/>
-    public bool HasRegistration(Type? serviceType) =>
-        HasRegistration(serviceType, null);
-
-    /// <inheritdoc/>
-    public bool HasRegistration<T>() =>
-        HasRegistration(typeof(T), null);
-
-    /// <inheritdoc/>
-    public bool HasRegistration<T>(string? contract) =>
-        HasRegistration(typeof(T), contract);
-
     /// <inheritdoc/>
     public void Register(Func<object?> factory, Type? serviceType) =>
         Register(factory, serviceType, null);
@@ -224,42 +161,6 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
     /// <inheritdoc/>
     public void Register<T>(Func<T?> factory, string? contract) =>
         Register(() => factory(), typeof(T), contract);
-
-    /// <inheritdoc/>
-    public void UnregisterCurrent(Type? serviceType) =>
-        UnregisterCurrent(serviceType, null);
-
-    /// <inheritdoc/>
-    public void UnregisterCurrent<T>() =>
-        UnregisterCurrent(typeof(T), null);
-
-    /// <inheritdoc/>
-    public void UnregisterCurrent<T>(string? contract) =>
-        UnregisterCurrent(typeof(T), contract);
-
-    /// <inheritdoc/>
-    public void UnregisterAll(Type? serviceType) =>
-        UnregisterAll(serviceType, null);
-
-    /// <inheritdoc/>
-    public void UnregisterAll<T>() =>
-        UnregisterAll(typeof(T), null);
-
-    /// <inheritdoc/>
-    public void UnregisterAll<T>(string? contract) =>
-        UnregisterAll(typeof(T), contract);
-
-    /// <inheritdoc/>
-    public IDisposable ServiceRegistrationCallback(Type serviceType, Action<IDisposable> callback) =>
-        ServiceRegistrationCallback(serviceType, null, callback);
-
-    /// <inheritdoc/>
-    public IDisposable ServiceRegistrationCallback<T>(Action<IDisposable> callback) =>
-        ServiceRegistrationCallback(typeof(T), null, callback);
-
-    /// <inheritdoc/>
-    public IDisposable ServiceRegistrationCallback<T>(string? contract, Action<IDisposable> callback) =>
-        ServiceRegistrationCallback(typeof(T), contract, callback);
 
     /// <inheritdoc/>
     void IMutableDependencyResolver.Register<TService, TImplementation>() =>
@@ -348,6 +249,112 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
             ifAlreadyRegistered: IfAlreadyRegistered.Replace,
             serviceKey: contract);
     }
+
+    /// <inheritdoc />
+    public virtual void UnregisterCurrent(Type? serviceType, string? contract)
+    {
+        // Find the LAST matching binding (not the first)
+        var matchingBinding = _container.GetServiceRegistrations()
+            .LastOrDefault(x =>
+            {
+                if (x.ServiceType != serviceType)
+                {
+                    return false;
+                }
+
+                if (contract is null)
+                {
+                    return (x.OptionalServiceKey?.ToString())?.StartsWith(DefaultKeyPrefix, StringComparison.Ordinal) == true;
+                }
+
+                return x.OptionalServiceKey is string serviceKeyAsString &&
+                       contract.Equals(serviceKeyAsString, StringComparison.Ordinal);
+            });
+
+        if (matchingBinding.Equals(default(ServiceRegistrationInfo)))
+        {
+            return;
+        }
+
+        // Unregister using the specific binding's key
+        if (matchingBinding.OptionalServiceKey is not null)
+        {
+            _container.Unregister(serviceType, matchingBinding.OptionalServiceKey);
+        }
+        else
+        {
+            _container.Unregister(serviceType);
+        }
+    }
+
+    /// <inheritdoc/>
+    public void UnregisterCurrent(Type? serviceType) =>
+        UnregisterCurrent(serviceType, null);
+
+    /// <inheritdoc/>
+    public void UnregisterCurrent<T>() =>
+        UnregisterCurrent(typeof(T), null);
+
+    /// <inheritdoc/>
+    public void UnregisterCurrent<T>(string? contract) =>
+        UnregisterCurrent(typeof(T), contract);
+
+    /// <inheritdoc />
+    public virtual void UnregisterAll(Type? serviceType, string? contract)
+    {
+        // Collect all registrations to unregister first to avoid modifying collection during iteration
+        var registrationsToUnregister = _container.GetServiceRegistrations()
+            .Where(x =>
+            {
+                if (x.ServiceType != serviceType)
+                {
+                    return false;
+                }
+
+                if (contract is null)
+                {
+                    return (x.OptionalServiceKey?.ToString())!.StartsWith(DefaultKeyPrefix, StringComparison.Ordinal);
+                }
+
+                return x.OptionalServiceKey is string serviceKeyAsString &&
+                       contract.Equals(serviceKeyAsString, StringComparison.Ordinal);
+            })
+            .ToList();
+
+        // Unregister each collected registration
+        foreach (var registration in registrationsToUnregister)
+        {
+            _container.Unregister(serviceType, registration.OptionalServiceKey);
+        }
+    }
+
+    /// <inheritdoc/>
+    public void UnregisterAll(Type? serviceType) =>
+        UnregisterAll(serviceType, null);
+
+    /// <inheritdoc/>
+    public void UnregisterAll<T>() =>
+        UnregisterAll(typeof(T), null);
+
+    /// <inheritdoc/>
+    public void UnregisterAll<T>(string? contract) =>
+        UnregisterAll(typeof(T), contract);
+
+    /// <inheritdoc />
+    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback)
+        => throw new NotSupportedException("ServiceRegistrationCallback is not supported by the DryIocDependencyResolver.");
+
+    /// <inheritdoc/>
+    public IDisposable ServiceRegistrationCallback(Type serviceType, Action<IDisposable> callback) =>
+        ServiceRegistrationCallback(serviceType, null, callback);
+
+    /// <inheritdoc/>
+    public IDisposable ServiceRegistrationCallback<T>(Action<IDisposable> callback) =>
+        ServiceRegistrationCallback(typeof(T), null, callback);
+
+    /// <inheritdoc/>
+    public IDisposable ServiceRegistrationCallback<T>(string? contract, Action<IDisposable> callback) =>
+        ServiceRegistrationCallback(typeof(T), contract, callback);
 
     /// <inheritdoc />
     public void Dispose()

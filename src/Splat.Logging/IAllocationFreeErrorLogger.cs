@@ -13,6 +13,10 @@ namespace Splat;
 /// A <see cref="WrappingFullLogger"/> will wrap simple loggers into a full logger.
 /// </summary>
 [SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Existing API")]
+[SuppressMessage(
+    "Major Code Smell",
+    "S107:Methods should not have too many parameters",
+    Justification = "These are deliberately strongly-typed, allocation-free logging overloads; each typed parameter avoids params-array boxing on the logging hot path.")]
 public interface IAllocationFreeErrorLogger : ILogger
 {
     /// <summary>Emits a message using formatting to the debug log.</summary>
@@ -53,7 +57,13 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument2">The second argument for formatting purposes.</param>
     /// <param name="argument3">The third argument for formatting purposes.</param>
     /// <param name="argument4">The fourth argument for formatting purposes.</param>
-    void Debug<TArgument1, TArgument2, TArgument3, TArgument4>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4);
+    void Debug<TArgument1, TArgument2, TArgument3, TArgument4>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4);
 
     /// <summary>Emits a message using formatting to the debug log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -68,7 +78,14 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument3">The third argument for formatting purposes.</param>
     /// <param name="argument4">The fourth argument for formatting purposes.</param>
     /// <param name="argument5">The fifth argument for formatting purposes.</param>
-    void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5);
+    void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5);
 
     /// <summary>Emits a message using formatting to the debug log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -85,7 +102,15 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument4">The fourth argument for formatting purposes.</param>
     /// <param name="argument5">The fifth argument for formatting purposes.</param>
     /// <param name="argument6">The sixth argument for formatting purposes.</param>
-    void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6);
+    void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6);
 
     /// <summary>Emits a message using formatting to the debug log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -104,7 +129,16 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument5">The fifth argument for formatting purposes.</param>
     /// <param name="argument6">The sixth argument for formatting purposes.</param>
     /// <param name="argument7">The seventh argument for formatting purposes.</param>
-    void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7);
+    void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6,
+        TArgument7 argument7);
 
     /// <summary>Emits a message using formatting to the debug log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -125,7 +159,17 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument6">The sixth argument for formatting purposes.</param>
     /// <param name="argument7">The seventh argument for formatting purposes.</param>
     /// <param name="argument8">The eighth argument for formatting purposes.</param>
-    void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8);
+    void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6,
+        TArgument7 argument7,
+        TArgument8 argument8);
 
     /// <summary>Emits a message using formatting to the debug log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -148,7 +192,18 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument7">The seventh argument for formatting purposes.</param>
     /// <param name="argument8">The eighth argument for formatting purposes.</param>
     /// <param name="argument9">The ninth argument for formatting purposes.</param>
-    void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9);
+    void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6,
+        TArgument7 argument7,
+        TArgument8 argument8,
+        TArgument9 argument9);
 
     /// <summary>Emits a message using formatting to the debug log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -173,7 +228,19 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument8">The eighth argument for formatting purposes.</param>
     /// <param name="argument9">The ninth argument for formatting purposes.</param>
     /// <param name="argument10">The tenth argument for formatting purposes.</param>
-    void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10);
+    void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6,
+        TArgument7 argument7,
+        TArgument8 argument8,
+        TArgument9 argument9,
+        TArgument10 argument10);
 
     /// <summary>Emits a message using formatting to the info log.</summary>
     /// <typeparam name="TArgument">The type of the argument which is used in the formatting.</typeparam>
@@ -213,7 +280,13 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument2">The second argument for formatting purposes.</param>
     /// <param name="argument3">The third argument for formatting purposes.</param>
     /// <param name="argument4">The fourth argument for formatting purposes.</param>
-    void Info<TArgument1, TArgument2, TArgument3, TArgument4>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4);
+    void Info<TArgument1, TArgument2, TArgument3, TArgument4>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4);
 
     /// <summary>Logs a info message with the provided message format and values.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -228,7 +301,14 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument3">The third argument for formatting purposes.</param>
     /// <param name="argument4">The fourth argument for formatting purposes.</param>
     /// <param name="argument5">The fifth argument for formatting purposes.</param>
-    void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5);
+    void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5);
 
     /// <summary>Logs a info message with the provided message format and values.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -245,7 +325,15 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument4">The fourth argument for formatting purposes.</param>
     /// <param name="argument5">The fifth argument for formatting purposes.</param>
     /// <param name="argument6">The sixth argument for formatting purposes.</param>
-    void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6);
+    void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6);
 
     /// <summary>Emits a message using formatting to the info log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -264,7 +352,16 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument5">The fifth argument for formatting purposes.</param>
     /// <param name="argument6">The sixth argument for formatting purposes.</param>
     /// <param name="argument7">The seventh argument for formatting purposes.</param>
-    void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7);
+    void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6,
+        TArgument7 argument7);
 
     /// <summary>Emits a message using formatting to the info log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -285,7 +382,17 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument6">The sixth argument for formatting purposes.</param>
     /// <param name="argument7">The seventh argument for formatting purposes.</param>
     /// <param name="argument8">The eighth argument for formatting purposes.</param>
-    void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8);
+    void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6,
+        TArgument7 argument7,
+        TArgument8 argument8);
 
     /// <summary>Emits a message using formatting to the info log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -308,7 +415,18 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument7">The seventh argument for formatting purposes.</param>
     /// <param name="argument8">The eighth argument for formatting purposes.</param>
     /// <param name="argument9">The ninth argument for formatting purposes.</param>
-    void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9);
+    void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6,
+        TArgument7 argument7,
+        TArgument8 argument8,
+        TArgument9 argument9);
 
     /// <summary>Emits a message using formatting to the info log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -333,7 +451,19 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument8">The eighth argument for formatting purposes.</param>
     /// <param name="argument9">The ninth argument for formatting purposes.</param>
     /// <param name="argument10">The tenth argument for formatting purposes.</param>
-    void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10);
+    void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6,
+        TArgument7 argument7,
+        TArgument8 argument8,
+        TArgument9 argument9,
+        TArgument10 argument10);
 
     /// <summary>Emits a message using formatting to the warning log.</summary>
     /// <typeparam name="TArgument">The type of the argument which is used in the formatting.</typeparam>
@@ -373,7 +503,13 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument2">The second argument for formatting purposes.</param>
     /// <param name="argument3">The third argument for formatting purposes.</param>
     /// <param name="argument4">The fourth argument for formatting purposes.</param>
-    void Warn<TArgument1, TArgument2, TArgument3, TArgument4>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4);
+    void Warn<TArgument1, TArgument2, TArgument3, TArgument4>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4);
 
     /// <summary>Emits a message using formatting to the warning log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -388,7 +524,14 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument3">The third argument for formatting purposes.</param>
     /// <param name="argument4">The fourth argument for formatting purposes.</param>
     /// <param name="argument5">The fifth argument for formatting purposes.</param>
-    void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5);
+    void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5);
 
     /// <summary>Emits a message using formatting to the warning log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -405,7 +548,15 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument4">The fourth argument for formatting purposes.</param>
     /// <param name="argument5">The fifth argument for formatting purposes.</param>
     /// <param name="argument6">The sixth argument for formatting purposes.</param>
-    void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6);
+    void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6);
 
     /// <summary>Emits a message using formatting to the warn log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -424,7 +575,16 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument5">The fifth argument for formatting purposes.</param>
     /// <param name="argument6">The sixth argument for formatting purposes.</param>
     /// <param name="argument7">The seventh argument for formatting purposes.</param>
-    void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7);
+    void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6,
+        TArgument7 argument7);
 
     /// <summary>Emits a message using formatting to the warn log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -445,7 +605,17 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument6">The sixth argument for formatting purposes.</param>
     /// <param name="argument7">The seventh argument for formatting purposes.</param>
     /// <param name="argument8">The eighth argument for formatting purposes.</param>
-    void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8);
+    void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6,
+        TArgument7 argument7,
+        TArgument8 argument8);
 
     /// <summary>Emits a message using formatting to the warn log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -468,7 +638,18 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument7">The seventh argument for formatting purposes.</param>
     /// <param name="argument8">The eighth argument for formatting purposes.</param>
     /// <param name="argument9">The ninth argument for formatting purposes.</param>
-    void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9);
+    void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6,
+        TArgument7 argument7,
+        TArgument8 argument8,
+        TArgument9 argument9);
 
     /// <summary>Emits a message using formatting to the warn log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -493,7 +674,19 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument8">The eighth argument for formatting purposes.</param>
     /// <param name="argument9">The ninth argument for formatting purposes.</param>
     /// <param name="argument10">The tenth argument for formatting purposes.</param>
-    void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10);
+    void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6,
+        TArgument7 argument7,
+        TArgument8 argument8,
+        TArgument9 argument9,
+        TArgument10 argument10);
 
     /// <summary>Emits a message using formatting to the error log.</summary>
     /// <typeparam name="TArgument">The type of the argument which is used in the formatting.</typeparam>
@@ -533,7 +726,13 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument2">The second argument for formatting purposes.</param>
     /// <param name="argument3">The third argument for formatting purposes.</param>
     /// <param name="argument4">The fourth argument for formatting purposes.</param>
-    void Error<TArgument1, TArgument2, TArgument3, TArgument4>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4);
+    void Error<TArgument1, TArgument2, TArgument3, TArgument4>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4);
 
     /// <summary>Emits a message using formatting to the error log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -548,7 +747,14 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument3">The third argument for formatting purposes.</param>
     /// <param name="argument4">The fourth argument for formatting purposes.</param>
     /// <param name="argument5">The fifth argument for formatting purposes.</param>
-    void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5);
+    void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5);
 
     /// <summary>Emits a message using formatting to the error log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -565,7 +771,15 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument4">The fourth argument for formatting purposes.</param>
     /// <param name="argument5">The fifth argument for formatting purposes.</param>
     /// <param name="argument6">The sixth argument for formatting purposes.</param>
-    void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6);
+    void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6);
 
     /// <summary>Emits a message using formatting to the error log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -584,7 +798,16 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument5">The fifth argument for formatting purposes.</param>
     /// <param name="argument6">The sixth argument for formatting purposes.</param>
     /// <param name="argument7">The seventh argument for formatting purposes.</param>
-    void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7);
+    void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6,
+        TArgument7 argument7);
 
     /// <summary>Emits a message using formatting to the error log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -605,7 +828,17 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument6">The sixth argument for formatting purposes.</param>
     /// <param name="argument7">The seventh argument for formatting purposes.</param>
     /// <param name="argument8">The eighth argument for formatting purposes.</param>
-    void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8);
+    void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6,
+        TArgument7 argument7,
+        TArgument8 argument8);
 
     /// <summary>Emits a message using formatting to the error log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -628,7 +861,18 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument7">The seventh argument for formatting purposes.</param>
     /// <param name="argument8">The eighth argument for formatting purposes.</param>
     /// <param name="argument9">The ninth argument for formatting purposes.</param>
-    void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9);
+    void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6,
+        TArgument7 argument7,
+        TArgument8 argument8,
+        TArgument9 argument9);
 
     /// <summary>Emits a message using formatting to the error log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -653,7 +897,19 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument8">The eighth argument for formatting purposes.</param>
     /// <param name="argument9">The ninth argument for formatting purposes.</param>
     /// <param name="argument10">The tenth argument for formatting purposes.</param>
-    void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10);
+    void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6,
+        TArgument7 argument7,
+        TArgument8 argument8,
+        TArgument9 argument9,
+        TArgument10 argument10);
 
     /// <summary>Emits a message using formatting to the fatal log.</summary>
     /// <typeparam name="TArgument">The type of the argument which is used in the formatting.</typeparam>
@@ -693,7 +949,13 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument2">The second argument for formatting purposes.</param>
     /// <param name="argument3">The third argument for formatting purposes.</param>
     /// <param name="argument4">The fourth argument for formatting purposes.</param>
-    void Fatal<TArgument1, TArgument2, TArgument3, TArgument4>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4);
+    void Fatal<TArgument1, TArgument2, TArgument3, TArgument4>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4);
 
     /// <summary>Emits a message using formatting to the fatal log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -708,7 +970,14 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument3">The third argument for formatting purposes.</param>
     /// <param name="argument4">The fourth argument for formatting purposes.</param>
     /// <param name="argument5">The fifth argument for formatting purposes.</param>
-    void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5);
+    void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5);
 
     /// <summary>Emits a message using formatting to the fatal log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -725,7 +994,15 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument4">The fourth argument for formatting purposes.</param>
     /// <param name="argument5">The fifth argument for formatting purposes.</param>
     /// <param name="argument6">The sixth argument for formatting purposes.</param>
-    void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6);
+    void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6);
 
     /// <summary>Emits a message using formatting to the fatal log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -744,7 +1021,16 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument5">The fifth argument for formatting purposes.</param>
     /// <param name="argument6">The sixth argument for formatting purposes.</param>
     /// <param name="argument7">The seventh argument for formatting purposes.</param>
-    void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7);
+    void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6,
+        TArgument7 argument7);
 
     /// <summary>Emits a message using formatting to the fatal log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -765,7 +1051,17 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument6">The sixth argument for formatting purposes.</param>
     /// <param name="argument7">The seventh argument for formatting purposes.</param>
     /// <param name="argument8">The eighth argument for formatting purposes.</param>
-    void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8);
+    void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6,
+        TArgument7 argument7,
+        TArgument8 argument8);
 
     /// <summary>Emits a message using formatting to the fatal log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -788,7 +1084,18 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument7">The seventh argument for formatting purposes.</param>
     /// <param name="argument8">The eighth argument for formatting purposes.</param>
     /// <param name="argument9">The ninth argument for formatting purposes.</param>
-    void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9);
+    void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6,
+        TArgument7 argument7,
+        TArgument8 argument8,
+        TArgument9 argument9);
 
     /// <summary>Emits a message using formatting to the fatal log.</summary>
     /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
@@ -813,5 +1120,17 @@ public interface IAllocationFreeErrorLogger : ILogger
     /// <param name="argument8">The eighth argument for formatting purposes.</param>
     /// <param name="argument9">The ninth argument for formatting purposes.</param>
     /// <param name="argument10">The tenth argument for formatting purposes.</param>
-    void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(Exception exception, [Localizable(false)] string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10);
+    void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(
+        Exception exception,
+        [Localizable(false)] string messageFormat,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        TArgument4 argument4,
+        TArgument5 argument5,
+        TArgument6 argument6,
+        TArgument7 argument7,
+        TArgument8 argument8,
+        TArgument9 argument9,
+        TArgument10 argument10);
 }

@@ -17,6 +17,7 @@ namespace Splat.Builder;
 /// with the Microsoft DI container.</remarks>
 public sealed class MicrosoftDependencyResolverModule : IModule
 {
+    /// <summary>The service collection that registrations are applied to when the module runs.</summary>
     private readonly IServiceCollection _container;
 
     /// <summary>Initializes a new instance of the <see cref="MicrosoftDependencyResolverModule"/> class.</summary>

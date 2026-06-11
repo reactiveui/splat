@@ -16,12 +16,19 @@ namespace Splat;
 /// using RegisterDrawableResolver or a Resource.Drawable type using <see cref="RegisterDrawables{TDrawable}"/> before creating
 /// instances of this class. If neither is registered, the loader will fall back to reflection-based assembly scanning,
 /// which is not AOT-compatible. For full AOT compatibility, consider using <see cref="PlatformBitmapLoader"/> instead.</remarks>
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification = "RegisterDrawables<TDrawable>'s generic parameter is the caller-supplied Resource.Drawable type; it has no value argument so cannot appear in the parameter list.")]
 public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
 {
+    /// <summary>Resolves a drawable resource name to its integer resource id; <see langword="null"/> until registered.</summary>
     private static Func<string, int>? _drawableResolver;
 
+    /// <summary>The generated <c>Resource.Drawable</c> type to read resource ids from; <see langword="null"/> until registered.</summary>
     private static Type? _drawableType;
 
+    /// <summary>Maps drawable resource names to their integer resource ids.</summary>
     private readonly Dictionary<string, int> _drawableList;
 
     /// <summary>Initializes a new instance of the <see cref="PlatformBitmapLoader"/> class.</summary>
@@ -29,7 +36,9 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
     /// For AOT compatibility, call <see cref="RegisterDrawableResolver"/> or <see cref="RegisterDrawables{TDrawable}"/>
     /// before creating instances of this class.
     /// </remarks>
-    [RequiresUnreferencedCode("Constructor may use reflection for drawable discovery if RegisterDrawableResolver() or RegisterDrawables<T>() are not called first. For full AOT compatibility, use PlatformBitmapLoader<T> instead.")]
+    [RequiresUnreferencedCode(
+        "Constructor may use reflection for drawable discovery if RegisterDrawableResolver() or RegisterDrawables<T>() " +
+        "are not called first. For full AOT compatibility, use PlatformBitmapLoader<T> instead.")]
     public PlatformBitmapLoader()
     {
         // If a resolver is registered, we don't need the dictionary at all (AOT-safe)
@@ -113,8 +122,7 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
                 return Task.Run(() => PlatformBitmapLoaderHelpers.LoadFromDrawableId(resourceId));
             }
 
-            ArgumentGuard.ThrowIf(true, "Either pass in an integer ID cast to a string, or the name of a drawable resource", nameof(source));
-            return null!; // unreachable
+            throw new ArgumentException("Either pass in an integer ID cast to a string, or the name of a drawable resource", nameof(source));
         }
 
         // Fall back to dictionary lookup (from reflection or registered type)
@@ -136,8 +144,7 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
             return Task.Run(() => PlatformBitmapLoaderHelpers.LoadFromDrawableId(intValue));
         }
 
-        ArgumentGuard.ThrowIf(true, "Either pass in an integer ID cast to a string, or the name of a drawable resource", nameof(source));
-        return null!; // unreachable
+        throw new ArgumentException("Either pass in an integer ID cast to a string, or the name of a drawable resource", nameof(source));
     }
 
     /// <inheritdoc />
@@ -233,43 +240,58 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
         }
         catch (ReflectionTypeLoadException e)
         {
-            // The array returned by the Types property of this exception contains a Type
-            // object for each type that was loaded and null for each type that could not
-            // be loaded, while the LoaderExceptions property contains an exception for
-            // each type that could not be loaded.
-            if (log is not null)
-            {
-                log.Warn(e, "Exception while detecting drawing types.");
-
-                foreach (var loaderException in e.LoaderExceptions)
-                {
-                    if (loaderException is null)
-                    {
-                        continue;
-                    }
-
-                    log.Warn(loaderException, "Inner Exception for detecting drawing types.");
-                }
-            }
-
-            // null check here because mono doesn't appear to follow the MSDN documentation
-            // as of July 2019.
-            if (e.Types is null)
-            {
-                return [];
-            }
-
-            var result = new List<Type>(e.Types.Length);
-            foreach (var type in e.Types)
-            {
-                if (type is not null)
-                {
-                    result.Add(type);
-                }
-            }
-
-            return [.. result];
+            LogTypeLoadExceptions(e, log);
+            return GetLoadableTypes(e);
         }
+    }
+
+    /// <summary>Logs the details of a <see cref="ReflectionTypeLoadException"/> when a logger is available.</summary>
+    /// <param name="exception">The exception describing the types that failed to load.</param>
+    /// <param name="log">The logger used to report the failures, or <see langword="null"/> to suppress logging.</param>
+    private static void LogTypeLoadExceptions(ReflectionTypeLoadException exception, IFullLogger? log)
+    {
+        // The array returned by the Types property of this exception contains a Type
+        // object for each type that was loaded and null for each type that could not
+        // be loaded, while the LoaderExceptions property contains an exception for
+        // each type that could not be loaded.
+        if (log is null)
+        {
+            return;
+        }
+
+        log.Warn(exception, "Exception while detecting drawing types.");
+
+        foreach (var loaderException in exception.LoaderExceptions)
+        {
+            if (loaderException is not null)
+            {
+                log.Warn(loaderException, "Inner Exception for detecting drawing types.");
+            }
+        }
+    }
+
+    /// <summary>Extracts the successfully loaded types from a <see cref="ReflectionTypeLoadException"/>.</summary>
+    /// <param name="exception">The exception describing the partially loaded types.</param>
+    /// <returns>The non-null types that were loaded, or an empty array if none are available.</returns>
+    private static Type[] GetLoadableTypes(ReflectionTypeLoadException exception)
+    {
+        // null check here because mono doesn't appear to follow the MSDN documentation
+        // as of July 2019.
+        if (exception.Types is null)
+        {
+            return [];
+        }
+
+        var result = new List<Type>(exception.Types.Length);
+        foreach (var type in exception.Types)
+        {
+            if (type is not null)
+            {
+                result.Add(type);
+            }
+        }
+
+        return [.. result];
     }
 
     /// <summary>Builds the dictionary of drawable resource names to resource IDs by scanning the supplied assemblies for <c>Resource.Drawable</c> types.</summary>

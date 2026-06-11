@@ -18,6 +18,7 @@ namespace Splat;
 /// <param name="callingType">The type whose name is used as a prefix for all log messages. Cannot be null.</param>
 public class WrappingPrefixLogger(ILogger inner, Type callingType) : ILogger
 {
+    /// <summary>The calling type's name prepended to every log message.</summary>
     private readonly string _prefix = $"{callingType?.Name}: ";
 
     /// <inheritdoc />

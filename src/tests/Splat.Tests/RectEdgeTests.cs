@@ -49,10 +49,14 @@ public class RectEdgeTests
     {
         using (Assert.Multiple())
         {
-            await Assert.That((int)RectEdge.Left).IsEqualTo(0);
-            await Assert.That((int)RectEdge.Top).IsEqualTo(1);
-            await Assert.That((int)RectEdge.Right).IsEqualTo(2);
-            await Assert.That((int)RectEdge.Bottom).IsEqualTo(3);
+            const int leftOrdinal = 0;
+            const int topOrdinal = leftOrdinal + 1;
+            const int rightOrdinal = topOrdinal + 1;
+            const int bottomOrdinal = rightOrdinal + 1;
+            await Assert.That((int)RectEdge.Left).IsEqualTo(leftOrdinal);
+            await Assert.That((int)RectEdge.Top).IsEqualTo(topOrdinal);
+            await Assert.That((int)RectEdge.Right).IsEqualTo(rightOrdinal);
+            await Assert.That((int)RectEdge.Bottom).IsEqualTo(bottomOrdinal);
         }
     }
 

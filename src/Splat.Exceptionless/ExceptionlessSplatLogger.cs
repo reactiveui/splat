@@ -20,6 +20,7 @@ namespace Splat.Exceptionless;
 [DebuggerDisplay("Name={_sourceType} Level={Level}")]
 public sealed class ExceptionlessSplatLogger : ILogger
 {
+    /// <summary>Mapping pairs from Splat <see cref="LogLevel"/> to the equivalent Exceptionless log level.</summary>
     private static readonly KeyValuePair<LogLevel, global::Exceptionless.Logging.LogLevel>[] _mappings =
     [
         new(LogLevel.Debug, global::Exceptionless.Logging.LogLevel.Debug),
@@ -28,10 +29,13 @@ public sealed class ExceptionlessSplatLogger : ILogger
         new(LogLevel.Error, global::Exceptionless.Logging.LogLevel.Error),
         new(LogLevel.Fatal, global::Exceptionless.Logging.LogLevel.Fatal)];
 
+    /// <summary>Immutable lookup built from <see cref="_mappings"/> for translating log levels.</summary>
     private static readonly ImmutableDictionary<LogLevel, global::Exceptionless.Logging.LogLevel> _mappingsDictionary = _mappings.ToImmutableDictionary();
 
+    /// <summary>Name of the source type this logger was created for; used as the log source.</summary>
     private readonly string _sourceType;
 
+    /// <summary>The Exceptionless client that log events are submitted to.</summary>
     private readonly ExceptionlessClient _exceptionlessClient;
 
     /// <summary>Initializes a new instance of the <see cref="ExceptionlessSplatLogger"/> class.</summary>

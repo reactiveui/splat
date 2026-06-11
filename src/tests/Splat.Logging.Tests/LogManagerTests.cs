@@ -27,6 +27,7 @@ public class LogManagerTests
     [Test]
     public async Task FuncLogManager_Should_Use_Factory()
     {
+        const int expectedFactoryCallCount = 2;
         var callCount = 0;
         var logManager = new FuncLogManager(type =>
         {
@@ -39,7 +40,7 @@ public class LogManagerTests
 
         using (Assert.Multiple())
         {
-            await Assert.That(callCount).IsEqualTo(2);
+            await Assert.That(callCount).IsEqualTo(expectedFactoryCallCount);
             await Assert.That(logger1).IsTypeOf<WrappingFullLogger>();
             await Assert.That(logger2).IsTypeOf<WrappingFullLogger>();
         }

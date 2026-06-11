@@ -11,10 +11,11 @@ namespace Splat.Log4Net;
 /// abstraction. The effective log level is determined from the underlying Log4Net configuration and is updated
 /// automatically if the configuration changes. Instances of this class are not thread-safe for disposal; ensure that
 /// Dispose is not called concurrently with logging operations.</remarks>
-[DebuggerDisplay("Name={_inner.Logger.Name} Level={Level}")]
+[DebuggerDisplay("Name={_logger.Logger.Name} Level={Level}")]
 public sealed class Log4NetLogger : ILogger, IDisposable
 {
-    private readonly log4net.ILog _inner;
+    /// <summary>The underlying log4net logger that messages are forwarded to.</summary>
+    private readonly log4net.ILog _logger;
 
     /// <summary>Initializes a new instance of the <see cref="Log4NetLogger"/> class.</summary>
     /// <param name="inner">The Log4Net logger instance to wrap.</param>
@@ -22,18 +23,21 @@ public sealed class Log4NetLogger : ILogger, IDisposable
     public Log4NetLogger(log4net.ILog inner)
     {
         ArgumentExceptionHelper.ThrowIfNull(inner);
-        _inner = inner;
-        ArgumentGuard.ThrowIfNullWithMessage(_inner.Logger.Repository, "Log4Net repository is not initialized. Configure Log4Net before using with Splat.", nameof(inner));
+        _logger = inner;
+        if (_logger.Logger.Repository is null)
+        {
+            throw new ArgumentNullException(nameof(inner), "Log4Net repository is not initialized. Configure Log4Net before using with Splat.");
+        }
 
         SetLogLevel();
-        _inner.Logger.Repository.ConfigurationChanged += OnInnerLoggerReconfigured;
+        _logger.Logger.Repository.ConfigurationChanged += OnInnerLoggerReconfigured;
     }
 
     /// <inheritdoc />
     public LogLevel Level { get; private set; }
 
     /// <inheritdoc />
-    public void Dispose() => _inner.Logger.Repository!.ConfigurationChanged -= OnInnerLoggerReconfigured;
+    public void Dispose() => _logger.Logger.Repository!.ConfigurationChanged -= OnInnerLoggerReconfigured;
 
     /// <inheritdoc />
     public void Write(string message, LogLevel logLevel)
@@ -42,42 +46,42 @@ public sealed class Log4NetLogger : ILogger, IDisposable
         {
             case LogLevel.Debug:
                 {
-                    _inner.Debug(message);
+                    _logger.Debug(message);
 
                     break;
                 }
 
             case LogLevel.Info:
                 {
-                    _inner.Info(message);
+                    _logger.Info(message);
 
                     break;
                 }
 
             case LogLevel.Warn:
                 {
-                    _inner.Warn(message);
+                    _logger.Warn(message);
 
                     break;
                 }
 
             case LogLevel.Error:
                 {
-                    _inner.Error(message);
+                    _logger.Error(message);
 
                     break;
                 }
 
             case LogLevel.Fatal:
                 {
-                    _inner.Fatal(message);
+                    _logger.Fatal(message);
 
                     break;
                 }
 
             default:
                 {
-                    _inner.Debug(message);
+                    _logger.Debug(message);
 
                     break;
                 }
@@ -91,41 +95,41 @@ public sealed class Log4NetLogger : ILogger, IDisposable
         {
             case LogLevel.Debug:
                 {
-                    _inner.Debug(message, exception);
+                    _logger.Debug(message, exception);
                     break;
                 }
 
             case LogLevel.Info:
                 {
-                    _inner.Info(message, exception);
+                    _logger.Info(message, exception);
 
                     break;
                 }
 
             case LogLevel.Warn:
                 {
-                    _inner.Warn(message, exception);
+                    _logger.Warn(message, exception);
 
                     break;
                 }
 
             case LogLevel.Error:
                 {
-                    _inner.Error(message, exception);
+                    _logger.Error(message, exception);
 
                     break;
                 }
 
             case LogLevel.Fatal:
                 {
-                    _inner.Fatal(message, exception);
+                    _logger.Fatal(message, exception);
 
                     break;
                 }
 
             default:
                 {
-                    _inner.Debug(message, exception);
+                    _logger.Debug(message, exception);
 
                     break;
                 }
@@ -236,25 +240,25 @@ public sealed class Log4NetLogger : ILogger, IDisposable
     /// </remarks>
     private void SetLogLevel()
     {
-        if (_inner.IsDebugEnabled)
+        if (_logger.IsDebugEnabled)
         {
             Level = LogLevel.Debug;
             return;
         }
 
-        if (_inner.IsInfoEnabled)
+        if (_logger.IsInfoEnabled)
         {
             Level = LogLevel.Info;
             return;
         }
 
-        if (_inner.IsWarnEnabled)
+        if (_logger.IsWarnEnabled)
         {
             Level = LogLevel.Warn;
             return;
         }
 
-        if (_inner.IsErrorEnabled)
+        if (_logger.IsErrorEnabled)
         {
             Level = LogLevel.Error;
             return;

@@ -4,6 +4,8 @@
 
 using Splat.Tests.Mocks;
 
+using static Splat.Tests.Logging.LoggerTestConstants;
+
 namespace Splat.Tests.Logging;
 
 /// <summary>Unit tests for the <see cref="WrappingPrefixLogger"/> class.</summary>
@@ -20,7 +22,7 @@ public class WrappingPrefixLoggerTests
         var textLogger = new TextLogger();
         var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
-        logger.Write("This is a test.", LogLevel.Debug);
+        logger.Write(TestMessage, LogLevel.Debug);
 
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass1)}: This is a test.");
     }
@@ -33,7 +35,7 @@ public class WrappingPrefixLoggerTests
         var textLogger = new TextLogger();
         var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
-        logger.Write("This is a test.", typeof(DummyObjectClass1), LogLevel.Debug);
+        logger.Write(TestMessage, typeof(DummyObjectClass1), LogLevel.Debug);
 
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass1)}: This is a test.");
     }
@@ -46,7 +48,7 @@ public class WrappingPrefixLoggerTests
         var textLogger = new TextLogger();
         var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
-        logger.Debug<DummyObjectClass1>("This is a test.");
+        logger.Debug<DummyObjectClass1>(TestMessage);
 
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass1)}: This is a test.");
     }
@@ -59,7 +61,7 @@ public class WrappingPrefixLoggerTests
         var textLogger = new TextLogger();
         var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
-        logger.Debug<DummyObjectClass2>("This is a test.");
+        logger.Debug<DummyObjectClass2>(TestMessage);
 
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass2)}: This is a test.");
     }
@@ -72,7 +74,7 @@ public class WrappingPrefixLoggerTests
         var textLogger = new TextLogger();
         var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
-        logger.Info<DummyObjectClass1>("This is a test.");
+        logger.Info<DummyObjectClass1>(TestMessage);
 
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass1)}: This is a test.");
     }
@@ -85,7 +87,7 @@ public class WrappingPrefixLoggerTests
         var textLogger = new TextLogger();
         var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
-        logger.Info<DummyObjectClass2>("This is a test.");
+        logger.Info<DummyObjectClass2>(TestMessage);
 
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass2)}: This is a test.");
     }
@@ -98,7 +100,7 @@ public class WrappingPrefixLoggerTests
         var textLogger = new TextLogger();
         var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
-        logger.Warn<DummyObjectClass1>("This is a test.");
+        logger.Warn<DummyObjectClass1>(TestMessage);
 
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass1)}: This is a test.");
     }
@@ -111,7 +113,7 @@ public class WrappingPrefixLoggerTests
         var textLogger = new TextLogger();
         var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
-        logger.Warn<DummyObjectClass2>("This is a test.");
+        logger.Warn<DummyObjectClass2>(TestMessage);
 
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass2)}: This is a test.");
     }
@@ -124,7 +126,7 @@ public class WrappingPrefixLoggerTests
         var textLogger = new TextLogger();
         var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
-        logger.Error<DummyObjectClass1>("This is a test.");
+        logger.Error<DummyObjectClass1>(TestMessage);
 
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass1)}: This is a test.");
     }
@@ -137,7 +139,7 @@ public class WrappingPrefixLoggerTests
         var textLogger = new TextLogger();
         var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
-        logger.Error<DummyObjectClass2>("This is a test.");
+        logger.Error<DummyObjectClass2>(TestMessage);
 
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass2)}: This is a test.");
     }
@@ -150,7 +152,7 @@ public class WrappingPrefixLoggerTests
         var textLogger = new TextLogger();
         var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
-        logger.Fatal<DummyObjectClass1>("This is a test.");
+        logger.Fatal<DummyObjectClass1>(TestMessage);
 
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass1)}: This is a test.");
     }
@@ -163,7 +165,7 @@ public class WrappingPrefixLoggerTests
         var textLogger = new TextLogger();
         var logger = new WrappingFullLogger(new WrappingPrefixLogger(textLogger, typeof(DummyObjectClass1)));
 
-        logger.Fatal<DummyObjectClass2>("This is a test.");
+        logger.Fatal<DummyObjectClass2>(TestMessage);
 
         await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"{nameof(DummyObjectClass2)}: This is a test.");
     }

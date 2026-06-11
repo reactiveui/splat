@@ -71,13 +71,13 @@ public class SerilogLoggerTests : FullLoggerTestBase
 
         await Assert.That(target.Logs).IsEmpty();
 
-        IEnableLogger logger = null!;
-        logger.Log().Debug<DummyObjectClass2>("This is a test.");
+        const IEnableLogger logger = null!;
+        logger!.Log().Debug<DummyObjectClass2>(LoggerTestConstants.TestMessage);
 
         using (Assert.Multiple())
         {
             await Assert.That(target.Logs).Count().IsEqualTo(1);
-            await Assert.That(target.Logs.Last().message.Trim(_newLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(target.Logs.Last().message.Trim(_newLine).Trim()).IsEqualTo(LoggerTestConstants.TestMessage);
         }
     }
 
@@ -90,14 +90,13 @@ public class SerilogLoggerTests : FullLoggerTestBase
         AppLocator.CurrentMutable.UseSerilogFullLogger(seriLogger);
 
         await Assert.That(target.Logs).IsEmpty();
-
-        IEnableLogger logger = null!;
-        logger.Log().Debug<DummyObjectClass2>("This is a test.");
+        const IEnableLogger logger = null!;
+        logger!.Log().Debug<DummyObjectClass2>(LoggerTestConstants.TestMessage);
 
         using (Assert.Multiple())
         {
             await Assert.That(target.Logs).Count().IsEqualTo(1);
-            await Assert.That(target.Logs.Last().message.Trim(_newLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(target.Logs.Last().message.Trim(_newLine).Trim()).IsEqualTo(LoggerTestConstants.TestMessage);
         }
     }
 

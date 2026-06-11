@@ -20,6 +20,7 @@ namespace Splat.Common.Test;
 /// </example>
 public sealed class PlatformModeDetectorScope : IDisposable
 {
+    /// <summary>The platform mode detector and cached result captured on construction and restored on dispose.</summary>
     private readonly (IPlatformModeDetector detector, bool? cachedResult) _savedState;
 
     /// <summary>Initializes a new instance of the <see cref="PlatformModeDetectorScope"/> class. Saves the current PlatformModeDetector state and resets it to default.</summary>

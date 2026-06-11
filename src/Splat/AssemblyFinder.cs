@@ -21,6 +21,10 @@ internal static class AssemblyFinder
     /// <param name="fullTypeName">The fully qualified name of the type to load, including its namespace.</param>
     /// <returns>An instance of type T if the type is found and instantiated successfully; otherwise, null.</returns>
     [RequiresUnreferencedCode("This method uses reflection to dynamically load types and cannot be made AOT-compatible.")]
+    [SuppressMessage(
+        "Minor Code Smell",
+        "S4018:All type parameters should be used in the parameter list to enable type inference",
+        Justification = "T is the caller-supplied target type to instantiate; it is identified by its fully qualified name string, not a value of type T, so it cannot appear in the parameter list.")]
     public static T? AttemptToLoadType<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(string fullTypeName)
     {
         var thisType = typeof(AssemblyFinder);

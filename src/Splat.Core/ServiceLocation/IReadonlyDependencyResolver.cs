@@ -2,6 +2,8 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Splat;
 
 /// <summary>Defines a read-only contract for resolving service instances and collections by type and optional contract identifier.</summary>
@@ -10,6 +12,10 @@ namespace Splat;
 /// return null when a service is unavailable; instead, they should return null for single-instance methods and an empty
 /// collection for multi-instance methods. This interface is typically used to access services in a decoupled manner,
 /// supporting scenarios such as dependency injection, plugin architectures, or service location patterns.</remarks>
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification = "Generic service-location API; the service type is supplied explicitly by callers, so type inference cannot apply by design.")]
 public interface IReadonlyDependencyResolver
 {
     /// <summary>Gets an instance of the given <paramref name="serviceType"/>. Must return <c>null</c> if the service is not available (must not throw).</summary>

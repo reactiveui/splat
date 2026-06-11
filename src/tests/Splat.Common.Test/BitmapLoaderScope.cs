@@ -20,6 +20,7 @@ namespace Splat.Common.Test;
 /// </example>
 public sealed class BitmapLoaderScope : IDisposable
 {
+    /// <summary>The bitmap loader captured on construction and restored on dispose.</summary>
     private readonly IBitmapLoader? _savedState;
 
     /// <summary>Initializes a new instance of the <see cref="BitmapLoaderScope"/> class. Saves the current BitmapLoader state and resets it to default.</summary>

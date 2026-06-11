@@ -9,6 +9,15 @@ namespace Splat.Tests.Logging;
 /// <summary>Tests for the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.</summary>
 public class MemoizingMRUCacheTests
 {
+    /// <summary>A sample cache key used by the tests.</summary>
+    private const string SampleKey = "Test1";
+
+    /// <summary>The default maximum cache size used when constructing test instances.</summary>
+    private const int DefaultMaxCacheSize = 256;
+
+    /// <summary>The expected count when two items have been cached.</summary>
+    private const int TwoCachedItems = 2;
+
     /// <summary>Checks to ensure an Argument Null Exception is thrown.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -36,7 +45,9 @@ public class MemoizingMRUCacheTests
     /// <summary>Test that constructor throws ArgumentNullException for null calculation function.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task Constructor_ThrowsArgumentNullException_ForNullCalculationFunction() => await Assert.That(() => new MemoizingMRUCache<string, DummyObjectClass1>(null!, 10)).Throws<ArgumentNullException>();
+    public async Task Constructor_ThrowsArgumentNullException_ForNullCalculationFunction() =>
+        await Assert.That(() => new MemoizingMRUCache<string, DummyObjectClass1>(null!, 10))
+            .Throws<ArgumentNullException>();
 
     /// <summary>Test that TryGet throws ArgumentNullException for null key.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -116,7 +127,7 @@ public class MemoizingMRUCacheTests
 
         var exception = await Assert.That(() => instance.InvalidateAll(true)).Throws<AggregateException>();
         await Assert.That(exception).IsNotNull();
-        await Assert.That(exception.InnerExceptions).Count().IsEqualTo(2);
+        await Assert.That(exception.InnerExceptions).Count().IsEqualTo(TwoCachedItems);
     }
 
     /// <summary>Test that InvalidateAll without aggregating exceptions throws on first error.</summary>
@@ -147,7 +158,7 @@ public class MemoizingMRUCacheTests
 
         using (Assert.Multiple())
         {
-            await Assert.That(cachedValues).Count().IsEqualTo(2);
+            await Assert.That(cachedValues).Count().IsEqualTo(TwoCachedItems);
             await Assert.That(cachedValues).Contains(value1);
             await Assert.That(cachedValues).Contains(value2);
         }
@@ -259,7 +270,7 @@ public class MemoizingMRUCacheTests
     public async Task ReturnsValue()
     {
         var instance = GetTestInstance();
-        var result = instance.Get("Test1");
+        var result = instance.Get(SampleKey);
         await Assert.That(result).IsNotNull();
     }
 
@@ -269,8 +280,8 @@ public class MemoizingMRUCacheTests
     public async Task GetReturnsSameValue()
     {
         var instance = GetTestInstance();
-        var result1 = instance.Get("Test1");
-        var result2 = instance.Get("Test1");
+        var result1 = instance.Get(SampleKey);
+        var result2 = instance.Get(SampleKey);
 
         using (Assert.Multiple())
         {
@@ -286,7 +297,7 @@ public class MemoizingMRUCacheTests
     public async Task GetReturnsDifferentValues()
     {
         var instance = GetTestInstance();
-        var result1 = instance.Get("Test1");
+        var result1 = instance.Get(SampleKey);
         var result2 = instance.Get("Test2");
 
         using (Assert.Multiple())
@@ -303,8 +314,8 @@ public class MemoizingMRUCacheTests
     public async Task TryGetReturnsSameValue()
     {
         var instance = GetTestInstance();
-        var result1 = instance.Get("Test1");
-        instance.TryGet("Test1", out var result2);
+        var result1 = instance.Get(SampleKey);
+        instance.TryGet(SampleKey, out var result2);
 
         using (Assert.Multiple())
         {
@@ -320,10 +331,10 @@ public class MemoizingMRUCacheTests
     public async Task TryGetReturnsDifferentValues()
     {
         var instance = GetTestInstance();
-        var p1 = instance.Get("Test1");
+        var p1 = instance.Get(SampleKey);
         var p2 = instance.Get("Test2");
 
-        var result1 = instance.Get("Test1");
+        var result1 = instance.Get(SampleKey);
         var result2 = instance.Get("Test2");
 
         using (Assert.Multiple())
@@ -344,7 +355,7 @@ public class MemoizingMRUCacheTests
         var instance = GetTestInstance();
         var tests = Enumerable.Range(0, 100);
 
-        var results = tests.AsParallel().Select(_ => instance.Get("Test1")).ToList();
+        var results = tests.AsParallel().Select(_ => instance.Get(SampleKey)).ToList();
         var first = results[0];
 
         foreach (var item in results)
@@ -365,10 +376,10 @@ public class MemoizingMRUCacheTests
         {
             if (i % 2 == 0)
             {
-                return instance.Get("Test1");
+                return instance.Get(SampleKey);
             }
 
-            instance.TryGet("Test1", out var result);
+            instance.TryGet(SampleKey, out var result);
             return result;
         }).ToList();
 
@@ -395,8 +406,8 @@ public class MemoizingMRUCacheTests
 
         await Assert.That(() => results = tests.AsParallel().Select(_ =>
             {
-                instance.Invalidate("Test1");
-                instance.Get("Test1");
+                instance.Invalidate(SampleKey);
+                instance.Get(SampleKey);
                 return instance.CachedValues();
             }).ToList()).ThrowsNothing();
 
@@ -415,8 +426,8 @@ public class MemoizingMRUCacheTests
 
         await Assert.That(() => results = tests.AsParallel().Select(i =>
             {
-                instance.Invalidate("Test1");
-                var result = instance.Get("Test1");
+                instance.Invalidate(SampleKey);
+                var result = instance.Get(SampleKey);
 
                 // Also exercise CachedValues
                 _ = instance.CachedValues();
@@ -439,7 +450,7 @@ public class MemoizingMRUCacheTests
         await Assert.That(() => results = tests.AsParallel().Select(_ =>
             {
                 instance.InvalidateAll();
-                return instance.Get("Test1");
+                return instance.Get(SampleKey);
             }).ToList()).ThrowsNothing();
 
         await Assert.That(results).IsNotNull();
@@ -448,5 +459,5 @@ public class MemoizingMRUCacheTests
     /// <summary>Creates a test instance of the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.</summary>
     /// <returns>A new test cache instance.</returns>
     private static MemoizingMRUCache<string, DummyObjectClass1> GetTestInstance() =>
-        new((_, _) => new(), 256);
+        new((_, _) => new(), DefaultMaxCacheSize);
 }

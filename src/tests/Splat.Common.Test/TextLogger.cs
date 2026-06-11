@@ -8,8 +8,10 @@ namespace Splat.Tests.Mocks;
 /// <seealso cref="ILogger" />
 public class TextLogger : ILogger, IMockLogTarget
 {
+    /// <summary>Types registered with this logger via <see cref="IMockLogTarget"/>.</summary>
     private readonly List<Type> _types = [];
 
+    /// <summary>The log entries captured by this logger.</summary>
     private readonly List<(LogLevel logLevel, string message)> _logs = [];
 
     /// <inheritdoc />

@@ -8,22 +8,44 @@ namespace Splat.Tests.ServiceLocation.GenericFirst;
 [NotInParallel] // Container<T> is static, tests must run sequentially
 public class ContainerTests
 {
+    /// <summary>Contract name used for the first registration in these tests.</summary>
+    private const string First = "first";
+
+    /// <summary>Contract name used for the second registration in these tests.</summary>
+    private const string Second = "second";
+
+    /// <summary>Contract name used for the third registration in these tests.</summary>
+    private const string Third = "third";
+
+    /// <summary>The expected registration count when two items are present.</summary>
+    private const int TwoItems = 2;
+
+    /// <summary>The expected registration count when three items are present.</summary>
+    private const int ThreeItems = 3;
+
+    /// <summary>A sample value registered in the container during these tests.</summary>
+    private const int SampleValue = 42;
+
+    /// <summary>The value of the first item used in these tests.</summary>
+    private const int FirstValue = 1;
+
+    /// <summary>The value of the second item used in these tests.</summary>
+    private const int SecondValue = 2;
+
+    /// <summary>The value of the third item used in these tests.</summary>
+    private const int ThirdValue = 3;
+
+    /// <summary>Zero-based index of the second item.</summary>
+    private const int SecondIndex = 1;
+
+    /// <summary>Zero-based index of the third item.</summary>
+    private const int ThirdIndex = 2;
+
     /// <summary>Clears the container state before each test.</summary>
     [Before(Test)]
-    public void Setup()
-    {
-        // Clear the container before each test
-        Container<string>.Clear();
-        Container<int>.Clear();
-        Container<int?>.Clear();
-        Container<TestService>.Clear();
-    }
-
-    /// <summary>Clears the container state after each test.</summary>
     [After(Test)]
-    public void Cleanup()
+    public void ResetContainers()
     {
-        // Clear the container after each test
         Container<string>.Clear();
         Container<int>.Clear();
         Container<int?>.Clear();
@@ -91,15 +113,15 @@ public class ContainerTests
     public async Task Add_MultipleInstances_ReturnsLatest()
     {
         // Act
-        Container<string>.Add("first");
-        Container<string>.Add("second");
-        Container<string>.Add("third");
+        Container<string>.Add(First);
+        Container<string>.Add(Second);
+        Container<string>.Add(Third);
 
         var success = Container<string>.TryGet(out var result);
 
         // Assert
         await Assert.That(success).IsTrue();
-        await Assert.That(result).IsEqualTo("third");
+        await Assert.That(result).IsEqualTo(Third);
     }
 
     /// <summary>Tests that try get when empty returns false.</summary>
@@ -149,9 +171,9 @@ public class ContainerTests
         Container<int>.TryGet(out var result2);
 
         // Assert
-        await Assert.That(invocationCount).IsEqualTo(2);
-        await Assert.That(result1).IsEqualTo(1);
-        await Assert.That(result2).IsEqualTo(2);
+        await Assert.That(invocationCount).IsEqualTo(TwoItems);
+        await Assert.That(result1).IsEqualTo(FirstValue);
+        await Assert.That(result2).IsEqualTo(SecondValue);
     }
 
     /// <summary>Tests that get all when empty returns empty array.</summary>
@@ -173,18 +195,18 @@ public class ContainerTests
     public async Task GetAll_WithMultipleRegistrations_ReturnsAllValues()
     {
         // Arrange
-        Container<string>.Add("first");
-        Container<string>.Add("second");
-        Container<string>.Add("third");
+        Container<string>.Add(First);
+        Container<string>.Add(Second);
+        Container<string>.Add(Third);
 
         // Act
         var result = Container<string>.GetAll();
 
         // Assert
-        await Assert.That(result.Length).IsEqualTo(3);
-        await Assert.That(result[0]).IsEqualTo("first");
-        await Assert.That(result[1]).IsEqualTo("second");
-        await Assert.That(result[2]).IsEqualTo("third");
+        await Assert.That(result.Length).IsEqualTo(ThreeItems);
+        await Assert.That(result[0]).IsEqualTo(First);
+        await Assert.That(result[SecondIndex]).IsEqualTo(Second);
+        await Assert.That(result[ThirdIndex]).IsEqualTo(Third);
     }
 
     /// <summary>Tests that get all with factories invokes all factories.</summary>
@@ -197,28 +219,28 @@ public class ContainerTests
         Container<int>.Add(() =>
         {
             invocationCount++;
-            return 1;
+            return FirstValue;
         });
         Container<int>.Add(() =>
         {
             invocationCount++;
-            return 2;
+            return SecondValue;
         });
         Container<int>.Add(() =>
         {
             invocationCount++;
-            return 3;
+            return ThirdValue;
         });
 
         // Act
         var result = Container<int>.GetAll();
 
         // Assert
-        await Assert.That(invocationCount).IsEqualTo(3);
-        await Assert.That(result.Length).IsEqualTo(3);
-        await Assert.That(result[0]).IsEqualTo(1);
-        await Assert.That(result[1]).IsEqualTo(2);
-        await Assert.That(result[2]).IsEqualTo(3);
+        await Assert.That(invocationCount).IsEqualTo(ThreeItems);
+        await Assert.That(result.Length).IsEqualTo(ThreeItems);
+        await Assert.That(result[0]).IsEqualTo(FirstValue);
+        await Assert.That(result[SecondIndex]).IsEqualTo(SecondValue);
+        await Assert.That(result[ThirdIndex]).IsEqualTo(ThirdValue);
     }
 
     /// <summary>Tests that get all with mixed registrations returns all values.</summary>
@@ -235,10 +257,10 @@ public class ContainerTests
         var result = Container<string>.GetAll();
 
         // Assert
-        await Assert.That(result.Length).IsEqualTo(3);
+        await Assert.That(result.Length).IsEqualTo(ThreeItems);
         await Assert.That(result[0]).IsEqualTo("instance");
-        await Assert.That(result[1]).IsEqualTo("factory");
-        await Assert.That(result[2]).IsEqualTo("another instance");
+        await Assert.That(result[SecondIndex]).IsEqualTo("factory");
+        await Assert.That(result[ThirdIndex]).IsEqualTo("another instance");
     }
 
     /// <summary>Tests that remove current when empty does not throw.</summary>
@@ -274,9 +296,9 @@ public class ContainerTests
     public async Task RemoveCurrent_WithMultipleItems_RemovesLatest()
     {
         // Arrange
-        Container<string>.Add("first");
-        Container<string>.Add("second");
-        Container<string>.Add("third");
+        Container<string>.Add(First);
+        Container<string>.Add(Second);
+        Container<string>.Add(Third);
 
         // Act
         Container<string>.RemoveCurrent();
@@ -284,7 +306,7 @@ public class ContainerTests
 
         // Assert
         await Assert.That(success).IsTrue();
-        await Assert.That(result).IsEqualTo("second");
+        await Assert.That(result).IsEqualTo(Second);
     }
 
     /// <summary>Tests that remove current multiple removes in reverse order.</summary>
@@ -293,18 +315,18 @@ public class ContainerTests
     public async Task RemoveCurrent_Multiple_RemovesInReverseOrder()
     {
         // Arrange
-        Container<int>.Add(1);
-        Container<int>.Add(2);
-        Container<int>.Add(3);
+        Container<int>.Add(FirstValue);
+        Container<int>.Add(SecondValue);
+        Container<int>.Add(ThirdValue);
 
         // Act & Assert
         Container<int>.RemoveCurrent();
         Container<int>.TryGet(out var result1);
-        await Assert.That(result1).IsEqualTo(2);
+        await Assert.That(result1).IsEqualTo(SecondValue);
 
         Container<int>.RemoveCurrent();
         Container<int>.TryGet(out var result2);
-        await Assert.That(result2).IsEqualTo(1);
+        await Assert.That(result2).IsEqualTo(FirstValue);
 
         Container<int>.RemoveCurrent();
         var success = Container<int>.TryGet(out _);
@@ -317,9 +339,9 @@ public class ContainerTests
     public async Task Clear_RemovesAllRegistrations()
     {
         // Arrange
-        Container<string>.Add("first");
-        Container<string>.Add("second");
-        Container<string>.Add("third");
+        Container<string>.Add(First);
+        Container<string>.Add(Second);
+        Container<string>.Add(Third);
 
         // Act
         Container<string>.Clear();
@@ -390,14 +412,14 @@ public class ContainerTests
     {
         // Arrange & Act
         Container<string>.Add("string value");
-        Container<int>.Add(42);
+        Container<int>.Add(SampleValue);
 
         // Assert
         Container<string>.TryGet(out var stringResult);
         Container<int>.TryGet(out var intResult);
 
         await Assert.That(stringResult).IsEqualTo("string value");
-        await Assert.That(intResult).IsEqualTo(42);
+        await Assert.That(intResult).IsEqualTo(SampleValue);
     }
 
     /// <summary>Tests that add large number of items maintains performance.</summary>

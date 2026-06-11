@@ -15,8 +15,10 @@ namespace Splat.Builder;
 /// SimpleInjector container.</remarks>
 public sealed class SimpleInjectorSplatModule : IModule
 {
+    /// <summary>The SimpleInjector container that registrations are applied to when the module runs.</summary>
     private readonly Container _container;
 
+    /// <summary>The initializer that accumulates registrations before they are applied to the container.</summary>
     private readonly SimpleInjectorInitializer _initializer;
 
     /// <summary>Initializes a new instance of the <see cref="SimpleInjectorSplatModule" /> class.</summary>

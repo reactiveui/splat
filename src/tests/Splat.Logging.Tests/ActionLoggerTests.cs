@@ -4,6 +4,8 @@
 
 using Splat.Tests.Mocks;
 
+using static Splat.Tests.Logging.LoggerTestConstants;
+
 namespace Splat.Tests.Logging;
 
 /// <summary>Unit tests for the <see cref="ActionLogger"/> class.</summary>
@@ -29,11 +31,11 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Write("This is a test.", LogLevel.Debug);
+        fullLogger.Write(TestMessage, LogLevel.Debug);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Debug);
         }
     }
@@ -60,11 +62,11 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Debug<DummyObjectClass1>("This is a test.");
+        fullLogger.Debug<DummyObjectClass1>(TestMessage);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Debug);
             await Assert.That(passedType).IsEqualTo(typeof(DummyObjectClass1));
         }
@@ -92,11 +94,11 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Debug<DummyObjectClass2>("This is a test.");
+        fullLogger.Debug<DummyObjectClass2>(TestMessage);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Debug);
             await Assert.That(passedType).IsEqualTo(typeof(DummyObjectClass2));
         }
@@ -124,11 +126,11 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Info<DummyObjectClass1>("This is a test.");
+        fullLogger.Info<DummyObjectClass1>(TestMessage);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Info);
             await Assert.That(passedType).IsEqualTo(typeof(DummyObjectClass1));
         }
@@ -156,11 +158,11 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Info<DummyObjectClass2>("This is a test.");
+        fullLogger.Info<DummyObjectClass2>(TestMessage);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Info);
             await Assert.That(passedType).IsEqualTo(typeof(DummyObjectClass2));
         }
@@ -188,11 +190,11 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Warn<DummyObjectClass1>("This is a test.");
+        fullLogger.Warn<DummyObjectClass1>(TestMessage);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Warn);
             await Assert.That(passedType).IsEqualTo(typeof(DummyObjectClass1));
         }
@@ -220,11 +222,11 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Warn<DummyObjectClass2>("This is a test.");
+        fullLogger.Warn<DummyObjectClass2>(TestMessage);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Warn);
             await Assert.That(passedType).IsEqualTo(typeof(DummyObjectClass2));
         }
@@ -252,11 +254,11 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Error<DummyObjectClass1>("This is a test.");
+        fullLogger.Error<DummyObjectClass1>(TestMessage);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Error);
             await Assert.That(passedType).IsEqualTo(typeof(DummyObjectClass1));
         }
@@ -284,11 +286,11 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Error<DummyObjectClass2>("This is a test.");
+        fullLogger.Error<DummyObjectClass2>(TestMessage);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Error);
             await Assert.That(passedType).IsEqualTo(typeof(DummyObjectClass2));
         }
@@ -316,11 +318,11 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Fatal<DummyObjectClass1>("This is a test.");
+        fullLogger.Fatal<DummyObjectClass1>(TestMessage);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Fatal);
             await Assert.That(passedType).IsEqualTo(typeof(DummyObjectClass1));
         }
@@ -348,11 +350,11 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Fatal<DummyObjectClass2>("This is a test.");
+        fullLogger.Fatal<DummyObjectClass2>(TestMessage);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Fatal);
             await Assert.That(passedType).IsEqualTo(typeof(DummyObjectClass2));
         }

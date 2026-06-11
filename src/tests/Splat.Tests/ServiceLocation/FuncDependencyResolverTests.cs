@@ -9,6 +9,24 @@ namespace Splat.Tests.ServiceLocation;
 [InheritsTests]
 public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDependencyResolver>
 {
+    /// <summary>Contract name used for the first registration in these tests.</summary>
+    private const string First = "first";
+
+    /// <summary>Contract name used for the second registration in these tests.</summary>
+    private const string Second = "second";
+
+    /// <summary>Contract name used for the third registration in these tests.</summary>
+    private const string Third = "third";
+
+    /// <summary>Contract name used when registering against a custom contract.</summary>
+    private const string MyContract = "mycontract";
+
+    /// <summary>The number of services expected after registering three factories.</summary>
+    private const int ExpectedServiceCount = 3;
+
+    /// <summary>Zero-based index of the third item.</summary>
+    private const int ThirdIndex = 2;
+
     /// <summary>Marker interface used by the tests.</summary>
     private interface ITestInterface;
 
@@ -54,14 +72,14 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     public async Task GetService_ShouldReturnLastService_WhenMultipleRegistered()
     {
         // Arrange
-        var services = new List<object> { "first", "second", "third" };
+        var services = new List<object> { First, Second, Third };
         var resolver = new FuncDependencyResolver((_, _) => services);
 
         // Act
         var result = resolver.GetService<object>();
 
         // Assert
-        await Assert.That(result).IsEqualTo("third");
+        await Assert.That(result).IsEqualTo(Third);
     }
 
     /// <summary>Verifies that GetService returns null when no services are registered.</summary>
@@ -85,15 +103,15 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     public async Task GetService_WithContract_ShouldReturnLastService()
     {
         // Arrange
-        var services = new List<object> { "first", "second" };
-        var resolver = new FuncDependencyResolver((type, contract) =>
+        var services = new List<object> { First, Second };
+        var resolver = new FuncDependencyResolver((_, contract) =>
             contract == "test" ? services : []);
 
         // Act
         var result = resolver.GetService<object>("test");
 
         // Assert
-        await Assert.That(result).IsEqualTo("second");
+        await Assert.That(result).IsEqualTo(Second);
     }
 
     /// <summary>Verifies that GetServices returns an empty list when the delegate returns null.</summary>
@@ -117,17 +135,17 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     public async Task GetServices_ShouldReturnAllServices()
     {
         // Arrange
-        var services = new List<object> { "first", "second", "third" };
+        var services = new List<object> { First, Second, Third };
         var resolver = new FuncDependencyResolver((_, _) => services);
 
         // Act
         var result = resolver.GetServices<string>().ToList();
 
         // Assert
-        await Assert.That(result.Count).IsEqualTo(3);
-        await Assert.That(result[0]).IsEqualTo("first");
-        await Assert.That(result[1]).IsEqualTo("second");
-        await Assert.That(result[2]).IsEqualTo("third");
+        await Assert.That(result.Count).IsEqualTo(ExpectedServiceCount);
+        await Assert.That(result[0]).IsEqualTo(First);
+        await Assert.That(result[1]).IsEqualTo(Second);
+        await Assert.That(result[ThirdIndex]).IsEqualTo(Third);
     }
 
     /// <summary>Verifies that GetServices passes the contract through to the delegate.</summary>
@@ -144,10 +162,10 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         });
 
         // Act
-        _ = resolver.GetServices<string>("mycontract").ToList();
+        _ = resolver.GetServices<string>(MyContract).ToList();
 
         // Assert
-        await Assert.That(capturedContract).IsEqualTo("mycontract");
+        await Assert.That(capturedContract).IsEqualTo(MyContract);
     }
 
     /// <summary>Verifies that GetServices substitutes the null service type when none is supplied.</summary>
@@ -214,10 +232,10 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         });
 
         // Act
-        _ = resolver.HasRegistration<string>("mycontract");
+        _ = resolver.HasRegistration<string>(MyContract);
 
         // Assert
-        await Assert.That(capturedContract).IsEqualTo("mycontract");
+        await Assert.That(capturedContract).IsEqualTo(MyContract);
     }
 
     /// <summary>Verifies that Register throws NotSupportedException when no register delegate is provided.</summary>
@@ -272,13 +290,13 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
 
         var resolver = new FuncDependencyResolver(
             getAllServices: (_, _) => [],
-            register: (factory, type, contract) => capturedContract = contract);
+            register: (_, _, contract) => capturedContract = contract);
 
         // Act
-        resolver.Register(() => "test", typeof(string), "mycontract");
+        resolver.Register(() => "test", typeof(string), MyContract);
 
         // Assert
-        await Assert.That(capturedContract).IsEqualTo("mycontract");
+        await Assert.That(capturedContract).IsEqualTo(MyContract);
     }
 
     /// <summary>Verifies that Register wraps a null service type in the null service type.</summary>
@@ -291,7 +309,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
 
         var resolver = new FuncDependencyResolver(
             getAllServices: (_, _) => [],
-            register: (factory, type, contract) => capturedValue = factory());
+            register: (factory, _, _) => capturedValue = factory());
 
         // Act
         resolver.Register(() => "test", serviceType: null);
@@ -326,7 +344,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
 
         var resolver = new FuncDependencyResolver(
             getAllServices: (_, _) => [],
-            register: (factory, type, contract) => capturedValue = factory());
+            register: (factory, _, _) => capturedValue = factory());
 
         var testValue = new TestClass();
 
@@ -363,7 +381,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
 
         var resolver = new FuncDependencyResolver(
             getAllServices: (_, _) => null!, // Return null to avoid triggering factories during registration callbacks
-            register: (factory, type, contract) => capturedFactory = factory);
+            register: (factory, _, _) => capturedFactory = factory);
 
         // Act
         resolver.RegisterLazySingleton<TestClass>(() =>
@@ -433,13 +451,13 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
 
         var resolver = new FuncDependencyResolver(
             getAllServices: (_, _) => [],
-            unregisterCurrent: (type, contract) => capturedContract = contract);
+            unregisterCurrent: (_, contract) => capturedContract = contract);
 
         // Act
-        resolver.UnregisterCurrent<string>("mycontract");
+        resolver.UnregisterCurrent<string>(MyContract);
 
         // Assert
-        await Assert.That(capturedContract).IsEqualTo("mycontract");
+        await Assert.That(capturedContract).IsEqualTo(MyContract);
     }
 
     /// <summary>Verifies that UnregisterAll throws NotSupportedException when no delegate is provided.</summary>
@@ -490,13 +508,13 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
 
         var resolver = new FuncDependencyResolver(
             getAllServices: (_, _) => [],
-            unregisterAll: (type, contract) => capturedContract = contract);
+            unregisterAll: (_, contract) => capturedContract = contract);
 
         // Act
-        resolver.UnregisterAll<string>("mycontract");
+        resolver.UnregisterAll<string>(MyContract);
 
         // Assert
-        await Assert.That(capturedContract).IsEqualTo("mycontract");
+        await Assert.That(capturedContract).IsEqualTo(MyContract);
     }
 
     /// <summary>Verifies that ServiceRegistrationCallback registers a callback invoked on registration.</summary>
@@ -567,8 +585,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
             register: (_, _, _) => { });
 
         // Act
-        _ = resolver.ServiceRegistrationCallback<string>("mycontract", _ => callbackInvoked = true);
-        resolver.Register(() => "test", typeof(string), "mycontract");
+        _ = resolver.ServiceRegistrationCallback<string>(MyContract, _ => callbackInvoked = true);
+        resolver.Register(() => "test", typeof(string), MyContract);
 
         // Assert
         await Assert.That(callbackInvoked).IsTrue();
@@ -604,7 +622,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
             register: (_, _, _) => { });
 
         var callbackInvoked = false;
-        var disposable = resolver.ServiceRegistrationCallback<string>(disp =>
+        _ = resolver.ServiceRegistrationCallback<string>(disp =>
         {
             callbackInvoked = true;
             disp.Dispose(); // Signal to remove this callback
@@ -696,7 +714,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
 
         var resolver = new FuncDependencyResolver(
             getAllServices: (_, _) => [],
-            register: (factory, type, contract) => capturedFactory = factory);
+            register: (factory, _, _) => capturedFactory = factory);
 
         // Act
         resolver.Register<ITestInterface, TestClass>();
@@ -720,13 +738,13 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
 
         var resolver = new FuncDependencyResolver(
             getAllServices: (_, _) => [],
-            register: (factory, type, contract) => capturedContract = contract);
+            register: (_, _, contract) => capturedContract = contract);
 
         // Act
-        resolver.Register<ITestInterface, TestClass>("mycontract");
+        resolver.Register<ITestInterface, TestClass>(MyContract);
 
         // Assert
-        await Assert.That(capturedContract).IsEqualTo("mycontract");
+        await Assert.That(capturedContract).IsEqualTo(MyContract);
     }
 
     /// <inheritdoc/>
@@ -735,63 +753,92 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         var services = new Dictionary<(Type? type, string contract), List<Func<object?>>>();
 
         return new(
-            getAllServices: (type, contract) =>
-            {
-                type ??= NullServiceType.CachedType;
-
-                // Normalize contract: null -> string.Empty
-                contract ??= string.Empty;
-                if (services.TryGetValue((type, contract), out var list) && list.Count > 0)
-                {
-                    return [.. list.Select(f => f()!)];
-                }
-
-                return null!; // Return null to indicate no services registered
-            },
-            register: (factory, type, contract) =>
-            {
-                type ??= NullServiceType.CachedType;
-
-                // Normalize contract: null -> string.Empty
-                contract ??= string.Empty;
-                var key = (type, contract);
-                if (!services.TryGetValue(key, out var value))
-                {
-                    value = [];
-                    services[key] = value;
-                }
-
-                value.Add(factory);
-            },
-            unregisterCurrent: (type, contract) =>
-            {
-                type ??= NullServiceType.CachedType;
-
-                // Normalize contract: null -> string.Empty
-                contract ??= string.Empty;
-                var key = (type, contract);
-                if (!services.TryGetValue(key, out var list) || list.Count == 0)
-                {
-                    return;
-                }
-
-                list.RemoveAt(list.Count - 1);
-                if (list.Count != 0)
-                {
-                    return;
-                }
-
-                services.Remove(key);
-            },
-            unregisterAll: (type, contract) =>
-            {
-                type ??= NullServiceType.CachedType;
-
-                // Normalize contract: null -> string.Empty
-                contract ??= string.Empty;
-                services.Remove((type, contract));
-            });
+            getAllServices: (type, contract) => GetAllServices(services, type, contract),
+            register: (factory, type, contract) => RegisterService(services, factory, type, contract),
+            unregisterCurrent: (type, contract) => UnregisterCurrentService(services, type, contract),
+            unregisterAll: (type, contract) => UnregisterAllServices(services, type, contract));
     }
+
+    /// <summary>Normalizes a service type and contract into the dictionary key used by the backing store.</summary>
+    /// <param name="type">The service type, or <see langword="null"/> for the null service type.</param>
+    /// <param name="contract">The registration contract, or <see langword="null"/> for the default contract.</param>
+    /// <returns>The normalized key.</returns>
+    private static (Type Type, string Contract) NormalizeKey(Type? type, string? contract) =>
+        (type ?? NullServiceType.CachedType, contract ?? string.Empty);
+
+    /// <summary>Returns the materialized services registered for the given type and contract.</summary>
+    /// <param name="services">The backing service store.</param>
+    /// <param name="type">The service type.</param>
+    /// <param name="contract">The registration contract.</param>
+    /// <returns>The registered service instances, or <see langword="null"/> when none are registered.</returns>
+    private static IEnumerable<object> GetAllServices(
+        Dictionary<(Type? type, string contract), List<Func<object?>>> services,
+        Type? type,
+        string? contract)
+    {
+        var key = NormalizeKey(type, contract);
+        if (services.TryGetValue(key, out var list) && list.Count > 0)
+        {
+            return [.. list.Select(f => f()!)];
+        }
+
+        return null!; // Return null to indicate no services registered
+    }
+
+    /// <summary>Registers a factory for the given service type and contract.</summary>
+    /// <param name="services">The backing service store.</param>
+    /// <param name="factory">The factory that produces the service instance.</param>
+    /// <param name="type">The service type.</param>
+    /// <param name="contract">The registration contract.</param>
+    private static void RegisterService(
+        Dictionary<(Type? type, string contract), List<Func<object?>>> services,
+        Func<object?> factory,
+        Type? type,
+        string? contract)
+    {
+        var key = NormalizeKey(type, contract);
+        if (!services.TryGetValue(key, out var value))
+        {
+            value = [];
+            services[key] = value;
+        }
+
+        value.Add(factory);
+    }
+
+    /// <summary>Removes the most recently registered factory for the given service type and contract.</summary>
+    /// <param name="services">The backing service store.</param>
+    /// <param name="type">The service type.</param>
+    /// <param name="contract">The registration contract.</param>
+    private static void UnregisterCurrentService(
+        Dictionary<(Type? type, string contract), List<Func<object?>>> services,
+        Type? type,
+        string? contract)
+    {
+        var key = NormalizeKey(type, contract);
+        if (!services.TryGetValue(key, out var list) || list.Count == 0)
+        {
+            return;
+        }
+
+        list.RemoveAt(list.Count - 1);
+        if (list.Count != 0)
+        {
+            return;
+        }
+
+        services.Remove(key);
+    }
+
+    /// <summary>Removes all registered factories for the given service type and contract.</summary>
+    /// <param name="services">The backing service store.</param>
+    /// <param name="type">The service type.</param>
+    /// <param name="contract">The registration contract.</param>
+    private static void UnregisterAllServices(
+        Dictionary<(Type? type, string contract), List<Func<object?>>> services,
+        Type? type,
+        string? contract) =>
+        services.Remove(NormalizeKey(type, contract));
 
     /// <summary>Concrete implementation used as a test service.</summary>
     private sealed class TestClass : ITestInterface;
@@ -799,6 +846,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     /// <summary>Disposable test helper that records whether it has been disposed.</summary>
     private sealed class TestDisposable : IDisposable
     {
+        /// <summary>The optional callback invoked when this instance is disposed.</summary>
         private readonly Action? _onDispose;
 
         /// <summary>Initializes a new instance of the <see cref="TestDisposable"/> class.</summary>

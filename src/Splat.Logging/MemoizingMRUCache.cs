@@ -26,6 +26,7 @@ namespace Splat;
 /// </remarks>
 /// <typeparam name="TParam">The key type.</typeparam>
 /// <typeparam name="TVal">The cached value type.</typeparam>
+[SuppressMessage("Minor Code Smell", "S101:Types should be named in PascalCase", Justification = "Existing type name is intentional.")]
 public sealed class MemoizingMRUCache<TParam, TVal>
     where TParam : notnull
 {
@@ -119,7 +120,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     /// <param name="context">Optional context passed to the calculation function.</param>
     /// <returns>The cached or computed value.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
-    public TVal Get(TParam key, object? context = null)
+    public TVal Get(TParam key, object? context)
     {
         ArgumentExceptionHelper.ThrowIfNull(key);
 
@@ -239,12 +240,15 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     }
 
     /// <summary>Invalidates all items in the cache.</summary>
+    public void InvalidateAll() => InvalidateAll(aggregateReleaseExceptions: false);
+
+    /// <summary>Invalidates all items in the cache.</summary>
     /// <param name="aggregateReleaseExceptions">
     /// When <see langword="true"/>, release exceptions are collected and rethrown as an <see cref="AggregateException"/>
     /// after all entries have been processed.
     /// </param>
     [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Aggregates exceptions when requested.")]
-    public void InvalidateAll(bool aggregateReleaseExceptions = false)
+    public void InvalidateAll(bool aggregateReleaseExceptions)
     {
         Dictionary<TParam, (LinkedListNode<TParam> node, TVal value)>? oldEntries = null;
 

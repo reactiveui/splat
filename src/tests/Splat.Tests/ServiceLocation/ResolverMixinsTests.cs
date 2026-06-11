@@ -10,6 +10,7 @@ namespace Splat.Tests.ServiceLocation;
 [NotInParallel]
 public sealed class ResolverMixinsTests
 {
+    /// <summary>The locator scope created for the duration of each test.</summary>
     private AppLocatorScope? _scope;
 
     /// <summary>Marker service interface used by the tests.</summary>

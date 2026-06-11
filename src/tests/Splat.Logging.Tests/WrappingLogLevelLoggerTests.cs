@@ -9,6 +9,12 @@ namespace Splat.Tests.Logging;
 /// <summary>Tests for the <see cref="WrappingLogLevelLogger"/> class.</summary>
 public class WrappingLogLevelLoggerTests
 {
+    /// <summary>The expected number of log entries written by the test.</summary>
+    private const int ExpectedLogCount = 3;
+
+    /// <summary>The index of the warning log entry within the captured logs.</summary>
+    private const int WarnLogIndex = 2;
+
     /// <summary>Test that WrappingLogLevelLogger adds level prefix to messages.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -25,10 +31,10 @@ public class WrappingLogLevelLoggerTests
 
         using (Assert.Multiple())
         {
-            await Assert.That(logsList).Count().IsEqualTo(3);
+            await Assert.That(logsList).Count().IsEqualTo(ExpectedLogCount);
             await Assert.That(logsList[0].message).IsEqualTo("Debug: Test message");
             await Assert.That(logsList[1].message).IsEqualTo("Info: Info message");
-            await Assert.That(logsList[2].message).IsEqualTo("Warn: Warn message");
+            await Assert.That(logsList[WarnLogIndex].message).IsEqualTo("Warn: Warn message");
         }
     }
 

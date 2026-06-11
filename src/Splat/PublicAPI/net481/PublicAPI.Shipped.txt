@@ -94,10 +94,25 @@ Splat.RectEdge.Bottom = 3 -> Splat.RectEdge
 Splat.RectEdge.Left = 0 -> Splat.RectEdge
 Splat.RectEdge.Right = 2 -> Splat.RectEdge
 Splat.RectEdge.Top = 1 -> Splat.RectEdge
+Splat.RectangleCopyOptions
+Splat.RectangleCopyOptions.Bottom.get -> float?
+Splat.RectangleCopyOptions.Bottom.init -> void
+Splat.RectangleCopyOptions.Equals(Splat.RectangleCopyOptions other) -> bool
+Splat.RectangleCopyOptions.Height.get -> float?
+Splat.RectangleCopyOptions.Height.init -> void
+Splat.RectangleCopyOptions.RectangleCopyOptions() -> void
+Splat.RectangleCopyOptions.Top.get -> float?
+Splat.RectangleCopyOptions.Top.init -> void
+Splat.RectangleCopyOptions.Width.get -> float?
+Splat.RectangleCopyOptions.Width.init -> void
+Splat.RectangleCopyOptions.X.get -> float?
+Splat.RectangleCopyOptions.X.init -> void
+Splat.RectangleCopyOptions.Y.get -> float?
+Splat.RectangleCopyOptions.Y.init -> void
 Splat.RectangleMathExtensions
 Splat.RectangleMathExtensions.extension(System.Drawing.RectangleF)
 Splat.RectangleMathExtensions.extension(System.Drawing.RectangleF).Center() -> System.Drawing.PointF
-Splat.RectangleMathExtensions.extension(System.Drawing.RectangleF).Copy(float? x = null, float? y = null, float? width = null, float? height = null, float? top = null, float? bottom = null) -> System.Drawing.RectangleF
+Splat.RectangleMathExtensions.extension(System.Drawing.RectangleF).Copy(Splat.RectangleCopyOptions options) -> System.Drawing.RectangleF
 Splat.RectangleMathExtensions.extension(System.Drawing.RectangleF).Divide(float amount, Splat.RectEdge fromEdge) -> System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF>!
 Splat.RectangleMathExtensions.extension(System.Drawing.RectangleF).DivideWithPadding(float sliceAmount, float padding, Splat.RectEdge fromEdge) -> System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF>!
 Splat.RectangleMathExtensions.extension(System.Drawing.RectangleF).InvertWithin(System.Drawing.RectangleF containingRect) -> System.Drawing.RectangleF
@@ -111,6 +126,7 @@ Splat.SizeMathExtensions.extension(System.Drawing.SizeF).WithinEpsilonOf(System.
 Splat.TargetFrameworkExtensions
 Splat.TargetFrameworkExtensions.extension(System.Reflection.Assembly!)
 Splat.TargetFrameworkExtensions.extension(System.Reflection.Assembly!).GetTargetFrameworkName() -> string?
+override Splat.RectangleCopyOptions.GetHashCode() -> int
 static Splat.ApplicationPerformanceMonitoring.EnableFeatureUsageTrackingExtensions.FeatureUsageTrackingSession(this Splat.ApplicationPerformanceMonitoring.IEnableFeatureUsageTracking! instance, string! featureName) -> Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession!
 static Splat.ApplicationPerformanceMonitoring.EnableFeatureUsageTrackingExtensions.WithFeatureUsageTrackingSession(this Splat.ApplicationPerformanceMonitoring.IEnableFeatureUsageTracking! instance, string! featureName, System.Action<Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession!>! action) -> void
 static Splat.ApplicationPerformanceMonitoring.EnableFeatureUsageTrackingExtensions.WithSubFeatureUsageTrackingSession(this Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession! instance, string! featureName, System.Action<Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession!>! action) -> void
@@ -133,8 +149,10 @@ static Splat.PointMathExtensions.ProjectAlong(this System.Drawing.PointF value, 
 static Splat.PointMathExtensions.ProjectAlongAngle(this System.Drawing.PointF value, float angleInDegrees) -> System.Drawing.PointF
 static Splat.PointMathExtensions.ScaledBy(this System.Drawing.PointF value, float factor) -> System.Drawing.PointF
 static Splat.PointMathExtensions.WithinEpsilonOf(this System.Drawing.PointF value, System.Drawing.PointF other, float epsilon) -> bool
+static Splat.RectangleCopyOptions.operator !=(Splat.RectangleCopyOptions left, Splat.RectangleCopyOptions right) -> bool
+static Splat.RectangleCopyOptions.operator ==(Splat.RectangleCopyOptions left, Splat.RectangleCopyOptions right) -> bool
 static Splat.RectangleMathExtensions.Center(this System.Drawing.RectangleF value) -> System.Drawing.PointF
-static Splat.RectangleMathExtensions.Copy(this System.Drawing.RectangleF value, float? x = null, float? y = null, float? width = null, float? height = null, float? top = null, float? bottom = null) -> System.Drawing.RectangleF
+static Splat.RectangleMathExtensions.Copy(this System.Drawing.RectangleF value, Splat.RectangleCopyOptions options) -> System.Drawing.RectangleF
 static Splat.RectangleMathExtensions.Divide(this System.Drawing.RectangleF value, float amount, Splat.RectEdge fromEdge) -> System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF>!
 static Splat.RectangleMathExtensions.DivideWithPadding(this System.Drawing.RectangleF value, float sliceAmount, float padding, Splat.RectEdge fromEdge) -> System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF>!
 static Splat.RectangleMathExtensions.InvertWithin(this System.Drawing.RectangleF value, System.Drawing.RectangleF containingRect) -> System.Drawing.RectangleF
@@ -145,3 +163,5 @@ static Splat.TargetFrameworkExtensions.GetTargetFrameworkName(this System.Reflec
 static readonly Splat.ModeDetection.Mode.Run -> Splat.ModeDetection.Mode!
 static readonly Splat.ModeDetection.Mode.Test -> Splat.ModeDetection.Mode!
 virtual Splat.FuncDependencyResolver.Dispose(bool isDisposing) -> void
+~override Splat.RectangleCopyOptions.Equals(object obj) -> bool
+~override Splat.RectangleCopyOptions.ToString() -> string

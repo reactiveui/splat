@@ -1,6 +1,7 @@
 #nullable enable
 Splat.Builder.AppBuilder
-Splat.Builder.AppBuilder.AppBuilder(Splat.IMutableDependencyResolver! resolver, Splat.IReadonlyDependencyResolver? current = null) -> void
+Splat.Builder.AppBuilder.AppBuilder(Splat.IMutableDependencyResolver! resolver) -> void
+Splat.Builder.AppBuilder.AppBuilder(Splat.IMutableDependencyResolver! resolver, Splat.IReadonlyDependencyResolver? current) -> void
 Splat.Builder.AppBuilder.Build() -> Splat.Builder.IAppInstance!
 Splat.Builder.AppBuilder.Current.get -> Splat.IReadonlyDependencyResolver?
 Splat.Builder.AppBuilder.CurrentMutable.get -> Splat.IMutableDependencyResolver!

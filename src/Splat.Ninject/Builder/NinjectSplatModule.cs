@@ -14,6 +14,7 @@ namespace Splat.Builder;
 /// container.</remarks>
 public sealed class NinjectSplatModule : IModule
 {
+    /// <summary>The Ninject kernel that registrations are applied to when the module runs.</summary>
     private readonly IKernel _container;
 
     /// <summary>Initializes a new instance of the <see cref="NinjectSplatModule"/> class.</summary>

@@ -9,8 +9,10 @@ namespace Splat.NLog;
 /// for internal use and is not thread-safe for external callers.</remarks>
 internal static class LogResolver
 {
+    /// <summary>Maximum number of resolved loggers retained by the cache.</summary>
     private const int MaxCacheSize = 16;
 
+    /// <summary>Caches the NLog logger resolved for each type, bounded by <see cref="MaxCacheSize"/>.</summary>
     private static readonly MemoizingMRUCache<Type, global::NLog.Logger> _loggerCache = new(
         (type, _) => global::NLog.LogManager.GetLogger(type.ToString()),
         MaxCacheSize);

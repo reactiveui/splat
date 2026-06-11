@@ -116,7 +116,9 @@ public class SizeMathExtensionsTests
     public async Task ScaledBy_ScalesSizeCorrectly()
     {
         // Arrange
-        var size = new SizeF(4.0f, 6.0f);
+        const float width = 4.0f;
+        const float height = 6.0f;
+        var size = new SizeF(width, height);
         const float factor = 2.5f;
 
         // Act
@@ -125,8 +127,8 @@ public class SizeMathExtensionsTests
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(result.Width).IsEqualTo(10.0f);
-            await Assert.That(result.Height).IsEqualTo(15.0f);
+            await Assert.That(result.Width).IsEqualTo(width * factor);
+            await Assert.That(result.Height).IsEqualTo(height * factor);
         }
     }
 
@@ -156,7 +158,9 @@ public class SizeMathExtensionsTests
     public async Task ScaledBy_HandlesNegativeFactor()
     {
         // Arrange
-        var size = new SizeF(4.0f, 6.0f);
+        const float width = 4.0f;
+        const float height = 6.0f;
+        var size = new SizeF(width, height);
         const float factor = -2.0f;
 
         // Act
@@ -165,8 +169,8 @@ public class SizeMathExtensionsTests
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(result.Width).IsEqualTo(-8.0f);
-            await Assert.That(result.Height).IsEqualTo(-12.0f);
+            await Assert.That(result.Width).IsEqualTo(width * factor);
+            await Assert.That(result.Height).IsEqualTo(height * factor);
         }
     }
 
@@ -176,7 +180,9 @@ public class SizeMathExtensionsTests
     public async Task ScaledBy_HandlesFractionalFactor()
     {
         // Arrange
-        var size = new SizeF(10.0f, 20.0f);
+        const float width = 10.0f;
+        const float height = 20.0f;
+        var size = new SizeF(width, height);
         const float factor = 0.5f;
 
         // Act
@@ -185,8 +191,8 @@ public class SizeMathExtensionsTests
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(result.Width).IsEqualTo(5.0f);
-            await Assert.That(result.Height).IsEqualTo(10.0f);
+            await Assert.That(result.Width).IsEqualTo(width * factor);
+            await Assert.That(result.Height).IsEqualTo(height * factor);
         }
     }
 
@@ -196,7 +202,9 @@ public class SizeMathExtensionsTests
     public async Task ScaledBy_HandlesVeryLargeFactor()
     {
         // Arrange
-        var size = new SizeF(1.0f, 2.0f);
+        const float width = 1.0f;
+        const float height = 2.0f;
+        var size = new SizeF(width, height);
         const float factor = 1000.0f;
 
         // Act
@@ -205,8 +213,8 @@ public class SizeMathExtensionsTests
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(result.Width).IsEqualTo(1000.0f);
-            await Assert.That(result.Height).IsEqualTo(2000.0f);
+            await Assert.That(result.Width).IsEqualTo(width * factor);
+            await Assert.That(result.Height).IsEqualTo(height * factor);
         }
     }
 
@@ -216,7 +224,9 @@ public class SizeMathExtensionsTests
     public async Task ScaledBy_HandlesVerySmallFactor()
     {
         // Arrange
-        var size = new SizeF(100.0f, 200.0f);
+        const float width = 100.0f;
+        const float height = 200.0f;
+        var size = new SizeF(width, height);
         const float factor = 0.001f;
 
         // Act
@@ -225,8 +235,8 @@ public class SizeMathExtensionsTests
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(result.Width).IsEqualTo(0.1f);
-            await Assert.That(result.Height).IsEqualTo(0.2f);
+            await Assert.That(result.Width).IsEqualTo(width * factor);
+            await Assert.That(result.Height).IsEqualTo(height * factor);
         }
     }
 }

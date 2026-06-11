@@ -42,6 +42,10 @@ namespace Splat;
 /// </list>
 /// </para>
 /// </remarks>
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification = "Generic service-location API; the service type is supplied explicitly by callers, so type inference cannot apply by design.")]
 public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 {
     /// <summary>Gate protecting <see cref="_callbackChanged"/> and publication of <see cref="_callbackSnapshot"/>.</summary>
@@ -100,7 +104,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
     /// });
     /// </code>
     /// </example>
-    public InstanceGenericFirstDependencyResolver(Action<IMutableDependencyResolver>? configure) => configure?.Invoke(this);
+    public InstanceGenericFirstDependencyResolver(Action<IMutableDependencyResolver>? configure) => ApplyConfiguration(configure);
 
     /// <inheritdoc />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -787,8 +791,67 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
     /// <inheritdoc />
     public void Dispose()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
+        // Ensure Dispose runs exactly once.
+        if (Interlocked.CompareExchange(ref _disposed, 1, 0) != 0)
+        {
+            return;
+        }
+
+        // Swap state so any future cache lookups use the new empty state.
+        // The old state becomes unreachable from this instance (allowing cleanup).
+        var oldState = Interlocked.Exchange(ref _state, new());
+
+        // Snapshot callbacks and disposal actions under their respective gates.
+        // Run user code outside locks.
+        var callbacks = Volatile.Read(ref _callbackSnapshot);
+
+        Action[]? disposalActionsSnapshot;
+        lock (_disposalGate)
+        {
+            disposalActionsSnapshot = _disposalActions.Count == 0 ? null : [.. _disposalActions];
+            _disposalActions.Clear();
+        }
+
+        // Dispose registration callbacks (exceptions suppressed).
+        for (var i = 0; i < callbacks.Length; i++)
+        {
+            try
+            {
+                callbacks[i]();
+            }
+            catch
+            {
+                // Suppress exceptions during disposal.
+            }
+        }
+
+        // Clear callbacks under the correct gate (race fix vs. original).
+        lock (_callbackGate)
+        {
+            _callbackChanged.Clear();
+            Volatile.Write(ref _callbackSnapshot, []);
+        }
+
+        // Execute disposal actions for constants and lazy singletons (exceptions suppressed).
+        if (disposalActionsSnapshot is not null)
+        {
+            for (var i = 0; i < disposalActionsSnapshot.Length; i++)
+            {
+                try
+                {
+                    disposalActionsSnapshot[i]();
+                }
+                catch
+                {
+                    // Suppress exceptions during disposal.
+                }
+            }
+        }
+
+        // Clear the non-generic registry associated with the old state.
+        // This ensures non-generic registrations do not leak across resolver lifetimes.
+        var registry = ServiceTypeRegistryCache.Get(oldState);
+        registry.Clear();
     }
 
     /// <summary>Unwraps non-generic results and filters out nulls.</summary>
@@ -804,59 +867,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         // Most callers pass object[] from the registry; special-case to avoid enumerator allocations.
         if (results is object[] arr)
         {
-            var count = 0;
-
-            // First pass: count surviving items after unwrap/null-filter.
-            for (var i = 0; i < arr.Length; i++)
-            {
-                var v = UnwrapNullServiceType(arr[i]);
-                if (v is not null)
-                {
-                    count++;
-                }
-            }
-
-            if (count == arr.Length)
-            {
-                // No nulls filtered and unwrap did not produce null; we can safely return original array
-                // because we are returning IEnumerable<object> semantics and the source is already an array.
-                // (If unwrap changed reference types, count would still equal, but we would have produced new objects;
-                // so we only reuse the array when unwrapping did not change shape. To ensure correctness, we re-check quickly.)
-                var changed = false;
-                for (var i = 0; i < arr.Length; i++)
-                {
-                    if (!ReferenceEquals(arr[i], UnwrapNullServiceType(arr[i])))
-                    {
-                        changed = true;
-                        break;
-                    }
-                }
-
-                if (!changed)
-                {
-                    return arr;
-                }
-            }
-
-            if (count == 0)
-            {
-                return [];
-            }
-
-            var output = new object[count];
-            var idx = 0;
-
-            // Second pass: fill output.
-            for (var i = 0; i < arr.Length; i++)
-            {
-                var v = UnwrapNullServiceType(arr[i]);
-                if (v is not null)
-                {
-                    output[idx++] = v;
-                }
-            }
-
-            return output;
+            return UnwrapArray(arr);
         }
 
         // General path: materialize into a list then return an array. This preserves semantics and avoids iterator allocations.
@@ -871,6 +882,71 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         }
 
         return list.Count == 0 ? [] : [.. list];
+    }
+
+    /// <summary>Unwraps and null-filters an array result, reusing the source array when no element changes.</summary>
+    /// <param name="arr">The raw array returned by the type registry.</param>
+    /// <returns>An array of unwrapped, non-null objects.</returns>
+    private static object[] UnwrapArray(object[] arr)
+    {
+        var count = CountUnwrapped(arr);
+
+        // Reuse the source array only when nothing is filtered and no element changes under unwrap.
+        if (count == arr.Length && !AnyChangedUnderUnwrap(arr))
+        {
+            return arr;
+        }
+
+        if (count == 0)
+        {
+            return [];
+        }
+
+        var output = new object[count];
+        var idx = 0;
+        for (var i = 0; i < arr.Length; i++)
+        {
+            var v = UnwrapNullServiceType(arr[i]);
+            if (v is not null)
+            {
+                output[idx++] = v;
+            }
+        }
+
+        return output;
+    }
+
+    /// <summary>Counts the elements of <paramref name="arr"/> that survive unwrap/null-filtering.</summary>
+    /// <param name="arr">The raw array returned by the type registry.</param>
+    /// <returns>The number of non-null unwrapped elements.</returns>
+    private static int CountUnwrapped(object[] arr)
+    {
+        var count = 0;
+        for (var i = 0; i < arr.Length; i++)
+        {
+            if (UnwrapNullServiceType(arr[i]) is not null)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    /// <summary>Determines whether unwrapping any element of <paramref name="arr"/> yields a different reference.</summary>
+    /// <param name="arr">The raw array returned by the type registry.</param>
+    /// <returns><see langword="true"/> if any element changes under unwrap; otherwise <see langword="false"/>.</returns>
+    private static bool AnyChangedUnderUnwrap(object[] arr)
+    {
+        for (var i = 0; i < arr.Length; i++)
+        {
+            if (!ReferenceEquals(arr[i], UnwrapNullServiceType(arr[i])))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>Unwraps a <see cref="NullServiceType"/> marker by invoking its factory; otherwise returns the value unchanged.</summary>
@@ -960,78 +1036,9 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         return combined;
     }
 
-    /// <summary>Releases the unmanaged resources used by the object and, optionally, releases the managed resources.</summary>
-    /// <remarks>
-    /// This method is called by public Dispose methods and finalizers to perform resource cleanup.
-    /// When isDisposing is true, the method can safely dispose managed objects. When isDisposing is false, the method
-    /// should only release unmanaged resources. Override this method in a derived class to provide custom disposal
-    /// logic. Always call the base class implementation to ensure proper cleanup.
-    /// </remarks>
-    /// <param name="isDisposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-    private void Dispose(bool isDisposing)
-    {
-        // Ensure Dispose runs exactly once.
-        if (Interlocked.CompareExchange(ref _disposed, 1, 0) != 0)
-        {
-            return;
-        }
-
-        // Swap state so any future cache lookups use the new empty state.
-        // The old state becomes unreachable from this instance (allowing cleanup).
-        var oldState = Interlocked.Exchange(ref _state, new());
-
-        // Snapshot callbacks and disposal actions under their respective gates.
-        // Run user code outside locks.
-        var callbacks = Volatile.Read(ref _callbackSnapshot);
-
-        Action[]? disposalActionsSnapshot;
-        lock (_disposalGate)
-        {
-            disposalActionsSnapshot = _disposalActions.Count == 0 ? null : [.. _disposalActions];
-            _disposalActions.Clear();
-        }
-
-        // Dispose registration callbacks (exceptions suppressed).
-        for (var i = 0; i < callbacks.Length; i++)
-        {
-            try
-            {
-                callbacks[i]();
-            }
-            catch
-            {
-                // Suppress exceptions during disposal.
-            }
-        }
-
-        // Clear callbacks under the correct gate (race fix vs. original).
-        lock (_callbackGate)
-        {
-            _callbackChanged.Clear();
-            Volatile.Write(ref _callbackSnapshot, []);
-        }
-
-        // Execute disposal actions for constants and lazy singletons (exceptions suppressed).
-        if (disposalActionsSnapshot is not null)
-        {
-            for (var i = 0; i < disposalActionsSnapshot.Length; i++)
-            {
-                try
-                {
-                    disposalActionsSnapshot[i]();
-                }
-                catch
-                {
-                    // Suppress exceptions during disposal.
-                }
-            }
-        }
-
-        // Clear the non-generic registry associated with the old state.
-        // This ensures non-generic registrations do not leak across resolver lifetimes.
-        var registry = ServiceTypeRegistryCache.Get(oldState);
-        registry.Clear();
-    }
+    /// <summary>Applies constructor-supplied bulk registrations against this fully-constructed instance.</summary>
+    /// <param name="configure">Optional delegate that performs registrations against this resolver.</param>
+    private void ApplyConfiguration(Action<IMutableDependencyResolver>? configure) => configure?.Invoke(this);
 
     /// <summary>Returns <see langword="true"/> if the resolver has never had a registration added.</summary>
     /// <returns>

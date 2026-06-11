@@ -151,11 +151,13 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
             }
 
             // Normalize checks without allocating additional strings.
+            const int yesLength = 3;
+            const int trueLength = 4;
             return value.Length switch
             {
                 1 => value == "1",
-                3 => value.Equals("yes", StringComparison.OrdinalIgnoreCase),
-                4 => value.Equals("true", StringComparison.OrdinalIgnoreCase),
+                yesLength => value.Equals("yes", StringComparison.OrdinalIgnoreCase),
+                trueLength => value.Equals("true", StringComparison.OrdinalIgnoreCase),
                 _ => false
             };
         }
@@ -246,18 +248,17 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
             {
                 using var p = System.Diagnostics.Process.GetCurrentProcess();
                 var mainModule = p.MainModule?.FileName;
-                if (mainModule is not null && !string.IsNullOrEmpty(mainModule))
-                {
 #if NETFRAMEWORK
-                    if (mainModule.IndexOf("testhost", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        mainModule.IndexOf("vstest", StringComparison.OrdinalIgnoreCase) >= 0)
+                if (mainModule is not null && !string.IsNullOrEmpty(mainModule) &&
+                    (mainModule.IndexOf("testhost", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                     mainModule.IndexOf("vstest", StringComparison.OrdinalIgnoreCase) >= 0))
 #else
-                    if (mainModule.Contains("testhost", StringComparison.OrdinalIgnoreCase) ||
-                        mainModule.Contains("vstest", StringComparison.OrdinalIgnoreCase))
+                if (mainModule is not null && !string.IsNullOrEmpty(mainModule) &&
+                    (mainModule.Contains("testhost", StringComparison.OrdinalIgnoreCase) ||
+                     mainModule.Contains("vstest", StringComparison.OrdinalIgnoreCase)))
 #endif
-                    {
-                        return true;
-                    }
+                {
+                    return true;
                 }
             }
             catch

@@ -16,12 +16,16 @@ namespace Splat;
 /// </remarks>
 internal static class ServiceTypeRegistry
 {
+    /// <summary>Serializes updates to the non-generic registration tracking sets.</summary>
     private static readonly Lock NonGenericGate = new();
 
+    /// <summary>Per-(service type, contract) entries holding the registered non-generic factories.</summary>
     private static readonly ConcurrentDictionary<(Type ServiceType, string Contract), ArrayHelpers.Entry<Func<object?>>> Entries = [];
 
+    /// <summary>Set of (service type, contract) pairs registered via the non-generic API; guarded by <see cref="NonGenericGate"/>.</summary>
     private static readonly HashSet<(Type ServiceType, string Contract)> NonGenericRegistrationSet = [];
 
+    /// <summary>Snapshot view of <see cref="NonGenericRegistrationSet"/> swapped atomically for lock-free enumeration.</summary>
     private static HashSet<(Type ServiceType, string Contract)> _nonGenericRegistrations = [];
 
     /// <summary>Tracks that a type was registered via the non-generic API.</summary>

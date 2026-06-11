@@ -28,6 +28,7 @@ public sealed class MicrosoftExtensionsLogProvider : ILoggerProvider
     /// <param name="categoryName">The category name associated with messages produced by this logger.</param>
     private sealed class SplatLoggingAdapter(string categoryName) : global::Microsoft.Extensions.Logging.ILogger
     {
+        /// <summary>The logging category name; retained deliberately even though currently unread.</summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1823:Avoid unused private fields", Justification = "Deliberate")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1213:Remove unused member declaration", Justification = "Deliberate")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop", "IDE0052:Remove unused member declaration", Justification = "Deliberate")]

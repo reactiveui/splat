@@ -33,5 +33,6 @@ public class ActionLogger(
     public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel) => writeWithType?.Invoke(message, type, logLevel);
 
     /// <inheritdoc />
-    public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel) => writeWithTypeAndException?.Invoke(exception, message, type, logLevel);
+    public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel) =>
+        writeWithTypeAndException?.Invoke(exception, message, type, logLevel);
 }

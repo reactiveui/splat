@@ -164,16 +164,22 @@ internal static class ArrayHelpers
     /// <typeparam name="TValue">The value type stored in the entry.</typeparam>
     internal sealed class Entry<TValue>
     {
+        /// <summary>Serializes mutations so committed state and version counters advance atomically.</summary>
         private readonly Lock _gate = new();
 
+        /// <summary>Backing storage for committed items; mutated only under <see cref="_gate"/>.</summary>
         private readonly List<TValue> _list = new(4);
 
+        /// <summary>Cached immutable copy of <see cref="_list"/> handed to lock-free readers; rebuilt when stale.</summary>
         private TValue[]? _snapshot;
 
+        /// <summary>Monotonically increasing version stamped on each committed mutation.</summary>
         private int _version;
 
+        /// <summary>The <see cref="_version"/> captured when <see cref="_snapshot"/> was last rebuilt.</summary>
         private int _snapshotVersion;
 
+        /// <summary>Number of committed items; read lock-free via <see cref="Count"/>.</summary>
         private int _count;
 
         /// <summary>Gets the number of committed items.</summary>
