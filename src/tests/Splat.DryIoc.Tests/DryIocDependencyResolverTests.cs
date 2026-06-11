@@ -23,7 +23,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
     public override Task ServiceRegistrationCallback_Generic_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
@@ -37,7 +37,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
 
         // Register a service first so the callback would normally fire immediately; DryIoc still throws.
         resolver.Register(() => new Common.Test.ViewModelOne(), typeof(Common.Test.ViewModelOne));
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
@@ -48,7 +48,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
     public override Task ServiceRegistrationCallback_Generic_WithContract_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>("test", _ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>("test", _ => { }));
         return Task.CompletedTask;
     }
 
@@ -59,7 +59,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
     public override Task ServiceRegistrationCallback_NonGeneric_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback(typeof(Common.Test.ViewModelOne), _ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback(typeof(Common.Test.ViewModelOne), _ => { }));
         return Task.CompletedTask;
     }
 
@@ -70,7 +70,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
     public override Task ServiceRegistrationCallback_NonGeneric_WithContract_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback(typeof(Common.Test.ViewModelOne), "test", _ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback(typeof(Common.Test.ViewModelOne), "test", _ => { }));
         return Task.CompletedTask;
     }
 
@@ -83,7 +83,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         var resolver = GetDependencyResolver();
 
         // The subscription disposable is never produced because DryIoc throws before returning it.
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }).Dispose());
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }).Dispose());
         return Task.CompletedTask;
     }
 
@@ -95,9 +95,9 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
     {
         var resolver = GetDependencyResolver();
         await Assert.That(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(null!))
-            .Throws<NotImplementedException>();
+            .Throws<NotSupportedException>();
         await Assert.That(() => resolver.ServiceRegistrationCallback(typeof(Common.Test.ViewModelOne), null!))
-            .Throws<NotImplementedException>();
+            .Throws<NotSupportedException>();
     }
 
     /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
@@ -111,7 +111,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         // Register multiple services so the callback would normally fire for each; DryIoc still throws.
         resolver.Register(() => new Common.Test.ViewModelOne(), typeof(Common.Test.ViewModelOne));
         resolver.Register(() => new Common.Test.ViewModelOne(), typeof(Common.Test.ViewModelOne));
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
@@ -124,8 +124,8 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         var resolver = GetDependencyResolver();
         resolver.Dispose();
 
-        // After disposal, ServiceRegistrationCallback still throws NotImplementedException for DryIoc.
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
+        // After disposal, ServiceRegistrationCallback still throws NotSupportedException for DryIoc.
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
@@ -138,7 +138,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         var resolver = GetDependencyResolver();
 
         // Callbacks can never be registered (DryIoc throws), so disposal has nothing to suppress.
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
         resolver.Dispose();
         return Task.CompletedTask;
     }
@@ -149,7 +149,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
     [ExcludeFromCodeCoverage]
     public override Task Dispose_InvokesCallbacks()
     {
-        // DryIoc ServiceRegistrationCallback throws NotImplementedException
+        // DryIoc ServiceRegistrationCallback throws NotSupportedException
         return Task.CompletedTask;
     }
 

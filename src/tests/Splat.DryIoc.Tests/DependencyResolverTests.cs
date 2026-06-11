@@ -224,7 +224,7 @@ public class DependencyResolverTests
         var container = new Container();
         container.UseDryIocDependencyResolver();
 
-        Assert.Throws<NotImplementedException>(() =>
+        Assert.Throws<NotSupportedException>(() =>
             AppLocator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), _ => { }));
     }
 
@@ -236,7 +236,10 @@ public class DependencyResolverTests
     [Test]
     public async Task DryIocDependencyResolver_Should_ReturnRegisteredLogger()
     {
-        var c = new Container();
+        // ConsoleLogger exposes both a parameterless and a TextWriter constructor, so DryIoc must be told how to
+        // choose. ConstructorWithResolvableArguments selects the greediest constructor whose arguments can be
+        // resolved; with no TextWriter registered that resolves to the parameterless constructor.
+        var c = new Container(rules => rules.With(FactoryMethod.ConstructorWithResolvableArguments));
         c.UseDryIocDependencyResolver();
         c.Register<ILogger, ConsoleLogger>(ifAlreadyRegistered: IfAlreadyRegistered.Replace);
         AppLocator.CurrentMutable.RegisterConstant<ILogManager>(

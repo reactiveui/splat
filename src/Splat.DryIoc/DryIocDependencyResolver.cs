@@ -54,8 +54,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
         {
             // Get all bindings that aren't tuple keys (which means they're either DefaultKey or null)
             var bindingsWithDefaultKey = _container.GetServiceRegistrations()
-                .Where(x => x.ServiceType == serviceType &&
-                           x.OptionalServiceKey?.ToString()?.StartsWith(DefaultKeyPrefix, StringComparison.Ordinal) == true)
+                .Where(x => x.ServiceType == serviceType && IsDefaultKey(x.OptionalServiceKey))
                 .ToList();
 
             if (bindingsWithDefaultKey.Count == 0)
@@ -107,7 +106,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
 
             if (contract is null)
             {
-                return x.OptionalServiceKey?.ToString()?.StartsWith(DefaultKeyPrefix, StringComparison.Ordinal) == true;
+                return IsDefaultKey(x.OptionalServiceKey);
             }
 
             return x.OptionalServiceKey is string serviceKeyAsString &&
@@ -264,7 +263,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
 
                 if (contract is null)
                 {
-                    return (x.OptionalServiceKey?.ToString())?.StartsWith(DefaultKeyPrefix, StringComparison.Ordinal) == true;
+                    return IsDefaultKey(x.OptionalServiceKey);
                 }
 
                 return x.OptionalServiceKey is string serviceKeyAsString &&
@@ -313,7 +312,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
 
                 if (contract is null)
                 {
-                    return (x.OptionalServiceKey?.ToString())!.StartsWith(DefaultKeyPrefix, StringComparison.Ordinal);
+                    return IsDefaultKey(x.OptionalServiceKey);
                 }
 
                 return x.OptionalServiceKey is string serviceKeyAsString &&
@@ -381,6 +380,18 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
             // Suppress exceptions from service disposal
         }
     }
+
+    /// <summary>Determines whether the supplied service key represents a contract-less (default) registration.</summary>
+    /// <remarks>
+    /// A registration made without an explicit contract has either a <see langword="null"/> service key (a single
+    /// default registration) or a DryIoc auto-generated <c>DefaultKey</c> (when multiple default implementations are
+    /// appended). Both cases must be treated as default registrations when resolving or unregistering without a contract.
+    /// </remarks>
+    /// <param name="serviceKey">The optional service key of a registration.</param>
+    /// <returns><see langword="true"/> if the key is <see langword="null"/> or a DryIoc <c>DefaultKey</c>; otherwise <see langword="false"/>.</returns>
+    private static bool IsDefaultKey(object? serviceKey) =>
+        serviceKey is null ||
+        serviceKey.ToString()?.StartsWith(DefaultKeyPrefix, StringComparison.Ordinal) == true;
 
     /// <summary>Invokes the factory and converts the produced instance to the requested service type.</summary>
     /// <param name="serviceType">The service type the instance should be converted to.</param>
