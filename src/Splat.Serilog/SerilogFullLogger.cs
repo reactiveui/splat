@@ -19,8 +19,12 @@ namespace Splat;
     Justification = "The generic type parameter is the caller-supplied calling type used only to scope the log entry; it intentionally has no corresponding method parameter and cannot be inferred.")]
 public partial class SerilogFullLogger : IFullLogger
 {
-    /// <summary>Serilog message template used to forward an already-rendered message as a single property.</summary>
-    private const string MessageTemplate = "{Message}";
+    /// <summary>
+    /// Serilog message template used to forward an already-rendered message as a single property. The <c>:l</c>
+    /// (literal) specifier renders the string value without the surrounding quotes Serilog adds to string
+    /// properties by default, so the emitted text matches the message that was passed in.
+    /// </summary>
+    private const string MessageTemplate = "{Message:l}";
 
     /// <summary>The underlying Serilog logger that messages are forwarded to.</summary>
     private readonly global::Serilog.ILogger _logger;
