@@ -688,7 +688,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     [Test]
     public async Task ErrorFourArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
-        var (logger, target) = GetLogger(LogLevel.Error);
+        var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Error(Format4, Arg1, Arg2, Arg3, Arg4);
         await Assert.That(target.Logs).IsEmpty();
     }
@@ -708,7 +708,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     [Test]
     public async Task ErrorFiveArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
-        var (logger, target) = GetLogger(LogLevel.Error);
+        var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Error(Format5, Arg1, Arg2, Arg3, Arg4, Arg5);
         await Assert.That(target.Logs).IsEmpty();
     }
@@ -728,7 +728,7 @@ public abstract class AllocationFreeLoggerBaseTestBase<T> : AllocateFreeErrorLog
     [Test]
     public async Task ErrorSixArgumentsMethod_Should_Not_Write_If_Higher_Level()
     {
-        var (logger, target) = GetLogger(LogLevel.Error);
+        var (logger, target) = GetLogger(LogLevel.Fatal);
         logger.Error(Format6, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6);
         await Assert.That(target.Logs).IsEmpty();
     }
