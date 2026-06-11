@@ -1,0 +1,46 @@
+name: SonarCloud
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  sonarcloud-token:
+    name: validate-token
+    runs-on: ubuntu-latest
+    outputs:
+      available: ${{ steps.check.outputs.available }}
+    steps:
+      - name: Check SonarCloud token
+        id: check
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          if [ -n "${SONAR_TOKEN:-}" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::SONAR_TOKEN is not configured; skipping SonarCloud analysis for this run."
+          fi
+
+  sonarcloud:
+    needs: sonarcloud-token
+    if: ${{ needs.sonarcloud-token.outputs.available == 'true' }}
+    uses: reactiveui/actions-common/.github/workflows/workflow-common-sonarcloud.yml@main
+    with:
+      productNamespacePrefix: Splat
+      installWorkloads: true
+      sonarProjectKey: reactiveui_splat
+      sonarOrganization: reactiveui
+      sonarExclusions: '**/tests/**,**/Benchmarks/**,**/benchmarks/**,**/TestResults/**'
+      sonarCoverageExclusions: '**/tests/**,**/Benchmarks/**,**/benchmarks/**,**/*Tests/**,**/*Tests.cs,**/Polyfills/**,**/Generated/**'
+      sonarCpdExclusions: '**/tests/**,**/Benchmarks/**,**/benchmarks/**,**/Polyfills/**'
+      sonarTestExclusions: '**/tests/**,**/Benchmarks/**,**/benchmarks/**'
+      testTimeout: '15m'
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
