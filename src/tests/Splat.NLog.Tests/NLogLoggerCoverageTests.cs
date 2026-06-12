@@ -153,7 +153,7 @@ public class NLogLoggerCoverageTests
     {
         var (logger, _) = GetLogger(LogLevel.Debug);
 
-        await Assert.That(() => ((IDisposable)logger).Dispose()).ThrowsNothing();
+        await Assert.That(() => logger.Dispose()).ThrowsNothing();
     }
 
     /// <summary>Verifies that the constructor throws when given a null inner logger.</summary>

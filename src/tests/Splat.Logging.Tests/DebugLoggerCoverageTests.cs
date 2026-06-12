@@ -10,6 +10,7 @@ public class DebugLoggerCoverageTests
 {
     /// <summary>A sample debug-level message used across the Write overload tests.</summary>
     private const string DebugMessage = "debug";
+
     /// <summary>A sample message used across the Write overload tests.</summary>
     private const string SampleMessage = "message";
 

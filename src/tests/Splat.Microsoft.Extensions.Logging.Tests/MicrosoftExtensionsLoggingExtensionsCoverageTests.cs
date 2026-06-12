@@ -73,10 +73,7 @@ public class MicrosoftExtensionsLoggingExtensionsCoverageTests
     public async Task AddSplat_OnLoggingBuilder_ReturnsSameBuilder()
     {
         ILoggingBuilder? captured = null;
-        using var loggerFactory = LoggerFactory.Create(builder =>
-        {
-            captured = builder.AddSplat();
-        });
+        using var loggerFactory = LoggerFactory.Create(builder => captured = builder.AddSplat());
 
         await Assert.That(captured).IsNotNull();
     }
