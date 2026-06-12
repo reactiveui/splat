@@ -48,18 +48,11 @@ namespace Splat;
     Justification = "Generic service-location API; the service type is supplied explicitly by callers, so type inference cannot apply by design.")]
 public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 {
-    /// <summary>Gate protecting <see cref="_callbackChanged"/> and publication of <see cref="_callbackSnapshot"/>.</summary>
+    /// <summary>Gate protecting <see cref="_callbackRegistry"/> structure and <see cref="_callbackCount"/> updates.</summary>
     /// <remarks>
-    /// Do not lock on the list instance itself; list mutations (including <c>Clear</c>) would make that pattern fragile.
+    /// Held only while mutating the registry dictionary or reading an entry reference; user callbacks always run outside this gate.
     /// </remarks>
     private readonly Lock _callbackGate = new();
-
-    /// <summary>Registered callbacks notified when registrations change.</summary>
-    /// <remarks>
-    /// The list is mutated under <see cref="_callbackGate"/> and a snapshot is published to <see cref="_callbackSnapshot"/>
-    /// for lock-free invocation.
-    /// </remarks>
-    private readonly List<Action> _callbackChanged = [];
 
     /// <summary>Gate protecting <see cref="_disposalActions"/> additions/enumeration/clearing.</summary>
     private readonly Lock _disposalGate = new();
@@ -76,11 +69,23 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
     /// </remarks>
     private ResolverState _state = new();
 
-    /// <summary>Snapshot of callbacks published for lock-free iteration.</summary>
+    /// <summary>Registration-change callbacks keyed by <c>(service type, contract)</c>; <see langword="null"/> until the first subscription.</summary>
     /// <remarks>
-    /// Written under <see cref="_callbackGate"/> and read via Volatile Read.
+    /// <para>
+    /// Lazily created so resolvers that never subscribe (the common case) allocate no callback state.
+    /// The dictionary structure is mutated only under <see cref="_callbackGate"/>; each per-key
+    /// <see cref="ArrayHelpers.Entry{TValue}"/> publishes an immutable snapshot that is invoked lock-free outside the gate.
+    /// </para>
+    /// <para>
+    /// Callbacks are scoped to their <c>(type, contract)</c> key and fire only on registration (not unregistration),
+    /// matching <see cref="ModernDependencyResolver"/> semantics.
+    /// </para>
     /// </remarks>
-    private Action[] _callbackSnapshot = [];
+    private Dictionary<(Type ServiceType, string? Contract), ArrayHelpers.Entry<Action<IDisposable>>>? _callbackRegistry;
+
+    /// <summary>Total number of live registration callbacks; enables a lock-free fast exit from <see cref="NotifyCallbackChanged"/> when zero.</summary>
+    /// <remarks>Written under <see cref="_callbackGate"/> via <see cref="Volatile.Write(ref int, int)"/>; read lock-free on the registration hot path.</remarks>
+    private int _callbackCount;
 
     /// <summary>Disposal flag: 0 = not disposed, 1 = disposed.</summary>
     private int _disposed;
@@ -340,7 +345,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         var registry = ServiceTypeRegistryCache.Get(_state);
         registry.Register(TypeCache<T>.Type, () => factory()!);
 
-        NotifyCallbackChanged();
+        NotifyCallbackChanged(TypeCache<T>.Type, null);
     }
 
     /// <inheritdoc />
@@ -364,7 +369,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         var registry = ServiceTypeRegistryCache.Get(_state);
         registry.Register(TypeCache<T>.Type, () => factory()!, contract);
 
-        NotifyCallbackChanged();
+        NotifyCallbackChanged(TypeCache<T>.Type, contract);
     }
 
     /// <inheritdoc />
@@ -381,7 +386,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         registry.Register(serviceType, factory);
         registry.TrackNonGenericRegistration(serviceType);
 
-        NotifyCallbackChanged();
+        NotifyCallbackChanged(serviceType, null);
     }
 
     /// <inheritdoc />
@@ -404,7 +409,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         registry.Register(serviceType, factory, contract);
         registry.TrackNonGenericRegistration(serviceType, contract);
 
-        NotifyCallbackChanged();
+        NotifyCallbackChanged(serviceType, contract);
     }
 
     /// <inheritdoc />
@@ -421,7 +426,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         var registry = ServiceTypeRegistryCache.Get(_state);
         registry.Register(TypeCache<TService>.Type, static () => new TImplementation());
 
-        NotifyCallbackChanged();
+        NotifyCallbackChanged(TypeCache<TService>.Type, null);
     }
 
     /// <inheritdoc />
@@ -444,7 +449,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         var registry = ServiceTypeRegistryCache.Get(_state);
         registry.Register(TypeCache<TService>.Type, static () => new TImplementation(), contract);
 
-        NotifyCallbackChanged();
+        NotifyCallbackChanged(TypeCache<TService>.Type, contract);
     }
 
     /// <inheritdoc />
@@ -462,7 +467,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         var registry = ServiceTypeRegistryCache.Get(_state);
         registry.Register(TypeCache<T>.Type, () => value!);
 
-        NotifyCallbackChanged();
+        NotifyCallbackChanged(TypeCache<T>.Type, null);
     }
 
     /// <inheritdoc />
@@ -486,7 +491,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         var registry = ServiceTypeRegistryCache.Get(_state);
         registry.Register(TypeCache<T>.Type, () => value!, contract);
 
-        NotifyCallbackChanged();
+        NotifyCallbackChanged(TypeCache<T>.Type, contract);
     }
 
     /// <inheritdoc />
@@ -529,7 +534,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
             return value;
         });
 
-        NotifyCallbackChanged();
+        NotifyCallbackChanged(TypeCache<T>.Type, null);
     }
 
     /// <inheritdoc />
@@ -583,7 +588,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
             },
             contract);
 
-        NotifyCallbackChanged();
+        NotifyCallbackChanged(TypeCache<T>.Type, contract);
     }
 
     /// <inheritdoc />
@@ -596,8 +601,6 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         var registry = ServiceTypeRegistryCache.Get(_state);
         registry.UnregisterCurrent(TypeCache<T>.Type);
-
-        NotifyCallbackChanged();
     }
 
     /// <inheritdoc />
@@ -616,8 +619,6 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         var registry = ServiceTypeRegistryCache.Get(_state);
         registry.UnregisterCurrent(TypeCache<T>.Type, contract);
-
-        NotifyCallbackChanged();
     }
 
     /// <inheritdoc />
@@ -628,8 +629,6 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         serviceType ??= NullServiceType.CachedType;
         var registry = ServiceTypeRegistryCache.Get(_state);
         registry.UnregisterCurrent(serviceType);
-
-        NotifyCallbackChanged();
     }
 
     /// <inheritdoc />
@@ -647,8 +646,6 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         var registry = ServiceTypeRegistryCache.Get(_state);
         registry.UnregisterCurrent(serviceType, contract);
-
-        NotifyCallbackChanged();
     }
 
     /// <inheritdoc />
@@ -661,8 +658,6 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         var registry = ServiceTypeRegistryCache.Get(_state);
         registry.UnregisterAll(TypeCache<T>.Type);
-
-        NotifyCallbackChanged();
     }
 
     /// <inheritdoc />
@@ -681,8 +676,6 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         var registry = ServiceTypeRegistryCache.Get(_state);
         registry.UnregisterAll(TypeCache<T>.Type, contract);
-
-        NotifyCallbackChanged();
     }
 
     /// <inheritdoc />
@@ -693,8 +686,6 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         serviceType ??= NullServiceType.CachedType;
         var registry = ServiceTypeRegistryCache.Get(_state);
         registry.UnregisterAll(serviceType);
-
-        NotifyCallbackChanged();
     }
 
     /// <inheritdoc />
@@ -712,8 +703,6 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         var registry = ServiceTypeRegistryCache.Get(_state);
         registry.UnregisterAll(serviceType, contract);
-
-        NotifyCallbackChanged();
     }
 
     /// <inheritdoc />
@@ -726,17 +715,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         ArgumentExceptionHelper.ThrowIfNull(callback);
         ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
 
-        // Wrap to normalize callback signature; the wrapper is what we store/remove.
-        Action callbackWrapper = () => callback(EmptyDisposable.Instance);
-
-        AddCallback(callbackWrapper);
-        RefreshCallbackSnapshot();
-
-        var disp = new ActionDisposable(() =>
-        {
-            RemoveCallback(callbackWrapper);
-            RefreshCallbackSnapshot();
-        });
+        var disp = AddCallback(TypeCache<T>.Type, contract, callback);
 
         // Invoke callback once per existing registration (matches ModernDependencyResolver behavior).
         // Use counts to avoid invoking factories (especially lazy singletons).
@@ -766,16 +745,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         ArgumentExceptionHelper.ThrowIfNull(callback);
         ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
 
-        Action callbackWrapper = () => callback(EmptyDisposable.Instance);
-
-        AddCallback(callbackWrapper);
-        RefreshCallbackSnapshot();
-
-        var disp = new ActionDisposable(() =>
-        {
-            RemoveCallback(callbackWrapper);
-            RefreshCallbackSnapshot();
-        });
+        var disp = AddCallback(serviceType, contract, callback);
 
         var registry = ServiceTypeRegistryCache.Get(_state);
         var count = registry.GetCount(serviceType, contract);
@@ -803,7 +773,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         // Snapshot callbacks and disposal actions under their respective gates.
         // Run user code outside locks.
-        var callbacks = Volatile.Read(ref _callbackSnapshot);
+        var callbacks = DrainCallbacks();
 
         Action[]? disposalActionsSnapshot;
         lock (_disposalGate)
@@ -817,19 +787,12 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         {
             try
             {
-                callbacks[i]();
+                callbacks[i](EmptyDisposable.Instance);
             }
             catch
             {
                 // Suppress exceptions during disposal.
             }
-        }
-
-        // Clear callbacks under the correct gate (race fix vs. original).
-        lock (_callbackGate)
-        {
-            _callbackChanged.Clear();
-            Volatile.Write(ref _callbackSnapshot, []);
         }
 
         // Execute disposal actions for constants and lazy singletons (exceptions suppressed).
@@ -1062,60 +1025,123 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         _state.MarkHasRegistrations();
     }
 
-    /// <summary>Adds a callback to the registration-change callback list.</summary>
+    /// <summary>Registers a callback under the supplied <c>(service type, contract)</c> key and returns a disposable that removes it.</summary>
+    /// <param name="serviceType">The service type the callback is scoped to.</param>
+    /// <param name="contract">The optional contract the callback is scoped to.</param>
     /// <param name="callback">The callback to add.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
-    private void AddCallback(Action callback)
+    /// <returns>A disposable that unsubscribes the callback when disposed.</returns>
+    private ActionDisposable AddCallback(Type serviceType, string? contract, Action<IDisposable> callback)
     {
-        ArgumentExceptionHelper.ThrowIfNull(callback);
+        var key = (serviceType, contract);
+
         lock (_callbackGate)
         {
-            _callbackChanged.Add(callback);
+            _callbackRegistry ??= [];
+            if (!_callbackRegistry.TryGetValue(key, out var entry))
+            {
+                entry = new();
+                _callbackRegistry[key] = entry;
+            }
+
+            entry.Add(callback);
+            Volatile.Write(ref _callbackCount, _callbackCount + 1);
+        }
+
+        return new ActionDisposable(() => RemoveCallback(key, callback));
+    }
+
+    /// <summary>Atomically detaches and returns every registered callback for one-shot teardown invocation.</summary>
+    /// <returns>A flattened snapshot of all registered callbacks; an empty array when none are subscribed.</returns>
+    private Action<IDisposable>[] DrainCallbacks()
+    {
+        lock (_callbackGate)
+        {
+            try
+            {
+                if (_callbackRegistry is null || _callbackCount == 0)
+                {
+                    return [];
+                }
+
+                // Flatten every key's callbacks into a single list so each is invoked exactly once on teardown.
+                var flattened = new List<Action<IDisposable>>(_callbackCount);
+                foreach (var entry in _callbackRegistry.Values)
+                {
+                    entry.CopyItemsTo(flattened);
+                }
+
+                return [.. flattened];
+            }
+            finally
+            {
+                _callbackRegistry = null;
+                Volatile.Write(ref _callbackCount, 0);
+            }
         }
     }
 
-    /// <summary>Removes a callback from the registration-change callback list.</summary>
+    /// <summary>Removes a previously registered callback for the supplied key.</summary>
+    /// <param name="key">The <c>(service type, contract)</c> key the callback was registered under.</param>
     /// <param name="callback">The callback to remove.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
-    private void RemoveCallback(Action callback)
-    {
-        ArgumentExceptionHelper.ThrowIfNull(callback);
-        lock (_callbackGate)
-        {
-            _callbackChanged.Remove(callback);
-        }
-    }
-
-    /// <summary>Publishes a fresh snapshot of callbacks for lock-free invocation.</summary>
-    /// <remarks>
-    /// This allocates a new array containing the current callback list.
-    /// The array is then published via <see cref="Volatile.Write{T}(ref T, T)"/>.
-    /// </remarks>
-    private void RefreshCallbackSnapshot()
+    private void RemoveCallback((Type ServiceType, string? Contract) key, Action<IDisposable> callback)
     {
         lock (_callbackGate)
         {
-            Volatile.Write(ref _callbackSnapshot, [.. _callbackChanged]);
+            if (_callbackRegistry is null || !_callbackRegistry.TryGetValue(key, out var entry))
+            {
+                return;
+            }
+
+            if (!entry.Remove(callback))
+            {
+                return;
+            }
+
+            Volatile.Write(ref _callbackCount, _callbackCount - 1);
+
+            if (entry.Count == 0)
+            {
+                _callbackRegistry.Remove(key);
+            }
         }
     }
 
-    /// <summary>Invokes the current callback snapshot to signal that registrations have changed.</summary>
+    /// <summary>Notifies callbacks scoped to the registered <c>(service type, contract)</c> key that a registration changed.</summary>
+    /// <param name="serviceType">The service type that was just registered.</param>
+    /// <param name="contract">The contract that was just registered, if any.</param>
     /// <remarks>
-    /// Suppresses exceptions thrown by callbacks. If the resolver is disposed, no callbacks are invoked.
+    /// Returns immediately (lock-free) when the resolver is disposed or no callbacks are subscribed.
+    /// Otherwise the matching key's immutable snapshot is invoked outside the gate; callback exceptions are suppressed.
     /// </remarks>
-    private void NotifyCallbackChanged()
+    private void NotifyCallbackChanged(Type serviceType, string? contract)
     {
         if (Volatile.Read(ref _disposed) != 0)
         {
             return;
         }
 
-        var callbacks = Volatile.Read(ref _callbackSnapshot);
-        for (var i = 0; i < callbacks.Length; i++)
+        // Fast path: the overwhelmingly common case has no subscribers, so avoid the gate and the dictionary lookup entirely.
+        if (Volatile.Read(ref _callbackCount) == 0)
+        {
+            return;
+        }
+
+        Action<IDisposable>[] snapshot;
+        lock (_callbackGate)
+        {
+            if (_callbackRegistry is null || !_callbackRegistry.TryGetValue((serviceType, contract), out var entry))
+            {
+                return;
+            }
+
+            snapshot = entry.GetSnapshot();
+        }
+
+        for (var i = 0; i < snapshot.Length; i++)
         {
             try
             {
-                callbacks[i]();
+                snapshot[i](EmptyDisposable.Instance);
             }
             catch
             {

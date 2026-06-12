@@ -233,6 +233,34 @@ internal static class ArrayHelpers
             }
         }
 
+        /// <summary>Removes the first occurrence of <paramref name="value"/>, if present.</summary>
+        /// <param name="value">The value to remove, matched by the default equality comparer.</param>
+        /// <returns><see langword="true"/> if an item was removed; otherwise <see langword="false"/>.</returns>
+        /// <remarks>When the entry drains to empty, an empty snapshot is published so subsequent reads fast-exit.</remarks>
+        public bool Remove(TValue value)
+        {
+            lock (_gate)
+            {
+                if (!_list.Remove(value))
+                {
+                    return false;
+                }
+
+                _version++;
+                var remaining = _list.Count;
+                Volatile.Write(ref _count, remaining);
+
+                if (remaining == 0)
+                {
+                    // Publish an empty snapshot aligned with the new version so readers fast-exit.
+                    _snapshot = [];
+                    _snapshotVersion = _version;
+                }
+
+                return true;
+            }
+        }
+
         /// <summary>Removes all items and publishes an empty snapshot.</summary>
         public void Clear()
         {
