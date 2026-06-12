@@ -272,7 +272,6 @@ public partial class ObservableLinkedList<T> : INotifyCollectionChanged, INotify
 
 ### Framework Integration
 - **Splat.Prism** - Prism framework integration
-- **Splat.Prism.Forms** - Prism for Xamarin.Forms integration
 
 ### Testing and Benchmarks
 - **Splat.Tests** - Main test suite with comprehensive coverage
@@ -280,10 +279,6 @@ public partial class ObservableLinkedList<T> : INotifyCollectionChanged, INotify
 - **Splat.*.Tests** - Individual adapter test projects
 - **Benchmarks** - Performance benchmarks
 - **Splat.Common.Test** - Shared test utilities
-
-### Test Runners
-- **Splat.TestRunner.Android** - Android test runner
-- **Splat.TestRunner.Uwp** - UWP test runner
 
 ## Common Development Tasks
 

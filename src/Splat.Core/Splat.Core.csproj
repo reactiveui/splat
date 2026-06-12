@@ -29,8 +29,6 @@
     <InternalsVisibleTo Include="Splat.Exceptionless" />
     <InternalsVisibleTo Include="Splat.Tests" />
     <InternalsVisibleTo Include="Splat.Drawing.Tests" />
-    <InternalsVisibleTo Include="Splat.TestRunner.Android" />
-    <InternalsVisibleTo Include="Splat.TestRunner.Uwp" />
     <InternalsVisibleTo Include="Splat.Builder.Tests" />
     <InternalsVisibleTo Include="Splat.Autofac" />
     <InternalsVisibleTo Include="Splat.Ninject" />
