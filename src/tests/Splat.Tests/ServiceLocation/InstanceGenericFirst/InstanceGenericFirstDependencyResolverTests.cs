@@ -14,6 +14,83 @@ namespace Splat.Tests.ServiceLocation;
 [InheritsTests]
 public sealed class InstanceGenericFirstDependencyResolverTests : BaseDependencyResolverTests<InstanceGenericFirstDependencyResolver>
 {
+    /// <summary>
+    /// Tests that a generic registration callback fires only for registrations of its own service type,
+    /// not for unrelated ones (issue #1589 callback-scoping regression).
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task ServiceRegistrationCallback_Generic_OnlyFiresForMatchingServiceType()
+    {
+        var resolver = new InstanceGenericFirstDependencyResolver();
+        var totalInvocations = 0;
+        var matchingInvocations = 0;
+
+        using var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(_ =>
+        {
+            totalInvocations++;
+            matchingInvocations += resolver.HasRegistration<ViewModelOne>() ? 1 : 0;
+        });
+
+        // An unrelated registration must not trigger the ViewModelOne callback.
+        resolver.RegisterConstant(new ViewModelTwo());
+        await Assert.That(totalInvocations).IsEqualTo(0);
+
+        // The matching registration must trigger it exactly once, while the service is resolvable.
+        resolver.RegisterConstant(new ViewModelOne());
+        using (Assert.Multiple())
+        {
+            await Assert.That(totalInvocations).IsEqualTo(1);
+            await Assert.That(matchingInvocations).IsEqualTo(1);
+        }
+    }
+
+    /// <summary>Tests that registration callbacks do not fire on unregistration, matching ModernDependencyResolver.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task ServiceRegistrationCallback_Generic_DoesNotFireOnUnregister()
+    {
+        var resolver = new InstanceGenericFirstDependencyResolver();
+        resolver.RegisterConstant(new ViewModelOne());
+
+        var invocations = 0;
+        using var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(_ => invocations++);
+
+        // The single existing registration is replayed once on subscribe; nothing else should fire.
+        var baseline = invocations;
+
+        resolver.UnregisterCurrent<ViewModelOne>();
+        resolver.UnregisterAll<ViewModelOne>();
+
+        await Assert.That(invocations).IsEqualTo(baseline);
+    }
+
+    /// <summary>
+    /// Tests that a nested generic lookup for a not-yet-registered type during another resolution does not
+    /// permanently flag that type as unresolvable (issue #1589 nested-resolution regression).
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_Generic_WhenMissingDuringNestedResolution_ResolvesAfterLaterRegistration()
+    {
+        var resolver = new InstanceGenericFirstDependencyResolver();
+        resolver.RegisterLazySingleton(() => new NestedResolutionProbe<ViewModelOne>(resolver));
+
+        var probe = resolver.GetService<NestedResolutionProbe<ViewModelOne>>();
+
+        await Assert.That(probe).IsNotNull();
+        await Assert.That(probe!.Service).IsNull();
+
+        var service = new ViewModelOne();
+        resolver.RegisterConstant(service);
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(resolver.HasRegistration<ViewModelOne>()).IsTrue();
+            await Assert.That(resolver.GetService<ViewModelOne>()).IsSameReferenceAs(service);
+        }
+    }
+
     /// <summary>Test constructor with configure parameter registers services.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
