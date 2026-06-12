@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
@@ -10,29 +9,33 @@ using Splat.Tests.Mocks;
 
 namespace Splat.Tests.Logging;
 
-/// <summary>
-/// Unit Tests for the Static Logging wrapper implementation.
-/// </summary>
+/// <summary>Unit Tests for the Static Logging wrapper implementation.</summary>
 [ExcludeFromCodeCoverage]
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification = "T is the caller-supplied log-source type bound at compile time to the generic logger.Debug<T> overload under test; it cannot become a parameter without changing the test.")]
 internal sealed class StaticLoggerTests
 {
+    /// <summary>Gets the new line characters for the current environment.</summary>
     private static char[] NewLine => Environment.NewLine.ToCharArray();
 
-    /// <summary>
-    /// Test that constructor throws ArgumentNullException when passed null logger.
-    /// </summary>
+    /// <summary>Test that constructor throws ArgumentNullException when passed null logger.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Constructor_WithNullLogger_ThrowsArgumentNullException() =>
         await Assert.That(() => new StaticFullLogger(null!)).Throws<ArgumentNullException>();
 
-    /// <summary>
-    /// Base tests for the static logger.
-    /// </summary>
+    /// <summary>Base tests for the static logger.</summary>
     public abstract class BaseStaticLoggerTests
     {
-        /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
-        /// </summary>
+        /// <summary>The log message used across the tests.</summary>
+        private const string TestMessage = "Message";
+
+        /// <summary>The float value passed as the third argument in the tests.</summary>
+        private const float ThirdArgumentFloatValue = 2.3f;
+
+        /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [Test]
         public async Task Method_With_Generic_Type_Should_Write_Message_And_Type()
@@ -45,9 +48,7 @@ internal sealed class StaticLoggerTests
             await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"This is a test. ({nameof(GetMethodWithGenericTypeShouldWriteMessageAndType)})");
         }
 
-        /// <summary>
-        /// Test to make sure the generic type parameter is passed to the logger.
-        /// </summary>
+        /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [Test]
         public async Task Method_With_Generic_Type_Should_Write_Message_And_Type_Provided()
@@ -60,103 +61,83 @@ internal sealed class StaticLoggerTests
             await Assert.That(textLogger.Logs.Last().message.Trim(NewLine).Trim()).IsEqualTo($"This is a test. ({nameof(GetMethodWithGenericTypeShouldWriteMessageAndType)})");
         }
 
-        /// <summary>
-        /// Test to ensure debug writes.
-        /// </summary>
+        /// <summary>Test to ensure debug writes.</summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [Test]
         public async Task Method_Writes_Message() =>
-            await Test_Write_Message(logger => GetMethodToWriteMessage()(logger, "Message"));
+            await Test_Write_Message(logger => GetMethodToWriteMessage()(logger, TestMessage));
 
-        /// <summary>
-        /// Test to ensure invariant culture formatted string writes.
-        /// </summary>
+        /// <summary>Test to ensure invariant culture formatted string writes.</summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [Test]
         public async Task Method_Writes_Message_InvariantCulture() =>
-            await Test_Write_Message(logger => GetMethodToWriteMessageWithInvariantCulture()(logger, CultureInfo.InvariantCulture, "{0}", "Message"));
+            await Test_Write_Message(logger => GetMethodToWriteMessageWithInvariantCulture()(logger, CultureInfo.InvariantCulture, "{0}", TestMessage));
 
-        /// <summary>
-        /// Test to ensure invariant culture formatted string writes.
-        /// </summary>
+        /// <summary>Test to ensure invariant culture formatted string writes.</summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [Test]
         public async Task Method_Writes_Message_InvariantCulture_With_Generic_Two_Args() =>
-            await Test_Write_Message(logger => GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs()(logger, CultureInfo.InvariantCulture, "{0}", "Message", 1));
+            await Test_Write_Message(logger => GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs()(logger, CultureInfo.InvariantCulture, "{0}", TestMessage, 1));
 
-        /// <summary>
-        /// Test to ensure invariant culture formatted string writes.
-        /// </summary>
+        /// <summary>Test to ensure invariant culture formatted string writes.</summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [Test]
         public async Task Method_Writes_Message_InvariantCulture_With_Generic_Three_Args() =>
-            await Test_Write_Message(logger => GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs()(logger, CultureInfo.InvariantCulture, "{0}", "Message", 1, 2.3f));
+            await Test_Write_Message(logger => GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs()(logger, CultureInfo.InvariantCulture, "{0}", TestMessage, 1, ThirdArgumentFloatValue));
 
-        /// <summary>
-        /// Test to ensure debug writes.
-        /// </summary>
+        /// <summary>Test to ensure debug writes.</summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [Test]
         public async Task Method_Writes_Exception_And_Message()
         {
             var staticLogger = GetLogger(GetLogLevel());
-            GetMethodToWriteExceptionAndMessage()(staticLogger, new ArgumentException("TEST"), "Message");
+            GetMethodToWriteExceptionAndMessage()(staticLogger, new ArgumentException("TEST"), TestMessage);
             await Task.CompletedTask;
         }
 
-        /// <summary>
-        /// Test to ensure writes method works.
-        /// </summary>
+        /// <summary>Test to ensure writes method works.</summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [Test]
         public async Task Direct_Write_At_Level_Message()
         {
             var staticLogger = GetLogger(GetLogLevel());
-            staticLogger.Write("Message", GetLogLevel());
+            staticLogger.Write(TestMessage, GetLogLevel());
             await Task.CompletedTask;
         }
 
-        /// <summary>
-        /// Test to ensure writes method works.
-        /// </summary>
+        /// <summary>Test to ensure writes method works.</summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [Test]
         public async Task Direct_Write_At_Level_Message_And_Type()
         {
             var staticLogger = GetLogger(GetLogLevel());
-            staticLogger.Write("Message", typeof(DummyObjectClass1), GetLogLevel());
+            staticLogger.Write(TestMessage, typeof(DummyObjectClass1), GetLogLevel());
             await Task.CompletedTask;
         }
 
-        /// <summary>
-        /// Test to ensure writes method works.
-        /// </summary>
+        /// <summary>Test to ensure writes method works.</summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [Test]
         public async Task Direct_Write_At_Level_Message_And_Exception()
         {
             var staticLogger = GetLogger(GetLogLevel());
             var exception = new InvalidOperationException("bleh");
-            staticLogger.Write(exception, "Message", GetLogLevel());
+            staticLogger.Write(exception, TestMessage, GetLogLevel());
             await Task.CompletedTask;
         }
 
-        /// <summary>
-        /// Test to ensure writes method works.
-        /// </summary>
+        /// <summary>Test to ensure writes method works.</summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [Test]
         public async Task Direct_Write_At_Level_Message_Exception_And_Type()
         {
             var staticLogger = GetLogger(GetLogLevel());
             var exception = new InvalidOperationException("bleh");
-            staticLogger.Write(exception, "Message", typeof(DummyObjectClass1), GetLogLevel());
+            staticLogger.Write(exception, TestMessage, typeof(DummyObjectClass1), GetLogLevel());
             await Task.CompletedTask;
         }
 
-        /// <summary>
-        /// Test to make sure the message writes.
-        /// </summary>
+        /// <summary>Test to make sure the message writes.</summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [Test]
         public async Task Logger_Level_AtBoundary_Should_Be_correct()
@@ -167,51 +148,43 @@ internal sealed class StaticLoggerTests
             await Assert.That(logger.Level).IsEqualTo(level);
         }
 
-        /// <summary>
-        /// Gets the logger action for Write with a generic type.
-        /// </summary>
+        /// <summary>Gets the logger action for Write with a generic type.</summary>
         /// <typeparam name="T">The generic type to log.</typeparam>
         /// <returns>Action to call.</returns>
         protected abstract Action<StaticFullLogger, string> GetMethodWithGenericTypeShouldWriteMessageAndType<T>();
 
-        /// <summary>
-        /// Gets the logger action for Writing a string message.
-        /// </summary>
+        /// <summary>Gets the logger action for Writing a string message.</summary>
         /// <returns>Action to call.</returns>
         protected abstract Action<StaticFullLogger, string> GetMethodToWriteMessage();
 
-        /// <summary>
-        /// Gets the logger action for Writing a string message.
-        /// </summary>
+        /// <summary>Gets the logger action for Writing a string message.</summary>
         /// <returns>Action to call.</returns>
         protected abstract Action<StaticFullLogger, CultureInfo, string, string> GetMethodToWriteMessageWithInvariantCulture();
 
-        /// <summary>
-        /// Gets the logger action for Writing a string message.
-        /// </summary>
+        /// <summary>Gets the logger action for Writing a string message.</summary>
         /// <returns>Action to call.</returns>
         protected abstract Action<StaticFullLogger, CultureInfo, string, string, int> GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs();
 
-        /// <summary>
-        /// Gets the logger action for Writing a string message.
-        /// </summary>
+        /// <summary>Gets the logger action for Writing a string message.</summary>
         /// <returns>Action to call.</returns>
         protected abstract Action<StaticFullLogger, CultureInfo, string, string, int, float> GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs();
 
-        /// <summary>
-        /// Gets the logger action for Writing an exception and string message.
-        /// </summary>
+        /// <summary>Gets the logger action for Writing an exception and string message.</summary>
         /// <returns>Action to call.</returns>
         protected abstract Action<StaticFullLogger, Exception, string> GetMethodToWriteExceptionAndMessage();
 
-        /// <summary>
-        /// Gets the log level boundary for the test.
-        /// </summary>
+        /// <summary>Gets the log level boundary for the test.</summary>
         /// <returns>Log Level.</returns>
         protected abstract LogLevel GetLogLevel();
 
+        /// <summary>Creates a <see cref="StaticFullLogger"/> wrapping the supplied text logger.</summary>
+        /// <param name="textLogger">The text logger to wrap.</param>
+        /// <returns>A new static full logger.</returns>
         private static StaticFullLogger GetLogger(TextLogger textLogger) => new(new WrappingFullLogger(textLogger));
 
+        /// <summary>Creates a <see cref="StaticFullLogger"/> configured with the supplied log level.</summary>
+        /// <param name="logLevel">The minimum log level for the logger.</param>
+        /// <returns>A new static full logger.</returns>
         private static StaticFullLogger GetLogger(LogLevel logLevel)
         {
             var textLogger = new TextLogger
@@ -223,6 +196,9 @@ internal sealed class StaticLoggerTests
             return new(wrappingFullLogger);
         }
 
+        /// <summary>Verifies that the supplied write action emits a single message containing a caller member suffix.</summary>
+        /// <param name="testMethodFunc">The action that writes the log message.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         private static async Task Test_Write_Message(Action<StaticFullLogger> testMethodFunc)
         {
             var textLogger = new TextLogger();
@@ -248,12 +224,13 @@ internal sealed class StaticLoggerTests
 #endif
                 await Assert.That(startOfCallerMemberSuffix).IsGreaterThan(0);
 
-                var endOfCallerMemberSuffix = line.message.IndexOf(')', startOfCallerMemberSuffix);
+                var endOfCallerMemberSuffix = line.message.IndexOf(")", startOfCallerMemberSuffix, StringComparison.Ordinal);
                 await Assert.That(endOfCallerMemberSuffix).IsGreaterThan(startOfCallerMemberSuffix + 1);
             }
         }
     }
 
+    /// <summary>Static logger tests for the <see cref="LogLevel.Debug"/> level.</summary>
     [InheritsTests]
     public sealed class DebugStaticLoggerTests : BaseStaticLoggerTests
     {
@@ -261,24 +238,31 @@ internal sealed class StaticLoggerTests
         protected override LogLevel GetLogLevel() => LogLevel.Debug;
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, string> GetMethodWithGenericTypeShouldWriteMessageAndType<T>() => (logger, message) => logger.Debug<T>(message);
+        protected override Action<StaticFullLogger, string> GetMethodWithGenericTypeShouldWriteMessageAndType<T>() =>
+            (logger, message) => logger.Debug<T>(message);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, string> GetMethodToWriteMessage() => (logger, s) => logger.Debug(s);
+        protected override Action<StaticFullLogger, string> GetMethodToWriteMessage() =>
+            (logger, s) => logger.Debug(s);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, CultureInfo, string, string> GetMethodToWriteMessageWithInvariantCulture() => (logger, formatProvider, message, arg1) => logger.Debug(formatProvider, message, arg1);
+        protected override Action<StaticFullLogger, CultureInfo, string, string> GetMethodToWriteMessageWithInvariantCulture() =>
+            (logger, formatProvider, message, arg1) => logger.Debug(formatProvider, message, arg1);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, Exception, string> GetMethodToWriteExceptionAndMessage() => (logger, exception, message) => logger.Debug(exception, message);
+        protected override Action<StaticFullLogger, Exception, string> GetMethodToWriteExceptionAndMessage() =>
+            (logger, exception, message) => logger.Debug(exception, message);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, CultureInfo, string, string, int> GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs() => (logger, formatProvider, message, arg1, arg2) => logger.Debug(formatProvider, message, arg1, arg2);
+        protected override Action<StaticFullLogger, CultureInfo, string, string, int> GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs() =>
+            (logger, formatProvider, message, arg1, arg2) => logger.Debug(formatProvider, message, arg1, arg2);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, CultureInfo, string, string, int, float> GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs() => (logger, formatProvider, message, arg1, arg2, arg3) => logger.Debug(formatProvider, message, arg1, arg2, arg3);
+        protected override Action<StaticFullLogger, CultureInfo, string, string, int, float> GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs() =>
+            (logger, formatProvider, message, arg1, arg2, arg3) => logger.Debug(formatProvider, message, arg1, arg2, arg3);
     }
 
+    /// <summary>Static logger tests for the <see cref="LogLevel.Info"/> level.</summary>
     [InheritsTests]
     public sealed class InfoStaticLoggerTests : BaseStaticLoggerTests
     {
@@ -286,24 +270,31 @@ internal sealed class StaticLoggerTests
         protected override LogLevel GetLogLevel() => LogLevel.Info;
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, string> GetMethodWithGenericTypeShouldWriteMessageAndType<T>() => (logger, message) => logger.Info<T>(message);
+        protected override Action<StaticFullLogger, string> GetMethodWithGenericTypeShouldWriteMessageAndType<T>() =>
+            (logger, message) => logger.Info<T>(message);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, string> GetMethodToWriteMessage() => (logger, s) => logger.Info(s);
+        protected override Action<StaticFullLogger, string> GetMethodToWriteMessage() =>
+            (logger, s) => logger.Info(s);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, CultureInfo, string, string> GetMethodToWriteMessageWithInvariantCulture() => (logger, formatProvider, message, arg1) => logger.Info(formatProvider, message, arg1);
+        protected override Action<StaticFullLogger, CultureInfo, string, string> GetMethodToWriteMessageWithInvariantCulture() =>
+            (logger, formatProvider, message, arg1) => logger.Info(formatProvider, message, arg1);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, Exception, string> GetMethodToWriteExceptionAndMessage() => (logger, exception, message) => logger.Info(exception, message);
+        protected override Action<StaticFullLogger, Exception, string> GetMethodToWriteExceptionAndMessage() =>
+            (logger, exception, message) => logger.Info(exception, message);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, CultureInfo, string, string, int> GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs() => (logger, formatProvider, message, arg1, arg2) => logger.Info(formatProvider, message, arg1, arg2);
+        protected override Action<StaticFullLogger, CultureInfo, string, string, int> GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs() =>
+            (logger, formatProvider, message, arg1, arg2) => logger.Info(formatProvider, message, arg1, arg2);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, CultureInfo, string, string, int, float> GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs() => (logger, formatProvider, message, arg1, arg2, arg3) => logger.Info(formatProvider, message, arg1, arg2, arg3);
+        protected override Action<StaticFullLogger, CultureInfo, string, string, int, float> GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs() =>
+            (logger, formatProvider, message, arg1, arg2, arg3) => logger.Info(formatProvider, message, arg1, arg2, arg3);
     }
 
+    /// <summary>Static logger tests for the <see cref="LogLevel.Warn"/> level.</summary>
     [InheritsTests]
     public sealed class WarningStaticLoggerTests : BaseStaticLoggerTests
     {
@@ -311,24 +302,31 @@ internal sealed class StaticLoggerTests
         protected override LogLevel GetLogLevel() => LogLevel.Warn;
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, string> GetMethodWithGenericTypeShouldWriteMessageAndType<T>() => (logger, message) => logger.Warn<T>(message);
+        protected override Action<StaticFullLogger, string> GetMethodWithGenericTypeShouldWriteMessageAndType<T>() =>
+            (logger, message) => logger.Warn<T>(message);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, string> GetMethodToWriteMessage() => (logger, s) => logger.Warn(s);
+        protected override Action<StaticFullLogger, string> GetMethodToWriteMessage() =>
+            (logger, s) => logger.Warn(s);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, CultureInfo, string, string> GetMethodToWriteMessageWithInvariantCulture() => (logger, formatProvider, message, arg1) => logger.Warn(formatProvider, message, arg1);
+        protected override Action<StaticFullLogger, CultureInfo, string, string> GetMethodToWriteMessageWithInvariantCulture() =>
+            (logger, formatProvider, message, arg1) => logger.Warn(formatProvider, message, arg1);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, Exception, string> GetMethodToWriteExceptionAndMessage() => (logger, exception, message) => logger.Warn(exception, message);
+        protected override Action<StaticFullLogger, Exception, string> GetMethodToWriteExceptionAndMessage() =>
+            (logger, exception, message) => logger.Warn(exception, message);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, CultureInfo, string, string, int> GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs() => (logger, formatProvider, message, arg1, arg2) => logger.Warn(formatProvider, message, arg1, arg2);
+        protected override Action<StaticFullLogger, CultureInfo, string, string, int> GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs() =>
+            (logger, formatProvider, message, arg1, arg2) => logger.Warn(formatProvider, message, arg1, arg2);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, CultureInfo, string, string, int, float> GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs() => (logger, formatProvider, message, arg1, arg2, arg3) => logger.Warn(formatProvider, message, arg1, arg2, arg3);
+        protected override Action<StaticFullLogger, CultureInfo, string, string, int, float> GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs() =>
+            (logger, formatProvider, message, arg1, arg2, arg3) => logger.Warn(formatProvider, message, arg1, arg2, arg3);
     }
 
+    /// <summary>Static logger tests for the <see cref="LogLevel.Error"/> level.</summary>
     [InheritsTests]
     public sealed class ErrorStaticLoggerTests : BaseStaticLoggerTests
     {
@@ -336,24 +334,31 @@ internal sealed class StaticLoggerTests
         protected override LogLevel GetLogLevel() => LogLevel.Error;
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, string> GetMethodWithGenericTypeShouldWriteMessageAndType<T>() => (logger, message) => logger.Error<T>(message);
+        protected override Action<StaticFullLogger, string> GetMethodWithGenericTypeShouldWriteMessageAndType<T>() =>
+            (logger, message) => logger.Error<T>(message);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, string> GetMethodToWriteMessage() => (logger, s) => logger.Error(s);
+        protected override Action<StaticFullLogger, string> GetMethodToWriteMessage() =>
+            (logger, s) => logger.Error(s);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, CultureInfo, string, string> GetMethodToWriteMessageWithInvariantCulture() => (logger, formatProvider, message, arg1) => logger.Error(formatProvider, message, arg1);
+        protected override Action<StaticFullLogger, CultureInfo, string, string> GetMethodToWriteMessageWithInvariantCulture() =>
+            (logger, formatProvider, message, arg1) => logger.Error(formatProvider, message, arg1);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, Exception, string> GetMethodToWriteExceptionAndMessage() => (logger, exception, message) => logger.Error(exception, message);
+        protected override Action<StaticFullLogger, Exception, string> GetMethodToWriteExceptionAndMessage() =>
+            (logger, exception, message) => logger.Error(exception, message);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, CultureInfo, string, string, int> GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs() => (logger, formatProvider, message, arg1, arg2) => logger.Error(formatProvider, message, arg1, arg2);
+        protected override Action<StaticFullLogger, CultureInfo, string, string, int> GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs() =>
+            (logger, formatProvider, message, arg1, arg2) => logger.Error(formatProvider, message, arg1, arg2);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, CultureInfo, string, string, int, float> GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs() => (logger, formatProvider, message, arg1, arg2, arg3) => logger.Error(formatProvider, message, arg1, arg2, arg3);
+        protected override Action<StaticFullLogger, CultureInfo, string, string, int, float> GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs() =>
+            (logger, formatProvider, message, arg1, arg2, arg3) => logger.Error(formatProvider, message, arg1, arg2, arg3);
     }
 
+    /// <summary>Static logger tests for the <see cref="LogLevel.Fatal"/> level.</summary>
     [InheritsTests]
     public sealed class FatalStaticLoggerTests : BaseStaticLoggerTests
     {
@@ -361,21 +366,27 @@ internal sealed class StaticLoggerTests
         protected override LogLevel GetLogLevel() => LogLevel.Fatal;
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, string> GetMethodWithGenericTypeShouldWriteMessageAndType<T>() => (logger, message) => logger.Fatal<T>(message);
+        protected override Action<StaticFullLogger, string> GetMethodWithGenericTypeShouldWriteMessageAndType<T>() =>
+            (logger, message) => logger.Fatal<T>(message);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, string> GetMethodToWriteMessage() => (logger, s) => logger.Fatal(s);
+        protected override Action<StaticFullLogger, string> GetMethodToWriteMessage() =>
+            (logger, s) => logger.Fatal(s);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, CultureInfo, string, string> GetMethodToWriteMessageWithInvariantCulture() => (logger, formatProvider, message, arg1) => logger.Fatal(formatProvider, message, arg1);
+        protected override Action<StaticFullLogger, CultureInfo, string, string> GetMethodToWriteMessageWithInvariantCulture() =>
+            (logger, formatProvider, message, arg1) => logger.Fatal(formatProvider, message, arg1);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, Exception, string> GetMethodToWriteExceptionAndMessage() => (logger, exception, message) => logger.Fatal(exception, message);
+        protected override Action<StaticFullLogger, Exception, string> GetMethodToWriteExceptionAndMessage() =>
+            (logger, exception, message) => logger.Fatal(exception, message);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, CultureInfo, string, string, int> GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs() => (logger, formatProvider, message, arg1, arg2) => logger.Fatal(formatProvider, message, arg1, arg2);
+        protected override Action<StaticFullLogger, CultureInfo, string, string, int> GetMethodToWriteMessageWithInvariantCultureWithTwoGenericArgs() =>
+            (logger, formatProvider, message, arg1, arg2) => logger.Fatal(formatProvider, message, arg1, arg2);
 
         /// <inheritdoc/>
-        protected override Action<StaticFullLogger, CultureInfo, string, string, int, float> GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs() => (logger, formatProvider, message, arg1, arg2, arg3) => logger.Fatal(formatProvider, message, arg1, arg2, arg3);
+        protected override Action<StaticFullLogger, CultureInfo, string, string, int, float> GetMethodToWriteMessageWithInvariantCultureWithThreeGenericArgs() =>
+            (logger, formatProvider, message, arg1, arg2, arg3) => logger.Fatal(formatProvider, message, arg1, arg2, arg3);
     }
 }

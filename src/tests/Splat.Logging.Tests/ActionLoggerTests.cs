@@ -1,17 +1,17 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Tests.Mocks;
 
+using static Splat.Tests.Logging.LoggerTestConstants;
+
 namespace Splat.Tests.Logging;
 
+/// <summary>Unit tests for the <see cref="ActionLogger"/> class.</summary>
 public class ActionLoggerTests
 {
-    /// <summary>
-    /// Test to make sure the message writes.
-    /// </summary>
+    /// <summary>Test to make sure the message writes.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Write_Should_Emit_Message()
@@ -31,18 +31,16 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Write("This is a test.", LogLevel.Debug);
+        fullLogger.Write(TestMessage, LogLevel.Debug);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Debug);
         }
     }
 
-    /// <summary>
-    /// Test to make sure the generic type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Debug_With_Generic_Type_Should_Emit_Message_And_Type()
@@ -64,19 +62,17 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Debug<DummyObjectClass1>("This is a test.");
+        fullLogger.Debug<DummyObjectClass1>(TestMessage);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Debug);
             await Assert.That(passedType).IsEqualTo(typeof(DummyObjectClass1));
         }
     }
 
-    /// <summary>
-    /// Test to make sure the generic type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Debug_With_Generic_Type_Should_Emit_Message_And_Type_Provided()
@@ -98,19 +94,17 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Debug<DummyObjectClass2>("This is a test.");
+        fullLogger.Debug<DummyObjectClass2>(TestMessage);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Debug);
             await Assert.That(passedType).IsEqualTo(typeof(DummyObjectClass2));
         }
     }
 
-    /// <summary>
-    /// Test to make sure the generic type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Info_With_Generic_Type_Should_Emit_Message_And_Type()
@@ -132,19 +126,17 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Info<DummyObjectClass1>("This is a test.");
+        fullLogger.Info<DummyObjectClass1>(TestMessage);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Info);
             await Assert.That(passedType).IsEqualTo(typeof(DummyObjectClass1));
         }
     }
 
-    /// <summary>
-    /// Test to make sure the generic type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Info_With_Generic_Type_Should_Emit_Message_And_Type_Provided()
@@ -166,19 +158,17 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Info<DummyObjectClass2>("This is a test.");
+        fullLogger.Info<DummyObjectClass2>(TestMessage);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Info);
             await Assert.That(passedType).IsEqualTo(typeof(DummyObjectClass2));
         }
     }
 
-    /// <summary>
-    /// Test to make sure the generic type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Warn_With_Generic_Type_Should_Emit_Message_And_Type()
@@ -200,19 +190,17 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Warn<DummyObjectClass1>("This is a test.");
+        fullLogger.Warn<DummyObjectClass1>(TestMessage);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Warn);
             await Assert.That(passedType).IsEqualTo(typeof(DummyObjectClass1));
         }
     }
 
-    /// <summary>
-    /// Test to make sure the generic type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Warn_With_Generic_Type_Should_Emit_Message_And_Type_Provided()
@@ -234,19 +222,17 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Warn<DummyObjectClass2>("This is a test.");
+        fullLogger.Warn<DummyObjectClass2>(TestMessage);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Warn);
             await Assert.That(passedType).IsEqualTo(typeof(DummyObjectClass2));
         }
     }
 
-    /// <summary>
-    /// Test to make sure the generic type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Error_With_Generic_Type_Should_Emit_Message_And_Type()
@@ -268,19 +254,17 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Error<DummyObjectClass1>("This is a test.");
+        fullLogger.Error<DummyObjectClass1>(TestMessage);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Error);
             await Assert.That(passedType).IsEqualTo(typeof(DummyObjectClass1));
         }
     }
 
-    /// <summary>
-    /// Test to make sure the generic type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Error_With_Generic_Type_Should_Emit_Message_And_Type_Provided()
@@ -302,19 +286,17 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Error<DummyObjectClass2>("This is a test.");
+        fullLogger.Error<DummyObjectClass2>(TestMessage);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Error);
             await Assert.That(passedType).IsEqualTo(typeof(DummyObjectClass2));
         }
     }
 
-    /// <summary>
-    /// Test to make sure the generic type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Fatal_With_Generic_Type_Should_Emit_Message_And_Type()
@@ -336,19 +318,17 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Fatal<DummyObjectClass1>("This is a test.");
+        fullLogger.Fatal<DummyObjectClass1>(TestMessage);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Fatal);
             await Assert.That(passedType).IsEqualTo(typeof(DummyObjectClass1));
         }
     }
 
-    /// <summary>
-    /// Test to make sure the generic type parameter is passed to the logger.
-    /// </summary>
+    /// <summary>Test to make sure the generic type parameter is passed to the logger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Fatal_With_Generic_Type_Should_Emit_Message_And_Type_Provided()
@@ -370,11 +350,11 @@ public class ActionLoggerTests
 
         var fullLogger = new WrappingFullLogger(logger);
 
-        fullLogger.Fatal<DummyObjectClass2>("This is a test.");
+        fullLogger.Fatal<DummyObjectClass2>(TestMessage);
 
         using (Assert.Multiple())
         {
-            await Assert.That(passedMessage).IsEqualTo("This is a test.");
+            await Assert.That(passedMessage).IsEqualTo(TestMessage);
             await Assert.That(passedLevel).IsEqualTo(LogLevel.Fatal);
             await Assert.That(passedType).IsEqualTo(typeof(DummyObjectClass2));
         }

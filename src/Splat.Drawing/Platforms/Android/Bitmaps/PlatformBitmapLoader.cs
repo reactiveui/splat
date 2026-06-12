@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
@@ -17,20 +16,29 @@ namespace Splat;
 /// using RegisterDrawableResolver or a Resource.Drawable type using <see cref="RegisterDrawables{TDrawable}"/> before creating
 /// instances of this class. If neither is registered, the loader will fall back to reflection-based assembly scanning,
 /// which is not AOT-compatible. For full AOT compatibility, consider using <see cref="PlatformBitmapLoader"/> instead.</remarks>
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification = "RegisterDrawables<TDrawable>'s generic parameter is the caller-supplied Resource.Drawable type; it has no value argument so cannot appear in the parameter list.")]
 public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
 {
+    /// <summary>Resolves a drawable resource name to its integer resource id; <see langword="null"/> until registered.</summary>
     private static Func<string, int>? _drawableResolver;
+
+    /// <summary>The generated <c>Resource.Drawable</c> type to read resource ids from; <see langword="null"/> until registered.</summary>
     private static Type? _drawableType;
+
+    /// <summary>Maps drawable resource names to their integer resource ids.</summary>
     private readonly Dictionary<string, int> _drawableList;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PlatformBitmapLoader"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="PlatformBitmapLoader"/> class.</summary>
     /// <remarks>
     /// For AOT compatibility, call <see cref="RegisterDrawableResolver"/> or <see cref="RegisterDrawables{TDrawable}"/>
     /// before creating instances of this class.
     /// </remarks>
-    [RequiresUnreferencedCode("Constructor may use reflection for drawable discovery if RegisterDrawableResolver() or RegisterDrawables<T>() are not called first. For full AOT compatibility, use PlatformBitmapLoader<T> instead.")]
+    [RequiresUnreferencedCode(
+        "Constructor may use reflection for drawable discovery if RegisterDrawableResolver() or RegisterDrawables<T>() " +
+        "are not called first. For full AOT compatibility, use PlatformBitmapLoader<T> instead.")]
     public PlatformBitmapLoader()
     {
         // If a resolver is registered, we don't need the dictionary at all (AOT-safe)
@@ -107,15 +115,14 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
             }
 
             // Try without extension
-            var key = System.IO.Path.GetFileNameWithoutExtension(source);
+            var key = Path.GetFileNameWithoutExtension(source);
             resourceId = _drawableResolver(key);
             if (resourceId != 0)
             {
                 return Task.Run(() => PlatformBitmapLoaderHelpers.LoadFromDrawableId(resourceId));
             }
 
-            ArgumentExceptionHelper.ThrowIf(true, "Either pass in an integer ID cast to a string, or the name of a drawable resource", nameof(source));
-            return null!; // unreachable
+            throw new ArgumentException("Either pass in an integer ID cast to a string, or the name of a drawable resource", nameof(source));
         }
 
         // Fall back to dictionary lookup (from reflection or registered type)
@@ -131,20 +138,22 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
 
         // NB: On iOS, you have to pass the extension, but on Android it's
         // stripped - try stripping the extension to see if there's a Drawable.
-        var key2 = System.IO.Path.GetFileNameWithoutExtension(source);
+        var key2 = Path.GetFileNameWithoutExtension(source);
         if (_drawableList.TryGetValue(key2, out var intValue))
         {
             return Task.Run(() => PlatformBitmapLoaderHelpers.LoadFromDrawableId(intValue));
         }
 
-        ArgumentExceptionHelper.ThrowIf(true, "Either pass in an integer ID cast to a string, or the name of a drawable resource", nameof(source));
-        return null!; // unreachable
+        throw new ArgumentException("Either pass in an integer ID cast to a string, or the name of a drawable resource", nameof(source));
     }
 
     /// <inheritdoc />
     public IBitmap? Create(float width, float height) =>
         PlatformBitmapLoaderHelpers.CreateBitmap(width, height);
 
+    /// <summary>Gets the dictionary of drawable resource names to resource IDs, using the registered type if available or falling back to assembly scanning.</summary>
+    /// <param name="log">The logger used to report diagnostic information, or <see langword="null"/> to suppress logging.</param>
+    /// <returns>A dictionary mapping drawable resource names to their integer resource IDs.</returns>
     [RequiresUnreferencedCode("Assembly scanning uses reflection and is not AOT-compatible. Use RegisterDrawables<T>() or RegisterDrawableResolver() for AOT scenarios.")]
     internal static Dictionary<string, int> GetDrawableList(IFullLogger? log)
     {
@@ -159,6 +168,8 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
         return GetDrawableList(log, assemblies);
     }
 
+    /// <summary>Builds the dictionary of drawable resource names to resource IDs from the previously registered <c>Resource.Drawable</c> type.</summary>
+    /// <returns>A dictionary mapping drawable resource names to their integer resource IDs.</returns>
     [RequiresUnreferencedCode("Uses reflection to extract drawable fields. For full AOT compatibility, use RegisterDrawableResolver() instead.")]
     private static Dictionary<string, int> GetDrawableListFromRegisteredType()
     {
@@ -166,6 +177,8 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
         return GetDrawableListFromType(_drawableType!, log);
     }
 
+    /// <summary>Builds the dictionary of drawable resource names to resource IDs by scanning the currently loaded assemblies for <c>Resource.Drawable</c> types.</summary>
+    /// <returns>A dictionary mapping drawable resource names to their integer resource IDs.</returns>
     [RequiresUnreferencedCode("Assembly scanning uses reflection and is not AOT-compatible. Call RegisterDrawableResolver() or RegisterDrawables<T>() before instantiation to avoid reflection.")]
     private static Dictionary<string, int> GetDrawableListViaReflection()
     {
@@ -174,6 +187,10 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
         return GetDrawableList(log, assemblies);
     }
 
+    /// <summary>Extracts the drawable resource names and IDs from the integer literal fields of the specified <c>Resource.Drawable</c> type.</summary>
+    /// <param name="drawableType">The <c>Resource.Drawable</c> type whose integer literal fields define the available drawable resources.</param>
+    /// <param name="log">The logger used to report diagnostic information, or <see langword="null"/> to suppress logging.</param>
+    /// <returns>A dictionary mapping drawable resource names to their integer resource IDs.</returns>
     [RequiresUnreferencedCode("Uses reflection to extract drawable fields. For full AOT compatibility, use RegisterDrawableResolver() instead.")]
     private static Dictionary<string, int> GetDrawableListFromType(Type drawableType, IFullLogger? log)
     {
@@ -208,6 +225,10 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
         return result;
     }
 
+    /// <summary>Gets the types defined in the specified assembly, gracefully handling any types that fail to load.</summary>
+    /// <param name="assembly">The assembly to retrieve the types from.</param>
+    /// <param name="log">The logger used to report any type load failures, or <see langword="null"/> to suppress logging.</param>
+    /// <returns>The types that were successfully loaded from the assembly; an empty array if none could be loaded.</returns>
     [RequiresUnreferencedCode("Assembly scanning uses reflection and is not AOT-compatible.")]
     private static Type[] GetTypesFromAssembly(
         Assembly assembly,
@@ -219,45 +240,64 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
         }
         catch (ReflectionTypeLoadException e)
         {
-            // The array returned by the Types property of this exception contains a Type
-            // object for each type that was loaded and null for each type that could not
-            // be loaded, while the LoaderExceptions property contains an exception for
-            // each type that could not be loaded.
-            if (log is not null)
-            {
-                log.Warn(e, "Exception while detecting drawing types.");
-
-                foreach (var loaderException in e.LoaderExceptions)
-                {
-                    if (loaderException is null)
-                    {
-                        continue;
-                    }
-
-                    log.Warn(loaderException, "Inner Exception for detecting drawing types.");
-                }
-            }
-
-            // null check here because mono doesn't appear to follow the MSDN documentation
-            // as of July 2019.
-            if (e.Types is null)
-            {
-                return [];
-            }
-
-            var result = new List<Type>(e.Types.Length);
-            foreach (var type in e.Types)
-            {
-                if (type is not null)
-                {
-                    result.Add(type);
-                }
-            }
-
-            return [.. result];
+            LogTypeLoadExceptions(e, log);
+            return GetLoadableTypes(e);
         }
     }
 
+    /// <summary>Logs the details of a <see cref="ReflectionTypeLoadException"/> when a logger is available.</summary>
+    /// <param name="exception">The exception describing the types that failed to load.</param>
+    /// <param name="log">The logger used to report the failures, or <see langword="null"/> to suppress logging.</param>
+    private static void LogTypeLoadExceptions(ReflectionTypeLoadException exception, IFullLogger? log)
+    {
+        // The array returned by the Types property of this exception contains a Type
+        // object for each type that was loaded and null for each type that could not
+        // be loaded, while the LoaderExceptions property contains an exception for
+        // each type that could not be loaded.
+        if (log is null)
+        {
+            return;
+        }
+
+        log.Warn(exception, "Exception while detecting drawing types.");
+
+        foreach (var loaderException in exception.LoaderExceptions)
+        {
+            if (loaderException is not null)
+            {
+                log.Warn(loaderException, "Inner Exception for detecting drawing types.");
+            }
+        }
+    }
+
+    /// <summary>Extracts the successfully loaded types from a <see cref="ReflectionTypeLoadException"/>.</summary>
+    /// <param name="exception">The exception describing the partially loaded types.</param>
+    /// <returns>The non-null types that were loaded, or an empty array if none are available.</returns>
+    private static Type[] GetLoadableTypes(ReflectionTypeLoadException exception)
+    {
+        // null check here because mono doesn't appear to follow the MSDN documentation
+        // as of July 2019.
+        if (exception.Types is null)
+        {
+            return [];
+        }
+
+        var result = new List<Type>(exception.Types.Length);
+        foreach (var type in exception.Types)
+        {
+            if (type is not null)
+            {
+                result.Add(type);
+            }
+        }
+
+        return [.. result];
+    }
+
+    /// <summary>Builds the dictionary of drawable resource names to resource IDs by scanning the supplied assemblies for <c>Resource.Drawable</c> types.</summary>
+    /// <param name="log">The logger used to report diagnostic information, or <see langword="null"/> to suppress logging.</param>
+    /// <param name="assemblies">The assemblies to scan for <c>Resource.Drawable</c> types.</param>
+    /// <returns>A dictionary mapping drawable resource names to their integer resource IDs.</returns>
     [RequiresUnreferencedCode("Assembly scanning uses reflection and is not AOT-compatible.")]
     private static Dictionary<string, int> GetDrawableList(
         IFullLogger? log,
@@ -269,7 +309,7 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
             .SelectMany(a => GetTypesFromAssembly(a, log))
             .Where(x => x.Name.Equals("Resource", StringComparison.Ordinal) && x.GetNestedType("Drawable") is not null)
             .Select(x => x.GetNestedType("Drawable"))
-            .Where(x => x != null)
+            .Where(x => x is not null)
             .Select(x => x!)
             .ToArray();
 

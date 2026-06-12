@@ -1,50 +1,40 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
+
+using System.Diagnostics.CodeAnalysis;
 
 namespace Splat;
 
-/// <summary>
-/// Defines a read-only contract for resolving service instances and collections by type and optional contract
-/// identifier.
-/// </summary>
+/// <summary>Defines a read-only contract for resolving service instances and collections by type and optional contract identifier.</summary>
 /// <remarks>This interface provides methods to retrieve single or multiple service instances from a dependency
 /// resolver without allowing registration or modification of services. Implementations must not throw exceptions or
 /// return null when a service is unavailable; instead, they should return null for single-instance methods and an empty
 /// collection for multi-instance methods. This interface is typically used to access services in a decoupled manner,
 /// supporting scenarios such as dependency injection, plugin architectures, or service location patterns.</remarks>
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification = "Generic service-location API; the service type is supplied explicitly by callers, so type inference cannot apply by design.")]
 public interface IReadonlyDependencyResolver
 {
-    /// <summary>
-    /// Gets an instance of the given <paramref name="serviceType"/>. Must return <c>null</c>
-    /// if the service is not available (must not throw).
-    /// </summary>
+    /// <summary>Gets an instance of the given <paramref name="serviceType"/>. Must return <c>null</c> if the service is not available (must not throw).</summary>
     /// <param name="serviceType">The object type.</param>
     /// <returns>The requested object, if found; <c>null</c> otherwise.</returns>
     object? GetService(Type? serviceType);
 
-    /// <summary>
-    /// Gets an instance of the given <paramref name="serviceType"/>. Must return <c>null</c>
-    /// if the service is not available (must not throw).
-    /// </summary>
+    /// <summary>Gets an instance of the given <paramref name="serviceType"/>. Must return <c>null</c> if the service is not available (must not throw).</summary>
     /// <param name="serviceType">The object type.</param>
     /// <param name="contract">A value which will retrieve only a object registered with the same contract.</param>
     /// <returns>The requested object, if found; <c>null</c> otherwise.</returns>
     object? GetService(Type? serviceType, string? contract);
 
-    /// <summary>
-    /// Gets an instance of the given <typeparamref name="T"/>. Must return <c>null</c>
-    /// if the service is not available (must not throw).
-    /// </summary>
+    /// <summary>Gets an instance of the given <typeparamref name="T"/>. Must return <c>null</c> if the service is not available (must not throw).</summary>
     /// <typeparam name="T">The object type.</typeparam>
     /// <returns>The requested object, if found; <c>null</c> otherwise.</returns>
     T? GetService<T>();
 
-    /// <summary>
-    /// Gets an instance of the given <typeparamref name="T"/>. Must return <c>null</c>
-    /// if the service is not available (must not throw).
-    /// </summary>
+    /// <summary>Gets an instance of the given <typeparamref name="T"/>. Must return <c>null</c> if the service is not available (must not throw).</summary>
     /// <typeparam name="T">The object type.</typeparam>
     /// <param name="contract">A value which will retrieve only a object registered with the same contract.</param>
     /// <returns>The requested object, if found; <c>null</c> otherwise.</returns>

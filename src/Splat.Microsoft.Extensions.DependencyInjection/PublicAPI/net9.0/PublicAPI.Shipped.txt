@@ -1,0 +1,55 @@
+#nullable enable
+Splat.Builder.MicrosoftDependencyResolverModule
+Splat.Builder.MicrosoftDependencyResolverModule.Configure(Splat.IMutableDependencyResolver! resolver) -> void
+Splat.Builder.MicrosoftDependencyResolverModule.MicrosoftDependencyResolverModule(Microsoft.Extensions.DependencyInjection.IServiceCollection! serviceCollection) -> void
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.Dispose() -> void
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.DisposeAsync() -> System.Threading.Tasks.ValueTask
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.GetService<T>() -> T?
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.GetService<T>(string? contract) -> T?
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.GetServices<T>() -> System.Collections.Generic.IEnumerable<T>!
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.GetServices<T>(string? contract) -> System.Collections.Generic.IEnumerable<T>!
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.HasRegistration<T>() -> bool
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.HasRegistration<T>(string? contract) -> bool
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.MicrosoftDependencyResolver() -> void
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.MicrosoftDependencyResolver(Microsoft.Extensions.DependencyInjection.IServiceCollection? services) -> void
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.MicrosoftDependencyResolver(System.IServiceProvider! serviceProvider) -> void
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.Register<T>(System.Func<T?>! factory) -> void
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.Register<T>(System.Func<T?>! factory, string? contract) -> void
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.Register<TService, TImplementation>() -> void
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.Register<TService, TImplementation>(string? contract) -> void
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.RegisterConstant<T>(T? value) -> void
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.RegisterConstant<T>(T? value, string? contract) -> void
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.RegisterLazySingleton<T>(System.Func<T?>! valueFactory) -> void
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.RegisterLazySingleton<T>(System.Func<T?>! valueFactory, string? contract) -> void
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.ServiceRegistrationCallback<T>(System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.ServiceRegistrationCallback<T>(string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.UnregisterAll<T>() -> void
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.UnregisterAll<T>(string? contract) -> void
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.UnregisterCurrent<T>() -> void
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.UnregisterCurrent<T>(string? contract) -> void
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.UpdateContainer(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
+Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.UpdateContainer(System.IServiceProvider! serviceProvider) -> void
+Splat.Microsoft.Extensions.DependencyInjection.SplatMicrosoftExtensions
+Splat.Microsoft.Extensions.DependencyInjection.SplatMicrosoftExtensions.extension(Microsoft.Extensions.DependencyInjection.IServiceCollection!)
+Splat.Microsoft.Extensions.DependencyInjection.SplatMicrosoftExtensions.extension(Microsoft.Extensions.DependencyInjection.IServiceCollection!).UseMicrosoftDependencyResolver() -> void
+Splat.Microsoft.Extensions.DependencyInjection.SplatMicrosoftExtensions.extension(System.IServiceProvider!)
+Splat.Microsoft.Extensions.DependencyInjection.SplatMicrosoftExtensions.extension(System.IServiceProvider!).UseMicrosoftDependencyResolver() -> void
+static Splat.Microsoft.Extensions.DependencyInjection.SplatMicrosoftExtensions.UseMicrosoftDependencyResolver(this Microsoft.Extensions.DependencyInjection.IServiceCollection! serviceCollection) -> void
+static Splat.Microsoft.Extensions.DependencyInjection.SplatMicrosoftExtensions.UseMicrosoftDependencyResolver(this System.IServiceProvider! serviceProvider) -> void
+virtual Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.Dispose(bool disposing) -> void
+virtual Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.GetService(System.Type? serviceType) -> object?
+virtual Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.GetService(System.Type? serviceType, string? contract) -> object?
+virtual Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.GetServices(System.Type? serviceType) -> System.Collections.Generic.IEnumerable<object!>!
+virtual Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.GetServices(System.Type? serviceType, string? contract) -> System.Collections.Generic.IEnumerable<object!>!
+virtual Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.HasRegistration(System.Type? serviceType) -> bool
+virtual Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.HasRegistration(System.Type? serviceType, string? contract) -> bool
+virtual Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.Register(System.Func<object?>! factory, System.Type? serviceType) -> void
+virtual Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.Register(System.Func<object?>! factory, System.Type? serviceType, string? contract) -> void
+virtual Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.ServiceProvider.get -> System.IServiceProvider?
+virtual Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.ServiceRegistrationCallback(System.Type! serviceType, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+virtual Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.ServiceRegistrationCallback(System.Type! serviceType, string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+virtual Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.UnregisterAll(System.Type? serviceType) -> void
+virtual Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.UnregisterAll(System.Type? serviceType, string? contract) -> void
+virtual Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.UnregisterCurrent(System.Type? serviceType) -> void
+virtual Splat.Microsoft.Extensions.DependencyInjection.MicrosoftDependencyResolver.UnregisterCurrent(System.Type? serviceType, string? contract) -> void

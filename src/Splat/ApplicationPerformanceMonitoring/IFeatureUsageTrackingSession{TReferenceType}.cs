@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.ApplicationPerformanceMonitoring;
@@ -13,13 +12,9 @@ namespace Splat.ApplicationPerformanceMonitoring;
 /// be reference type compatible.</typeparam>
 public interface IFeatureUsageTrackingSession<out TReferenceType> : IFeatureUsageTrackingSession
 {
-    /// <summary>
-    /// Gets the current Feature Usage Unique Reference.
-    /// </summary>
+    /// <summary>Gets the current Feature Usage Unique Reference.</summary>
     TReferenceType FeatureReference { get; }
 
-    /// <summary>
-    /// Gets the unique reference for the Parent Tracking Session, if any.
-    /// </summary>
+    /// <summary>Gets the unique reference for the Parent Tracking Session, if any.</summary>
     TReferenceType ParentReference { get; }
 }

@@ -15,29 +15,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Splat" />
-    <InternalsVisibleTo Include="Splat.Builder" />
-    <InternalsVisibleTo Include="Splat.Logging" />
-    <InternalsVisibleTo Include="Splat.Logging.Tests" />
-    <InternalsVisibleTo Include="Splat.Drawing" />
-    <InternalsVisibleTo Include="Splat.Common.Test" />
-    <InternalsVisibleTo Include="Splat.Microsoft.Extensions.Logging.Tests" />
-    <InternalsVisibleTo Include="Splat.DryIoc" />
-    <InternalsVisibleTo Include="Splat.Microsoft.Extensions.DependencyInjection" />
-    <InternalsVisibleTo Include="Splat.Microsoft.Extensions.Logging" />
-    <InternalsVisibleTo Include="Splat.Raygun" />
-    <InternalsVisibleTo Include="Splat.Exceptionless" />
+    <PackageReference Include="ReactiveUI.Disposables" />
+  </ItemGroup>
+
+  <!-- IVT is granted to the test projects only, for white-box testing of internals. Production
+       libraries no longer import Splat.Core internals over IVT — the shared polyfills/helpers are
+       compiled into each assembly from src/Polyfills (see Directory.Build.props). -->
+  <ItemGroup>
     <InternalsVisibleTo Include="Splat.Tests" />
     <InternalsVisibleTo Include="Splat.Drawing.Tests" />
+    <InternalsVisibleTo Include="Splat.Logging.Tests" />
     <InternalsVisibleTo Include="Splat.Builder.Tests" />
-    <InternalsVisibleTo Include="Splat.Autofac" />
-    <InternalsVisibleTo Include="Splat.Ninject" />
-    <InternalsVisibleTo Include="Splat.Serilog" />
-    <InternalsVisibleTo Include="Splat.SimpleInjector" />
-    <InternalsVisibleTo Include="Splat.NLog" />
-    <InternalsVisibleTo Include="Splat.Log4Net" />
-    <InternalsVisibleTo Include="Splat.Prism" />
-    <InternalsVisibleTo Include="Splat.AppCenter" />
-    <InternalsVisibleTo Include="Splat.ApplicationInsights" />
+    <InternalsVisibleTo Include="Splat.Common.Test" />
+    <InternalsVisibleTo Include="Splat.Microsoft.Extensions.Logging.Tests" />
   </ItemGroup>
 </Project>

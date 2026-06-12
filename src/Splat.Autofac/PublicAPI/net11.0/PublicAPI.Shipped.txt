@@ -1,0 +1,47 @@
+#nullable enable
+Splat.Autofac.AutofacDependencyResolver
+Splat.Autofac.AutofacDependencyResolver.AutofacDependencyResolver(Autofac.ContainerBuilder! builder) -> void
+Splat.Autofac.AutofacDependencyResolver.Dispose() -> void
+Splat.Autofac.AutofacDependencyResolver.GetService<T>() -> T?
+Splat.Autofac.AutofacDependencyResolver.GetService<T>(string? contract) -> T?
+Splat.Autofac.AutofacDependencyResolver.GetServices<T>() -> System.Collections.Generic.IEnumerable<T>!
+Splat.Autofac.AutofacDependencyResolver.GetServices<T>(string? contract) -> System.Collections.Generic.IEnumerable<T>!
+Splat.Autofac.AutofacDependencyResolver.HasRegistration(System.Type? serviceType) -> bool
+Splat.Autofac.AutofacDependencyResolver.HasRegistration(System.Type? serviceType, string? contract) -> bool
+Splat.Autofac.AutofacDependencyResolver.HasRegistration<T>() -> bool
+Splat.Autofac.AutofacDependencyResolver.HasRegistration<T>(string? contract) -> bool
+Splat.Autofac.AutofacDependencyResolver.Register<T>(System.Func<T?>! factory) -> void
+Splat.Autofac.AutofacDependencyResolver.Register<T>(System.Func<T?>! factory, string? contract) -> void
+Splat.Autofac.AutofacDependencyResolver.Register<TService, TImplementation>() -> void
+Splat.Autofac.AutofacDependencyResolver.Register<TService, TImplementation>(string? contract) -> void
+Splat.Autofac.AutofacDependencyResolver.RegisterConstant<T>(T? value) -> void
+Splat.Autofac.AutofacDependencyResolver.RegisterConstant<T>(T? value, string? contract) -> void
+Splat.Autofac.AutofacDependencyResolver.RegisterLazySingleton<T>(System.Func<T?>! valueFactory) -> void
+Splat.Autofac.AutofacDependencyResolver.RegisterLazySingleton<T>(System.Func<T?>! valueFactory, string? contract) -> void
+Splat.Autofac.AutofacDependencyResolver.ServiceRegistrationCallback<T>(System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.Autofac.AutofacDependencyResolver.ServiceRegistrationCallback<T>(string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.Autofac.AutofacDependencyResolver.SetLifetimeScope(Autofac.ILifetimeScope! lifetimeScope) -> void
+Splat.Autofac.AutofacDependencyResolver.UnregisterAll<T>() -> void
+Splat.Autofac.AutofacDependencyResolver.UnregisterAll<T>(string? contract) -> void
+Splat.Autofac.AutofacDependencyResolver.UnregisterCurrent<T>() -> void
+Splat.Autofac.AutofacDependencyResolver.UnregisterCurrent<T>(string? contract) -> void
+Splat.Autofac.SplatAutofacExtensions
+Splat.Autofac.SplatAutofacExtensions.extension(Autofac.ContainerBuilder!)
+Splat.Autofac.SplatAutofacExtensions.extension(Autofac.ContainerBuilder!).UseAutofacDependencyResolver() -> Splat.Autofac.AutofacDependencyResolver!
+Splat.Builder.AutofacSplatModule
+Splat.Builder.AutofacSplatModule.AutofacSplatModule(Autofac.ContainerBuilder! builder) -> void
+Splat.Builder.AutofacSplatModule.Configure(Splat.IMutableDependencyResolver! resolver) -> void
+static Splat.Autofac.SplatAutofacExtensions.UseAutofacDependencyResolver(this Autofac.ContainerBuilder! builder) -> Splat.Autofac.AutofacDependencyResolver!
+virtual Splat.Autofac.AutofacDependencyResolver.Dispose(bool disposing) -> void
+virtual Splat.Autofac.AutofacDependencyResolver.GetService(System.Type? serviceType) -> object?
+virtual Splat.Autofac.AutofacDependencyResolver.GetService(System.Type? serviceType, string? contract) -> object?
+virtual Splat.Autofac.AutofacDependencyResolver.GetServices(System.Type? serviceType) -> System.Collections.Generic.IEnumerable<object!>!
+virtual Splat.Autofac.AutofacDependencyResolver.GetServices(System.Type? serviceType, string? contract) -> System.Collections.Generic.IEnumerable<object!>!
+virtual Splat.Autofac.AutofacDependencyResolver.Register(System.Func<object?>! factory, System.Type? serviceType) -> void
+virtual Splat.Autofac.AutofacDependencyResolver.Register(System.Func<object?>! factory, System.Type? serviceType, string? contract) -> void
+virtual Splat.Autofac.AutofacDependencyResolver.ServiceRegistrationCallback(System.Type! serviceType, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+virtual Splat.Autofac.AutofacDependencyResolver.ServiceRegistrationCallback(System.Type! serviceType, string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+virtual Splat.Autofac.AutofacDependencyResolver.UnregisterAll(System.Type? serviceType) -> void
+virtual Splat.Autofac.AutofacDependencyResolver.UnregisterAll(System.Type? serviceType, string? contract) -> void
+virtual Splat.Autofac.AutofacDependencyResolver.UnregisterCurrent(System.Type? serviceType) -> void
+virtual Splat.Autofac.AutofacDependencyResolver.UnregisterCurrent(System.Type? serviceType, string? contract) -> void

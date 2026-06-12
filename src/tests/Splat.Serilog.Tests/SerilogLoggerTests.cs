@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Globalization;
@@ -17,15 +16,15 @@ using Splat.Tests.Mocks;
 
 namespace Splat.Tests.Logging;
 
+/// <summary>Tests that verify the <see cref="SerilogFullLogger"/> class.</summary>
 [NotInParallel] // touches global static state (AppLocator, Serilog.Log.Logger)
 [InheritsTests]
 public class SerilogLoggerTests : FullLoggerTestBase
 {
+    /// <summary>The newline characters used to trim log messages.</summary>
     private static readonly char[] _newLine = Environment.NewLine.ToCharArray();
 
-    /// <summary>
-    /// Gets a list of mappings of Serilog levels and equivalent Splat log levels.
-    /// </summary>
+    /// <summary>Gets a list of mappings of Serilog levels and equivalent Splat log levels.</summary>
     private static readonly Dictionary<LogLevel, LogEventLevel> _mappingsToSerilog = new()
     {
         { LogLevel.Debug, LogEventLevel.Debug },
@@ -35,9 +34,7 @@ public class SerilogLoggerTests : FullLoggerTestBase
         { LogLevel.Fatal, LogEventLevel.Fatal },
     };
 
-    /// <summary>
-    /// Gets a list of mappings of Serilog levels and equivalent Splat log levels.
-    /// </summary>
+    /// <summary>Gets a list of mappings of Serilog levels and equivalent Splat log levels.</summary>
     private static readonly Dictionary<LogEventLevel, LogLevel> _mappingsToSplat = new()
     {
         { LogEventLevel.Debug, LogLevel.Debug },
@@ -47,27 +44,22 @@ public class SerilogLoggerTests : FullLoggerTestBase
         { LogEventLevel.Fatal, LogLevel.Fatal },
     };
 
+    /// <summary>The app locator scope used to isolate registrations per test.</summary>
     private AppLocatorScope? _appLocatorScope;
 
-    /// <summary>
-    /// Setup method to initialize AppLocatorScope before each test.
-    /// </summary>
-    [Before(HookType.Test)]
+    /// <summary>Setup method to initialize AppLocatorScope before each test.</summary>
+    [Before(Test)]
     public void SetUpAppLocatorScope() => _appLocatorScope = new();
 
-    /// <summary>
-    /// Teardown method to dispose AppLocatorScope after each test.
-    /// </summary>
-    [After(HookType.Test)]
+    /// <summary>Teardown method to dispose AppLocatorScope after each test.</summary>
+    [After(Test)]
     public void TearDownAppLocatorScope()
     {
         _appLocatorScope?.Dispose();
         _appLocatorScope = null;
     }
 
-    /// <summary>
-    /// Test to make sure the calling `UseSerilogWithWrappingFullLogger` logs.
-    /// </summary>
+    /// <summary>Test to make sure the calling `UseSerilogWithWrappingFullLogger` logs.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Configuring_With_Static_Log_Should_Write_Message()
@@ -79,19 +71,17 @@ public class SerilogLoggerTests : FullLoggerTestBase
 
         await Assert.That(target.Logs).IsEmpty();
 
-        IEnableLogger logger = null!;
-        logger.Log().Debug<DummyObjectClass2>("This is a test.");
+        const IEnableLogger logger = null!;
+        logger!.Log().Debug<DummyObjectClass2>(LoggerTestConstants.TestMessage);
 
         using (Assert.Multiple())
         {
             await Assert.That(target.Logs).Count().IsEqualTo(1);
-            await Assert.That(target.Logs.Last().message.Trim(_newLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(target.Logs.Last().message.Trim(_newLine).Trim()).IsEqualTo(LoggerTestConstants.TestMessage);
         }
     }
 
-    /// <summary>
-    /// Test to make calling `UseSerilogWithWrappingFullLogger(Serilog.ILogger)` logs.
-    /// </summary>
+    /// <summary>Test to make calling `UseSerilogWithWrappingFullLogger(Serilog.ILogger)` logs.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Configuring_With_PreConfigured_Log_Should_Write_Message()
@@ -100,14 +90,13 @@ public class SerilogLoggerTests : FullLoggerTestBase
         AppLocator.CurrentMutable.UseSerilogFullLogger(seriLogger);
 
         await Assert.That(target.Logs).IsEmpty();
-
-        IEnableLogger logger = null!;
-        logger.Log().Debug<DummyObjectClass2>("This is a test.");
+        const IEnableLogger logger = null!;
+        logger!.Log().Debug<DummyObjectClass2>(LoggerTestConstants.TestMessage);
 
         using (Assert.Multiple())
         {
             await Assert.That(target.Logs).Count().IsEqualTo(1);
-            await Assert.That(target.Logs.Last().message.Trim(_newLine).Trim()).IsEqualTo("This is a test.");
+            await Assert.That(target.Logs.Last().message.Trim(_newLine).Trim()).IsEqualTo(LoggerTestConstants.TestMessage);
         }
     }
 
@@ -118,6 +107,9 @@ public class SerilogLoggerTests : FullLoggerTestBase
         return (new SerilogFullLogger(log), messages);
     }
 
+    /// <summary>Creates a Serilog logger and its associated mock log target.</summary>
+    /// <param name="minimumLogLevel">The minimum log level to capture.</param>
+    /// <returns>A tuple containing the Serilog logger and the mock log target.</returns>
     private static (Logger logger, IMockLogTarget mockTarget) CreateSerilogger(LogLevel minimumLogLevel)
     {
         var messages = new LogTarget();
@@ -134,13 +126,19 @@ public class SerilogLoggerTests : FullLoggerTestBase
         return (log, messages);
     }
 
+    /// <summary>A Serilog sink that captures emitted log events for assertions.</summary>
     private sealed class LogTarget : ILogEventSink, IMockLogTarget
     {
+        /// <summary>The formatter used to render captured log events.</summary>
         private static readonly MessageTemplateTextFormatter _formatter = new("{Message} {Exception}", CultureInfo.InvariantCulture);
+
+        /// <summary>The captured log entries.</summary>
         private readonly List<(LogLevel logLevel, string message)> _logs = [];
 
+        /// <inheritdoc/>
         public ICollection<(LogLevel logLevel, string message)> Logs => _logs;
 
+        /// <inheritdoc/>
         public void Emit(LogEvent logEvent)
         {
             using var buffer = new StringWriter();

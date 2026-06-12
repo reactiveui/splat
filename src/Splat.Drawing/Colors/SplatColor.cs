@@ -1,8 +1,8 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
 namespace Splat;
@@ -18,21 +18,63 @@ namespace Splat;
 [DataContract]
 public partial struct SplatColor : IEquatable<SplatColor>
 {
-    //// Private transparency (A) and R,G,B fields.
+    /// <summary>The maximum value of a single 8-bit color channel (0-255).</summary>
+    private const int MaxChannelValue = 255;
 
+    /// <summary>The bit mask that isolates a single 8-bit color channel.</summary>
+    private const uint ChannelMask = 0xFF;
+
+    /// <summary>The mask covering all 32 bits of a packed ARGB value.</summary>
+    private const uint ArgbMask = 0xFFFFFFFF;
+
+    /// <summary>The bit offset of the alpha channel within a packed ARGB value.</summary>
+    private const int AlphaShift = 24;
+
+    /// <summary>The bit offset of the red channel within a packed ARGB value.</summary>
+    private const int RedShift = 16;
+
+    /// <summary>The bit offset of the green channel within a packed ARGB value.</summary>
+    private const int GreenShift = 8;
+
+    /// <summary>The sum of the maximum values of two color channels (255 + 255).</summary>
+    private const int TwoChannelMax = MaxChannelValue + MaxChannelValue;
+
+    /// <summary>The lowest <see cref="KnownColor"/> index that is not a system color.</summary>
+    private const int FirstNonSystemKnownColor = 27;
+
+    /// <summary>The highest <see cref="KnownColor"/> index that is not a system color.</summary>
+    private const int LastNonSystemKnownColor = 169;
+
+    /// <summary>The number of degrees in one sextant of the HSL colour wheel.</summary>
+    private const float DegreesPerSextant = 60.0f;
+
+    /// <summary>The total number of degrees in the HSL colour wheel.</summary>
+    private const float DegreesPerCircle = 360.0f;
+
+    /// <summary>The hue sextant offset applied when red is the dominant channel.</summary>
+    private const float RedHueOffset = 6.0f;
+
+    /// <summary>The hue sextant offset applied when green is the dominant channel.</summary>
+    private const float GreenHueOffset = 2.0f;
+
+    /// <summary>The hue sextant offset applied when blue is the dominant channel.</summary>
+    private const float BlueHueOffset = 4.0f;
+
+    /// <summary>Packed state flags describing how this color was created (see <see cref="ColorTypes"/>).</summary>
     private short _state;
+
+    /// <summary>Identifier of the known color this value was created from, when applicable.</summary>
     private short _knownColor;
 
-    // #if ONLY_1_1
-    // Mono bug #324144 is holding this change
-    // MS 1.1 requires this member to be present for serialization (not so in 2.0)
-    // however it's bad to keep a string (reference) in a struct
+    /// <summary>The name of the color, when it has one.</summary>
+    /// <remarks>
+    /// Retained for serialization compatibility: MS 1.1 required this member to be present for serialization
+    /// (no longer needed in 2.0). Keeping a string reference inside a struct is not ideal, but Mono bug #324144
+    /// held back changing it.
+    /// </remarks>
     private string _name;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SplatColor"/> struct with the specified color value, state, known color
-    /// identifier, and name.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="SplatColor"/> struct with the specified color value, state, known color identifier, and name.</summary>
     /// <param name="value">The packed ARGB color value represented as an unsigned integer.</param>
     /// <param name="state">A value indicating the state or flags associated with the color.</param>
     /// <param name="knownColor">An identifier for a known color, or a value indicating that the color is not a known color.</param>
@@ -45,9 +87,7 @@ public partial struct SplatColor : IEquatable<SplatColor>
         _name = name;
     }
 
-    /// <summary>
-    /// Specifies the type or characteristics of a color value.
-    /// </summary>
+    /// <summary>Specifies the type or characteristics of a color value.</summary>
     /// <remarks><para>
     /// This enumeration supports bitwise combination of its values to represent multiple color
     /// characteristics. It is typically used to indicate how a color is defined or categorized, such as whether it is a
@@ -60,48 +100,43 @@ public partial struct SplatColor : IEquatable<SplatColor>
     /// </para>
     /// </remarks>
     [Flags]
-    internal enum ColorType : short
+    internal enum ColorTypes
     {
+        /// <summary>The color is empty (uninitialized).</summary>
         Empty = 0,
+
+        /// <summary>The color was created from a known color.</summary>
         Known = 1,
+
+        /// <summary>The color was created from an explicit ARGB value.</summary>
         ARGB = 2,
+
+        /// <summary>The color has a name.</summary>
         Named = 4,
+
+        /// <summary>The color is a system color.</summary>
         System = 8,
     }
 
-    /// <summary>
-    /// Gets an instance of SplatColor that represents an uninitialized or empty color value (transparent).
-    /// </summary>
+    /// <summary>Gets an instance of SplatColor that represents an uninitialized or empty color value (transparent).</summary>
     public static SplatColor Empty { get; }
 
-    /// <summary>
-    /// Gets a value indicating whether the current color is transparent black. Eg where R,G,B,A == 0.
-    /// </summary>
-    public readonly bool IsEmpty => _state == (short)ColorType.Empty;
+    /// <summary>Gets a value indicating whether the current color is transparent black. Eg where R,G,B,A == 0.</summary>
+    public readonly bool IsEmpty => _state == (short)ColorTypes.Empty;
 
-    /// <summary>
-    /// Gets the alpha component of the color.
-    /// </summary>
-    public byte A => (byte)(Value >> 24);
+    /// <summary>Gets the alpha component of the color.</summary>
+    public byte A => (byte)(Value >> AlphaShift);
 
-    /// <summary>
-    /// Gets the red component of the color.
-    /// </summary>
-    public byte R => (byte)(Value >> 16);
+    /// <summary>Gets the red component of the color.</summary>
+    public byte R => (byte)(Value >> RedShift);
 
-    /// <summary>
-    /// Gets the green component of the color.
-    /// </summary>
-    public byte G => (byte)(Value >> 8);
+    /// <summary>Gets the green component of the color.</summary>
+    public byte G => (byte)(Value >> GreenShift);
 
-    /// <summary>
-    /// Gets the blue component of the color.
-    /// </summary>
+    /// <summary>Gets the blue component of the color.</summary>
     public byte B => (byte)Value;
 
-    /// <summary>
-    /// Gets the name of the color if one is known. Otherwise will be the hex value.
-    /// </summary>
+    /// <summary>Gets the name of the color if one is known. Otherwise will be the hex value.</summary>
     public string Name
     {
         get
@@ -114,24 +149,16 @@ public partial struct SplatColor : IEquatable<SplatColor>
         }
     }
 
-    /// <summary>
-    /// Gets a value indicating whether the color is part of the <see cref="ColorType.Known"/> group.
-    /// </summary>
-    public readonly bool IsKnownColor => (_state & (short)ColorType.Known) != 0;
+    /// <summary>Gets a value indicating whether the color is part of the <see cref="ColorTypes.Known"/> group.</summary>
+    public readonly bool IsKnownColor => (_state & (short)ColorTypes.Known) != 0;
 
-    /// <summary>
-    /// Gets a value indicating whether the color is part of the <see cref="ColorType.System"/> group.
-    /// </summary>
-    public readonly bool IsSystemColor => (_state & (short)ColorType.System) != 0;
+    /// <summary>Gets a value indicating whether the color is part of the <see cref="ColorTypes.System"/> group.</summary>
+    public readonly bool IsSystemColor => (_state & (short)ColorTypes.System) != 0;
 
-    /// <summary>
-    /// Gets a value indicating whether the color is par tof the <see cref="ColorType.Known"/> or <see cref="ColorType.Named"/> groups.
-    /// </summary>
-    public readonly bool IsNamedColor => (_state & (short)(ColorType.Known | ColorType.Named)) != 0;
+    /// <summary>Gets a value indicating whether the color is par tof the <see cref="ColorTypes.Known"/> or <see cref="ColorTypes.Named"/> groups.</summary>
+    public readonly bool IsNamedColor => (_state & (short)(ColorTypes.Known | ColorTypes.Named)) != 0;
 
-    /// <summary>
-    /// Gets or sets the value of the color.
-    /// </summary>
+    /// <summary>Gets or sets the value of the color.</summary>
     [DataMember]
     internal uint Value
     {
@@ -141,7 +168,7 @@ public partial struct SplatColor : IEquatable<SplatColor>
             // from an MS serialized stream.
             if (field == 0 && IsKnownColor)
             {
-                field = KnownColors.FromKnownColor((KnownColor)_knownColor).ToArgb() & 0xFFFFFFFF;
+                field = KnownColors.FromKnownColor((KnownColor)_knownColor).ToArgb() & ArgbMask;
             }
 
             return field;
@@ -150,37 +177,28 @@ public partial struct SplatColor : IEquatable<SplatColor>
         set;
     }
 
-    /// <summary>
-    /// Compares two SplatColor references and determines if they are equivalent based on their A,R,G,B values.
-    /// </summary>
+    /// <summary>Compares two SplatColor references and determines if they are equivalent based on their A,R,G,B values.</summary>
     /// <param name="left">The first SplatColor to compare.</param>
     /// <param name="right">The second SplatColor to compare.</param>
     /// <returns>If they are equivalent to each other.</returns>
     public static bool operator ==(SplatColor left, SplatColor right) =>
         left.Equals(right);
 
-    /// <summary>
-    /// Compares two SplatColor references and determines if they are not equivalent based on their A,R,G,B values.
-    /// </summary>
+    /// <summary>Compares two SplatColor references and determines if they are not equivalent based on their A,R,G,B values.</summary>
     /// <param name="left">The first SplatColor to compare.</param>
     /// <param name="right">The second SplatColor to compare.</param>
     /// <returns>If they are not equivalent to each other.</returns>
     public static bool operator !=(SplatColor left, SplatColor right) =>
         !left.Equals(right);
 
-    /// <summary>
-    /// Creates a SplatColor from the RGB values.
-    /// The alpha will be set to 255 for full alpha.
-    /// </summary>
+    /// <summary>Creates a SplatColor from the RGB values. The alpha will be set to 255 for full alpha.</summary>
     /// <param name="red">The red channel of the color.</param>
     /// <param name="green">The green channel of the color.</param>
     /// <param name="blue">The blue channel of the color.</param>
     /// <returns>A splat color from the specified channels.</returns>
-    public static SplatColor FromArgb(int red, int green, int blue) => FromArgb(255, red, green, blue);
+    public static SplatColor FromArgb(int red, int green, int blue) => FromArgb(MaxChannelValue, red, green, blue);
 
-    /// <summary>
-    /// Creates a SplatColor from the RGB values.
-    /// </summary>
+    /// <summary>Creates a SplatColor from the RGB values.</summary>
     /// <param name="alpha">The alpha channel of the color.</param>
     /// <param name="red">The red channel of the color.</param>
     /// <param name="green">The green channel of the color.</param>
@@ -188,36 +206,34 @@ public partial struct SplatColor : IEquatable<SplatColor>
     /// <returns>A splat color from the specified channels.</returns>
     public static SplatColor FromArgb(int alpha, int red, int green, int blue)
     {
-        CheckARGBValues(alpha, red, green, blue);
+        CheckArgbValues(alpha, red, green, blue);
         var newColor = new SplatColor
         {
-            _state = (short)ColorType.ARGB,
-            Value = ((uint)alpha << 24) + ((uint)red << 16) + ((uint)green << 8) + (uint)blue,
+            _state = (short)ColorTypes.ARGB,
+            Value = ((uint)alpha << AlphaShift) + ((uint)red << RedShift) + ((uint)green << GreenShift) + (uint)blue,
         };
 
         return CheckIfIsKnownColor(newColor);
     }
 
-    /// <summary>
-    /// Creates a new <see cref="SplatColor"/> from another <see cref="SplatColor"/>, replacing its alpha with one specified.
-    /// </summary>
+    /// <summary>Creates a new <see cref="SplatColor"/> from another <see cref="SplatColor"/>, replacing its alpha with one specified.</summary>
     /// <param name="alpha">The new alpha component to set for the new <see cref="SplatColor"/>.</param>
     /// <param name="baseColor">The base color to use for the RGB values.</param>
     /// <returns>The new <see cref="SplatColor"/>.</returns>
     public static SplatColor FromArgb(int alpha, SplatColor baseColor) =>
         FromArgb(alpha, baseColor.R, baseColor.G, baseColor.B);
 
-    /// <summary>
-    /// Creates a new <see cref="SplatColor"/> from the specified int based ARGB value.
-    /// </summary>
+    /// <summary>Creates a new <see cref="SplatColor"/> from the specified int based ARGB value.</summary>
     /// <param name="argb">The int containing the ARGB values.</param>
     /// <returns>The new <see cref="SplatColor"/>.</returns>
     public static SplatColor FromArgb(uint argb) =>
-        FromArgb((int)((argb >> 24) & 0x0FF), (int)((argb >> 16) & 0x0FF), (int)((argb >> 8) & 0x0FF), (int)(argb & 0x0FF));
+        FromArgb(
+            (int)((argb >> AlphaShift) & ChannelMask),
+            (int)((argb >> RedShift) & ChannelMask),
+            (int)((argb >> GreenShift) & ChannelMask),
+            (int)(argb & ChannelMask));
 
-    /// <summary>
-    /// Gets a SplatColor from a <see cref="KnownColor"/> value.
-    /// </summary>
+    /// <summary>Gets a SplatColor from a <see cref="KnownColor"/> value.</summary>
     /// <param name="color">The color to generate.</param>
     /// <returns>The generated SplatValue.</returns>
     public static SplatColor FromKnownColor(KnownColor color)
@@ -228,15 +244,15 @@ public partial struct SplatColor : IEquatable<SplatColor>
         {
             // This is what it returns!
             c = Empty;
-            c._state |= (short)ColorType.Named;
+            c._state |= (short)ColorTypes.Named;
         }
         else
         {
             c = Empty;
-            c._state = (short)(ColorType.ARGB | ColorType.Known | ColorType.Named);
-            if (n is < 27 or > 169)
+            c._state = (short)(ColorTypes.ARGB | ColorTypes.Known | ColorTypes.Named);
+            if (n is < FirstNonSystemKnownColor or > LastNonSystemKnownColor)
             {
-                c._state |= (short)ColorType.System;
+                c._state |= (short)ColorTypes.System;
             }
 
             c.Value = KnownColors.ArgbValues[n];
@@ -246,9 +262,7 @@ public partial struct SplatColor : IEquatable<SplatColor>
         return c;
     }
 
-    /// <summary>
-    /// Gets a SplatColor from a name.
-    /// </summary>
+    /// <summary>Gets a SplatColor from a name.</summary>
     /// <param name="name">The name of the color to generate.</param>
     /// <returns>The generated SplatValue.</returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Attempt to find best match.")]
@@ -270,26 +284,22 @@ public partial struct SplatColor : IEquatable<SplatColor>
             // This is what it returns!
             var d = Empty;
             d._name = name;
-            d._state |= (short)ColorType.Named;
+            d._state |= (short)ColorTypes.Named;
             return d;
         }
     }
 
-    /// <summary>
-    /// Gets the brightness of the color.
-    /// </summary>
+    /// <summary>Gets the brightness of the color.</summary>
     /// <returns>The brightness of the value between 0 and 1.</returns>
     public float GetBrightness()
     {
         var minval = Math.Min(R, Math.Min(G, B));
         var maxval = Math.Max(R, Math.Max(G, B));
 
-        return (float)(maxval + minval) / 510;
+        return (float)(maxval + minval) / TwoChannelMax;
     }
 
-    /// <summary>
-    /// Gets the saturation of the color.
-    /// </summary>
+    /// <summary>Gets the saturation of the color.</summary>
     /// <returns>The saturation of the value between 0 and 1.</returns>
     public float GetSaturation()
     {
@@ -302,23 +312,19 @@ public partial struct SplatColor : IEquatable<SplatColor>
         }
 
         var sum = maxval + minval;
-        if (sum > 255)
+        if (sum > MaxChannelValue)
         {
-            sum = 510 - sum;
+            sum = TwoChannelMax - sum;
         }
 
         return (float)(maxval - minval) / sum;
     }
 
-    /// <summary>
-    /// Gets the integer value of the color.
-    /// </summary>
+    /// <summary>Gets the integer value of the color.</summary>
     /// <returns>The integer value.</returns>
     public uint ToArgb() => Value;
 
-    /// <summary>
-    /// Gets the hue of the color.
-    /// </summary>
+    /// <summary>Gets the hue of the color.</summary>
     /// <returns>The hue component of the color.</returns>
     public float GetHue()
     {
@@ -341,22 +347,22 @@ public partial struct SplatColor : IEquatable<SplatColor>
         var hue = 0.0f;
         if (r == maxval)
         {
-            hue = 60.0f * (6.0f + bnorm - gnorm);
+            hue = DegreesPerSextant * (RedHueOffset + bnorm - gnorm);
         }
 
         if (g == maxval)
         {
-            hue = 60.0f * (2.0f + rnorm - bnorm);
+            hue = DegreesPerSextant * (GreenHueOffset + rnorm - bnorm);
         }
 
         if (b == maxval)
         {
-            hue = 60.0f * (4.0f + gnorm - rnorm);
+            hue = DegreesPerSextant * (BlueHueOffset + gnorm - rnorm);
         }
 
-        if (hue > 360.0f)
+        if (hue > DegreesPerCircle)
         {
-            hue -= 360.0f;
+            hue -= DegreesPerCircle;
         }
 
         return hue;
@@ -380,7 +386,10 @@ public partial struct SplatColor : IEquatable<SplatColor>
     /// <inheritdoc />
     public override int GetHashCode()
     {
-        var hc = (int)(Value ^ (Value >> 32) ^ _state ^ (_knownColor >> 16));
+        // Value is a 32-bit uint, so the whole colour already fits in the hash; the
+        // historic "Value >> 32" fold came from a 64-bit source value and would be a
+        // no-op shift (undefined for a 32-bit operand), so it is omitted here.
+        var hc = (int)(Value ^ (uint)_state ^ ((uint)_knownColor >> RedShift));
         if (IsNamedColor)
         {
             hc ^= StringComparer.OrdinalIgnoreCase.GetHashCode(Name);
@@ -401,38 +410,62 @@ public partial struct SplatColor : IEquatable<SplatColor>
         return IsNamedColor ? "SplatColor [" + Name + "]" : $"SplatColor [A={A}, R={R}, G={G}, B={B}]";
     }
 
-    private static void CheckRGBValues(int red, int green, int blue)
+    /// <summary>Validates that the red, green, and blue components are each within the 0-255 range.</summary>
+    /// <param name="red">The red component.</param>
+    /// <param name="green">The green component.</param>
+    /// <param name="blue">The blue component.</param>
+    /// <exception cref="ArgumentException">Thrown when any component is outside the 0-255 range.</exception>
+    private static void CheckRgbValues(int red, int green, int blue)
     {
-        if (red is > 255 or < 0)
+        if (red is > MaxChannelValue or < 0)
         {
-            throw CreateColorArgumentException(red, "red");
+            throw CreateColorArgumentException(red, nameof(red));
         }
 
-        if (green is > 255 or < 0)
+        if (green is > MaxChannelValue or < 0)
         {
-            throw CreateColorArgumentException(green, "green");
+            throw CreateColorArgumentException(green, nameof(green));
         }
 
-        if (blue is > 255 or < 0)
+        if (!(blue is > MaxChannelValue or < 0))
         {
-            throw CreateColorArgumentException(blue, "blue");
+            return;
         }
+
+        throw CreateColorArgumentException(blue, nameof(blue));
     }
 
+    /// <summary>Creates an <see cref="ArgumentException"/> describing an out-of-range color component.</summary>
+    /// <param name="value">The invalid component value.</param>
+    /// <param name="color">The name of the component (for example, "red").</param>
+    /// <returns>An <see cref="ArgumentException"/> describing the invalid value.</returns>
     private static ArgumentException CreateColorArgumentException(int value, string color) =>
-        new($"'{value}' is not a valid value for '{color}'. '{color}' should be greater or equal to 0 and less than or equal to 255.");
+        new(
+            $"'{value}' is not a valid value for '{color}'. '{color}' should be greater or equal to 0 and less than or equal to {MaxChannelValue}.");
 
-    private static void CheckARGBValues(int alpha, int red, int green, int blue)
+    /// <summary>Validates that the alpha, red, green, and blue components are each within the 0-255 range.</summary>
+    /// <param name="alpha">The alpha component.</param>
+    /// <param name="red">The red component.</param>
+    /// <param name="green">The green component.</param>
+    /// <param name="blue">The blue component.</param>
+    /// <exception cref="ArgumentException">Thrown when any component is outside the 0-255 range.</exception>
+    private static void CheckArgbValues(int alpha, int red, int green, int blue)
     {
-        if (alpha is > 255 or < 0)
+        if (alpha is > MaxChannelValue or < 0)
         {
-            throw CreateColorArgumentException(alpha, "alpha");
+            throw CreateColorArgumentException(alpha, nameof(alpha));
         }
 
-        CheckRGBValues(red, green, blue);
+        CheckRgbValues(red, green, blue);
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We don't want to do anything if caught and just return the Splat color.")]
+    /// <summary>Returns the known-color equivalent of the supplied color when its value matches one; otherwise returns it unchanged.</summary>
+    /// <param name="splatColor">The color to test against the known-color table.</param>
+    /// <returns>The matching known <see cref="SplatColor"/>, or <paramref name="splatColor"/> when no match exists.</returns>
+    [SuppressMessage(
+        "Design",
+        "CA1031:Do not catch general exception types",
+        Justification = "We don't want to do anything if caught and just return the Splat color.")]
     private static SplatColor CheckIfIsKnownColor(SplatColor splatColor)
     {
         try
@@ -446,6 +479,8 @@ public partial struct SplatColor : IEquatable<SplatColor>
         }
         catch
         {
+            // Intentionally ignored: if the known-color lookup fails for any reason we
+            // simply fall back to returning the original color unchanged.
         }
 
         return splatColor;

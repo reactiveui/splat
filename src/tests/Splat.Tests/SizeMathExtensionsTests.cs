@@ -1,17 +1,15 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Drawing;
 
 namespace Splat.Tests;
 
+/// <summary>Tests for the size math extension methods.</summary>
 public class SizeMathExtensionsTests
 {
-    /// <summary>
-    /// Test that WithinEpsilonOf returns true when sizes are within epsilon.
-    /// </summary>
+    /// <summary>Test that WithinEpsilonOf returns true when sizes are within epsilon.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task WithinEpsilonOf_ReturnsTrue_WhenSizesAreWithinEpsilon()
@@ -28,9 +26,7 @@ public class SizeMathExtensionsTests
         await Assert.That(result).IsTrue();
     }
 
-    /// <summary>
-    /// Test that WithinEpsilonOf returns false when sizes are not within epsilon.
-    /// </summary>
+    /// <summary>Test that WithinEpsilonOf returns false when sizes are not within epsilon.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task WithinEpsilonOf_ReturnsFalse_WhenSizesAreNotWithinEpsilon()
@@ -47,9 +43,7 @@ public class SizeMathExtensionsTests
         await Assert.That(result).IsFalse();
     }
 
-    /// <summary>
-    /// Test that WithinEpsilonOf handles identical sizes.
-    /// </summary>
+    /// <summary>Test that WithinEpsilonOf handles identical sizes.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task WithinEpsilonOf_HandlesIdenticalSizes()
@@ -65,9 +59,7 @@ public class SizeMathExtensionsTests
         await Assert.That(result).IsTrue();
     }
 
-    /// <summary>
-    /// Test that WithinEpsilonOf calculates distance correctly.
-    /// </summary>
+    /// <summary>Test that WithinEpsilonOf calculates distance correctly.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task WithinEpsilonOf_CalculatesDistanceCorrectly()
@@ -84,9 +76,7 @@ public class SizeMathExtensionsTests
         await Assert.That(result).IsTrue();
     }
 
-    /// <summary>
-    /// Test that WithinEpsilonOf returns false when distance exceeds epsilon.
-    /// </summary>
+    /// <summary>Test that WithinEpsilonOf returns false when distance exceeds epsilon.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task WithinEpsilonOf_ReturnsFalse_WhenDistanceExceedsEpsilon()
@@ -103,9 +93,7 @@ public class SizeMathExtensionsTests
         await Assert.That(result).IsFalse();
     }
 
-    /// <summary>
-    /// Test that WithinEpsilonOf handles negative sizes.
-    /// </summary>
+    /// <summary>Test that WithinEpsilonOf handles negative sizes.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task WithinEpsilonOf_HandlesNegativeSizes()
@@ -122,15 +110,15 @@ public class SizeMathExtensionsTests
         await Assert.That(result).IsTrue();
     }
 
-    /// <summary>
-    /// Test that ScaledBy scales size correctly.
-    /// </summary>
+    /// <summary>Test that ScaledBy scales size correctly.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ScaledBy_ScalesSizeCorrectly()
     {
         // Arrange
-        var size = new SizeF(4.0f, 6.0f);
+        const float width = 4.0f;
+        const float height = 6.0f;
+        var size = new SizeF(width, height);
         const float factor = 2.5f;
 
         // Act
@@ -139,14 +127,12 @@ public class SizeMathExtensionsTests
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(result.Width).IsEqualTo(10.0f);
-            await Assert.That(result.Height).IsEqualTo(15.0f);
+            await Assert.That(result.Width).IsEqualTo(width * factor);
+            await Assert.That(result.Height).IsEqualTo(height * factor);
         }
     }
 
-    /// <summary>
-    /// Test that ScaledBy handles zero factor.
-    /// </summary>
+    /// <summary>Test that ScaledBy handles zero factor.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ScaledBy_HandlesZeroFactor()
@@ -166,15 +152,15 @@ public class SizeMathExtensionsTests
         }
     }
 
-    /// <summary>
-    /// Test that ScaledBy handles negative factor.
-    /// </summary>
+    /// <summary>Test that ScaledBy handles negative factor.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ScaledBy_HandlesNegativeFactor()
     {
         // Arrange
-        var size = new SizeF(4.0f, 6.0f);
+        const float width = 4.0f;
+        const float height = 6.0f;
+        var size = new SizeF(width, height);
         const float factor = -2.0f;
 
         // Act
@@ -183,20 +169,20 @@ public class SizeMathExtensionsTests
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(result.Width).IsEqualTo(-8.0f);
-            await Assert.That(result.Height).IsEqualTo(-12.0f);
+            await Assert.That(result.Width).IsEqualTo(width * factor);
+            await Assert.That(result.Height).IsEqualTo(height * factor);
         }
     }
 
-    /// <summary>
-    /// Test that ScaledBy handles fractional factor.
-    /// </summary>
+    /// <summary>Test that ScaledBy handles fractional factor.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ScaledBy_HandlesFractionalFactor()
     {
         // Arrange
-        var size = new SizeF(10.0f, 20.0f);
+        const float width = 10.0f;
+        const float height = 20.0f;
+        var size = new SizeF(width, height);
         const float factor = 0.5f;
 
         // Act
@@ -205,20 +191,20 @@ public class SizeMathExtensionsTests
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(result.Width).IsEqualTo(5.0f);
-            await Assert.That(result.Height).IsEqualTo(10.0f);
+            await Assert.That(result.Width).IsEqualTo(width * factor);
+            await Assert.That(result.Height).IsEqualTo(height * factor);
         }
     }
 
-    /// <summary>
-    /// Test that ScaledBy handles very large factor.
-    /// </summary>
+    /// <summary>Test that ScaledBy handles very large factor.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ScaledBy_HandlesVeryLargeFactor()
     {
         // Arrange
-        var size = new SizeF(1.0f, 2.0f);
+        const float width = 1.0f;
+        const float height = 2.0f;
+        var size = new SizeF(width, height);
         const float factor = 1000.0f;
 
         // Act
@@ -227,20 +213,20 @@ public class SizeMathExtensionsTests
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(result.Width).IsEqualTo(1000.0f);
-            await Assert.That(result.Height).IsEqualTo(2000.0f);
+            await Assert.That(result.Width).IsEqualTo(width * factor);
+            await Assert.That(result.Height).IsEqualTo(height * factor);
         }
     }
 
-    /// <summary>
-    /// Test that ScaledBy handles very small factor.
-    /// </summary>
+    /// <summary>Test that ScaledBy handles very small factor.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ScaledBy_HandlesVerySmallFactor()
     {
         // Arrange
-        var size = new SizeF(100.0f, 200.0f);
+        const float width = 100.0f;
+        const float height = 200.0f;
+        var size = new SizeF(width, height);
         const float factor = 0.001f;
 
         // Act
@@ -249,8 +235,8 @@ public class SizeMathExtensionsTests
         using (Assert.Multiple())
         {
             // Assert
-            await Assert.That(result.Width).IsEqualTo(0.1f);
-            await Assert.That(result.Height).IsEqualTo(0.2f);
+            await Assert.That(result.Width).IsEqualTo(width * factor);
+            await Assert.That(result.Height).IsEqualTo(height * factor);
         }
     }
 }

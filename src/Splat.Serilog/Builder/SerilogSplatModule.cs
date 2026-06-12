@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Serilog;
@@ -17,9 +16,7 @@ namespace Splat.Builder;
 /// <param name="actualLogger">The Serilog logger instance to use for logging. If null, a default logger will be configured.</param>
 public sealed class SerilogSplatModule(global::Serilog.ILogger? actualLogger) : IModule
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SerilogSplatModule"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="SerilogSplatModule"/> class.</summary>
     public SerilogSplatModule()
         : this(null)
     {

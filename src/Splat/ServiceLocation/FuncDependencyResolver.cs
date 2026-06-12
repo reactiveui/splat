@@ -1,15 +1,14 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
 
+using ReactiveUI.Primitives.Disposables;
+
 namespace Splat;
 
-/// <summary>
-/// A lightweight adapter <see cref="IDependencyResolver"/> that delegates all operations to supplied callbacks.
-/// </summary>
+/// <summary>A lightweight adapter <see cref="IDependencyResolver"/> that delegates all operations to supplied callbacks.</summary>
 /// <remarks>
 /// <para>
 /// This resolver is intentionally minimal: it is primarily useful for bridging to another container or
@@ -36,6 +35,10 @@ namespace Splat;
 /// <param name="unregisterCurrent">A func which will unregister the current registered element for a service type and contract.</param>
 /// <param name="unregisterAll">A func which will unregister all the registered elements for a service type and contract.</param>
 /// <param name="toDispose">A optional disposable which is called when this resolver is disposed.</param>
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification = "Resolution/registration APIs whose generic parameter is the caller-supplied service type and cannot appear in the parameter list (e.g. GetService<T>(), Register<TService>()).")]
 public class FuncDependencyResolver(
     Func<Type?, string?, IEnumerable<object>> getAllServices,
     Action<Func<object?>, Type?, string?>? register = null,
@@ -43,36 +46,32 @@ public class FuncDependencyResolver(
     Action<Type?, string?>? unregisterAll = null,
     IDisposable? toDispose = null) : IDependencyResolver
 {
-    /// <summary>
-    /// Stores registration callbacks keyed by (service type, contract).
-    /// </summary>
+    /// <summary>Stores registration callbacks keyed by (service type, contract).</summary>
     /// <remarks>
     /// When a service is registered via <c>Register*</c>, callbacks registered for that key are invoked.
     /// A callback may dispose the provided token to indicate it should be removed (one-shot semantics).
     /// </remarks>
+    /// <summary>The initial capacity used when creating a callback list for a newly seen registration key.</summary>
+    private const int InitialCallbackListCapacity = 4;
+
+    /// <summary>Maps a (service type, contract) key to the change callbacks registered for it.</summary>
     private readonly Dictionary<(Type? type, string? contract), List<Action<IDisposable>>> _callbackRegistry = new(16);
 
-    /// <summary>
-    /// Stores deferred disposal actions associated with registrations made by this resolver.
-    /// </summary>
+    /// <summary>Stores deferred disposal actions associated with registrations made by this resolver.</summary>
     /// <remarks>
     /// Currently used for lazy singletons to dispose the created instance (if any) during <see cref="Dispose()"/>.
     /// Exceptions thrown by these actions are suppressed during disposal to avoid masking other cleanup.
     /// </remarks>
     private readonly List<Action> _disposalActions = new(16);
 
-    /// <summary>
-    /// Optional inner disposable provided at construction, disposed when this resolver is disposed.
-    /// </summary>
+    /// <summary>Optional inner disposable provided at construction, disposed when this resolver is disposed.</summary>
     [SuppressMessage(
         "Usage",
         "CA2213:Disposable fields should be disposed",
         Justification = "Field is disposed via Interlocked.Exchange in Dispose(bool)")]
-    private IDisposable _inner = toDispose ?? ActionDisposable.Empty;
+    private IDisposable _inner = toDispose ?? EmptyDisposable.Instance;
 
-    /// <summary>
-    /// Tracks whether this resolver has been disposed.
-    /// </summary>
+    /// <summary>Tracks whether this resolver has been disposed.</summary>
     /// <remarks>
     /// Used to prevent double-dispose and to reject registrations after disposal.
     /// </remarks>
@@ -188,7 +187,7 @@ public class FuncDependencyResolver(
     {
         if (unregisterCurrent is null)
         {
-            throw new NotImplementedException("UnregisterCurrent is not implemented in this resolver.");
+            throw new NotSupportedException("UnregisterCurrent is not supported by this resolver because no unregister delegate was supplied.");
         }
 
         serviceType ??= NullServiceType.CachedType;
@@ -200,7 +199,7 @@ public class FuncDependencyResolver(
     {
         if (unregisterCurrent is null)
         {
-            throw new NotImplementedException("UnregisterCurrent is not implemented in this resolver.");
+            throw new NotSupportedException("UnregisterCurrent is not supported by this resolver because no unregister delegate was supplied.");
         }
 
         serviceType ??= NullServiceType.CachedType;
@@ -218,7 +217,7 @@ public class FuncDependencyResolver(
     {
         if (unregisterAll is null)
         {
-            throw new NotImplementedException("UnregisterAll is not implemented in this resolver.");
+            throw new NotSupportedException("UnregisterAll is not supported by this resolver because no unregister delegate was supplied.");
         }
 
         serviceType ??= NullServiceType.CachedType;
@@ -230,7 +229,7 @@ public class FuncDependencyResolver(
     {
         if (unregisterAll is null)
         {
-            throw new NotImplementedException("UnregisterAll is not implemented in this resolver.");
+            throw new NotSupportedException("UnregisterAll is not supported by this resolver because no unregister delegate was supplied.");
         }
 
         serviceType ??= NullServiceType.CachedType;
@@ -257,7 +256,7 @@ public class FuncDependencyResolver(
 
         if (!_callbackRegistry.TryGetValue(key, out var callbacks))
         {
-            callbacks = new(4);
+            callbacks = new(InitialCallbackListCapacity);
             _callbackRegistry[key] = callbacks;
         }
 
@@ -296,9 +295,7 @@ public class FuncDependencyResolver(
         GC.SuppressFinalize(this);
     }
 
-    /// <summary>
-    /// Disposes of all managed memory from this class.
-    /// </summary>
+    /// <summary>Disposes of all managed memory from this class.</summary>
     /// <param name="isDisposing">If we are currently disposing managed resources.</param>
     protected virtual void Dispose(bool isDisposing)
     {
@@ -309,67 +306,21 @@ public class FuncDependencyResolver(
 
         if (isDisposing)
         {
-            // Signal callbacks (exceptions suppressed by design).
-            foreach (var kvp in _callbackRegistry)
-            {
-                var list = kvp.Value;
-                for (var i = 0; i < list.Count; i++)
-                {
-                    try
-                    {
-                        using var disp = new BooleanDisposable();
-                        list[i](disp);
-                    }
-                    catch
-                    {
-                        // Suppress exceptions during disposal.
-                    }
-                }
-            }
-
+            SignalCallbacksOnDispose();
             _callbackRegistry.Clear();
 
-            // Execute disposal actions for lazy singletons.
-            for (var i = 0; i < _disposalActions.Count; i++)
-            {
-                try
-                {
-                    _disposalActions[i]();
-                }
-                catch
-                {
-                    // Suppress exceptions during disposal.
-                }
-            }
-
+            ExecuteDisposalActions();
             _disposalActions.Clear();
 
-            // Dispose all registered services that are IDisposable (exceptions suppressed by design).
-            var allServices = getAllServices?.Invoke(null, null);
-            if (allServices is not null)
-            {
-                foreach (var service in allServices)
-                {
-                    try
-                    {
-                        (service as IDisposable)?.Dispose();
-                    }
-                    catch
-                    {
-                        // Suppress exceptions during disposal.
-                    }
-                }
-            }
+            DisposeRegisteredServices();
 
-            Interlocked.Exchange(ref _inner, ActionDisposable.Empty).Dispose();
+            Interlocked.Exchange(ref _inner, EmptyDisposable.Instance).Dispose();
         }
 
         _isDisposed = true;
     }
 
-    /// <summary>
-    /// Returns the last element of an <see cref="IEnumerable{T}"/> if present; otherwise returns <see langword="null"/>.
-    /// </summary>
+    /// <summary>Returns the last element of an <see cref="IEnumerable{T}"/> if present; otherwise returns <see langword="null"/>.</summary>
     /// <param name="source">The sequence to examine.</param>
     /// <returns>
     /// The last element of <paramref name="source"/> when the sequence is non-empty; otherwise <see langword="null"/>.
@@ -407,9 +358,7 @@ public class FuncDependencyResolver(
         return found ? last : null;
     }
 
-    /// <summary>
-    /// Enumerates <paramref name="source"/> and casts each element to <typeparamref name="T"/>.
-    /// </summary>
+    /// <summary>Enumerates <paramref name="source"/> and casts each element to <typeparamref name="T"/>.</summary>
     /// <typeparam name="T">The target element type.</typeparam>
     /// <param name="source">The source sequence.</param>
     /// <returns>An enumerable sequence of <typeparamref name="T"/> values.</returns>
@@ -426,15 +375,48 @@ public class FuncDependencyResolver(
     {
         ArgumentExceptionHelper.ThrowIfNull(source);
 
-        foreach (var o in source)
+        return Iterator(source);
+
+        static IEnumerable<T> Iterator(IEnumerable<object> items)
         {
-            yield return (T)o;
+            foreach (var o in items)
+            {
+                yield return (T)o;
+            }
         }
     }
 
-    /// <summary>
-    /// Resolves all services for the specified type/contract pair, handling null service-type semantics.
-    /// </summary>
+    /// <summary>Invokes each registration callback once, removing any that dispose their provided token (one-shot semantics).</summary>
+    /// <param name="callbacks">The list of callbacks to invoke for the registered key.</param>
+    private static void InvokeRegistrationCallbacks(List<Action<IDisposable>> callbacks)
+    {
+        // Iterate in forward order to preserve callback invocation order, collecting any
+        // that dispose the provided token for removal afterwards so removals do not disturb iteration.
+        List<int>? toRemove = null;
+        for (var i = 0; i < callbacks.Count; i++)
+        {
+            using var disp = new BooleanDisposable();
+            callbacks[i](disp);
+
+            if (disp.IsDisposed)
+            {
+                (toRemove ??= []).Add(i);
+            }
+        }
+
+        if (toRemove is null)
+        {
+            return;
+        }
+
+        // Remove from highest index to lowest so earlier indices remain valid.
+        for (var j = toRemove.Count - 1; j >= 0; j--)
+        {
+            callbacks.RemoveAt(toRemove[j]);
+        }
+    }
+
+    /// <summary>Resolves all services for the specified type/contract pair, handling null service-type semantics.</summary>
     /// <param name="serviceType">
     /// The service type to resolve. When <see langword="null"/>, a sentinel type is used and results are unwrapped
     /// from <see cref="NullServiceType"/>.
@@ -498,9 +480,7 @@ public class FuncDependencyResolver(
         }
     }
 
-    /// <summary>
-    /// Registers a factory for a service type/contract pair and invokes any registration callbacks.
-    /// </summary>
+    /// <summary>Registers a factory for a service type/contract pair and invokes any registration callbacks.</summary>
     /// <param name="factory">The factory used to produce service instances.</param>
     /// <param name="serviceType">
     /// The service type to register. When <see langword="null"/>, the registration is wrapped as <see cref="NullServiceType"/>
@@ -508,7 +488,7 @@ public class FuncDependencyResolver(
     /// </param>
     /// <param name="contract">The contract associated with the registration, or <see langword="null"/>.</param>
     /// <exception cref="ObjectDisposedException">Thrown if this resolver has been disposed.</exception>
-    /// <exception cref="NotImplementedException">Thrown if the <c>register</c> delegate was not supplied.</exception>
+    /// <exception cref="NotSupportedException">Thrown if the <c>register</c> delegate was not supplied.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> is <see langword="null"/>.</exception>
     /// <remarks>
     /// Registration callbacks are invoked after the underlying registration is performed. A callback may dispose the
@@ -521,7 +501,7 @@ public class FuncDependencyResolver(
 
         if (register is null)
         {
-            throw new NotImplementedException("Register is not implemented in this resolver.");
+            throw new NotSupportedException("Register is not supported by this resolver because no register delegate was supplied.");
         }
 
         var isNull = serviceType is null;
@@ -539,23 +519,10 @@ public class FuncDependencyResolver(
             return;
         }
 
-        // Invoke callbacks; remove any that dispose the provided token (one-shot semantics).
-        for (var i = 0; i < callbacks.Count; i++)
-        {
-            using var disp = new BooleanDisposable();
-            callbacks[i](disp);
-
-            if (disp.IsDisposed)
-            {
-                callbacks.RemoveAt(i);
-                i--;
-            }
-        }
+        InvokeRegistrationCallbacks(callbacks);
     }
 
-    /// <summary>
-    /// Registers a lazy singleton for a service type/contract pair and tracks its disposal if created.
-    /// </summary>
+    /// <summary>Registers a lazy singleton for a service type/contract pair and tracks its disposal if created.</summary>
     /// <typeparam name="T">
     /// The service type. The type parameter is annotated to support trimming scenarios requiring a public parameterless constructor.
     /// </typeparam>
@@ -563,7 +530,7 @@ public class FuncDependencyResolver(
     /// <param name="contract">The contract associated with the registration, or <see langword="null"/>.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="valueFactory"/> is <see langword="null"/>.</exception>
     /// <exception cref="ObjectDisposedException">Thrown if this resolver has been disposed.</exception>
-    /// <exception cref="NotImplementedException">Thrown if the <c>register</c> delegate was not supplied.</exception>
+    /// <exception cref="NotSupportedException">Thrown if the <c>register</c> delegate was not supplied.</exception>
     /// <remarks>
     /// <para>
     /// The singleton is created via <see cref="Lazy{T}"/> using <see cref="LazyThreadSafetyMode.ExecutionAndPublication"/>.
@@ -583,10 +550,12 @@ public class FuncDependencyResolver(
         // Store disposal action that can safely dispose the lazy value.
         _disposalActions.Add(() =>
         {
-            if (lazy.IsValueCreated && lazy.Value is IDisposable disposable)
+            if (!lazy.IsValueCreated || lazy.Value is not IDisposable disposable)
             {
-                disposable.Dispose();
+                return;
             }
+
+            disposable.Dispose();
         });
 
         // Wrap lazy value access to dispose and throw if resolver was disposed during construction.
@@ -604,5 +573,64 @@ public class FuncDependencyResolver(
             },
             typeof(T),
             contract);
+    }
+
+    /// <summary>Signals all registered callbacks during disposal, suppressing any exceptions.</summary>
+    private void SignalCallbacksOnDispose()
+    {
+        foreach (var kvp in _callbackRegistry)
+        {
+            var list = kvp.Value;
+            for (var i = 0; i < list.Count; i++)
+            {
+                try
+                {
+                    using var disp = new BooleanDisposable();
+                    list[i](disp);
+                }
+                catch
+                {
+                    // Suppress exceptions during disposal.
+                }
+            }
+        }
+    }
+
+    /// <summary>Executes the deferred disposal actions for lazy singletons, suppressing any exceptions.</summary>
+    private void ExecuteDisposalActions()
+    {
+        for (var i = 0; i < _disposalActions.Count; i++)
+        {
+            try
+            {
+                _disposalActions[i]();
+            }
+            catch
+            {
+                // Suppress exceptions during disposal.
+            }
+        }
+    }
+
+    /// <summary>Disposes all registered services that implement <see cref="IDisposable"/>, suppressing any exceptions.</summary>
+    private void DisposeRegisteredServices()
+    {
+        var allServices = getAllServices?.Invoke(null, null);
+        if (allServices is null)
+        {
+            return;
+        }
+
+        foreach (var service in allServices)
+        {
+            try
+            {
+                (service as IDisposable)?.Dispose();
+            }
+            catch
+            {
+                // Suppress exceptions during disposal.
+            }
+        }
     }
 }

@@ -1,41 +1,43 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using Splat.Common.Test;
 
 namespace Splat.Tests.ServiceLocation;
 
-/// <summary>
-/// Common tests for Dependency Resolver interaction with Splat.
-/// </summary>
+/// <summary>Common tests for Dependency Resolver interaction with Splat.</summary>
 /// <typeparam name="T">The dependency resolver to test.</typeparam>
 [NotInParallel]
 public abstract class BaseDependencyResolverTests<T>
     where T : IDependencyResolver
 {
+    /// <summary>The contract name used by tests that register a named service.</summary>
+    private const string NamedContract = "named";
+
+    /// <summary>The minimum number of registrations expected when a service is registered more than once.</summary>
+    private const int ExpectedMultipleRegistrationCount = 2;
+
+    /// <summary>The minimum number of registration callback invocations expected.</summary>
+    private const int ExpectedCallbackInvocationCount = 3;
+
+    /// <summary>The locator scope created for the duration of each test.</summary>
     private AppLocatorScope? _appLocatorScope;
 
-    /// <summary>
-    /// Setup method to initialize AppLocatorScope before each test.
-    /// </summary>
-    [Before(HookType.Test)]
-    public void SetUpAppLocatorScope() => _appLocatorScope = new AppLocatorScope();
+    /// <summary>Setup method to initialize AppLocatorScope before each test.</summary>
+    [Before(Test)]
+    public void SetUpAppLocatorScope() => _appLocatorScope = new();
 
-    /// <summary>
-    /// Teardown method to dispose AppLocatorScope after each test.
-    /// </summary>
-    [After(HookType.Test)]
+    /// <summary>Teardown method to dispose AppLocatorScope after each test.</summary>
+    [After(Test)]
     public void TearDownAppLocatorScope()
     {
         _appLocatorScope?.Dispose();
         _appLocatorScope = null;
     }
 
-    /// <summary>
-    /// Test to ensure Unregister doesn't cause an IndexOutOfRangeException.
-    /// </summary>
+    /// <summary>Test to ensure Unregister doesn't cause an IndexOutOfRangeException.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task UnregisterCurrent_Doesnt_Throw_When_List_Empty()
@@ -44,7 +46,7 @@ public abstract class BaseDependencyResolverTests<T>
         var type = typeof(ILogManager);
 
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type);
-        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, "named");
+        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, NamedContract);
 
         await Assert.That(() =>
         {
@@ -53,9 +55,7 @@ public abstract class BaseDependencyResolverTests<T>
         }).ThrowsNothing();
     }
 
-    /// <summary>
-    /// Test to ensure UnregisterCurrent removes last entry.
-    /// </summary>
+    /// <summary>Test to ensure UnregisterCurrent removes last entry.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task UnregisterCurrent_Remove_Last()
@@ -65,7 +65,7 @@ public abstract class BaseDependencyResolverTests<T>
 
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type);
         resolver.Register(() => new FuncLogManager(_ => new WrappingFullLogger(new DebugLogger())), type);
-        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, "named");
+        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, NamedContract);
 
         var service = resolver.GetService(type);
         await Assert.That(service).IsTypeOf<FuncLogManager>();
@@ -76,16 +76,14 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(service).IsTypeOf<DefaultLogManager>();
     }
 
-    /// <summary>
-    /// Test to ensure Unregister doesn't cause an IndexOutOfRangeException.
-    /// </summary>
+    /// <summary>Test to ensure Unregister doesn't cause an IndexOutOfRangeException.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task UnregisterCurrentByName_Doesnt_Throw_When_List_Empty()
     {
         var resolver = GetDependencyResolver();
         var type = typeof(ILogManager);
-        const string contract = "named";
+        const string contract = NamedContract;
 
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type);
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, contract);
@@ -97,9 +95,7 @@ public abstract class BaseDependencyResolverTests<T>
         }).ThrowsNothing();
     }
 
-    /// <summary>
-    /// Test to ensure Unregister doesn't cause an IndexOutOfRangeException.
-    /// </summary>
+    /// <summary>Test to ensure Unregister doesn't cause an IndexOutOfRangeException.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task UnregisterAll_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
@@ -108,7 +104,7 @@ public abstract class BaseDependencyResolverTests<T>
         var type = typeof(ILogManager);
 
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type);
-        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, "named");
+        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, NamedContract);
 
         await Assert.That(() =>
         {
@@ -117,16 +113,14 @@ public abstract class BaseDependencyResolverTests<T>
         }).ThrowsNothing();
     }
 
-    /// <summary>
-    /// Test to ensure Unregister doesn't cause an IndexOutOfRangeException.
-    /// </summary>
+    /// <summary>Test to ensure Unregister doesn't cause an IndexOutOfRangeException.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task UnregisterAllByContract_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
     {
         var resolver = GetDependencyResolver();
         var type = typeof(ILogManager);
-        const string contract = "named";
+        const string contract = NamedContract;
 
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type);
         resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, contract);
@@ -138,9 +132,7 @@ public abstract class BaseDependencyResolverTests<T>
         }).ThrowsNothing();
     }
 
-    /// <summary>
-    /// Ensures <see cref="IReadonlyDependencyResolver.GetServices(Type, string)"/> never returns null.
-    /// </summary>
+    /// <summary>Ensures <see cref="IReadonlyDependencyResolver.GetServices(Type, string)"/> never returns null.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetServices_Should_Never_Return_Null()
@@ -154,9 +146,7 @@ public abstract class BaseDependencyResolverTests<T>
         }
     }
 
-    /// <summary>
-    /// Tests for ensuring Has Registration method behaves when using contracts.
-    /// </summary>
+    /// <summary>Tests for ensuring Has Registration method behaves when using contracts.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task HasRegistration()
@@ -202,9 +192,7 @@ public abstract class BaseDependencyResolverTests<T>
         }
     }
 
-    /// <summary>
-    /// Nulls the resolver tests.
-    /// </summary>
+    /// <summary>Nulls the resolver tests.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task NullResolverTests()
@@ -225,9 +213,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(() => resolver1!.RegisterConstantAnd<ViewModelOne>()).Throws<ArgumentNullException>();
     }
 
-    /// <summary>
-    /// Registers the resolver and tests.
-    /// </summary>
+    /// <summary>Registers the resolver and tests.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterAndTests()
@@ -248,9 +234,7 @@ public abstract class BaseDependencyResolverTests<T>
                 .Register<IViewModelOne, ViewModelOne>();
     }
 
-    /// <summary>
-    /// Test generic GetService without contract.
-    /// </summary>
+    /// <summary>Test generic GetService without contract.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task GetService_Generic_WithoutContract_ReturnsService()
@@ -263,9 +247,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsNotNull();
     }
 
-    /// <summary>
-    /// Test generic GetService with contract.
-    /// </summary>
+    /// <summary>Test generic GetService with contract.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task GetService_Generic_WithContract_ReturnsService()
@@ -279,9 +261,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsNotNull();
     }
 
-    /// <summary>
-    /// Test generic GetService returns null for unregistered service.
-    /// </summary>
+    /// <summary>Test generic GetService returns null for unregistered service.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task GetService_Generic_Unregistered_ReturnsNull()
@@ -293,9 +273,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsNull();
     }
 
-    /// <summary>
-    /// Test generic GetServices returns all registered services.
-    /// </summary>
+    /// <summary>Test generic GetServices returns all registered services.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task GetServices_Generic_ReturnsAllServices()
@@ -306,12 +284,10 @@ public abstract class BaseDependencyResolverTests<T>
 
         var results = resolver.GetServices<ViewModelOne>().ToList();
 
-        await Assert.That(results).Count().IsGreaterThanOrEqualTo(2);
+        await Assert.That(results).Count().IsGreaterThanOrEqualTo(ExpectedMultipleRegistrationCount);
     }
 
-    /// <summary>
-    /// Test generic GetServices with contract returns only contract services.
-    /// </summary>
+    /// <summary>Test generic GetServices with contract returns only contract services.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task GetServices_Generic_WithContract_ReturnsContractServices()
@@ -326,9 +302,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(results).Count().IsGreaterThanOrEqualTo(1);
     }
 
-    /// <summary>
-    /// Test generic HasRegistration returns true when registered.
-    /// </summary>
+    /// <summary>Test generic HasRegistration returns true when registered.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task HasRegistration_Generic_WithoutContract_ReturnsTrueWhenRegistered()
@@ -341,9 +315,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsTrue();
     }
 
-    /// <summary>
-    /// Test generic HasRegistration with contract.
-    /// </summary>
+    /// <summary>Test generic HasRegistration with contract.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task HasRegistration_Generic_WithContract_ReturnsTrueWhenRegistered()
@@ -357,9 +329,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsTrue();
     }
 
-    /// <summary>
-    /// Test generic HasRegistration returns false when not registered.
-    /// </summary>
+    /// <summary>Test generic HasRegistration returns false when not registered.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task HasRegistration_Generic_NotRegistered_ReturnsFalse()
@@ -371,9 +341,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsFalse();
     }
 
-    /// <summary>
-    /// Test generic Register with factory function.
-    /// </summary>
+    /// <summary>Test generic Register with factory function.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task Register_Generic_WithFactory_RegistersService()
@@ -386,9 +354,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsNotNull();
     }
 
-    /// <summary>
-    /// Test generic Register with factory and contract.
-    /// </summary>
+    /// <summary>Test generic Register with factory and contract.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task Register_Generic_WithFactoryAndContract_RegistersService()
@@ -402,9 +368,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsNotNull();
     }
 
-    /// <summary>
-    /// Test generic Register with TService and TImplementation.
-    /// </summary>
+    /// <summary>Test generic Register with TService and TImplementation.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task Register_Generic_WithServiceAndImplementation_RegistersService()
@@ -418,9 +382,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsTypeOf<ViewModelOne>();
     }
 
-    /// <summary>
-    /// Test generic Register with TService, TImplementation, and contract.
-    /// </summary>
+    /// <summary>Test generic Register with TService, TImplementation, and contract.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task Register_Generic_WithServiceImplementationAndContract_RegistersService()
@@ -435,9 +397,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsTypeOf<ViewModelOne>();
     }
 
-    /// <summary>
-    /// Test generic RegisterConstant creates singleton.
-    /// </summary>
+    /// <summary>Test generic RegisterConstant creates singleton.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task RegisterConstant_Generic_CreatesSingleton()
@@ -453,9 +413,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result2).IsSameReferenceAs(instance);
     }
 
-    /// <summary>
-    /// Test generic RegisterConstant with contract.
-    /// </summary>
+    /// <summary>Test generic RegisterConstant with contract.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task RegisterConstant_Generic_WithContract_CreatesSingleton()
@@ -470,9 +428,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsSameReferenceAs(instance);
     }
 
-    /// <summary>
-    /// Test generic RegisterLazySingleton creates singleton on first access.
-    /// </summary>
+    /// <summary>Test generic RegisterLazySingleton creates singleton on first access.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task RegisterLazySingleton_Generic_CreatesSingletonOnFirstAccess()
@@ -498,9 +454,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result1).IsSameReferenceAs(result2);
     }
 
-    /// <summary>
-    /// Test generic RegisterLazySingleton with contract.
-    /// </summary>
+    /// <summary>Test generic RegisterLazySingleton with contract.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task RegisterLazySingleton_Generic_WithContract_CreatesSingleton()
@@ -517,9 +471,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result1).IsSameReferenceAs(result2);
     }
 
-    /// <summary>
-    /// Test generic UnregisterCurrent removes last registration.
-    /// </summary>
+    /// <summary>Test generic UnregisterCurrent removes last registration.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task UnregisterCurrent_Generic_RemovesLastRegistration()
@@ -540,9 +492,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(afterUnregister).IsSameReferenceAs(instance1);
     }
 
-    /// <summary>
-    /// Test generic UnregisterCurrent with contract.
-    /// </summary>
+    /// <summary>Test generic UnregisterCurrent with contract.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task UnregisterCurrent_Generic_WithContract_RemovesRegistration()
@@ -558,9 +508,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(resolver.HasRegistration<ViewModelOne>(contract)).IsFalse();
     }
 
-    /// <summary>
-    /// Test generic UnregisterAll removes all registrations.
-    /// </summary>
+    /// <summary>Test generic UnregisterAll removes all registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task UnregisterAll_Generic_RemovesAllRegistrations()
@@ -576,9 +524,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(resolver.HasRegistration<ViewModelOne>()).IsFalse();
     }
 
-    /// <summary>
-    /// Test generic UnregisterAll with contract.
-    /// </summary>
+    /// <summary>Test generic UnregisterAll with contract.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task UnregisterAll_Generic_WithContract_RemovesAllContractRegistrations()
@@ -595,9 +541,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(resolver.HasRegistration<ViewModelOne>(contract)).IsFalse();
     }
 
-    /// <summary>
-    /// Test ServiceRegistrationCallback generic version is invoked when service is registered.
-    /// </summary>
+    /// <summary>Test ServiceRegistrationCallback generic version is invoked when service is registered.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task ServiceRegistrationCallback_Generic_InvokedWhenServiceRegistered()
@@ -614,9 +558,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(callbackInvoked).IsTrue();
     }
 
-    /// <summary>
-    /// Test ServiceRegistrationCallback generic version with existing registration invokes immediately.
-    /// </summary>
+    /// <summary>Test ServiceRegistrationCallback generic version with existing registration invokes immediately.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task ServiceRegistrationCallback_Generic_WithExistingRegistration_InvokesImmediately()
@@ -631,9 +573,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(callbackInvoked).IsTrue();
     }
 
-    /// <summary>
-    /// Test ServiceRegistrationCallback generic with contract version is invoked.
-    /// </summary>
+    /// <summary>Test ServiceRegistrationCallback generic with contract version is invoked.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task ServiceRegistrationCallback_Generic_WithContract_InvokedWhenServiceRegistered()
@@ -651,9 +591,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(callbackInvoked).IsTrue();
     }
 
-    /// <summary>
-    /// Test ServiceRegistrationCallback non-generic version is invoked.
-    /// </summary>
+    /// <summary>Test ServiceRegistrationCallback non-generic version is invoked.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task ServiceRegistrationCallback_NonGeneric_InvokedWhenServiceRegistered()
@@ -670,9 +608,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(callbackInvoked).IsTrue();
     }
 
-    /// <summary>
-    /// Test ServiceRegistrationCallback non-generic with contract version is invoked.
-    /// </summary>
+    /// <summary>Test ServiceRegistrationCallback non-generic with contract version is invoked.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task ServiceRegistrationCallback_NonGeneric_WithContract_InvokedWhenServiceRegistered()
@@ -693,9 +629,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(callbackInvoked).IsTrue();
     }
 
-    /// <summary>
-    /// Test ServiceRegistrationCallback disposal stops receiving notifications.
-    /// </summary>
+    /// <summary>Test ServiceRegistrationCallback disposal stops receiving notifications.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task ServiceRegistrationCallback_Disposal_StopsReceivingNotifications()
@@ -714,9 +648,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(callbackCount).IsEqualTo(1); // Should not increment
     }
 
-    /// <summary>
-    /// Test ServiceRegistrationCallback with null callback throws.
-    /// </summary>
+    /// <summary>Test ServiceRegistrationCallback with null callback throws.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task ServiceRegistrationCallback_NullCallback_Throws()
@@ -730,9 +662,7 @@ public abstract class BaseDependencyResolverTests<T>
             .Throws<ArgumentNullException>();
     }
 
-    /// <summary>
-    /// Test Dispose can be called multiple times without throwing.
-    /// </summary>
+    /// <summary>Test Dispose can be called multiple times without throwing.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task Dispose_DoubleDispose_DoesNotThrow()
@@ -747,9 +677,7 @@ public abstract class BaseDependencyResolverTests<T>
         }).ThrowsNothing();
     }
 
-    /// <summary>
-    /// Test Dispose disposes registered IDisposable services.
-    /// </summary>
+    /// <summary>Test Dispose disposes registered IDisposable services.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task Dispose_DisposesRegisteredServices()
@@ -766,9 +694,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(disposableService.IsDisposed).IsTrue();
     }
 
-    /// <summary>
-    /// Test Dispose does not create lazy services just to dispose them.
-    /// </summary>
+    /// <summary>Test Dispose does not create lazy services just to dispose them.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task Dispose_WithLazySingleton_DoesNotCreateIfNotAccessed()
@@ -790,9 +716,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(factoryCalled).IsFalse();
     }
 
-    /// <summary>
-    /// Test Dispose invokes registered callbacks.
-    /// </summary>
+    /// <summary>Test Dispose invokes registered callbacks.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task Dispose_InvokesCallbacks()
@@ -807,9 +731,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(callbackInvoked).IsTrue();
     }
 
-    /// <summary>
-    /// Test GetService with null contract delegates to non-contract version.
-    /// </summary>
+    /// <summary>Test GetService with null contract delegates to non-contract version.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task GetService_Generic_WithNullContract_DelegatesToNonContract()
@@ -823,9 +745,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsSameReferenceAs(instance);
     }
 
-    /// <summary>
-    /// Test GetService non-generic with null contract returns null when no registrations.
-    /// </summary>
+    /// <summary>Test GetService non-generic with null contract returns null when no registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task GetService_NonGeneric_WithContract_ReturnsNullWhenEmpty()
@@ -837,9 +757,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsNull();
     }
 
-    /// <summary>
-    /// Test GetServices with null contract delegates to non-contract version.
-    /// </summary>
+    /// <summary>Test GetServices with null contract delegates to non-contract version.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task GetServices_Generic_WithNullContract_DelegatesToNonContract()
@@ -852,9 +770,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(results).Count().IsGreaterThanOrEqualTo(1);
     }
 
-    /// <summary>
-    /// Test GetServices non-generic with null contract delegates to non-contract version.
-    /// </summary>
+    /// <summary>Test GetServices non-generic with null contract delegates to non-contract version.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task GetServices_NonGeneric_WithNullContract_DelegatesToNonContract()
@@ -867,9 +783,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(results).Count().IsGreaterThanOrEqualTo(1);
     }
 
-    /// <summary>
-    /// Test GetServices non-generic with contract returns empty when no registrations.
-    /// </summary>
+    /// <summary>Test GetServices non-generic with contract returns empty when no registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task GetServices_NonGeneric_WithContract_ReturnsEmptyWhenNoRegistrations()
@@ -881,9 +795,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(results).IsEmpty();
     }
 
-    /// <summary>
-    /// Test HasRegistration with null contract delegates to non-contract version.
-    /// </summary>
+    /// <summary>Test HasRegistration with null contract delegates to non-contract version.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task HasRegistration_Generic_WithNullContract_DelegatesToNonContract()
@@ -896,9 +808,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsTrue();
     }
 
-    /// <summary>
-    /// Test HasRegistration generic with contract returns false when no registrations.
-    /// </summary>
+    /// <summary>Test HasRegistration generic with contract returns false when no registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task HasRegistration_Generic_WithContract_ReturnsFalseWhenEmpty()
@@ -910,9 +820,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsFalse();
     }
 
-    /// <summary>
-    /// Test HasRegistration non-generic with null contract delegates to non-contract version.
-    /// </summary>
+    /// <summary>Test HasRegistration non-generic with null contract delegates to non-contract version.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task HasRegistration_NonGeneric_WithNullContract_DelegatesToNonContract()
@@ -925,9 +833,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsTrue();
     }
 
-    /// <summary>
-    /// Test Register with null contract delegates to non-contract version.
-    /// </summary>
+    /// <summary>Test Register with null contract delegates to non-contract version.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task Register_Generic_WithNullContract_DelegatesToNonContract()
@@ -940,9 +846,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsNotNull();
     }
 
-    /// <summary>
-    /// Test Register non-generic with null contract delegates to non-contract version.
-    /// </summary>
+    /// <summary>Test Register non-generic with null contract delegates to non-contract version.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task Register_NonGeneric_WithNullContract_DelegatesToNonContract()
@@ -955,9 +859,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsNotNull();
     }
 
-    /// <summary>
-    /// Test Register with TService and TImplementation and null contract delegates to non-contract version.
-    /// </summary>
+    /// <summary>Test Register with TService and TImplementation and null contract delegates to non-contract version.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task Register_Generic_WithServiceImplementationAndNullContract_DelegatesToNonContract()
@@ -971,9 +873,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsTypeOf<ViewModelOne>();
     }
 
-    /// <summary>
-    /// Test RegisterConstant with null contract delegates to non-contract version.
-    /// </summary>
+    /// <summary>Test RegisterConstant with null contract delegates to non-contract version.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task RegisterConstant_Generic_WithNullContract_DelegatesToNonContract()
@@ -987,9 +887,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsSameReferenceAs(instance);
     }
 
-    /// <summary>
-    /// Test RegisterLazySingleton with null contract delegates to non-contract version.
-    /// </summary>
+    /// <summary>Test RegisterLazySingleton with null contract delegates to non-contract version.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task RegisterLazySingleton_Generic_WithNullContract_DelegatesToNonContract()
@@ -1004,9 +902,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result1).IsSameReferenceAs(result2);
     }
 
-    /// <summary>
-    /// Test UnregisterCurrent with null contract delegates to non-contract version.
-    /// </summary>
+    /// <summary>Test UnregisterCurrent with null contract delegates to non-contract version.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task UnregisterCurrent_Generic_WithNullContract_DelegatesToNonContract()
@@ -1024,9 +920,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsSameReferenceAs(instance1);
     }
 
-    /// <summary>
-    /// Test UnregisterCurrent non-generic with null contract delegates to non-contract version.
-    /// </summary>
+    /// <summary>Test UnregisterCurrent non-generic with null contract delegates to non-contract version.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task UnregisterCurrent_NonGeneric_WithNullContract_DelegatesToNonContract()
@@ -1040,9 +934,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(resolver.HasRegistration(typeof(ViewModelOne))).IsTrue();
     }
 
-    /// <summary>
-    /// Test UnregisterAll with null contract delegates to non-contract version.
-    /// </summary>
+    /// <summary>Test UnregisterAll with null contract delegates to non-contract version.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task UnregisterAll_Generic_WithNullContract_DelegatesToNonContract()
@@ -1056,9 +948,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(resolver.HasRegistration<ViewModelOne>()).IsFalse();
     }
 
-    /// <summary>
-    /// Test UnregisterAll non-generic with null contract delegates to non-contract version.
-    /// </summary>
+    /// <summary>Test UnregisterAll non-generic with null contract delegates to non-contract version.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task UnregisterAll_NonGeneric_WithNullContract_DelegatesToNonContract()
@@ -1072,9 +962,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(resolver.HasRegistration(typeof(ViewModelOne))).IsFalse();
     }
 
-    /// <summary>
-    /// Test GetServices combines generic and non-generic registrations.
-    /// </summary>
+    /// <summary>Test GetServices combines generic and non-generic registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task GetServices_Generic_CombinesGenericAndNonGenericResults()
@@ -1085,12 +973,10 @@ public abstract class BaseDependencyResolverTests<T>
 
         var results = resolver.GetServices<ViewModelOne>().ToList();
 
-        await Assert.That(results).Count().IsGreaterThanOrEqualTo(2);
+        await Assert.That(results).Count().IsGreaterThanOrEqualTo(ExpectedMultipleRegistrationCount);
     }
 
-    /// <summary>
-    /// Test GetServices with contract combines generic and non-generic registrations.
-    /// </summary>
+    /// <summary>Test GetServices with contract combines generic and non-generic registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task GetServices_Generic_WithContract_CombinesGenericAndNonGenericResults()
@@ -1102,12 +988,10 @@ public abstract class BaseDependencyResolverTests<T>
 
         var results = resolver.GetServices<ViewModelOne>(contract).ToList();
 
-        await Assert.That(results).Count().IsGreaterThanOrEqualTo(2);
+        await Assert.That(results).Count().IsGreaterThanOrEqualTo(ExpectedMultipleRegistrationCount);
     }
 
-    /// <summary>
-    /// Test ServiceRegistrationCallback invokes callback for each existing registration.
-    /// </summary>
+    /// <summary>Test ServiceRegistrationCallback invokes callback for each existing registration.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task ServiceRegistrationCallback_Generic_InvokesForEachExistingRegistration()
@@ -1121,12 +1005,10 @@ public abstract class BaseDependencyResolverTests<T>
 
         using var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(_ => callbackCount++);
 
-        await Assert.That(callbackCount).IsGreaterThanOrEqualTo(3);
+        await Assert.That(callbackCount).IsGreaterThanOrEqualTo(ExpectedCallbackInvocationCount);
     }
 
-    /// <summary>
-    /// Test Dispose handles exceptions from callbacks gracefully.
-    /// </summary>
+    /// <summary>Test Dispose handles exceptions from callbacks gracefully.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task Dispose_SuppressesExceptionsFromCallbacks()
@@ -1142,9 +1024,7 @@ public abstract class BaseDependencyResolverTests<T>
         }).ThrowsNothing();
     }
 
-    /// <summary>
-    /// Test Dispose handles exceptions from service disposal gracefully.
-    /// </summary>
+    /// <summary>Test Dispose handles exceptions from service disposal gracefully.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task Dispose_SuppressesExceptionsFromServiceDisposal()
@@ -1161,9 +1041,7 @@ public abstract class BaseDependencyResolverTests<T>
         }).ThrowsNothing();
     }
 
-    /// <summary>
-    /// Test registration callbacks are not invoked after disposal.
-    /// </summary>
+    /// <summary>Test registration callbacks are not invoked after disposal.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task Register_AfterDispose_DoesNotInvokeCallbacks()
@@ -1177,17 +1055,12 @@ public abstract class BaseDependencyResolverTests<T>
 
         var countAfterDispose = callbackCount;
 
-        await Assert.That(() =>
-        {
-            resolver.Register(() => new ViewModelOne());
-        }).Throws<ObjectDisposedException>();
+        await Assert.That(() => resolver.Register(() => new ViewModelOne())).Throws<ObjectDisposedException>();
 
         await Assert.That(callbackCount).IsEqualTo(countAfterDispose);
     }
 
-    /// <summary>
-    /// Test RegisterLazySingleton unwrapping in non-generic GetService.
-    /// </summary>
+    /// <summary>Test RegisterLazySingleton unwrapping in non-generic GetService.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task GetService_NonGeneric_UnwrapsLazySingleton()
@@ -1211,9 +1084,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result1).IsSameReferenceAs(result2);
     }
 
-    /// <summary>
-    /// Test RegisterLazySingleton unwrapping in non-generic GetService with contract.
-    /// </summary>
+    /// <summary>Test RegisterLazySingleton unwrapping in non-generic GetService with contract.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task GetService_NonGeneric_WithContract_UnwrapsLazySingleton()
@@ -1240,9 +1111,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result1).IsSameReferenceAs(result2);
     }
 
-    /// <summary>
-    /// Test Dispose checks Lazy.IsValueCreated before disposing.
-    /// </summary>
+    /// <summary>Test Dispose checks Lazy.IsValueCreated before disposing.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task Dispose_WithAccessedLazySingleton_DisposesValue()
@@ -1261,10 +1130,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(disposableService.IsDisposed).IsTrue();
     }
 
-    /// <summary>
-    /// Test that Dispose does NOT create transient services.
-    /// Transient services should never be instantiated during disposal.
-    /// </summary>
+    /// <summary>Test that Dispose does NOT create transient services. Transient services should never be instantiated during disposal.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task Dispose_WithTransientServices_DoesNotCreateInstances()
@@ -1281,7 +1147,7 @@ public abstract class BaseDependencyResolverTests<T>
         });
 
         // Register transient disposable services
-        resolver.Register<DisposableTestService>(() =>
+        resolver.Register(() =>
         {
             disposableCreatedCount++;
             return new DisposableTestService();
@@ -1302,9 +1168,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(disposableCreatedCount).IsEqualTo(1);
     }
 
-    /// <summary>
-    /// Test GetService with null serviceType uses NullServiceType.
-    /// </summary>
+    /// <summary>Test GetService with null serviceType uses NullServiceType.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task GetService_NonGeneric_WithNullType_HandlesNullServiceType()
@@ -1319,9 +1183,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsSameReferenceAs(instance);
     }
 
-    /// <summary>
-    /// Test GetServices with null serviceType uses NullServiceType.
-    /// </summary>
+    /// <summary>Test GetServices with null serviceType uses NullServiceType.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task GetServices_NonGeneric_WithNullType_HandlesNullServiceType()
@@ -1334,9 +1196,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(results).Count().IsGreaterThanOrEqualTo(1);
     }
 
-    /// <summary>
-    /// Test HasRegistration with null serviceType uses NullServiceType.
-    /// </summary>
+    /// <summary>Test HasRegistration with null serviceType uses NullServiceType.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task HasRegistration_NonGeneric_WithNullType_HandlesNullServiceType()
@@ -1349,9 +1209,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(result).IsTrue();
     }
 
-    /// <summary>
-    /// Test UnregisterCurrent with null serviceType uses NullServiceType.
-    /// </summary>
+    /// <summary>Test UnregisterCurrent with null serviceType uses NullServiceType.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task UnregisterCurrent_NonGeneric_WithNullType_HandlesNullServiceType()
@@ -1365,9 +1223,7 @@ public abstract class BaseDependencyResolverTests<T>
         await Assert.That(resolver.HasRegistration(null)).IsTrue();
     }
 
-    /// <summary>
-    /// Test UnregisterAll with null serviceType uses NullServiceType.
-    /// </summary>
+    /// <summary>Test UnregisterAll with null serviceType uses NullServiceType.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public virtual async Task UnregisterAll_NonGeneric_WithNullType_HandlesNullServiceType()
@@ -1392,10 +1248,10 @@ public abstract class BaseDependencyResolverTests<T>
         var resolver = GetDependencyResolver();
 
         // Register a slow service that takes 3 seconds to construct
-        resolver.RegisterLazySingleton<SlowDisposableService>(() => new SlowDisposableService());
+        resolver.RegisterLazySingleton<SlowDisposableService>(() => new());
 
         // Register a fast service for comparison
-        resolver.RegisterLazySingleton<FastDisposableService>(() => new FastDisposableService());
+        resolver.RegisterLazySingleton<FastDisposableService>(() => new());
 
         // Start constructing the slow service in a background task
         var slowTask = Task.Run(() => resolver.GetService<SlowDisposableService>());
@@ -1413,10 +1269,9 @@ public abstract class BaseDependencyResolverTests<T>
         resolver.Dispose();
 
         // The fast service should have been disposed during resolver disposal
-        FastDisposableService? fastService = null;
         try
         {
-            fastService = await fastTask;
+            var fastService = await fastTask;
 
             // If we get the service, it should be disposed
             if (fastService is not null)
@@ -1469,35 +1324,32 @@ public abstract class BaseDependencyResolverTests<T>
         }
     }
 
-    /// <summary>
-    /// Gets an instance of a dependency resolver to test.
-    /// </summary>
+    /// <summary>Gets an instance of a dependency resolver to test.</summary>
     /// <returns>Dependency Resolver.</returns>
     protected abstract T GetDependencyResolver();
 
-    /// <summary>
-    /// Disposable test service for testing disposal.
-    /// </summary>
+    /// <summary>Disposable test service for testing disposal.</summary>
     protected sealed class DisposableTestService : IDisposable
     {
+        /// <summary>Gets a value indicating whether this instance has been disposed.</summary>
         public bool IsDisposed { get; private set; }
 
+        /// <inheritdoc />
         public void Dispose() => IsDisposed = true;
     }
 
-    /// <summary>
-    /// Disposable test service that throws exceptions during disposal.
-    /// </summary>
+    /// <summary>Disposable test service that throws exceptions during disposal.</summary>
     protected sealed class ThrowingDisposableService : IDisposable
     {
+        /// <inheritdoc />
+        [SuppressMessage("Blocker Code Smell", "S3877:Exceptions should not be thrown from unexpected methods", Justification = "Testing purposes")]
         public void Dispose() => throw new InvalidOperationException("Disposal exception");
     }
 
-    /// <summary>
-    /// Disposable test service that takes time to construct.
-    /// </summary>
+    /// <summary>Disposable test service that takes time to construct.</summary>
     protected sealed class SlowDisposableService : IDisposable
     {
+        /// <summary>Initializes a new instance of the <see cref="SlowDisposableService"/> class.</summary>
         public SlowDisposableService()
         {
             ConstructionStarted = true;
@@ -1505,22 +1357,26 @@ public abstract class BaseDependencyResolverTests<T>
             ConstructionCompleted = true;
         }
 
+        /// <summary>Gets a value indicating whether this instance has been disposed.</summary>
         public bool IsDisposed { get; private set; }
 
-        public bool ConstructionStarted { get; private set; }
+        /// <summary>Gets a value indicating whether construction has started.</summary>
+        public bool ConstructionStarted { get; }
 
-        public bool ConstructionCompleted { get; private set; }
+        /// <summary>Gets a value indicating whether construction has completed.</summary>
+        public bool ConstructionCompleted { get; }
 
+        /// <inheritdoc />
         public void Dispose() => IsDisposed = true;
     }
 
-    /// <summary>
-    /// Disposable test service that constructs quickly.
-    /// </summary>
+    /// <summary>Disposable test service that constructs quickly.</summary>
     protected sealed class FastDisposableService : IDisposable
     {
+        /// <summary>Gets a value indicating whether this instance has been disposed.</summary>
         public bool IsDisposed { get; private set; }
 
+        /// <inheritdoc />
         public void Dispose() => IsDisposed = true;
     }
 }

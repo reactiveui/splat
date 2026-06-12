@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Exceptionless;
@@ -20,15 +19,16 @@ namespace Splat;
 /// for use within a single logical operation or request.</remarks>
 public sealed class ExceptionlessFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ExceptionlessFeatureUsageTrackingSession"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="ExceptionlessFeatureUsageTrackingSession"/> class.</summary>
     /// <param name="featureName">Name of the feature.</param>
     public ExceptionlessFeatureUsageTrackingSession(string featureName)
         : this(featureName, Guid.Empty)
     {
     }
 
+    /// <summary>Initializes a new instance of the <see cref="ExceptionlessFeatureUsageTrackingSession"/> class.</summary>
+    /// <param name="featureName">Name of the feature.</param>
+    /// <param name="parentReference">The unique reference of the parent feature session, or <see cref="Guid.Empty"/> if this is a root session.</param>
     internal ExceptionlessFeatureUsageTrackingSession(
         string featureName,
         Guid parentReference)

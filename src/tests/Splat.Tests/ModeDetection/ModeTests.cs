@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Common.Test;
@@ -8,20 +7,18 @@ using Splat.ModeDetection;
 
 namespace Splat.Tests.ModeDetection;
 
+/// <summary>Tests for the mode detection behaviour.</summary>
 [NotInParallel]
 public class ModeTests
 {
+    /// <summary>The mode detector scope used to isolate each test.</summary>
     private ModeDetectorScope? _modeDetectorScope;
 
-    /// <summary>
-    /// Setup method to initialize ModeDetectorScope before each test.
-    /// </summary>
+    /// <summary>Setup method to initialize ModeDetectorScope before each test.</summary>
     [Before(HookType.Test)]
     public void SetUpModeDetectorScope() => _modeDetectorScope = new();
 
-    /// <summary>
-    /// Teardown method to dispose ModeDetectorScope after each test.
-    /// </summary>
+    /// <summary>Teardown method to dispose ModeDetectorScope after each test.</summary>
     [After(HookType.Test)]
     public void TearDownModeDetectorScope()
     {
@@ -29,9 +26,7 @@ public class ModeTests
         _modeDetectorScope = null;
     }
 
-    /// <summary>
-    /// Tests the <see cref="Mode.Run"/> mode.
-    /// </summary>
+    /// <summary>Tests the <see cref="Mode.Run"/> mode.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RunModeTest()
@@ -46,9 +41,7 @@ public class ModeTests
         await Assert.That(inUnitTestRunner).IsFalse();
     }
 
-    /// <summary>
-    /// Tests the <see cref="Mode.Test"/> mode.
-    /// </summary>
+    /// <summary>Tests the <see cref="Mode.Test"/> mode.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task TestModeTest()
@@ -63,9 +56,7 @@ public class ModeTests
         await Assert.That(inUnitTestRunner).IsTrue();
     }
 
-    /// <summary>
-    /// Tests that ModeDetector caches results properly.
-    /// </summary>
+    /// <summary>Tests that ModeDetector caches results properly.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ModeDetector_CachesResults()
@@ -87,9 +78,7 @@ public class ModeTests
         }
     }
 
-    /// <summary>
-    /// Tests that overriding mode detector clears cache.
-    /// </summary>
+    /// <summary>Tests that overriding mode detector clears cache.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ModeDetector_OverrideClearsCache()
@@ -107,9 +96,7 @@ public class ModeTests
         await Assert.That(result2).IsFalse();
     }
 
-    /// <summary>
-    /// Tests that ModeDetector handles null detector gracefully.
-    /// </summary>
+    /// <summary>Tests that ModeDetector handles null detector gracefully.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ModeDetector_HandlesNullDetector()

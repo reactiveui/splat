@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.ComponentModel;
@@ -8,30 +7,27 @@ using System.Globalization;
 
 namespace Splat;
 
-/// <summary>
-/// Provides a logger implementation that writes log messages to a specified text writer, such as the console output.
-/// </summary>
+/// <summary>Provides a logger implementation that writes log messages to a specified text writer, such as the console output.</summary>
 /// <remarks>ConsoleLogger is typically used for simple logging scenarios where log output is directed to the
 /// console or another text stream. The logger supports configurable log levels and customizable exception message
 /// formatting. This class is not thread-safe; if used from multiple threads, external synchronization is
 /// required.</remarks>
 public class ConsoleLogger : ILogger
 {
-    /// <summary>
-    /// The text writer to write log messages to.
-    /// </summary>
+    /// <summary>The text writer to write log messages to.</summary>
     private readonly TextWriter _writer;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ConsoleLogger"/> class.
-    /// </summary>
-    /// <param name="writer">The text writer to write log messages to. Defaults to Console.Out if null.</param>
-    public ConsoleLogger(TextWriter? writer = null) => _writer = writer ?? Console.Out;
+    /// <summary>Initializes a new instance of the <see cref="ConsoleLogger"/> class that writes to <see cref="Console.Out"/>.</summary>
+    public ConsoleLogger()
+        : this(Console.Out)
+    {
+    }
 
-    /// <summary>
-    /// Gets or sets the exception message format.
-    /// First parameter will be the message, second will be the exception.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="ConsoleLogger"/> class.</summary>
+    /// <param name="writer">The text writer to write log messages to. Defaults to Console.Out if null.</param>
+    public ConsoleLogger(TextWriter? writer) => _writer = writer ?? Console.Out;
+
+    /// <summary>Gets or sets the exception message format. First parameter will be the message, second will be the exception.</summary>
     public string ExceptionMessageFormat { get; set; } = "{0} - {1}";
 
     /// <inheritdoc />

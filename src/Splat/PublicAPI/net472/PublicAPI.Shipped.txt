@@ -1,0 +1,167 @@
+#nullable enable
+Splat.ApplicationPerformanceMonitoring.DefaultFeatureUsageTrackingManager
+Splat.ApplicationPerformanceMonitoring.DefaultFeatureUsageTrackingManager.DefaultFeatureUsageTrackingManager() -> void
+Splat.ApplicationPerformanceMonitoring.DefaultFeatureUsageTrackingSession
+Splat.ApplicationPerformanceMonitoring.DefaultFeatureUsageTrackingSession.DefaultFeatureUsageTrackingSession(string! featureName) -> void
+Splat.ApplicationPerformanceMonitoring.DefaultFeatureUsageTrackingSession.Dispose() -> void
+Splat.ApplicationPerformanceMonitoring.DefaultFeatureUsageTrackingSession.FeatureName.get -> string!
+Splat.ApplicationPerformanceMonitoring.DefaultFeatureUsageTrackingSession.FeatureReference.get -> System.Guid
+Splat.ApplicationPerformanceMonitoring.DefaultFeatureUsageTrackingSession.OnException(System.Exception! exception) -> void
+Splat.ApplicationPerformanceMonitoring.DefaultFeatureUsageTrackingSession.ParentReference.get -> System.Guid
+Splat.ApplicationPerformanceMonitoring.DefaultFeatureUsageTrackingSession.SubFeature(string! description) -> Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession!
+Splat.ApplicationPerformanceMonitoring.EnableFeatureUsageTrackingExtensions
+Splat.ApplicationPerformanceMonitoring.EnableFeatureUsageTrackingExtensions.extension(Splat.ApplicationPerformanceMonitoring.IEnableFeatureUsageTracking!)
+Splat.ApplicationPerformanceMonitoring.EnableFeatureUsageTrackingExtensions.extension(Splat.ApplicationPerformanceMonitoring.IEnableFeatureUsageTracking!).FeatureUsageTrackingSession(string! featureName) -> Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession!
+Splat.ApplicationPerformanceMonitoring.EnableFeatureUsageTrackingExtensions.extension(Splat.ApplicationPerformanceMonitoring.IEnableFeatureUsageTracking!).WithFeatureUsageTrackingSession(string! featureName, System.Action<Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession!>! action) -> void
+Splat.ApplicationPerformanceMonitoring.EnableFeatureUsageTrackingExtensions.extension(Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession!)
+Splat.ApplicationPerformanceMonitoring.EnableFeatureUsageTrackingExtensions.extension(Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession!).WithSubFeatureUsageTrackingSession(string! featureName, System.Action<Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession!>! action) -> void
+Splat.ApplicationPerformanceMonitoring.FuncFeatureUsageTrackingManager
+Splat.ApplicationPerformanceMonitoring.FuncFeatureUsageTrackingManager.FuncFeatureUsageTrackingManager(System.Func<string!, Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession!>! featureUsageTrackingSessionFunc) -> void
+Splat.ApplicationPerformanceMonitoring.FuncFeatureUsageTrackingManager.GetFeatureUsageTrackingSession(string! featureName) -> Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession!
+Splat.ApplicationPerformanceMonitoring.IEnableFeatureUsageTracking
+Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingManager
+Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingManager.GetFeatureUsageTrackingSession(string! featureName) -> Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession!
+Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession
+Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession.FeatureName.get -> string!
+Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession.OnException(System.Exception! exception) -> void
+Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession.SubFeature(string! description) -> Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession!
+Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession<TReferenceType>
+Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession<TReferenceType>.FeatureReference.get -> TReferenceType
+Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession<TReferenceType>.ParentReference.get -> TReferenceType
+Splat.ApplicationPerformanceMonitoring.IViewTracking
+Splat.ApplicationPerformanceMonitoring.IViewTracking.OnViewNavigation(string! name) -> void
+Splat.DefaultModeDetector
+Splat.DefaultModeDetector.DefaultModeDetector() -> void
+Splat.DefaultModeDetector.InUnitTestRunner() -> bool?
+Splat.FuncDependencyResolver
+Splat.FuncDependencyResolver.Dispose() -> void
+Splat.FuncDependencyResolver.FuncDependencyResolver(System.Func<System.Type?, string?, System.Collections.Generic.IEnumerable<object!>!>! getAllServices, System.Action<System.Func<object?>!, System.Type?, string?>? register = null, System.Action<System.Type?, string?>? unregisterCurrent = null, System.Action<System.Type?, string?>? unregisterAll = null, System.IDisposable? toDispose = null) -> void
+Splat.FuncDependencyResolver.GetService(System.Type? serviceType) -> object?
+Splat.FuncDependencyResolver.GetService(System.Type? serviceType, string? contract) -> object?
+Splat.FuncDependencyResolver.GetService<T>() -> T?
+Splat.FuncDependencyResolver.GetService<T>(string? contract) -> T?
+Splat.FuncDependencyResolver.GetServices(System.Type? serviceType) -> System.Collections.Generic.IEnumerable<object!>!
+Splat.FuncDependencyResolver.GetServices(System.Type? serviceType, string? contract) -> System.Collections.Generic.IEnumerable<object!>!
+Splat.FuncDependencyResolver.GetServices<T>() -> System.Collections.Generic.IEnumerable<T>!
+Splat.FuncDependencyResolver.GetServices<T>(string? contract) -> System.Collections.Generic.IEnumerable<T>!
+Splat.FuncDependencyResolver.HasRegistration(System.Type? serviceType) -> bool
+Splat.FuncDependencyResolver.HasRegistration(System.Type? serviceType, string? contract) -> bool
+Splat.FuncDependencyResolver.HasRegistration<T>() -> bool
+Splat.FuncDependencyResolver.HasRegistration<T>(string? contract) -> bool
+Splat.FuncDependencyResolver.Register(System.Func<object?>! factory, System.Type? serviceType) -> void
+Splat.FuncDependencyResolver.Register(System.Func<object?>! factory, System.Type? serviceType, string? contract) -> void
+Splat.FuncDependencyResolver.Register<T>(System.Func<T?>! factory) -> void
+Splat.FuncDependencyResolver.Register<T>(System.Func<T?>! factory, string? contract) -> void
+Splat.FuncDependencyResolver.Register<TService, TImplementation>() -> void
+Splat.FuncDependencyResolver.Register<TService, TImplementation>(string? contract) -> void
+Splat.FuncDependencyResolver.RegisterConstant<T>(T? value) -> void
+Splat.FuncDependencyResolver.RegisterConstant<T>(T? value, string? contract) -> void
+Splat.FuncDependencyResolver.RegisterLazySingleton<T>(System.Func<T?>! valueFactory) -> void
+Splat.FuncDependencyResolver.RegisterLazySingleton<T>(System.Func<T?>! valueFactory, string? contract) -> void
+Splat.FuncDependencyResolver.ServiceRegistrationCallback(System.Type! serviceType, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.FuncDependencyResolver.ServiceRegistrationCallback(System.Type! serviceType, string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.FuncDependencyResolver.ServiceRegistrationCallback<T>(System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.FuncDependencyResolver.ServiceRegistrationCallback<T>(string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.FuncDependencyResolver.UnregisterAll(System.Type? serviceType) -> void
+Splat.FuncDependencyResolver.UnregisterAll(System.Type? serviceType, string? contract) -> void
+Splat.FuncDependencyResolver.UnregisterAll<T>() -> void
+Splat.FuncDependencyResolver.UnregisterAll<T>(string? contract) -> void
+Splat.FuncDependencyResolver.UnregisterCurrent(System.Type? serviceType) -> void
+Splat.FuncDependencyResolver.UnregisterCurrent(System.Type? serviceType, string? contract) -> void
+Splat.FuncDependencyResolver.UnregisterCurrent<T>() -> void
+Splat.FuncDependencyResolver.UnregisterCurrent<T>(string? contract) -> void
+Splat.IModeDetector
+Splat.IModeDetector.InUnitTestRunner() -> bool?
+Splat.Locator
+Splat.ModeDetection.Mode
+Splat.ModeDetection.Mode.InUnitTestRunner() -> bool?
+Splat.ModeDetector
+Splat.PointMathExtensions
+Splat.PointMathExtensions.extension(System.Drawing.Point)
+Splat.PointMathExtensions.extension(System.Drawing.Point).Floor() -> System.Drawing.PointF
+Splat.PointMathExtensions.extension(System.Drawing.PointF)
+Splat.PointMathExtensions.extension(System.Drawing.PointF).AngleInDegrees() -> float
+Splat.PointMathExtensions.extension(System.Drawing.PointF).DistanceTo(System.Drawing.PointF other) -> float
+Splat.PointMathExtensions.extension(System.Drawing.PointF).DotProduct(System.Drawing.PointF other) -> float
+Splat.PointMathExtensions.extension(System.Drawing.PointF).Length() -> float
+Splat.PointMathExtensions.extension(System.Drawing.PointF).Normalize() -> System.Drawing.PointF
+Splat.PointMathExtensions.extension(System.Drawing.PointF).ProjectAlong(System.Drawing.PointF direction) -> System.Drawing.PointF
+Splat.PointMathExtensions.extension(System.Drawing.PointF).ProjectAlongAngle(float angleInDegrees) -> System.Drawing.PointF
+Splat.PointMathExtensions.extension(System.Drawing.PointF).ScaledBy(float factor) -> System.Drawing.PointF
+Splat.PointMathExtensions.extension(System.Drawing.PointF).WithinEpsilonOf(System.Drawing.PointF other, float epsilon) -> bool
+Splat.RectEdge
+Splat.RectEdge.Bottom = 3 -> Splat.RectEdge
+Splat.RectEdge.Left = 0 -> Splat.RectEdge
+Splat.RectEdge.Right = 2 -> Splat.RectEdge
+Splat.RectEdge.Top = 1 -> Splat.RectEdge
+Splat.RectangleCopyOptions
+Splat.RectangleCopyOptions.Bottom.get -> float?
+Splat.RectangleCopyOptions.Bottom.init -> void
+Splat.RectangleCopyOptions.Equals(Splat.RectangleCopyOptions other) -> bool
+Splat.RectangleCopyOptions.Height.get -> float?
+Splat.RectangleCopyOptions.Height.init -> void
+Splat.RectangleCopyOptions.RectangleCopyOptions() -> void
+Splat.RectangleCopyOptions.Top.get -> float?
+Splat.RectangleCopyOptions.Top.init -> void
+Splat.RectangleCopyOptions.Width.get -> float?
+Splat.RectangleCopyOptions.Width.init -> void
+Splat.RectangleCopyOptions.X.get -> float?
+Splat.RectangleCopyOptions.X.init -> void
+Splat.RectangleCopyOptions.Y.get -> float?
+Splat.RectangleCopyOptions.Y.init -> void
+Splat.RectangleMathExtensions
+Splat.RectangleMathExtensions.extension(System.Drawing.RectangleF)
+Splat.RectangleMathExtensions.extension(System.Drawing.RectangleF).Center() -> System.Drawing.PointF
+Splat.RectangleMathExtensions.extension(System.Drawing.RectangleF).Copy(Splat.RectangleCopyOptions options) -> System.Drawing.RectangleF
+Splat.RectangleMathExtensions.extension(System.Drawing.RectangleF).Divide(float amount, Splat.RectEdge fromEdge) -> System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF>!
+Splat.RectangleMathExtensions.extension(System.Drawing.RectangleF).DivideWithPadding(float sliceAmount, float padding, Splat.RectEdge fromEdge) -> System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF>!
+Splat.RectangleMathExtensions.extension(System.Drawing.RectangleF).InvertWithin(System.Drawing.RectangleF containingRect) -> System.Drawing.RectangleF
+Splat.ServiceLocationInitializationExtensions
+Splat.ServiceLocationInitializationExtensions.extension(Splat.IMutableDependencyResolver!)
+Splat.ServiceLocationInitializationExtensions.extension(Splat.IMutableDependencyResolver!).InitializeSplat() -> void
+Splat.SizeMathExtensions
+Splat.SizeMathExtensions.extension(System.Drawing.SizeF)
+Splat.SizeMathExtensions.extension(System.Drawing.SizeF).ScaledBy(float factor) -> System.Drawing.SizeF
+Splat.SizeMathExtensions.extension(System.Drawing.SizeF).WithinEpsilonOf(System.Drawing.SizeF other, float epsilon) -> bool
+Splat.TargetFrameworkExtensions
+Splat.TargetFrameworkExtensions.extension(System.Reflection.Assembly!)
+Splat.TargetFrameworkExtensions.extension(System.Reflection.Assembly!).GetTargetFrameworkName() -> string?
+override Splat.RectangleCopyOptions.GetHashCode() -> int
+static Splat.ApplicationPerformanceMonitoring.EnableFeatureUsageTrackingExtensions.FeatureUsageTrackingSession(this Splat.ApplicationPerformanceMonitoring.IEnableFeatureUsageTracking! instance, string! featureName) -> Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession!
+static Splat.ApplicationPerformanceMonitoring.EnableFeatureUsageTrackingExtensions.WithFeatureUsageTrackingSession(this Splat.ApplicationPerformanceMonitoring.IEnableFeatureUsageTracking! instance, string! featureName, System.Action<Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession!>! action) -> void
+static Splat.ApplicationPerformanceMonitoring.EnableFeatureUsageTrackingExtensions.WithSubFeatureUsageTrackingSession(this Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession! instance, string! featureName, System.Action<Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession!>! action) -> void
+static Splat.Locator.AreResolverCallbackChangedNotificationsEnabled() -> bool
+static Splat.Locator.Current.get -> Splat.IReadonlyDependencyResolver!
+static Splat.Locator.CurrentMutable.get -> Splat.IMutableDependencyResolver!
+static Splat.Locator.GetLocator() -> Splat.IDependencyResolver!
+static Splat.Locator.RegisterResolverCallbackChanged(System.Action! callback) -> System.IDisposable!
+static Splat.Locator.SetLocator(Splat.IDependencyResolver! dependencyResolver) -> void
+static Splat.Locator.SuppressResolverCallbackChangedNotifications() -> System.IDisposable!
+static Splat.ModeDetector.InUnitTestRunner() -> bool
+static Splat.ModeDetector.OverrideModeDetector(Splat.IModeDetector! modeDetector) -> void
+static Splat.PointMathExtensions.AngleInDegrees(this System.Drawing.PointF value) -> float
+static Splat.PointMathExtensions.DistanceTo(this System.Drawing.PointF value, System.Drawing.PointF other) -> float
+static Splat.PointMathExtensions.DotProduct(this System.Drawing.PointF value, System.Drawing.PointF other) -> float
+static Splat.PointMathExtensions.Floor(this System.Drawing.Point value) -> System.Drawing.PointF
+static Splat.PointMathExtensions.Length(this System.Drawing.PointF value) -> float
+static Splat.PointMathExtensions.Normalize(this System.Drawing.PointF value) -> System.Drawing.PointF
+static Splat.PointMathExtensions.ProjectAlong(this System.Drawing.PointF value, System.Drawing.PointF direction) -> System.Drawing.PointF
+static Splat.PointMathExtensions.ProjectAlongAngle(this System.Drawing.PointF value, float angleInDegrees) -> System.Drawing.PointF
+static Splat.PointMathExtensions.ScaledBy(this System.Drawing.PointF value, float factor) -> System.Drawing.PointF
+static Splat.PointMathExtensions.WithinEpsilonOf(this System.Drawing.PointF value, System.Drawing.PointF other, float epsilon) -> bool
+static Splat.RectangleCopyOptions.operator !=(Splat.RectangleCopyOptions left, Splat.RectangleCopyOptions right) -> bool
+static Splat.RectangleCopyOptions.operator ==(Splat.RectangleCopyOptions left, Splat.RectangleCopyOptions right) -> bool
+static Splat.RectangleMathExtensions.Center(this System.Drawing.RectangleF value) -> System.Drawing.PointF
+static Splat.RectangleMathExtensions.Copy(this System.Drawing.RectangleF value, Splat.RectangleCopyOptions options) -> System.Drawing.RectangleF
+static Splat.RectangleMathExtensions.Divide(this System.Drawing.RectangleF value, float amount, Splat.RectEdge fromEdge) -> System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF>!
+static Splat.RectangleMathExtensions.DivideWithPadding(this System.Drawing.RectangleF value, float sliceAmount, float padding, Splat.RectEdge fromEdge) -> System.Tuple<System.Drawing.RectangleF, System.Drawing.RectangleF>!
+static Splat.RectangleMathExtensions.InvertWithin(this System.Drawing.RectangleF value, System.Drawing.RectangleF containingRect) -> System.Drawing.RectangleF
+static Splat.ServiceLocationInitializationExtensions.InitializeSplat(this Splat.IMutableDependencyResolver! resolver) -> void
+static Splat.SizeMathExtensions.ScaledBy(this System.Drawing.SizeF value, float factor) -> System.Drawing.SizeF
+static Splat.SizeMathExtensions.WithinEpsilonOf(this System.Drawing.SizeF value, System.Drawing.SizeF other, float epsilon) -> bool
+static Splat.TargetFrameworkExtensions.GetTargetFrameworkName(this System.Reflection.Assembly! assembly) -> string?
+static readonly Splat.ModeDetection.Mode.Run -> Splat.ModeDetection.Mode!
+static readonly Splat.ModeDetection.Mode.Test -> Splat.ModeDetection.Mode!
+virtual Splat.FuncDependencyResolver.Dispose(bool isDisposing) -> void
+~override Splat.RectangleCopyOptions.Equals(object obj) -> bool
+~override Splat.RectangleCopyOptions.ToString() -> string

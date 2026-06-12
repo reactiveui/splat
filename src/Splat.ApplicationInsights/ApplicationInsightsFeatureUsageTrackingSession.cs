@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Microsoft.ApplicationInsights;
@@ -20,11 +19,10 @@ namespace Splat.ApplicationInsights;
 /// should be used on a single thread.</remarks>
 public sealed class ApplicationInsightsFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
 {
+    /// <summary>The Application Insights client that feature-usage telemetry is sent to.</summary>
     private readonly TelemetryClient _telemetryClient;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ApplicationInsightsFeatureUsageTrackingSession"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="ApplicationInsightsFeatureUsageTrackingSession"/> class.</summary>
     /// <param name="featureName">The name of the feature.</param>
     /// <param name="telemetryClient">The Application Insights telemetry client instance to use.</param>
     public ApplicationInsightsFeatureUsageTrackingSession(
@@ -34,6 +32,10 @@ public sealed class ApplicationInsightsFeatureUsageTrackingSession : IFeatureUsa
     {
     }
 
+    /// <summary>Initializes a new instance of the <see cref="ApplicationInsightsFeatureUsageTrackingSession"/> class for a sub-feature with a parent reference.</summary>
+    /// <param name="featureName">The name of the feature.</param>
+    /// <param name="parentReference">The reference of the parent feature, or <see cref="Guid.Empty"/> if there is no parent.</param>
+    /// <param name="telemetryClient">The Application Insights telemetry client instance to use.</param>
     internal ApplicationInsightsFeatureUsageTrackingSession(
         string featureName,
         Guid parentReference,
@@ -75,6 +77,8 @@ public sealed class ApplicationInsightsFeatureUsageTrackingSession : IFeatureUsa
         _telemetryClient.TrackException(telemetry);
     }
 
+    /// <summary>Sends a feature usage event with the specified name to Application Insights.</summary>
+    /// <param name="eventName">The name of the event to track.</param>
     private void TrackEvent(string eventName)
     {
         var eventTelemetry = new EventTelemetry(eventName);
@@ -83,15 +87,20 @@ public sealed class ApplicationInsightsFeatureUsageTrackingSession : IFeatureUsa
         _telemetryClient.TrackEvent(eventTelemetry);
     }
 
+    /// <summary>Populates the telemetry properties with the feature name, feature reference, and parent reference for the current session.</summary>
+    /// <typeparam name="TTelemetry">The type of telemetry being prepared, which must support properties.</typeparam>
+    /// <param name="eventTelemetry">The telemetry instance to populate with feature usage properties.</param>
     private void PrepareEventData<TTelemetry>(TTelemetry eventTelemetry)
         where TTelemetry : ISupportProperties
     {
         eventTelemetry.Properties.Add("Name", FeatureName);
         eventTelemetry.Properties.Add("Reference", FeatureReference.ToString());
 
-        if (ParentReference != Guid.Empty)
+        if (ParentReference == Guid.Empty)
         {
-            eventTelemetry.Properties.Add("ParentReference", ParentReference.ToString());
+            return;
         }
+
+        eventTelemetry.Properties.Add("ParentReference", ParentReference.ToString());
     }
 }

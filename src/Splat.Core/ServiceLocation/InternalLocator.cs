@@ -1,7 +1,8 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
+
+using ReactiveUI.Primitives.Disposables;
 
 namespace Splat;
 
@@ -15,15 +16,19 @@ namespace Splat;
 /// resources when no longer needed.</remarks>
 internal class InternalLocator : IDisposable
 {
-    // this has been done to have a default single instance. but allow isolation in unit tests.B
+    /// <summary>Registration-change callbacks. A process-wide default instance is used, while still allowing isolation in unit tests.</summary>
     private readonly List<Action> _resolverChanged = new(4);
+
+    /// <summary>Subscription that raises registration-change notifications; disposed with this instance.</summary>
     private readonly IDisposable _resolverChangedNotification;
+
+    /// <summary>Reentrancy counter; while greater than zero, change notifications are suppressed.</summary>
     private volatile int _resolverChangedNotificationSuspendCount;
+
+    /// <summary>Guards against running the dispose logic more than once.</summary>
     private bool _disposedValue;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="InternalLocator"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="InternalLocator"/> class.</summary>
     internal InternalLocator()
     {
         Internal = new InstanceGenericFirstDependencyResolver();
@@ -56,43 +61,39 @@ internal class InternalLocator : IDisposable
     /// </summary>
     public IMutableDependencyResolver CurrentMutable => Internal;
 
-    /// <summary>
-    /// Gets or sets the dependency resolver used internally by the component.
-    /// </summary>
+    /// <summary>Gets or sets the dependency resolver used internally by the component.</summary>
     internal IDependencyResolver Internal { get; set; }
 
-    /// <summary>
-    /// Releases unmanaged and - optionally - managed resources.
-    /// </summary>
+    /// <summary>Releases unmanaged and - optionally - managed resources.</summary>
     public void Dispose()
     {
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
 
-    /// <summary>
-    /// Allows setting the dependency resolver.
-    /// </summary>
+    /// <summary>Allows setting the dependency resolver.</summary>
     /// <param name="dependencyResolver">The dependency resolver to set.</param>
     public void SetLocator(IDependencyResolver dependencyResolver)
     {
         ArgumentExceptionHelper.ThrowIfNull(dependencyResolver);
         Internal = dependencyResolver;
 
-        if (AreResolverCallbackChangedNotificationsEnabled())
+        if (!AreResolverCallbackChangedNotificationsEnabled())
         {
-            Action[] currentCallbacks;
-            lock (_resolverChanged)
-            {
-                // NB: Prevent deadlocks should we reenter this setter from
-                // the callbacks
-                currentCallbacks = [.. _resolverChanged];
-            }
+            return;
+        }
 
-            foreach (var block in currentCallbacks)
-            {
-                block();
-            }
+        Action[] currentCallbacks;
+        lock (_resolverChanged)
+        {
+            // NB: Prevent deadlocks should we reenter this setter from
+            // the callbacks
+            currentCallbacks = [.. _resolverChanged];
+        }
+
+        foreach (var block in currentCallbacks)
+        {
+            block();
         }
     }
 
@@ -130,10 +131,7 @@ internal class InternalLocator : IDisposable
         });
     }
 
-    /// <summary>
-    /// This method will prevent resolver changed notifications from happening until
-    /// the returned <see cref="IDisposable"/> is disposed.
-    /// </summary>
+    /// <summary>This method will prevent resolver changed notifications from happening until the returned <see cref="IDisposable"/> is disposed.</summary>
     /// <returns>A disposable which when disposed will indicate the change
     /// notification is no longer needed.</returns>
     public IDisposable SuppressResolverCallbackChangedNotifications()
@@ -143,30 +141,28 @@ internal class InternalLocator : IDisposable
         return new ActionDisposable(() => Interlocked.Decrement(ref _resolverChangedNotificationSuspendCount));
     }
 
-    /// <summary>
-    /// Indicates if the we are notifying external classes of updates to the resolver being changed.
-    /// </summary>
+    /// <summary>Indicates if the we are notifying external classes of updates to the resolver being changed.</summary>
     /// <returns>A value indicating whether the notifications are happening.</returns>
     public bool AreResolverCallbackChangedNotificationsEnabled() => _resolverChangedNotificationSuspendCount == 0;
 
-    /// <summary>
-    /// Releases the unmanaged resources used by the object and optionally releases the managed resources.
-    /// </summary>
+    /// <summary>Releases the unmanaged resources used by the object and optionally releases the managed resources.</summary>
     /// <remarks>This method is called by public Dispose methods and the finalizer. When disposing is true,
     /// this method releases all resources held by managed objects. When disposing is false, only unmanaged resources
     /// are released. Override this method to release additional resources in a derived class.</remarks>
     /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
     protected virtual void Dispose(bool disposing)
     {
-        if (!_disposedValue)
+        if (_disposedValue)
         {
-            if (disposing)
-            {
-                Internal.Dispose();
-                _resolverChangedNotification.Dispose();
-            }
-
-            _disposedValue = true;
+            return;
         }
+
+        if (disposing)
+        {
+            Internal.Dispose();
+            _resolverChangedNotification.Dispose();
+        }
+
+        _disposedValue = true;
     }
 }

@@ -1,15 +1,16 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.Tests.ModeDetection;
 
+/// <summary>Tests for the <see cref="DefaultModeDetector"/>.</summary>
 public class DefaultModeDetectorTests
 {
-    /// <summary>
-    /// Test that DefaultModeDetector can detect unit test runner.
-    /// </summary>
+    /// <summary>The environment variable / AppContext key used to flag a test run.</summary>
+    private const string DotnetRunningInTest = "DOTNET_RUNNING_IN_TEST";
+
+    /// <summary>Test that DefaultModeDetector can detect unit test runner.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DefaultModeDetector_CanDetectUnitTestRunner()
@@ -29,9 +30,7 @@ public class DefaultModeDetectorTests
         }
     }
 
-    /// <summary>
-    /// Test that DefaultModeDetector implements IModeDetector.
-    /// </summary>
+    /// <summary>Test that DefaultModeDetector implements IModeDetector.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DefaultModeDetector_ImplementsIModeDetector()
@@ -43,9 +42,7 @@ public class DefaultModeDetectorTests
         await Assert.That(detector).IsAssignableTo<IModeDetector>();
     }
 
-    /// <summary>
-    /// Test that DefaultModeDetector implements IEnableLogger.
-    /// </summary>
+    /// <summary>Test that DefaultModeDetector implements IEnableLogger.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DefaultModeDetector_ImplementsIEnableLogger()
@@ -57,9 +54,7 @@ public class DefaultModeDetectorTests
         await Assert.That(detector).IsAssignableTo<IEnableLogger>();
     }
 
-    /// <summary>
-    /// Test that DefaultModeDetector handles exceptions gracefully.
-    /// </summary>
+    /// <summary>Test that DefaultModeDetector handles exceptions gracefully.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DefaultModeDetector_HandlesExceptionsGracefully()
@@ -71,9 +66,7 @@ public class DefaultModeDetectorTests
         await Assert.That(() => detector.InUnitTestRunner()).ThrowsNothing();
     }
 
-    /// <summary>
-    /// Test that DefaultModeDetector returns consistent results.
-    /// </summary>
+    /// <summary>Test that DefaultModeDetector returns consistent results.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DefaultModeDetector_ReturnsConsistentResults()
@@ -112,14 +105,14 @@ public class DefaultModeDetectorTests
     {
         // Arrange
         var detector = new DefaultModeDetector();
-        var oldEnv = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_TEST");
-        var oldAppCtx = AppContext.GetData("DOTNET_RUNNING_IN_TEST");
+        var oldEnv = Environment.GetEnvironmentVariable(DotnetRunningInTest);
+        var oldAppCtx = AppContext.GetData(DotnetRunningInTest);
 
         try
         {
             // Prefer explicit env var; clear AppContext override to exercise env path.
-            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", value);
-            AppContext.SetData("DOTNET_RUNNING_IN_TEST", null);
+            Environment.SetEnvironmentVariable(DotnetRunningInTest, value);
+            AppContext.SetData(DotnetRunningInTest, null);
 
             // Act
             var result = detector.InUnitTestRunner();
@@ -134,30 +127,28 @@ public class DefaultModeDetectorTests
         finally
         {
             // Restore prior state
-            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", oldEnv);
-            AppContext.SetData("DOTNET_RUNNING_IN_TEST", oldAppCtx);
+            Environment.SetEnvironmentVariable(DotnetRunningInTest, oldEnv);
+            AppContext.SetData(DotnetRunningInTest, oldAppCtx);
         }
     }
 #endif
 
 #if NET8_0_OR_GREATER
-    /// <summary>
-    /// Verifies explicit AppContext-based detection using DOTNET_RUNNING_IN_TEST data.
-    /// </summary>
+    /// <summary>Verifies explicit AppContext-based detection using DOTNET_RUNNING_IN_TEST data.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DefaultModeDetector_AppContext_DotnetRunningInTest_ReturnsTrue()
     {
         // Arrange
         var detector = new DefaultModeDetector();
-        var oldEnv = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_TEST");
-        var oldAppCtx = AppContext.GetData("DOTNET_RUNNING_IN_TEST");
+        var oldEnv = Environment.GetEnvironmentVariable(DotnetRunningInTest);
+        var oldAppCtx = AppContext.GetData(DotnetRunningInTest);
 
         try
         {
             // Clear env var and set AppContext data
-            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", null);
-            AppContext.SetData("DOTNET_RUNNING_IN_TEST", "true");
+            Environment.SetEnvironmentVariable(DotnetRunningInTest, null);
+            AppContext.SetData(DotnetRunningInTest, "true");
 
             // Act
             var result = detector.InUnitTestRunner();
@@ -171,31 +162,29 @@ public class DefaultModeDetectorTests
         }
         finally
         {
-            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", oldEnv);
-            AppContext.SetData("DOTNET_RUNNING_IN_TEST", oldAppCtx);
+            Environment.SetEnvironmentVariable(DotnetRunningInTest, oldEnv);
+            AppContext.SetData(DotnetRunningInTest, oldAppCtx);
         }
     }
 #endif
 
 #if NET8_0_OR_GREATER
-    /// <summary>
-    /// Verifies detection via exact test runner environment variables.
-    /// </summary>
+    /// <summary>Verifies detection via exact test runner environment variables.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DefaultModeDetector_ExactEnvVar_NUnitTest_ReturnsTrue()
     {
         // Arrange
         var detector = new DefaultModeDetector();
-        var oldDotnetEnv = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_TEST");
-        var oldAppCtx = AppContext.GetData("DOTNET_RUNNING_IN_TEST");
+        var oldDotnetEnv = Environment.GetEnvironmentVariable(DotnetRunningInTest);
+        var oldAppCtx = AppContext.GetData(DotnetRunningInTest);
         var oldNUnitEnv = Environment.GetEnvironmentVariable("NUNIT_TEST");
 
         try
         {
             // Clear explicit signals to exercise runner env signal path and set NUNIT_TEST.
-            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", null);
-            AppContext.SetData("DOTNET_RUNNING_IN_TEST", null);
+            Environment.SetEnvironmentVariable(DotnetRunningInTest, null);
+            AppContext.SetData(DotnetRunningInTest, null);
             Environment.SetEnvironmentVariable("NUNIT_TEST", "1");
 
             // Act
@@ -210,33 +199,31 @@ public class DefaultModeDetectorTests
         }
         finally
         {
-            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", oldDotnetEnv);
-            AppContext.SetData("DOTNET_RUNNING_IN_TEST", oldAppCtx);
+            Environment.SetEnvironmentVariable(DotnetRunningInTest, oldDotnetEnv);
+            AppContext.SetData(DotnetRunningInTest, oldAppCtx);
             Environment.SetEnvironmentVariable("NUNIT_TEST", oldNUnitEnv);
         }
     }
 #endif
 
 #if NET8_0_OR_GREATER
-    /// <summary>
-    /// Verifies detection via environment variable prefix signals (e.g., VSTEST_*, XUNIT_*).
-    /// </summary>
+    /// <summary>Verifies detection via environment variable prefix signals (e.g., VSTEST_*, XUNIT_*).</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DefaultModeDetector_EnvPrefix_VSTEST_ReturnsTrue()
     {
         // Arrange
         var detector = new DefaultModeDetector();
-        var oldDotnetEnv = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_TEST");
-        var oldAppCtx = AppContext.GetData("DOTNET_RUNNING_IN_TEST");
-        var customVarName = "VSTEST_MY_CUSTOM_FLAG";
+        var oldDotnetEnv = Environment.GetEnvironmentVariable(DotnetRunningInTest);
+        var oldAppCtx = AppContext.GetData(DotnetRunningInTest);
+        const string customVarName = "VSTEST_MY_CUSTOM_FLAG";
         var oldCustom = Environment.GetEnvironmentVariable(customVarName);
 
         try
         {
             // Clear explicit signals and set a prefixed env var.
-            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", null);
-            AppContext.SetData("DOTNET_RUNNING_IN_TEST", null);
+            Environment.SetEnvironmentVariable(DotnetRunningInTest, null);
+            AppContext.SetData(DotnetRunningInTest, null);
             Environment.SetEnvironmentVariable(customVarName, "1");
 
             // Act
@@ -251,8 +238,8 @@ public class DefaultModeDetectorTests
         }
         finally
         {
-            Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_TEST", oldDotnetEnv);
-            AppContext.SetData("DOTNET_RUNNING_IN_TEST", oldAppCtx);
+            Environment.SetEnvironmentVariable(DotnetRunningInTest, oldDotnetEnv);
+            AppContext.SetData(DotnetRunningInTest, oldAppCtx);
             Environment.SetEnvironmentVariable(customVarName, oldCustom);
         }
     }
@@ -314,9 +301,9 @@ public class DefaultModeDetectorTests
         // Arrange & Act
         // Check if any loaded assemblies contain Microsoft.Testing.Platform
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-        var hasMTPAssembly = assemblies.Any(a =>
-            a.FullName != null &&
-            a.FullName.Contains("Microsoft.Testing.Platform", StringComparison.OrdinalIgnoreCase));
+        var hasMTPAssembly = Array.Exists(
+            assemblies,
+            a => a.FullName?.Contains("Microsoft.Testing.Platform", StringComparison.OrdinalIgnoreCase) == true);
 
         var detector = new DefaultModeDetector();
         var result = detector.InUnitTestRunner();
@@ -330,7 +317,7 @@ public class DefaultModeDetectorTests
             }
 
             // Ensure this test only passes if the MTP assembly is present or another test framework is detected
-            await Assert.That(hasMTPAssembly || (result.HasValue && result.Value)).IsTrue();
+            await Assert.That(hasMTPAssembly || result == true).IsTrue();
         }
     }
 }

@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Runtime.CompilerServices;
@@ -54,9 +53,7 @@ namespace Splat;
 /// </remarks>
 internal static class KnownColors
 {
-    /// <summary>
-    /// ARGB values (0xAARRGGBB), indexed by <see cref="KnownColor"/>.
-    /// </summary>
+    /// <summary>ARGB values (0xAARRGGBB), indexed by <see cref="KnownColor"/>.</summary>
     internal static readonly uint[] ArgbValues =
     [
         0x00000000, /* 000 - Empty */
@@ -229,19 +226,18 @@ internal static class KnownColors
         0xFF9ACD32 /* 167 - YellowGreen */
     ];
 
-    // Fast ARGB -> KnownColor reverse index. Keeps first occurrence for duplicates (e.g., Aqua/Cyan).
+    /// <summary>Fast ARGB → <see cref="KnownColor"/> reverse index. Keeps the first occurrence for duplicates (for example, Aqua/Cyan).</summary>
     private static readonly Dictionary<uint, KnownColor> ArgbToKnown = BuildReverseIndex();
 
-    /// <summary>
-    /// Creates a <see cref="SplatColor"/> for a given <see cref="KnownColor"/>.
-    /// </summary>
+    /// <summary>Creates a <see cref="SplatColor"/> for a given <see cref="KnownColor"/>.</summary>
+    /// <param name="kc">The known color to convert.</param>
+    /// <returns>A <see cref="SplatColor"/> representing the known color.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static SplatColor FromKnownColor(KnownColor kc) => SplatColor.FromKnownColor(kc);
 
-    /// <summary>
-    /// Gets a user-friendly name for a <see cref="KnownColor"/> given as a numeric value.
-    /// </summary>
-    /// <remarks>Returns <see cref="string.Empty"/> if the value does not map to a defined enum member.</remarks>
+    /// <summary>Gets a user-friendly name for a <see cref="KnownColor"/> given as a numeric value.</summary>
+    /// <param name="kc">The numeric value of the known color.</param>
+    /// <returns>The known color name, or <see cref="string.Empty"/> if the value does not map to a defined enum member.</returns>
     public static string GetName(short kc)
     {
         // Valid if value is within the defined enum range.
@@ -250,15 +246,13 @@ internal static class KnownColors
         return kc >= 0 && kc <= MaxKnown ? ((KnownColor)kc).ToString() : string.Empty;
     }
 
-    /// <summary>
-    /// Gets a user-friendly name for a <see cref="KnownColor"/>.
-    /// </summary>
+    /// <summary>Gets a user-friendly name for a <see cref="KnownColor"/>.</summary>
+    /// <param name="kc">The known color.</param>
+    /// <returns>The name of the known color.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string GetName(KnownColor kc) => kc.ToString();
 
-    /// <summary>
-    /// Attempts to find the matching <see cref="KnownColor"/> for an exact ARGB color.
-    /// </summary>
+    /// <summary>Attempts to find the matching <see cref="KnownColor"/> for an exact ARGB color.</summary>
     /// <param name="c">The color to match.</param>
     /// <returns>
     /// A <see cref="SplatColor"/> constructed from the matched <see cref="KnownColor"/>,
@@ -274,9 +268,9 @@ internal static class KnownColors
         return ArgbToKnown.TryGetValue(argb, out var kc) ? FromKnownColor(kc) : SplatColor.Empty;
     }
 
-    /// <summary>
-    /// Gets the ARGB value (<c>0xAARRGGBB</c>) for a known color.
-    /// </summary>
+    /// <summary>Gets the ARGB value (<c>0xAARRGGBB</c>) for a known color.</summary>
+    /// <param name="kc">The known color.</param>
+    /// <returns>The packed ARGB value for the known color.</returns>
     public static uint GetArgb(KnownColor kc) => ArgbValues[(int)kc];
 
     /// <summary>
@@ -307,6 +301,8 @@ internal static class KnownColors
         ArgbToKnown[newArgb] = kc;
     }
 
+    /// <summary>Builds the ARGB → <see cref="KnownColor"/> reverse lookup, preferring the earliest defined color for duplicate ARGB values.</summary>
+    /// <returns>A dictionary mapping each ARGB value to its first matching known color.</returns>
     private static Dictionary<uint, KnownColor> BuildReverseIndex()
     {
         var dict = new Dictionary<uint, KnownColor>(ArgbValues.Length);

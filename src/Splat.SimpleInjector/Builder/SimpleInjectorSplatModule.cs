@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using SimpleInjector;
@@ -9,21 +8,20 @@ using Splat.SimpleInjector;
 
 namespace Splat.Builder;
 
-/// <summary>
-/// Provides a module for integrating SimpleInjector with Splat's dependency resolver infrastructure.
-/// </summary>
+/// <summary>Provides a module for integrating SimpleInjector with Splat's dependency resolver infrastructure.</summary>
 /// <remarks>This module enables the use of a SimpleInjector container as the backing implementation for Splat's
 /// dependency resolution. It is typically used to configure dependency injection in applications that leverage both
 /// SimpleInjector and Splat. Thread safety and container lifetime management are determined by the provided
 /// SimpleInjector container.</remarks>
 public sealed class SimpleInjectorSplatModule : IModule
 {
+    /// <summary>The SimpleInjector container that registrations are applied to when the module runs.</summary>
     private readonly Container _container;
+
+    /// <summary>The initializer that accumulates registrations before they are applied to the container.</summary>
     private readonly SimpleInjectorInitializer _initializer;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SimpleInjectorSplatModule" /> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="SimpleInjectorSplatModule" /> class.</summary>
     /// <param name="container">The SimpleInjector container.</param>
     /// <param name="initializer">The SimpleInjector Initializer.</param>
     public SimpleInjectorSplatModule(Container container, SimpleInjectorInitializer initializer)

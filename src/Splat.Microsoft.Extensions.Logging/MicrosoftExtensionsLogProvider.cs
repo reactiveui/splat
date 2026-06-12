@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Microsoft.Extensions.Logging;
@@ -25,8 +24,11 @@ public sealed class MicrosoftExtensionsLogProvider : ILoggerProvider
     /// <inheritdoc />
     public global::Microsoft.Extensions.Logging.ILogger CreateLogger(string categoryName) => new SplatLoggingAdapter(categoryName);
 
+    /// <summary>Adapts a Splat logger so it can be consumed through the Microsoft.Extensions.Logging abstraction.</summary>
+    /// <param name="categoryName">The category name associated with messages produced by this logger.</param>
     private sealed class SplatLoggingAdapter(string categoryName) : global::Microsoft.Extensions.Logging.ILogger
     {
+        /// <summary>The logging category name; retained deliberately even though currently unread.</summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1823:Avoid unused private fields", Justification = "Deliberate")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1213:Remove unused member declaration", Justification = "Deliberate")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop", "IDE0052:Remove unused member declaration", Justification = "Deliberate")]

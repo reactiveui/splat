@@ -1,11 +1,6 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
-
-#if NET6_0_OR_GREATER
-using System.Diagnostics.CodeAnalysis;
-#endif
 
 namespace Splat;
 
@@ -18,9 +13,7 @@ namespace Splat;
 /// between design-time and run-time execution.</remarks>
 public interface IPlatformModeDetector
 {
-    /// <summary>
-    /// Gets a value indicating whether the current library or application is running in a GUI design mode tool.
-    /// </summary>
+    /// <summary>Gets a value indicating whether the current library or application is running in a GUI design mode tool.</summary>
     /// <returns>If we are currently running in design mode.</returns>
     bool? InDesignMode();
 }

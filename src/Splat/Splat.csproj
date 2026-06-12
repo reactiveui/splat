@@ -16,9 +16,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ReactiveUI.Disposables" />
+  </ItemGroup>
+
+  <ItemGroup>
     <InternalsVisibleTo Include="Splat.Tests" />
     <InternalsVisibleTo Include="Splat.Common.Test" />
-    <InternalsVisibleTo Include="Splat.Drawing" />
     <InternalsVisibleTo Include="Splat.Drawing.Tests" />
     <InternalsVisibleTo Include="Splat.Builder.Tests" />
   </ItemGroup>

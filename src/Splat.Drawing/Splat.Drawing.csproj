@@ -29,7 +29,7 @@
     <None Include="Resources\**\*.*"/>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Platforms\ServiceLocationDrawingInitialization.cs"/>
+    <Compile Include="Platforms\ServiceLocationDrawingInitializationExtensions.cs"/>
   </ItemGroup>
   <ItemGroup Condition=" $(TargetFramework.StartsWith('net4')) ">
     <Compile Include="Platforms\net4\**\*.cs"/>

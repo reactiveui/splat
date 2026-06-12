@@ -1,34 +1,35 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Common.Test;
 
 namespace Splat.Tests.ServiceLocation;
 
-/// <summary>
-/// Tests for the <see cref="ResolverMixins"/> class.
-/// </summary>
+/// <summary>Tests for the <see cref="ResolverMixins"/> class.</summary>
 [NotInParallel]
 public sealed class ResolverMixinsTests
 {
+    /// <summary>The locator scope created for the duration of each test.</summary>
     private AppLocatorScope? _scope;
 
-    private interface ITestService
-    {
-    }
+    /// <summary>Marker service interface used by the tests.</summary>
+    private interface ITestService;
 
-    [Before(HookType.Test)]
+    /// <summary>Creates a fresh locator scope before each test.</summary>
+    [Before(Test)]
     public void SetUp() => _scope = new();
 
-    [After(HookType.Test)]
+    /// <summary>Disposes the locator scope after each test.</summary>
+    [After(Test)]
     public void TearDown()
     {
         _scope?.Dispose();
         _scope = null;
     }
 
+    /// <summary>Verifies that RegisterAnd registers the service (TService) and returns the resolver for chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterAnd_TService_ShouldRegisterAndReturnResolver()
     {
@@ -42,6 +43,8 @@ public sealed class ResolverMixinsTests
         await Assert.That(service).IsTypeOf<TestService>();
     }
 
+    /// <summary>Verifies that RegisterAnd registers the service (TService, WithContract) and returns the resolver for chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterAnd_TService_WithContract_ShouldRegisterAndReturnResolver()
     {
@@ -55,6 +58,8 @@ public sealed class ResolverMixinsTests
         await Assert.That(service).IsTypeOf<TestService>();
     }
 
+    /// <summary>Verifies that RegisterAnd registers the service (TService, WithFactory) and returns the resolver for chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterAnd_TService_WithFactory_ShouldRegisterAndReturnResolver()
     {
@@ -68,6 +73,8 @@ public sealed class ResolverMixinsTests
         await Assert.That(service).IsEqualTo(instance);
     }
 
+    /// <summary>Verifies that RegisterAnd registers the service (TService, WithFactoryAndContract) and returns the resolver for chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterAnd_TService_WithFactoryAndContract_ShouldRegisterAndReturnResolver()
     {
@@ -81,6 +88,8 @@ public sealed class ResolverMixinsTests
         await Assert.That(service).IsEqualTo(instance);
     }
 
+    /// <summary>Verifies that RegisterAnd registers the service (TServiceTImplementation) and returns the resolver for chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterAnd_TServiceTImplementation_ShouldRegisterAndReturnResolver()
     {
@@ -94,6 +103,8 @@ public sealed class ResolverMixinsTests
         await Assert.That(service).IsTypeOf<TestService>();
     }
 
+    /// <summary>Verifies that RegisterAnd registers the service (TServiceTImplementation, WithContract) and returns the resolver for chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterAnd_TServiceTImplementation_WithContract_ShouldRegisterAndReturnResolver()
     {
@@ -107,6 +118,8 @@ public sealed class ResolverMixinsTests
         await Assert.That(service).IsTypeOf<TestService>();
     }
 
+    /// <summary>Verifies that RegisterAnd registers the service (TServiceTImplementation, WithFactory) and returns the resolver for chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterAnd_TServiceTImplementation_WithFactory_ShouldRegisterAndReturnResolver()
     {
@@ -120,6 +133,8 @@ public sealed class ResolverMixinsTests
         await Assert.That(service).IsEqualTo(instance);
     }
 
+    /// <summary>Verifies that RegisterAnd registers the service (TServiceTImplementation, WithFactoryAndContract) and returns the resolver for chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterAnd_TServiceTImplementation_WithFactoryAndContract_ShouldRegisterAndReturnResolver()
     {
@@ -133,6 +148,8 @@ public sealed class ResolverMixinsTests
         await Assert.That(service).IsEqualTo(instance);
     }
 
+    /// <summary>Verifies that RegisterConstantAnd registers the service (TypeBased) and returns the resolver for chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterConstantAnd_TypeBased_ShouldRegisterAndReturnResolver()
     {
@@ -146,6 +163,8 @@ public sealed class ResolverMixinsTests
         await Assert.That(service).IsEqualTo(instance);
     }
 
+    /// <summary>Verifies that RegisterConstantAnd registers the service (TypeBased, WithContract) and returns the resolver for chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterConstantAnd_TypeBased_WithContract_ShouldRegisterAndReturnResolver()
     {
@@ -159,6 +178,8 @@ public sealed class ResolverMixinsTests
         await Assert.That(service).IsEqualTo(instance);
     }
 
+    /// <summary>Verifies that RegisterConstantAnd registers the service (TService) and returns the resolver for chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterConstantAnd_TService_ShouldRegisterAndReturnResolver()
     {
@@ -173,6 +194,8 @@ public sealed class ResolverMixinsTests
         await Assert.That(service2).IsEqualTo(service1);
     }
 
+    /// <summary>Verifies that RegisterConstantAnd registers the service (TService, WithContract) and returns the resolver for chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterConstantAnd_TService_WithContract_ShouldRegisterAndReturnResolver()
     {
@@ -187,6 +210,8 @@ public sealed class ResolverMixinsTests
         await Assert.That(service2).IsEqualTo(service1);
     }
 
+    /// <summary>Verifies that RegisterConstantAnd registers the service (TService, WithValue) and returns the resolver for chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterConstantAnd_TService_WithValue_ShouldRegisterAndReturnResolver()
     {
@@ -200,6 +225,8 @@ public sealed class ResolverMixinsTests
         await Assert.That(service).IsEqualTo(instance);
     }
 
+    /// <summary>Verifies that RegisterConstantAnd registers the service (TService, WithValueAndContract) and returns the resolver for chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterConstantAnd_TService_WithValueAndContract_ShouldRegisterAndReturnResolver()
     {
@@ -213,6 +240,8 @@ public sealed class ResolverMixinsTests
         await Assert.That(service).IsEqualTo(instance);
     }
 
+    /// <summary>Verifies that RegisterLazySingletonAnd registers lazily the service (TypeBased) and returns the resolver for chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterLazySingletonAnd_TypeBased_ShouldRegisterLazilyAndReturnResolver()
     {
@@ -238,6 +267,8 @@ public sealed class ResolverMixinsTests
         await Assert.That(service2).IsEqualTo(service1);
     }
 
+    /// <summary>Verifies that RegisterLazySingletonAnd registers lazily the service (TypeBased, WithContract) and returns the resolver for chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterLazySingletonAnd_TypeBased_WithContract_ShouldRegisterLazilyAndReturnResolver()
     {
@@ -260,6 +291,8 @@ public sealed class ResolverMixinsTests
         await Assert.That(callCount).IsEqualTo(1);
     }
 
+    /// <summary>Verifies that RegisterLazySingletonAnd registers lazily the service (TService) and returns the resolver for chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterLazySingletonAnd_TService_ShouldRegisterLazilyAndReturnResolver()
     {
@@ -275,6 +308,8 @@ public sealed class ResolverMixinsTests
         await Assert.That(service2).IsEqualTo(service1);
     }
 
+    /// <summary>Verifies that RegisterLazySingletonAnd registers lazily the service (TService, WithContract) and returns the resolver for chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterLazySingletonAnd_TService_WithContract_ShouldRegisterLazilyAndReturnResolver()
     {
@@ -290,6 +325,8 @@ public sealed class ResolverMixinsTests
         await Assert.That(service2).IsEqualTo(service1);
     }
 
+    /// <summary>Verifies that RegisterLazySingletonAnd registers lazily the service (TService, WithFactory) and returns the resolver for chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterLazySingletonAnd_TService_WithFactory_ShouldRegisterLazilyAndReturnResolver()
     {
@@ -316,6 +353,8 @@ public sealed class ResolverMixinsTests
         await Assert.That(service2).IsEqualTo(service1);
     }
 
+    /// <summary>Verifies that RegisterLazySingletonAnd registers lazily the service (TService, WithFactoryAndContract) and returns the resolver for chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterLazySingletonAnd_TService_WithFactoryAndContract_ShouldRegisterLazilyAndReturnResolver()
     {
@@ -339,6 +378,8 @@ public sealed class ResolverMixinsTests
         await Assert.That(service).IsTypeOf<TestService>();
     }
 
+    /// <summary>Verifies that the RegisterAnd fluent API supports chaining.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterAnd_SupportsFluentChaining()
     {
@@ -358,7 +399,6 @@ public sealed class ResolverMixinsTests
         await Assert.That(service3).IsNotNull();
     }
 
-    private sealed class TestService : ITestService
-    {
-    }
+    /// <summary>Concrete test service implementation.</summary>
+    private sealed class TestService : ITestService;
 }

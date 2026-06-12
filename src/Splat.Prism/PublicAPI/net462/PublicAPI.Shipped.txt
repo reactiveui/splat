@@ -1,0 +1,33 @@
+#nullable enable
+Splat.Prism.SplatContainerExtension
+Splat.Prism.SplatContainerExtension.CreateScope() -> Prism.Ioc.IScopedProvider!
+Splat.Prism.SplatContainerExtension.CurrentScope.get -> Prism.Ioc.IScopedProvider!
+Splat.Prism.SplatContainerExtension.Dispose() -> void
+Splat.Prism.SplatContainerExtension.Instance.get -> Splat.IDependencyResolver!
+Splat.Prism.SplatContainerExtension.IsRegistered(System.Type! type) -> bool
+Splat.Prism.SplatContainerExtension.IsRegistered(System.Type! type, string! name) -> bool
+Splat.Prism.SplatContainerExtension.Register(System.Type! from, System.Type! to) -> Prism.Ioc.IContainerRegistry!
+Splat.Prism.SplatContainerExtension.Register(System.Type! from, System.Type! to, System.Func<object!>! defaultCreationFunc) -> Prism.Ioc.IContainerRegistry!
+Splat.Prism.SplatContainerExtension.Register(System.Type! from, System.Type! to, string! name) -> Prism.Ioc.IContainerRegistry!
+Splat.Prism.SplatContainerExtension.Register(System.Type! from, System.Type! to, string! name, System.Func<object!>! defaultCreationFunc) -> Prism.Ioc.IContainerRegistry!
+Splat.Prism.SplatContainerExtension.Register(System.Type! type, System.Func<Prism.Ioc.IContainerProvider!, object!>! factoryMethod) -> Prism.Ioc.IContainerRegistry!
+Splat.Prism.SplatContainerExtension.Register(System.Type! type, System.Func<object!>! factoryMethod) -> Prism.Ioc.IContainerRegistry!
+Splat.Prism.SplatContainerExtension.RegisterInstance(System.Type! type, object! instance) -> Prism.Ioc.IContainerRegistry!
+Splat.Prism.SplatContainerExtension.RegisterInstance(System.Type! type, object! instance, string! name) -> Prism.Ioc.IContainerRegistry!
+Splat.Prism.SplatContainerExtension.RegisterMany(System.Type! type, params System.Type![]! serviceTypes) -> Prism.Ioc.IContainerRegistry!
+Splat.Prism.SplatContainerExtension.RegisterManySingleton(System.Type! type, params System.Type![]! serviceTypes) -> Prism.Ioc.IContainerRegistry!
+Splat.Prism.SplatContainerExtension.RegisterScoped(System.Type! from, System.Type! to) -> Prism.Ioc.IContainerRegistry!
+Splat.Prism.SplatContainerExtension.RegisterScoped(System.Type! type, System.Func<Prism.Ioc.IContainerProvider!, object!>! factoryMethod) -> Prism.Ioc.IContainerRegistry!
+Splat.Prism.SplatContainerExtension.RegisterScoped(System.Type! type, System.Func<object!>! factoryMethod) -> Prism.Ioc.IContainerRegistry!
+Splat.Prism.SplatContainerExtension.RegisterSingleton(System.Type! from, System.Type! to) -> Prism.Ioc.IContainerRegistry!
+Splat.Prism.SplatContainerExtension.RegisterSingleton(System.Type! from, System.Type! to, System.Func<object!>! defaultCreationFunc) -> Prism.Ioc.IContainerRegistry!
+Splat.Prism.SplatContainerExtension.RegisterSingleton(System.Type! from, System.Type! to, string! name) -> Prism.Ioc.IContainerRegistry!
+Splat.Prism.SplatContainerExtension.RegisterSingleton(System.Type! from, System.Type! to, string! name, System.Func<object!>! defaultCreationFunc) -> Prism.Ioc.IContainerRegistry!
+Splat.Prism.SplatContainerExtension.RegisterSingleton(System.Type! type, System.Func<Prism.Ioc.IContainerProvider!, object!>! factoryMethod) -> Prism.Ioc.IContainerRegistry!
+Splat.Prism.SplatContainerExtension.RegisterSingleton(System.Type! type, System.Func<object!>! factoryMethod) -> Prism.Ioc.IContainerRegistry!
+Splat.Prism.SplatContainerExtension.Resolve(System.Type! type) -> object!
+Splat.Prism.SplatContainerExtension.Resolve(System.Type! type, params (System.Type! Type, object! Instance)[]! parameters) -> object!
+Splat.Prism.SplatContainerExtension.Resolve(System.Type! type, string! name) -> object!
+Splat.Prism.SplatContainerExtension.Resolve(System.Type! type, string! name, params (System.Type! Type, object! Instance)[]! parameters) -> object!
+Splat.Prism.SplatContainerExtension.SplatContainerExtension() -> void
+virtual Splat.Prism.SplatContainerExtension.Dispose(bool isDisposing) -> void

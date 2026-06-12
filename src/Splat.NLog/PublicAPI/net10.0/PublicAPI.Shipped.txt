@@ -1,0 +1,201 @@
+#nullable enable
+Splat.Builder.NLogSplatModule
+Splat.Builder.NLogSplatModule.Configure(Splat.IMutableDependencyResolver! resolver) -> void
+Splat.Builder.NLogSplatModule.NLogSplatModule() -> void
+Splat.NLog.MutableDependencyResolverExtensions
+Splat.NLog.MutableDependencyResolverExtensions.extension(Splat.IMutableDependencyResolver!)
+Splat.NLog.MutableDependencyResolverExtensions.extension(Splat.IMutableDependencyResolver!).UseNLogWithWrappingFullLogger() -> void
+Splat.NLog.NLogLogger
+Splat.NLog.NLogLogger.Debug(System.Exception! exception, System.Func<string!>! function) -> void
+Splat.NLog.NLogLogger.Debug(System.Exception! exception, string? message) -> void
+Splat.NLog.NLogLogger.Debug(System.Func<string!>! function) -> void
+Splat.NLog.NLogLogger.Debug(System.IFormatProvider! formatProvider, string! message, params object![]! args) -> void
+Splat.NLog.NLogLogger.Debug(string! message, params object![]! args) -> void
+Splat.NLog.NLogLogger.Debug(string? message) -> void
+Splat.NLog.NLogLogger.Debug<T>(System.Func<string!>! function) -> void
+Splat.NLog.NLogLogger.Debug<T>(System.IFormatProvider! formatProvider, T value) -> void
+Splat.NLog.NLogLogger.Debug<T>(T value) -> void
+Splat.NLog.NLogLogger.Debug<T>(string! message, params object![]! args) -> void
+Splat.NLog.NLogLogger.Debug<T>(string? message) -> void
+Splat.NLog.NLogLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) -> void
+Splat.NLog.NLogLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) -> void
+Splat.NLog.NLogLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) -> void
+Splat.NLog.NLogLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) -> void
+Splat.NLog.NLogLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) -> void
+Splat.NLog.NLogLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) -> void
+Splat.NLog.NLogLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) -> void
+Splat.NLog.NLogLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) -> void
+Splat.NLog.NLogLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) -> void
+Splat.NLog.NLogLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) -> void
+Splat.NLog.NLogLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) -> void
+Splat.NLog.NLogLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) -> void
+Splat.NLog.NLogLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) -> void
+Splat.NLog.NLogLogger.Debug<TArgument1, TArgument2, TArgument3, TArgument4>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) -> void
+Splat.NLog.NLogLogger.Debug<TArgument1, TArgument2, TArgument3>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.NLog.NLogLogger.Debug<TArgument1, TArgument2, TArgument3>(System.IFormatProvider! formatProvider, string! message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.NLog.NLogLogger.Debug<TArgument1, TArgument2, TArgument3>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.NLog.NLogLogger.Debug<TArgument1, TArgument2>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.NLog.NLogLogger.Debug<TArgument1, TArgument2>(System.IFormatProvider! formatProvider, string! message, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.NLog.NLogLogger.Debug<TArgument1, TArgument2>(string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.NLog.NLogLogger.Debug<TArgument>(System.Exception! exception, string! messageFormat, TArgument argument) -> void
+Splat.NLog.NLogLogger.Debug<TArgument>(System.IFormatProvider! formatProvider, string! message, TArgument argument) -> void
+Splat.NLog.NLogLogger.Debug<TArgument>(string! message, TArgument args) -> void
+Splat.NLog.NLogLogger.DebugException(System.Func<string!>! function, System.Exception! exception) -> void
+Splat.NLog.NLogLogger.DebugException(string? message, System.Exception! exception) -> void
+Splat.NLog.NLogLogger.Dispose() -> void
+Splat.NLog.NLogLogger.Error(System.Exception! exception, System.Func<string!>! function) -> void
+Splat.NLog.NLogLogger.Error(System.Exception! exception, string? message) -> void
+Splat.NLog.NLogLogger.Error(System.Func<string!>! function) -> void
+Splat.NLog.NLogLogger.Error(System.IFormatProvider! formatProvider, string! message, params object![]! args) -> void
+Splat.NLog.NLogLogger.Error(string! message, params object![]! args) -> void
+Splat.NLog.NLogLogger.Error(string? message) -> void
+Splat.NLog.NLogLogger.Error<T>(System.Func<string!>! function) -> void
+Splat.NLog.NLogLogger.Error<T>(System.IFormatProvider! formatProvider, T value) -> void
+Splat.NLog.NLogLogger.Error<T>(T value) -> void
+Splat.NLog.NLogLogger.Error<T>(string! message, params object![]! args) -> void
+Splat.NLog.NLogLogger.Error<T>(string? message) -> void
+Splat.NLog.NLogLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) -> void
+Splat.NLog.NLogLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) -> void
+Splat.NLog.NLogLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) -> void
+Splat.NLog.NLogLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) -> void
+Splat.NLog.NLogLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) -> void
+Splat.NLog.NLogLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) -> void
+Splat.NLog.NLogLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) -> void
+Splat.NLog.NLogLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) -> void
+Splat.NLog.NLogLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) -> void
+Splat.NLog.NLogLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) -> void
+Splat.NLog.NLogLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) -> void
+Splat.NLog.NLogLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) -> void
+Splat.NLog.NLogLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) -> void
+Splat.NLog.NLogLogger.Error<TArgument1, TArgument2, TArgument3, TArgument4>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) -> void
+Splat.NLog.NLogLogger.Error<TArgument1, TArgument2, TArgument3>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.NLog.NLogLogger.Error<TArgument1, TArgument2, TArgument3>(System.IFormatProvider! formatProvider, string! message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.NLog.NLogLogger.Error<TArgument1, TArgument2, TArgument3>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.NLog.NLogLogger.Error<TArgument1, TArgument2>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.NLog.NLogLogger.Error<TArgument1, TArgument2>(System.IFormatProvider! formatProvider, string! message, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.NLog.NLogLogger.Error<TArgument1, TArgument2>(string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.NLog.NLogLogger.Error<TArgument>(System.Exception! exception, string! messageFormat, TArgument argument) -> void
+Splat.NLog.NLogLogger.Error<TArgument>(System.IFormatProvider! formatProvider, string! message, TArgument argument) -> void
+Splat.NLog.NLogLogger.Error<TArgument>(string! message, TArgument args) -> void
+Splat.NLog.NLogLogger.ErrorException(System.Func<string!>! function, System.Exception! exception) -> void
+Splat.NLog.NLogLogger.ErrorException(string? message, System.Exception! exception) -> void
+Splat.NLog.NLogLogger.Fatal(System.Exception! exception, System.Func<string!>! function) -> void
+Splat.NLog.NLogLogger.Fatal(System.Exception! exception, string? message) -> void
+Splat.NLog.NLogLogger.Fatal(System.Func<string!>! function) -> void
+Splat.NLog.NLogLogger.Fatal(System.IFormatProvider! formatProvider, string! message, params object![]! args) -> void
+Splat.NLog.NLogLogger.Fatal(string! message, params object![]! args) -> void
+Splat.NLog.NLogLogger.Fatal(string? message) -> void
+Splat.NLog.NLogLogger.Fatal<T>(System.Func<string!>! function) -> void
+Splat.NLog.NLogLogger.Fatal<T>(System.IFormatProvider! formatProvider, T value) -> void
+Splat.NLog.NLogLogger.Fatal<T>(T value) -> void
+Splat.NLog.NLogLogger.Fatal<T>(string! message, params object![]! args) -> void
+Splat.NLog.NLogLogger.Fatal<T>(string? message) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument1, TArgument2, TArgument3, TArgument4>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument1, TArgument2, TArgument3>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument1, TArgument2, TArgument3>(System.IFormatProvider! formatProvider, string! message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument1, TArgument2, TArgument3>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument1, TArgument2>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument1, TArgument2>(System.IFormatProvider! formatProvider, string! message, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument1, TArgument2>(string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument>(System.Exception! exception, string! messageFormat, TArgument argument) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument>(System.IFormatProvider! formatProvider, string! message, TArgument argument) -> void
+Splat.NLog.NLogLogger.Fatal<TArgument>(string! message, TArgument args) -> void
+Splat.NLog.NLogLogger.FatalException(System.Func<string!>! function, System.Exception! exception) -> void
+Splat.NLog.NLogLogger.FatalException(string? message, System.Exception! exception) -> void
+Splat.NLog.NLogLogger.Info(System.Exception! exception, System.Func<string!>! function) -> void
+Splat.NLog.NLogLogger.Info(System.Exception! exception, string? message) -> void
+Splat.NLog.NLogLogger.Info(System.Func<string!>! function) -> void
+Splat.NLog.NLogLogger.Info(System.IFormatProvider! formatProvider, string! message, params object![]! args) -> void
+Splat.NLog.NLogLogger.Info(string! message, params object![]! args) -> void
+Splat.NLog.NLogLogger.Info(string? message) -> void
+Splat.NLog.NLogLogger.Info<T>(System.Func<string!>! function) -> void
+Splat.NLog.NLogLogger.Info<T>(System.IFormatProvider! formatProvider, T value) -> void
+Splat.NLog.NLogLogger.Info<T>(T value) -> void
+Splat.NLog.NLogLogger.Info<T>(string! message, params object![]! args) -> void
+Splat.NLog.NLogLogger.Info<T>(string? message) -> void
+Splat.NLog.NLogLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) -> void
+Splat.NLog.NLogLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) -> void
+Splat.NLog.NLogLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) -> void
+Splat.NLog.NLogLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) -> void
+Splat.NLog.NLogLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) -> void
+Splat.NLog.NLogLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) -> void
+Splat.NLog.NLogLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) -> void
+Splat.NLog.NLogLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) -> void
+Splat.NLog.NLogLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) -> void
+Splat.NLog.NLogLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) -> void
+Splat.NLog.NLogLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) -> void
+Splat.NLog.NLogLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) -> void
+Splat.NLog.NLogLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) -> void
+Splat.NLog.NLogLogger.Info<TArgument1, TArgument2, TArgument3, TArgument4>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) -> void
+Splat.NLog.NLogLogger.Info<TArgument1, TArgument2, TArgument3>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.NLog.NLogLogger.Info<TArgument1, TArgument2, TArgument3>(System.IFormatProvider! formatProvider, string! message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.NLog.NLogLogger.Info<TArgument1, TArgument2, TArgument3>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.NLog.NLogLogger.Info<TArgument1, TArgument2>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.NLog.NLogLogger.Info<TArgument1, TArgument2>(System.IFormatProvider! formatProvider, string! message, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.NLog.NLogLogger.Info<TArgument1, TArgument2>(string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.NLog.NLogLogger.Info<TArgument>(System.Exception! exception, string! messageFormat, TArgument argument) -> void
+Splat.NLog.NLogLogger.Info<TArgument>(System.IFormatProvider! formatProvider, string! message, TArgument argument) -> void
+Splat.NLog.NLogLogger.Info<TArgument>(string! message, TArgument args) -> void
+Splat.NLog.NLogLogger.InfoException(System.Func<string!>! function, System.Exception! exception) -> void
+Splat.NLog.NLogLogger.InfoException(string? message, System.Exception! exception) -> void
+Splat.NLog.NLogLogger.IsDebugEnabled.get -> bool
+Splat.NLog.NLogLogger.IsErrorEnabled.get -> bool
+Splat.NLog.NLogLogger.IsFatalEnabled.get -> bool
+Splat.NLog.NLogLogger.IsInfoEnabled.get -> bool
+Splat.NLog.NLogLogger.IsWarnEnabled.get -> bool
+Splat.NLog.NLogLogger.Level.get -> Splat.LogLevel
+Splat.NLog.NLogLogger.NLogLogger(NLog.Logger! inner) -> void
+Splat.NLog.NLogLogger.Warn(System.Exception! exception, System.Func<string!>! function) -> void
+Splat.NLog.NLogLogger.Warn(System.Exception! exception, string? message) -> void
+Splat.NLog.NLogLogger.Warn(System.Func<string!>! function) -> void
+Splat.NLog.NLogLogger.Warn(System.IFormatProvider! formatProvider, string! message, params object![]! args) -> void
+Splat.NLog.NLogLogger.Warn(string! message, params object![]! args) -> void
+Splat.NLog.NLogLogger.Warn(string? message) -> void
+Splat.NLog.NLogLogger.Warn<T>(System.Func<string!>! function) -> void
+Splat.NLog.NLogLogger.Warn<T>(System.IFormatProvider! formatProvider, T value) -> void
+Splat.NLog.NLogLogger.Warn<T>(T value) -> void
+Splat.NLog.NLogLogger.Warn<T>(string! message, params object![]! args) -> void
+Splat.NLog.NLogLogger.Warn<T>(string? message) -> void
+Splat.NLog.NLogLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) -> void
+Splat.NLog.NLogLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) -> void
+Splat.NLog.NLogLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) -> void
+Splat.NLog.NLogLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) -> void
+Splat.NLog.NLogLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) -> void
+Splat.NLog.NLogLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) -> void
+Splat.NLog.NLogLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) -> void
+Splat.NLog.NLogLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) -> void
+Splat.NLog.NLogLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) -> void
+Splat.NLog.NLogLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) -> void
+Splat.NLog.NLogLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) -> void
+Splat.NLog.NLogLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) -> void
+Splat.NLog.NLogLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) -> void
+Splat.NLog.NLogLogger.Warn<TArgument1, TArgument2, TArgument3, TArgument4>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) -> void
+Splat.NLog.NLogLogger.Warn<TArgument1, TArgument2, TArgument3>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.NLog.NLogLogger.Warn<TArgument1, TArgument2, TArgument3>(System.IFormatProvider! formatProvider, string! message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.NLog.NLogLogger.Warn<TArgument1, TArgument2, TArgument3>(string! messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) -> void
+Splat.NLog.NLogLogger.Warn<TArgument1, TArgument2>(System.Exception! exception, string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.NLog.NLogLogger.Warn<TArgument1, TArgument2>(System.IFormatProvider! formatProvider, string! message, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.NLog.NLogLogger.Warn<TArgument1, TArgument2>(string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
+Splat.NLog.NLogLogger.Warn<TArgument>(System.Exception! exception, string! messageFormat, TArgument argument) -> void
+Splat.NLog.NLogLogger.Warn<TArgument>(System.IFormatProvider! formatProvider, string! message, TArgument argument) -> void
+Splat.NLog.NLogLogger.Warn<TArgument>(string! message, TArgument args) -> void
+Splat.NLog.NLogLogger.WarnException(System.Func<string!>! function, System.Exception! exception) -> void
+Splat.NLog.NLogLogger.WarnException(string? message, System.Exception! exception) -> void
+Splat.NLog.NLogLogger.Write(System.Exception! exception, string! message, Splat.LogLevel logLevel) -> void
+Splat.NLog.NLogLogger.Write(System.Exception! exception, string! message, System.Type! type, Splat.LogLevel logLevel) -> void
+Splat.NLog.NLogLogger.Write(string! message, Splat.LogLevel logLevel) -> void
+Splat.NLog.NLogLogger.Write(string! message, System.Type! type, Splat.LogLevel logLevel) -> void
+static Splat.NLog.MutableDependencyResolverExtensions.UseNLogWithWrappingFullLogger(this Splat.IMutableDependencyResolver! instance) -> void

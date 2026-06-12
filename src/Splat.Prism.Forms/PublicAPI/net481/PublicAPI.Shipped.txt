@@ -1,0 +1,4 @@
+#nullable enable
+Splat.Prism.Forms.PrismApplication
+Splat.Prism.Forms.PrismApplication.PrismApplication(Prism.IPlatformInitializer? initializer = null) -> void
+override Splat.Prism.Forms.PrismApplication.CreateContainerExtension() -> Prism.Ioc.IContainerExtension!

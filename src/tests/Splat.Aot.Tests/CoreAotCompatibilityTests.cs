@@ -1,56 +1,72 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 using Splat.Common.Test;
 
 namespace Splat.Tests.Aot;
 
-/// <summary>
-/// AOT compatibility tests for core Splat functionality.
-/// </summary>
+/// <summary>AOT compatibility tests for core Splat functionality.</summary>
 [NotInParallel] // Uses Locator/AppLocator and resolver scopes; keep serialized to avoid cross-fixture interference.
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Testing Purposes")]
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2263:Prefer generic overload when type is known", Justification = "Testing purposes")]
-[System.Diagnostics.CodeAnalysis.SuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.", Justification = "Testing Purposes")]
+[SuppressMessage(
+    "Trimming",
+    "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+    Justification = "Testing Purposes")]
+[SuppressMessage("Usage", "CA2263:Prefer generic overload when type is known", Justification = "Testing purposes")]
+[SuppressMessage(
+    "AOT",
+    "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.",
+    Justification = "Testing Purposes")]
 public class CoreAotCompatibilityTests
 {
+    /// <summary>The contract name used when registering a service via a factory delegate.</summary>
+    private const string FactoryContract = "factory";
+
+    /// <summary>The format string for a log message with a single argument.</summary>
+    private const string SimpleMessageFormat = "Simple message {0}";
+
+    /// <summary>The format string for a log message with two arguments.</summary>
+    private const string TwoArgsFormat = "Two args: {0} {1}";
+
+    /// <summary>The format string for a log message with three arguments.</summary>
+    private const string ThreeArgsFormat = "Three args: {0} {1} {2}";
+
+    /// <summary>The expected number of registrations when two services are registered.</summary>
+    private const int ExpectedTwoRegistrations = 2;
+
+    /// <summary>The number of resolution iterations performed by each task in the concurrency test.</summary>
+    private const int ConcurrentIterationsPerTask = 100;
+
+    /// <summary>The lock guarding access to the shared exception list during concurrent execution.</summary>
+    private readonly Lock _exceptionsLock = new();
+
+    /// <summary>The scope that isolates the <see cref="AppLocator"/> state for each test.</summary>
     private AppLocatorScope? _appLocatorScope;
 
-    /// <summary>
-    /// Interface for testing dependency injection.
-    /// </summary>
+    /// <summary>Interface for testing dependency injection.</summary>
     private interface ITestInterface
     {
-        /// <summary>
-        /// Gets a test value.
-        /// </summary>
+        /// <summary>Gets a test value.</summary>
         /// <returns>A test string.</returns>
         string GetValue();
     }
 
-    /// <summary>
-    /// Setup method to initialize AppLocatorScope before each test.
-    /// </summary>
-    [Before(HookType.Test)]
+    /// <summary>Setup method to initialize AppLocatorScope before each test.</summary>
+    [Before(Test)]
     public void SetUpAppLocatorScope() => _appLocatorScope = new();
 
-    /// <summary>
-    /// Teardown method to dispose AppLocatorScope after each test.
-    /// </summary>
-    [After(HookType.Test)]
+    /// <summary>Teardown method to dispose AppLocatorScope after each test.</summary>
+    [After(Test)]
     public void TearDownAppLocatorScope()
     {
         _appLocatorScope?.Dispose();
         _appLocatorScope = null;
     }
 
-    /// <summary>
-    /// Test that basic service registration and resolution works in AOT scenarios.
-    /// </summary>
+    /// <summary>Test that basic service registration and resolution works in AOT scenarios.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task BasicServiceRegistration_WorksWithAot()
@@ -78,9 +94,7 @@ public class CoreAotCompatibilityTests
         }
     }
 
-    /// <summary>
-    /// Test that all registration mixins work with AOT.
-    /// </summary>
+    /// <summary>Test that all registration mixins work with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegistrationMixins_WorksWithAot()
@@ -112,9 +126,7 @@ public class CoreAotCompatibilityTests
         }
     }
 
-    /// <summary>
-    /// Test that service callbacks work with AOT.
-    /// </summary>
+    /// <summary>Test that service callbacks work with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ServiceRegistrationCallbacks_WorksWithAot()
@@ -132,9 +144,7 @@ public class CoreAotCompatibilityTests
         await Assert.That(callbackTriggered).IsTrue();
     }
 
-    /// <summary>
-    /// Test that logging functionality works with AOT.
-    /// </summary>
+    /// <summary>Test that logging functionality works with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Logging_WorksWithAot()
@@ -158,9 +168,7 @@ public class CoreAotCompatibilityTests
         }).ThrowsNothing();
     }
 
-    /// <summary>
-    /// Test that mode detection works with AOT.
-    /// </summary>
+    /// <summary>Test that mode detection works with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ModeDetection_WorksWithAot()
@@ -175,9 +183,7 @@ public class CoreAotCompatibilityTests
         }
     }
 
-    /// <summary>
-    /// Test that lazy singleton registration works with AOT.
-    /// </summary>
+    /// <summary>Test that lazy singleton registration works with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task LazySingleton_WorksWithAot()
@@ -199,13 +205,11 @@ public class CoreAotCompatibilityTests
             await Assert.That(service1).IsNotNull();
             await Assert.That(service2).IsNotNull();
             await Assert.That(service1).IsSameReferenceAs(service2); // Should be the same instance
-            await Assert.That(creationCount).IsEqualTo(1);  // Created once
+            await Assert.That(creationCount).IsEqualTo(1); // Created once
         }
     }
 
-    /// <summary>
-    /// Test that unregistering services works with AOT.
-    /// </summary>
+    /// <summary>Test that unregistering services works with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ServiceUnregistration_WorksWithAot()
@@ -222,9 +226,7 @@ public class CoreAotCompatibilityTests
         await Assert.That(logger2).IsNull();
     }
 
-    /// <summary>
-    /// Test that target framework extensions work with AOT.
-    /// </summary>
+    /// <summary>Test that target framework extensions work with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task TargetFrameworkExtensions_WorksWithAot()
@@ -234,15 +236,15 @@ public class CoreAotCompatibilityTests
         // This uses reflection but should be AOT-safe with proper attributes
         var targetFramework = assembly.GetTargetFrameworkName();
 
-        if (targetFramework is not null)
+        if (targetFramework is null)
         {
-            await Assert.That(targetFramework).Contains("net");
+            return;
         }
+
+        await Assert.That(targetFramework).Contains("net");
     }
 
-    /// <summary>
-    /// Test that multiple service registration works with AOT.
-    /// </summary>
+    /// <summary>Test that multiple service registration works with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task MultipleServiceRegistration_WorksWithAot()
@@ -256,15 +258,13 @@ public class CoreAotCompatibilityTests
 
         using (Assert.Multiple())
         {
-            await Assert.That(services).Count().IsEqualTo(2);
+            await Assert.That(services).Count().IsEqualTo(ExpectedTwoRegistrations);
             await Assert.That(services).Any(s => s is TestImplementation);
             await Assert.That(services).Any(s => s is AlternateTestImplementation);
         }
     }
 
-    /// <summary>
-    /// Test that locator static methods work with AOT.
-    /// </summary>
+    /// <summary>Test that locator static methods work with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task LocatorStatic_WorksWithAot()
@@ -306,9 +306,7 @@ public class CoreAotCompatibilityTests
         }
     }
 
-    /// <summary>
-    /// Test that service registrations with contracts work with AOT.
-    /// </summary>
+    /// <summary>Test that service registrations with contracts work with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ContractBasedRegistration_WorksWithAot()
@@ -333,9 +331,7 @@ public class CoreAotCompatibilityTests
         }
     }
 
-    /// <summary>
-    /// Test that type-based service queries work with AOT.
-    /// </summary>
+    /// <summary>Test that type-based service queries work with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task TypeBasedServiceQueries_WorksWithAot()
@@ -355,9 +351,7 @@ public class CoreAotCompatibilityTests
         }
     }
 
-    /// <summary>
-    /// Test that HasRegistration queries work with AOT.
-    /// </summary>
+    /// <summary>Test that HasRegistration queries work with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task HasRegistrationQueries_WorksWithAot()
@@ -382,10 +376,7 @@ public class CoreAotCompatibilityTests
         }
     }
 
-    /// <summary>
-    /// Test that comprehensive logging functionality works with AOT.
-    /// This tests generic logging methods with type parameters.
-    /// </summary>
+    /// <summary>Test that comprehensive logging functionality works with AOT. This tests generic logging methods with type parameters.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ComprehensiveLogging_WorksWithAot()
@@ -438,21 +429,21 @@ public class CoreAotCompatibilityTests
 
         await Assert.That(() =>
         {
-            logger!.Debug(CultureInfo.InvariantCulture, "Simple message {0}", "arg1");
-            logger.Debug(CultureInfo.InvariantCulture, "Two args: {0} {1}", "arg1", "arg2");
-            logger.Debug(CultureInfo.InvariantCulture, "Three args: {0} {1} {2}", "arg1", "arg2", "arg3");
+            logger!.Debug(CultureInfo.InvariantCulture, SimpleMessageFormat, "arg1");
+            logger.Debug(CultureInfo.InvariantCulture, TwoArgsFormat, "arg1", "arg2");
+            logger.Debug(CultureInfo.InvariantCulture, ThreeArgsFormat, "arg1", "arg2", "arg3");
 
-            logger.Info(CultureInfo.InvariantCulture, "Simple message {0}", "arg1");
-            logger.Info(CultureInfo.InvariantCulture, "Two args: {0} {1}", "arg1", "arg2");
-            logger.Info(CultureInfo.InvariantCulture, "Three args: {0} {1} {2}", "arg1", "arg2", "arg3");
+            logger.Info(CultureInfo.InvariantCulture, SimpleMessageFormat, "arg1");
+            logger.Info(CultureInfo.InvariantCulture, TwoArgsFormat, "arg1", "arg2");
+            logger.Info(CultureInfo.InvariantCulture, ThreeArgsFormat, "arg1", "arg2", "arg3");
 
-            logger.Warn(CultureInfo.InvariantCulture, "Simple message {0}", "arg1");
-            logger.Warn(CultureInfo.InvariantCulture, "Two args: {0} {1}", "arg1", "arg2");
-            logger.Warn(CultureInfo.InvariantCulture, "Three args: {0} {1} {2}", "arg1", "arg2", "arg3");
+            logger.Warn(CultureInfo.InvariantCulture, SimpleMessageFormat, "arg1");
+            logger.Warn(CultureInfo.InvariantCulture, TwoArgsFormat, "arg1", "arg2");
+            logger.Warn(CultureInfo.InvariantCulture, ThreeArgsFormat, "arg1", "arg2", "arg3");
 
-            logger.Error(CultureInfo.InvariantCulture, "Simple message {0}", "arg1");
-            logger.Error(CultureInfo.InvariantCulture, "Two args: {0} {1}", "arg1", "arg2");
-            logger.Error(CultureInfo.InvariantCulture, "Three args: {0} {1} {2}", "arg1", "arg2", "arg3");
+            logger.Error(CultureInfo.InvariantCulture, SimpleMessageFormat, "arg1");
+            logger.Error(CultureInfo.InvariantCulture, TwoArgsFormat, "arg1", "arg2");
+            logger.Error(CultureInfo.InvariantCulture, ThreeArgsFormat, "arg1", "arg2", "arg3");
 
             // Higher-arity
             logger.Debug(CultureInfo.InvariantCulture, "Four args: {0} {1} {2} {3}", "arg1", "arg2", "arg3", "arg4");
@@ -460,9 +451,7 @@ public class CoreAotCompatibilityTests
         }).ThrowsNothing();
     }
 
-    /// <summary>
-    /// Test that static logging host works with AOT.
-    /// </summary>
+    /// <summary>Test that static logging host works with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task StaticLoggingHost_WorksWithAot()
@@ -483,9 +472,7 @@ public class CoreAotCompatibilityTests
         }).ThrowsNothing();
     }
 
-    /// <summary>
-    /// Test that WrappingFullLogger works correctly with AOT.
-    /// </summary>
+    /// <summary>Test that WrappingFullLogger works correctly with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task WrappingFullLogger_WorksWithAot()
@@ -518,9 +505,7 @@ public class CoreAotCompatibilityTests
         }).ThrowsNothing();
     }
 
-    /// <summary>
-    /// Test that platform mode detector works with AOT including design mode detection.
-    /// </summary>
+    /// <summary>Test that platform mode detector works with AOT including design mode detection.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task PlatformModeDetector_WorksWithAot()
@@ -541,9 +526,7 @@ public class CoreAotCompatibilityTests
         }
     }
 
-    /// <summary>
-    /// Test that service registration callbacks with different parameters work with AOT.
-    /// </summary>
+    /// <summary>Test that service registration callbacks with different parameters work with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ServiceRegistrationCallbacksWithContracts_WorksWithAot()
@@ -573,9 +556,7 @@ public class CoreAotCompatibilityTests
         }
     }
 
-    /// <summary>
-    /// Test that service unregistration scenarios work with AOT.
-    /// </summary>
+    /// <summary>Test that service unregistration scenarios work with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ComprehensiveServiceUnregistration_WorksWithAot()
@@ -586,14 +567,14 @@ public class CoreAotCompatibilityTests
         // Register multiple services
         resolver.RegisterConstant<ITestInterface>(new TestImplementation());
         resolver.RegisterConstant<ITestInterface>(new AlternateTestImplementation(), contract);
-        resolver.Register<ITestInterface>(() => new TestImplementation(), "factory");
+        resolver.Register<ITestInterface>(() => new TestImplementation(), FactoryContract);
 
         // Verify initial registrations
         using (Assert.Multiple())
         {
             await Assert.That(resolver.HasRegistration(typeof(ITestInterface))).IsTrue();
             await Assert.That(resolver.HasRegistration(typeof(ITestInterface), contract)).IsTrue();
-            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), "factory")).IsTrue();
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), FactoryContract)).IsTrue();
         }
 
         // Unregister current (default contract)
@@ -609,7 +590,7 @@ public class CoreAotCompatibilityTests
         using (Assert.Multiple())
         {
             await Assert.That(resolver.HasRegistration(typeof(ITestInterface), contract)).IsFalse();
-            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), "factory")).IsTrue();
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), FactoryContract)).IsTrue();
         }
 
         // Unregister all (default contract only)
@@ -621,13 +602,11 @@ public class CoreAotCompatibilityTests
         using (Assert.Multiple())
         {
             await Assert.That(resolver.HasRegistration(typeof(ITestInterface))).IsFalse();
-            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), "factory")).IsTrue();
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), FactoryContract)).IsTrue();
         }
     }
 
-    /// <summary>
-    /// Test that fluent registration APIs work with AOT.
-    /// </summary>
+    /// <summary>Test that fluent registration APIs work with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task FluentRegistrationApis_WorksWithAot()
@@ -661,9 +640,7 @@ public class CoreAotCompatibilityTests
         }
     }
 
-    /// <summary>
-    /// Test that resolver scoping and isolation work with AOT.
-    /// </summary>
+    /// <summary>Test that resolver scoping and isolation work with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ResolverScoping_WorksWithAot()
@@ -690,15 +667,15 @@ public class CoreAotCompatibilityTests
 
         // After exiting the scoped resolver, we should be back to the original resolver
         var revertedLogger = Locator.Current.GetService<ILogger>();
-        if (revertedLogger is not null)
+        if (revertedLogger is null)
         {
-            await Assert.That(revertedLogger).IsNotTypeOf<ConsoleLogger>();
+            return;
         }
+
+        await Assert.That(revertedLogger).IsNotTypeOf<ConsoleLogger>();
     }
 
-    /// <summary>
-    /// Test that callback suppression works with AOT.
-    /// </summary>
+    /// <summary>Test that callback suppression works with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task CallbackSuppression_WorksWithAot()
@@ -746,9 +723,7 @@ public class CoreAotCompatibilityTests
         }
     }
 
-    /// <summary>
-    /// Test that cross-casting and type conversions work with AOT.
-    /// </summary>
+    /// <summary>Test that cross-casting and type conversions work with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task TypeConversions_WorksWithAot()
@@ -771,9 +746,7 @@ public class CoreAotCompatibilityTests
         }
     }
 
-    /// <summary>
-    /// Test that complex nested generic scenarios work with AOT.
-    /// </summary>
+    /// <summary>Test that complex nested generic scenarios work with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task NestedGenericScenarios_WorksWithAot()
@@ -798,15 +771,13 @@ public class CoreAotCompatibilityTests
             await Assert.That(enumerable).IsNotNull();
             await Assert.That(factory).IsNotNull();
             await Assert.That(lazy).IsNotNull();
-            await Assert.That(enumerable!.Count()).IsEqualTo(2);
-            await Assert.That(factory!()).IsNotNull();
+            await Assert.That(enumerable!.Count()).IsEqualTo(ExpectedTwoRegistrations);
+            await Assert.That(factory()).IsNotNull();
             await Assert.That(lazy!.Value).IsTypeOf<DebugLogger>();
         }
     }
 
-    /// <summary>
-    /// Tests concurrent access scenarios with AOT compatibility.
-    /// </summary>
+    /// <summary>Tests concurrent access scenarios with AOT compatibility.</summary>
     /// <returns>A task that represents the asynchronous test operation.</returns>
     [Test]
     public async Task ConcurrentAccess_WorksWithAot()
@@ -824,7 +795,7 @@ public class CoreAotCompatibilityTests
             {
                 try
                 {
-                    for (var j = 0; j < 100; j++)
+                    for (var j = 0; j < ConcurrentIterationsPerTask; j++)
                     {
                         var logger = resolver.GetService<ILogger>();
                         await Assert.That(logger).IsNotNull();
@@ -838,7 +809,7 @@ public class CoreAotCompatibilityTests
                 }
                 catch (Exception ex)
                 {
-                    lock (exceptions)
+                    lock (_exceptionsLock)
                     {
                         exceptions.Add(ex);
                     }
@@ -851,9 +822,7 @@ public class CoreAotCompatibilityTests
         await Assert.That(exceptions).IsEmpty();
     }
 
-    /// <summary>
-    /// Test that null service type handling works with AOT.
-    /// </summary>
+    /// <summary>Test that null service type handling works with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task NullServiceTypeHandling_WorksWithAot()
@@ -871,9 +840,7 @@ public class CoreAotCompatibilityTests
         }
     }
 
-    /// <summary>
-    /// Test that dependency resolver extension methods work with AOT.
-    /// </summary>
+    /// <summary>Test that dependency resolver extension methods work with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DependencyResolverExtensions_WorksWithAot()
@@ -892,13 +859,11 @@ public class CoreAotCompatibilityTests
         {
             await Assert.That(service).IsTypeOf<TestImplementation>();
             await Assert.That(services).IsNotNull();
-            await Assert.That(services!.Count()).IsEqualTo(1);
+            await Assert.That(services.Count()).IsEqualTo(1);
         }
     }
 
-    /// <summary>
-    /// Test that dependency injection with parameterized constructors works with AOT.
-    /// </summary>
+    /// <summary>Test that dependency injection with parameterized constructors works with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ParameterizedConstructors_WorkWithAot()
@@ -913,14 +878,14 @@ public class CoreAotCompatibilityTests
         using (Assert.Multiple())
         {
             await Assert.That(service).IsTypeOf<TestImplementationWithDependency>();
-            var typed = (TestImplementationWithDependency)service!;
-            await Assert.That(typed.Logger).IsTypeOf<DebugLogger>();
+            if (service is TestImplementationWithDependency typed)
+            {
+                await Assert.That(typed.Logger).IsTypeOf<DebugLogger>();
+            }
         }
     }
 
-    /// <summary>
-    /// Test that service disposal works correctly with AOT.
-    /// </summary>
+    /// <summary>Test that service disposal works correctly with AOT.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ServiceDisposal_WorksWithAot()
@@ -934,50 +899,58 @@ public class CoreAotCompatibilityTests
         await Assert.That(disposableService.IsDisposed).IsTrue();
     }
 
+    /// <summary>Basic test implementation of <see cref="ITestInterface"/>.</summary>
     private sealed class TestImplementation : ITestInterface
     {
+        /// <inheritdoc />
         public string GetValue() => "Test Implementation";
     }
 
+    /// <summary>Alternate test implementation of <see cref="ITestInterface"/> used for contract resolution tests.</summary>
     private sealed class AlternateTestImplementation : ITestInterface
     {
+        /// <inheritdoc />
         public string GetValue() => "Alternate Test Implementation";
     }
 
+    /// <summary>Test implementation of <see cref="ITestInterface"/> that takes a constructor dependency.</summary>
+    /// <param name="logger">The logger to inject.</param>
     private sealed class TestImplementationWithDependency(ILogger logger) : ITestInterface
     {
-        /// <summary>
-        /// Gets the injected logger.
-        /// </summary>
+        /// <summary>Gets the injected logger.</summary>
         public ILogger Logger { get; } = logger;
 
+        /// <inheritdoc />
         public string GetValue() => "Test Implementation With Dependency";
     }
 
+    /// <summary>Test implementation of <see cref="ITestInterface"/> that tracks disposal.</summary>
     private sealed class DisposableTestService : ITestInterface, IDisposable
     {
+        /// <summary>Gets a value indicating whether this instance has been disposed.</summary>
         public bool IsDisposed { get; private set; }
 
+        /// <inheritdoc />
         public string GetValue() => "Disposable Test Service";
 
+        /// <inheritdoc />
         public void Dispose() => IsDisposed = true;
     }
 
-    /// <summary>
-    /// Simple test service that implements IEnableLogger for testing purposes.
-    /// </summary>
+    /// <summary>Simple test service that implements IEnableLogger for testing purposes.</summary>
     private sealed class TestService : IEnableLogger
     {
+        /// <summary>Gets or sets the logger associated with this service.</summary>
         public IFullLogger? Logger { get; set; }
     }
 
-    /// <summary>
-    /// Test service that implements multiple interfaces for cross-casting tests.
-    /// </summary>
+    /// <summary>Test service that implements multiple interfaces for cross-casting tests.</summary>
     private sealed class TestServiceWithMultipleInterfaces : ITestInterface, IEnableLogger
     {
+        /// <summary>Gets or sets the logger associated with this service.</summary>
         public IFullLogger? Logger { get; set; }
 
+        /// <inheritdoc />
         public string GetValue() => "Multi-Interface Service";
     }
 }

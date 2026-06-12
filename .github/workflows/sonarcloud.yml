@@ -1,0 +1,26 @@
+name: SonarCloud
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  sonarcloud:
+    uses: reactiveui/actions-common/.github/workflows/workflow-common-sonarcloud.yml@main
+    with:
+      productNamespacePrefix: Splat
+      installWorkloads: true
+      sonarProjectKey: reactiveui_splat
+      sonarOrganization: reactiveui
+      sonarExclusions: '**/tests/**,**/Benchmarks/**,**/benchmarks/**,**/TestResults/**'
+      sonarCoverageExclusions: '**/tests/**,**/Benchmarks/**,**/benchmarks/**,**/*Tests/**,**/*Tests.cs,**/Polyfills/**,**/Generated/**'
+      sonarCpdExclusions: '**/tests/**,**/Benchmarks/**,**/benchmarks/**,**/Polyfills/**'
+      sonarTestExclusions: '**/tests/**,**/Benchmarks/**,**/benchmarks/**'
+      testTimeout: '15m'
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

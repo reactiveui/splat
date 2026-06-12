@@ -1,0 +1,85 @@
+#nullable enable
+Splat.Builder.SimpleInjectorSplatModule
+Splat.Builder.SimpleInjectorSplatModule.Configure(Splat.IMutableDependencyResolver! resolver) -> void
+Splat.Builder.SimpleInjectorSplatModule.SimpleInjectorSplatModule(SimpleInjector.Container! container, Splat.SimpleInjector.SimpleInjectorInitializer! initializer) -> void
+Splat.SimpleInjector.SimpleInjectorDependencyResolver
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.Dispose() -> void
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.GetService(System.Type? serviceType) -> object?
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.GetService(System.Type? serviceType, string? contract) -> object?
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.GetService<T>() -> T?
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.GetService<T>(string? contract) -> T?
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.GetServices(System.Type? serviceType) -> System.Collections.Generic.IEnumerable<object!>!
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.GetServices(System.Type? serviceType, string? contract) -> System.Collections.Generic.IEnumerable<object!>!
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.GetServices<T>() -> System.Collections.Generic.IEnumerable<T>!
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.GetServices<T>(string? contract) -> System.Collections.Generic.IEnumerable<T>!
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.HasRegistration(System.Type? serviceType) -> bool
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.HasRegistration(System.Type? serviceType, string? contract) -> bool
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.HasRegistration<T>() -> bool
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.HasRegistration<T>(string? contract) -> bool
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.Register(System.Func<object?>! factory, System.Type? serviceType) -> void
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.Register(System.Func<object?>! factory, System.Type? serviceType, string? contract) -> void
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.Register<T>(System.Func<T?>! factory) -> void
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.Register<T>(System.Func<T?>! factory, string? contract) -> void
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.Register<TService, TImplementation>() -> void
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.Register<TService, TImplementation>(string? contract) -> void
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.RegisterConstant<T>(T? value) -> void
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.RegisterConstant<T>(T? value, string? contract) -> void
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.RegisterLazySingleton<T>(System.Func<T?>! valueFactory) -> void
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.RegisterLazySingleton<T>(System.Func<T?>! valueFactory, string? contract) -> void
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.ServiceRegistrationCallback(System.Type! serviceType, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.ServiceRegistrationCallback(System.Type! serviceType, string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.ServiceRegistrationCallback<T>(System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.ServiceRegistrationCallback<T>(string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.SimpleInjectorDependencyResolver(SimpleInjector.Container! container, Splat.SimpleInjector.SimpleInjectorInitializer! initializer) -> void
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.UnregisterAll(System.Type? serviceType) -> void
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.UnregisterAll(System.Type? serviceType, string? contract) -> void
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.UnregisterAll<T>() -> void
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.UnregisterAll<T>(string? contract) -> void
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.UnregisterCurrent(System.Type? serviceType) -> void
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.UnregisterCurrent(System.Type? serviceType, string? contract) -> void
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.UnregisterCurrent<T>() -> void
+Splat.SimpleInjector.SimpleInjectorDependencyResolver.UnregisterCurrent<T>(string? contract) -> void
+Splat.SimpleInjector.SimpleInjectorInitializer
+Splat.SimpleInjector.SimpleInjectorInitializer.Dispose() -> void
+Splat.SimpleInjector.SimpleInjectorInitializer.GetService(System.Type? serviceType) -> object?
+Splat.SimpleInjector.SimpleInjectorInitializer.GetService(System.Type? serviceType, string? contract) -> object?
+Splat.SimpleInjector.SimpleInjectorInitializer.GetService<T>() -> T?
+Splat.SimpleInjector.SimpleInjectorInitializer.GetService<T>(string? contract) -> T?
+Splat.SimpleInjector.SimpleInjectorInitializer.GetServices(System.Type? serviceType) -> System.Collections.Generic.IEnumerable<object!>!
+Splat.SimpleInjector.SimpleInjectorInitializer.GetServices(System.Type? serviceType, string? contract) -> System.Collections.Generic.IEnumerable<object!>!
+Splat.SimpleInjector.SimpleInjectorInitializer.GetServices<T>() -> System.Collections.Generic.IEnumerable<T>!
+Splat.SimpleInjector.SimpleInjectorInitializer.GetServices<T>(string? contract) -> System.Collections.Generic.IEnumerable<T>!
+Splat.SimpleInjector.SimpleInjectorInitializer.HasRegistration(System.Type? serviceType) -> bool
+Splat.SimpleInjector.SimpleInjectorInitializer.HasRegistration(System.Type? serviceType, string? contract) -> bool
+Splat.SimpleInjector.SimpleInjectorInitializer.HasRegistration<T>() -> bool
+Splat.SimpleInjector.SimpleInjectorInitializer.HasRegistration<T>(string? contract) -> bool
+Splat.SimpleInjector.SimpleInjectorInitializer.Register(System.Func<object?>! factory, System.Type? serviceType) -> void
+Splat.SimpleInjector.SimpleInjectorInitializer.Register(System.Func<object?>! factory, System.Type? serviceType, string? contract) -> void
+Splat.SimpleInjector.SimpleInjectorInitializer.Register<T>(System.Func<T?>! factory) -> void
+Splat.SimpleInjector.SimpleInjectorInitializer.Register<T>(System.Func<T?>! factory, string? contract) -> void
+Splat.SimpleInjector.SimpleInjectorInitializer.Register<TService, TImplementation>() -> void
+Splat.SimpleInjector.SimpleInjectorInitializer.Register<TService, TImplementation>(string? contract) -> void
+Splat.SimpleInjector.SimpleInjectorInitializer.RegisterConstant<T>(T? value) -> void
+Splat.SimpleInjector.SimpleInjectorInitializer.RegisterConstant<T>(T? value, string? contract) -> void
+Splat.SimpleInjector.SimpleInjectorInitializer.RegisterLazySingleton<T>(System.Func<T?>! valueFactory) -> void
+Splat.SimpleInjector.SimpleInjectorInitializer.RegisterLazySingleton<T>(System.Func<T?>! valueFactory, string? contract) -> void
+Splat.SimpleInjector.SimpleInjectorInitializer.RegisteredFactories.get -> System.Collections.Generic.Dictionary<System.Type!, System.Collections.Generic.List<System.Func<object?>!>!>!
+Splat.SimpleInjector.SimpleInjectorInitializer.ServiceRegistrationCallback(System.Type! serviceType, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.SimpleInjector.SimpleInjectorInitializer.ServiceRegistrationCallback(System.Type! serviceType, string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.SimpleInjector.SimpleInjectorInitializer.ServiceRegistrationCallback<T>(System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.SimpleInjector.SimpleInjectorInitializer.ServiceRegistrationCallback<T>(string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.SimpleInjector.SimpleInjectorInitializer.SimpleInjectorInitializer() -> void
+Splat.SimpleInjector.SimpleInjectorInitializer.UnregisterAll(System.Type? serviceType) -> void
+Splat.SimpleInjector.SimpleInjectorInitializer.UnregisterAll(System.Type? serviceType, string? contract) -> void
+Splat.SimpleInjector.SimpleInjectorInitializer.UnregisterAll<T>() -> void
+Splat.SimpleInjector.SimpleInjectorInitializer.UnregisterAll<T>(string? contract) -> void
+Splat.SimpleInjector.SimpleInjectorInitializer.UnregisterCurrent(System.Type? serviceType) -> void
+Splat.SimpleInjector.SimpleInjectorInitializer.UnregisterCurrent(System.Type? serviceType, string? contract) -> void
+Splat.SimpleInjector.SimpleInjectorInitializer.UnregisterCurrent<T>() -> void
+Splat.SimpleInjector.SimpleInjectorInitializer.UnregisterCurrent<T>(string? contract) -> void
+Splat.SimpleInjector.SplatSimpleInjectorExtensions
+Splat.SimpleInjector.SplatSimpleInjectorExtensions.extension(SimpleInjector.Container!)
+Splat.SimpleInjector.SplatSimpleInjectorExtensions.extension(SimpleInjector.Container!).UseSimpleInjectorDependencyResolver(Splat.SimpleInjector.SimpleInjectorInitializer! initializer) -> void
+static Splat.SimpleInjector.SplatSimpleInjectorExtensions.UseSimpleInjectorDependencyResolver(this SimpleInjector.Container! container, Splat.SimpleInjector.SimpleInjectorInitializer! initializer) -> void
+virtual Splat.SimpleInjector.SimpleInjectorDependencyResolver.Dispose(bool disposing) -> void
+virtual Splat.SimpleInjector.SimpleInjectorInitializer.Dispose(bool isDisposing) -> void
