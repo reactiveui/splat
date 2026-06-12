@@ -12,7 +12,7 @@ permissions:
 jobs:
   sonarcloud-token:
     name: validate-token
-    runs-on: windows-2025-vs2026-latest
+    runs-on: windows-latest
     outputs:
       available: ${{ steps.check.outputs.available }}
     steps:
