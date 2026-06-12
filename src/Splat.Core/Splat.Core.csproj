@@ -28,7 +28,5 @@
     <InternalsVisibleTo Include="Splat.Builder.Tests" />
     <InternalsVisibleTo Include="Splat.Common.Test" />
     <InternalsVisibleTo Include="Splat.Microsoft.Extensions.Logging.Tests" />
-    <InternalsVisibleTo Include="Splat.TestRunner.Android" />
-    <InternalsVisibleTo Include="Splat.TestRunner.Uwp" />
   </ItemGroup>
 </Project>

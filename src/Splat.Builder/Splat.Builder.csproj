@@ -18,8 +18,6 @@
     <InternalsVisibleTo Include="Splat.Tests" />
     <InternalsVisibleTo Include="Splat.Common.Test" />
     <InternalsVisibleTo Include="Splat.Drawing.Tests" />
-    <InternalsVisibleTo Include="Splat.TestRunner.Android" />
-    <InternalsVisibleTo Include="Splat.TestRunner.Uwp" />
     <InternalsVisibleTo Include="Splat.Builder.Tests" />
   </ItemGroup>
 

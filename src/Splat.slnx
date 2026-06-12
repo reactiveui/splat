@@ -31,7 +31,6 @@
     <Project Path="Splat.AppCenter/Splat.AppCenter.csproj" />
     <Project Path="Splat.ApplicationInsights/Splat.ApplicationInsights.csproj" />
     <Project Path="Splat.Exceptionless/Splat.Exceptionless.csproj" />
-    <Project Path="Splat.Prism.Forms/Splat.Prism.Forms.csproj" />
     <Project Path="Splat.Raygun/Splat.Raygun.csproj" />
   </Folder>
   <Folder Name="/test/">
