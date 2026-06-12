@@ -250,7 +250,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Aggregates exceptions when requested.")]
     public void InvalidateAll(bool aggregateReleaseExceptions)
     {
-        Dictionary<TParam, (LinkedListNode<TParam> node, TVal value)>? oldEntries = null;
+        Dictionary<TParam, (LinkedListNode<TParam> node, TVal value)> oldEntries;
 
         lock (_gate)
         {
@@ -265,7 +265,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
             _entries = new(_comparer);
         }
 
-        if (_releaseFunction is null || oldEntries is null)
+        if (_releaseFunction is null)
         {
             return;
         }

@@ -358,7 +358,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
         var bindings = kernel.GetBindings(serviceType).ToArray();
 
-        if (bindings is null || bindings.Length < 1)
+        if (bindings.Length < 1)
         {
             return;
         }
@@ -380,7 +380,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
         var bindings = kernel.GetBindings(serviceType).ToArray();
 
-        if (bindings is null || bindings.Length < 1)
+        if (bindings.Length < 1)
         {
             return;
         }
@@ -410,7 +410,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
         var bindings = kernel.GetBindings(serviceType).ToArray();
 
-        if (bindings is null || bindings.Length < 1)
+        if (bindings.Length < 1)
         {
             return;
         }
@@ -435,7 +435,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
         var bindings = kernel.GetBindings(serviceType).ToArray();
 
-        if (bindings is null || bindings.Length < 1)
+        if (bindings.Length < 1)
         {
             return;
         }
