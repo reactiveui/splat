@@ -1,4 +1,13 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": ["local>reactiveui/.github:renovate"]
+    "extends": ["local>reactiveui/.github:renovate"],
+    "packageRules": [
+        {
+            "description": "Legacy System.* compatibility packages are pinned to their 4.x line for the net4*/netstandard targets. Cap Renovate below 5.0.0 so the .NET monorepo v10 updates do not bump these and break those targets. The modern 10.x System.* entries (in the Otherwise/modern groups) are unaffected because this rule only matches versions currently on 4.x.",
+            "matchManagers": ["nuget"],
+            "matchPackageNames": ["/^System\\./"],
+            "matchCurrentVersion": "/^4\\./",
+            "allowedVersions": "<5.0.0"
+        }
+    ]
 }
