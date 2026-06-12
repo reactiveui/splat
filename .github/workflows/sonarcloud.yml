@@ -10,27 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  sonarcloud-token:
-    name: validate-token
-    runs-on: windows-latest
-    outputs:
-      available: ${{ steps.check.outputs.available }}
-    steps:
-      - name: Check SonarCloud token
-        id: check
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          if [ -n "${SONAR_TOKEN:-}" ]; then
-            echo "available=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "available=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::SONAR_TOKEN is not configured; skipping SonarCloud analysis for this run."
-          fi
-
   sonarcloud:
-    needs: sonarcloud-token
-    if: ${{ needs.sonarcloud-token.outputs.available == 'true' }}
     uses: reactiveui/actions-common/.github/workflows/workflow-common-sonarcloud.yml@main
     with:
       productNamespacePrefix: Splat
