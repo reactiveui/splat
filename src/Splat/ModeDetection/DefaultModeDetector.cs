@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Collections;
@@ -8,10 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Splat;
 
-/// <summary>
-/// Provides a default implementation for detecting whether the current process is running within a unit test
-/// environment.
-/// </summary>
+/// <summary>Provides a default implementation for detecting whether the current process is running within a unit test environment.</summary>
 /// <remarks>This class uses a combination of environment variable checks, process name heuristics, and assembly
 /// scanning to determine if the application is executing under a known test runner. It is intended for use in scenarios
 /// where behavior should change when running under test conditions, such as enabling test-specific features or
@@ -155,11 +151,13 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
             }
 
             // Normalize checks without allocating additional strings.
+            const int yesLength = 3;
+            const int trueLength = 4;
             return value.Length switch
             {
                 1 => value == "1",
-                3 => value.Equals("yes", StringComparison.OrdinalIgnoreCase),
-                4 => value.Equals("true", StringComparison.OrdinalIgnoreCase),
+                yesLength => value.Equals("yes", StringComparison.OrdinalIgnoreCase),
+                trueLength => value.Equals("true", StringComparison.OrdinalIgnoreCase),
                 _ => false
             };
         }
@@ -192,8 +190,7 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
             }
 
             // Slower path: enumerate env vars once and check prefixes.
-            var vars = Environment.GetEnvironmentVariables(EnvironmentVariableTarget.Process);
-            foreach (DictionaryEntry kv in vars)
+            foreach (DictionaryEntry kv in Environment.GetEnvironmentVariables(EnvironmentVariableTarget.Process))
             {
                 if (kv.Key is not string key || string.IsNullOrEmpty(key))
                 {
@@ -251,18 +248,17 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
             {
                 using var p = System.Diagnostics.Process.GetCurrentProcess();
                 var mainModule = p.MainModule?.FileName;
-                if (mainModule is not null && !string.IsNullOrEmpty(mainModule))
-                {
 #if NETFRAMEWORK
-                    if (mainModule.IndexOf("testhost", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                        mainModule.IndexOf("vstest", StringComparison.OrdinalIgnoreCase) >= 0)
+                if (mainModule is not null && !string.IsNullOrEmpty(mainModule) &&
+                    (mainModule.IndexOf("testhost", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                     mainModule.IndexOf("vstest", StringComparison.OrdinalIgnoreCase) >= 0))
 #else
-                    if (mainModule.Contains("testhost", StringComparison.OrdinalIgnoreCase) ||
-                        mainModule.Contains("vstest", StringComparison.OrdinalIgnoreCase))
+                if (mainModule is not null && !string.IsNullOrEmpty(mainModule) &&
+                    (mainModule.Contains("testhost", StringComparison.OrdinalIgnoreCase) ||
+                     mainModule.Contains("vstest", StringComparison.OrdinalIgnoreCase)))
 #endif
-                    {
-                        return true;
-                    }
+                {
+                    return true;
                 }
             }
             catch

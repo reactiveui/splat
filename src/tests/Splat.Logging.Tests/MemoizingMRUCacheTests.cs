@@ -1,20 +1,24 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Tests.Mocks;
 
 namespace Splat.Tests.Logging;
 
-/// <summary>
-/// Tests for the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.
-/// </summary>
+/// <summary>Tests for the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.</summary>
 public class MemoizingMRUCacheTests
 {
-    /// <summary>
-    /// Checks to ensure an Argument Null Exception is thrown.
-    /// </summary>
+    /// <summary>A sample cache key used by the tests.</summary>
+    private const string SampleKey = "Test1";
+
+    /// <summary>The default maximum cache size used when constructing test instances.</summary>
+    private const int DefaultMaxCacheSize = 256;
+
+    /// <summary>The expected count when two items have been cached.</summary>
+    private const int TwoCachedItems = 2;
+
+    /// <summary>Checks to ensure an Argument Null Exception is thrown.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ThrowsArgumentNullException()
@@ -23,9 +27,7 @@ public class MemoizingMRUCacheTests
         await Assert.That(() => instance.Get(null!)).Throws<ArgumentNullException>();
     }
 
-    /// <summary>
-    /// Test that constructor throws ArgumentException for invalid max size.
-    /// </summary>
+    /// <summary>Test that constructor throws ArgumentException for invalid max size.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Constructor_ThrowsArgumentException_ForInvalidMaxSize()
@@ -40,16 +42,14 @@ public class MemoizingMRUCacheTests
         }
     }
 
-    /// <summary>
-    /// Test that constructor throws ArgumentNullException for null calculation function.
-    /// </summary>
+    /// <summary>Test that constructor throws ArgumentNullException for null calculation function.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task Constructor_ThrowsArgumentNullException_ForNullCalculationFunction() => await Assert.That(() => new MemoizingMRUCache<string, DummyObjectClass1>(null!, 10)).Throws<ArgumentNullException>();
+    public async Task Constructor_ThrowsArgumentNullException_ForNullCalculationFunction() =>
+        await Assert.That(() => new MemoizingMRUCache<string, DummyObjectClass1>(null!, 10))
+            .Throws<ArgumentNullException>();
 
-    /// <summary>
-    /// Test that TryGet throws ArgumentNullException for null key.
-    /// </summary>
+    /// <summary>Test that TryGet throws ArgumentNullException for null key.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task TryGet_ThrowsArgumentNullException_ForNullKey()
@@ -58,9 +58,7 @@ public class MemoizingMRUCacheTests
         await Assert.That(() => instance.TryGet(null!, out _)).Throws<ArgumentNullException>();
     }
 
-    /// <summary>
-    /// Test that Invalidate throws ArgumentNullException for null key.
-    /// </summary>
+    /// <summary>Test that Invalidate throws ArgumentNullException for null key.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Invalidate_ThrowsArgumentNullException_ForNullKey()
@@ -69,9 +67,7 @@ public class MemoizingMRUCacheTests
         await Assert.That(() => instance.Invalidate(null!)).Throws<ArgumentNullException>();
     }
 
-    /// <summary>
-    /// Test that cache evicts old items when max size is reached.
-    /// </summary>
+    /// <summary>Test that cache evicts old items when max size is reached.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Cache_EvictsOldItems_WhenMaxSizeReached()
@@ -95,9 +91,7 @@ public class MemoizingMRUCacheTests
         }
     }
 
-    /// <summary>
-    /// Test that cache eviction releases default values.
-    /// </summary>
+    /// <summary>Test that cache eviction releases default values.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Cache_EvictsDefaultValues_WhenMaxSizeReached()
@@ -118,9 +112,7 @@ public class MemoizingMRUCacheTests
         }
     }
 
-    /// <summary>
-    /// Test that InvalidateAll with aggregateReleaseExceptions handles exceptions.
-    /// </summary>
+    /// <summary>Test that InvalidateAll with aggregateReleaseExceptions handles exceptions.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task InvalidateAll_WithAggregateExceptions_HandlesExceptions()
@@ -135,12 +127,10 @@ public class MemoizingMRUCacheTests
 
         var exception = await Assert.That(() => instance.InvalidateAll(true)).Throws<AggregateException>();
         await Assert.That(exception).IsNotNull();
-        await Assert.That(exception.InnerExceptions).Count().IsEqualTo(2);
+        await Assert.That(exception.InnerExceptions).Count().IsEqualTo(TwoCachedItems);
     }
 
-    /// <summary>
-    /// Test that InvalidateAll without aggregating exceptions throws on first error.
-    /// </summary>
+    /// <summary>Test that InvalidateAll without aggregating exceptions throws on first error.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task InvalidateAll_WithoutAggregateExceptions_ThrowsOnFirstError()
@@ -155,9 +145,7 @@ public class MemoizingMRUCacheTests
         await Assert.That(() => instance.InvalidateAll(false)).Throws<InvalidOperationException>();
     }
 
-    /// <summary>
-    /// Test that CachedValues returns current cache contents.
-    /// </summary>
+    /// <summary>Test that CachedValues returns current cache contents.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task CachedValues_ReturnsCurrentCacheContents()
@@ -170,15 +158,13 @@ public class MemoizingMRUCacheTests
 
         using (Assert.Multiple())
         {
-            await Assert.That(cachedValues).Count().IsEqualTo(2);
+            await Assert.That(cachedValues).Count().IsEqualTo(TwoCachedItems);
             await Assert.That(cachedValues).Contains(value1);
             await Assert.That(cachedValues).Contains(value2);
         }
     }
 
-    /// <summary>
-    /// Test with custom comparer.
-    /// </summary>
+    /// <summary>Test with custom comparer.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Constructor_WithCustomComparer_UsesComparer()
@@ -194,9 +180,7 @@ public class MemoizingMRUCacheTests
         await Assert.That(value1).IsSameReferenceAs(value2);
     }
 
-    /// <summary>
-    /// Test with custom comparer and release function.
-    /// </summary>
+    /// <summary>Test with custom comparer and release function.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Constructor_WithCustomComparerAndReleaseFunction_Works()
@@ -214,9 +198,7 @@ public class MemoizingMRUCacheTests
         await Assert.That(releaseCount).IsEqualTo(1);
     }
 
-    /// <summary>
-    /// Test that Get with context parameter works.
-    /// </summary>
+    /// <summary>Test that Get with context parameter works.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Get_WithContext_PassesContextToFactory()
@@ -237,9 +219,7 @@ public class MemoizingMRUCacheTests
         await Assert.That(receivedContext).IsSameReferenceAs(testContext);
     }
 
-    /// <summary>
-    /// Test that Invalidate removes non-existent key gracefully.
-    /// </summary>
+    /// <summary>Test that Invalidate removes non-existent key gracefully.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Invalidate_NonExistentKey_DoesNotThrow()
@@ -248,9 +228,7 @@ public class MemoizingMRUCacheTests
         await Assert.That(() => instance.Invalidate("nonexistent")).ThrowsNothing();
     }
 
-    /// <summary>
-    /// Test that InvalidateAll with empty cache works.
-    /// </summary>
+    /// <summary>Test that InvalidateAll with empty cache works.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task InvalidateAll_EmptyCache_DoesNotThrow()
@@ -259,9 +237,7 @@ public class MemoizingMRUCacheTests
         await Assert.That(() => instance.InvalidateAll()).ThrowsNothing();
     }
 
-    /// <summary>
-    /// Test that InvalidateAll with null release function works.
-    /// </summary>
+    /// <summary>Test that InvalidateAll with null release function works.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task InvalidateAll_NullReleaseFunction_Works()
@@ -272,9 +248,7 @@ public class MemoizingMRUCacheTests
         await Assert.That(() => instance.InvalidateAll()).ThrowsNothing();
     }
 
-    /// <summary>
-    /// Test that TryGet returns false for non-existent key.
-    /// </summary>
+    /// <summary>Test that TryGet returns false for non-existent key.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task TryGet_NonExistentKey_ReturnsFalse()
@@ -290,28 +264,24 @@ public class MemoizingMRUCacheTests
         }
     }
 
-    /// <summary>
-    /// Checks to ensure a value is returned.
-    /// </summary>
+    /// <summary>Checks to ensure a value is returned.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ReturnsValue()
     {
         var instance = GetTestInstance();
-        var result = instance.Get("Test1");
+        var result = instance.Get(SampleKey);
         await Assert.That(result).IsNotNull();
     }
 
-    /// <summary>
-    /// Checks to ensure a value is returned for 2 duplicate calls.
-    /// </summary>
+    /// <summary>Checks to ensure a value is returned for 2 duplicate calls.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetReturnsSameValue()
     {
         var instance = GetTestInstance();
-        var result1 = instance.Get("Test1");
-        var result2 = instance.Get("Test1");
+        var result1 = instance.Get(SampleKey);
+        var result2 = instance.Get(SampleKey);
 
         using (Assert.Multiple())
         {
@@ -321,15 +291,13 @@ public class MemoizingMRUCacheTests
         }
     }
 
-    /// <summary>
-    /// Checks to ensure 2 different values are returned for 2 different calls.
-    /// </summary>
+    /// <summary>Checks to ensure 2 different values are returned for 2 different calls.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetReturnsDifferentValues()
     {
         var instance = GetTestInstance();
-        var result1 = instance.Get("Test1");
+        var result1 = instance.Get(SampleKey);
         var result2 = instance.Get("Test2");
 
         using (Assert.Multiple())
@@ -340,16 +308,14 @@ public class MemoizingMRUCacheTests
         }
     }
 
-    /// <summary>
-    /// Checks to ensure a value is returned for 2 duplicate calls.
-    /// </summary>
+    /// <summary>Checks to ensure a value is returned for 2 duplicate calls.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task TryGetReturnsSameValue()
     {
         var instance = GetTestInstance();
-        var result1 = instance.Get("Test1");
-        instance.TryGet("Test1", out var result2);
+        var result1 = instance.Get(SampleKey);
+        instance.TryGet(SampleKey, out var result2);
 
         using (Assert.Multiple())
         {
@@ -359,18 +325,16 @@ public class MemoizingMRUCacheTests
         }
     }
 
-    /// <summary>
-    /// Checks to ensure 2 different values are returned for 2 different calls.
-    /// </summary>
+    /// <summary>Checks to ensure 2 different values are returned for 2 different calls.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task TryGetReturnsDifferentValues()
     {
         var instance = GetTestInstance();
-        var p1 = instance.Get("Test1");
+        var p1 = instance.Get(SampleKey);
         var p2 = instance.Get("Test2");
 
-        var result1 = instance.Get("Test1");
+        var result1 = instance.Get(SampleKey);
         var result2 = instance.Get("Test2");
 
         using (Assert.Multiple())
@@ -383,9 +347,7 @@ public class MemoizingMRUCacheTests
         }
     }
 
-    /// <summary>
-    /// Crude test for checking thread safety when using Get.
-    /// </summary>
+    /// <summary>Crude test for checking thread safety when using Get.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ThreadSafeRetrievalTest()
@@ -393,8 +355,8 @@ public class MemoizingMRUCacheTests
         var instance = GetTestInstance();
         var tests = Enumerable.Range(0, 100);
 
-        var results = tests.AsParallel().Select(_ => instance.Get("Test1")).ToList();
-        var first = results.First();
+        var results = tests.AsParallel().Select(_ => instance.Get(SampleKey)).ToList();
+        var first = results[0];
 
         foreach (var item in results)
         {
@@ -402,9 +364,7 @@ public class MemoizingMRUCacheTests
         }
     }
 
-    /// <summary>
-    /// Crude test for checking thread safety when using Get and TryGet.
-    /// </summary>
+    /// <summary>Crude test for checking thread safety when using Get and TryGet.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ThreadSafeRetrievalTestWithGetAndTryGet()
@@ -416,10 +376,10 @@ public class MemoizingMRUCacheTests
         {
             if (i % 2 == 0)
             {
-                return instance.Get("Test1");
+                return instance.Get(SampleKey);
             }
 
-            instance.TryGet("Test1", out var result);
+            instance.TryGet(SampleKey, out var result);
             return result;
         }).ToList();
 
@@ -434,9 +394,7 @@ public class MemoizingMRUCacheTests
         }
     }
 
-    /// <summary>
-    /// Check that invalidate plays nicely.
-    /// </summary>
+    /// <summary>Check that invalidate plays nicely.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetsResultsFromCacheValuesWhenInvalidateAndGetAreUsed()
@@ -448,17 +406,15 @@ public class MemoizingMRUCacheTests
 
         await Assert.That(() => results = tests.AsParallel().Select(_ =>
             {
-                instance.Invalidate("Test1");
-                instance.Get("Test1");
+                instance.Invalidate(SampleKey);
+                instance.Get(SampleKey);
                 return instance.CachedValues();
             }).ToList()).ThrowsNothing();
 
         await Assert.That(results).IsNotNull();
     }
 
-    /// <summary>
-    /// Check that invalidate plays nicely.
-    /// </summary>
+    /// <summary>Check that invalidate plays nicely.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetsResultsWhenInvalidateAndGetAreUsed()
@@ -470,8 +426,8 @@ public class MemoizingMRUCacheTests
 
         await Assert.That(() => results = tests.AsParallel().Select(i =>
             {
-                instance.Invalidate("Test1");
-                var result = instance.Get("Test1");
+                instance.Invalidate(SampleKey);
+                var result = instance.Get(SampleKey);
 
                 // Also exercise CachedValues
                 _ = instance.CachedValues();
@@ -481,9 +437,7 @@ public class MemoizingMRUCacheTests
         await Assert.That(results).IsNotNull();
     }
 
-    /// <summary>
-    /// Check that invalidate all plays nicely.
-    /// </summary>
+    /// <summary>Check that invalidate all plays nicely.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetsResultsWhenInvalidateAllAndGetAreUsed()
@@ -496,12 +450,14 @@ public class MemoizingMRUCacheTests
         await Assert.That(() => results = tests.AsParallel().Select(_ =>
             {
                 instance.InvalidateAll();
-                return instance.Get("Test1");
+                return instance.Get(SampleKey);
             }).ToList()).ThrowsNothing();
 
         await Assert.That(results).IsNotNull();
     }
 
+    /// <summary>Creates a test instance of the <see cref="MemoizingMRUCache{TParam, TVal}"/> class.</summary>
+    /// <returns>A new test cache instance.</returns>
     private static MemoizingMRUCache<string, DummyObjectClass1> GetTestInstance() =>
-        new((_, _) => new(), 256);
+        new((_, _) => new(), DefaultMaxCacheSize);
 }

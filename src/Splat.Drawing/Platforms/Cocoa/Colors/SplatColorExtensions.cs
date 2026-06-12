@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 #if UIKIT
@@ -11,55 +10,64 @@ using AppKit;
 
 namespace Splat;
 
-/// <summary>
-/// Provides extension methods for converting between <see cref="SplatColor"/> and native Cocoa color types.
-/// </summary>
+/// <summary>Provides extension methods for converting between <see cref="SplatColor"/> and native Cocoa color types.</summary>
 /// <remarks>These methods enable seamless interoperability between SplatColor and platform-specific color
 /// representations, such as UIColor on iOS or NSColor on macOS. Use these extensions to convert colors when working
 /// with native UI frameworks.</remarks>
 public static class SplatColorExtensions
 {
+    /// <summary>The maximum value of a single 8-bit colour component, used to scale between byte and normalized float channels.</summary>
+    private const float ByteComponentMax = 255f;
+
 #if UIKIT
-    /// <summary>
-    /// Converts a <see cref="SplatColor"/> into the cocoa native <see cref="UIColor"/>.
-    /// </summary>
-    /// <param name="value">The color to convert.</param>
-    /// <returns>The <see cref="UIColor"/> generated value.</returns>
-    public static UIColor ToNative(this SplatColor value) =>
-        new(value.R / 255.0f, value.G / 255.0f, value.B / 255.0f, value.A / 255.0f);
-
-    /// <summary>
-    /// Converts a <see cref="UIColor"/> into the cocoa native <see cref="SplatColor"/>.
-    /// </summary>
-    /// <param name="value">The color to convert.</param>
-    /// <returns>The <see cref="SplatColor"/> generated.</returns>
-    public static SplatColor FromNative(this UIColor value)
+    /// <summary>Extension members for <see cref="SplatColor"/>.</summary>
+    /// <param name="value">The value the extension members operate on.</param>
+    extension(SplatColor value)
     {
-        ArgumentExceptionHelper.ThrowIfNull(value);
+        /// <summary>Converts a <see cref="SplatColor"/> into the cocoa native <see cref="UIColor"/>.</summary>
+        /// <returns>The <see cref="UIColor"/> generated value.</returns>
+        public UIColor ToNative() =>
+            new(value.R / ByteComponentMax, value.G / ByteComponentMax, value.B / ByteComponentMax, value.A / ByteComponentMax);
+    }
 
-        value.GetRGBA(out var r, out var g, out var b, out var a);
-        return SplatColor.FromArgb((int)(a * 255.0f), (int)(r * 255.0f), (int)(g * 255.0f), (int)(b * 255.0f));
+    /// <summary>Extension members for <see cref="UIColor"/>.</summary>
+    /// <param name="value">The value the extension members operate on.</param>
+    extension(UIColor value)
+    {
+        /// <summary>Converts a <see cref="UIColor"/> into the cocoa native <see cref="SplatColor"/>.</summary>
+        /// <returns>The <see cref="SplatColor"/> generated.</returns>
+        public SplatColor FromNative()
+        {
+            ArgumentExceptionHelper.ThrowIfNull(value);
+
+            value.GetRGBA(out var r, out var g, out var b, out var a);
+            return SplatColor.FromArgb((int)(a * ByteComponentMax), (int)(r * ByteComponentMax), (int)(g * ByteComponentMax), (int)(b * ByteComponentMax));
+        }
     }
 #else
-    /// <summary>
-    /// Converts a <see cref="SplatColor"/> into the cocoa native <see cref="NSColor"/>.
-    /// </summary>
-    /// <param name="value">The color to convert.</param>
-    /// <returns>The <see cref="NSColor"/> generated.</returns>
-    public static NSColor ToNative(this SplatColor value) =>
-        NSColor.FromSrgb(value.R / 255.0f, value.G / 255.0f, value.B / 255.0f, value.A / 255.0f);
-
-    /// <summary>
-    /// Converts a <see cref="NSColor"/> into the cocoa native <see cref="SplatColor"/>.
-    /// </summary>
-    /// <param name="value">The color to convert.</param>
-    /// <returns>The <see cref="SplatColor"/> generated.</returns>
-    public static SplatColor FromNative(this NSColor value)
+    /// <summary>Extension members for <see cref="SplatColor"/>.</summary>
+    /// <param name="value">The value the extension members operate on.</param>
+    extension(SplatColor value)
     {
-        ArgumentExceptionHelper.ThrowIfNull(value);
+        /// <summary>Converts a <see cref="SplatColor"/> into the cocoa native <see cref="NSColor"/>.</summary>
+        /// <returns>The <see cref="NSColor"/> generated.</returns>
+        public NSColor ToNative() =>
+            NSColor.FromSrgb(value.R / ByteComponentMax, value.G / ByteComponentMax, value.B / ByteComponentMax, value.A / ByteComponentMax);
+    }
 
-        value.GetRgba(out var r, out var g, out var b, out var a);
-        return SplatColor.FromArgb((int)(a * 255.0f), (int)(r * 255.0f), (int)(g * 255.0f), (int)(b * 255.0f));
+    /// <summary>Extension members for <see cref="NSColor"/>.</summary>
+    /// <param name="value">The value the extension members operate on.</param>
+    extension(NSColor value)
+    {
+        /// <summary>Converts a <see cref="NSColor"/> into the cocoa native <see cref="SplatColor"/>.</summary>
+        /// <returns>The <see cref="SplatColor"/> generated.</returns>
+        public SplatColor FromNative()
+        {
+            ArgumentExceptionHelper.ThrowIfNull(value);
+
+            value.GetRgba(out var r, out var g, out var b, out var a);
+            return SplatColor.FromArgb((int)(a * ByteComponentMax), (int)(r * ByteComponentMax), (int)(g * ByteComponentMax), (int)(b * ByteComponentMax));
+        }
     }
 #endif
 }

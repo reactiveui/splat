@@ -1,0 +1,25 @@
+#nullable enable
+Splat.Builder.MicrosoftExtensionsLoggingSplatModule
+Splat.Builder.MicrosoftExtensionsLoggingSplatModule.Configure(Splat.IMutableDependencyResolver! resolver) -> void
+Splat.Builder.MicrosoftExtensionsLoggingSplatModule.MicrosoftExtensionsLoggingSplatModule(Microsoft.Extensions.Logging.ILoggerFactory! loggerFactory) -> void
+Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLogProvider
+Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLogProvider.CreateLogger(string! categoryName) -> Microsoft.Extensions.Logging.ILogger!
+Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLogProvider.Dispose() -> void
+Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLogProvider.MicrosoftExtensionsLogProvider() -> void
+Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLoggingExtensions
+Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLoggingExtensions.extension(Microsoft.Extensions.Logging.ILoggerFactory!)
+Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLoggingExtensions.extension(Microsoft.Extensions.Logging.ILoggerFactory!).AddSplat() -> Microsoft.Extensions.Logging.ILoggerFactory!
+Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLoggingExtensions.extension(Microsoft.Extensions.Logging.ILoggingBuilder!)
+Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLoggingExtensions.extension(Microsoft.Extensions.Logging.ILoggingBuilder!).AddSplat() -> Microsoft.Extensions.Logging.ILoggingBuilder!
+Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLoggingExtensions.extension(Splat.IMutableDependencyResolver!)
+Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLoggingExtensions.extension(Splat.IMutableDependencyResolver!).UseMicrosoftExtensionsLoggingWithWrappingFullLogger(Microsoft.Extensions.Logging.ILoggerFactory! loggerFactory) -> void
+Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLoggingLogger
+Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLoggingLogger.Level.get -> Splat.LogLevel
+Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLoggingLogger.MicrosoftExtensionsLoggingLogger(Microsoft.Extensions.Logging.ILogger! inner) -> void
+Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLoggingLogger.Write(System.Exception! exception, string! message, Splat.LogLevel logLevel) -> void
+Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLoggingLogger.Write(System.Exception! exception, string! message, System.Type! type, Splat.LogLevel logLevel) -> void
+Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLoggingLogger.Write(string! message, Splat.LogLevel logLevel) -> void
+Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLoggingLogger.Write(string! message, System.Type! type, Splat.LogLevel logLevel) -> void
+static Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLoggingExtensions.AddSplat(this Microsoft.Extensions.Logging.ILoggerFactory! loggerFactory) -> Microsoft.Extensions.Logging.ILoggerFactory!
+static Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLoggingExtensions.AddSplat(this Microsoft.Extensions.Logging.ILoggingBuilder! builder) -> Microsoft.Extensions.Logging.ILoggingBuilder!
+static Splat.Microsoft.Extensions.Logging.MicrosoftExtensionsLoggingExtensions.UseMicrosoftExtensionsLoggingWithWrappingFullLogger(this Splat.IMutableDependencyResolver! instance, Microsoft.Extensions.Logging.ILoggerFactory! loggerFactory) -> void

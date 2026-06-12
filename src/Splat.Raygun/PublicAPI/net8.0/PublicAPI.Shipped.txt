@@ -1,0 +1,9 @@
+#nullable enable
+Splat.RaygunFeatureUsageTrackingSession
+Splat.RaygunFeatureUsageTrackingSession.Dispose() -> void
+Splat.RaygunFeatureUsageTrackingSession.FeatureName.get -> string!
+Splat.RaygunFeatureUsageTrackingSession.FeatureReference.get -> System.Guid
+Splat.RaygunFeatureUsageTrackingSession.OnException(System.Exception! exception) -> void
+Splat.RaygunFeatureUsageTrackingSession.ParentReference.get -> System.Guid
+Splat.RaygunFeatureUsageTrackingSession.RaygunFeatureUsageTrackingSession(string! featureName, Mindscape.Raygun4Net.RaygunClient! raygunClient, Mindscape.Raygun4Net.RaygunSettings! raygunSettings) -> void
+Splat.RaygunFeatureUsageTrackingSession.SubFeature(string! description) -> Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession!

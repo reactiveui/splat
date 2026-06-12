@@ -1,28 +1,59 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.Tests.ServiceLocation.GenericFirst;
 
-/// <summary>
-/// Tests for the ServiceTypeRegistry class.
-/// </summary>
+/// <summary>Tests for the ServiceTypeRegistry class.</summary>
 [NotInParallel] // ServiceTypeRegistry is static, tests must run sequentially
 public class ServiceTypeRegistryTests
 {
-    [Before(HookType.Test)]
+    /// <summary>Contract name used when registering against a custom contract.</summary>
+    private const string Contract = "contract";
+
+    /// <summary>Contract name used for the first registration in these tests.</summary>
+    private const string First = "first";
+
+    /// <summary>Contract name used for the second registration in these tests.</summary>
+    private const string Second = "second";
+
+    /// <summary>Contract name used for the third registration in these tests.</summary>
+    private const string Third = "third";
+
+    /// <summary>A sample integer value registered during these tests.</summary>
+    private const int SampleIntValue = 42;
+
+    /// <summary>A sample double value registered during these tests.</summary>
+    private const double SampleDoubleValue = 3.14;
+
+    /// <summary>The expected number of callback invocations in these tests.</summary>
+    private const int ExpectedInvocationCount = 2;
+
+    /// <summary>The expected registered-type count when two types are present.</summary>
+    private const int TwoItems = 2;
+
+    /// <summary>The expected registered-type count when three types are present.</summary>
+    private const int ThreeItems = 3;
+
+    /// <summary>The expected registered-type count when four types are present.</summary>
+    private const int FourItems = 4;
+
+    /// <summary>Clears the registry state before each test.</summary>
+    [Before(Test)]
     public void Setup() =>
 
         // Clear the registry before each test
         ServiceTypeRegistry.Clear();
 
-    [After(HookType.Test)]
+    /// <summary>Clears the registry state after each test.</summary>
+    [After(Test)]
     public void Cleanup() =>
 
         // Clear the registry after each test
         ServiceTypeRegistry.Clear();
 
+    /// <summary>Tests that track non generic registration tracks type.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task TrackNonGenericRegistration_TracksType()
     {
@@ -33,28 +64,34 @@ public class ServiceTypeRegistryTests
         await Assert.That(ServiceTypeRegistry.HasNonGenericRegistrations(typeof(string))).IsTrue();
     }
 
+    /// <summary>Tests that track non generic registration with contract tracks type and contract.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task TrackNonGenericRegistration_WithContract_TracksTypeAndContract()
     {
         // Act
-        ServiceTypeRegistry.TrackNonGenericRegistration(typeof(string), "contract");
+        ServiceTypeRegistry.TrackNonGenericRegistration(typeof(string), Contract);
 
         // Assert
-        await Assert.That(ServiceTypeRegistry.HasNonGenericRegistrations(typeof(string), "contract")).IsTrue();
+        await Assert.That(ServiceTypeRegistry.HasNonGenericRegistrations(typeof(string), Contract)).IsTrue();
         await Assert.That(ServiceTypeRegistry.HasNonGenericRegistrations(typeof(string))).IsFalse();
     }
 
+    /// <summary>Tests that has non generic registrations when not tracked returns false.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task HasNonGenericRegistrations_WhenNotTracked_ReturnsFalse() =>
 
         // Act & Assert
         await Assert.That(ServiceTypeRegistry.HasNonGenericRegistrations(typeof(string))).IsFalse();
 
+    /// <summary>Tests that register stores factory.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Register_StoresFactory()
     {
         // Arrange
-        var expectedValue = "test";
+        const string expectedValue = "test";
         Func<object?> factory = () => expectedValue;
 
         // Act
@@ -65,35 +102,41 @@ public class ServiceTypeRegistryTests
         await Assert.That(result).IsEqualTo(expectedValue);
     }
 
+    /// <summary>Tests that register with contract stores factory under contract.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Register_WithContract_StoresFactoryUnderContract()
     {
         // Arrange
-        var expectedValue = "contract value";
+        const string expectedValue = "contract value";
         Func<object?> factory = () => expectedValue;
 
         // Act
-        ServiceTypeRegistry.Register(typeof(string), factory, "contract");
-        var result = ServiceTypeRegistry.GetService(typeof(string), "contract");
+        ServiceTypeRegistry.Register(typeof(string), factory, Contract);
+        var result = ServiceTypeRegistry.GetService(typeof(string), Contract);
 
         // Assert
         await Assert.That(result).IsEqualTo(expectedValue);
     }
 
+    /// <summary>Tests that register multiple for same type returns latest.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Register_MultipleForSameType_ReturnsLatest()
     {
         // Act
-        ServiceTypeRegistry.Register(typeof(string), () => "first");
-        ServiceTypeRegistry.Register(typeof(string), () => "second");
-        ServiceTypeRegistry.Register(typeof(string), () => "third");
+        ServiceTypeRegistry.Register(typeof(string), () => First);
+        ServiceTypeRegistry.Register(typeof(string), () => Second);
+        ServiceTypeRegistry.Register(typeof(string), () => Third);
 
         var result = ServiceTypeRegistry.GetService(typeof(string));
 
         // Assert
-        await Assert.That(result).IsEqualTo("third");
+        await Assert.That(result).IsEqualTo(Third);
     }
 
+    /// <summary>Tests that get service when empty returns null.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetService_WhenEmpty_ReturnsNull()
     {
@@ -104,6 +147,8 @@ public class ServiceTypeRegistryTests
         await Assert.That(result).IsNull();
     }
 
+    /// <summary>Tests that get service with wrong contract returns null.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetService_WithWrongContract_ReturnsNull()
     {
@@ -117,6 +162,8 @@ public class ServiceTypeRegistryTests
         await Assert.That(result).IsNull();
     }
 
+    /// <summary>Tests that get service invokes factory each time.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetService_InvokesFactoryEachTime()
     {
@@ -135,11 +182,13 @@ public class ServiceTypeRegistryTests
         var result2 = ServiceTypeRegistry.GetService(typeof(int));
 
         // Assert
-        await Assert.That(invocationCount).IsEqualTo(2);
+        await Assert.That(invocationCount).IsEqualTo(ExpectedInvocationCount);
         await Assert.That(result1).IsEqualTo(1);
-        await Assert.That(result2).IsEqualTo(2);
+        await Assert.That(result2).IsEqualTo(ExpectedInvocationCount);
     }
 
+    /// <summary>Tests that get services when empty returns empty array.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetServices_WhenEmpty_ReturnsEmptyArray()
     {
@@ -151,42 +200,48 @@ public class ServiceTypeRegistryTests
         await Assert.That(result.Length).IsEqualTo(0);
     }
 
+    /// <summary>Tests that get services with multiple registrations returns all values.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetServices_WithMultipleRegistrations_ReturnsAllValues()
     {
         // Arrange
-        ServiceTypeRegistry.Register(typeof(string), () => "first");
-        ServiceTypeRegistry.Register(typeof(string), () => "second");
-        ServiceTypeRegistry.Register(typeof(string), () => "third");
+        ServiceTypeRegistry.Register(typeof(string), () => First);
+        ServiceTypeRegistry.Register(typeof(string), () => Second);
+        ServiceTypeRegistry.Register(typeof(string), () => Third);
 
         // Act
         var result = ServiceTypeRegistry.GetServices(typeof(string));
 
         // Assert
-        await Assert.That(result.Length).IsEqualTo(3);
-        await Assert.That(result[0]).IsEqualTo("first");
-        await Assert.That(result[1]).IsEqualTo("second");
-        await Assert.That(result[2]).IsEqualTo("third");
+        await Assert.That(result.Length).IsEqualTo(ThreeItems);
+        await Assert.That(result[0]).IsEqualTo(First);
+        await Assert.That(result[1]).IsEqualTo(Second);
+        await Assert.That(result[^1]).IsEqualTo(Third);
     }
 
+    /// <summary>Tests that get services only returns matching contract.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetServices_OnlyReturnsMatchingContract()
     {
         // Arrange
         ServiceTypeRegistry.Register(typeof(string), () => "no-contract-1");
         ServiceTypeRegistry.Register(typeof(string), () => "no-contract-2");
-        ServiceTypeRegistry.Register(typeof(string), () => "contract-1", "contract");
+        ServiceTypeRegistry.Register(typeof(string), () => "contract-1", Contract);
 
         // Act
         var resultNoContract = ServiceTypeRegistry.GetServices(typeof(string));
-        var resultWithContract = ServiceTypeRegistry.GetServices(typeof(string), "contract");
+        var resultWithContract = ServiceTypeRegistry.GetServices(typeof(string), Contract);
 
         // Assert
-        await Assert.That(resultNoContract.Length).IsEqualTo(2);
+        await Assert.That(resultNoContract.Length).IsEqualTo(TwoItems);
         await Assert.That(resultWithContract.Length).IsEqualTo(1);
         await Assert.That(resultWithContract[0]).IsEqualTo("contract-1");
     }
 
+    /// <summary>Tests that get services filters out null values.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetServices_FiltersOutNullValues()
     {
@@ -199,17 +254,21 @@ public class ServiceTypeRegistryTests
         var result = ServiceTypeRegistry.GetServices(typeof(string));
 
         // Assert
-        await Assert.That(result.Length).IsEqualTo(2);
+        await Assert.That(result.Length).IsEqualTo(TwoItems);
         await Assert.That(result[0]).IsEqualTo("valid");
         await Assert.That(result[1]).IsEqualTo("another valid");
     }
 
+    /// <summary>Tests that has registration when empty returns false.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task HasRegistration_WhenEmpty_ReturnsFalse() =>
 
         // Act & Assert
         await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(string))).IsFalse();
 
+    /// <summary>Tests that has registration after registering returns true.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task HasRegistration_AfterRegistering_ReturnsTrue()
     {
@@ -220,23 +279,29 @@ public class ServiceTypeRegistryTests
         await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(string))).IsTrue();
     }
 
+    /// <summary>Tests that has registration with contract only returns true for matching contract.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task HasRegistration_WithContract_OnlyReturnsTrueForMatchingContract()
     {
         // Act
-        ServiceTypeRegistry.Register(typeof(string), () => "test", "contract");
+        ServiceTypeRegistry.Register(typeof(string), () => "test", Contract);
 
         // Assert
-        await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(string), "contract")).IsTrue();
+        await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(string), Contract)).IsTrue();
         await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(string))).IsFalse();
     }
 
+    /// <summary>Tests that unregister current when empty does not throw.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task UnregisterCurrent_WhenEmpty_DoesNotThrow() =>
 
         // Act & Assert - should not throw
         ServiceTypeRegistry.UnregisterCurrent(typeof(string));
 
+    /// <summary>Tests that unregister current with single item clears registration.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task UnregisterCurrent_WithSingleItem_ClearsRegistration()
     {
@@ -251,44 +316,50 @@ public class ServiceTypeRegistryTests
         await Assert.That(ServiceTypeRegistry.GetService(typeof(string))).IsNull();
     }
 
+    /// <summary>Tests that unregister current with multiple items removes latest.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task UnregisterCurrent_WithMultipleItems_RemovesLatest()
     {
         // Arrange
-        ServiceTypeRegistry.Register(typeof(string), () => "first");
-        ServiceTypeRegistry.Register(typeof(string), () => "second");
-        ServiceTypeRegistry.Register(typeof(string), () => "third");
+        ServiceTypeRegistry.Register(typeof(string), () => First);
+        ServiceTypeRegistry.Register(typeof(string), () => Second);
+        ServiceTypeRegistry.Register(typeof(string), () => Third);
 
         // Act
         ServiceTypeRegistry.UnregisterCurrent(typeof(string));
         var result = ServiceTypeRegistry.GetService(typeof(string));
 
         // Assert
-        await Assert.That(result).IsEqualTo("second");
+        await Assert.That(result).IsEqualTo(Second);
     }
 
+    /// <summary>Tests that unregister current only affects specified contract.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task UnregisterCurrent_OnlyAffectsSpecifiedContract()
     {
         // Arrange
         ServiceTypeRegistry.Register(typeof(string), () => "no contract");
-        ServiceTypeRegistry.Register(typeof(string), () => "with contract", "contract");
+        ServiceTypeRegistry.Register(typeof(string), () => "with contract", Contract);
 
         // Act
         ServiceTypeRegistry.UnregisterCurrent(typeof(string));
 
         // Assert
         await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(string))).IsFalse();
-        await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(string), "contract")).IsTrue();
+        await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(string), Contract)).IsTrue();
     }
 
+    /// <summary>Tests that unregister all removes all registrations for type.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task UnregisterAll_RemovesAllRegistrationsForType()
     {
         // Arrange
-        ServiceTypeRegistry.Register(typeof(string), () => "first");
-        ServiceTypeRegistry.Register(typeof(string), () => "second");
-        ServiceTypeRegistry.Register(typeof(string), () => "third");
+        ServiceTypeRegistry.Register(typeof(string), () => First);
+        ServiceTypeRegistry.Register(typeof(string), () => Second);
+        ServiceTypeRegistry.Register(typeof(string), () => Third);
 
         // Act
         ServiceTypeRegistry.UnregisterAll(typeof(string));
@@ -299,13 +370,15 @@ public class ServiceTypeRegistryTests
         await Assert.That(result.Length).IsEqualTo(0);
     }
 
+    /// <summary>Tests that unregister all only affects specified type and contract.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task UnregisterAll_OnlyAffectsSpecifiedTypeAndContract()
     {
         // Arrange
         ServiceTypeRegistry.Register(typeof(string), () => "string1");
-        ServiceTypeRegistry.Register(typeof(int), () => 42);
-        ServiceTypeRegistry.Register(typeof(string), () => "string-contract", "contract");
+        ServiceTypeRegistry.Register(typeof(int), () => SampleIntValue);
+        ServiceTypeRegistry.Register(typeof(string), () => "string-contract", Contract);
 
         // Act
         ServiceTypeRegistry.UnregisterAll(typeof(string));
@@ -313,16 +386,18 @@ public class ServiceTypeRegistryTests
         // Assert
         await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(string))).IsFalse();
         await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(int))).IsTrue();
-        await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(string), "contract")).IsTrue();
+        await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(string), Contract)).IsTrue();
     }
 
+    /// <summary>Tests that clear removes all registrations.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Clear_RemovesAllRegistrations()
     {
         // Arrange
         ServiceTypeRegistry.Register(typeof(string), () => "string");
-        ServiceTypeRegistry.Register(typeof(int), () => 42);
-        ServiceTypeRegistry.Register(typeof(string), () => "contract", "contract");
+        ServiceTypeRegistry.Register(typeof(int), () => SampleIntValue);
+        ServiceTypeRegistry.Register(typeof(string), () => Contract, Contract);
 
         // Act
         ServiceTypeRegistry.Clear();
@@ -330,35 +405,41 @@ public class ServiceTypeRegistryTests
         // Assert
         await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(string))).IsFalse();
         await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(int))).IsFalse();
-        await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(string), "contract")).IsFalse();
+        await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(string), Contract)).IsFalse();
     }
 
+    /// <summary>Tests that clear when empty does not throw.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Clear_WhenEmpty_DoesNotThrow() =>
 
         // Act & Assert - should not throw
         ServiceTypeRegistry.Clear();
 
+    /// <summary>Tests that registry with different types are isolated.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Registry_WithDifferentTypes_AreIsolated()
     {
         // Arrange & Act
         ServiceTypeRegistry.Register(typeof(string), () => "string value");
-        ServiceTypeRegistry.Register(typeof(int), () => 42);
-        ServiceTypeRegistry.Register(typeof(double), () => 3.14);
+        ServiceTypeRegistry.Register(typeof(int), () => SampleIntValue);
+        ServiceTypeRegistry.Register(typeof(double), () => SampleDoubleValue);
 
         // Assert
         await Assert.That(ServiceTypeRegistry.GetService(typeof(string))).IsEqualTo("string value");
-        await Assert.That(ServiceTypeRegistry.GetService(typeof(int))).IsEqualTo(42);
-        await Assert.That(ServiceTypeRegistry.GetService(typeof(double))).IsEqualTo(3.14);
+        await Assert.That(ServiceTypeRegistry.GetService(typeof(int))).IsEqualTo(SampleIntValue);
+        await Assert.That(ServiceTypeRegistry.GetService(typeof(double))).IsEqualTo(SampleDoubleValue);
     }
 
+    /// <summary>Tests that registry thread safety concurrent adds.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Registry_ThreadSafety_ConcurrentAdds()
     {
         // Arrange
         var tasks = new List<Task>();
-        var itemCount = 100;
+        const int itemCount = 100;
 
         // Act - add items concurrently
         for (int i = 0; i < itemCount; i++)
@@ -375,6 +456,8 @@ public class ServiceTypeRegistryTests
         await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(int))).IsTrue();
     }
 
+    /// <summary>Tests that register with complex types works correctly.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Register_WithComplexTypes_WorksCorrectly()
     {
@@ -391,11 +474,13 @@ public class ServiceTypeRegistryTests
         await Assert.That(result.Name).IsEqualTo("Test");
     }
 
+    /// <summary>Tests that register large number of types maintains performance.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Register_LargeNumberOfTypes_MaintainsPerformance()
     {
         // Arrange
-        var typeCount = 100;
+        const int typeCount = 100;
 
         // Act
         for (int i = 0; i < typeCount; i++)
@@ -413,6 +498,8 @@ public class ServiceTypeRegistryTests
         }
     }
 
+    /// <summary>Tests that get all factories for disposal when empty returns empty enumerable.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetAllFactoriesForDisposal_WhenEmpty_ReturnsEmptyEnumerable()
     {
@@ -424,51 +511,58 @@ public class ServiceTypeRegistryTests
         await Assert.That(result).Count().IsEqualTo(0);
     }
 
+    /// <summary>Tests that get all factories for disposal with multiple registrations returns all factories.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetAllFactoriesForDisposal_WithMultipleRegistrations_ReturnsAllFactories()
     {
         // Arrange
-        ServiceTypeRegistry.Register(typeof(string), () => "first");
-        ServiceTypeRegistry.Register(typeof(string), () => "second");
-        ServiceTypeRegistry.Register(typeof(int), () => 42);
-        ServiceTypeRegistry.Register(typeof(double), () => 3.14, "contract");
+        ServiceTypeRegistry.Register(typeof(string), () => First);
+        ServiceTypeRegistry.Register(typeof(string), () => Second);
+        ServiceTypeRegistry.Register(typeof(int), () => SampleIntValue);
+        ServiceTypeRegistry.Register(typeof(double), () => SampleDoubleValue, Contract);
 
         // Act
         var result = ServiceTypeRegistry.GetAllFactoriesForDisposal().ToArray();
 
         // Assert
-        await Assert.That(result.Length).IsEqualTo(4);
+        await Assert.That(result.Length).IsEqualTo(FourItems);
 
         // Verify all factories can be invoked
         var values = result.Select(f => f()).ToArray();
-        await Assert.That(values).Contains("first");
-        await Assert.That(values).Contains("second");
-        await Assert.That(values).Contains(42);
-        await Assert.That(values).Contains(3.14);
+        await Assert.That(values).Contains(First);
+        await Assert.That(values).Contains(Second);
+        await Assert.That(values).Contains(SampleIntValue);
+        await Assert.That(values).Contains(SampleDoubleValue);
     }
 
+    /// <summary>Tests that get all factories for disposal returns snapshot not affected by subsequent changes.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task GetAllFactoriesForDisposal_ReturnsSnapshot_NotAffectedBySubsequentChanges()
     {
         // Arrange
-        ServiceTypeRegistry.Register(typeof(string), () => "first");
-        ServiceTypeRegistry.Register(typeof(int), () => 42);
+        ServiceTypeRegistry.Register(typeof(string), () => First);
+        ServiceTypeRegistry.Register(typeof(int), () => SampleIntValue);
 
         // Act
         var snapshot = ServiceTypeRegistry.GetAllFactoriesForDisposal().ToArray();
 
         // Make changes after taking snapshot
-        ServiceTypeRegistry.Register(typeof(double), () => 3.14);
+        ServiceTypeRegistry.Register(typeof(double), () => SampleDoubleValue);
         ServiceTypeRegistry.UnregisterCurrent(typeof(string));
 
         // Assert - snapshot should still have original 2 factories
-        await Assert.That(snapshot.Length).IsEqualTo(2);
+        await Assert.That(snapshot.Length).IsEqualTo(TwoItems);
     }
 
+    /// <summary>A simple reference type used for testing the service type registry.</summary>
     private sealed class TestClass
     {
+        /// <summary>Gets or sets the identifier.</summary>
         public int Id { get; set; }
 
+        /// <summary>Gets or sets the name.</summary>
         public string? Name { get; set; }
     }
 }

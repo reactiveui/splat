@@ -1,15 +1,12 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 [assembly: Xamarin.Forms.XmlnsDefinition("http://prismlibrary.com", "Splat.Prism.Forms")]
 
 namespace Splat.Prism.Forms;
 
-/// <summary>
-/// Provides a base class for Prism applications using the Splat dependency injection container.
-/// </summary>
+/// <summary>Provides a base class for Prism applications using the Splat dependency injection container.</summary>
 /// <remarks>This class integrates the Splat container with the Prism application framework. Inherit from this
 /// class to create a Prism application that uses Splat for dependency injection.</remarks>
 /// <param name="initializer">An optional platform-specific initializer that can be used to register platform services or perform

@@ -1,39 +1,41 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Windows;
 
 namespace Splat;
 
-/// <summary>
-/// Provides extension methods for converting between <see cref="System.Drawing.Rectangle"/> types and the Android native Rect
-/// structure.
-/// </summary>
+/// <summary>Provides extension methods for converting between <see cref="System.Drawing.Rectangle"/> types and the Android native Rect structure.</summary>
 /// <remarks>These methods enable seamless interoperability between .NET drawing types and Android graphics by
 /// allowing direct conversion without manual mapping of fields. All methods are static and intended to be used as
 /// extension methods for convenience.</remarks>
 public static class RectExtensions
 {
-    /// <summary>
-    /// Convert a <see cref="System.Drawing.Rectangle"/> to the android native <see cref="Rect"/>.
-    /// </summary>
-    /// <param name="value">The value to convert.</param>
-    /// <returns>A <see cref="Rect"/> of the value.</returns>
-    public static Rect ToNative(this System.Drawing.Rectangle value) => new(value.X, value.Y, value.Width, value.Height);
+    /// <summary>Extension members for <see cref="System.Drawing.Rectangle"/>.</summary>
+    /// <param name="value">The value the extension members operate on.</param>
+    extension(System.Drawing.Rectangle value)
+    {
+        /// <summary>Convert a <see cref="System.Drawing.Rectangle"/> to the android native <see cref="Rect"/>.</summary>
+        /// <returns>A <see cref="Rect"/> of the value.</returns>
+        public Rect ToNative() => new(value.X, value.Y, value.Width, value.Height);
+    }
 
-    /// <summary>
-    /// Convert a <see cref="System.Drawing.RectangleF"/> to the android native <see cref="Rect"/>.
-    /// </summary>
-    /// <param name="value">The value to convert.</param>
-    /// <returns>A <see cref="Rect"/> of the value.</returns>
-    public static Rect ToNative(this System.Drawing.RectangleF value) => new(value.X, value.Y, value.Width, value.Height);
+    /// <summary>Extension members for <see cref="System.Drawing.RectangleF"/>.</summary>
+    /// <param name="value">The value the extension members operate on.</param>
+    extension(System.Drawing.RectangleF value)
+    {
+        /// <summary>Convert a <see cref="System.Drawing.RectangleF"/> to the android native <see cref="Rect"/>.</summary>
+        /// <returns>A <see cref="Rect"/> of the value.</returns>
+        public Rect ToNative() => new(value.X, value.Y, value.Width, value.Height);
+    }
 
-    /// <summary>
-    /// Converts a <see cref="Point"/> to a <see cref="System.Drawing.RectangleF"/>.
-    /// </summary>
-    /// <param name="value">The value to convert.</param>
-    /// <returns>A <see cref="System.Drawing.RectangleF"/> of the value.</returns>
-    public static System.Drawing.RectangleF FromNative(this Rect value) => new((float)value.X, (float)value.Y, (float)value.Width, (float)value.Height);
+    /// <summary>Extension members for <see cref="Rect"/>.</summary>
+    /// <param name="value">The value the extension members operate on.</param>
+    extension(Rect value)
+    {
+        /// <summary>Converts a <see cref="Point"/> to a <see cref="System.Drawing.RectangleF"/>.</summary>
+        /// <returns>A <see cref="System.Drawing.RectangleF"/> of the value.</returns>
+        public System.Drawing.RectangleF FromNative() => new((float)value.X, (float)value.Y, (float)value.Width, (float)value.Height);
+    }
 }

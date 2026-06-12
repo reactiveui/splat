@@ -6,7 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="PublicApiGenerator" />
     <PackageReference Include="Verify.TUnit" />
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.IO;
@@ -16,19 +15,13 @@ namespace Splat;
 /// hold unmanaged resources that should be released when no longer needed.</remarks>
 public interface IBitmap : IDisposable
 {
-    /// <summary>
-    /// Gets the width in pixel units (depending on platform).
-    /// </summary>
+    /// <summary>Gets the width in pixel units (depending on platform).</summary>
     float Width { get; }
 
-    /// <summary>
-    /// Gets the height in pixel units (depending on platform).
-    /// </summary>
+    /// <summary>Gets the height in pixel units (depending on platform).</summary>
     float Height { get; }
 
-    /// <summary>
-    /// Saves an image to a target stream.
-    /// </summary>
+    /// <summary>Saves an image to a target stream.</summary>
     /// <param name="format">The format to save the image in.</param>
     /// <param name="quality">If JPEG is specified, this is a quality
     /// factor between 0.0 and 1.0f where 1.0f is the best quality.</param>

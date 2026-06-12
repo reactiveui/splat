@@ -1,0 +1,46 @@
+#nullable enable
+Splat.Builder.NinjectSplatModule
+Splat.Builder.NinjectSplatModule.Configure(Splat.IMutableDependencyResolver! resolver) -> void
+Splat.Builder.NinjectSplatModule.NinjectSplatModule(Ninject.IKernel! kernel) -> void
+Splat.Ninject.NinjectDependencyResolver
+Splat.Ninject.NinjectDependencyResolver.Dispose() -> void
+Splat.Ninject.NinjectDependencyResolver.GetService<T>() -> T?
+Splat.Ninject.NinjectDependencyResolver.GetService<T>(string? contract) -> T?
+Splat.Ninject.NinjectDependencyResolver.GetServices<T>() -> System.Collections.Generic.IEnumerable<T>!
+Splat.Ninject.NinjectDependencyResolver.GetServices<T>(string? contract) -> System.Collections.Generic.IEnumerable<T>!
+Splat.Ninject.NinjectDependencyResolver.HasRegistration(System.Type? serviceType) -> bool
+Splat.Ninject.NinjectDependencyResolver.HasRegistration(System.Type? serviceType, string? contract) -> bool
+Splat.Ninject.NinjectDependencyResolver.HasRegistration<T>() -> bool
+Splat.Ninject.NinjectDependencyResolver.HasRegistration<T>(string? contract) -> bool
+Splat.Ninject.NinjectDependencyResolver.NinjectDependencyResolver(Ninject.IKernel! kernel) -> void
+Splat.Ninject.NinjectDependencyResolver.Register<T>(System.Func<T?>! factory) -> void
+Splat.Ninject.NinjectDependencyResolver.Register<T>(System.Func<T?>! factory, string? contract) -> void
+Splat.Ninject.NinjectDependencyResolver.Register<TService, TImplementation>() -> void
+Splat.Ninject.NinjectDependencyResolver.Register<TService, TImplementation>(string? contract) -> void
+Splat.Ninject.NinjectDependencyResolver.RegisterConstant<T>(T? value) -> void
+Splat.Ninject.NinjectDependencyResolver.RegisterConstant<T>(T? value, string? contract) -> void
+Splat.Ninject.NinjectDependencyResolver.RegisterLazySingleton<T>(System.Func<T?>! valueFactory) -> void
+Splat.Ninject.NinjectDependencyResolver.RegisterLazySingleton<T>(System.Func<T?>! valueFactory, string? contract) -> void
+Splat.Ninject.NinjectDependencyResolver.ServiceRegistrationCallback<T>(System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.Ninject.NinjectDependencyResolver.ServiceRegistrationCallback<T>(string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.Ninject.NinjectDependencyResolver.UnregisterAll<T>() -> void
+Splat.Ninject.NinjectDependencyResolver.UnregisterAll<T>(string? contract) -> void
+Splat.Ninject.NinjectDependencyResolver.UnregisterCurrent<T>() -> void
+Splat.Ninject.NinjectDependencyResolver.UnregisterCurrent<T>(string? contract) -> void
+Splat.Ninject.SplatNinjectExtensions
+Splat.Ninject.SplatNinjectExtensions.extension(Ninject.IKernel!)
+Splat.Ninject.SplatNinjectExtensions.extension(Ninject.IKernel!).UseNinjectDependencyResolver() -> void
+static Splat.Ninject.SplatNinjectExtensions.UseNinjectDependencyResolver(this Ninject.IKernel! kernel) -> void
+virtual Splat.Ninject.NinjectDependencyResolver.Dispose(bool disposing) -> void
+virtual Splat.Ninject.NinjectDependencyResolver.GetService(System.Type? serviceType) -> object?
+virtual Splat.Ninject.NinjectDependencyResolver.GetService(System.Type? serviceType, string? contract) -> object?
+virtual Splat.Ninject.NinjectDependencyResolver.GetServices(System.Type? serviceType) -> System.Collections.Generic.IEnumerable<object!>!
+virtual Splat.Ninject.NinjectDependencyResolver.GetServices(System.Type? serviceType, string? contract) -> System.Collections.Generic.IEnumerable<object!>!
+virtual Splat.Ninject.NinjectDependencyResolver.Register(System.Func<object?>! factory, System.Type? serviceType) -> void
+virtual Splat.Ninject.NinjectDependencyResolver.Register(System.Func<object?>! factory, System.Type? serviceType, string? contract) -> void
+virtual Splat.Ninject.NinjectDependencyResolver.ServiceRegistrationCallback(System.Type! serviceType, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+virtual Splat.Ninject.NinjectDependencyResolver.ServiceRegistrationCallback(System.Type! serviceType, string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+virtual Splat.Ninject.NinjectDependencyResolver.UnregisterAll(System.Type? serviceType) -> void
+virtual Splat.Ninject.NinjectDependencyResolver.UnregisterAll(System.Type? serviceType, string? contract) -> void
+virtual Splat.Ninject.NinjectDependencyResolver.UnregisterCurrent(System.Type? serviceType) -> void
+virtual Splat.Ninject.NinjectDependencyResolver.UnregisterCurrent(System.Type? serviceType, string? contract) -> void

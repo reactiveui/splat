@@ -1,15 +1,12 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.ComponentModel;
 
 namespace Splat;
 
-/// <summary>
-/// A logger where you pass in Action delegates that will be invoked when the Write methods are invoked.
-/// </summary>
+/// <summary>A logger where you pass in Action delegates that will be invoked when the Write methods are invoked.</summary>
 /// <remarks>
 /// Initializes a new instance of the <see cref="ActionLogger"/> class.
 /// </remarks>
@@ -23,23 +20,19 @@ public class ActionLogger(
     Action<Exception, string, LogLevel> writeNoTypeWithException,
     Action<Exception, string, Type, LogLevel> writeWithTypeAndException) : ILogger
 {
-    private readonly Action<string, LogLevel> _writeNoType = writeNoType;
-    private readonly Action<Exception, string, LogLevel> _writeNoTypeWithException = writeNoTypeWithException;
-    private readonly Action<string, Type, LogLevel> _writeWithType = writeWithType;
-    private readonly Action<Exception, string, Type, LogLevel> _writeWithTypeAndException = writeWithTypeAndException;
-
     /// <inheritdoc />
     public LogLevel Level { get; set; }
 
     /// <inheritdoc />
-    public void Write([Localizable(false)] string message, LogLevel logLevel) => _writeNoType?.Invoke(message, logLevel);
+    public void Write([Localizable(false)] string message, LogLevel logLevel) => writeNoType?.Invoke(message, logLevel);
 
     /// <inheritdoc />
-    public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel) => _writeNoTypeWithException?.Invoke(exception, message, logLevel);
+    public void Write(Exception exception, [Localizable(false)] string message, LogLevel logLevel) => writeNoTypeWithException?.Invoke(exception, message, logLevel);
 
     /// <inheritdoc />
-    public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel) => _writeWithType?.Invoke(message, type, logLevel);
+    public void Write([Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel) => writeWithType?.Invoke(message, type, logLevel);
 
     /// <inheritdoc />
-    public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel) => _writeWithTypeAndException?.Invoke(exception, message, type, logLevel);
+    public void Write(Exception exception, [Localizable(false)] string message, [Localizable(false)] Type type, LogLevel logLevel) =>
+        writeWithTypeAndException?.Invoke(exception, message, type, logLevel);
 }

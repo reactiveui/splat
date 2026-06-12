@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.IO;
@@ -9,9 +8,7 @@ using System.Windows.Media.Imaging;
 
 namespace Splat;
 
-/// <summary>
-/// Provides platform-specific functionality for loading and creating bitmap images.
-/// </summary>
+/// <summary>Provides platform-specific functionality for loading and creating bitmap images.</summary>
 /// <remarks>This class implements the IBitmapLoader interface to support loading bitmaps from streams and
 /// resources, as well as creating new bitmap instances. It is intended for use in scenarios where platform-dependent
 /// image loading is required.</remarks>
@@ -68,15 +65,20 @@ public class PlatformBitmapLoader : IBitmapLoader
     /// <inheritdoc />
     public IBitmap Create(float width, float height) => new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height, 96, 96, PixelFormats.Pbgra32, null));
 
+    /// <summary>Runs the supplied initialization block on a <see cref="BitmapImage"/> between <c>BeginInit</c> and <c>EndInit</c>.</summary>
+    /// <param name="source">The bitmap image to initialize.</param>
+    /// <param name="block">The initialization actions to apply to <paramref name="source"/>.</param>
     private static void WithInit(BitmapImage source, Action<BitmapImage> block)
     {
         source.BeginInit();
         block(source);
         source.EndInit();
 
-        if (source.CanFreeze)
+        if (!source.CanFreeze)
         {
-            source.Freeze();
+            return;
         }
+
+        source.Freeze();
     }
 }

@@ -1,18 +1,13 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace Splat.ApplicationPerformanceMonitoring;
 
-/// <summary>
-/// Defines a contract for creating feature usage tracking sessions for specified features.
-/// </summary>
+/// <summary>Defines a contract for creating feature usage tracking sessions for specified features.</summary>
 public interface IFeatureUsageTrackingManager
 {
-    /// <summary>
-    /// Creates a new session for tracking usage of the specified feature.
-    /// </summary>
+    /// <summary>Creates a new session for tracking usage of the specified feature.</summary>
     /// <remarks>Use the returned session to record feature usage events. Disposing the session typically
     /// finalizes and submits the usage data. Multiple sessions can be created for different features as
     /// needed.</remarks>

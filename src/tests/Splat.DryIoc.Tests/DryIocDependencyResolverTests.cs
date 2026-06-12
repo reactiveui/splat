@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
@@ -9,9 +8,7 @@ using Splat.Tests.ServiceLocation;
 
 namespace Splat.DryIoc.Tests;
 
-/// <summary>
-/// Unit tests for the DryIocDependencyResolver that verify conformance to the IDependencyResolver contract.
-/// </summary>
+/// <summary>Unit tests for the DryIocDependencyResolver that verify conformance to the IDependencyResolver contract.</summary>
 /// <remarks>
 /// Inherits from BaseDependencyResolverTests to ensure consistent behavior across all resolver implementations.
 /// </remarks>
@@ -19,87 +16,78 @@ namespace Splat.DryIoc.Tests;
 [InheritsTests]
 public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<DryIocDependencyResolver>
 {
-    /// <summary>
-    /// DryIoc does not support ServiceRegistrationCallback.
-    /// </summary>
+    /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
     public override Task ServiceRegistrationCallback_Generic_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support ServiceRegistrationCallback.
-    /// </summary>
+    /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
     public override Task ServiceRegistrationCallback_Generic_WithExistingRegistration_InvokesImmediately()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
+
+        // Register a service first so the callback would normally fire immediately; DryIoc still throws.
+        resolver.Register(() => new Common.Test.ViewModelOne(), typeof(Common.Test.ViewModelOne));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support ServiceRegistrationCallback.
-    /// </summary>
+    /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
     public override Task ServiceRegistrationCallback_Generic_WithContract_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>("test", _ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>("test", _ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support ServiceRegistrationCallback.
-    /// </summary>
+    /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
     public override Task ServiceRegistrationCallback_NonGeneric_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback(typeof(Common.Test.ViewModelOne), _ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback(typeof(Common.Test.ViewModelOne), _ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support ServiceRegistrationCallback.
-    /// </summary>
+    /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
     public override Task ServiceRegistrationCallback_NonGeneric_WithContract_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback(typeof(Common.Test.ViewModelOne), "test", _ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback(typeof(Common.Test.ViewModelOne), "test", _ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support ServiceRegistrationCallback.
-    /// </summary>
+    /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
     public override Task ServiceRegistrationCallback_Disposal_StopsReceivingNotifications()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
+
+        // The subscription disposable is never produced because DryIoc throws before returning it.
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }).Dispose());
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support ServiceRegistrationCallback.
-    /// </summary>
+    /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -107,65 +95,65 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
     {
         var resolver = GetDependencyResolver();
         await Assert.That(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(null!))
-            .Throws<NotImplementedException>();
+            .Throws<NotSupportedException>();
         await Assert.That(() => resolver.ServiceRegistrationCallback(typeof(Common.Test.ViewModelOne), null!))
-            .Throws<NotImplementedException>();
+            .Throws<NotSupportedException>();
     }
 
-    /// <summary>
-    /// DryIoc does not support ServiceRegistrationCallback.
-    /// </summary>
+    /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
     public override Task ServiceRegistrationCallback_Generic_InvokesForEachExistingRegistration()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
+
+        // Register multiple services so the callback would normally fire for each; DryIoc still throws.
+        resolver.Register(() => new Common.Test.ViewModelOne(), typeof(Common.Test.ViewModelOne));
+        resolver.Register(() => new Common.Test.ViewModelOne(), typeof(Common.Test.ViewModelOne));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support ServiceRegistrationCallback.
-    /// </summary>
+    /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
     public override Task Register_AfterDispose_DoesNotInvokeCallbacks()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
+        resolver.Dispose();
+
+        // After disposal, ServiceRegistrationCallback still throws NotSupportedException for DryIoc.
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support ServiceRegistrationCallback.
-    /// </summary>
+    /// <summary>DryIoc does not support ServiceRegistrationCallback.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
     public override Task Dispose_SuppressesExceptionsFromCallbacks()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
+
+        // Callbacks can never be registered (DryIoc throws), so disposal has nothing to suppress.
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<Common.Test.ViewModelOne>(_ => { }));
+        resolver.Dispose();
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not invoke callbacks on disposal.
-    /// </summary>
+    /// <summary>DryIoc does not invoke callbacks on disposal.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
     public override Task Dispose_InvokesCallbacks()
     {
-        // DryIoc ServiceRegistrationCallback throws NotImplementedException
+        // DryIoc ServiceRegistrationCallback throws NotSupportedException
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc manages disposal of services itself.
-    /// </summary>
+    /// <summary>DryIoc manages disposal of services itself.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -175,9 +163,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support null service types.
-    /// </summary>
+    /// <summary>DryIoc does not support null service types.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -187,9 +173,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support null service types.
-    /// </summary>
+    /// <summary>DryIoc does not support null service types.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -199,9 +183,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support null service types.
-    /// </summary>
+    /// <summary>DryIoc does not support null service types.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -211,9 +193,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support null service types.
-    /// </summary>
+    /// <summary>DryIoc does not support null service types.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -223,9 +203,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support null service types.
-    /// </summary>
+    /// <summary>DryIoc does not support null service types.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -235,9 +213,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc's Unregister implementation has issues with DefaultKey-based registrations.
-    /// </summary>
+    /// <summary>DryIoc's Unregister implementation has issues with DefaultKey-based registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -247,9 +223,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc's Unregister implementation has issues with DefaultKey-based registrations.
-    /// </summary>
+    /// <summary>DryIoc's Unregister implementation has issues with DefaultKey-based registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -259,9 +233,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc's Unregister implementation has issues with DefaultKey-based registrations.
-    /// </summary>
+    /// <summary>DryIoc's Unregister implementation has issues with DefaultKey-based registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -271,9 +243,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc's Unregister implementation has issues with DefaultKey-based registrations.
-    /// </summary>
+    /// <summary>DryIoc's Unregister implementation has issues with DefaultKey-based registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -283,9 +253,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc's Unregister implementation has issues with DefaultKey-based registrations.
-    /// </summary>
+    /// <summary>DryIoc's Unregister implementation has issues with DefaultKey-based registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -295,9 +263,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support multiple registrations with the same contract (Replace mode only).
-    /// </summary>
+    /// <summary>DryIoc does not support multiple registrations with the same contract (Replace mode only).</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -307,9 +273,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc does not support multiple registrations with the same contract (Replace mode only).
-    /// </summary>
+    /// <summary>DryIoc does not support multiple registrations with the same contract (Replace mode only).</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -319,9 +283,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc's UnregisterAll implementation has issues with DefaultKey-based registrations.
-    /// </summary>
+    /// <summary>DryIoc's UnregisterAll implementation has issues with DefaultKey-based registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]
@@ -331,9 +293,7 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// DryIoc's UnregisterAll implementation has issues with DefaultKey-based registrations.
-    /// </summary>
+    /// <summary>DryIoc's UnregisterAll implementation has issues with DefaultKey-based registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     [ExcludeFromCodeCoverage]

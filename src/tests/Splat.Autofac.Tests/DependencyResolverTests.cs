@@ -1,7 +1,8 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
+
+using System.Diagnostics.CodeAnalysis;
 
 using Autofac;
 
@@ -13,13 +14,15 @@ using Splat.Tests.ServiceLocation;
 
 namespace Splat.Autofac.Tests;
 
+/// <summary>Tests for the Autofac dependency resolver.</summary>
 [InheritsTests]
 [NotInParallel]
 public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDependencyResolver>
 {
-    /// <summary>
-    /// Should resolve nulls.
-    /// </summary>
+    /// <summary>The contract name used when exercising contract-based registration APIs.</summary>
+    private const string ContractName = "contract";
+
+    /// <summary>Should resolve nulls.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Can_Register_And_Resolve_Null_Types()
@@ -58,7 +61,7 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
             await Assert.That(values).Count().IsEqualTo(1);
         }
 
-        Assert.Throws<NotImplementedException>(() => Locator.CurrentMutable.UnregisterCurrent(null));
+        Assert.Throws<NotSupportedException>(() => Locator.CurrentMutable.UnregisterCurrent(null));
 
         var valuesNc = Locator.Current.GetServices(null).ToList();
         using (Assert.Multiple())
@@ -75,9 +78,7 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
         }
     }
 
-    /// <summary>
-    /// Should resolve views.
-    /// </summary>
+    /// <summary>Should resolve views.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AutofacDependencyResolver_Should_Resolve_Views()
@@ -102,9 +103,7 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
         await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
     }
 
-    /// <summary>
-    /// Should resolve named view.
-    /// </summary>
+    /// <summary>Should resolve named view.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AutofacDependencyResolver_Should_Resolve_Named_View()
@@ -121,9 +120,7 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
         await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
     }
 
-    /// <summary>
-    /// Should resolve view models.
-    /// </summary>
+    /// <summary>Should resolve view models.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AutofacDependencyResolver_Should_Resolve_View_Models()
@@ -145,9 +142,7 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
         }
     }
 
-    /// <summary>
-    /// Should resolve screen.
-    /// </summary>
+    /// <summary>Should resolve screen.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AutofacDependencyResolver_Should_Resolve_Screen()
@@ -164,9 +159,7 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
         await Assert.That(screen).IsTypeOf<MockScreen>();
     }
 
-    /// <summary>
-    /// Should throw an exception if service registration callback is called.
-    /// </summary>
+    /// <summary>Should throw an exception if service registration callback is called.</summary>
     [Test]
     public void AutofacDependencyResolver_Should_Throw_If_ServiceRegistrationCallback_Called()
     {
@@ -174,132 +167,155 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
         var autofacResolver = builder.UseAutofacDependencyResolver();
         autofacResolver.SetLifetimeScope(builder.Build());
 
-        Assert.Throws<NotImplementedException>(() =>
+        Assert.Throws<NotSupportedException>(() =>
             Locator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), _ => { }));
     }
 
-    /// <summary>
-    /// Verifies that UnregisterCurrent throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that UnregisterCurrent throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Test deliberately overrides and exercises the obsolete UnregisterCurrent API and must keep the [Obsolete] marker to compile.")]
     [Obsolete("Testing obsolete UnregisterCurrent method")]
     public override Task UnregisterCurrent_Doesnt_Throw_When_List_Empty()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.UnregisterCurrent(typeof(string)));
+        Assert.Throws<NotSupportedException>(() => resolver.UnregisterCurrent(typeof(string)));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that UnregisterCurrent throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that UnregisterCurrent throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Test deliberately overrides and exercises the obsolete UnregisterCurrent API and must keep the [Obsolete] marker to compile.")]
     [Obsolete("Testing obsolete UnregisterCurrent method")]
     public override Task UnregisterCurrent_Remove_Last()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.UnregisterCurrent(typeof(string)));
+
+        // Register a value so the scenario reflects removing the last registration; Autofac still throws.
+        resolver.Register(() => "last", typeof(string));
+        Assert.Throws<NotSupportedException>(() => resolver.UnregisterCurrent(typeof(string)));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that UnregisterCurrent with contract throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that UnregisterCurrent with contract throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Test deliberately overrides and exercises the obsolete UnregisterCurrent API and must keep the [Obsolete] marker to compile.")]
     [Obsolete("Testing obsolete UnregisterCurrent method")]
     public override Task UnregisterCurrentByName_Doesnt_Throw_When_List_Empty()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.UnregisterCurrent(typeof(string), "contract"));
+        Assert.Throws<NotSupportedException>(() => resolver.UnregisterCurrent(typeof(string), ContractName));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that UnregisterAll throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that UnregisterAll throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Test deliberately overrides and exercises the obsolete UnregisterAll API and must keep the [Obsolete] marker to compile.")]
     [Obsolete("Testing obsolete UnregisterAll method")]
     public override Task UnregisterAll_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.UnregisterAll(typeof(string)));
+        Assert.Throws<NotSupportedException>(() => resolver.UnregisterAll(typeof(string)));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that UnregisterAll with contract throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that UnregisterAll with contract throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Test deliberately overrides and exercises the obsolete UnregisterAll API and must keep the [Obsolete] marker to compile.")]
     [Obsolete("Testing obsolete UnregisterAll method")]
     public override Task UnregisterAllByContract_UnregisterCurrent_Doesnt_Throw_When_List_Empty()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.UnregisterAll(typeof(string), "contract"));
+        Assert.Throws<NotSupportedException>(() => resolver.UnregisterAll(typeof(string), ContractName));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that generic UnregisterCurrent throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that generic UnregisterCurrent throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Test deliberately overrides and exercises the obsolete generic UnregisterCurrent API and must keep the [Obsolete] marker to compile.")]
     [Obsolete("Testing obsolete UnregisterCurrent method")]
     public override Task UnregisterCurrent_Generic_RemovesLastRegistration()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.UnregisterCurrent<ViewModelOne>());
+        Assert.Throws<NotSupportedException>(() => resolver.UnregisterCurrent<ViewModelOne>());
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that generic UnregisterCurrent with contract throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that generic UnregisterCurrent with contract throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Test deliberately overrides and exercises the obsolete generic UnregisterCurrent API and must keep the [Obsolete] marker to compile.")]
     [Obsolete("Testing obsolete UnregisterCurrent method")]
     public override Task UnregisterCurrent_Generic_WithContract_RemovesRegistration()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.UnregisterCurrent<ViewModelOne>("contract"));
+        Assert.Throws<NotSupportedException>(() => resolver.UnregisterCurrent<ViewModelOne>(ContractName));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that generic UnregisterAll throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that generic UnregisterAll throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Test deliberately overrides and exercises the obsolete generic UnregisterAll API and must keep the [Obsolete] marker to compile.")]
     [Obsolete("Testing obsolete UnregisterAll method")]
     public override Task UnregisterAll_Generic_RemovesAllRegistrations()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.UnregisterAll<ViewModelOne>());
+        Assert.Throws<NotSupportedException>(() => resolver.UnregisterAll<ViewModelOne>());
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that generic UnregisterAll with contract throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that generic UnregisterAll with contract throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Test deliberately overrides and exercises the obsolete generic UnregisterAll API and must keep the [Obsolete] marker to compile.")]
     [Obsolete("Testing obsolete UnregisterAll method")]
     public override Task UnregisterAll_Generic_WithContract_RemovesAllContractRegistrations()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.UnregisterAll<ViewModelOne>("contract"));
+        Assert.Throws<NotSupportedException>(() => resolver.UnregisterAll<ViewModelOne>(ContractName));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Should check registration with and without contracts.
-    /// </summary>
+    /// <summary>Should check registration with and without contracts.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
+    [SuppressMessage(
+        "Info Code Smell",
+        "S1133:Deprecated code should be removed",
+        Justification = "Test deliberately overrides and exercises the obsolete HasRegistration API and must keep the [Obsolete] marker to compile.")]
     [Obsolete("Obsolete")]
 #pragma warning disable CS0809 // Obsolete member overrides non-obsolete member
     public override async Task HasRegistration()
@@ -342,109 +358,96 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
         }
     }
 
-    /// <summary>
-    /// Verifies that ServiceRegistrationCallback throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that ServiceRegistrationCallback throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task ServiceRegistrationCallback_Generic_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that ServiceRegistrationCallback throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that ServiceRegistrationCallback throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task ServiceRegistrationCallback_Generic_WithExistingRegistration_InvokesImmediately()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+
+        // Register a service first so the callback would normally fire immediately; Autofac still throws.
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that ServiceRegistrationCallback with contract throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that ServiceRegistrationCallback with contract throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task ServiceRegistrationCallback_Generic_WithContract_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>("test", _ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>("test", _ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that non-generic ServiceRegistrationCallback throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that non-generic ServiceRegistrationCallback throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task ServiceRegistrationCallback_NonGeneric_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), _ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), _ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that non-generic ServiceRegistrationCallback with contract throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that non-generic ServiceRegistrationCallback with contract throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task ServiceRegistrationCallback_NonGeneric_WithContract_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), "test", _ => { }));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), "test", _ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that ServiceRegistrationCallback disposal throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that ServiceRegistrationCallback disposal throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task ServiceRegistrationCallback_Disposal_StopsReceivingNotifications()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+
+        // The subscription disposable is never produced because Autofac throws before returning it.
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }).Dispose());
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that ServiceRegistrationCallback with null callback throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that ServiceRegistrationCallback with null callback throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override async Task ServiceRegistrationCallback_NullCallback_Throws()
     {
         var resolver = GetDependencyResolver();
 
-        // Autofac throws NotImplementedException before checking for null
+        // Autofac throws NotSupportedException before checking for null
         await Assert.That(() => resolver.ServiceRegistrationCallback<ViewModelOne>(null!))
-            .Throws<NotImplementedException>();
+            .Throws<NotSupportedException>();
 
         await Assert.That(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), null!))
-            .Throws<NotImplementedException>();
+            .Throws<NotSupportedException>();
     }
 
-    /// <summary>
-    /// Autofac doesn't invoke callbacks on disposal.
-    /// </summary>
+    /// <summary>Autofac doesn't invoke callbacks on disposal.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task Dispose_InvokesCallbacks()
     {
-        // Autofac ServiceRegistrationCallback throws NotImplementedException, so this test doesn't apply
+        // Autofac ServiceRegistrationCallback throws NotSupportedException, so this test doesn't apply
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Autofac manages disposal of registered services itself.
-    /// </summary>
+    /// <summary>Autofac manages disposal of registered services itself.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task Dispose_DisposesRegisteredServices()
@@ -453,9 +456,7 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Autofac handles lazy singletons itself.
-    /// </summary>
+    /// <summary>Autofac handles lazy singletons itself.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task Dispose_WithLazySingleton_DoesNotCreateIfNotAccessed()
@@ -464,119 +465,107 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that UnregisterCurrent generic with null contract throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that UnregisterCurrent generic with null contract throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task UnregisterCurrent_Generic_WithNullContract_DelegatesToNonContract()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.UnregisterCurrent<ViewModelOne>(null));
+        Assert.Throws<NotSupportedException>(() => resolver.UnregisterCurrent<ViewModelOne>(null));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that UnregisterCurrent non-generic with null contract throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that UnregisterCurrent non-generic with null contract throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task UnregisterCurrent_NonGeneric_WithNullContract_DelegatesToNonContract()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.UnregisterCurrent(typeof(ViewModelOne), null));
+        Assert.Throws<NotSupportedException>(() => resolver.UnregisterCurrent(typeof(ViewModelOne), null));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that UnregisterAll generic with null contract throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that UnregisterAll generic with null contract throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task UnregisterAll_Generic_WithNullContract_DelegatesToNonContract()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.UnregisterAll<ViewModelOne>(null));
+        Assert.Throws<NotSupportedException>(() => resolver.UnregisterAll<ViewModelOne>(null));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that UnregisterAll non-generic with null contract throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that UnregisterAll non-generic with null contract throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task UnregisterAll_NonGeneric_WithNullContract_DelegatesToNonContract()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.UnregisterAll(typeof(ViewModelOne), null));
+        Assert.Throws<NotSupportedException>(() => resolver.UnregisterAll(typeof(ViewModelOne), null));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that UnregisterCurrent with null type throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that UnregisterCurrent with null type throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task UnregisterCurrent_NonGeneric_WithNullType_HandlesNullServiceType()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.UnregisterCurrent(null));
+        Assert.Throws<NotSupportedException>(() => resolver.UnregisterCurrent(null));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that UnregisterAll with null type throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that UnregisterAll with null type throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task UnregisterAll_NonGeneric_WithNullType_HandlesNullServiceType()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.UnregisterAll(null));
+        Assert.Throws<NotSupportedException>(() => resolver.UnregisterAll(null));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that Register after dispose throws NotImplementedException for Autofac (due to callbacks not implemented).
-    /// </summary>
+    /// <summary>Verifies that Register after dispose throws NotSupportedException for Autofac (due to callbacks not implemented).</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task Register_AfterDispose_DoesNotInvokeCallbacks()
     {
         var resolver = GetDependencyResolver();
+        resolver.Dispose();
 
-        // Since ServiceRegistrationCallback throws, we verify that instead of the full test flow
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        // After disposal, ServiceRegistrationCallback still throws NotSupportedException for Autofac.
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that ServiceRegistrationCallback invokes for each throws NotImplementedException for Autofac.
-    /// </summary>
+    /// <summary>Verifies that ServiceRegistrationCallback invokes for each throws NotSupportedException for Autofac.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task ServiceRegistrationCallback_Generic_InvokesForEachExistingRegistration()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+
+        // Register multiple services so the callback would normally fire for each; Autofac still throws.
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies that Dispose suppresses exceptions from callbacks (NotApplicable for Autofac as callbacks throw).
-    /// </summary>
+    /// <summary>Verifies that Dispose suppresses exceptions from callbacks (NotApplicable for Autofac as callbacks throw).</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task Dispose_SuppressesExceptionsFromCallbacks()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotImplementedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+
+        // Callbacks can never be registered (Autofac throws), so disposal has nothing to suppress.
+        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        resolver.Dispose();
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Autofac handles lazy singletons itself.
-    /// </summary>
+    /// <summary>Autofac handles lazy singletons itself.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task Dispose_WithAccessedLazySingleton_DisposesValue()
@@ -585,9 +574,7 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Autofac manages disposal of services under construction itself.
-    /// </summary>
+    /// <summary>Autofac manages disposal of services under construction itself.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task Dispose_WhileLazySingletonUnderConstruction_DisposesServiceAndThrowsException()
@@ -596,9 +583,7 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies GetService with null type.
-    /// </summary>
+    /// <summary>Verifies GetService with null type.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task GetService_NonGeneric_WithNullType_HandlesNullServiceType()
@@ -607,9 +592,7 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies GetServices with null type.
-    /// </summary>
+    /// <summary>Verifies GetServices with null type.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task GetServices_NonGeneric_WithNullType_HandlesNullServiceType()
@@ -618,9 +601,7 @@ public class DependencyResolverTests : BaseDependencyResolverTests<AutofacDepend
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Verifies HasRegistration with null type.
-    /// </summary>
+    /// <summary>Verifies HasRegistration with null type.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public override Task HasRegistration_NonGeneric_WithNullType_HandlesNullServiceType()

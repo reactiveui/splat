@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Common.Test;
@@ -15,9 +14,7 @@ namespace Splat.Tests.ServiceLocation;
 [InheritsTests]
 public sealed class InstanceGenericFirstDependencyResolverTests : BaseDependencyResolverTests<InstanceGenericFirstDependencyResolver>
 {
-    /// <summary>
-    /// Test constructor with configure parameter registers services.
-    /// </summary>
+    /// <summary>Test constructor with configure parameter registers services.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Constructor_WithConfigure_RegistersServices()
@@ -35,9 +32,7 @@ public sealed class InstanceGenericFirstDependencyResolverTests : BaseDependency
         await Assert.That(result2).IsNotNull();
     }
 
-    /// <summary>
-    /// Test constructor with null configure parameter does not throw.
-    /// </summary>
+    /// <summary>Test constructor with null configure parameter does not throw.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Constructor_WithNullConfigure_DoesNotThrow() =>
@@ -47,9 +42,7 @@ public sealed class InstanceGenericFirstDependencyResolverTests : BaseDependency
             return Task.CompletedTask;
         }).ThrowsNothing();
 
-    /// <summary>
-    /// Test Dispose method disposes resolver properly.
-    /// </summary>
+    /// <summary>Test Dispose method disposes resolver properly.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Dispose_DisposesResolver()
@@ -66,9 +59,7 @@ public sealed class InstanceGenericFirstDependencyResolverTests : BaseDependency
         }).Throws<ObjectDisposedException>();
     }
 
-    /// <summary>
-    /// Test operations after disposal throw ObjectDisposedException.
-    /// </summary>
+    /// <summary>Test operations after disposal throw ObjectDisposedException.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task AfterDispose_Operations_ThrowObjectDisposedException()

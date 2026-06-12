@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
@@ -18,8 +17,13 @@ namespace Splat.Ninject;
 /// operations, but individual service factories should be thread-safe if used in multi-threaded scenarios. Disposing
 /// the resolver will also dispose the underlying Ninject kernel, releasing all managed resources.</remarks>
 /// <param name="kernel">The Ninject kernel instance used to manage service bindings and resolve dependencies. Cannot be null.</param>
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification = "These are dependency-resolution and registration APIs whose generic type parameter is the caller-supplied service type, which by contract cannot appear in the parameter list.")]
 public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 {
+    /// <summary>Non-zero once disposed; used for a thread-safe single-dispose guard via <see cref="System.Threading.Interlocked"/>.</summary>
     private int _isDisposed;
 
     /// <inheritdoc />
@@ -36,8 +40,15 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
         return GetServices(serviceType, contract).LastOrDefault()!;
     }
 
+    /// <inheritdoc/>
+    public T? GetService<T>() =>
+        GetServices<T>().LastOrDefault();
+
+    /// <inheritdoc/>
+    public T? GetService<T>(string? contract) =>
+        GetServices<T>(contract).LastOrDefault();
+
     /// <inheritdoc />
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We provide a different registration instead")]
     public virtual IEnumerable<object> GetServices(Type? serviceType)
     {
         serviceType ??= NullServiceType.CachedType;
@@ -66,7 +77,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
                         results.Add(instance);
                     }
                 }
-                catch
+                catch (ActivationException)
                 {
                     // Skip bindings that can't be resolved
                 }
@@ -74,14 +85,13 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
             return results;
         }
-        catch
+        catch (ActivationException)
         {
             return [];
         }
     }
 
     /// <inheritdoc />
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We provide a different registration instead")]
     public virtual IEnumerable<object> GetServices(Type? serviceType, string? contract)
     {
         serviceType ??= NullServiceType.CachedType;
@@ -110,7 +120,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
                         results.Add(instance);
                     }
                 }
-                catch
+                catch (ActivationException)
                 {
                     // Skip bindings that can't be resolved
                 }
@@ -118,160 +128,11 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
             return results;
         }
-        catch
+        catch (ActivationException)
         {
             return [];
         }
     }
-
-    /// <inheritdoc />
-    public bool HasRegistration(Type? serviceType)
-    {
-        serviceType ??= NullServiceType.CachedType;
-
-        return kernel.CanResolve(serviceType, metadata => IsCorrectMetadata(metadata, null));
-    }
-
-    /// <inheritdoc />
-    public bool HasRegistration(Type? serviceType, string? contract)
-    {
-        serviceType ??= NullServiceType.CachedType;
-
-        return kernel.CanResolve(serviceType, metadata => IsCorrectMetadata(metadata, contract));
-    }
-
-    /// <inheritdoc />
-    public virtual void Register(Func<object?> factory, Type? serviceType)
-    {
-        serviceType ??= NullServiceType.CachedType;
-
-        _ = kernel.Bind(serviceType).ToMethod(_ => factory());
-    }
-
-    /// <inheritdoc />
-    public virtual void Register(Func<object?> factory, Type? serviceType, string? contract)
-    {
-        serviceType ??= NullServiceType.CachedType;
-
-        if (contract is null)
-        {
-            _ = kernel.Bind(serviceType).ToMethod(_ => factory());
-        }
-        else
-        {
-            _ = kernel.Bind(serviceType).ToMethod(_ => factory()).Named(contract);
-        }
-    }
-
-    /// <inheritdoc />
-    public virtual void UnregisterCurrent(Type? serviceType)
-    {
-        serviceType ??= NullServiceType.CachedType;
-
-        var bindings = kernel.GetBindings(serviceType).ToArray();
-
-        if (bindings is null || bindings.Length < 1)
-        {
-            return;
-        }
-
-        var matchingBinding = bindings.LastOrDefault(x => IsCorrectMetadata(x.BindingConfiguration.Metadata, null));
-
-        if (matchingBinding is null)
-        {
-            return;
-        }
-
-        kernel.RemoveBinding(matchingBinding);
-    }
-
-    /// <inheritdoc />
-    public virtual void UnregisterCurrent(Type? serviceType, string? contract)
-    {
-        serviceType ??= NullServiceType.CachedType;
-
-        var bindings = kernel.GetBindings(serviceType).ToArray();
-
-        if (bindings is null || bindings.Length < 1)
-        {
-            return;
-        }
-
-        var matchingBinding = bindings.LastOrDefault(x => IsCorrectMetadata(x.BindingConfiguration.Metadata, contract));
-
-        if (matchingBinding is null)
-        {
-            return;
-        }
-
-        kernel.RemoveBinding(matchingBinding);
-    }
-
-    /// <inheritdoc />
-    public virtual void UnregisterAll(Type? serviceType)
-    {
-        serviceType ??= NullServiceType.CachedType;
-
-        var bindings = kernel.GetBindings(serviceType).ToArray();
-
-        if (bindings is null || bindings.Length < 1)
-        {
-            return;
-        }
-
-        var matchingBinding = bindings.Where(x => IsCorrectMetadata(x.BindingConfiguration.Metadata, null)).ToArray();
-
-        if (matchingBinding.Length < 1)
-        {
-            return;
-        }
-
-        foreach (var binding in matchingBinding)
-        {
-            kernel.RemoveBinding(binding);
-        }
-    }
-
-    /// <inheritdoc />
-    public virtual void UnregisterAll(Type? serviceType, string? contract)
-    {
-        serviceType ??= NullServiceType.CachedType;
-
-        var bindings = kernel.GetBindings(serviceType).ToArray();
-
-        if (bindings is null || bindings.Length < 1)
-        {
-            return;
-        }
-
-        var matchingBinding = bindings.Where(x => IsCorrectMetadata(x.BindingConfiguration.Metadata, contract)).ToArray();
-
-        if (matchingBinding.Length < 1)
-        {
-            return;
-        }
-
-        foreach (var binding in matchingBinding)
-        {
-            kernel.RemoveBinding(binding);
-        }
-    }
-
-    /// <inheritdoc />
-    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, Action<IDisposable> callback) =>
-        throw new NotImplementedException("ServiceRegistrationCallback is not supported by the NInject framework");
-
-    /// <inheritdoc />
-    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) =>
-        throw new NotImplementedException("ServiceRegistrationCallback is not supported by the NInject framework");
-
-    /// <inheritdoc/>
-    public T? GetService<T>() =>
-        GetServices<T>().LastOrDefault();
-
-    /// <inheritdoc/>
-    public T? GetService<T>(string? contract) =>
-        GetServices<T>(contract).LastOrDefault();
 
     /// <inheritdoc/>
     public IEnumerable<T> GetServices<T>()
@@ -300,7 +161,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
                         results.Add(instance);
                     }
                 }
-                catch
+                catch (ActivationException)
                 {
                     // Skip bindings that can't be resolved
                 }
@@ -308,7 +169,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
             return results;
         }
-        catch
+        catch (ActivationException)
         {
             return [];
         }
@@ -341,7 +202,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
                         results.Add(instance);
                     }
                 }
-                catch
+                catch (ActivationException)
                 {
                     // Skip bindings that can't be resolved
                 }
@@ -349,10 +210,26 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
             return results;
         }
-        catch
+        catch (ActivationException)
         {
             return [];
         }
+    }
+
+    /// <inheritdoc />
+    public bool HasRegistration(Type? serviceType)
+    {
+        serviceType ??= NullServiceType.CachedType;
+
+        return kernel.CanResolve(serviceType, metadata => IsCorrectMetadata(metadata, null));
+    }
+
+    /// <inheritdoc />
+    public bool HasRegistration(Type? serviceType, string? contract)
+    {
+        serviceType ??= NullServiceType.CachedType;
+
+        return kernel.CanResolve(serviceType, metadata => IsCorrectMetadata(metadata, contract));
     }
 
     /// <inheritdoc/>
@@ -362,6 +239,29 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     /// <inheritdoc/>
     public bool HasRegistration<T>(string? contract) =>
         HasRegistration(typeof(T), contract);
+
+    /// <inheritdoc />
+    public virtual void Register(Func<object?> factory, Type? serviceType)
+    {
+        serviceType ??= NullServiceType.CachedType;
+
+        _ = kernel.Bind(serviceType).ToMethod(_ => factory());
+    }
+
+    /// <inheritdoc />
+    public virtual void Register(Func<object?> factory, Type? serviceType, string? contract)
+    {
+        serviceType ??= NullServiceType.CachedType;
+
+        if (contract is null)
+        {
+            _ = kernel.Bind(serviceType).ToMethod(_ => factory());
+        }
+        else
+        {
+            _ = kernel.Bind(serviceType).ToMethod(_ => factory()).Named(contract);
+        }
+    }
 
     /// <inheritdoc/>
     public void Register<T>(Func<T?> factory) =>
@@ -379,30 +279,6 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
             kernel.Bind<T>().ToMethod(_ => factory()!).Named(contract);
         }
     }
-
-    /// <inheritdoc/>
-    public void UnregisterCurrent<T>() =>
-        UnregisterCurrent(typeof(T));
-
-    /// <inheritdoc/>
-    public void UnregisterCurrent<T>(string? contract) =>
-        UnregisterCurrent(typeof(T), contract);
-
-    /// <inheritdoc/>
-    public void UnregisterAll<T>() =>
-        UnregisterAll(typeof(T));
-
-    /// <inheritdoc/>
-    public void UnregisterAll<T>(string? contract) =>
-        UnregisterAll(typeof(T), contract);
-
-    /// <inheritdoc/>
-    public IDisposable ServiceRegistrationCallback<T>(Action<IDisposable> callback) =>
-        ServiceRegistrationCallback(typeof(T), callback);
-
-    /// <inheritdoc/>
-    public IDisposable ServiceRegistrationCallback<T>(string? contract, Action<IDisposable> callback) =>
-        ServiceRegistrationCallback(typeof(T), contract, callback);
 
     /// <inheritdoc/>
     public void Register<TService, TImplementation>()
@@ -476,29 +352,161 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     }
 
     /// <inheritdoc />
+    public virtual void UnregisterCurrent(Type? serviceType)
+    {
+        serviceType ??= NullServiceType.CachedType;
+
+        var bindings = kernel.GetBindings(serviceType).ToArray();
+
+        if (bindings is null || bindings.Length < 1)
+        {
+            return;
+        }
+
+        var matchingBinding = bindings.LastOrDefault(x => IsCorrectMetadata(x.BindingConfiguration.Metadata, null));
+
+        if (matchingBinding is null)
+        {
+            return;
+        }
+
+        kernel.RemoveBinding(matchingBinding);
+    }
+
+    /// <inheritdoc />
+    public virtual void UnregisterCurrent(Type? serviceType, string? contract)
+    {
+        serviceType ??= NullServiceType.CachedType;
+
+        var bindings = kernel.GetBindings(serviceType).ToArray();
+
+        if (bindings is null || bindings.Length < 1)
+        {
+            return;
+        }
+
+        var matchingBinding = bindings.LastOrDefault(x => IsCorrectMetadata(x.BindingConfiguration.Metadata, contract));
+
+        if (matchingBinding is null)
+        {
+            return;
+        }
+
+        kernel.RemoveBinding(matchingBinding);
+    }
+
+    /// <inheritdoc/>
+    public void UnregisterCurrent<T>() =>
+        UnregisterCurrent(typeof(T));
+
+    /// <inheritdoc/>
+    public void UnregisterCurrent<T>(string? contract) =>
+        UnregisterCurrent(typeof(T), contract);
+
+    /// <inheritdoc />
+    public virtual void UnregisterAll(Type? serviceType)
+    {
+        serviceType ??= NullServiceType.CachedType;
+
+        var bindings = kernel.GetBindings(serviceType).ToArray();
+
+        if (bindings is null || bindings.Length < 1)
+        {
+            return;
+        }
+
+        var matchingBinding = bindings.Where(x => IsCorrectMetadata(x.BindingConfiguration.Metadata, null)).ToArray();
+
+        if (matchingBinding.Length < 1)
+        {
+            return;
+        }
+
+        foreach (var binding in matchingBinding)
+        {
+            kernel.RemoveBinding(binding);
+        }
+    }
+
+    /// <inheritdoc />
+    public virtual void UnregisterAll(Type? serviceType, string? contract)
+    {
+        serviceType ??= NullServiceType.CachedType;
+
+        var bindings = kernel.GetBindings(serviceType).ToArray();
+
+        if (bindings is null || bindings.Length < 1)
+        {
+            return;
+        }
+
+        var matchingBinding = bindings.Where(x => IsCorrectMetadata(x.BindingConfiguration.Metadata, contract)).ToArray();
+
+        if (matchingBinding.Length < 1)
+        {
+            return;
+        }
+
+        foreach (var binding in matchingBinding)
+        {
+            kernel.RemoveBinding(binding);
+        }
+    }
+
+    /// <inheritdoc/>
+    public void UnregisterAll<T>() =>
+        UnregisterAll(typeof(T));
+
+    /// <inheritdoc/>
+    public void UnregisterAll<T>(string? contract) =>
+        UnregisterAll(typeof(T), contract);
+
+    /// <inheritdoc />
+    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, Action<IDisposable> callback) =>
+        throw new NotSupportedException("ServiceRegistrationCallback is not supported by the NInject framework");
+
+    /// <inheritdoc />
+    public virtual IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) =>
+        throw new NotSupportedException("ServiceRegistrationCallback is not supported by the NInject framework");
+
+    /// <inheritdoc/>
+    public IDisposable ServiceRegistrationCallback<T>(Action<IDisposable> callback) =>
+        ServiceRegistrationCallback(typeof(T), callback);
+
+    /// <inheritdoc/>
+    public IDisposable ServiceRegistrationCallback<T>(string? contract, Action<IDisposable> callback) =>
+        ServiceRegistrationCallback(typeof(T), contract, callback);
+
+    /// <inheritdoc />
     public void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);
     }
 
-    /// <summary>
-    /// Disposes of the instance.
-    /// </summary>
+    /// <summary>Disposes of the instance.</summary>
     /// <param name="disposing">Whether or not the instance is disposing.</param>
     protected virtual void Dispose(bool disposing)
     {
-        if (disposing)
+        if (!disposing)
         {
-            // Use Interlocked.Exchange for thread-safe disposal flag setting
-            var wasDisposed = Interlocked.Exchange(ref _isDisposed, 1);
-            if (wasDisposed == 0)
-            {
-                kernel?.Dispose();
-            }
+            return;
         }
+
+        // Use Interlocked.Exchange for thread-safe disposal flag setting
+        var wasDisposed = Interlocked.Exchange(ref _isDisposed, 1);
+        if (wasDisposed != 0)
+        {
+            return;
+        }
+
+        kernel?.Dispose();
     }
 
+    /// <summary>Determines whether the supplied binding metadata matches the requested contract.</summary>
+    /// <param name="metadata">The binding metadata to inspect.</param>
+    /// <param name="contract">The contract name to match, or <see langword="null"/> for the default contract.</param>
+    /// <returns><see langword="true"/> if the metadata matches the contract; otherwise, <see langword="false"/>.</returns>
     private static bool IsCorrectMetadata(global::Ninject.Planning.Bindings.IBindingMetadata metadata, string? contract) =>
         (metadata?.Name is null && string.IsNullOrWhiteSpace(contract))
         || (metadata?.Name is not null && metadata.Name.Equals(contract, StringComparison.OrdinalIgnoreCase));

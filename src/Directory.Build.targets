@@ -19,10 +19,10 @@
   <PropertyGroup Condition="$(TargetFramework.EndsWith('0-maccatalyst'))">
     <DefineConstants>$(DefineConstants);MONO;UIKIT;COCOA;MACCATALYST</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="$(TargetFramework.EndsWith('0-android'))">
+  <PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
     <DefineConstants>$(DefineConstants);MONO;ANDROID</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="$(TargetFramework.Equals('net8.0')) or $(TargetFramework.Equals('net9.0')) or $(TargetFramework.Equals('net10.0'))">
+  <PropertyGroup Condition="$(TargetFramework.Equals('net8.0')) or $(TargetFramework.Equals('net9.0')) or $(TargetFramework.Equals('net10.0')) or $(TargetFramework.Equals('net11.0'))">
     <DefineConstants>$(DefineConstants);IS_SHARED_NET</DefineConstants>
   </PropertyGroup>
 </Project>

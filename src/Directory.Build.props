@@ -20,6 +20,7 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
     <WarningsAsErrors>nullable</WarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <!-- Net Analyzers config taken from : https://docs.microsoft.com/en-gb/visualstudio/code-quality/migrate-from-fxcop-analyzers-to-net-analyzers?view=vs-2019 -->
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
@@ -36,13 +37,12 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <!-- Include PDB in the built .nupkg -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <NoWarn>$(NoWarn);IDE1006</NoWarn>
     <!-- Enable building the .NET Framework targets on non-Windows platforms (reference-only compile). -->
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
 
   <PropertyGroup>
-    <SplatModernTargets>net8.0;net9.0;net10.0</SplatModernTargets>
+    <SplatModernTargets>net8.0;net9.0;net10.0;net11.0</SplatModernTargets>
 
     <SplatLegacyTargets>net462;net472;net481</SplatLegacyTargets>
 
@@ -53,9 +53,9 @@
          workload targets (Android + Apple) are dropped. The base net9.0 and the
          net9.0-windows desktop TFMs remain: those track the .NET 9 runtime
          lifecycle, not .NET MAUI. See https://dotnet.microsoft.com/platform/support/policy/maui -->
-    <SplatAndroidTargets>net10.0-android36.0</SplatAndroidTargets>
-    <SplatWindowsTargets>net8.0-windows10.0.17763.0;net9.0-windows10.0.17763.0;net10.0-windows10.0.17763.0;net8.0-windows10.0.19041.0;net9.0-windows10.0.19041.0;net10.0-windows10.0.19041.0</SplatWindowsTargets>
-    <SplatAppleTargets>net10.0-ios;net10.0-macos;net10.0-maccatalyst;net10.0-tvos</SplatAppleTargets>
+    <SplatAndroidTargets>net10.0-android36.0;net11.0-android37.0</SplatAndroidTargets>
+    <SplatWindowsTargets>net8.0-windows10.0.17763.0;net9.0-windows10.0.17763.0;net10.0-windows10.0.17763.0;net8.0-windows10.0.19041.0;net9.0-windows10.0.19041.0;net10.0-windows10.0.19041.0;net11.0-windows10.0.19041.0</SplatWindowsTargets>
+    <SplatAppleTargets>net10.0-ios;net10.0-macos;net10.0-maccatalyst;net10.0-tvos;net11.0-ios;net11.0-macos;net11.0-maccatalyst;net11.0-tvos</SplatAppleTargets>
     <SplatUiFinalTargetFrameworks>$(SplatCoreTargets);$(SplatAndroidTargets);$(SplatWindowsTargets)</SplatUiFinalTargetFrameworks>
   </PropertyGroup>
 
@@ -64,12 +64,8 @@
     <SplatUiFinalTargetFrameworks>$(SplatUiFinalTargetFrameworks);$(SplatAppleTargets)</SplatUiFinalTargetFrameworks>
   </PropertyGroup>
 
-  <PropertyGroup Condition="$(IsTestProject) != 'true'">
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
     <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
@@ -99,6 +95,59 @@
     <None Include="$(MSBuildThisFileDirectory)..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
+  <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net11.0'))">
+    <Features>$(Features);runtime-async=on</Features>
+  </PropertyGroup>
+  <!-- Alias Lock to the dedicated System.Threading.Lock on .NET 9+ (faster EnterScope fast path),
+     and to a plain object elsewhere (the lock statement falls back to Monitor). -->
+  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0'))">
+    <Using Include="System.Threading.Lock" Alias="Lock" />
+  </ItemGroup>
+  <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0'))">
+    <Using Include="System.Object" Alias="Lock" />
+  </ItemGroup>
+
+  <!-- Shared polyfills, compiled directly into each production assembly (the Primitives model) instead
+       of being shared from Splat.Core via InternalsVisibleTo. Test projects are excluded — they reach
+       internals over IVT (white-box testing) and would otherwise see a polyfill type in several
+       referenced assemblies at once (CS0433). -->
+  <PropertyGroup>
+    <_SplatCompilePolyfills>true</_SplatCompilePolyfills>
+    <_SplatCompilePolyfills Condition="'$(IsTestProject)' == 'true' or $(MSBuildProjectDirectory.Contains('tests'))">false</_SplatCompilePolyfills>
+  </PropertyGroup>
+
+  <!-- The BCL shims and the argument/disposed helpers are compiled ONLY on net462-net481: on net8.0+ the
+       BCL provides the real types, and emitting the #else type-forwarders there would add them to every
+       assembly's public API surface (RS0016). On net8.0+ those helpers are aliased straight to the BCL
+       throw helpers (no shipped wrapper). -->
+  <ItemGroup Condition="'$(_SplatCompilePolyfills)' == 'true' and $(TargetFramework.StartsWith('net4'))">
+    <Compile Include="$(MSBuildThisFileDirectory)Polyfills\*.cs"
+             Exclude="$(MSBuildThisFileDirectory)Polyfills\ArgumentGuard.cs"
+             Link="Polyfills\%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <!-- ArgumentGuard has no BCL equivalent, so it is compiled on every target framework. -->
+  <ItemGroup Condition="'$(_SplatCompilePolyfills)' == 'true'">
+    <Compile Include="$(MSBuildThisFileDirectory)Polyfills\ArgumentGuard.cs" Link="Polyfills\ArgumentGuard.cs" />
+  </ItemGroup>
+
+  <!-- The aliases are applied only to the assemblies that compile the polyfills. Test projects reach
+       these internals over IVT from several assemblies at once, so a Splat.Internal alias there would be
+       ambiguous (CS0433); tests don't use the helpers anyway. -->
+  <ItemGroup Condition="'$(_SplatCompilePolyfills)' == 'true' and $(TargetFramework.StartsWith('net4'))">
+    <Using Include="Splat.Internal.ArgumentExceptionHelper" Alias="ArgumentExceptionHelper" />
+    <Using Include="Splat.Internal.ArgumentOutOfRangeExceptionHelper" Alias="ArgumentOutOfRangeExceptionHelper" />
+    <Using Include="Splat.Internal.ObjectDisposedExceptionHelper" Alias="ObjectDisposedExceptionHelper" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(_SplatCompilePolyfills)' == 'true' and !$(TargetFramework.StartsWith('net4'))">
+    <Using Include="System.ArgumentNullException" Alias="ArgumentExceptionHelper" />
+    <Using Include="System.ArgumentOutOfRangeException" Alias="ArgumentOutOfRangeExceptionHelper" />
+    <Using Include="System.ObjectDisposedException" Alias="ObjectDisposedExceptionHelper" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(_SplatCompilePolyfills)' == 'true'">
+    <Using Include="Splat.Internal.ArgumentGuard" Alias="ArgumentGuard" />
+  </ItemGroup>
+
   <!-- MinVer (versioning) — replaces Nerdbank.GitVersioning. Floor at the
        current 19.3 baseline so untagged builds produce 19.3.x-alpha.0.<height>
        until a v19.3.x (or later) tag is reachable. -->
@@ -111,8 +160,25 @@
 
   <ItemGroup>
     <PackageReference Include="MinVer" PrivateAssets="all" />
-    <PackageReference Include="stylecop.analyzers" PrivateAssets="all" />
+    <PackageReference Include="StyleSharp.Analyzers" PrivateAssets="all" />
     <PackageReference Include="Roslynator.Analyzers" PrivateAssets="All" />
+    <PackageReference Include="SonarAnalyzer.CSharp" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- Per-TFM public-API tracking via Roslyn PublicApiAnalyzers (RS0016/RS0017); baselines in
+       PublicAPI/<tfm>/. Tests and benchmarks are exempt. -->
+  <PropertyGroup>
+    <TrackPublicApi Condition="'$(TrackPublicApi)' == ''">true</TrackPublicApi>
+    <TrackPublicApi Condition="'$(IsTestProject)' == 'true'">false</TrackPublicApi>
+    <!-- Test-support projects (e.g. Splat.Common.Test) live under tests/ but are not named
+         '*Tests', so exempt the whole tests/ tree as well. -->
+    <TrackPublicApi Condition="$(MSBuildProjectDirectory.Contains('tests'))">false</TrackPublicApi>
+    <TrackPublicApi Condition="$(MSBuildProjectDirectory.Contains('benchmarks'))">false</TrackPublicApi>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(TrackPublicApi)' == 'true'">
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="all" />
+    <AdditionalFiles Include="$(MSBuildProjectDirectory)\PublicAPI\$(TargetFramework)\PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="$(MSBuildProjectDirectory)\PublicAPI\$(TargetFramework)\PublicAPI.Unshipped.txt" />
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />

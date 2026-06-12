@@ -1,18 +1,16 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using Splat.Common.Test;
 
 namespace Splat.Prism.Tests;
 
+/// <summary>Tests for the Prism dependency resolver.</summary>
 [NotInParallel]
 public class DependencyResolverTests
 {
-    /// <summary>
-    /// Tracks CreateScope not being implemented in case it's changed in future.
-    /// </summary>
+    /// <summary>Tracks CreateScope not being implemented in case it's changed in future.</summary>
     [Test]
     public void CreateScope_Throws_NotSupportedException()
     {
@@ -21,9 +19,7 @@ public class DependencyResolverTests
         Assert.Throws<NotSupportedException>(() => container.CreateScope());
     }
 
-    /// <summary>
-    /// Tracks RegisterScoped not being implemented in case it's changed in future.
-    /// </summary>
+    /// <summary>Tracks RegisterScoped not being implemented in case it's changed in future.</summary>
     [Test]
     public void RegisterScoped_Throws_NotSupportedException()
     {
@@ -34,9 +30,7 @@ public class DependencyResolverTests
             () => new ViewOne()));
     }
 
-    /// <summary>
-    /// Tracks RegisterManySingleton not being implemented in case it's changed in future.
-    /// </summary>
+    /// <summary>Tracks RegisterManySingleton not being implemented in case it's changed in future.</summary>
     [Test]
     public void RegisterManySingleton_Throws_NotSupportedException()
     {
@@ -47,9 +41,7 @@ public class DependencyResolverTests
             typeof(ViewOne)));
     }
 
-    /// <summary>
-    /// Test to ensure register many succeeds.
-    /// </summary>
+    /// <summary>Test to ensure register many succeeds.</summary>
     [Test]
     public void RegisterMany_Succeeds()
     {
@@ -60,9 +52,7 @@ public class DependencyResolverTests
             typeof(ViewOne));
     }
 
-    /// <summary>
-    /// Test to ensure a simple resolve succeeds.
-    /// </summary>
+    /// <summary>Test to ensure a simple resolve succeeds.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Resolve_Succeeds()
@@ -75,9 +65,7 @@ public class DependencyResolverTests
         await Assert.That(instance).IsNotNull();
     }
 
-    /// <summary>
-    /// Test to ensure a resolve with name succeeds.
-    /// </summary>
+    /// <summary>Test to ensure a resolve with name succeeds.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Resolve_With_Name_Succeeds()
@@ -90,9 +78,7 @@ public class DependencyResolverTests
         await Assert.That(instance).IsNotNull();
     }
 
-    /// <summary>
-    /// Test to ensure a simple is registered check succeeds.
-    /// </summary>
+    /// <summary>Test to ensure a simple is registered check succeeds.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task IsRegistered_Returns_True()
@@ -105,9 +91,7 @@ public class DependencyResolverTests
         await Assert.That(isRegistered).IsTrue();
     }
 
-    /// <summary>
-    /// Test to ensure a simple is registered check succeeds.
-    /// </summary>
+    /// <summary>Test to ensure a simple is registered check succeeds.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task IsRegistered_With_Name_Returns_True()
@@ -120,9 +104,7 @@ public class DependencyResolverTests
         await Assert.That(isRegistered).IsTrue();
     }
 
-    /// <summary>
-    /// Should resolve the views.
-    /// </summary>
+    /// <summary>Should resolve the views.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task PrismDependencyResolver_Should_Resolve_Views()
@@ -144,9 +126,7 @@ public class DependencyResolverTests
         await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
     }
 
-    /// <summary>
-    /// Should resolve the views.
-    /// </summary>
+    /// <summary>Should resolve the views.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task PrismDependencyResolver_Should_Resolve_Named_View()
@@ -160,9 +140,7 @@ public class DependencyResolverTests
         await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
     }
 
-    /// <summary>
-    /// Should resolve the view models.
-    /// </summary>
+    /// <summary>Should resolve the view models.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task PrismDependencyResolver_Should_Resolve_View_Models()
@@ -182,9 +160,7 @@ public class DependencyResolverTests
         }
     }
 
-    /// <summary>
-    /// Should resolve the screen.
-    /// </summary>
+    /// <summary>Should resolve the screen.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task PrismDependencyResolver_Should_Resolve_Screen()
@@ -198,9 +174,7 @@ public class DependencyResolverTests
         await Assert.That(screen).IsTypeOf<MockScreen>();
     }
 
-    /// <summary>
-    /// Should unregister the screen.
-    /// </summary>
+    /// <summary>Should unregister the screen.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task PrismDependencyResolver_Should_UnregisterCurrent_Screen()
@@ -215,9 +189,7 @@ public class DependencyResolverTests
         await Assert.That(AppLocator.Current.GetService<IScreen>()).IsNull();
     }
 
-    /// <summary>
-    /// Should unregister the screen.
-    /// </summary>
+    /// <summary>Should unregister the screen.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task PrismDependencyResolver_Should_UnregisterCurrent_Screen_With_Contract()
@@ -232,9 +204,7 @@ public class DependencyResolverTests
         await Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen))).IsNull();
     }
 
-    /// <summary>
-    /// Should unregister the screen.
-    /// </summary>
+    /// <summary>Should unregister the screen.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task PrismDependencyResolver_Should_UnregisterAll_Screen()
@@ -249,9 +219,7 @@ public class DependencyResolverTests
         await Assert.That(AppLocator.Current.GetService<IScreen>()).IsNull();
     }
 
-    /// <summary>
-    /// Should unregister the screen.
-    /// </summary>
+    /// <summary>Should unregister the screen.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task PrismDependencyResolver_Should_UnregisterAll_Screen_With_Contract()
@@ -266,9 +234,7 @@ public class DependencyResolverTests
         await Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen))).IsNull();
     }
 
-    /// <summary>
-    /// Check to ensure the correct logger is returned.
-    /// </summary>
+    /// <summary>Check to ensure the correct logger is returned.</summary>
     /// <remarks>
     /// Introduced for Splat #331.
     /// </remarks>
@@ -286,9 +252,7 @@ public class DependencyResolverTests
         await Assert.That(d).IsTypeOf<FuncLogManager>();
     }
 
-    /// <summary>
-    /// Test that a pre-init logger isn't overridden.
-    /// </summary>
+    /// <summary>Test that a pre-init logger isn't overridden.</summary>
     /// <remarks>
     /// Introduced for Splat #331.
     /// </remarks>

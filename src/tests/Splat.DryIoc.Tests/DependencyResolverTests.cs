@@ -1,6 +1,5 @@
-// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using DryIoc;
@@ -9,12 +8,11 @@ using Splat.Common.Test;
 
 namespace Splat.DryIoc.Tests;
 
+/// <summary>Tests for the DryIoc dependency resolver.</summary>
 [NotInParallel]
 public class DependencyResolverTests
 {
-    /// <summary>
-    /// Shoulds the resolve nulls.
-    /// </summary>
+    /// <summary>Shoulds the resolve nulls.</summary>
     [Test] //// (Ignore("Further investigation required"))]
     public void Can_Register_And_Resolve_Null_Types()
     {
@@ -58,9 +56,7 @@ public class DependencyResolverTests
 #endif
     }
 
-    /// <summary>
-    /// Should resolve the views.
-    /// </summary>
+    /// <summary>Should resolve the views.</summary>
     [Test]
     public void DryIocDependencyResolver_Should_Register_But_Not_Create_Views()
     {
@@ -71,9 +67,7 @@ public class DependencyResolverTests
         Assert.Throws<InvalidOperationException>(() => AppLocator.Current.GetService<IViewFor<ViewModelOne>>());
     }
 
-    /// <summary>
-    /// Should resolve the views.
-    /// </summary>
+    /// <summary>Should resolve the views.</summary>
     [Test]
     public void DryIocDependencyResolver_Should_Register_With_Contract_But_Not_Create_Views()
     {
@@ -84,9 +78,7 @@ public class DependencyResolverTests
         Assert.Throws<InvalidOperationException>(() => AppLocator.Current.GetService<IViewFor<ViewModelOne>>("name"));
     }
 
-    /// <summary>
-    /// Should resolve the views.
-    /// </summary>
+    /// <summary>Should resolve the views.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DryIocDependencyResolver_Should_Resolve_Views()
@@ -109,9 +101,7 @@ public class DependencyResolverTests
         await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
     }
 
-    /// <summary>
-    /// Should resolve the views.
-    /// </summary>
+    /// <summary>Should resolve the views.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DryIocDependencyResolver_Should_Resolve_Named_View()
@@ -126,9 +116,7 @@ public class DependencyResolverTests
         await Assert.That(viewTwo).IsTypeOf<ViewTwo>();
     }
 
-    /// <summary>
-    /// Should resolve the view models.
-    /// </summary>
+    /// <summary>Should resolve the view models.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DryIocDependencyResolver_Should_Resolve_View_Models()
@@ -150,9 +138,7 @@ public class DependencyResolverTests
         }
     }
 
-    /// <summary>
-    /// Should resolve the screen.
-    /// </summary>
+    /// <summary>Should resolve the screen.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DryIocDependencyResolver_Should_Resolve_Screen()
@@ -167,9 +153,7 @@ public class DependencyResolverTests
         await Assert.That(screen).IsTypeOf<MockScreen>();
     }
 
-    /// <summary>
-    /// Should unregister the screen.
-    /// </summary>
+    /// <summary>Should unregister the screen.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DryIocDependencyResolver_Should_UnregisterCurrent_Screen()
@@ -185,9 +169,7 @@ public class DependencyResolverTests
         await Assert.That(AppLocator.Current.GetService<IScreen>()).IsNull();
     }
 
-    /// <summary>
-    /// Should unregister the screen.
-    /// </summary>
+    /// <summary>Should unregister the screen.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DryIocDependencyResolver_Should_UnregisterCurrent_Screen_With_Contract()
@@ -203,9 +185,7 @@ public class DependencyResolverTests
         await Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen))).IsNull();
     }
 
-    /// <summary>
-    /// Should unregister the screen.
-    /// </summary>
+    /// <summary>Should unregister the screen.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DryIocDependencyResolver_Should_UnregisterAll_Screen()
@@ -221,9 +201,7 @@ public class DependencyResolverTests
         await Assert.That(AppLocator.Current.GetService<IScreen>()).IsNull();
     }
 
-    /// <summary>
-    /// Should unregister the screen.
-    /// </summary>
+    /// <summary>Should unregister the screen.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DryIocDependencyResolver_Should_UnregisterAll_Screen_With_Contract()
@@ -239,22 +217,18 @@ public class DependencyResolverTests
         await Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen))).IsNull();
     }
 
-    /// <summary>
-    /// Should throw an exception if service registration call back called.
-    /// </summary>
+    /// <summary>Should throw an exception if service registration call back called.</summary>
     [Test]
     public void DryIocDependencyResolver_Should_Throw_If_ServiceRegistionCallback_Called()
     {
         var container = new Container();
         container.UseDryIocDependencyResolver();
 
-        Assert.Throws<NotImplementedException>(() =>
+        Assert.Throws<NotSupportedException>(() =>
             AppLocator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), _ => { }));
     }
 
-    /// <summary>
-    /// Check to ensure the correct logger is returned.
-    /// </summary>
+    /// <summary>Check to ensure the correct logger is returned.</summary>
     /// <remarks>
     /// Introduced for Splat #331.
     /// </remarks>
@@ -262,7 +236,10 @@ public class DependencyResolverTests
     [Test]
     public async Task DryIocDependencyResolver_Should_ReturnRegisteredLogger()
     {
-        var c = new Container();
+        // ConsoleLogger exposes both a parameterless and a TextWriter constructor, so DryIoc must be told how to
+        // choose. ConstructorWithResolvableArguments selects the greediest constructor whose arguments can be
+        // resolved; with no TextWriter registered that resolves to the parameterless constructor.
+        var c = new Container(rules => rules.With(FactoryMethod.ConstructorWithResolvableArguments));
         c.UseDryIocDependencyResolver();
         c.Register<ILogger, ConsoleLogger>(ifAlreadyRegistered: IfAlreadyRegistered.Replace);
         AppLocator.CurrentMutable.RegisterConstant<ILogManager>(
@@ -273,9 +250,7 @@ public class DependencyResolverTests
         await Assert.That(d).IsTypeOf<FuncLogManager>();
     }
 
-    /// <summary>
-    /// Test that a pre-init logger isn't overriden.
-    /// </summary>
+    /// <summary>Test that a pre-init logger isn't overriden.</summary>
     /// <remarks>
     /// Introduced for Splat #331.
     /// </remarks>
@@ -293,9 +268,7 @@ public class DependencyResolverTests
         await Assert.That(d).IsTypeOf<FuncLogManager>();
     }
 
-    /// <summary>
-    /// DryIoc dependency resolver should resolve after duplicate keyed registratoion.
-    /// </summary>
+    /// <summary>DryIoc dependency resolver should resolve after duplicate keyed registratoion.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DryIocDependencyResolver_Should_Resolve_AfterDuplicateKeyedRegistration()
@@ -310,9 +283,7 @@ public class DependencyResolverTests
         await Assert.That(vmOne).IsNotNull();
     }
 
-    /// <summary>
-    /// DryIoc dependency resolver should create a resolved object only once when resolving.
-    /// </summary>
+    /// <summary>DryIoc dependency resolver should create a resolved object only once when resolving.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task DryIocDependencyResolver_Should_Create_Once_When_Resolving()

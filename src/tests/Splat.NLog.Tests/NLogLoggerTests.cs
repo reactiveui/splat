@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using NLog;
@@ -12,12 +11,11 @@ using Splat.Tests.Mocks;
 
 namespace Splat.Tests.Logging;
 
-/// <summary>
-/// Tests that verify the <see cref="NLogLogger"/> class.
-/// </summary>
+/// <summary>Tests that verify the <see cref="NLogLogger"/> class.</summary>
 [InheritsTests]
 public class NLogLoggerTests : FullLoggerTestBase
 {
+    /// <summary>Mappings of NLog log levels to equivalent Splat log levels.</summary>
     private static readonly Dictionary<global::NLog.LogLevel, LogLevel> _nLog2Splat = new()
     {
             { global::NLog.LogLevel.Debug, LogLevel.Debug },
@@ -27,6 +25,7 @@ public class NLogLoggerTests : FullLoggerTestBase
             { global::NLog.LogLevel.Info, LogLevel.Info },
     };
 
+    /// <summary>Mappings of Splat log levels to equivalent NLog log levels.</summary>
     private static readonly Dictionary<LogLevel, global::NLog.LogLevel> _splat2NLog = new()
     {
             { LogLevel.Debug, global::NLog.LogLevel.Debug },
@@ -55,17 +54,19 @@ public class NLogLoggerTests : FullLoggerTestBase
         return (new NLogLogger(LogManager.GetCurrentClassLogger()), errorTarget);
     }
 
+    /// <summary>An NLog target that captures rendered log events for assertions.</summary>
     private sealed class MemoryTargetWrapper : TargetWithLayout, IMockLogTarget
     {
-        private readonly List<(LogLevel, string)> _logs = [];
+        /// <summary>The captured log entries.</summary>
+        private readonly List<(LogLevel logLevel, string message)> _logs = [];
 
+        /// <summary>Initializes a new instance of the <see cref="MemoryTargetWrapper"/> class.</summary>
         public MemoryTargetWrapper() => Name = "test wrapper";
 
+        /// <inheritdoc/>
         public ICollection<(LogLevel logLevel, string message)> Logs => _logs;
 
-        /// <summary>
-        /// Renders the logging event message and adds it to the internal ArrayList of log messages.
-        /// </summary>
+        /// <summary>Renders the logging event message and adds it to the internal ArrayList of log messages.</summary>
         /// <param name="logEvent">The logging event.</param>
         protected override void Write(LogEventInfo logEvent) => _logs.Add((_nLog2Splat[logEvent.Level], RenderLogEvent(Layout, logEvent)));
     }

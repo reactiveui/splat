@@ -1,28 +1,28 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace Splat;
 
-/// <summary>
-/// Provides a sealed implementation of <see cref="IStaticFullLogger"/> that wraps an <see cref="IFullLogger"/> instance
-/// for static logging scenarios.
-/// </summary>
+/// <summary>Provides a sealed implementation of <see cref="IStaticFullLogger"/> that wraps an <see cref="IFullLogger"/> instance for static logging scenarios.</summary>
 /// <remarks>This class enables static-style logging by delegating all logging operations to the provided <see
 /// cref="IFullLogger"/> instance. It is typically used to facilitate logging in static contexts where dependency
 /// injection is not available. All log messages are automatically suffixed with the caller member name to aid in
 /// tracing log origins.</remarks>
+[SuppressMessage(
+    "Minor Code Smell",
+    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    Justification = "The generic type parameter is the caller-supplied calling type used only to scope the log entry; it intentionally has no corresponding method parameter and cannot be inferred.")]
 public sealed class StaticFullLogger : IStaticFullLogger
 {
+    /// <summary>The wrapped logger that log calls are forwarded to.</summary>
     private readonly IFullLogger _fullLogger;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="StaticFullLogger"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="StaticFullLogger"/> class.</summary>
     /// <param name="fullLogger">The <see cref="IFullLogger"/> to wrap in this class.</param>
     public StaticFullLogger(IFullLogger fullLogger)
     {
@@ -58,7 +58,13 @@ public sealed class StaticFullLogger : IStaticFullLogger
             argument2);
 
     /// <inheritdoc/>
-    public void Debug<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string? message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [CallerMemberName] string? callerMemberName = null) =>
+    public void Debug<TArgument1, TArgument2, TArgument3>(
+        IFormatProvider formatProvider,
+        string? message,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        [CallerMemberName] string? callerMemberName = null) =>
         _fullLogger.Debug(
             formatProvider,
             GetSuffixedCallerData(message, callerMemberName),
@@ -91,7 +97,13 @@ public sealed class StaticFullLogger : IStaticFullLogger
             argument2);
 
     /// <inheritdoc/>
-    public void Info<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string? message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [CallerMemberName] string? callerMemberName = null) =>
+    public void Info<TArgument1, TArgument2, TArgument3>(
+        IFormatProvider formatProvider,
+        string? message,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        [CallerMemberName] string? callerMemberName = null) =>
         _fullLogger.Info(
             formatProvider,
             GetSuffixedCallerData(message, callerMemberName),
@@ -124,7 +136,13 @@ public sealed class StaticFullLogger : IStaticFullLogger
             argument2);
 
     /// <inheritdoc/>
-    public void Warn<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string? message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [CallerMemberName] string? callerMemberName = null) =>
+    public void Warn<TArgument1, TArgument2, TArgument3>(
+        IFormatProvider formatProvider,
+        string? message,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        [CallerMemberName] string? callerMemberName = null) =>
         _fullLogger.Warn(
             formatProvider,
             GetSuffixedCallerData(message, callerMemberName),
@@ -157,7 +175,13 @@ public sealed class StaticFullLogger : IStaticFullLogger
             argument2);
 
     /// <inheritdoc/>
-    public void Error<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string? message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [CallerMemberName] string? callerMemberName = null) =>
+    public void Error<TArgument1, TArgument2, TArgument3>(
+        IFormatProvider formatProvider,
+        string? message,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        [CallerMemberName] string? callerMemberName = null) =>
         _fullLogger.Error(
             formatProvider,
             GetSuffixedCallerData(message, callerMemberName),
@@ -190,7 +214,13 @@ public sealed class StaticFullLogger : IStaticFullLogger
             argument2);
 
     /// <inheritdoc/>
-    public void Fatal<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, string? message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, [CallerMemberName] string? callerMemberName = null) =>
+    public void Fatal<TArgument1, TArgument2, TArgument3>(
+        IFormatProvider formatProvider,
+        string? message,
+        TArgument1 argument1,
+        TArgument2 argument2,
+        TArgument3 argument3,
+        [CallerMemberName] string? callerMemberName = null) =>
         _fullLogger.Fatal(
             formatProvider,
             GetSuffixedCallerData(message, callerMemberName),
@@ -202,14 +232,21 @@ public sealed class StaticFullLogger : IStaticFullLogger
     public void Write(string? message, LogLevel logLevel, [CallerMemberName] string? callerMemberName = null) => _fullLogger.Write(GetSuffixedCallerData(message, callerMemberName), logLevel);
 
     /// <inheritdoc/>
-    public void Write(Exception exception, string? message, LogLevel logLevel, [CallerMemberName] string? callerMemberName = null) => _fullLogger.Write(exception, GetSuffixedCallerData(message, callerMemberName), logLevel);
+    public void Write(Exception exception, string? message, LogLevel logLevel, [CallerMemberName] string? callerMemberName = null) =>
+        _fullLogger.Write(exception, GetSuffixedCallerData(message, callerMemberName), logLevel);
 
     /// <inheritdoc/>
-    public void Write([Localizable(false)] string? message, [Localizable(false)] Type type, LogLevel logLevel, [CallerMemberName] string? callerMemberName = null) => _fullLogger.Write(GetSuffixedCallerData(message, callerMemberName), type, logLevel);
+    public void Write([Localizable(false)] string? message, [Localizable(false)] Type type, LogLevel logLevel, [CallerMemberName] string? callerMemberName = null) =>
+        _fullLogger.Write(GetSuffixedCallerData(message, callerMemberName), type, logLevel);
 
     /// <inheritdoc/>
-    public void Write(Exception exception, [Localizable(false)] string? message, [Localizable(false)] Type type, LogLevel logLevel, [CallerMemberName] string? callerMemberName = null) => _fullLogger.Write(exception, GetSuffixedCallerData(message, callerMemberName), type, logLevel);
+    public void Write(Exception exception, [Localizable(false)] string? message, [Localizable(false)] Type type, LogLevel logLevel, [CallerMemberName] string? callerMemberName = null) =>
+        _fullLogger.Write(exception, GetSuffixedCallerData(message, callerMemberName), type, logLevel);
 
+    /// <summary>Appends the calling member name to a log message.</summary>
+    /// <param name="message">The log message.</param>
+    /// <param name="callerMemberName">The name of the calling member.</param>
+    /// <returns>The message suffixed with the caller member name.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static string GetSuffixedCallerData(string? message, string? callerMemberName) =>
         $"{message} ({callerMemberName})";

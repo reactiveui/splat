@@ -1,0 +1,44 @@
+#nullable enable
+Splat.Builder.DryIocSplatModule
+Splat.Builder.DryIocSplatModule.Configure(Splat.IMutableDependencyResolver! resolver) -> void
+Splat.Builder.DryIocSplatModule.DryIocSplatModule(DryIoc.IContainer! container) -> void
+Splat.DryIoc.DryIocDependencyResolver
+Splat.DryIoc.DryIocDependencyResolver.Dispose() -> void
+Splat.DryIoc.DryIocDependencyResolver.DryIocDependencyResolver(DryIoc.IContainer? container = null) -> void
+Splat.DryIoc.DryIocDependencyResolver.GetService(System.Type? serviceType) -> object?
+Splat.DryIoc.DryIocDependencyResolver.GetService<T>() -> T?
+Splat.DryIoc.DryIocDependencyResolver.GetService<T>(string? contract) -> T?
+Splat.DryIoc.DryIocDependencyResolver.GetServices(System.Type? serviceType) -> System.Collections.Generic.IEnumerable<object!>!
+Splat.DryIoc.DryIocDependencyResolver.GetServices<T>() -> System.Collections.Generic.IEnumerable<T>!
+Splat.DryIoc.DryIocDependencyResolver.GetServices<T>(string? contract) -> System.Collections.Generic.IEnumerable<T>!
+Splat.DryIoc.DryIocDependencyResolver.HasRegistration(System.Type? serviceType) -> bool
+Splat.DryIoc.DryIocDependencyResolver.HasRegistration(System.Type? serviceType, string? contract) -> bool
+Splat.DryIoc.DryIocDependencyResolver.HasRegistration<T>() -> bool
+Splat.DryIoc.DryIocDependencyResolver.HasRegistration<T>(string? contract) -> bool
+Splat.DryIoc.DryIocDependencyResolver.Register(System.Func<object?>! factory, System.Type? serviceType) -> void
+Splat.DryIoc.DryIocDependencyResolver.Register<T>(System.Func<T?>! factory) -> void
+Splat.DryIoc.DryIocDependencyResolver.Register<T>(System.Func<T?>! factory, string? contract) -> void
+Splat.DryIoc.DryIocDependencyResolver.RegisterConstant<T>(T? value) -> void
+Splat.DryIoc.DryIocDependencyResolver.RegisterConstant<T>(T? value, string? contract) -> void
+Splat.DryIoc.DryIocDependencyResolver.RegisterLazySingleton<T>(System.Func<T?>! valueFactory) -> void
+Splat.DryIoc.DryIocDependencyResolver.RegisterLazySingleton<T>(System.Func<T?>! valueFactory, string? contract) -> void
+Splat.DryIoc.DryIocDependencyResolver.ServiceRegistrationCallback(System.Type! serviceType, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.DryIoc.DryIocDependencyResolver.ServiceRegistrationCallback<T>(System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.DryIoc.DryIocDependencyResolver.ServiceRegistrationCallback<T>(string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+Splat.DryIoc.DryIocDependencyResolver.UnregisterAll(System.Type? serviceType) -> void
+Splat.DryIoc.DryIocDependencyResolver.UnregisterAll<T>() -> void
+Splat.DryIoc.DryIocDependencyResolver.UnregisterAll<T>(string? contract) -> void
+Splat.DryIoc.DryIocDependencyResolver.UnregisterCurrent(System.Type? serviceType) -> void
+Splat.DryIoc.DryIocDependencyResolver.UnregisterCurrent<T>() -> void
+Splat.DryIoc.DryIocDependencyResolver.UnregisterCurrent<T>(string? contract) -> void
+Splat.DryIoc.SplatDryIocExtensions
+Splat.DryIoc.SplatDryIocExtensions.extension(DryIoc.IContainer!)
+Splat.DryIoc.SplatDryIocExtensions.extension(DryIoc.IContainer!).UseDryIocDependencyResolver() -> void
+static Splat.DryIoc.SplatDryIocExtensions.UseDryIocDependencyResolver(this DryIoc.IContainer! container) -> void
+virtual Splat.DryIoc.DryIocDependencyResolver.Dispose(bool disposing) -> void
+virtual Splat.DryIoc.DryIocDependencyResolver.GetService(System.Type? serviceType, string? contract) -> object?
+virtual Splat.DryIoc.DryIocDependencyResolver.GetServices(System.Type? serviceType, string? contract) -> System.Collections.Generic.IEnumerable<object!>!
+virtual Splat.DryIoc.DryIocDependencyResolver.Register(System.Func<object?>! factory, System.Type? serviceType, string? contract) -> void
+virtual Splat.DryIoc.DryIocDependencyResolver.ServiceRegistrationCallback(System.Type! serviceType, string? contract, System.Action<System.IDisposable!>! callback) -> System.IDisposable!
+virtual Splat.DryIoc.DryIocDependencyResolver.UnregisterAll(System.Type? serviceType, string? contract) -> void
+virtual Splat.DryIoc.DryIocDependencyResolver.UnregisterCurrent(System.Type? serviceType, string? contract) -> void

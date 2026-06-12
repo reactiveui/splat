@@ -1,7 +1,9 @@
-﻿// Copyright (c) 2026 ReactiveUI. All rights reserved.
-// Licensed to ReactiveUI under one or more agreements.
-// ReactiveUI licenses this file to you under the MIT license.
+﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
+
+using Splat.Log4Net;
+using Splat.Tests.Mocks;
 
 using log4net;
 using log4net.Core;
@@ -9,18 +11,14 @@ using log4net.Layout;
 using log4net.Repository;
 using log4net.Repository.Hierarchy;
 
-using Splat.Log4Net;
-using Splat.Tests.Mocks;
-
 namespace Splat.Tests.Logging;
 
-/// <summary>
-/// Tests that verify the <see cref="Log4NetLogger"/> class.
-/// </summary>
+/// <summary>Tests that verify the <see cref="Log4NetLogger"/> class.</summary>
 [InheritsTests]
 [NotInParallel]
 public class Log4NetLoggerTests : FullLoggerTestBase
 {
+    /// <summary>Mappings of log4net levels to equivalent Splat log levels.</summary>
     private static readonly Dictionary<Level, LogLevel> _log4Net2Splat = new()
     {
         { Level.Debug, LogLevel.Debug },
@@ -30,6 +28,7 @@ public class Log4NetLoggerTests : FullLoggerTestBase
         { Level.Fatal, LogLevel.Fatal },
     };
 
+    /// <summary>Mappings of Splat log levels to equivalent log4net levels.</summary>
     private static readonly Dictionary<LogLevel, Level> _splat2log4net = new()
     {
         { LogLevel.Debug, Level.Debug },
@@ -39,12 +38,13 @@ public class Log4NetLoggerTests : FullLoggerTestBase
         { LogLevel.Fatal, Level.Fatal },
     };
 
+    /// <summary>The log4net hierarchy repository used during the test.</summary>
     private Hierarchy? _hierarchy;
+
+    /// <summary>The memory appender currently attached to the hierarchy root.</summary>
     private log4net.Appender.MemoryAppender? _currentAppender;
 
-    /// <summary>
-    /// Set up clean state before each test to prevent state leakage.
-    /// </summary>
+    /// <summary>Set up clean state before each test to prevent state leakage.</summary>
     [Before(HookType.Test)]
     public void SetupTest()
     {
@@ -58,26 +58,26 @@ public class Log4NetLoggerTests : FullLoggerTestBase
         _hierarchy.ResetConfiguration();
     }
 
-    /// <summary>
-    /// Clean up the current test's appender after each test.
-    /// </summary>
+    /// <summary>Clean up the current test's appender after each test.</summary>
     [After(HookType.Test)]
     public void CleanupTest()
     {
-        if (_hierarchy != null && _currentAppender != null)
+        if (_hierarchy is not null && _currentAppender is not null)
         {
             _hierarchy.Root.RemoveAppender(_currentAppender);
             _currentAppender.Close();
             _currentAppender = null;
         }
 
-        if (_hierarchy != null)
+        if (_hierarchy is null)
         {
-            // Reset to a clean state for the next test
-            _hierarchy.Root.RemoveAllAppenders();
-            _hierarchy.ResetConfiguration();
-            _hierarchy = null;
+            return;
         }
+
+        // Reset to a clean state for the next test
+        _hierarchy.Root.RemoveAllAppenders();
+        _hierarchy.ResetConfiguration();
+        _hierarchy = null;
     }
 
     /// <inheritdoc/>
@@ -115,31 +115,36 @@ public class Log4NetLoggerTests : FullLoggerTestBase
         return (new WrappingFullLogger(new Log4NetLogger(log4netLogger)), memoryWrapper);
     }
 
+    /// <summary>Wraps a log4net memory appender and exposes captured events for assertions.</summary>
+    /// <param name="memoryTarget">The memory appender to wrap.</param>
     private sealed class MemoryTargetWrapper(log4net.Appender.MemoryAppender memoryTarget) : IMockLogTarget
     {
+        /// <summary>Gets the underlying log4net memory appender.</summary>
         public log4net.Appender.MemoryAppender MemoryTarget { get; } = memoryTarget;
 
-        public ICollection<(LogLevel logLevel, string message)> Logs
+        /// <inheritdoc/>
+        public ICollection<(LogLevel logLevel, string message)> Logs => BuildLogs();
+
+        /// <summary>Flushes the appender and projects its captured events into Splat log entries.</summary>
+        /// <returns>The captured log entries.</returns>
+        private List<(LogLevel logLevel, string message)> BuildLogs()
         {
-            get
+            MemoryTarget.Flush(0);
+            return MemoryTarget.GetEvents().Select(x =>
             {
-                MemoryTarget.Flush(0);
-                return MemoryTarget.GetEvents().Select(x =>
-                {
 #if NET8_0_OR_GREATER
-                    var currentLevel = _log4Net2Splat.GetValueOrDefault(x.Level ?? Level.Debug, LogLevel.Debug);
+                var currentLevel = _log4Net2Splat.GetValueOrDefault(x.Level ?? Level.Debug, LogLevel.Debug);
 #else
-                    var levelKey = x.Level ?? Level.Debug;
-                    var currentLevel = _log4Net2Splat.ContainsKey(levelKey) ? _log4Net2Splat[levelKey] : LogLevel.Debug;
+                var levelKey = x.Level ?? Level.Debug;
+                var currentLevel = _log4Net2Splat.ContainsKey(levelKey) ? _log4Net2Splat[levelKey] : LogLevel.Debug;
 #endif
 
-                    return x.ExceptionObject switch
-                    {
-                        not null => (currentLevel, $"{x.MessageObject} {x.ExceptionObject}"),
-                        _ => (currentLevel, x.MessageObject?.ToString() ?? string.Empty)
-                    };
-                }).ToList();
-            }
+                return x.ExceptionObject switch
+                {
+                    not null => (currentLevel, $"{x.MessageObject} {x.ExceptionObject}"),
+                    _ => (currentLevel, x.MessageObject?.ToString() ?? string.Empty)
+                };
+            }).ToList();
         }
     }
 }
