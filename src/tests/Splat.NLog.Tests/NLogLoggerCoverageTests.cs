@@ -14,6 +14,9 @@ namespace Splat.Tests.Logging;
 [NotInParallel]
 public class NLogLoggerCoverageTests
 {
+    /// <summary>A log-level value outside the defined range, used to verify out-of-range handling.</summary>
+    private const int OutOfRangeLogLevel = 999;
+
     /// <summary>Mappings of NLog log levels to equivalent Splat log levels.</summary>
     private static readonly Dictionary<global::NLog.LogLevel, LogLevel> _nLog2Splat = new()
     {
@@ -140,7 +143,7 @@ public class NLogLoggerCoverageTests
     {
         var (logger, _) = GetLogger(LogLevel.Debug);
 
-        await Assert.That(() => logger.Write("bad", (LogLevel)999)).Throws<ArgumentOutOfRangeException>();
+        await Assert.That(() => logger.Write("bad", (LogLevel)OutOfRangeLogLevel)).Throws<ArgumentOutOfRangeException>();
     }
 
     /// <summary>Verifies that disposing the logger does not throw.</summary>
@@ -150,9 +153,7 @@ public class NLogLoggerCoverageTests
     {
         var (logger, _) = GetLogger(LogLevel.Debug);
 
-        var disposable = (IDisposable)logger;
-
-        await Assert.That(() => disposable.Dispose()).ThrowsNothing();
+        await Assert.That(() => ((IDisposable)logger).Dispose()).ThrowsNothing();
     }
 
     /// <summary>Verifies that the constructor throws when given a null inner logger.</summary>

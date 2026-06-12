@@ -15,6 +15,9 @@ namespace Splat.Tests.Logging;
 [NotInParallel]
 public class MicrosoftExtensionsLogProviderCoverageTests
 {
+    /// <summary>The category name used when creating the logger under test.</summary>
+    private const string Category = "MyCategory";
+
     /// <summary>Verifies the provider creates a non-null logger.</summary>
     /// <returns>A task representing the asynchronous test operation.</returns>
     [Test]
@@ -22,7 +25,7 @@ public class MicrosoftExtensionsLogProviderCoverageTests
     {
         using var provider = new MicrosoftExtensionsLogProvider();
 
-        var logger = provider.CreateLogger("MyCategory");
+        var logger = provider.CreateLogger(Category);
 
         await Assert.That(logger).IsNotNull();
     }
@@ -50,7 +53,7 @@ public class MicrosoftExtensionsLogProviderCoverageTests
     public async Task IsEnabled_TrueForAllExceptNone(MsLogLevel logLevel)
     {
         using var provider = new MicrosoftExtensionsLogProvider();
-        var logger = provider.CreateLogger("MyCategory");
+        var logger = provider.CreateLogger(Category);
 
         await Assert.That(logger.IsEnabled(logLevel)).IsTrue();
     }
@@ -61,7 +64,7 @@ public class MicrosoftExtensionsLogProviderCoverageTests
     public async Task IsEnabled_FalseForNone()
     {
         using var provider = new MicrosoftExtensionsLogProvider();
-        var logger = provider.CreateLogger("MyCategory");
+        var logger = provider.CreateLogger(Category);
 
         await Assert.That(logger.IsEnabled(MsLogLevel.None)).IsFalse();
     }
@@ -72,7 +75,7 @@ public class MicrosoftExtensionsLogProviderCoverageTests
     public async Task BeginScope_DoesNotThrow()
     {
         using var provider = new MicrosoftExtensionsLogProvider();
-        var logger = provider.CreateLogger("MyCategory");
+        var logger = provider.CreateLogger(Category);
 
         await Assert.That(() => logger.BeginScope("state")).ThrowsNothing();
     }
@@ -86,9 +89,9 @@ public class MicrosoftExtensionsLogProviderCoverageTests
         var capture = RegisterCapturingLogManager();
 
         using var provider = new MicrosoftExtensionsLogProvider();
-        var logger = provider.CreateLogger("MyCategory");
+        var logger = provider.CreateLogger(Category);
 
-        logger.Log(MsLogLevel.None, new EventId(0), "state", null, static (state, _) => state.ToString()!);
+        logger.Log(MsLogLevel.None, new EventId(0), "state", null, static (state, _) => state);
 
         await Assert.That(capture.Logs).IsEmpty();
     }
@@ -109,9 +112,9 @@ public class MicrosoftExtensionsLogProviderCoverageTests
         var capture = RegisterCapturingLogManager();
 
         using var provider = new MicrosoftExtensionsLogProvider();
-        var logger = provider.CreateLogger("MyCategory");
+        var logger = provider.CreateLogger(Category);
 
-        logger.Log(msLevel, new EventId(0), "hello", null, static (state, _) => state.ToString()!);
+        logger.Log(msLevel, new EventId(0), "hello", null, static (state, _) => state);
 
         await Assert.That(capture.Logs.Count).IsEqualTo(1);
         await Assert.That(capture.Logs[0].logLevel).IsEqualTo(expectedSplatLevel);
@@ -126,7 +129,7 @@ public class MicrosoftExtensionsLogProviderCoverageTests
         RegisterCapturingLogManager();
 
         using var provider = new MicrosoftExtensionsLogProvider();
-        var logger = provider.CreateLogger("MyCategory");
+        var logger = provider.CreateLogger(Category);
 
         await Assert.That(() => logger.Log<string>(MsLogLevel.Information, new EventId(0), "state", null, null!)).Throws<ArgumentNullException>();
     }

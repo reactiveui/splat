@@ -8,6 +8,9 @@ namespace Splat.Tests.Logging;
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2201:Do not raise reserved exception types", Justification = "Deliberate usage of Exception for testing")]
 public class ActionLoggerCoverageTests
 {
+    /// <summary>The message written and asserted on by the logger tests.</summary>
+    private const string TestMessage = "This is a test.";
+
     /// <summary>Test that the Level property is settable and gettable.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -35,11 +38,11 @@ public class ActionLoggerCoverageTests
             null!,
             null!);
 
-        logger.Write("This is a test.", LogLevel.Info);
+        logger.Write(TestMessage, LogLevel.Info);
 
         using (Assert.Multiple())
         {
-            await Assert.That(message).IsEqualTo("This is a test.");
+            await Assert.That(message).IsEqualTo(TestMessage);
             await Assert.That(level).IsEqualTo(LogLevel.Info);
         }
     }
@@ -63,11 +66,11 @@ public class ActionLoggerCoverageTests
             null!,
             null!);
 
-        logger.Write("This is a test.", typeof(ActionLoggerCoverageTests), LogLevel.Warn);
+        logger.Write(TestMessage, typeof(ActionLoggerCoverageTests), LogLevel.Warn);
 
         using (Assert.Multiple())
         {
-            await Assert.That(message).IsEqualTo("This is a test.");
+            await Assert.That(message).IsEqualTo(TestMessage);
             await Assert.That(type).IsEqualTo(typeof(ActionLoggerCoverageTests));
             await Assert.That(level).IsEqualTo(LogLevel.Warn);
         }
@@ -93,12 +96,12 @@ public class ActionLoggerCoverageTests
             },
             null!);
 
-        logger.Write(expected, "This is a test.", LogLevel.Error);
+        logger.Write(expected, TestMessage, LogLevel.Error);
 
         using (Assert.Multiple())
         {
             await Assert.That(captured).IsSameReferenceAs(expected);
-            await Assert.That(message).IsEqualTo("This is a test.");
+            await Assert.That(message).IsEqualTo(TestMessage);
             await Assert.That(level).IsEqualTo(LogLevel.Error);
         }
     }
@@ -125,12 +128,12 @@ public class ActionLoggerCoverageTests
                 level = l;
             });
 
-        logger.Write(expected, "This is a test.", typeof(ActionLoggerCoverageTests), LogLevel.Fatal);
+        logger.Write(expected, TestMessage, typeof(ActionLoggerCoverageTests), LogLevel.Fatal);
 
         using (Assert.Multiple())
         {
             await Assert.That(captured).IsSameReferenceAs(expected);
-            await Assert.That(message).IsEqualTo("This is a test.");
+            await Assert.That(message).IsEqualTo(TestMessage);
             await Assert.That(type).IsEqualTo(typeof(ActionLoggerCoverageTests));
             await Assert.That(level).IsEqualTo(LogLevel.Fatal);
         }
@@ -145,10 +148,10 @@ public class ActionLoggerCoverageTests
 
         await Assert.That(() =>
         {
-            logger.Write("This is a test.", LogLevel.Debug);
-            logger.Write("This is a test.", typeof(ActionLoggerCoverageTests), LogLevel.Debug);
-            logger.Write(new Exception("boom"), "This is a test.", LogLevel.Debug);
-            logger.Write(new Exception("boom"), "This is a test.", typeof(ActionLoggerCoverageTests), LogLevel.Debug);
+            logger.Write(TestMessage, LogLevel.Debug);
+            logger.Write(TestMessage, typeof(ActionLoggerCoverageTests), LogLevel.Debug);
+            logger.Write(new Exception("boom"), TestMessage, LogLevel.Debug);
+            logger.Write(new Exception("boom"), TestMessage, typeof(ActionLoggerCoverageTests), LogLevel.Debug);
         }).ThrowsNothing();
     }
 }

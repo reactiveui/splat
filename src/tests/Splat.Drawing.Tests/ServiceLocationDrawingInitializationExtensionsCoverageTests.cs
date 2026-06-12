@@ -34,7 +34,7 @@ public sealed class ServiceLocationDrawingInitializationExtensionsCoverageTests
     [Test]
     public async Task RegisterPlatformBitmapLoader_NullResolver_Throws()
     {
-        IMutableDependencyResolver resolver = null!;
+        const IMutableDependencyResolver resolver = null!;
 
         await Assert.That(() => resolver.RegisterPlatformBitmapLoader()).Throws<ArgumentNullException>();
     }

@@ -100,7 +100,7 @@ public class SerilogSplatModuleCoverageTests
     [Test]
     public async Task UseSerilogFullLogger_Default_Throws_For_Null_Resolver()
     {
-        IMutableDependencyResolver resolver = null!;
+        const IMutableDependencyResolver resolver = null!;
 
         await Assert.That(() => resolver.UseSerilogFullLogger()).Throws<ArgumentNullException>();
     }
@@ -110,7 +110,7 @@ public class SerilogSplatModuleCoverageTests
     [Test]
     public async Task UseSerilogFullLogger_With_Logger_Throws_For_Null_Resolver()
     {
-        IMutableDependencyResolver resolver = null!;
+        const IMutableDependencyResolver resolver = null!;
         global::Serilog.ILogger logger = new LoggerConfiguration().CreateLogger();
 
         await Assert.That(() => resolver.UseSerilogFullLogger(logger)).Throws<ArgumentNullException>();

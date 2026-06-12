@@ -45,7 +45,7 @@ public class MicrosoftExtensionsLoggingExtensionsCoverageTests
     [Test]
     public async Task UseMicrosoftExtensionsLoggingWithWrappingFullLogger_NullResolverThrows()
     {
-        IMutableDependencyResolver resolver = null!;
+        const IMutableDependencyResolver resolver = null!;
 
         await Assert.That(() => resolver.UseMicrosoftExtensionsLoggingWithWrappingFullLogger(NullLoggerFactory.Instance)).Throws<ArgumentNullException>();
     }
@@ -75,8 +75,7 @@ public class MicrosoftExtensionsLoggingExtensionsCoverageTests
         ILoggingBuilder? captured = null;
         using var loggerFactory = LoggerFactory.Create(builder =>
         {
-            var result = builder.AddSplat();
-            captured = result;
+            captured = builder.AddSplat();
         });
 
         await Assert.That(captured).IsNotNull();
@@ -87,7 +86,7 @@ public class MicrosoftExtensionsLoggingExtensionsCoverageTests
     [Test]
     public async Task AddSplat_OnLoggingBuilder_NullThrows()
     {
-        ILoggingBuilder builder = null!;
+        const ILoggingBuilder builder = null!;
 
         await Assert.That(() => builder.AddSplat()).Throws<ArgumentNullException>();
     }
@@ -109,7 +108,7 @@ public class MicrosoftExtensionsLoggingExtensionsCoverageTests
     [Test]
     public async Task AddSplat_OnLoggerFactory_NullThrows()
     {
-        ILoggerFactory loggerFactory = null!;
+        const ILoggerFactory loggerFactory = null!;
 
         await Assert.That(() => loggerFactory.AddSplat()).Throws<ArgumentNullException>();
     }

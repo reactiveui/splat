@@ -8,6 +8,11 @@ namespace Splat.Tests.Logging;
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2201:Do not raise reserved exception types", Justification = "Deliberate usage of Exception for testing")]
 public class DebugLoggerCoverageTests
 {
+    /// <summary>A sample debug-level message used across the Write overload tests.</summary>
+    private const string DebugMessage = "debug";
+    /// <summary>A sample message used across the Write overload tests.</summary>
+    private const string SampleMessage = "message";
+
     /// <summary>Test that the Level property is settable and reads back the value that was set.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -44,10 +49,10 @@ public class DebugLoggerCoverageTests
 
         await Assert.That(() =>
         {
-            logger.Write("debug", LogLevel.Debug);
-            logger.Write(new Exception("ex"), "debug", LogLevel.Debug);
-            logger.Write("debug", typeof(DebugLoggerCoverageTests), LogLevel.Info);
-            logger.Write(new Exception("ex"), "debug", typeof(DebugLoggerCoverageTests), LogLevel.Warn);
+            logger.Write(DebugMessage, LogLevel.Debug);
+            logger.Write(new Exception("ex"), DebugMessage, LogLevel.Debug);
+            logger.Write(DebugMessage, typeof(DebugLoggerCoverageTests), LogLevel.Info);
+            logger.Write(new Exception("ex"), DebugMessage, typeof(DebugLoggerCoverageTests), LogLevel.Warn);
         }).ThrowsNothing();
     }
 
@@ -62,10 +67,10 @@ public class DebugLoggerCoverageTests
         {
             foreach (var level in new[] { LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error, LogLevel.Fatal })
             {
-                logger.Write("message", level);
-                logger.Write(new Exception("ex"), "message", level);
-                logger.Write("message", typeof(DebugLoggerCoverageTests), level);
-                logger.Write(new Exception("ex"), "message", typeof(DebugLoggerCoverageTests), level);
+                logger.Write(SampleMessage, level);
+                logger.Write(new Exception("ex"), SampleMessage, level);
+                logger.Write(SampleMessage, typeof(DebugLoggerCoverageTests), level);
+                logger.Write(new Exception("ex"), SampleMessage, typeof(DebugLoggerCoverageTests), level);
             }
         }).ThrowsNothing();
     }

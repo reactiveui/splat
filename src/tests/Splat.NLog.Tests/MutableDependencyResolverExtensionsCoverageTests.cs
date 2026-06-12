@@ -44,7 +44,7 @@ public class MutableDependencyResolverExtensionsCoverageTests
     [Test]
     public async Task UseNLogWithWrappingFullLogger_Null_Resolver_Throws()
     {
-        IMutableDependencyResolver resolver = null!;
+        const IMutableDependencyResolver resolver = null!;
 
         await Assert.That(() => resolver.UseNLogWithWrappingFullLogger()).Throws<ArgumentNullException>();
     }

@@ -7,6 +7,18 @@ namespace Splat.Drawing.Tests;
 /// <summary>Additional coverage tests for <see cref="SplatColor"/> members and classification flags.</summary>
 public sealed class SplatColorCoverageTests
 {
+    /// <summary>The alpha component used by the component-extraction test.</summary>
+    private const byte AlphaComponent = 0x12;
+
+    /// <summary>The red component used by the component-extraction test.</summary>
+    private const byte RedComponent = 0x34;
+
+    /// <summary>The green component used by the component-extraction test.</summary>
+    private const byte GreenComponent = 0x56;
+
+    /// <summary>The blue component used by the component-extraction test.</summary>
+    private const byte BlueComponent = 0x78;
+
     /// <summary>Verifies that a color created from a known color reports as known, named, and not empty.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -66,14 +78,14 @@ public sealed class SplatColorCoverageTests
     [Test]
     public async Task Components_AreExtractedCorrectly()
     {
-        var color = SplatColor.FromArgb(0x12, 0x34, 0x56, 0x78);
+        var color = SplatColor.FromArgb(AlphaComponent, RedComponent, GreenComponent, BlueComponent);
 
         using (Assert.Multiple())
         {
-            await Assert.That(color.A).IsEqualTo((byte)0x12);
-            await Assert.That(color.R).IsEqualTo((byte)0x34);
-            await Assert.That(color.G).IsEqualTo((byte)0x56);
-            await Assert.That(color.B).IsEqualTo((byte)0x78);
+            await Assert.That(color.A).IsEqualTo(AlphaComponent);
+            await Assert.That(color.R).IsEqualTo(RedComponent);
+            await Assert.That(color.G).IsEqualTo(GreenComponent);
+            await Assert.That(color.B).IsEqualTo(BlueComponent);
         }
     }
 
