@@ -28,7 +28,7 @@
     <PackageVersion Include="StyleSharp.Analyzers" Version="3.5.2" />
     <PackageVersion Include="System.Net.Http" Version="4.3.4" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
-    <PackageVersion Include="TUnit" Version="1.54.0" />
+    <PackageVersion Include="TUnit" Version="1.55.2" />
     <PackageVersion Include="Verify.TUnit" Version="31.19.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.6.0" />
     <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.8.0" />
