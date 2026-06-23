@@ -855,15 +855,12 @@ The table below shows the support across various APM packages
 
 | Product | Package | NuGet | Maturity Level | Error Reporting | Feature Usage Tracking | View Tracking |
 |----|----|----|----|----|----|----|
-| Appcenter | [Splat.AppCenter][SplatAppcenterNuGet] | [![SplatAppcenterBadge]][SplatAppcenterNuGet] | Alpha | TODO | Native | Native |
 | Application Insights | [Splat.ApplicationInsights][SplatApplicationInsightsNuGet] | [![SplatApplicationInsightsBadge]][SplatApplicationInsightsNuGet] | Alpha | TODO | Native | Native |
 | Exceptionless | [Splat.Exceptionless][SplatExceptionlessNuGet] | [![SplatExceptionlessBadge]][SplatExceptionlessNuGet] | Alpha | TODO | Native | By Convention |
 | New Relic | N\A | N\A | Not Started | TODO | TODO | TODO
 | OpenTrace | N\A | N\A | Not Started |TODO | TODO | TODO
 | Raygun | [Splat.Raygun][SplatRaygunNuGet] | [![SplatRaygunBadge]][SplatRaygunNuGet] | Prototype | TODO | By Convention | By Convention |
 
-[SplatAppcenterNuGet]: https://www.nuget.org/packages/Splat.Appcenter/
-[SplatAppcenterBadge]: https://img.shields.io/nuget/v/Splat.Appcenter.svg
 [SplatApplicationInsightsNuGet]: https://www.nuget.org/packages/Splat.ApplicationInsights/
 [SplatApplicationInsightsBadge]: https://img.shields.io/nuget/v/Splat.ApplicationInsights.svg
 [SplatExceptionlessNuGet]: https://www.nuget.org/packages/Splat.Exceptionless/
@@ -961,17 +958,6 @@ as subfeatures.
 #### View Tracking
 
 TODO
-
-#### Configuring Appcenter
-
-First configure Appcenter. For guidance see https://docs.microsoft.com/en-us/appcenter/diagnostics/enabling-diagnostics
-
-```cs
-using Splat.AppCenter;
-
-// then in your service locator initialisation
-Locator.CurrentMutable.UseAppcenterApm();
-```
 
 #### Configuring Application Insights
 
