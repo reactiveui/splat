@@ -28,14 +28,12 @@
     <Project Path="Splat.Serilog/Splat.Serilog.csproj" />
   </Folder>
   <Folder Name="/Other/">
-    <Project Path="Splat.AppCenter/Splat.AppCenter.csproj" />
     <Project Path="Splat.ApplicationInsights/Splat.ApplicationInsights.csproj" />
     <Project Path="Splat.Exceptionless/Splat.Exceptionless.csproj" />
     <Project Path="Splat.Raygun/Splat.Raygun.csproj" />
   </Folder>
   <Folder Name="/test/">
     <Project Path="tests/Splat.Aot.Tests/Splat.Aot.Tests.csproj" />
-    <Project Path="tests/Splat.AppCenter.Tests/Splat.AppCenter.Tests.csproj" />
     <Project Path="tests/Splat.Builder.Tests/Splat.Builder.Tests.csproj" />
     <Project Path="tests/Splat.Common.Test/Splat.Common.Test.csproj" />
     <Project Path="tests/Splat.Drawing.Tests/Splat.Drawing.Tests.csproj" />
