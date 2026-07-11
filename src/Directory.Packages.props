@@ -17,7 +17,7 @@
     <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="11.2.5" />
     <PackageVersion Include="MinVer" Version="7.0.0" />
     <PackageVersion Include="Ninject" Version="3.3.6" />
-    <PackageVersion Include="NLog" Version="6.1.3" />
+    <PackageVersion Include="NLog" Version="6.1.4" />
     <PackageVersion Include="Prism.Core" Version="9.0.537" />
     <PackageVersion Include="ReactiveUI.Disposables" Version="6.0.0" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.15.0" />
