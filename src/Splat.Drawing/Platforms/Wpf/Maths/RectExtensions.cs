@@ -16,7 +16,7 @@ public static class RectExtensions
     /// <param name="value">The value the extension members operate on.</param>
     extension(Rect value)
     {
-        /// <summary>Converts a <see cref="Point"/> to a <see cref="System.Drawing.RectangleF"/>.</summary>
+        /// <summary>Converts a <see cref="Rect"/> to a <see cref="System.Drawing.RectangleF"/>.</summary>
         /// <returns>A <see cref="System.Drawing.RectangleF"/> of the value.</returns>
         public System.Drawing.RectangleF FromNative() => new((float)value.X, (float)value.Y, (float)value.Width, (float)value.Height);
     }

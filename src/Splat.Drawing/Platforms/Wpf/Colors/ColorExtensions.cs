@@ -16,7 +16,7 @@ public static class ColorExtensions
     /// <param name="value">The value the extension members operate on.</param>
     extension(Color value)
     {
-        /// <summary>Converts a <see cref="SolidColorBrush"/> into the XAML <see cref="System.Drawing.Color"/>.</summary>
+        /// <summary>Converts a <see cref="Color"/> into the <see cref="System.Drawing.Color"/>.</summary>
         /// <returns>The <see cref="System.Drawing.Color"/> generated.</returns>
         public System.Drawing.Color FromNative() => System.Drawing.Color.FromArgb(value.A, value.R, value.G, value.B);
     }
