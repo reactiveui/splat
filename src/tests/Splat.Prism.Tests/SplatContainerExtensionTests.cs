@@ -192,21 +192,6 @@ public class SplatContainerExtensionTests
             .Throws<InvalidOperationException>();
     }
 
-    /// <summary>
-    /// Verifies the current behavior of named parameterized resolution when the type is registered: it throws.
-    /// This pins the pre-existing inverted-condition behavior of the overload so any future fix is a conscious change.
-    /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task Resolve_WithNameAndParameters_WhenRegistered_Throws()
-    {
-        using var container = new SplatContainerExtension();
-        _ = container.Register(typeof(ViewModelOne), typeof(ViewModelOne), Name);
-
-        await Assert.That(() => container.Resolve(typeof(ViewModelOne), Name, (typeof(string), (object)Name)))
-            .Throws<InvalidOperationException>();
-    }
-
     /// <summary>Verifies that the finalizer disposal path leaves the global locator untouched.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]

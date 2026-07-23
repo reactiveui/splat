@@ -291,6 +291,28 @@ public class DependencyResolverTests
         }
     }
 
+    /// <summary>Resolving a named registration with constructor parameters builds it from the supplied parameters.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Resolve_With_Name_And_Parameters_Creates_Instance_From_Named_Registration()
+    {
+        const string parameterValue = "payload";
+        const string registrationName = "named";
+        using var container = new SplatContainerExtension();
+        _ = container.Register(typeof(ConstructorParameterService), typeof(ConstructorParameterService), registrationName);
+
+        var resolved = container.Resolve(typeof(ConstructorParameterService), registrationName, (typeof(string), (object)parameterValue));
+
+        await Assert.That(resolved).IsTypeOf<ConstructorParameterService>();
+
+        var typed = (ConstructorParameterService)resolved;
+        using (Assert.Multiple())
+        {
+            await Assert.That(typed.Parameters).Count().IsEqualTo(1);
+            await Assert.That(typed.Parameters[0]).IsEqualTo(parameterValue);
+        }
+    }
+
     /// <summary>A service whose constructor records the activation parameters the container supplied to it.</summary>
     private sealed class ConstructorParameterService
     {

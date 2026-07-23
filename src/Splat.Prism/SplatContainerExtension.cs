@@ -234,12 +234,8 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     /// <inheritdoc/>
     [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Existing API")]
     public object Resolve(Type type, string name, params (Type Type, object Instance)[] parameters) =>
-        (!_types.TryGetValue((type, name), out var resolvedType)
-            ? resolvedType switch
-            {
-                null => null,
-                _ => Activator.CreateInstance(resolvedType, parameters.Select(static x => x.Instance))
-            }
+        (_types.TryGetValue((type, name), out var resolvedType)
+            ? Activator.CreateInstance(resolvedType, parameters.Select(static x => x.Instance)) ?? throw new InvalidOperationException(CouldNotCreateTypeMessage)
             : null) ?? throw new InvalidOperationException(MustBeValidValueMessage);
 
     /// <summary>Disposes data associated with the extension.</summary>
