@@ -43,8 +43,8 @@
 
   <!-- Latest versions for modern TFMs (net8.0+) -->
   <ItemGroup>
-    <PackageVersion Include="System.Collections.Immutable" Version="10.0.9" />
-    <PackageVersion Include="System.Text.Json" Version="10.0.9" />
+    <PackageVersion Include="System.Collections.Immutable" Version="10.0.10" />
+    <PackageVersion Include="System.Text.Json" Version="10.0.10" />
   </ItemGroup>
 
   <!-- System.Runtime.Serialization.Formatters: TFM-specific versioning -->
@@ -57,7 +57,7 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="10.0.9" />
+        <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="10.0.10" />
       </ItemGroup>
     </Otherwise>
   </Choose>
