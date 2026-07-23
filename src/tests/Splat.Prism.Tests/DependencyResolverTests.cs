@@ -269,4 +269,36 @@ public class DependencyResolverTests
 
         await Assert.That(d).IsTypeOf<FuncLogManager>();
     }
+
+    /// <summary>Resolving a registered type with constructor parameters should build it from the supplied parameters.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Resolve_With_Parameters_Creates_Instance_From_Registered_Type()
+    {
+        const string parameterValue = "payload";
+        using var container = new SplatContainerExtension();
+        _ = container.Register(typeof(ConstructorParameterService), typeof(ConstructorParameterService));
+
+        var resolved = container.Resolve(typeof(ConstructorParameterService), (typeof(string), (object)parameterValue));
+
+        await Assert.That(resolved).IsTypeOf<ConstructorParameterService>();
+
+        var typed = (ConstructorParameterService)resolved;
+        using (Assert.Multiple())
+        {
+            await Assert.That(typed.Parameters).Count().IsEqualTo(1);
+            await Assert.That(typed.Parameters[0]).IsEqualTo(parameterValue);
+        }
+    }
+
+    /// <summary>A service whose constructor records the activation parameters the container supplied to it.</summary>
+    private sealed class ConstructorParameterService
+    {
+        /// <summary>Initializes a new instance of the <see cref="ConstructorParameterService"/> class.</summary>
+        /// <param name="parameters">The activation parameters supplied by the container.</param>
+        public ConstructorParameterService(IEnumerable<object> parameters) => Parameters = parameters.ToArray();
+
+        /// <summary>Gets the activation parameters the instance was constructed with.</summary>
+        public object[] Parameters { get; }
+    }
 }

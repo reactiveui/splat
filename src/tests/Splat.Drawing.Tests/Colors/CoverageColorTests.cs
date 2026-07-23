@@ -32,6 +32,9 @@ public class CoverageColorTests
     /// <summary>A color name that does not map to any known color.</summary>
     private const string UnknownColorName = "TheBestColor";
 
+    /// <summary>A single channel value used to build an achromatic (R == G == B) color where max and min channels coincide.</summary>
+    private const int AchromaticComponent = 64;
+
     /// <summary>Initialize Splat before each test (fresh state per test).</summary>
     [Before(Test)]
     public void SetUp() => Locator.CurrentMutable.InitializeSplat();
@@ -165,6 +168,28 @@ public class CoverageColorTests
         var hue = fixture.GetHue();
 
         await Assert.That(hue).IsEqualTo(DarkBlueHue).Within(Eps);
+    }
+
+    /// <summary>Verifies that an achromatic color (equal R, G, B) reports zero saturation via the max-equals-min shortcut.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task ColorSaturationForAchromaticColorIsZero()
+    {
+        var fixture = SplatColor.FromArgb(FullAlpha, AchromaticComponent, AchromaticComponent, AchromaticComponent);
+        var saturation = fixture.GetSaturation();
+
+        await Assert.That(saturation).IsEqualTo(0F).Within(Eps);
+    }
+
+    /// <summary>Verifies that an achromatic color (equal R, G, B) reports zero hue via the max-equals-min shortcut.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task ColorHueForAchromaticColorIsZero()
+    {
+        var fixture = SplatColor.FromArgb(FullAlpha, AchromaticComponent, AchromaticComponent, AchromaticComponent);
+        var hue = fixture.GetHue();
+
+        await Assert.That(hue).IsEqualTo(0F).Within(Eps);
     }
 
     /// <summary>Colors to known color has correct value.</summary>

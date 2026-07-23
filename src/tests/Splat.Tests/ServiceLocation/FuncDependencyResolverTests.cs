@@ -27,6 +27,15 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     /// <summary>Zero-based index of the third item.</summary>
     private const int ThirdIndex = 2;
 
+    /// <summary>The value produced by a <see cref="NullServiceType"/>-wrapped registration once unwrapped.</summary>
+    private const string UnwrappedValue = "unwrapped";
+
+    /// <summary>A plain, non-wrapped service value.</summary>
+    private const string PlainValue = "plain";
+
+    /// <summary>The number of services yielded by the mixed wrapped/plain sequence.</summary>
+    private const int MixedServiceCount = 2;
+
     /// <summary>Marker interface used by the tests.</summary>
     private interface ITestInterface;
 
@@ -756,6 +765,69 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(capturedContract).IsEqualTo(MyContract);
     }
 
+    /// <summary>
+    /// Verifies that resolving a null service type over a lazily-evaluated (non-collection) sequence unwraps
+    /// <see cref="NullServiceType"/> markers by materializing a new list.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetServices_WithNullServiceTypeOverNonCollection_UnwrapsMarkers()
+    {
+        // Arrange - the sequence is an iterator, so it is not an ICollection and takes the materializing unwrap path.
+        using var resolver = new FuncDependencyResolver(static (_, _) => WrappedThenPlainServices());
+
+        // Act
+        var services = resolver.GetServices((Type?)null).ToList();
+
+        // Assert - the wrapper is unwrapped to its factory value; the plain value passes through unchanged.
+        using (Assert.Multiple())
+        {
+            await Assert.That(services.Count).IsEqualTo(MixedServiceCount);
+            await Assert.That(services[0]).IsEqualTo(UnwrappedValue);
+            await Assert.That(services[1]).IsEqualTo(PlainValue);
+        }
+    }
+
+    /// <summary>Verifies that an exception thrown while disposing a created lazy singleton is suppressed on <see cref="FuncDependencyResolver.Dispose()"/>.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Dispose_WhenLazySingletonDisposalThrows_DoesNotPropagate()
+    {
+        // Arrange
+        var resolver = GetDependencyResolver();
+        resolver.RegisterLazySingleton(static () => new ThrowingDisposableService());
+
+        // Force creation so the lazy value exists and is disposed during teardown.
+        var service = resolver.GetService<ThrowingDisposableService>();
+        await Assert.That(service).IsNotNull();
+
+        // Act & Assert - the disposal exception from the created singleton must not escape.
+        await Assert.That(() =>
+        {
+            resolver.Dispose();
+            return Task.CompletedTask;
+        }).ThrowsNothing();
+    }
+
+    /// <summary>Verifies that an exception thrown by a registered service during resolver disposal is suppressed.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Dispose_WhenRegisteredServiceDisposalThrows_DoesNotPropagate()
+    {
+        // Arrange - the backing store surfaces a disposable that records the attempt, then throws.
+        var throwing = new TestDisposable(static () => throw new InvalidOperationException("disposal failure"));
+        var resolver = new FuncDependencyResolver((_, _) => new object[] { throwing });
+
+        // Act & Assert
+        await Assert.That(() =>
+        {
+            resolver.Dispose();
+            return Task.CompletedTask;
+        }).ThrowsNothing();
+
+        await Assert.That(throwing.IsDisposed).IsTrue();
+    }
+
     /// <inheritdoc/>
     protected override FuncDependencyResolver GetDependencyResolver()
     {
@@ -848,6 +920,17 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         Type? type,
         string? contract) =>
         services.Remove(NormalizeKey(type, contract));
+
+    /// <summary>
+    /// Yields a <see cref="NullServiceType"/>-wrapped value followed by a plain value as a lazily evaluated
+    /// (non-collection) sequence, forcing the null-service-type unwrap loop that materializes a new list.
+    /// </summary>
+    /// <returns>A non-materialized sequence of services.</returns>
+    private static IEnumerable<object> WrappedThenPlainServices()
+    {
+        yield return new NullServiceType(static () => UnwrappedValue);
+        yield return PlainValue;
+    }
 
     /// <summary>Concrete implementation used as a test service.</summary>
     private sealed class TestClass : ITestInterface;

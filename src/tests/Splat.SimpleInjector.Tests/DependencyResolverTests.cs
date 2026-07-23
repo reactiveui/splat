@@ -111,4 +111,113 @@ public class DependencyResolverTests
         var views = AppLocator.Current.GetServices<ViewOne>();
         await Assert.That(views).IsNotNull();
     }
+
+    /// <summary>The initializer's non-generic Register overload should store every factory and expose them from GetServices.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SimpleInjectorInitializer_NonGenericRegister_ReturnsAllServicesFromGetServices()
+    {
+        const int expectedServiceCount = 2;
+        using var initializer = new SimpleInjectorInitializer();
+        var first = new ViewModelOne();
+        var second = new ViewModelOne();
+        initializer.Register((Func<object?>)(() => first), typeof(IViewModelOne));
+        initializer.Register((Func<object?>)(() => second), typeof(IViewModelOne));
+
+        var services = initializer.GetServices(typeof(IViewModelOne)).ToList();
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(services).Count().IsEqualTo(expectedServiceCount);
+            await Assert.That(services[0]).IsSameReferenceAs(first);
+            await Assert.That(services[1]).IsSameReferenceAs(second);
+        }
+    }
+
+    /// <summary>The initializer's generic GetServices should return the registered instances when a registration exists.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SimpleInjectorInitializer_GetServicesGeneric_WithRegistration_ReturnsInstances()
+    {
+        using var initializer = new SimpleInjectorInitializer();
+        var instance = new ViewModelOne();
+        initializer.Register((Func<object?>)(() => instance), typeof(ViewModelOne));
+
+        var services = initializer.GetServices<ViewModelOne>().ToList();
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(services).Count().IsEqualTo(1);
+            await Assert.That(services[0]).IsSameReferenceAs(instance);
+        }
+    }
+
+    /// <summary>The initializer's generic GetServices should return an empty sequence when nothing is registered.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SimpleInjectorInitializer_GetServicesGeneric_WithoutRegistration_ReturnsEmpty()
+    {
+        using var initializer = new SimpleInjectorInitializer();
+
+        var services = initializer.GetServices<ViewModelOne>().ToList();
+
+        await Assert.That(services).Count().IsEqualTo(0);
+    }
+
+    /// <summary>The initializer's service/implementation Register overload should resolve to the implementation type.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SimpleInjectorInitializer_RegisterServiceImplementation_ResolvesImplementation()
+    {
+        using var initializer = new SimpleInjectorInitializer();
+        initializer.Register<IViewModelOne, ViewModelOne>();
+
+        var service = initializer.GetService<IViewModelOne>();
+
+        await Assert.That(service).IsNotNull();
+        await Assert.That(service).IsTypeOf<ViewModelOne>();
+    }
+
+    /// <summary>The initializer's RegisterLazySingleton should resolve the same instance on every resolution.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SimpleInjectorInitializer_RegisterLazySingleton_ResolvesSameInstance()
+    {
+        using var initializer = new SimpleInjectorInitializer();
+        initializer.RegisterLazySingleton(static () => new ViewModelOne());
+
+        var first = initializer.GetService<ViewModelOne>();
+        var second = initializer.GetService<ViewModelOne>();
+
+        await Assert.That(first).IsNotNull();
+        await Assert.That(second).IsSameReferenceAs(first);
+    }
+
+    /// <summary>The resolver's service/implementation Register overload with a contract is a compatibility no-op that registers nothing.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SimpleInjectorDependencyResolver_RegisterServiceImplementationWithContract_DoesNotRegister()
+    {
+        const string contract = "contract";
+        using var resolver = new SimpleInjectorDependencyResolver(new Container(), new SimpleInjectorInitializer());
+
+        resolver.Register<IViewModelOne, ViewModelOne>(contract);
+
+        await Assert.That(resolver.HasRegistration(typeof(IViewModelOne))).IsFalse();
+    }
+
+    /// <summary>The resolver's RegisterLazySingleton should resolve the same singleton instance on repeated resolutions.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SimpleInjectorDependencyResolver_RegisterLazySingleton_ResolvesSameSingleton()
+    {
+        using var resolver = new SimpleInjectorDependencyResolver(new Container(), new SimpleInjectorInitializer());
+        resolver.RegisterLazySingleton(static () => new ViewModelOne());
+
+        var first = resolver.GetService<ViewModelOne>();
+        var second = resolver.GetService<ViewModelOne>();
+
+        await Assert.That(first).IsNotNull();
+        await Assert.That(second).IsSameReferenceAs(first);
+    }
 }
