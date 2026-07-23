@@ -34,6 +34,7 @@ public static class TargetFrameworkExtensions
     /// <summary>Maps full framework monikers (for example, ".NETCoreApp,Version=v8.0") to their short TFMs (for example, "net8.0").</summary>
     private static readonly Dictionary<string, string> _frameworkNameToShortName = new(StringComparer.Ordinal)
     {
+        [".NETCoreApp,Version=v11.0"] = "net11.0",
         [".NETCoreApp,Version=v10.0"] = "net10.0",
         [".NETCoreApp,Version=v9.0"] = "net9.0",
         [".NETCoreApp,Version=v8.0"] = "net8.0",

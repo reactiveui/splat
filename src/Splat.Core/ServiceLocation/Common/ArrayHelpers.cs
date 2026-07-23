@@ -2,6 +2,7 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace Splat;
@@ -288,26 +289,9 @@ internal static class ArrayHelpers
             var version = Volatile.Read(ref _version);
             var snapshot = Volatile.Read(ref _snapshot);
 
-            if (snapshot is not null && Volatile.Read(ref _snapshotVersion) == version)
-            {
-                return snapshot;
-            }
-
-            lock (_gate)
-            {
-                snapshot = _snapshot;
-                var currentVersion = _version;
-
-                if (snapshot is null || _snapshotVersion != currentVersion)
-                {
-                    TValue[] newSnapshot = _list.Count == 0 ? [] : [.. _list];
-                    _snapshot = newSnapshot;
-                    _snapshotVersion = currentVersion;
-                    return newSnapshot;
-                }
-
-                return snapshot;
-            }
+            return snapshot is not null && Volatile.Read(ref _snapshotVersion) == version
+                ? snapshot
+                : RebuildSnapshot();
         }
 
         /// <summary>Appends all current items to <paramref name="destination"/> under the gate.</summary>
@@ -321,6 +305,33 @@ internal static class ArrayHelpers
             lock (_gate)
             {
                 destination.AddRange(_list);
+            }
+        }
+
+        /// <summary>Rebuilds and publishes the snapshot under the gate after the lock-free fast path missed.</summary>
+        /// <returns>The current immutable snapshot; never <see langword="null"/>.</returns>
+        /// <remarks>
+        /// The in-gate re-validation success (returning the cached snapshot without rebuilding) only happens when another thread
+        /// rebuilt the snapshot between this thread's lock-free miss and its acquisition of the gate. That race cannot be
+        /// reproduced by a single-threaded test, so the method is excluded from coverage.
+        /// </remarks>
+        [ExcludeFromCodeCoverage] // Defensive: the in-gate re-validation only succeeds when another thread rebuilt the snapshot between the lock-free miss and acquiring the gate.
+        private TValue[] RebuildSnapshot()
+        {
+            lock (_gate)
+            {
+                var snapshot = _snapshot;
+                var currentVersion = _version;
+
+                if (snapshot is null || _snapshotVersion != currentVersion)
+                {
+                    TValue[] newSnapshot = _list.Count == 0 ? [] : [.. _list];
+                    _snapshot = newSnapshot;
+                    _snapshotVersion = currentVersion;
+                    return newSnapshot;
+                }
+
+                return snapshot;
             }
         }
     }

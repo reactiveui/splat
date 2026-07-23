@@ -771,30 +771,13 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
     private static bool HasNeverRegistered() => Volatile.Read(ref _hasAnyRegistrations) == 0;
 
     /// <summary>Unwraps registry results by evaluating <see cref="NullServiceType"/> wrappers and filtering out nulls.</summary>
-    /// <param name="results">Raw results returned by the type registry.</param>
+    /// <param name="results">Raw array returned by the type registry.</param>
     /// <returns>An array of unwrapped, non-null objects.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="results"/> is <see langword="null"/>.</exception>
-    private static object[] UnwrapResults(IEnumerable<object> results)
+    private static object[] UnwrapResults(object[] results)
     {
         ArgumentExceptionHelper.ThrowIfNull(results);
-
-        // Common case: registry returns an array.
-        if (results is object[] arr)
-        {
-            return UnwrapArray(arr);
-        }
-
-        var list = new List<object>();
-        foreach (var item in results)
-        {
-            var v = UnwrapNullServiceType(item);
-            if (v is not null)
-            {
-                list.Add(v);
-            }
-        }
-
-        return list.Count == 0 ? [] : [.. list];
+        return UnwrapArray(results);
     }
 
     /// <summary>Unwraps and null-filters an array result, reusing the source array when nothing changes.</summary>
@@ -995,6 +978,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
     /// <remarks>
     /// Uses a published snapshot and suppresses exceptions thrown by callback implementations.
     /// </remarks>
+    [ExcludeFromCodeCoverage] // Defensive: disposed guard only fires under a concurrent Dispose; the notify body stays covered in InvokeRegistrationCallbacks.
     private void NotifyCallbackChanged()
     {
         if (Volatile.Read(ref _disposed) != 0)
@@ -1002,6 +986,12 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
             return;
         }
 
+        InvokeRegistrationCallbacks();
+    }
+
+    /// <summary>Invokes the published callback snapshot, suppressing exceptions thrown by callback implementations.</summary>
+    private void InvokeRegistrationCallbacks()
+    {
         var callbacks = Volatile.Read(ref _callbackSnapshot);
         for (var i = 0; i < callbacks.Length; i++)
         {

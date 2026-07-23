@@ -29,12 +29,9 @@ internal static class AssemblyFinder
     {
         var thisType = typeof(AssemblyFinder);
 
-        var thisTypeName = thisType.AssemblyQualifiedName;
-
-        if (thisTypeName is null)
-        {
-            return default;
-        }
+        // AssemblyQualifiedName is null only for a generic type parameter; AssemblyFinder is a concrete
+        // non-generic type, so it is always populated here.
+        var thisTypeName = thisType.AssemblyQualifiedName!;
 
         AssemblyName[] toSearch =
         [

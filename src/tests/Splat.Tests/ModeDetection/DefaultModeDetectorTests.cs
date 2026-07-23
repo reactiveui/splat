@@ -359,4 +359,26 @@ public class DefaultModeDetectorTests
             await Assert.That(hasMTPAssembly || result == true).IsTrue();
         }
     }
+
+    /// <summary>
+    /// Verifies the marker matching helper across null, empty, matching, and non-matching names,
+    /// including case-insensitive comparison.
+    /// </summary>
+    /// <param name="name">The candidate name to test.</param>
+    /// <param name="expected">The expected match result.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    [Arguments(null, false)]
+    [Arguments("", false)]
+    [Arguments("just-an-ordinary-app", false)]
+    [Arguments("MyTestHostRunner", true)]
+    [Arguments("some/path/to/VSTEST.console", true)]
+    public async Task NameContainsAnyMarker_MatchesExpected(string? name, bool expected)
+    {
+        var markers = new[] { "testhost", "vstest" };
+
+        var actual = DefaultModeDetector.NameContainsAnyMarker(name, markers, StringComparison.OrdinalIgnoreCase);
+
+        await Assert.That(actual).IsEqualTo(expected);
+    }
 }

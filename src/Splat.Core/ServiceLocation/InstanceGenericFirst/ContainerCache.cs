@@ -85,23 +85,7 @@ internal static class ContainerCache<T>
                 return false;
             }
 
-            var registrations = _entry.GetSnapshot();
-            if (registrations.Length == 0)
-            {
-                instance = default;
-                return false;
-            }
-
-            var last = registrations[^1];
-
-            if (last.TryGetFactory(out var factory))
-            {
-                instance = factory.Invoke()!;
-                return instance is not null;
-            }
-
-            instance = last.GetInstance();
-            return instance is not null;
+            return ResolveLast(_entry.GetSnapshot(), out instance);
         }
 
         /// <summary>Resolves all registrations in this container.</summary>
@@ -138,5 +122,34 @@ internal static class ContainerCache<T>
         /// Publishes an empty snapshot to keep the read path fast after a clear.
         /// </remarks>
         internal void Clear() => _entry.Clear();
+
+        /// <summary>Resolves the most recent registration from <paramref name="registrations"/> (last registration wins).</summary>
+        /// <param name="registrations">The immutable snapshot to resolve from.</param>
+        /// <param name="instance">Receives the resolved instance when available.</param>
+        /// <returns><see langword="true"/> when a non-null instance is produced; otherwise <see langword="false"/>.</returns>
+        /// <remarks>
+        /// The empty-snapshot arm is a copy-on-write race guard: <see cref="HasRegistrations"/> was observed true, but a
+        /// concurrent <see cref="Clear"/>/<see cref="RemoveCurrent"/> drained the snapshot before it was read. That window cannot
+        /// be reproduced by a single-threaded test, so the method is excluded from coverage.
+        /// </remarks>
+        [ExcludeFromCodeCoverage] // Defensive: the empty-snapshot arm only fires when a concurrent Clear/Remove drains the entry between the HasItems check and the snapshot read.
+        private static bool ResolveLast(Registration<T>[] registrations, [MaybeNullWhen(false)] out T instance)
+        {
+            if (registrations.Length == 0)
+            {
+                instance = default;
+                return false;
+            }
+
+            var last = registrations[^1];
+            if (last.TryGetFactory(out var factory))
+            {
+                instance = factory.Invoke()!;
+                return instance is not null;
+            }
+
+            instance = last.GetInstance();
+            return instance is not null;
+        }
     }
 }

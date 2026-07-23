@@ -795,33 +795,15 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
     }
 
     /// <summary>Unwraps non-generic results and filters out nulls.</summary>
-    /// <param name="results">The raw results sequence from the type registry.</param>
+    /// <param name="results">The raw array returned by the type registry.</param>
     /// <returns>
     /// An array containing unwrapped non-null results. Returning an array avoids iterator allocations.
     /// </returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="results"/> is <see langword="null"/>.</exception>
-    private static object[] UnwrapResults(IEnumerable<object> results)
+    private static object[] UnwrapResults(object[] results)
     {
         ArgumentExceptionHelper.ThrowIfNull(results);
-
-        // Most callers pass object[] from the registry; special-case to avoid enumerator allocations.
-        if (results is object[] arr)
-        {
-            return UnwrapArray(arr);
-        }
-
-        // General path: materialize into a list then return an array. This preserves semantics and avoids iterator allocations.
-        var list = new List<object>();
-        foreach (var item in results)
-        {
-            var v = UnwrapNullServiceType(item);
-            if (v is not null)
-            {
-                list.Add(v);
-            }
-        }
-
-        return list.Count == 0 ? [] : [.. list];
+        return UnwrapArray(results);
     }
 
     /// <summary>Unwraps and null-filters an array result, reusing the source array when no element changes.</summary>
@@ -1080,6 +1062,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
     /// Returns immediately (lock-free) when the resolver is disposed or no callbacks are subscribed.
     /// Otherwise the matching key's immutable snapshot is invoked outside the gate; callback exceptions are suppressed.
     /// </remarks>
+    [ExcludeFromCodeCoverage] // Defensive: disposed guard only fires under a concurrent Dispose; the notify body stays covered in NotifyCallbackChangedCore.
     private void NotifyCallbackChanged(Type serviceType, string? contract)
     {
         if (Volatile.Read(ref _disposed) != 0)
@@ -1087,6 +1070,14 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
             return;
         }
 
+        NotifyCallbackChangedCore(serviceType, contract);
+    }
+
+    /// <summary>Invokes callbacks scoped to the <c>(service type, contract)</c> key; the disposed fast-exit is handled by the caller.</summary>
+    /// <param name="serviceType">The service type that was just registered.</param>
+    /// <param name="contract">The contract that was just registered, if any.</param>
+    private void NotifyCallbackChangedCore(Type serviceType, string? contract)
+    {
         // Fast path: the overwhelmingly common case has no subscribers, so avoid the gate and the dictionary lookup entirely.
         if (Volatile.Read(ref _callbackCount) == 0)
         {

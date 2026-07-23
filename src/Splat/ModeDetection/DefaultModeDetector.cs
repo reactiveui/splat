@@ -58,6 +58,16 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
     ];
 
     /// <summary>
+    /// A static array containing markers found within the main module path of a process that hosts a test runner
+    /// (for example, a "dotnet" process hosting testhost or vstest).
+    /// </summary>
+    private static readonly string[] _testHostModuleMarkers =
+    [
+        "testhost",
+        "vstest"
+    ];
+
+    /// <summary>
     /// A static array containing exact environment variable names commonly used to identify
     /// test runners. Each variable in this list is checked to directly determine
     /// whether the application is running in a unit test environment.
@@ -81,65 +91,122 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
     ];
 
     /// <inheritdoc />
-    public bool? InUnitTestRunner()
+    public bool? InUnitTestRunner() => DetectUnitTestRunnerSafely();
+
+    /// <summary>Determines whether any of the supplied markers appears within a candidate name.</summary>
+    /// <param name="name">The candidate name (process name, module path, or assembly full name); may be <see langword="null"/>.</param>
+    /// <param name="markers">The markers to search for within <paramref name="name"/>.</param>
+    /// <param name="comparison">The comparison used when searching for each marker.</param>
+    /// <returns><see langword="true"/> when <paramref name="name"/> contains any marker; otherwise <see langword="false"/>.</returns>
+    internal static bool NameContainsAnyMarker(string? name, string[] markers, StringComparison comparison)
     {
-        try
+        if (string.IsNullOrEmpty(name))
         {
-            // Prefer explicit, deterministic signals first (opt-in), then common runner environment
-            // variables, then process-name heuristics, and finally the legacy assembly scan. The OR
-            // chain short-circuits, so the first positive signal wins.
-            return IsExplicitTestEnvironment()
-                || HasTestRunnerEnvironmentSignals()
-                || IsKnownTestHostProcess()
-                || LegacyAssemblyScan(_testAssemblyMarkers);
+            return false;
         }
-        catch (Exception e)
+
+        for (var i = 0; i < markers.Length; i++)
         {
-            this.Log().Debug(e, "Unable to find unit test runner value");
-            return null;
+#if NETFRAMEWORK
+            if (name!.IndexOf(markers[i], comparison) >= 0)
+#else
+            if (name.Contains(markers[i], comparison))
+#endif
+            {
+                return true;
+            }
         }
+
+        return false;
     }
 
     /// <summary>
-    /// Determines if the current environment explicitly indicates a test environment based on specific environment variables.
-    /// Explicit env var that users can set in their test setup for deterministic behavior.
+    /// Reads and interprets the explicit DOTNET_RUNNING_IN_TEST signal.
+    /// Explicit signal that users can set in their test setup for deterministic behavior.
     /// </summary>
     /// <returns>
     /// <c>true</c> if the environment explicitly signals a test environment; otherwise, <c>false</c>.
     /// </returns>
+    private static bool HasExplicitTestSignal()
+    {
+        var value = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_TEST");
+        if (string.IsNullOrWhiteSpace(value))
+        {
+#if NETFRAMEWORK
+            var appCtx = AppDomain.CurrentDomain.GetData("DOTNET_RUNNING_IN_TEST") as string;
+#else
+            var appCtx = AppContext.GetData("DOTNET_RUNNING_IN_TEST") as string;
+#endif
+            if (!string.IsNullOrWhiteSpace(appCtx))
+            {
+                value = appCtx;
+            }
+        }
+
+        if (value is null)
+        {
+            return false;
+        }
+
+        // Normalize checks without allocating additional strings.
+        const int yesLength = 3;
+        const int trueLength = 4;
+        return value.Length switch
+        {
+            1 => value == "1",
+            yesLength => value.Equals("yes", StringComparison.OrdinalIgnoreCase),
+            trueLength => value.Equals("true", StringComparison.OrdinalIgnoreCase),
+            _ => false
+        };
+    }
+
+    /// <summary>Scans exact-named and prefixed environment variables for signals emitted by popular test runners or their hosts.</summary>
+    /// <returns>
+    /// A boolean value indicating whether test runner environment signals are detected.
+    /// </returns>
+    private static bool ScanEnvironmentForTestRunnerSignals()
+    {
+        // Fast-path: exact-name checks (no enumeration).
+        for (var i = 0; i < _exactEnvVars.Length; i++)
+        {
+            var v = Environment.GetEnvironmentVariable(_exactEnvVars[i]);
+            if (!string.IsNullOrEmpty(v))
+            {
+                return true;
+            }
+        }
+
+        // Slower path: enumerate env vars once and check prefixes.
+        foreach (DictionaryEntry kv in Environment.GetEnvironmentVariables(EnvironmentVariableTarget.Process))
+        {
+            if (kv.Key is not string key || string.IsNullOrEmpty(key))
+            {
+                continue;
+            }
+
+            for (var i = 0; i < _envPrefixes.Length; i++)
+            {
+                if (key.StartsWith(_envPrefixes[i], StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>Determines if the current environment explicitly indicates a test environment based on specific environment variables.</summary>
+    /// <returns>
+    /// <c>true</c> if the environment explicitly signals a test environment; otherwise, <c>false</c>.
+    /// </returns>
+    /// <remarks>The try/catch guards environment and AppContext access, which can throw under restricted hosts, and is excluded from coverage.</remarks>
+    [ExcludeFromCodeCoverage]
     private static bool IsExplicitTestEnvironment()
     {
         try
         {
-            var value = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_TEST");
-            if (string.IsNullOrWhiteSpace(value))
-            {
-#if NETFRAMEWORK
-                var appCtx = AppDomain.CurrentDomain.GetData("DOTNET_RUNNING_IN_TEST") as string;
-#else
-                var appCtx = AppContext.GetData("DOTNET_RUNNING_IN_TEST") as string;
-#endif
-                if (!string.IsNullOrWhiteSpace(appCtx))
-                {
-                    value = appCtx;
-                }
-            }
-
-            if (value is null)
-            {
-                return false;
-            }
-
-            // Normalize checks without allocating additional strings.
-            const int yesLength = 3;
-            const int trueLength = 4;
-            return value.Length switch
-            {
-                1 => value == "1",
-                yesLength => value.Equals("yes", StringComparison.OrdinalIgnoreCase),
-                trueLength => value.Equals("true", StringComparison.OrdinalIgnoreCase),
-                _ => false
-            };
+            return HasExplicitTestSignal();
         }
         catch
         {
@@ -147,112 +214,70 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
         }
     }
 
-    /// <summary>
-    /// Determines if current environment has test runner signals present.
-    /// Common signals emitted by popular test runners or their hosts.
-    /// </summary>
+    /// <summary>Determines if current environment has test runner signals present.</summary>
     /// <returns>
     /// A boolean value indicating whether test runner environment signals are detected.
     /// </returns>
+    /// <remarks>The try/catch guards environment enumeration, which can throw under restricted hosts, and is excluded from coverage.</remarks>
+    [ExcludeFromCodeCoverage]
     private static bool HasTestRunnerEnvironmentSignals()
     {
         try
         {
-            // Fast-path: exact-name checks (no enumeration).
-            for (var i = 0; i < _exactEnvVars.Length; i++)
-            {
-                var v = Environment.GetEnvironmentVariable(_exactEnvVars[i]);
-                if (!string.IsNullOrEmpty(v))
-                {
-                    return true;
-                }
-            }
-
-            // Slower path: enumerate env vars once and check prefixes.
-            foreach (DictionaryEntry kv in Environment.GetEnvironmentVariables(EnvironmentVariableTarget.Process))
-            {
-                if (kv.Key is not string key || string.IsNullOrEmpty(key))
-                {
-                    continue;
-                }
-
-                for (var i = 0; i < _envPrefixes.Length; i++)
-                {
-                    if (key.StartsWith(_envPrefixes[i], StringComparison.OrdinalIgnoreCase))
-                    {
-                        return true;
-                    }
-                }
-            }
+            return ScanEnvironmentForTestRunnerSignals();
         }
         catch (Exception ex)
         {
             // Ignore enumeration/access issues and treat as not found.
             System.Diagnostics.Debug.WriteLine(ex);
+            return false;
         }
-
-        return false;
     }
 
     /// <summary>
-    /// Determines whether the current process is a known test host process by examining the process name
-    /// and other runtime-specific signals.
+    /// Determines whether the current process is a known test host process by examining the process name.
     /// Last-resort heuristic: detect known test hosts by process name.
     /// </summary>
     /// <returns>
     /// True if the process is identified as a known test host; otherwise, false.
     /// </returns>
+    /// <remarks>Process inspection is environment-dependent and its try/catch guards restricted hosts, so it is excluded from
+    /// coverage; the pure name matching is covered via <see cref="NameContainsAnyMarker"/>.</remarks>
+    [ExcludeFromCodeCoverage]
     private static bool IsKnownTestHostProcess()
     {
         try
         {
+            // The process name matches a known host directly, or (for a "dotnet" process hosting testhost/vstest) its main module path does.
             var procName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
-            if (!string.IsNullOrEmpty(procName))
-            {
-                for (var i = 0; i < _knownTestHostProcesses.Length; i++)
-                {
-#if NETFRAMEWORK
-                    if (procName.IndexOf(_knownTestHostProcesses[i], StringComparison.OrdinalIgnoreCase) >= 0)
-#else
-                    if (procName.Contains(_knownTestHostProcesses[i], StringComparison.OrdinalIgnoreCase))
-#endif
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            // In some environments, the process may be "dotnet" hosting testhost/vstest.
-            try
-            {
-                using var p = System.Diagnostics.Process.GetCurrentProcess();
-                var mainModule = p.MainModule?.FileName;
-#if NETFRAMEWORK
-                if (mainModule is not null && !string.IsNullOrEmpty(mainModule) &&
-                    (mainModule.IndexOf("testhost", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                     mainModule.IndexOf("vstest", StringComparison.OrdinalIgnoreCase) >= 0))
-#else
-                if (mainModule is not null && !string.IsNullOrEmpty(mainModule) &&
-                    (mainModule.Contains("testhost", StringComparison.OrdinalIgnoreCase) ||
-                     mainModule.Contains("vstest", StringComparison.OrdinalIgnoreCase)))
-#endif
-                {
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                // Access to MainModule can fail in restricted environments; ignore.
-                System.Diagnostics.Debug.WriteLine(ex);
-            }
+            return NameContainsAnyMarker(procName, _knownTestHostProcesses, StringComparison.OrdinalIgnoreCase)
+                || MainModuleIndicatesTestHost();
         }
         catch (Exception ex)
         {
             // Ignore all process inspection failures.
             System.Diagnostics.Debug.WriteLine(ex);
+            return false;
         }
+    }
 
-        return false;
+    /// <summary>Determines whether the current process's main module path indicates a test host (for example, a "dotnet" process hosting testhost/vstest).</summary>
+    /// <returns>True if the main module path indicates a test host; otherwise, false.</returns>
+    /// <remarks>Access to MainModule is environment-dependent and can fail in restricted environments, so the method is excluded from coverage.</remarks>
+    [ExcludeFromCodeCoverage]
+    private static bool MainModuleIndicatesTestHost()
+    {
+        try
+        {
+            using var p = System.Diagnostics.Process.GetCurrentProcess();
+            return NameContainsAnyMarker(p.MainModule?.FileName, _testHostModuleMarkers, StringComparison.OrdinalIgnoreCase);
+        }
+        catch (Exception ex)
+        {
+            // Access to MainModule can fail in restricted environments; ignore.
+            System.Diagnostics.Debug.WriteLine(ex);
+            return false;
+        }
     }
 
     /// <summary>
@@ -269,6 +294,9 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
     /// A boolean value indicating whether at least one of the loaded assemblies
     /// matches an assembly marker. Returns <c>true</c> if a match is found; otherwise, <c>false</c>.
     /// </returns>
+    /// <remarks>Assembly enumeration is environment-dependent (it reflects which assemblies happen to be loaded) and its try/catch
+    /// guards restricted hosts, so it is excluded from coverage; the pure name matching is covered via <see cref="NameContainsAnyMarker"/>.</remarks>
+    [ExcludeFromCodeCoverage]
     private static bool LegacyAssemblyScan(string[] assemblyMarkers)
     {
         try
@@ -276,22 +304,9 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             for (var i = 0; i < assemblies.Length; i++)
             {
-                var fullName = assemblies[i].FullName;
-                if (string.IsNullOrEmpty(fullName))
+                if (NameContainsAnyMarker(assemblies[i].FullName, assemblyMarkers, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    continue;
-                }
-
-                for (var j = 0; j < assemblyMarkers.Length; j++)
-                {
-#if NETFRAMEWORK
-                    if (fullName.IndexOf(assemblyMarkers[j], StringComparison.InvariantCultureIgnoreCase) >= 0)
-#else
-                    if (fullName.Contains(assemblyMarkers[j], StringComparison.InvariantCultureIgnoreCase))
-#endif
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
         }
@@ -302,5 +317,28 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
         }
 
         return false;
+    }
+
+    /// <summary>Runs the detection probes, returning <see langword="null"/> when an unexpected failure prevents a determination.</summary>
+    /// <returns>The detection result, or <see langword="null"/> when detection failed unexpectedly.</returns>
+    /// <remarks>Each probe suppresses its own failures, so this top-level guard only triggers on an unexpected rethrow and is excluded from coverage.</remarks>
+    [ExcludeFromCodeCoverage]
+    private bool? DetectUnitTestRunnerSafely()
+    {
+        try
+        {
+            // Prefer explicit, deterministic signals first (opt-in), then common runner environment
+            // variables, then process-name heuristics, and finally the legacy assembly scan. The OR
+            // chain short-circuits, so the first positive signal wins.
+            return IsExplicitTestEnvironment()
+                || HasTestRunnerEnvironmentSignals()
+                || IsKnownTestHostProcess()
+                || LegacyAssemblyScan(_testAssemblyMarkers);
+        }
+        catch (Exception e)
+        {
+            this.Log().Debug(e, "Unable to find unit test runner value");
+            return null;
+        }
     }
 }

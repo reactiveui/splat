@@ -33,15 +33,8 @@ internal class InternalLocator : IDisposable
     {
         Internal = new InstanceGenericFirstDependencyResolver();
 
-        _resolverChangedNotification = RegisterResolverCallbackChanged(() =>
-        {
-            if (CurrentMutable is null)
-            {
-                return;
-            }
-
-            AppLocator.ReInit(CurrentMutable);
-        });
+        // CurrentMutable returns the non-nullable Internal resolver (set in this constructor and only ever replaced via the null-guarded SetLocator), so it is never null here.
+        _resolverChangedNotification = RegisterResolverCallbackChanged(() => AppLocator.ReInit(CurrentMutable));
     }
 
     /// <summary>
