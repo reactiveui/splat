@@ -18,6 +18,10 @@ namespace System.Diagnostics.CodeAnalysis;
     AttributeTargets.All,
     Inherited = false,
     AllowMultiple = true)]
+[SuppressMessage(
+    "Design",
+    "SST2324:Do not declare a member more accessible than its containing type",
+    Justification = "Mirrors the shape of the corresponding BCL attribute; the polyfill compiles only where the BCL lacks it.")]
 internal sealed class UnconditionalSuppressMessageAttribute : Attribute
 {
     /// <summary>Initializes a new instance of the <see cref="UnconditionalSuppressMessageAttribute"/> class, specifying the category of the tool and the identifier for an analysis rule.</summary>

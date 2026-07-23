@@ -34,8 +34,8 @@ public class DependencyResolverTests
     {
         var container = new StandardKernel();
         _scope!.TrackKernel(container);
-        container.Bind<IViewFor<ViewModelOne>>().To<ViewOne>();
-        container.Bind<IViewFor<ViewModelTwo>>().To<ViewTwo>();
+        _ = container.Bind<IViewFor<ViewModelOne>>().To<ViewOne>();
+        _ = container.Bind<IViewFor<ViewModelTwo>>().To<ViewTwo>();
         container.UseNinjectDependencyResolver();
 
         var viewOne = AppLocator.Current.GetService<IViewFor<ViewModelOne>>();
@@ -86,7 +86,7 @@ public class DependencyResolverTests
     {
         var container = new StandardKernel();
         _scope!.TrackKernel(container);
-        container.Bind<IViewFor<ViewModelTwo>>().To<ViewTwo>();
+        _ = container.Bind<IViewFor<ViewModelTwo>>().To<ViewTwo>();
         container.UseNinjectDependencyResolver();
 
         var viewTwo = AppLocator.Current.GetService<IViewFor<ViewModelTwo>>();
@@ -102,17 +102,17 @@ public class DependencyResolverTests
     {
         var container = new StandardKernel();
         _scope!.TrackKernel(container);
-        container.Bind<ViewModelOne>().ToSelf();
-        container.Bind<ViewModelTwo>().ToSelf();
+        _ = container.Bind<ViewModelOne>().ToSelf();
+        _ = container.Bind<ViewModelTwo>().ToSelf();
         container.UseNinjectDependencyResolver();
 
-        var vmOne = AppLocator.Current.GetService<ViewModelOne>();
-        var vmTwo = AppLocator.Current.GetService<ViewModelTwo>();
+        var viewModelOne = AppLocator.Current.GetService<ViewModelOne>();
+        var viewModelTwo = AppLocator.Current.GetService<ViewModelTwo>();
 
         using (Assert.Multiple())
         {
-            await Assert.That(vmOne).IsNotNull();
-            await Assert.That(vmTwo).IsNotNull();
+            await Assert.That(viewModelOne).IsNotNull();
+            await Assert.That(viewModelTwo).IsNotNull();
         }
     }
 
@@ -123,7 +123,7 @@ public class DependencyResolverTests
     {
         var container = new StandardKernel();
         _scope!.TrackKernel(container);
-        container.Bind<IScreen>().ToConstant(new MockScreen());
+        _ = container.Bind<IScreen>().ToConstant(new MockScreen());
         container.UseNinjectDependencyResolver();
 
         var screen = AppLocator.Current.GetService<IScreen>();
@@ -141,7 +141,7 @@ public class DependencyResolverTests
         _scope!.TrackKernel(container);
         container.UseNinjectDependencyResolver();
 
-        Assert.Throws<NotSupportedException>(() =>
+        _ = Assert.Throws<NotSupportedException>(static () =>
             AppLocator.CurrentMutable.UnregisterCurrent<IScreen>());
     }
 
@@ -152,7 +152,7 @@ public class DependencyResolverTests
     {
         var container = new StandardKernel();
         _scope!.TrackKernel(container);
-        container.Bind<IScreen>().ToConstant(new MockScreen());
+        _ = container.Bind<IScreen>().ToConstant(new MockScreen());
         container.UseNinjectDependencyResolver();
 
         var screen = AppLocator.Current.GetService<IScreen>();
@@ -174,7 +174,7 @@ public class DependencyResolverTests
         _scope!.TrackKernel(container);
         container.UseNinjectDependencyResolver();
 
-        Assert.Throws<NotSupportedException>(() =>
-            AppLocator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), _ => { }));
+        _ = Assert.Throws<NotSupportedException>(static () =>
+            AppLocator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), static _ => { }));
     }
 }

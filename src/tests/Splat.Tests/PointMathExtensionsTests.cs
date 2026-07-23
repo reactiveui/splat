@@ -10,16 +10,16 @@ namespace Splat.Tests;
 public class PointMathExtensionsTests
 {
     /// <summary>The epsilon tolerance used for floating-point comparisons.</summary>
-    private const float Eps = 1e-5f;
+    private const float Eps = 1e-5F;
 
     /// <summary>The X component of the classic 3-4-5 vector.</summary>
-    private const float VecX = 3.0f;
+    private const float VecX = 3.0F;
 
     /// <summary>The Y component of the classic 3-4-5 vector.</summary>
-    private const float VecY = 4.0f;
+    private const float VecY = 4.0F;
 
     /// <summary>The magnitude (hypotenuse) of the 3-4-5 vector.</summary>
-    private const float VecLength = 5.0f;
+    private const float VecLength = 5.0F;
 
     /// <summary>Test that Floor method correctly floors point values.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -58,9 +58,13 @@ public class PointMathExtensionsTests
     [Test]
     public async Task WithinEpsilonOf_ReturnsTrue_WhenPointsAreWithinEpsilon()
     {
-        var point1 = new PointF(1.0f, 2.0f);
-        var point2 = new PointF(1.1f, 2.1f);
-        const float epsilon = 0.2f;
+        const float point1X = 1.0F;
+        const float point1Y = 2.0F;
+        const float point2X = 1.1F;
+        const float point2Y = 2.1F;
+        var point1 = new PointF(point1X, point1Y);
+        var point2 = new PointF(point2X, point2Y);
+        const float epsilon = 0.2F;
 
         var result = point1.WithinEpsilonOf(point2, epsilon);
 
@@ -72,9 +76,13 @@ public class PointMathExtensionsTests
     [Test]
     public async Task WithinEpsilonOf_ReturnsFalse_WhenPointsAreNotWithinEpsilon()
     {
-        var point1 = new PointF(1.0f, 2.0f);
-        var point2 = new PointF(5.0f, 6.0f);
-        const float epsilon = 0.5f;
+        const float point1X = 1.0F;
+        const float point1Y = 2.0F;
+        const float point2X = 5.0F;
+        const float point2Y = 6.0F;
+        var point1 = new PointF(point1X, point1Y);
+        var point2 = new PointF(point2X, point2Y);
+        const float epsilon = 0.5F;
 
         var result = point1.WithinEpsilonOf(point2, epsilon);
 
@@ -86,8 +94,10 @@ public class PointMathExtensionsTests
     [Test]
     public async Task WithinEpsilonOf_HandlesIdenticalPoints()
     {
-        var point = new PointF(1.0f, 2.0f);
-        const float epsilon = 0.1f;
+        const float pointX = 1.0F;
+        const float pointY = 2.0F;
+        var point = new PointF(pointX, pointY);
+        const float epsilon = 0.1F;
 
         var result = point.WithinEpsilonOf(point, epsilon);
 
@@ -100,8 +110,8 @@ public class PointMathExtensionsTests
     public async Task DotProduct_CalculatesCorrectly()
     {
         var point1 = new PointF(VecX, VecY);
-        const float otherX = 2.0f;
-        const float otherY = 1.0f;
+        const float otherX = 2.0F;
+        const float otherY = 1.0F;
         var point2 = new PointF(otherX, otherY);
 
         var result = point1.DotProduct(point2);
@@ -114,8 +124,8 @@ public class PointMathExtensionsTests
     [Test]
     public async Task DotProduct_HandlesZeroVectors()
     {
-        var point1 = new PointF(3.0f, 4.0f);
-        var point2 = new PointF(0.0f, 0.0f);
+        var point1 = new PointF(VecX, VecY);
+        var point2 = new PointF(0.0F, 0.0F);
 
         var result = point1.DotProduct(point2);
 
@@ -127,10 +137,10 @@ public class PointMathExtensionsTests
     [Test]
     public async Task ScaledBy_ScalesPointCorrectly()
     {
-        const float pointX = 2.0f;
-        const float pointY = 3.0f;
+        const float pointX = 2.0F;
+        const float pointY = 3.0F;
         var point = new PointF(pointX, pointY);
-        const float factor = 2.5f;
+        const float factor = 2.5F;
 
         var result = point.ScaledBy(factor);
 
@@ -146,8 +156,10 @@ public class PointMathExtensionsTests
     [Test]
     public async Task ScaledBy_HandlesZeroFactor()
     {
-        var point = new PointF(2.0f, 3.0f);
-        const float factor = 0.0f;
+        const float pointX = 2.0F;
+        const float pointY = 3.0F;
+        var point = new PointF(pointX, pointY);
+        const float factor = 0.0F;
 
         var result = point.ScaledBy(factor);
 
@@ -163,10 +175,10 @@ public class PointMathExtensionsTests
     [Test]
     public async Task ScaledBy_HandlesNegativeFactor()
     {
-        const float pointX = 2.0f;
-        const float pointY = 3.0f;
+        const float pointX = 2.0F;
+        const float pointY = 3.0F;
         var point = new PointF(pointX, pointY);
-        const float factor = -2.0f;
+        const float factor = -2.0F;
 
         var result = point.ScaledBy(factor);
 
@@ -194,7 +206,7 @@ public class PointMathExtensionsTests
     [Test]
     public async Task Length_HandlesZeroVector()
     {
-        var point = new PointF(0.0f, 0.0f);
+        var point = new PointF(0.0F, 0.0F);
 
         var result = point.Length();
 
@@ -214,7 +226,7 @@ public class PointMathExtensionsTests
         {
             await Assert.That(result.X).IsEqualTo(VecX / VecLength).Within(Eps);
             await Assert.That(result.Y).IsEqualTo(VecY / VecLength).Within(Eps);
-            await Assert.That(result.Length()).IsEqualTo(1.0f).Within(Eps);
+            await Assert.That(result.Length()).IsEqualTo(1.0F).Within(Eps);
         }
     }
 
@@ -223,7 +235,7 @@ public class PointMathExtensionsTests
     [Test]
     public async Task Normalize_HandlesZeroVectorCorrectly()
     {
-        var point = new PointF(0.0f, 0.0f);
+        var point = new PointF(0.0F, 0.0F);
 
         var result = point.Normalize();
 
@@ -239,9 +251,9 @@ public class PointMathExtensionsTests
     [Test]
     public async Task AngleInDegrees_CalculatesAngleCorrectly()
     {
-        var point = new PointF(1.0f, 1.0f);
-        const float expectedAngle = 45.0f;
-        const float angleTolerance = 1.0f;
+        var point = new PointF(1.0F, 1.0F);
+        const float expectedAngle = 45.0F;
+        const float angleTolerance = 1.0F;
 
         var result = point.AngleInDegrees();
 
@@ -253,9 +265,9 @@ public class PointMathExtensionsTests
     [Test]
     public async Task AngleInDegrees_HandlesNegativeCoordinates()
     {
-        var point = new PointF(-1.0f, 1.0f);
-        const float expectedAngle = 135.0f;
-        const float angleTolerance = 1.0f;
+        var point = new PointF(-1.0F, 1.0F);
+        const float expectedAngle = 135.0F;
+        const float angleTolerance = 1.0F;
 
         var result = point.AngleInDegrees();
 
@@ -267,7 +279,7 @@ public class PointMathExtensionsTests
     [Test]
     public async Task AngleInDegrees_HandlesZeroVector()
     {
-        var point = new PointF(0.0f, 0.0f);
+        var point = new PointF(0.0F, 0.0F);
 
         var result = point.AngleInDegrees();
 
@@ -280,14 +292,14 @@ public class PointMathExtensionsTests
     public async Task ProjectAlong_ProjectsCorrectly()
     {
         var point = new PointF(VecX, VecY);
-        var direction = new PointF(1.0f, 0.0f); // Unit vector along X-axis
+        var direction = new PointF(1.0F, 0.0F); // Unit vector along X-axis
 
         var result = point.ProjectAlong(direction);
 
         using (Assert.Multiple())
         {
             await Assert.That(result.X).IsEqualTo(VecX).Within(Eps);
-            await Assert.That(result.Y).IsEqualTo(0f).Within(Eps);
+            await Assert.That(result.Y).IsEqualTo(0F).Within(Eps);
         }
     }
 
@@ -296,8 +308,8 @@ public class PointMathExtensionsTests
     [Test]
     public async Task ProjectAlong_HandlesZeroDirection()
     {
-        var point = new PointF(3.0f, 4.0f);
-        var direction = new PointF(0.0f, 0.0f);
+        var point = new PointF(VecX, VecY);
+        var direction = new PointF(0.0F, 0.0F);
 
         var result = point.ProjectAlong(direction);
 
@@ -315,14 +327,14 @@ public class PointMathExtensionsTests
     public async Task ProjectAlongAngle_ProjectsCorrectly()
     {
         var point = new PointF(VecX, VecY);
-        const float angle = 0.0f; // Along X-axis
+        const float angle = 0.0F; // Along X-axis
 
         var result = point.ProjectAlongAngle(angle);
 
         using (Assert.Multiple())
         {
             await Assert.That(result.X).IsEqualTo(VecX).Within(Eps);
-            await Assert.That(result.Y).IsEqualTo(0f).Within(Eps);
+            await Assert.That(result.Y).IsEqualTo(0F).Within(Eps);
         }
     }
 
@@ -332,13 +344,13 @@ public class PointMathExtensionsTests
     public async Task ProjectAlongAngle_WorksWithDifferentAngles()
     {
         var point = new PointF(VecX, VecY);
-        const float angle = 90.0f; // Along Y-axis
+        const float angle = 90.0F; // Along Y-axis
 
         var result = point.ProjectAlongAngle(angle);
 
         using (Assert.Multiple())
         {
-            await Assert.That(result.X).IsEqualTo(0f).Within(Eps);
+            await Assert.That(result.X).IsEqualTo(0F).Within(Eps);
             await Assert.That(result.Y).IsEqualTo(VecY).Within(Eps);
         }
     }
@@ -348,7 +360,7 @@ public class PointMathExtensionsTests
     [Test]
     public async Task DistanceTo_CalculatesDistanceCorrectly()
     {
-        var point1 = new PointF(0.0f, 0.0f);
+        var point1 = new PointF(0.0F, 0.0F);
         var point2 = new PointF(VecX, VecY);
 
         var result = point1.DistanceTo(point2);
@@ -361,7 +373,9 @@ public class PointMathExtensionsTests
     [Test]
     public async Task DistanceTo_HandlesSamePoints()
     {
-        var point = new PointF(1.0f, 2.0f);
+        const float pointX = 1.0F;
+        const float pointY = 2.0F;
+        var point = new PointF(pointX, pointY);
 
         var result = point.DistanceTo(point);
 
@@ -373,8 +387,12 @@ public class PointMathExtensionsTests
     [Test]
     public async Task DistanceTo_IsSymmetric()
     {
-        var point1 = new PointF(1.0f, 2.0f);
-        var point2 = new PointF(4.0f, 6.0f);
+        const float point1X = 1.0F;
+        const float point1Y = 2.0F;
+        const float point2X = 4.0F;
+        const float point2Y = 6.0F;
+        var point1 = new PointF(point1X, point1Y);
+        var point2 = new PointF(point2X, point2Y);
 
         var distance1 = point1.DistanceTo(point2);
         var distance2 = point2.DistanceTo(point1);

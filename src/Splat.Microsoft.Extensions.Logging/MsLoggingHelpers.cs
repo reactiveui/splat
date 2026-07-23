@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -18,7 +18,7 @@ internal static class MsLoggingHelpers
     /// <remarks>Use this property to translate between the application's log level enumeration and the
     /// standard log levels used by Microsoft.Extensions.Logging. The order and contents of the array are fixed and
     /// correspond to the defined log level pairs.</remarks>
-    public static KeyValuePair<LogLevel, global::Microsoft.Extensions.Logging.LogLevel>[] Mappings { get; } =
+    internal static KeyValuePair<LogLevel, global::Microsoft.Extensions.Logging.LogLevel>[] Mappings { get; } =
     [
         new(LogLevel.Debug, global::Microsoft.Extensions.Logging.LogLevel.Debug),
         new(LogLevel.Info, global::Microsoft.Extensions.Logging.LogLevel.Information),
@@ -30,11 +30,12 @@ internal static class MsLoggingHelpers
     /// <remarks>This dictionary provides a convenient way to translate between Splat's LogLevel enumeration
     /// and the log levels used by Microsoft.Extensions.Logging. The mapping is intended for use when integrating
     /// Splat-based logging with Microsoft.Extensions.Logging infrastructure.</remarks>
-    public static ImmutableDictionary<LogLevel, global::Microsoft.Extensions.Logging.LogLevel> Splat2MsLogDictionary { get; } = Mappings.ToImmutableDictionary();
+    internal static ImmutableDictionary<LogLevel, global::Microsoft.Extensions.Logging.LogLevel> Splat2MsLogDictionary { get; } = Mappings.ToImmutableDictionary();
 
     /// <summary>Gets a mapping between Microsoft.Extensions.Logging log levels and their corresponding Splat log levels.</summary>
     /// <remarks>This dictionary provides a convenient way to translate log levels from
     /// Microsoft.Extensions.Logging to the equivalent Splat log levels when integrating logging between the two
     /// frameworks.</remarks>
-    public static ImmutableDictionary<global::Microsoft.Extensions.Logging.LogLevel, LogLevel> MsLog2SplatDictionary { get; } = Mappings.ToImmutableDictionary(x => x.Value, x => x.Key);
+    internal static ImmutableDictionary<global::Microsoft.Extensions.Logging.LogLevel, LogLevel> MsLog2SplatDictionary { get; } =
+        Mappings.ToImmutableDictionary(static x => x.Value, static x => x.Key);
 }

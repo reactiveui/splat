@@ -18,7 +18,7 @@ public class DependencyResolverTests
     [Test]
     public async Task SimpleInjectorDependencyResolver_Should_Resolve_View_Model()
     {
-        var container = new Container();
+        await using var container = new Container();
         container.Register<ViewModelOne>();
         container.UseSimpleInjectorDependencyResolver(new());
 
@@ -33,8 +33,8 @@ public class DependencyResolverTests
     [Test]
     public async Task SimpleInjectorDependencyResolver_Should_Resolve_View_Model_Directly()
     {
-        var container = new SimpleInjectorInitializer();
-        container.Register(() => new ViewModelOne());
+        using var container = new SimpleInjectorInitializer();
+        container.Register(static () => new ViewModelOne());
 
         var viewModel = container.GetService<ViewModelOne>();
 
@@ -47,7 +47,7 @@ public class DependencyResolverTests
     [Test]
     public async Task SimpleInjectorDependencyResolver_Should_Resolve_View()
     {
-        var container = new Container();
+        await using var container = new Container();
         container.Register<IViewFor<ViewModelOne>, ViewOne>();
         container.UseSimpleInjectorDependencyResolver(new());
 
@@ -62,7 +62,7 @@ public class DependencyResolverTests
     [Test]
     public async Task SimpleInjectorDependencyResolver_Should_Resolve_Screen()
     {
-        var container = new Container();
+        await using var container = new Container();
         container.RegisterSingleton<IScreen, MockScreen>();
         container.UseSimpleInjectorDependencyResolver(new());
 
@@ -76,7 +76,7 @@ public class DependencyResolverTests
     [Test]
     public void SimpleInjectorDependencyResolver_Splat_Initialization_ShouldNotThrow()
     {
-        Container container = new();
+        using Container container = new();
         SimpleInjectorInitializer initializer = new();
 
         Locator.SetLocator(initializer);
@@ -89,7 +89,7 @@ public class DependencyResolverTests
     [Test]
     public async Task SimpleInjectorDependencyResolver_ShouldResolveSplatRegisteredDependency()
     {
-        Container container = new();
+        await using Container container = new();
         SimpleInjectorInitializer initializer = new();
 
         AppLocator.SetLocator(initializer);
@@ -105,7 +105,7 @@ public class DependencyResolverTests
     [Test]
     public async Task SimpleInjectorDependencyResolver_CollectionShouldNeverReturnNull()
     {
-        var container = new Container();
+        await using var container = new Container();
         container.UseSimpleInjectorDependencyResolver(new());
 
         var views = AppLocator.Current.GetServices<ViewOne>();

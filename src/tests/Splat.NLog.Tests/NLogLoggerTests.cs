@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -15,16 +15,6 @@ namespace Splat.Tests.Logging;
 [InheritsTests]
 public class NLogLoggerTests : FullLoggerTestBase
 {
-    /// <summary>Mappings of NLog log levels to equivalent Splat log levels.</summary>
-    private static readonly Dictionary<global::NLog.LogLevel, LogLevel> _nLog2Splat = new()
-    {
-            { global::NLog.LogLevel.Debug, LogLevel.Debug },
-            { global::NLog.LogLevel.Error, LogLevel.Error },
-            { global::NLog.LogLevel.Warn, LogLevel.Warn },
-            { global::NLog.LogLevel.Fatal, LogLevel.Fatal },
-            { global::NLog.LogLevel.Info, LogLevel.Info },
-    };
-
     /// <summary>Mappings of Splat log levels to equivalent NLog log levels.</summary>
     private static readonly Dictionary<LogLevel, global::NLog.LogLevel> _splat2NLog = new()
     {
@@ -57,6 +47,16 @@ public class NLogLoggerTests : FullLoggerTestBase
     /// <summary>An NLog target that captures rendered log events for assertions.</summary>
     private sealed class MemoryTargetWrapper : TargetWithLayout, IMockLogTarget
     {
+        /// <summary>Mappings of NLog log levels to equivalent Splat log levels.</summary>
+        private static readonly Dictionary<global::NLog.LogLevel, LogLevel> _nlog2Splat = new()
+        {
+            { global::NLog.LogLevel.Debug, LogLevel.Debug },
+            { global::NLog.LogLevel.Error, LogLevel.Error },
+            { global::NLog.LogLevel.Warn, LogLevel.Warn },
+            { global::NLog.LogLevel.Fatal, LogLevel.Fatal },
+            { global::NLog.LogLevel.Info, LogLevel.Info },
+        };
+
         /// <summary>The captured log entries.</summary>
         private readonly List<(LogLevel logLevel, string message)> _logs = [];
 
@@ -68,6 +68,6 @@ public class NLogLoggerTests : FullLoggerTestBase
 
         /// <summary>Renders the logging event message and adds it to the internal ArrayList of log messages.</summary>
         /// <param name="logEvent">The logging event.</param>
-        protected override void Write(LogEventInfo logEvent) => _logs.Add((_nLog2Splat[logEvent.Level], RenderLogEvent(Layout, logEvent)));
+        protected override void Write(LogEventInfo logEvent) => _logs.Add((_nlog2Splat[logEvent.Level], RenderLogEvent(Layout, logEvent)));
     }
 }

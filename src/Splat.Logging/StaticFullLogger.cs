@@ -1,9 +1,8 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace Splat;
@@ -13,10 +12,6 @@ namespace Splat;
 /// cref="IFullLogger"/> instance. It is typically used to facilitate logging in static contexts where dependency
 /// injection is not available. All log messages are automatically suffixed with the caller member name to aid in
 /// tracing log origins.</remarks>
-[SuppressMessage(
-    "Minor Code Smell",
-    "S4018:All type parameters should be used in the parameter list to enable type inference",
-    Justification = "The generic type parameter is the caller-supplied calling type used only to scope the log entry; it intentionally has no corresponding method parameter and cannot be inferred.")]
 public sealed class StaticFullLogger : IStaticFullLogger
 {
     /// <summary>The wrapped logger that log calls are forwarded to.</summary>

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -26,7 +26,6 @@ namespace Splat;
 /// </remarks>
 /// <typeparam name="TParam">The key type.</typeparam>
 /// <typeparam name="TVal">The cached value type.</typeparam>
-[SuppressMessage("Minor Code Smell", "S101:Types should be named in PascalCase", Justification = "Existing type name is intentional.")]
 public sealed class MemoizingMRUCache<TParam, TVal>
     where TParam : notnull
 {
@@ -247,7 +246,6 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     /// When <see langword="true"/>, release exceptions are collected and rethrown as an <see cref="AggregateException"/>
     /// after all entries have been processed.
     /// </param>
-    [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Aggregates exceptions when requested.")]
     public void InvalidateAll(bool aggregateReleaseExceptions)
     {
         Dictionary<TParam, (LinkedListNode<TParam> node, TVal value)> oldEntries;
@@ -318,7 +316,8 @@ public sealed class MemoizingMRUCache<TParam, TVal>
 
             foreach (var entry in _entries)
             {
-                result[i++] = entry.Value.value;
+                result[i] = entry.Value.value;
+                i++;
             }
 
             return result;

@@ -22,16 +22,19 @@ namespace Splat.Common.Test;
 /// </example>
 public sealed class AppBuilderScope : IDisposable
 {
-    /// <summary>The AppBuilder state captured on construction and restored on dispose.</summary>
-    private readonly (bool hasBeenBuilt, bool usingBuilder) _savedState;
+    /// <summary>Whether the AppBuilder had already been built, captured on construction.</summary>
+    private readonly bool _savedHasBeenBuilt;
+
+    /// <summary>Whether the AppBuilder was using the builder, captured on construction.</summary>
+    private readonly bool _savedUsingBuilder;
 
     /// <summary>Initializes a new instance of the <see cref="AppBuilderScope"/> class. Saves the current AppBuilder state and resets it to default.</summary>
     public AppBuilderScope()
     {
-        _savedState = AppBuilder.GetState();
+        (_savedHasBeenBuilt, _savedUsingBuilder) = AppBuilder.GetState();
         AppBuilder.ResetState();
     }
 
     /// <summary>Restores the AppBuilder to its previous state.</summary>
-    public void Dispose() => AppBuilder.RestoreState(_savedState.hasBeenBuilt, _savedState.usingBuilder);
+    public void Dispose() => AppBuilder.RestoreState(_savedHasBeenBuilt, _savedUsingBuilder);
 }

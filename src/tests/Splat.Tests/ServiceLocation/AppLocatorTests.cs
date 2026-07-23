@@ -64,7 +64,7 @@ public sealed class AppLocatorTests
     /// <summary>Verifies that SetLocator throws when given a null resolver.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task SetLocator_WithNullResolver_ShouldThrow() => await Assert.That(() => AppLocator.SetLocator(null!)).ThrowsExactly<ArgumentNullException>();
+    public async Task SetLocator_WithNullResolver_ShouldThrow() => await Assert.That(static () => AppLocator.SetLocator(null!)).ThrowsExactly<ArgumentNullException>();
 
     /// <summary>Verifies that SetLocator updates the active resolver.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -72,10 +72,10 @@ public sealed class AppLocatorTests
     public async Task SetLocator_ShouldUpdateResolver()
     {
         var newResolver = new FuncDependencyResolver(
-            (_, _) => null!,
-            (_, _, _) => { },
-            (_, _) => { },
-            (_, _) => { });
+            static (_, _) => null!,
+            static (_, _, _) => { },
+            static (_, _) => { },
+            static (_, _) => { });
 
         AppLocator.SetLocator(newResolver);
 
@@ -346,7 +346,7 @@ public sealed class AppLocatorTests
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterResolverCallbackChanged_WithNullCallback_ShouldThrow() =>
-        await Assert.That(() =>
+        await Assert.That(static () =>
             AppLocator.RegisterResolverCallbackChanged(null!)).ThrowsExactly<ArgumentNullException>();
 
     /// <summary>Verifies that RegisterResolverCallbackChanged invokes the callback immediately.</summary>
@@ -356,7 +356,7 @@ public sealed class AppLocatorTests
     {
         var callbackInvoked = false;
 
-        AppLocator.RegisterResolverCallbackChanged(() => callbackInvoked = true);
+        _ = AppLocator.RegisterResolverCallbackChanged(() => callbackInvoked = true);
 
         await Assert.That(callbackInvoked).IsTrue();
     }

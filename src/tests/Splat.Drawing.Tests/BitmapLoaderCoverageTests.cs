@@ -37,7 +37,7 @@ public sealed class BitmapLoaderCoverageTests
         {
             BitmapLoader.RestoreState(null);
 
-            await Assert.That(() => BitmapLoader.Current).Throws<BitmapLoaderException>();
+            await Assert.That(static () => BitmapLoader.Current).Throws<BitmapLoaderException>();
         }
         finally
         {
@@ -90,7 +90,7 @@ public sealed class BitmapLoaderCoverageTests
         public IBitmap? Create(float width, float height) => null;
 
         /// <inheritdoc />
-        public Task<IBitmap?> Load(System.IO.Stream sourceStream, float? desiredWidth, float? desiredHeight) => Task.FromResult<IBitmap?>(null);
+        public Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight) => Task.FromResult<IBitmap?>(null);
 
         /// <inheritdoc />
         public Task<IBitmap?> LoadFromResource(string source, float? desiredWidth, float? desiredHeight) => Task.FromResult<IBitmap?>(null);

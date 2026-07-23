@@ -15,6 +15,15 @@ namespace Splat;
 /// frameworks.</remarks>
 public static class ColorExtensions
 {
+    /// <summary>Extension members for <see cref="Color"/>.</summary>
+    /// <param name="value">The value the extension members operate on.</param>
+    extension(Color value)
+    {
+        /// <summary>Converts a <see cref="SolidColorBrush"/> into the XAML <see cref="System.Drawing.Color"/>.</summary>
+        /// <returns>The <see cref="System.Drawing.Color"/> generated.</returns>
+        public System.Drawing.Color FromNative() => System.Drawing.Color.FromArgb(value.A, value.R, value.G, value.B);
+    }
+
     /// <summary>Extension members for <see cref="System.Drawing.Color"/>.</summary>
     /// <param name="value">The value the extension members operate on.</param>
     extension(System.Drawing.Color value)
@@ -31,14 +40,5 @@ public static class ColorExtensions
             ret.Freeze();
             return ret;
         }
-    }
-
-    /// <summary>Extension members for <see cref="Color"/>.</summary>
-    /// <param name="value">The value the extension members operate on.</param>
-    extension(Color value)
-    {
-        /// <summary>Converts a <see cref="SolidColorBrush"/> into the XAML <see cref="System.Drawing.Color"/>.</summary>
-        /// <returns>The <see cref="System.Drawing.Color"/> generated.</returns>
-        public System.Drawing.Color FromNative() => System.Drawing.Color.FromArgb(value.A, value.R, value.G, value.B);
     }
 }

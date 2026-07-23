@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -19,8 +19,8 @@ namespace Splat.SimpleInjector;
 /// removing registrations or observing registration events after initial configuration. The resolver manages the
 /// lifetime of the underlying container and disposes it when the resolver is disposed.</remarks>
 [SuppressMessage(
-    "Minor Code Smell",
-    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    "StyleSharp",
+    "SST2307:A generic method's type parameter appears in no parameter, so no caller can infer it",
     Justification = "Generic parameter is the caller-supplied service/implementation type for these IDependencyResolver APIs and cannot become a method parameter without changing the contract.")]
 public class SimpleInjectorDependencyResolver : IDependencyResolver
 {
@@ -173,7 +173,7 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     public void Register<TService, TImplementation>(string? contract)
         where TService : class
         where TImplementation : class, TService, new() =>
-        Register(() => (TService)new TImplementation(), contract);
+        Register(static () => (TService)new TImplementation(), contract);
 
     /// <inheritdoc />
     public void UnregisterCurrent(Type? serviceType) =>
@@ -241,7 +241,7 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     {
         ArgumentExceptionHelper.ThrowIfNull(value);
 
-        _container.RegisterInstance<T>(value);
+        _container.RegisterInstance(value);
     }
 
     /// <inheritdoc/>
@@ -259,7 +259,7 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     {
         ArgumentExceptionHelper.ThrowIfNull(valueFactory);
 
-        _container.RegisterSingleton<T>(() => valueFactory()!);
+        _container.RegisterSingleton(() => valueFactory()!);
     }
 
     /// <inheritdoc/>

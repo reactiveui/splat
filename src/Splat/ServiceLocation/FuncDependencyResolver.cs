@@ -36,8 +36,8 @@ namespace Splat;
 /// <param name="unregisterAll">A func which will unregister all the registered elements for a service type and contract.</param>
 /// <param name="toDispose">A optional disposable which is called when this resolver is disposed.</param>
 [SuppressMessage(
-    "Minor Code Smell",
-    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    "StyleSharp",
+    "SST2307:A generic method's type parameter appears in no parameter, so no caller can infer it",
     Justification = "Resolution/registration APIs whose generic parameter is the caller-supplied service type and cannot appear in the parameter list (e.g. GetService<T>(), Register<TService>()).")]
 public class FuncDependencyResolver(
     Func<Type?, string?, IEnumerable<object>> getAllServices,
@@ -65,10 +65,6 @@ public class FuncDependencyResolver(
     private readonly List<Action> _disposalActions = new(16);
 
     /// <summary>Optional inner disposable provided at construction, disposed when this resolver is disposed.</summary>
-    [SuppressMessage(
-        "Usage",
-        "CA2213:Disposable fields should be disposed",
-        Justification = "Field is disposed via Interlocked.Exchange in Dispose(bool)")]
     private IDisposable _inner = toDispose ?? EmptyDisposable.Instance;
 
     /// <summary>Tracks whether this resolver has been disposed.</summary>
@@ -254,11 +250,17 @@ public class FuncDependencyResolver(
 
         var key = (serviceType, contract);
 
+#if NET6_0_OR_GREATER
+        ref var slot = ref System.Runtime.InteropServices.CollectionsMarshal.GetValueRefOrAddDefault(_callbackRegistry, key, out _);
+        slot ??= new(InitialCallbackListCapacity);
+        var callbacks = slot;
+#else
         if (!_callbackRegistry.TryGetValue(key, out var callbacks))
         {
             callbacks = new(InitialCallbackListCapacity);
             _callbackRegistry[key] = callbacks;
         }
+#endif
 
         callbacks.Add(callback);
 
@@ -468,16 +470,14 @@ public class FuncDependencyResolver(
 
             return list;
         }
-        else
-        {
-            var list = new List<object>();
-            foreach (var s in services)
-            {
-                list.Add(s is NullServiceType nst ? nst.Factory()! : s);
-            }
 
-            return list;
+        var unwrapped = new List<object>();
+        foreach (var s in services)
+        {
+            unwrapped.Add(s is NullServiceType nst ? nst.Factory()! : s);
         }
+
+        return unwrapped;
     }
 
     /// <summary>Registers a factory for a service type/contract pair and invokes any registration callbacks.</summary>
@@ -588,9 +588,10 @@ public class FuncDependencyResolver(
                     using var disp = new BooleanDisposable();
                     list[i](disp);
                 }
-                catch
+                catch (Exception ex)
                 {
                     // Suppress exceptions during disposal.
+                    System.Diagnostics.Debug.WriteLine(ex);
                 }
             }
         }
@@ -605,9 +606,10 @@ public class FuncDependencyResolver(
             {
                 _disposalActions[i]();
             }
-            catch
+            catch (Exception ex)
             {
                 // Suppress exceptions during disposal.
+                System.Diagnostics.Debug.WriteLine(ex);
             }
         }
     }
@@ -627,9 +629,10 @@ public class FuncDependencyResolver(
             {
                 (service as IDisposable)?.Dispose();
             }
-            catch
+            catch (Exception ex)
             {
                 // Suppress exceptions during disposal.
+                System.Diagnostics.Debug.WriteLine(ex);
             }
         }
     }

@@ -20,10 +20,14 @@ namespace Splat.Autofac;
 /// InitializeReactiveUI. Thread safety is ensured for all public operations. Disposing the resolver will release
 /// Autofac container resources.</remarks>
 [SuppressMessage(
-    "Minor Code Smell",
-    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    "StyleSharp",
+    "SST2307:A generic method's type parameter appears in no parameter, so no caller can infer it",
     Justification =
         "The generic parameter is the caller-supplied service type for these resolution/registration APIs and cannot be a method parameter without breaking the IDependencyResolver API.")]
+[SuppressMessage(
+    "StyleSharp",
+    "SST1452:A generic type parameter is used only as a marker",
+    Justification = "Generic marker API; the type parameter identifies the target and is applied via typeof(T) in the implementation.")]
 public class AutofacDependencyResolver : IDependencyResolver
 {
     /// <summary>The exception message thrown when an attempt is made to mutate the resolver after the lifetime scope has been set.</summary>
@@ -40,13 +44,11 @@ public class AutofacDependencyResolver : IDependencyResolver
 
     /// <summary>The obsolete message used by the unregister-current members, which are kept for backward compatibility.</summary>
     private const string UnregisterCurrentObsoleteMessage =
-        "Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore. " +
-        OverrideRegistrationGuidance;
+        $"Because Autofac 5+ containers are immutable, UnregisterCurrent method is not available anymore. {OverrideRegistrationGuidance}";
 
     /// <summary>The obsolete message used by the unregister-all members, which are kept for backward compatibility.</summary>
     private const string UnregisterAllObsoleteMessage =
-        "Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore. " +
-        OverrideRegistrationGuidance;
+        $"Because Autofac 5+ containers are immutable, UnregisterAll method is not available anymore. {OverrideRegistrationGuidance}";
 
     /// <summary>Serializes registration and lifetime-scope changes.</summary>
     private readonly Lock _lockObject = new();
@@ -64,10 +66,6 @@ public class AutofacDependencyResolver : IDependencyResolver
     private ILifetimeScope? _lifetimeScope;
 
     /// <summary>The lifetime scope of <see cref="_internalContainer"/> used until the user supplies their own scope.</summary>
-    [SuppressMessage(
-        "Usage",
-        "CA2213:Disposable fields should be disposed",
-        Justification = "_internalLifetimeScope will be disposed, because it is a child of _internalContainer")]
     private ILifetimeScope _internalLifetimeScope;
 
     /// <summary>
@@ -133,7 +131,7 @@ public class AutofacDependencyResolver : IDependencyResolver
             switch (isNull)
             {
                 case true when instance is IEnumerable<NullServiceType> nullService:
-                    return nullService.Select(item => item.Factory()!);
+                    return nullService.Select(static item => item.Factory()!);
                 case false when instance is not null:
                     return ((IEnumerable)instance).Cast<object>();
             }
@@ -156,7 +154,7 @@ public class AutofacDependencyResolver : IDependencyResolver
             switch (isNull)
             {
                 case true when instance is IEnumerable<NullServiceType> nullService:
-                    return nullService.Select(item => item.Factory()!);
+                    return nullService.Select(static item => item.Factory()!);
                 case false when instance is not null:
                     return ((IEnumerable)instance).Cast<object>();
             }
@@ -239,11 +237,6 @@ public class AutofacDependencyResolver : IDependencyResolver
     /// </summary>
     /// <param name="factory">The factory function which generates our object.</param>
     /// <param name="serviceType">The type which is used for the registration.</param>
-    [SuppressMessage(
-        "Info Code Smell",
-        "S1133:Deprecated code should be removed",
-        Justification =
-            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
     [Obsolete(RegisterObsoleteMessage)]
     public virtual void Register(Func<object?> factory, Type? serviceType)
     {
@@ -261,8 +254,8 @@ public class AutofacDependencyResolver : IDependencyResolver
             // First to the application-wide container, which we are still building.
             // Second to child lifetimes in a temporary container, that is used only to satisfy ReactiveUI dependencies.
             RegisterFactory(_builder, factory, serviceType, isNull);
-            _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(internalBuilder =>
-                RegisterFactory(internalBuilder, factory, serviceType, isNull));
+            _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(
+                new FactoryScopeConfigurator(factory, serviceType, isNull, null).Configure);
         }
     }
 
@@ -279,11 +272,6 @@ public class AutofacDependencyResolver : IDependencyResolver
     /// <param name="factory">The factory function which generates our object.</param>
     /// <param name="serviceType">The type which is used for the registration.</param>
     /// <param name="contract">A contract value which indicates to only generate the value if this contract is specified.</param>
-    [SuppressMessage(
-        "Info Code Smell",
-        "S1133:Deprecated code should be removed",
-        Justification =
-            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
     [Obsolete(RegisterObsoleteMessage)]
     public virtual void Register(Func<object?> factory, Type? serviceType, string? contract)
     {
@@ -301,37 +289,22 @@ public class AutofacDependencyResolver : IDependencyResolver
             // First to the application-wide container, which we are still building.
             // Second to child lifetimes in a temporary container, that is used only to satisfy ReactiveUI dependencies.
             RegisterFactory(_builder, factory, serviceType, isNull, contract);
-            _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(internalBuilder =>
-                RegisterFactory(internalBuilder, factory, serviceType, isNull, contract));
+            _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(
+                new FactoryScopeConfigurator(factory, serviceType, isNull, contract).Configure);
         }
     }
 
     /// <inheritdoc/>
-    [SuppressMessage(
-        "Info Code Smell",
-        "S1133:Deprecated code should be removed",
-        Justification =
-            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
     [Obsolete(RegisterObsoleteMessage)]
     public void Register<T>(Func<T?> factory) =>
         Register(() => factory(), typeof(T));
 
     /// <inheritdoc/>
-    [SuppressMessage(
-        "Info Code Smell",
-        "S1133:Deprecated code should be removed",
-        Justification =
-            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
     [Obsolete(RegisterObsoleteMessage)]
     public void Register<T>(Func<T?> factory, string? contract) =>
         Register(() => factory(), typeof(T), contract);
 
     /// <inheritdoc/>
-    [SuppressMessage(
-        "Info Code Smell",
-        "S1133:Deprecated code should be removed",
-        Justification =
-            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
     [Obsolete(RegisterObsoleteMessage)]
     public void Register<TService, TImplementation>()
         where TService : class
@@ -345,10 +318,10 @@ public class AutofacDependencyResolver : IDependencyResolver
             }
 
             // Register to both the application-wide container and internal lifetime
-            _builder.Register(static _ => new TImplementation())
+            _ = _builder.Register(static _ => new TImplementation())
                 .As<TService>()
                 .AsImplementedInterfaces();
-            _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(internalBuilder =>
+            _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(static internalBuilder =>
                 internalBuilder.Register(static _ => new TImplementation())
                     .As<TService>()
                     .AsImplementedInterfaces());
@@ -356,11 +329,6 @@ public class AutofacDependencyResolver : IDependencyResolver
     }
 
     /// <inheritdoc/>
-    [SuppressMessage(
-        "Info Code Smell",
-        "S1133:Deprecated code should be removed",
-        Justification =
-            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
     [Obsolete(RegisterObsoleteMessage)]
     public void Register<TService, TImplementation>(string? contract)
         where TService : class
@@ -382,23 +350,16 @@ public class AutofacDependencyResolver : IDependencyResolver
                 var contractName = contract!;
 
                 // Register to both the application-wide container and internal lifetime
-                _builder.Register(static _ => new TImplementation())
+                _ = _builder.Register(static _ => new TImplementation())
                     .Named<TService>(contractName)
                     .AsImplementedInterfaces();
-                _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(internalBuilder =>
-                    internalBuilder.Register(static _ => new TImplementation())
-                        .Named<TService>(contractName)
-                        .AsImplementedInterfaces());
+                _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(
+                    new TypeScopeConfigurator<TService, TImplementation>(contractName).Configure);
             }
         }
     }
 
     /// <inheritdoc/>
-    [SuppressMessage(
-        "Info Code Smell",
-        "S1133:Deprecated code should be removed",
-        Justification =
-            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
     [Obsolete(RegisterObsoleteMessage)]
     public void RegisterConstant<T>(T? value)
         where T : class
@@ -411,22 +372,15 @@ public class AutofacDependencyResolver : IDependencyResolver
             }
 
             // Register as singleton instance to both the application-wide container and internal lifetime
-            _builder.RegisterInstance(value!)
+            _ = _builder.RegisterInstance(value!)
                 .As<T>()
                 .AsImplementedInterfaces();
-            _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(internalBuilder =>
-                internalBuilder.RegisterInstance(value!)
-                    .As<T>()
-                    .AsImplementedInterfaces());
+            _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(
+                new InstanceScopeConfigurator<T>(value!, null).Configure);
         }
     }
 
     /// <inheritdoc/>
-    [SuppressMessage(
-        "Info Code Smell",
-        "S1133:Deprecated code should be removed",
-        Justification =
-            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
     [Obsolete(RegisterObsoleteMessage)]
     public void RegisterConstant<T>(T? value, string? contract)
         where T : class
@@ -440,29 +394,22 @@ public class AutofacDependencyResolver : IDependencyResolver
 
             if (string.IsNullOrWhiteSpace(contract))
             {
-                RegisterConstant<T>(value);
+                RegisterConstant(value);
                 return;
             }
 
             var contractName = contract!;
 
             // Register as singleton instance to both the application-wide container and internal lifetime
-            _builder.RegisterInstance(value!)
+            _ = _builder.RegisterInstance(value!)
                 .Named<T>(contractName)
                 .AsImplementedInterfaces();
-            _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(internalBuilder =>
-                internalBuilder.RegisterInstance(value!)
-                    .Named<T>(contractName)
-                    .AsImplementedInterfaces());
+            _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(
+                new InstanceScopeConfigurator<T>(value!, contractName).Configure);
         }
     }
 
     /// <inheritdoc/>
-    [SuppressMessage(
-        "Info Code Smell",
-        "S1133:Deprecated code should be removed",
-        Justification =
-            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
     [Obsolete(RegisterObsoleteMessage)]
     public void RegisterLazySingleton<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
@@ -478,23 +425,16 @@ public class AutofacDependencyResolver : IDependencyResolver
             }
 
             // Register as singleton with factory to both the application-wide container and internal lifetime
-            _builder.Register(_ => valueFactory()!)
+            _ = _builder.Register(_ => valueFactory()!)
                 .As<T>()
                 .SingleInstance()
                 .AsImplementedInterfaces();
-            _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(internalBuilder =>
-                internalBuilder.Register(_ => valueFactory()!)
-                    .As<T>()
-                    .SingleInstance()
-                    .AsImplementedInterfaces());
+            _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(
+                new LazySingletonScopeConfigurator<T>(valueFactory, null).Configure);
         }
     }
 
     /// <inheritdoc/>
-    [SuppressMessage(
-        "Info Code Smell",
-        "S1133:Deprecated code should be removed",
-        Justification = "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
     [Obsolete(RegisterObsoleteMessage)]
     public void RegisterLazySingleton<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
@@ -512,22 +452,19 @@ public class AutofacDependencyResolver : IDependencyResolver
 
             if (string.IsNullOrWhiteSpace(contract))
             {
-                RegisterLazySingleton<T>(valueFactory);
+                RegisterLazySingleton(valueFactory);
                 return;
             }
 
             var contractName = contract!;
 
             // Register as singleton with factory to both the application-wide container and internal lifetime
-            _builder.Register(_ => valueFactory()!)
+            _ = _builder.Register(_ => valueFactory()!)
                 .Named<T>(contractName)
                 .SingleInstance()
                 .AsImplementedInterfaces();
-            _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(internalBuilder =>
-                internalBuilder.Register(_ => valueFactory()!)
-                    .Named<T>(contractName)
-                    .SingleInstance()
-                    .AsImplementedInterfaces());
+            _internalLifetimeScope = _internalLifetimeScope.BeginLifetimeScope(
+                new LazySingletonScopeConfigurator<T>(valueFactory, contractName).Configure);
         }
     }
 
@@ -541,11 +478,6 @@ public class AutofacDependencyResolver : IDependencyResolver
     /// <param name="serviceType">The service type to unregister.</param>
     /// <exception cref="NotSupportedException">This is not implemented by default.</exception>
     /// <inheritdoc />
-    [SuppressMessage(
-        "Info Code Smell",
-        "S1133:Deprecated code should be removed",
-        Justification =
-            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
     [Obsolete(UnregisterCurrentObsoleteMessage)]
     public virtual void UnregisterCurrent(Type? serviceType) =>
         throw new NotSupportedException(UnregisterCurrentObsoleteMessage);
@@ -561,30 +493,15 @@ public class AutofacDependencyResolver : IDependencyResolver
     /// <param name="contract">The optional contract value, which will only remove the value associated with the contract.</param>
     /// <exception cref="NotSupportedException">This is not implemented by default.</exception>
     /// <inheritdoc />
-    [SuppressMessage(
-        "Info Code Smell",
-        "S1133:Deprecated code should be removed",
-        Justification =
-            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
     [Obsolete(UnregisterCurrentObsoleteMessage)]
     public virtual void UnregisterCurrent(Type? serviceType, string? contract) =>
         throw new NotSupportedException(UnregisterCurrentObsoleteMessage);
 
     /// <inheritdoc/>
-    [SuppressMessage(
-        "Info Code Smell",
-        "S1133:Deprecated code should be removed",
-        Justification =
-            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
     [Obsolete(UnregisterCurrentObsoleteMessage)]
     public void UnregisterCurrent<T>() => UnregisterCurrent(typeof(T));
 
     /// <inheritdoc/>
-    [SuppressMessage(
-        "Info Code Smell",
-        "S1133:Deprecated code should be removed",
-        Justification =
-            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
     [Obsolete(UnregisterCurrentObsoleteMessage)]
     public void UnregisterCurrent<T>(string? contract) =>
         UnregisterCurrent(typeof(T), contract);
@@ -599,11 +516,6 @@ public class AutofacDependencyResolver : IDependencyResolver
     /// <param name="serviceType">The service type to unregister.</param>
     /// <exception cref="NotSupportedException">This is not implemented by default.</exception>
     /// <inheritdoc />
-    [SuppressMessage(
-        "Info Code Smell",
-        "S1133:Deprecated code should be removed",
-        Justification =
-            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
     [Obsolete(UnregisterAllObsoleteMessage)]
     public virtual void UnregisterAll(Type? serviceType) =>
         throw new NotSupportedException(UnregisterAllObsoleteMessage);
@@ -619,30 +531,15 @@ public class AutofacDependencyResolver : IDependencyResolver
     /// <param name="contract">The optional contract value, which will only remove the value associated with the contract.</param>
     /// <exception cref="NotSupportedException">This is not implemented by default.</exception>
     /// <inheritdoc />
-    [SuppressMessage(
-        "Info Code Smell",
-        "S1133:Deprecated code should be removed",
-        Justification =
-            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
     [Obsolete(UnregisterAllObsoleteMessage)]
     public virtual void UnregisterAll(Type? serviceType, string? contract) =>
         throw new NotSupportedException(UnregisterAllObsoleteMessage);
 
     /// <inheritdoc/>
-    [SuppressMessage(
-        "Info Code Smell",
-        "S1133:Deprecated code should be removed",
-        Justification =
-            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
     [Obsolete(UnregisterAllObsoleteMessage)]
     public void UnregisterAll<T>() => UnregisterAll(typeof(T));
 
     /// <inheritdoc/>
-    [SuppressMessage(
-        "Info Code Smell",
-        "S1133:Deprecated code should be removed",
-        Justification =
-            "This is an intentionally [Obsolete] public-API deprecation kept for backward compatibility and must not be removed.")]
     [Obsolete(UnregisterAllObsoleteMessage)]
     public void UnregisterAll<T>(string? contract) =>
         UnregisterAll(typeof(T), contract);
@@ -712,11 +609,11 @@ public class AutofacDependencyResolver : IDependencyResolver
 
         if (contract is null || string.IsNullOrWhiteSpace(contract))
         {
-            registration.As(serviceType).AsImplementedInterfaces();
+            _ = registration.As(serviceType).AsImplementedInterfaces();
         }
         else
         {
-            registration.Named(contract, serviceType).AsImplementedInterfaces();
+            _ = registration.Named(contract, serviceType).AsImplementedInterfaces();
         }
     }
 
@@ -727,7 +624,7 @@ public class AutofacDependencyResolver : IDependencyResolver
     {
         var lifeTimeScope = _lifetimeScope ?? _internalLifetimeScope;
 
-        lifeTimeScope.TryResolve(serviceType, out var serviceInstance);
+        _ = lifeTimeScope.TryResolve(serviceType, out var serviceInstance);
 
         return serviceInstance;
     }
@@ -745,5 +642,93 @@ public class AutofacDependencyResolver : IDependencyResolver
             : lifeTimeScope.TryResolveNamed(contract, serviceType, out serviceInstance!);
 
         return serviceInstance;
+    }
+
+    /// <summary>
+    ///     Holds the state needed to replay a factory registration against a freshly created child lifetime scope.
+    ///     Storing the state on a dedicated instance lets the scope configuration be supplied as a method group,
+    ///     so it does not close over any local of the calling method.
+    /// </summary>
+    /// <param name="factory">The factory function which generates the service instance.</param>
+    /// <param name="serviceType">The type which is used for the registration.</param>
+    /// <param name="isNull">Whether the original service type was <see langword="null"/>.</param>
+    /// <param name="contract">The optional contract name used to disambiguate the registration.</param>
+    private sealed class FactoryScopeConfigurator(Func<object?> factory, Type serviceType, bool isNull, string? contract)
+    {
+        /// <summary>Applies the stored registration to the supplied child scope builder.</summary>
+        /// <param name="builder">The child scope builder to register against.</param>
+        public void Configure(ContainerBuilder builder) =>
+            RegisterFactory(builder, factory, serviceType, isNull, contract);
+    }
+
+    /// <summary>
+    ///     Holds the state needed to replay a singleton instance registration against a freshly created child
+    ///     lifetime scope without closing over any local of the calling method.
+    /// </summary>
+    /// <typeparam name="T">The service type to register the instance as.</typeparam>
+    /// <param name="value">The singleton instance to register.</param>
+    /// <param name="contractName">The contract name, or <see langword="null"/> to register without a contract.</param>
+    private sealed class InstanceScopeConfigurator<T>(T value, string? contractName)
+        where T : class
+    {
+        /// <summary>Applies the stored registration to the supplied child scope builder.</summary>
+        /// <param name="builder">The child scope builder to register against.</param>
+        public void Configure(ContainerBuilder builder)
+        {
+            var registration = builder.RegisterInstance(value);
+            if (contractName is null)
+            {
+                _ = registration.As<T>().AsImplementedInterfaces();
+            }
+            else
+            {
+                _ = registration.Named<T>(contractName).AsImplementedInterfaces();
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Holds the state needed to replay a lazy singleton factory registration against a freshly created child
+    ///     lifetime scope without closing over any local of the calling method.
+    /// </summary>
+    /// <typeparam name="T">The service type to register the factory as.</typeparam>
+    /// <param name="valueFactory">The factory that produces the singleton instance on first resolution.</param>
+    /// <param name="contractName">The contract name, or <see langword="null"/> to register without a contract.</param>
+    private sealed class LazySingletonScopeConfigurator<T>(Func<T?> valueFactory, string? contractName)
+        where T : class
+    {
+        /// <summary>Applies the stored registration to the supplied child scope builder.</summary>
+        /// <param name="builder">The child scope builder to register against.</param>
+        public void Configure(ContainerBuilder builder)
+        {
+            var registration = builder.Register(_ => valueFactory()!);
+            if (contractName is null)
+            {
+                _ = registration.As<T>().SingleInstance().AsImplementedInterfaces();
+            }
+            else
+            {
+                _ = registration.Named<T>(contractName).SingleInstance().AsImplementedInterfaces();
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Holds the state needed to replay a named type registration against a freshly created child lifetime
+    ///     scope without closing over any local of the calling method.
+    /// </summary>
+    /// <typeparam name="TService">The service type the implementation is registered as.</typeparam>
+    /// <typeparam name="TImplementation">The concrete implementation type to instantiate.</typeparam>
+    /// <param name="contractName">The contract name used to disambiguate the registration.</param>
+    private sealed class TypeScopeConfigurator<TService, TImplementation>(string contractName)
+        where TService : class
+        where TImplementation : class, TService, new()
+    {
+        /// <summary>Applies the stored registration to the supplied child scope builder.</summary>
+        /// <param name="builder">The child scope builder to register against.</param>
+        public void Configure(ContainerBuilder builder) =>
+            _ = builder.Register(static _ => new TImplementation())
+                .Named<TService>(contractName)
+                .AsImplementedInterfaces();
     }
 }

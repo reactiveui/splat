@@ -42,7 +42,7 @@ internal static class ContractContainer<T>
     /// <summary>Adds a constant instance registration for a contract.</summary>
     /// <param name="service">The instance to register (may be <see langword="null"/>).</param>
     /// <param name="contract">The contract name. When <see langword="null"/>, the default contract is used.</param>
-    public static void Add(T service, string? contract)
+    internal static void Add(T service, string? contract)
     {
         var entry = Entries.GetOrAdd(NormalizeContract(contract), static _ => new());
         entry.Add(Registration<T>.FromInstance(service));
@@ -52,7 +52,7 @@ internal static class ContractContainer<T>
     /// <param name="factory">Factory delegate used to produce instances.</param>
     /// <param name="contract">The contract name. When <see langword="null"/>, the default contract is used.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> is <see langword="null"/>.</exception>
-    public static void Add(Func<T?> factory, string? contract)
+    internal static void Add(Func<T?> factory, string? contract)
     {
         ArgumentExceptionHelper.ThrowIfNull(factory);
 
@@ -72,7 +72,7 @@ internal static class ContractContainer<T>
     /// This method does not hold internal locks while invoking user factories.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool TryGet(string contract, [MaybeNullWhen(false)] out T instance)
+    internal static bool TryGet(string contract, [MaybeNullWhen(false)] out T instance)
     {
         // Signature is non-null for API compatibility, but we still normalize defensively.
         if (!Entries.TryGetValue(NormalizeContract(contract), out var entry) || !entry.HasItems)
@@ -88,7 +88,7 @@ internal static class ContractContainer<T>
             return false;
         }
 
-        var last = registrations[registrations.Length - 1];
+        var last = registrations[^1];
 
         if (last.TryGetFactory(out var factory))
         {
@@ -107,7 +107,7 @@ internal static class ContractContainer<T>
     /// <returns>
     /// An array of resolved instances (excluding nulls). Returns an empty array when no registrations exist.
     /// </returns>
-    public static T[] GetAll(string contract)
+    internal static T[] GetAll(string contract)
     {
         if (!Entries.TryGetValue(NormalizeContract(contract), out var entry))
         {
@@ -122,7 +122,7 @@ internal static class ContractContainer<T>
     /// <param name="contract">
     /// The contract name. For compatibility, <see langword="null"/> is treated as the default contract.
     /// </param>
-    public static void RemoveCurrent(string contract)
+    internal static void RemoveCurrent(string contract)
     {
         var key = NormalizeContract(contract);
 
@@ -131,24 +131,24 @@ internal static class ContractContainer<T>
             return;
         }
 
-        Entries.TryRemove(key, out _);
+        _ = Entries.TryRemove(key, out _);
     }
 
     /// <summary>Removes all registrations for a specific contract.</summary>
     /// <param name="contract">
     /// The contract name. For compatibility, <see langword="null"/> is treated as the default contract.
     /// </param>
-    public static void Clear(string contract) => Entries.TryRemove(NormalizeContract(contract), out _);
+    internal static void Clear(string contract) => Entries.TryRemove(NormalizeContract(contract), out _);
 
     /// <summary>Clears all registrations for all contracts.</summary>
-    public static void ClearAll() => Entries.Clear();
+    internal static void ClearAll() => Entries.Clear();
 
     /// <summary>Returns whether a contract has any registrations.</summary>
     /// <param name="contract">
     /// The contract name. For compatibility, <see langword="null"/> is treated as the default contract.
     /// </param>
     /// <returns><see langword="true"/> when the contract has at least one registration; otherwise <see langword="false"/>.</returns>
-    public static bool HasRegistrations(string contract) =>
+    internal static bool HasRegistrations(string contract) =>
         Entries.TryGetValue(NormalizeContract(contract), out var entry) && entry.HasItems;
 
     /// <summary>Gets the number of registrations for a contract without invoking any factories.</summary>
@@ -156,7 +156,7 @@ internal static class ContractContainer<T>
     /// The contract name. For compatibility, <see langword="null"/> is treated as the default contract.
     /// </param>
     /// <returns>The number of registrations for the contract.</returns>
-    public static int GetCount(string contract) =>
+    internal static int GetCount(string contract) =>
         Entries.TryGetValue(NormalizeContract(contract), out var entry) ? entry.Count : 0;
 
     /// <summary>Normalizes a contract key for internal storage and lookup.</summary>

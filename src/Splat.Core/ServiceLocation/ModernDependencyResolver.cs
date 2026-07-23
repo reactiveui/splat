@@ -22,8 +22,8 @@ namespace Splat;
 /// </para>
 /// </summary>
 [SuppressMessage(
-    "Minor Code Smell",
-    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    "StyleSharp",
+    "SST2307:A generic method's type parameter appears in no parameter, so no caller can infer it",
     Justification = "Generic service-location API; the service type is supplied explicitly by callers, so type inference cannot apply by design.")]
 public class ModernDependencyResolver : IDependencyResolver
 {
@@ -35,6 +35,9 @@ public class ModernDependencyResolver : IDependencyResolver
 
     /// <summary>Default capacity for a per-key callback list.</summary>
     private const int DefaultCallbackListCapacity = 4;
+
+    /// <summary>Default capacity for a per-key registration factory list.</summary>
+    private const int DefaultRegistrationListCapacity = 4;
 
 #if NET9_0_OR_GREATER
     /// <summary>Synchronization primitive guarding mutations to the resolver's internal state.</summary>
@@ -175,7 +178,7 @@ public class ModernDependencyResolver : IDependencyResolver
             // Copy-on-write update of the registry for this key only.
             var newRegistry = CloneRegistryShallow(snap.Registry);
 
-            List<Func<object?>>? list = !newRegistry.TryGetValue(pair, out list) ? new(4) : [.. list];
+            List<Func<object?>>? list = !newRegistry.TryGetValue(pair, out list) ? new(DefaultRegistrationListCapacity) : [.. list];
 
             // Wrap null-type registrations using NullServiceType.
             list.Add(isNull ? () => new NullServiceType(factory) : factory);
@@ -200,7 +203,7 @@ public class ModernDependencyResolver : IDependencyResolver
     }
 
     /// <inheritdoc />
-    public void Register<T>(Func<T?> factory) => Register<T>(factory, null);
+    public void Register<T>(Func<T?> factory) => Register(factory, null);
 
     /// <inheritdoc />
     public void Register<T>(Func<T?> factory, string? contract)
@@ -223,7 +226,7 @@ public class ModernDependencyResolver : IDependencyResolver
 
             var newRegistry = CloneRegistryShallow(snap.Registry);
 
-            List<Func<object?>>? list = !newRegistry.TryGetValue(pair, out list) ? new(4) : [.. list];
+            List<Func<object?>>? list = !newRegistry.TryGetValue(pair, out list) ? new(DefaultRegistrationListCapacity) : [.. list];
 
             // Avoid extra closure allocation: store the delegate directly.
             list.Add(() => factory());
@@ -544,11 +547,16 @@ public class ModernDependencyResolver : IDependencyResolver
                 return EmptyDisposable.Instance;
             }
 
+#if NET6_0_OR_GREATER
+            ref var list = ref System.Runtime.InteropServices.CollectionsMarshal.GetValueRefOrAddDefault(_callbackRegistry, pair, out _);
+            list ??= new(DefaultCallbackListCapacity);
+#else
             if (!_callbackRegistry.TryGetValue(pair, out var list))
             {
                 list = new(DefaultCallbackListCapacity);
                 _callbackRegistry[pair] = list;
             }
+#endif
 
             list.Add(callback);
         }
@@ -602,11 +610,16 @@ public class ModernDependencyResolver : IDependencyResolver
                 return EmptyDisposable.Instance;
             }
 
+#if NET6_0_OR_GREATER
+            ref var list = ref System.Runtime.InteropServices.CollectionsMarshal.GetValueRefOrAddDefault(_callbackRegistry, pair, out _);
+            list ??= new(DefaultCallbackListCapacity);
+#else
             if (!_callbackRegistry.TryGetValue(pair, out var list))
             {
                 list = new(DefaultCallbackListCapacity);
                 _callbackRegistry[pair] = list;
             }
+#endif
 
             list.Add(callback);
         }
@@ -785,9 +798,10 @@ public class ModernDependencyResolver : IDependencyResolver
                     using var disp = new BooleanDisposable();
                     list[i](disp);
                 }
-                catch
+                catch (Exception ex)
                 {
                     // Ignore exceptions during disposal.
+                    System.Diagnostics.Debug.WriteLine(ex);
                 }
             }
         }
@@ -826,9 +840,10 @@ public class ModernDependencyResolver : IDependencyResolver
                 // Singleton instance from RegisterConstant.
                 (item as IDisposable)?.Dispose();
             }
-            catch
+            catch (Exception ex)
             {
                 // Ignore exceptions during disposal.
+                System.Diagnostics.Debug.WriteLine(ex);
             }
         }
     }
@@ -914,12 +929,7 @@ public class ModernDependencyResolver : IDependencyResolver
             return result;
         }
 
-        if (allowNullServiceTypeUnwrap && value is NullServiceType nst)
-        {
-            return nst.Factory()!;
-        }
-
-        return value;
+        return allowNullServiceTypeUnwrap && value is NullServiceType nst ? nst.Factory()! : value;
     }
 
     /// <summary>Invokes registration callbacks and removes one-shot callbacks from the registry.</summary>

@@ -96,9 +96,9 @@ public sealed class InstanceGenericFirstDependencyResolverTests : BaseDependency
     [Test]
     public async Task Constructor_WithConfigure_RegistersServices()
     {
-        var resolver = new InstanceGenericFirstDependencyResolver(r =>
+        using var resolver = new InstanceGenericFirstDependencyResolver(static r =>
         {
-            r.Register<IViewModelOne>(() => new ViewModelOne());
+            r.Register<IViewModelOne>(static () => new ViewModelOne());
             r.RegisterConstant(new ViewModelOne());
         });
 
@@ -113,7 +113,7 @@ public sealed class InstanceGenericFirstDependencyResolverTests : BaseDependency
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Constructor_WithNullConfigure_DoesNotThrow() =>
-        await Assert.That(() =>
+        await Assert.That(static () =>
         {
             _ = new InstanceGenericFirstDependencyResolver(null);
             return Task.CompletedTask;
@@ -125,13 +125,13 @@ public sealed class InstanceGenericFirstDependencyResolverTests : BaseDependency
     public async Task Dispose_DisposesResolver()
     {
         var resolver = new InstanceGenericFirstDependencyResolver();
-        resolver.Register(() => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
 
         resolver.Dispose();
 
         await Assert.That(() =>
         {
-            resolver.Register(() => new ViewModelOne());
+            resolver.Register(static () => new ViewModelOne());
             return Task.CompletedTask;
         }).Throws<ObjectDisposedException>();
     }
@@ -146,19 +146,19 @@ public sealed class InstanceGenericFirstDependencyResolverTests : BaseDependency
 
         await Assert.That(() =>
         {
-            resolver.Register(() => new ViewModelOne());
+            resolver.Register(static () => new ViewModelOne());
             return Task.CompletedTask;
         }).Throws<ObjectDisposedException>();
 
         await Assert.That(() =>
         {
-            resolver.Register(() => new ViewModelOne(), "contract");
+            resolver.Register(static () => new ViewModelOne(), "contract");
             return Task.CompletedTask;
         }).Throws<ObjectDisposedException>();
 
         await Assert.That(() =>
         {
-            resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+            resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
             return Task.CompletedTask;
         }).Throws<ObjectDisposedException>();
 

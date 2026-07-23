@@ -15,7 +15,7 @@ public class LogManagerTests
     public async Task DefaultLogManager_Should_Create_WrappingFullLogger()
     {
         var resolver = new ModernDependencyResolver();
-        resolver.Register<ILogger>(() => new TextLogger());
+        resolver.Register<ILogger>(static () => new TextLogger());
         var logManager = new DefaultLogManager(resolver);
         var logger = logManager.GetLogger(typeof(LogManagerTests));
 
@@ -51,7 +51,7 @@ public class LogManagerTests
     [Test]
     public async Task LogManagerMixin_Should_Create_FullLogger()
     {
-        var logManager = new FuncLogManager(_ => new WrappingFullLogger(new TextLogger()));
+        var logManager = new FuncLogManager(static _ => new WrappingFullLogger(new TextLogger()));
         var logger = logManager.GetLogger<LogManagerTests>();
 
         await Assert.That(logger).IsTypeOf<WrappingFullLogger>();

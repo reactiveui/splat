@@ -41,7 +41,7 @@ Splat.SerilogFullLogger.Debug<TArgument1, TArgument2>(System.IFormatProvider! fo
 Splat.SerilogFullLogger.Debug<TArgument1, TArgument2>(string! messageFormat, TArgument1 argument1, TArgument2 argument2) -> void
 Splat.SerilogFullLogger.Debug<TArgument>(System.Exception! exception, string! messageFormat, TArgument argument) -> void
 Splat.SerilogFullLogger.Debug<TArgument>(System.IFormatProvider! formatProvider, string! message, TArgument argument) -> void
-Splat.SerilogFullLogger.Debug<TArgument>(string! message, TArgument args) -> void
+Splat.SerilogFullLogger.Debug<TArgument>(string! messageFormat, TArgument argument) -> void
 Splat.SerilogFullLogger.DebugException(System.Func<string!>! function, System.Exception! exception) -> void
 Splat.SerilogFullLogger.DebugException(string? message, System.Exception! exception) -> void
 Splat.SerilogFullLogger.Error(System.Exception! exception, System.Func<string!>! function) -> void

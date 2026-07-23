@@ -1,6 +1,8 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
+
+using System.Diagnostics.CodeAnalysis;
 
 using Splat.Log4Net;
 using Splat.Tests.Mocks;
@@ -8,7 +10,6 @@ using Splat.Tests.Mocks;
 using log4net;
 using log4net.Core;
 using log4net.Layout;
-using log4net.Repository;
 using log4net.Repository.Hierarchy;
 
 namespace Splat.Tests.Logging;
@@ -18,16 +19,6 @@ namespace Splat.Tests.Logging;
 [NotInParallel]
 public class Log4NetLoggerTests : FullLoggerTestBase
 {
-    /// <summary>Mappings of log4net levels to equivalent Splat log levels.</summary>
-    private static readonly Dictionary<Level, LogLevel> _log4Net2Splat = new()
-    {
-        { Level.Debug, LogLevel.Debug },
-        { Level.Info, LogLevel.Info },
-        { Level.Warn, LogLevel.Warn },
-        { Level.Error, LogLevel.Error },
-        { Level.Fatal, LogLevel.Fatal },
-    };
-
     /// <summary>Mappings of Splat log levels to equivalent log4net levels.</summary>
     private static readonly Dictionary<LogLevel, Level> _splat2log4net = new()
     {
@@ -45,6 +36,7 @@ public class Log4NetLoggerTests : FullLoggerTestBase
     private log4net.Appender.MemoryAppender? _currentAppender;
 
     /// <summary>Set up clean state before each test to prevent state leakage.</summary>
+    [SuppressMessage("Design", "SST2326:Concrete type narrowing", Justification = "Test needs the concrete log4net Hierarchy to reach Root, which ILoggerRepository does not expose.")]
     [Before(HookType.Test)]
     public void SetupTest()
     {
@@ -64,7 +56,7 @@ public class Log4NetLoggerTests : FullLoggerTestBase
     {
         if (_hierarchy is not null && _currentAppender is not null)
         {
-            _hierarchy.Root.RemoveAppender(_currentAppender);
+            _ = _hierarchy.Root.RemoveAppender(_currentAppender);
             _currentAppender.Close();
             _currentAppender = null;
         }
@@ -81,6 +73,7 @@ public class Log4NetLoggerTests : FullLoggerTestBase
     }
 
     /// <inheritdoc/>
+    [SuppressMessage("Design", "SST2326:Concrete type narrowing", Justification = "Test needs the concrete log4net Hierarchy to reach Root, which ILoggerRepository does not expose.")]
     protected override (IFullLogger logger, IMockLogTarget mockTarget) GetLogger(LogLevel minimumLogLevel)
     {
         _hierarchy = (Hierarchy)LogManager.GetRepository(GetType().Assembly);
@@ -119,18 +112,28 @@ public class Log4NetLoggerTests : FullLoggerTestBase
     /// <param name="memoryTarget">The memory appender to wrap.</param>
     private sealed class MemoryTargetWrapper(log4net.Appender.MemoryAppender memoryTarget) : IMockLogTarget
     {
-        /// <summary>Gets the underlying log4net memory appender.</summary>
-        public log4net.Appender.MemoryAppender MemoryTarget { get; } = memoryTarget;
+        /// <summary>Mappings of log4net levels to equivalent Splat log levels.</summary>
+        private static readonly Dictionary<Level, LogLevel> _log4Net2Splat = new()
+        {
+            { Level.Debug, LogLevel.Debug },
+            { Level.Info, LogLevel.Info },
+            { Level.Warn, LogLevel.Warn },
+            { Level.Error, LogLevel.Error },
+            { Level.Fatal, LogLevel.Fatal },
+        };
 
         /// <inheritdoc/>
         public ICollection<(LogLevel logLevel, string message)> Logs => BuildLogs();
+
+        /// <summary>Gets the underlying log4net memory appender.</summary>
+        private log4net.Appender.MemoryAppender MemoryTarget { get; } = memoryTarget;
 
         /// <summary>Flushes the appender and projects its captured events into Splat log entries.</summary>
         /// <returns>The captured log entries.</returns>
         private List<(LogLevel logLevel, string message)> BuildLogs()
         {
-            MemoryTarget.Flush(0);
-            return MemoryTarget.GetEvents().Select(x =>
+            _ = MemoryTarget.Flush(0);
+            return MemoryTarget.GetEvents().Select(static x =>
             {
 #if NET8_0_OR_GREATER
                 var currentLevel = _log4Net2Splat.GetValueOrDefault(x.Level ?? Level.Debug, LogLevel.Debug);

@@ -35,7 +35,7 @@ public sealed class DependencyResolverMixinsTests
     {
         const IDependencyResolver resolver = null!;
 
-        await Assert.That(() => resolver.WithResolver()).ThrowsExactly<ArgumentNullException>();
+        await Assert.That(static () => resolver.WithResolver()).ThrowsExactly<ArgumentNullException>();
     }
 
     /// <summary>Verifies that WithResolver temporarily overrides the active resolver.</summary>
@@ -60,7 +60,7 @@ public sealed class DependencyResolverMixinsTests
     public async Task WithResolver_WithSuppressTrue_ShouldSuppressCallbacks()
     {
         var callbackInvoked = false;
-        AppLocator.RegisterResolverCallbackChanged(() => callbackInvoked = true);
+        _ = AppLocator.RegisterResolverCallbackChanged(() => callbackInvoked = true);
         callbackInvoked = false; // Reset
 
         var testResolver = new InstanceGenericFirstDependencyResolver();
@@ -79,7 +79,7 @@ public sealed class DependencyResolverMixinsTests
     public async Task WithResolver_WithSuppressFalse_ShouldInvokeCallbacks()
     {
         var callbackInvoked = false;
-        AppLocator.RegisterResolverCallbackChanged(() => callbackInvoked = true);
+        _ = AppLocator.RegisterResolverCallbackChanged(() => callbackInvoked = true);
         callbackInvoked = false; // Reset
 
         var testResolver = new InstanceGenericFirstDependencyResolver();
@@ -99,7 +99,7 @@ public sealed class DependencyResolverMixinsTests
     {
         const IMutableDependencyResolver resolver = null!;
 
-        await Assert.That(() => resolver.RegisterConstant(new TestService(), typeof(ITestService)))
+        await Assert.That(static () => resolver.RegisterConstant(new TestService(), typeof(ITestService)))
             .ThrowsExactly<ArgumentNullException>();
     }
 
@@ -138,7 +138,7 @@ public sealed class DependencyResolverMixinsTests
     {
         const IMutableDependencyResolver resolver = null!;
 
-        await Assert.That(() => resolver.RegisterLazySingleton(() => new TestService(), typeof(ITestService)))
+        await Assert.That(static () => resolver.RegisterLazySingleton(static () => new TestService(), typeof(ITestService)))
             .ThrowsExactly<ArgumentNullException>();
     }
 

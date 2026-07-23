@@ -47,8 +47,8 @@ namespace Splat;
 /// </para>
 /// </remarks>
 [SuppressMessage(
-    "Minor Code Smell",
-    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    "StyleSharp",
+    "SST2307:A generic method's type parameter appears in no parameter, so no caller can infer it",
     Justification = "Generic service-location API; the service type is supplied explicitly by callers, so type inference cannot apply by design.")]
 public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
 {
@@ -119,7 +119,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
             clearAction();
         }
 
-        Interlocked.Exchange(ref _hasAnyRegistrations, 0);
+        _ = Interlocked.Exchange(ref _hasAnyRegistrations, 0);
     }
 
     /// <inheritdoc />
@@ -136,12 +136,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
             return service;
         }
 
-        if (!ServiceTypeRegistry.HasNonGenericRegistrations(TypeCache<T>.Type))
-        {
-            return default;
-        }
-
-        return TryCastAndUnwrap<T>(ServiceTypeRegistry.GetService(TypeCache<T>.Type));
+        return !ServiceTypeRegistry.HasNonGenericRegistrations(TypeCache<T>.Type) ? default : TryCastAndUnwrap<T>(ServiceTypeRegistry.GetService(TypeCache<T>.Type));
     }
 
     /// <inheritdoc />
@@ -163,12 +158,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
             return contractService;
         }
 
-        if (!ServiceTypeRegistry.HasNonGenericRegistrations(TypeCache<T>.Type, contract))
-        {
-            return default;
-        }
-
-        return TryCastAndUnwrap<T>(ServiceTypeRegistry.GetService(TypeCache<T>.Type, contract));
+        return !ServiceTypeRegistry.HasNonGenericRegistrations(TypeCache<T>.Type, contract) ? default : TryCastAndUnwrap<T>(ServiceTypeRegistry.GetService(TypeCache<T>.Type, contract));
     }
 
     /// <inheritdoc />
@@ -268,15 +258,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
     }
 
     /// <inheritdoc />
-    public bool HasRegistration<T>()
-    {
-        if (HasNeverRegistered())
-        {
-            return false;
-        }
-
-        return Container<T>.HasRegistrations || ServiceTypeRegistry.HasRegistration(TypeCache<T>.Type);
-    }
+    public bool HasRegistration<T>() => HasNeverRegistered() ? false : Container<T>.HasRegistrations || ServiceTypeRegistry.HasRegistration(TypeCache<T>.Type);
 
     /// <inheritdoc />
     public bool HasRegistration<T>(string? contract)
@@ -286,12 +268,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
             return HasRegistration<T>();
         }
 
-        if (HasNeverRegistered())
-        {
-            return false;
-        }
-
-        return ContractContainer<T>.HasRegistrations(contract) || ServiceTypeRegistry.HasRegistration(TypeCache<T>.Type, contract);
+        return HasNeverRegistered() ? false : ContractContainer<T>.HasRegistrations(contract) || ServiceTypeRegistry.HasRegistration(TypeCache<T>.Type, contract);
     }
 
     /// <inheritdoc />
@@ -512,7 +489,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
     {
         if (contract is null)
         {
-            RegisterLazySingleton<T>(valueFactory);
+            RegisterLazySingleton(valueFactory);
             return;
         }
 
@@ -767,9 +744,10 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
             {
                 callbacks[i]();
             }
-            catch
+            catch (Exception ex)
             {
                 // Ignore exceptions thrown by callbacks during disposal.
+                System.Diagnostics.Debug.WriteLine(ex);
             }
         }
 
@@ -782,9 +760,10 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
                 {
                     disposals[i]();
                 }
-                catch
+                catch (Exception ex)
                 {
                     // Ignore exceptions during disposal.
+                    System.Diagnostics.Debug.WriteLine(ex);
                 }
             }
         }
@@ -858,7 +837,8 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
             var v = UnwrapNullServiceType(arr[i]);
             if (v is not null)
             {
-                output[idx++] = v;
+                output[idx] = v;
+                idx++;
             }
         }
 
@@ -964,7 +944,8 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
         {
             if (UnwrapNullServiceType(fallbackResults[i]) is T typed)
             {
-                combined[idx++] = typed;
+                combined[idx] = typed;
+                idx++;
             }
         }
 
@@ -978,7 +959,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void MarkRegistered()
     {
-        if (_hasAnyRegistrations != 0)
+        if (Volatile.Read(ref _hasAnyRegistrations) != 0)
         {
             return;
         }
@@ -1006,7 +987,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
         ArgumentExceptionHelper.ThrowIfNull(callback);
         lock (_callbackGate)
         {
-            _callbackChanged.Remove(callback);
+            _ = _callbackChanged.Remove(callback);
         }
     }
 
@@ -1044,9 +1025,10 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
             {
                 callbacks[i]();
             }
-            catch
+            catch (Exception ex)
             {
                 // Ignore exceptions thrown by callback implementations.
+                System.Diagnostics.Debug.WriteLine(ex);
             }
         }
     }
@@ -1070,9 +1052,10 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
                 {
                     disposable.Dispose();
                 }
-                catch
+                catch (Exception ex)
                 {
                     // Ignore exceptions during disposal.
+                    System.Diagnostics.Debug.WriteLine(ex);
                 }
             });
         }
@@ -1098,9 +1081,10 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
                         disposable.Dispose();
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
                     // Ignore exceptions during disposal.
+                    System.Diagnostics.Debug.WriteLine(ex);
                 }
             });
         }

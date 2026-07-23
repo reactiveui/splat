@@ -11,6 +11,9 @@ namespace Splat.Tests.ApplicationPerformanceMonitoring;
 [NotInParallel]
 public sealed class EnableFeatureUsageTrackingExtensionsCoverageTests
 {
+    /// <summary>The feature name passed to the tracking-session methods under test.</summary>
+    private const string FeatureName = "feature";
+
     /// <summary>Verifies the default manager path returns a session with the requested feature name.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -48,7 +51,7 @@ public sealed class EnableFeatureUsageTrackingExtensionsCoverageTests
         AppLocator.CurrentMutable.UnregisterCurrent<IFeatureUsageTrackingManager>();
         var fixture = new TrackingEnabledFixture();
 
-        await Assert.That(() => fixture.FeatureUsageTrackingSession("feature")).Throws<InvalidOperationException>();
+        await Assert.That(() => fixture.FeatureUsageTrackingSession(FeatureName)).Throws<InvalidOperationException>();
     }
 
     /// <summary>Verifies that WithFeatureUsageTrackingSession invokes the supplied action.</summary>
@@ -75,7 +78,7 @@ public sealed class EnableFeatureUsageTrackingExtensionsCoverageTests
         using var scope = new AppLocatorScope();
         var fixture = new TrackingEnabledFixture();
 
-        await Assert.That(() => fixture.WithFeatureUsageTrackingSession("feature", null!)).Throws<ArgumentNullException>();
+        await Assert.That(() => fixture.WithFeatureUsageTrackingSession(FeatureName, null!)).Throws<ArgumentNullException>();
     }
 
     /// <summary>Verifies that WithFeatureUsageTrackingSession reports exceptions and rethrows them.</summary>
@@ -87,8 +90,8 @@ public sealed class EnableFeatureUsageTrackingExtensionsCoverageTests
         var fixture = new TrackingEnabledFixture();
 
         await Assert.That(() => fixture.WithFeatureUsageTrackingSession(
-            "feature",
-            _ => throw new InvalidOperationException("boom"))).Throws<InvalidOperationException>();
+            FeatureName,
+            static _ => throw new InvalidOperationException("boom"))).Throws<InvalidOperationException>();
     }
 
     /// <summary>Verifies that WithSubFeatureUsageTrackingSession invokes the supplied action with a sub-feature session.</summary>
@@ -128,7 +131,7 @@ public sealed class EnableFeatureUsageTrackingExtensionsCoverageTests
 
         await Assert.That(() => session.WithSubFeatureUsageTrackingSession(
             "sub",
-            _ => throw new InvalidOperationException("boom"))).Throws<InvalidOperationException>();
+            static _ => throw new InvalidOperationException("boom"))).Throws<InvalidOperationException>();
     }
 
     /// <summary>A test type that opts in to feature usage tracking via the marker interface.</summary>

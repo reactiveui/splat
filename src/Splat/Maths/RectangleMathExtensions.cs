@@ -13,7 +13,7 @@ namespace Splat;
 public static class RectangleMathExtensions
 {
     /// <summary>The divisor used to obtain the midpoint of a dimension when locating a rectangle's center.</summary>
-    private const float CenterDivisor = 2.0f;
+    private const float CenterDivisor = 2.0F;
 
     /// <summary>Extension members for mathematical and geometric operations on <see cref="RectangleF"/>.</summary>
     /// <param name="value">The rectangle the extension members operate on.</param>
@@ -34,30 +34,22 @@ public static class RectangleMathExtensions
         /// <returns>A tuple containing two rectangles: the first is the region split from the specified edge with the given size,
         /// and the second is the remainder of the original rectangle. The sum of their areas equals the area of the
         /// original rectangle.</returns>
-        public Tuple<RectangleF, RectangleF> Divide(float amount, RectEdge fromEdge)
+        public Tuple<RectangleF, RectangleF> Divide(float amount, RectEdge fromEdge) => fromEdge switch
         {
-            switch (fromEdge)
-            {
-                case RectEdge.Left:
-                    return Tuple.Create(
-                        value.Copy(new() { Width = amount }),
-                        value.Copy(new() { X = value.Left + amount, Width = value.Width - amount }));
-                case RectEdge.Top:
-                    return Tuple.Create(
-                        value.Copy(new() { Height = amount }),
-                        value.Copy(new() { Y = value.Top + amount, Height = value.Height - amount }));
-                case RectEdge.Right:
-                    return Tuple.Create(
-                        value.Copy(new() { X = value.Right - amount, Width = amount }),
-                        value.Copy(new() { Width = value.Width - amount }));
-                case RectEdge.Bottom:
-                    return Tuple.Create(
-                        value.Copy(new() { Y = value.Bottom - amount, Height = amount }),
-                        value.Copy(new() { Height = value.Height - amount }));
-                default:
-                    throw new ArgumentException($"Invalid edge: {fromEdge}", nameof(fromEdge));
-            }
-        }
+            RectEdge.Left => Tuple.Create(
+                value.Copy(new() { Width = amount }),
+                value.Copy(new() { X = value.Left + amount, Width = value.Width - amount })),
+            RectEdge.Top => Tuple.Create(
+                value.Copy(new() { Height = amount }),
+                value.Copy(new() { Y = value.Top + amount, Height = value.Height - amount })),
+            RectEdge.Right => Tuple.Create(
+                value.Copy(new() { X = value.Right - amount, Width = amount }),
+                value.Copy(new() { Width = value.Width - amount })),
+            RectEdge.Bottom => Tuple.Create(
+                value.Copy(new() { Y = value.Bottom - amount, Height = amount }),
+                value.Copy(new() { Height = value.Height - amount })),
+            _ => throw new ArgumentException($"Invalid edge: {fromEdge}", nameof(fromEdge))
+        };
 
         /// <summary>Divides the specified rectangle into two regions along the given edge, separating them by a specified padding.</summary>
         /// <remarks>If the sum of sliceAmount and padding exceeds the corresponding dimension of the rectangle,

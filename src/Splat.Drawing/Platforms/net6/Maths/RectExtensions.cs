@@ -12,6 +12,15 @@ namespace Splat;
 /// methods.</remarks>
 public static class RectExtensions
 {
+    /// <summary>Extension members for <see cref="Rect"/>.</summary>
+    /// <param name="value">The value the extension members operate on.</param>
+    extension(Rect value)
+    {
+        /// <summary>Converts a <see cref="Point"/> to a <see cref="System.Drawing.RectangleF"/>.</summary>
+        /// <returns>A <see cref="System.Drawing.RectangleF"/> of the value.</returns>
+        public System.Drawing.RectangleF FromNative() => new((float)value.X, (float)value.Y, (float)value.Width, (float)value.Height);
+    }
+
     /// <summary>Extension members for <see cref="System.Drawing.Rectangle"/>.</summary>
     /// <param name="value">The value the extension members operate on.</param>
     extension(System.Drawing.Rectangle value)
@@ -28,14 +37,5 @@ public static class RectExtensions
         /// <summary>Convert a <see cref="System.Drawing.RectangleF"/> to the android native <see cref="Rect"/>.</summary>
         /// <returns>A <see cref="Rect"/> of the value.</returns>
         public Rect ToNative() => new(value.X, value.Y, value.Width, value.Height);
-    }
-
-    /// <summary>Extension members for <see cref="Rect"/>.</summary>
-    /// <param name="value">The value the extension members operate on.</param>
-    extension(Rect value)
-    {
-        /// <summary>Converts a <see cref="Point"/> to a <see cref="System.Drawing.RectangleF"/>.</summary>
-        /// <returns>A <see cref="System.Drawing.RectangleF"/> of the value.</returns>
-        public System.Drawing.RectangleF FromNative() => new((float)value.X, (float)value.Y, (float)value.Width, (float)value.Height);
     }
 }

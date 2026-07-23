@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -15,6 +15,7 @@ namespace Splat;
 /// </remarks>
 /// <param name="inner">The <see cref="ILogger" /> to wrap in this class.</param>
 [SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Existing API")]
+[SuppressMessage("Design", "SST1496:An abstract type declares nothing abstract", Justification = "Deliberate shared base class providing implementation, not a contract.")]
 public abstract partial class AllocationFreeLoggerBase(ILogger inner) : IAllocationFreeLogger
 {
     /// <inheritdoc />

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -14,7 +14,7 @@ namespace Splat;
 internal static class SerilogHelper
 {
     /// <summary>Gets a list of mappings of Serilog levels and equivalent Splat log levels.</summary>
-    public static KeyValuePair<LogLevel, LogEventLevel>[] Mappings { get; } =
+    internal static KeyValuePair<LogLevel, LogEventLevel>[] Mappings { get; } =
     [
         new(LogLevel.Debug, LogEventLevel.Debug),
         new(LogLevel.Info, LogEventLevel.Information),
@@ -23,5 +23,5 @@ internal static class SerilogHelper
         new(LogLevel.Fatal, LogEventLevel.Fatal)];
 
     /// <summary>Gets a dictionary which maps Splat log levels to Serilogs.</summary>
-    public static ImmutableDictionary<LogLevel, LogEventLevel> MappingsDictionary { get; } = Mappings.ToImmutableDictionary();
+    internal static ImmutableDictionary<LogLevel, LogEventLevel> MappingsDictionary { get; } = Mappings.ToImmutableDictionary();
 }

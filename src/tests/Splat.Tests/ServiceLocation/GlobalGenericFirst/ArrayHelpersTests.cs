@@ -31,6 +31,15 @@ public class ArrayHelpersTests
     /// <summary>Zero-based index of the third item.</summary>
     private const int ThirdIndex = 2;
 
+    /// <summary>Sample string value used for the first item in these tests.</summary>
+    private const string First = "first";
+
+    /// <summary>Sample string value used for the second item in these tests.</summary>
+    private const string Second = "second";
+
+    /// <summary>Sample string value used for the third item in these tests.</summary>
+    private const string Third = "third";
+
     /// <summary>Tests that append nullable with null array creates new array with single item.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -40,7 +49,7 @@ public class ArrayHelpersTests
         var item = Registration<string>.FromInstance("test");
 
         // Act
-        var result = ArrayHelpers.AppendNullable<string>(null, item);
+        var result = ArrayHelpers.AppendNullable(null, item);
 
         // Assert
         await Assert.That(result).IsNotNull();
@@ -54,8 +63,8 @@ public class ArrayHelpersTests
     public async Task AppendNullable_WithExistingArray_AppendsItem()
     {
         // Arrange
-        var item1 = Registration<string>.FromInstance("first");
-        var item2 = Registration<string>.FromInstance("second");
+        var item1 = Registration<string>.FromInstance(First);
+        var item2 = Registration<string>.FromInstance(Second);
         var existing = new[] { item1 };
 
         // Act
@@ -147,15 +156,15 @@ public class ArrayHelpersTests
     public async Task RemoveLast_WithMultipleItems_RemovesLastItem()
     {
         // Arrange
-        var array = new[] { "first", "second", "third" };
+        var array = new[] { First, Second, Third };
 
         // Act
         var result = ArrayHelpers.RemoveLast(array);
 
         // Assert
         await Assert.That(result.Length).IsEqualTo(TwoItems);
-        await Assert.That(result[0]).IsEqualTo("first");
-        await Assert.That(result[1]).IsEqualTo("second");
+        await Assert.That(result[0]).IsEqualTo(First);
+        await Assert.That(result[1]).IsEqualTo(Second);
     }
 
     /// <summary>Tests that remove last does not modify original array.</summary>
@@ -169,7 +178,7 @@ public class ArrayHelpersTests
         var lastIndex = array.Length - 1;
 
         // Act
-        ArrayHelpers.RemoveLast(array);
+        _ = ArrayHelpers.RemoveLast(array);
 
         // Assert
         await Assert.That(array.Length).IsEqualTo(originalLength);
@@ -264,7 +273,7 @@ public class ArrayHelpersTests
         var registrations = new[]
         {
             Registration<string>.FromInstance("instance"),
-            Registration<string>.FromFactory(() => "factory"),
+            Registration<string>.FromFactory(static () => "factory"),
             Registration<string>.FromInstance("another instance")
         };
 
@@ -288,7 +297,7 @@ public class ArrayHelpersTests
         {
             Registration<string?>.FromInstance("valid"),
             Registration<string?>.FromInstance(null),
-            Registration<string?>.FromFactory(() => null),
+            Registration<string?>.FromFactory(static () => null),
             Registration<string?>.FromInstance("another valid")
         };
 
@@ -309,7 +318,7 @@ public class ArrayHelpersTests
         // Arrange
         var registrations = new[]
         {
-            Registration<string>.FromFactory(() => throw new InvalidOperationException("Test exception"))
+            Registration<string>.FromFactory(static () => throw new InvalidOperationException("Test exception"))
         };
 
         // Act & Assert

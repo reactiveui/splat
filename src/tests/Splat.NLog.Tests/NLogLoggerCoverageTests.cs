@@ -17,16 +17,6 @@ public class NLogLoggerCoverageTests
     /// <summary>A log-level value outside the defined range, used to verify out-of-range handling.</summary>
     private const int OutOfRangeLogLevel = 999;
 
-    /// <summary>Mappings of NLog log levels to equivalent Splat log levels.</summary>
-    private static readonly Dictionary<global::NLog.LogLevel, LogLevel> _nLog2Splat = new()
-    {
-        { global::NLog.LogLevel.Debug, LogLevel.Debug },
-        { global::NLog.LogLevel.Error, LogLevel.Error },
-        { global::NLog.LogLevel.Warn, LogLevel.Warn },
-        { global::NLog.LogLevel.Fatal, LogLevel.Fatal },
-        { global::NLog.LogLevel.Info, LogLevel.Info },
-    };
-
     /// <summary>Mappings of Splat log levels to equivalent NLog log levels.</summary>
     private static readonly Dictionary<LogLevel, global::NLog.LogLevel> _splat2NLog = new()
     {
@@ -160,7 +150,7 @@ public class NLogLoggerCoverageTests
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Constructor_Null_Inner_Throws() =>
-        await Assert.That(() => new NLogLogger(null!)).Throws<ArgumentNullException>();
+        await Assert.That(static () => new NLogLogger(null!)).Throws<ArgumentNullException>();
 
     /// <summary>Creates an <see cref="NLogLogger"/> backed by a capturing in-memory target.</summary>
     /// <param name="minimumLogLevel">The minimum Splat log level to configure.</param>
@@ -186,6 +176,16 @@ public class NLogLoggerCoverageTests
     /// <summary>An NLog target that captures rendered log events for assertions.</summary>
     private sealed class MemoryTargetWrapper : TargetWithLayout
     {
+        /// <summary>Mappings of NLog log levels to equivalent Splat log levels.</summary>
+        private static readonly Dictionary<global::NLog.LogLevel, LogLevel> _nlog2Splat = new()
+        {
+            { global::NLog.LogLevel.Debug, LogLevel.Debug },
+            { global::NLog.LogLevel.Error, LogLevel.Error },
+            { global::NLog.LogLevel.Warn, LogLevel.Warn },
+            { global::NLog.LogLevel.Fatal, LogLevel.Fatal },
+            { global::NLog.LogLevel.Info, LogLevel.Info },
+        };
+
         /// <summary>The captured log entries.</summary>
         private readonly List<(LogLevel LogLevel, string Message)> _logs = [];
 
@@ -197,6 +197,6 @@ public class NLogLoggerCoverageTests
 
         /// <summary>Renders the logging event message and records it.</summary>
         /// <param name="logEvent">The logging event.</param>
-        protected override void Write(LogEventInfo logEvent) => _logs.Add((_nLog2Splat[logEvent.Level], RenderLogEvent(Layout, logEvent)));
+        protected override void Write(LogEventInfo logEvent) => _logs.Add((_nlog2Splat[logEvent.Level], RenderLogEvent(Layout, logEvent)));
     }
 }

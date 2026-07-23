@@ -12,6 +12,15 @@ namespace Splat;
 /// different frameworks.</remarks>
 public static class SizeExtensions
 {
+    /// <summary>Extension members for <see cref="Size"/>.</summary>
+    /// <param name="value">The value the extension members operate on.</param>
+    extension(Size value)
+    {
+        /// <summary>Converts a <see cref="Size"/> to a <see cref="System.Drawing.SizeF"/>.</summary>
+        /// <returns>A <see cref="System.Drawing.SizeF"/> of the value.</returns>
+        public System.Drawing.SizeF FromNative() => new((float)value.Width, (float)value.Height);
+    }
+
     /// <summary>Extension members for <see cref="System.Drawing.Size"/>.</summary>
     /// <param name="value">The value the extension members operate on.</param>
     extension(System.Drawing.Size value)
@@ -28,14 +37,5 @@ public static class SizeExtensions
         /// <summary>Convert a <see cref="System.Drawing.SizeF"/> to the android native <see cref="Size"/>.</summary>
         /// <returns>A <see cref="Size"/> of the value.</returns>
         public Size ToNative() => new(value.Width, value.Height);
-    }
-
-    /// <summary>Extension members for <see cref="Size"/>.</summary>
-    /// <param name="value">The value the extension members operate on.</param>
-    extension(Size value)
-    {
-        /// <summary>Converts a <see cref="Size"/> to a <see cref="System.Drawing.SizeF"/>.</summary>
-        /// <returns>A <see cref="System.Drawing.SizeF"/> of the value.</returns>
-        public System.Drawing.SizeF FromNative() => new((float)value.Width, (float)value.Height);
     }
 }

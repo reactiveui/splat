@@ -28,11 +28,11 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
         const int foo = 5;
 
         // Explicitly cast to call the non-generic Register method with null service type
-        resolver.Register(() => foo, serviceType: null);
+        resolver.Register(static () => foo, serviceType: null);
 
         const int bar = 4;
         const string contract = "foo";
-        resolver.Register(() => bar, serviceType: null, contract: contract);
+        resolver.Register(static () => bar, serviceType: null, contract: contract);
 
         await Assert.That(resolver.HasRegistration(null)).IsTrue();
 
@@ -75,7 +75,7 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
     public override Task ServiceRegistrationCallback_Generic_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        _ = Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(static _ => { }));
         return Task.CompletedTask;
     }
 
@@ -87,8 +87,8 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
         var resolver = GetDependencyResolver();
 
         // Register a service first so the callback would normally fire immediately; Ninject still throws.
-        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
+        _ = Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(static _ => { }));
         return Task.CompletedTask;
     }
 
@@ -98,7 +98,7 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
     public override Task ServiceRegistrationCallback_Generic_WithContract_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>("test", _ => { }));
+        _ = Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>("test", static _ => { }));
         return Task.CompletedTask;
     }
 
@@ -108,7 +108,7 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
     public override Task ServiceRegistrationCallback_NonGeneric_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), _ => { }));
+        _ = Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), static _ => { }));
         return Task.CompletedTask;
     }
 
@@ -118,7 +118,7 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
     public override Task ServiceRegistrationCallback_NonGeneric_WithContract_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), "test", _ => { }));
+        _ = Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), "test", static _ => { }));
         return Task.CompletedTask;
     }
 
@@ -130,7 +130,7 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
         var resolver = GetDependencyResolver();
 
         // The subscription disposable is never produced because Ninject throws before returning it.
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }).Dispose());
+        _ = Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(static _ => { }).Dispose());
         return Task.CompletedTask;
     }
 
@@ -157,9 +157,9 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
         var resolver = GetDependencyResolver();
 
         // Register multiple services so the callback would normally fire for each; Ninject still throws.
-        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
-        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
+        _ = Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(static _ => { }));
         return Task.CompletedTask;
     }
 
@@ -172,7 +172,7 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
         resolver.Dispose();
 
         // After disposal, ServiceRegistrationCallback still throws NotSupportedException for Ninject.
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        _ = Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(static _ => { }));
         return Task.CompletedTask;
     }
 
@@ -184,7 +184,7 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
         var resolver = GetDependencyResolver();
 
         // Callbacks can never be registered (Ninject throws), so disposal has nothing to suppress.
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        _ = Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(static _ => { }));
         resolver.Dispose();
         return Task.CompletedTask;
     }
@@ -192,37 +192,75 @@ public sealed class NInjectDependencyResolverTests : BaseDependencyResolverTests
     /// <summary>Ninject doesn't invoke callbacks on disposal.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public override Task Dispose_InvokesCallbacks()
+    public override async Task Dispose_InvokesCallbacks()
     {
-        // Ninject ServiceRegistrationCallback throws NotSupportedException, so this test doesn't apply
-        return Task.CompletedTask;
+        var resolver = GetDependencyResolver();
+
+        // Ninject does not support registration callbacks, so there is nothing for disposal to invoke.
+        await Assert.That(() => resolver.ServiceRegistrationCallback<ViewModelOne>(static _ => { }))
+            .Throws<NotSupportedException>();
+        await Assert.That(() =>
+        {
+            resolver.Dispose();
+            return Task.CompletedTask;
+        }).ThrowsNothing();
     }
 
-    /// <summary>Ninject manages disposal of registered services itself.</summary>
+    /// <summary>Ninject disposes the singleton-scoped services it activated on disposal.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public override Task Dispose_DisposesRegisteredServices()
+    public override async Task Dispose_DisposesRegisteredServices()
     {
-        // Ninject manages its own service disposal lifecycle
-        return Task.CompletedTask;
+        var resolver = GetDependencyResolver();
+        var disposableService = new DisposableTestService();
+        resolver.RegisterLazySingleton(() => disposableService);
+
+        _ = resolver.GetService<DisposableTestService>();
+        await Assert.That(disposableService.IsDisposed).IsFalse();
+
+        resolver.Dispose();
+
+        // Ninject disposes the singleton-scoped services it activated when the kernel is disposed.
+        await Assert.That(disposableService.IsDisposed).IsTrue();
     }
 
-    /// <summary>Ninject handles lazy singletons itself.</summary>
+    /// <summary>Ninject does not create an unresolved lazy singleton just to dispose it.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public override Task Dispose_WithLazySingleton_DoesNotCreateIfNotAccessed()
+    public override async Task Dispose_WithLazySingleton_DoesNotCreateIfNotAccessed()
     {
-        // Ninject manages lazy singleton creation and disposal
-        return Task.CompletedTask;
+        var resolver = GetDependencyResolver();
+        var factoryCalled = false;
+        resolver.RegisterLazySingleton<DisposableTestService>(() =>
+        {
+            factoryCalled = true;
+            return new();
+        });
+
+        await Assert.That(factoryCalled).IsFalse();
+
+        resolver.Dispose();
+
+        // Ninject does not activate an unresolved singleton just to dispose it.
+        await Assert.That(factoryCalled).IsFalse();
     }
 
-    /// <summary>Ninject manages disposal of services under construction itself.</summary>
+    /// <summary>Ninject disposes a constructed singleton and rejects further resolution after disposal.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public override Task Dispose_WhileLazySingletonUnderConstruction_DisposesServiceAndThrowsException()
+    public override async Task Dispose_WhileLazySingletonUnderConstruction_DisposesServiceAndThrowsException()
     {
-        // Ninject manages its own service disposal lifecycle including services under construction
-        return Task.CompletedTask;
+        var resolver = GetDependencyResolver();
+        var disposableService = new DisposableTestService();
+        resolver.RegisterLazySingleton(() => disposableService);
+
+        _ = resolver.GetService<DisposableTestService>();
+
+        resolver.Dispose();
+
+        // Ninject disposes the constructed singleton and rejects further resolution once the kernel is disposed.
+        await Assert.That(disposableService.IsDisposed).IsTrue();
+        await Assert.That(() => resolver.GetService(typeof(DisposableTestService))).Throws<ObjectDisposedException>();
     }
 
     /// <inheritdoc />

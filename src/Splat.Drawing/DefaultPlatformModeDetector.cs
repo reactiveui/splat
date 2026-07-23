@@ -82,15 +82,15 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
             return false;
         }
 
-        var mInfo = type.GetMethod(XamlDesignPropertiesDesignModeMethodName);
+        var methodInfo = type.GetMethod(XamlDesignPropertiesDesignModeMethodName);
         var dependencyObject = Type.GetType(XamlControlBorderType, false);
 
-        if (mInfo is null || dependencyObject is null)
+        if (methodInfo is null || dependencyObject is null)
         {
             return true;
         }
 
-        _cachedInDesignModeResult = (bool)(mInfo.Invoke(null, [Activator.CreateInstance(dependencyObject)]) ?? false);
+        _cachedInDesignModeResult = (bool)(methodInfo.Invoke(null, [Activator.CreateInstance(dependencyObject)]) ?? false);
         return true;
     }
 
@@ -104,14 +104,14 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
             return false;
         }
 
-        var mInfo = type.GetMethod(WpfDesignerPropertiesDesignModeMethod);
+        var methodInfo = type.GetMethod(WpfDesignerPropertiesDesignModeMethod);
         var dependencyObject = Type.GetType(WpfDependencyPropertyType, false);
-        if (mInfo is null || dependencyObject is null)
+        if (methodInfo is null || dependencyObject is null)
         {
             return true;
         }
 
-        _cachedInDesignModeResult = (bool)(mInfo.Invoke(null, [Activator.CreateInstance(dependencyObject)]) ?? false);
+        _cachedInDesignModeResult = (bool)(methodInfo.Invoke(null, [Activator.CreateInstance(dependencyObject)]) ?? false);
         return true;
     }
 

@@ -28,7 +28,7 @@ internal static class ServiceTypeRegistryCache
     /// <returns>The per-resolver <see cref="Registry"/> instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="state"/> is <see langword="null"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Registry Get(ResolverState state)
+    internal static Registry Get(ResolverState state)
     {
         ArgumentExceptionHelper.ThrowIfNull(state);
         return Registries.GetOrCreateValue(state);
@@ -62,7 +62,7 @@ internal static class ServiceTypeRegistryCache
         /// <returns><see langword="true"/> if registrations exist; otherwise <see langword="false"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="serviceType"/> is <see langword="null"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool HasNonGenericRegistrations(Type serviceType, string? contract = null)
+        internal bool HasNonGenericRegistrations(Type serviceType, string? contract = null)
         {
             ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
@@ -75,13 +75,13 @@ internal static class ServiceTypeRegistryCache
         /// <param name="serviceType">Service type being registered.</param>
         /// <param name="contract">Optional contract key.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="serviceType"/> is <see langword="null"/>.</exception>
-        public void TrackNonGenericRegistration(Type serviceType, string? contract = null)
+        internal void TrackNonGenericRegistration(Type serviceType, string? contract = null)
         {
             ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
             lock (_nonGenericGate)
             {
-                _nonGenericRegistrationSet.Add((serviceType, contract));
+                _ = _nonGenericRegistrationSet.Add((serviceType, contract));
                 PublishNonGenericSnapshot_NoThrow();
             }
         }
@@ -91,7 +91,7 @@ internal static class ServiceTypeRegistryCache
         /// <param name="factory">Factory delegate that produces instances.</param>
         /// <param name="contract">Optional contract key.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="serviceType"/> or <paramref name="factory"/> is <see langword="null"/>.</exception>
-        public void Register(Type serviceType, Func<object?> factory, string? contract = null)
+        internal void Register(Type serviceType, Func<object?> factory, string? contract = null)
         {
             ArgumentExceptionHelper.ThrowIfNull(serviceType);
             ArgumentExceptionHelper.ThrowIfNull(factory);
@@ -105,7 +105,7 @@ internal static class ServiceTypeRegistryCache
         /// <param name="contract">Optional contract key.</param>
         /// <returns>The resolved instance, or <see langword="null"/> when no registration exists or the factory returns <see langword="null"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="serviceType"/> is <see langword="null"/>.</exception>
-        public object? GetService(Type serviceType, string? contract = null)
+        internal object? GetService(Type serviceType, string? contract = null)
         {
             ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
@@ -115,13 +115,7 @@ internal static class ServiceTypeRegistryCache
             }
 
             var factories = entry.GetSnapshot();
-            if (factories.Length == 0)
-            {
-                return null;
-            }
-
-            // Invoke user code outside locks.
-            return factories[factories.Length - 1].Invoke();
+            return factories.Length == 0 ? null : factories[^1].Invoke();
         }
 
         /// <summary>Resolves all services for a type and optional contract.</summary>
@@ -132,7 +126,7 @@ internal static class ServiceTypeRegistryCache
         /// Factories are invoked during materialization; exceptions propagate to the caller.
         /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="serviceType"/> is <see langword="null"/>.</exception>
-        public object[] GetServices(Type serviceType, string? contract = null)
+        internal object[] GetServices(Type serviceType, string? contract = null)
         {
             ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
@@ -150,7 +144,7 @@ internal static class ServiceTypeRegistryCache
         /// <param name="contract">Optional contract key.</param>
         /// <returns><see langword="true"/> if at least one registration exists; otherwise <see langword="false"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="serviceType"/> is <see langword="null"/>.</exception>
-        public bool HasRegistration(Type serviceType, string? contract = null)
+        internal bool HasRegistration(Type serviceType, string? contract = null)
         {
             ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
@@ -162,7 +156,7 @@ internal static class ServiceTypeRegistryCache
         /// <param name="contract">Optional contract key.</param>
         /// <returns>Number of registrations.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="serviceType"/> is <see langword="null"/>.</exception>
-        public int GetCount(Type serviceType, string? contract = null)
+        internal int GetCount(Type serviceType, string? contract = null)
         {
             ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
@@ -173,7 +167,7 @@ internal static class ServiceTypeRegistryCache
         /// <param name="serviceType">Service type to unregister.</param>
         /// <param name="contract">Optional contract key.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="serviceType"/> is <see langword="null"/>.</exception>
-        public void UnregisterCurrent(Type serviceType, string? contract = null)
+        internal void UnregisterCurrent(Type serviceType, string? contract = null)
         {
             ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
@@ -183,11 +177,11 @@ internal static class ServiceTypeRegistryCache
                 return;
             }
 
-            _entries.TryRemove(key, out _);
+            _ = _entries.TryRemove(key, out _);
 
             lock (_nonGenericGate)
             {
-                _nonGenericRegistrationSet.Remove(key);
+                _ = _nonGenericRegistrationSet.Remove(key);
                 PublishNonGenericSnapshot_NoThrow();
             }
         }
@@ -196,7 +190,7 @@ internal static class ServiceTypeRegistryCache
         /// <param name="serviceType">Service type to unregister.</param>
         /// <param name="contract">Optional contract key.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="serviceType"/> is <see langword="null"/>.</exception>
-        public void UnregisterAll(Type serviceType, string? contract = null)
+        internal void UnregisterAll(Type serviceType, string? contract = null)
         {
             ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
@@ -208,13 +202,13 @@ internal static class ServiceTypeRegistryCache
 
             lock (_nonGenericGate)
             {
-                _nonGenericRegistrationSet.Remove(key);
+                _ = _nonGenericRegistrationSet.Remove(key);
                 PublishNonGenericSnapshot_NoThrow();
             }
         }
 
         /// <summary>Clears all registrations and tracked non-generic registrations from this registry.</summary>
-        public void Clear()
+        internal void Clear()
         {
             _entries.Clear();
 
@@ -232,7 +226,7 @@ internal static class ServiceTypeRegistryCache
         /// <remarks>
         /// This method does not invoke factories. It snapshots the current lists under each entry gate.
         /// </remarks>
-        public Func<object?>[] GetAllFactoriesForDisposal()
+        internal Func<object?>[] GetAllFactoriesForDisposal()
         {
             // Snapshot dictionary entries once (avoids enumerator invalidation if the dictionary is modified concurrently).
             var entriesSnapshot = _entries.ToArray();
@@ -262,7 +256,8 @@ internal static class ServiceTypeRegistryCache
                 var value = factories[i].Invoke();
                 if (value is not null)
                 {
-                    tmp[idx++] = value;
+                    tmp[idx] = value;
+                    idx++;
                 }
             }
 
@@ -286,10 +281,6 @@ internal static class ServiceTypeRegistryCache
         /// Caller must hold <see cref="_nonGenericGate"/>.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void PublishNonGenericSnapshot_NoThrow()
-        {
-            // HashSet copy is required to publish an immutable snapshot for lock-free readers.
-            Volatile.Write(ref _nonGenericRegistrations, [.. _nonGenericRegistrationSet]);
-        }
+        private void PublishNonGenericSnapshot_NoThrow() => Volatile.Write(ref _nonGenericRegistrations, [.. _nonGenericRegistrationSet]);
     }
 }

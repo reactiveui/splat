@@ -1,8 +1,6 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
-
-using System.Diagnostics.CodeAnalysis;
 
 namespace Splat.ApplicationPerformanceMonitoring;
 
@@ -20,10 +18,6 @@ public static class EnableFeatureUsageTrackingExtensions
         /// <param name="featureName">The name of the feature to track. Cannot be null or empty.</param>
         /// <returns>An <see cref="IFeatureUsageTrackingSession"/> instance for tracking usage of the specified feature.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the feature usage tracking manager service is not available.</exception>
-        [SuppressMessage(
-            "Performance",
-            "CA1822:Mark members as static",
-            Justification = "Instance receiver is intentional fluent API on IEnableFeatureUsageTracking; the manager is resolved via AppLocator.")]
         public IFeatureUsageTrackingSession FeatureUsageTrackingSession(string featureName)
         {
             var featureUsageTrackingSession = AppLocator.Current.GetService<IFeatureUsageTrackingManager>();

@@ -95,8 +95,8 @@ public class AppBuilder : IAppBuilder, IAppInstance
     /// <returns>The current <see cref="IAppBuilder"/> instance. This enables method chaining.</returns>
     public IAppBuilder UseCurrentSplatLocator()
     {
-        _resolverProvider = () => AppLocator.CurrentMutable;
-        _serviceProvider = () => AppLocator.Current;
+        _resolverProvider = static () => AppLocator.CurrentMutable;
+        _serviceProvider = static () => AppLocator.Current;
         return this;
     }
 
@@ -148,7 +148,7 @@ public class AppBuilder : IAppBuilder, IAppInstance
         HasBeenBuilt = true;
 
         // Ensure core services are always registered
-        WithCoreServices();
+        _ = WithCoreServices();
 
         // Apply all registrations against the current resolver source
         foreach (var registration in _registrations)

@@ -63,9 +63,10 @@ internal sealed class ConsoleLoggerTests : FullLoggerTestBase
                 var message = value.Substring(colonIndex + 1).Trim();
                 _logs.Add((level, message));
             }
-            catch
+            catch (Exception ex)
             {
                 // Ignore improperly formatted lines
+                System.Diagnostics.Debug.WriteLine(ex);
             }
         }
     }

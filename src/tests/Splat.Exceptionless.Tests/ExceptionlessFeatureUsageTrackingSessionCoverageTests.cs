@@ -18,7 +18,7 @@ public sealed class ExceptionlessFeatureUsageTrackingSessionCoverageTests
     public async Task Constructor_Should_Throw_When_FeatureName_Is_Whitespace()
     {
         ConfigureDefaultClient();
-        await Assert.That(() => new ExceptionlessFeatureUsageTrackingSession(" ")).Throws<ArgumentException>();
+        await Assert.That(static () => new ExceptionlessFeatureUsageTrackingSession(" ")).Throws<ArgumentException>();
     }
 
     /// <summary>Verifies <see cref="ExceptionlessFeatureUsageTrackingSession.SubFeature(string)"/> creates a child session referencing its parent.</summary>
@@ -63,7 +63,7 @@ public sealed class ExceptionlessFeatureUsageTrackingSessionCoverageTests
         var configuration = ExceptionlessClient.Default.Configuration;
         configuration.ApiKey = "someapikey";
         configuration.RemovePlugin("cancel-default");
-        configuration.AddPlugin("cancel-default", context => context.Cancel = true);
+        configuration.AddPlugin("cancel-default", static context => context.Cancel = true);
     }
 }
 

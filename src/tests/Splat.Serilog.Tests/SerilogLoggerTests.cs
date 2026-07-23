@@ -34,16 +34,6 @@ public class SerilogLoggerTests : FullLoggerTestBase
         { LogLevel.Fatal, LogEventLevel.Fatal },
     };
 
-    /// <summary>Gets a list of mappings of Serilog levels and equivalent Splat log levels.</summary>
-    private static readonly Dictionary<LogEventLevel, LogLevel> _mappingsToSplat = new()
-    {
-        { LogEventLevel.Debug, LogLevel.Debug },
-        { LogEventLevel.Information, LogLevel.Info },
-        { LogEventLevel.Warning, LogLevel.Warn },
-        { LogEventLevel.Error, LogLevel.Error },
-        { LogEventLevel.Fatal, LogLevel.Fatal },
-    };
-
     /// <summary>The app locator scope used to isolate registrations per test.</summary>
     private AppLocatorScope? _appLocatorScope;
 
@@ -129,6 +119,16 @@ public class SerilogLoggerTests : FullLoggerTestBase
     /// <summary>A Serilog sink that captures emitted log events for assertions.</summary>
     private sealed class LogTarget : ILogEventSink, IMockLogTarget
     {
+        /// <summary>Gets a list of mappings of Serilog levels and equivalent Splat log levels.</summary>
+        private static readonly Dictionary<LogEventLevel, LogLevel> _mappingsToSplat = new()
+        {
+            { LogEventLevel.Debug, LogLevel.Debug },
+            { LogEventLevel.Information, LogLevel.Info },
+            { LogEventLevel.Warning, LogLevel.Warn },
+            { LogEventLevel.Error, LogLevel.Error },
+            { LogEventLevel.Fatal, LogLevel.Fatal },
+        };
+
         /// <summary>The formatter used to render captured log events.</summary>
         private static readonly MessageTemplateTextFormatter _formatter = new("{Message} {Exception}", CultureInfo.InvariantCulture);
 

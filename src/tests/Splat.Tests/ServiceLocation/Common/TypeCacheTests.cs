@@ -2,6 +2,8 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Splat.Tests.ServiceLocation;
 
 /// <summary>Tests for TypeCache to verify type caching functionality.</summary>
@@ -92,9 +94,9 @@ public class TypeCacheTests
     }
 
     /// <summary>A simple service type used for testing the type cache.</summary>
-    private sealed class TestService
-    {
-        /// <summary>Gets or sets the identifier.</summary>
-        public int Id { get; set; }
-    }
+    [SuppressMessage(
+        "Design",
+        "SST1436:An empty type is rarely intentional",
+        Justification = "Deliberate marker type used only as a distinct generic argument in TypeCache<T> tests.")]
+    private sealed class TestService;
 }

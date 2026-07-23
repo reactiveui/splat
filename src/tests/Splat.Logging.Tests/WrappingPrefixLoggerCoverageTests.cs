@@ -45,7 +45,7 @@ public class WrappingPrefixLoggerCoverageTests
         var inner = new TextLogger();
         var logger = new WrappingPrefixLogger(inner, typeof(DummyObjectClass1));
 
-        logger.Write(new Exception("boom"), TestMessage, LogLevel.Error);
+        logger.Write(new("boom"), TestMessage, LogLevel.Error);
 
         await Assert.That(inner.Logs.Last().message.StartsWith($"{nameof(DummyObjectClass1)}: This is a test.", StringComparison.Ordinal)).IsTrue();
     }
@@ -71,7 +71,7 @@ public class WrappingPrefixLoggerCoverageTests
         var inner = new TextLogger();
         var logger = new WrappingPrefixLogger(inner, typeof(DummyObjectClass1));
 
-        logger.Write(new Exception("boom"), TestMessage, typeof(DummyObjectClass2), LogLevel.Fatal);
+        logger.Write(new("boom"), TestMessage, typeof(DummyObjectClass2), LogLevel.Fatal);
 
         await Assert.That(inner.Logs.Last().message.StartsWith($"{nameof(DummyObjectClass2)}: This is a test.", StringComparison.Ordinal)).IsTrue();
     }
@@ -93,6 +93,6 @@ public class WrappingPrefixLoggerCoverageTests
     {
         var logger = new WrappingPrefixLogger(new TextLogger(), typeof(DummyObjectClass1));
 
-        await Assert.That(() => logger.Write(new Exception("boom"), TestMessage, null!, LogLevel.Info)).Throws<ArgumentNullException>();
+        await Assert.That(() => logger.Write(new("boom"), TestMessage, null!, LogLevel.Info)).Throws<ArgumentNullException>();
     }
 }

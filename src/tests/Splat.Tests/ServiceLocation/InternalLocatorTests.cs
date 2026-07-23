@@ -65,10 +65,10 @@ public sealed class InternalLocatorTests
     public async Task SetLocator_ShouldUpdateInternal()
     {
         var newResolver = new FuncDependencyResolver(
-            (_, _) => null!,
-            (_, _, _) => { },
-            (_, _) => { },
-            (_, _) => { });
+            static (_, _) => null!,
+            static (_, _, _) => { },
+            static (_, _) => { },
+            static (_, _) => { });
 
         _locator.SetLocator(newResolver);
 
@@ -82,14 +82,14 @@ public sealed class InternalLocatorTests
     {
         var callbackInvoked = false;
 
-        _locator.RegisterResolverCallbackChanged(() => callbackInvoked = true);
+        _ = _locator.RegisterResolverCallbackChanged(() => callbackInvoked = true);
         callbackInvoked = false; // Reset after initial registration
 
         var newResolver = new FuncDependencyResolver(
-            (_, _) => null!,
-            (_, _, _) => { },
-            (_, _) => { },
-            (_, _) => { });
+            static (_, _) => null!,
+            static (_, _, _) => { },
+            static (_, _) => { },
+            static (_, _) => { });
         _locator.SetLocator(newResolver);
 
         await Assert.That(callbackInvoked).IsTrue();
@@ -102,16 +102,16 @@ public sealed class InternalLocatorTests
     {
         var callbackInvoked = false;
 
-        _locator.RegisterResolverCallbackChanged(() => callbackInvoked = true);
+        _ = _locator.RegisterResolverCallbackChanged(() => callbackInvoked = true);
         callbackInvoked = false; // Reset after initial registration
 
         using (_locator.SuppressResolverCallbackChangedNotifications())
         {
             var newResolver = new FuncDependencyResolver(
-                (_, _) => null!,
-                (_, _, _) => { },
-                (_, _) => { },
-                (_, _) => { });
+                static (_, _) => null!,
+                static (_, _, _) => { },
+                static (_, _) => { },
+                static (_, _) => { });
             _locator.SetLocator(newResolver);
 
             await Assert.That(callbackInvoked).IsFalse();
@@ -133,7 +133,7 @@ public sealed class InternalLocatorTests
     {
         var callbackInvoked = false;
 
-        _locator.RegisterResolverCallbackChanged(() => callbackInvoked = true);
+        _ = _locator.RegisterResolverCallbackChanged(() => callbackInvoked = true);
 
         await Assert.That(callbackInvoked).IsTrue();
     }
@@ -151,10 +151,10 @@ public sealed class InternalLocatorTests
         subscription.Dispose();
 
         var newResolver = new FuncDependencyResolver(
-            (_, _) => null!,
-            (_, _, _) => { },
-            (_, _) => { },
-            (_, _) => { });
+            static (_, _) => null!,
+            static (_, _, _) => { },
+            static (_, _) => { },
+            static (_, _) => { });
         _locator.SetLocator(newResolver);
 
         await Assert.That(callCount).IsEqualTo(0);
@@ -168,17 +168,17 @@ public sealed class InternalLocatorTests
         var callback1Invoked = false;
         var callback2Invoked = false;
 
-        _locator.RegisterResolverCallbackChanged(() => callback1Invoked = true);
-        _locator.RegisterResolverCallbackChanged(() => callback2Invoked = true);
+        _ = _locator.RegisterResolverCallbackChanged(() => callback1Invoked = true);
+        _ = _locator.RegisterResolverCallbackChanged(() => callback2Invoked = true);
 
         callback1Invoked = false;
         callback2Invoked = false;
 
         var newResolver = new FuncDependencyResolver(
-            (_, _) => null!,
-            (_, _, _) => { },
-            (_, _) => { },
-            (_, _) => { });
+            static (_, _) => null!,
+            static (_, _, _) => { },
+            static (_, _) => { },
+            static (_, _) => { });
         _locator.SetLocator(newResolver);
 
         await Assert.That(callback1Invoked).IsTrue();
@@ -229,7 +229,7 @@ public sealed class InternalLocatorTests
 
         using (_locator.SuppressResolverCallbackChangedNotifications())
         {
-            _locator.RegisterResolverCallbackChanged(() => callbackInvoked = true);
+            _ = _locator.RegisterResolverCallbackChanged(() => callbackInvoked = true);
 
             await Assert.That(callbackInvoked).IsFalse();
         }
@@ -275,7 +275,7 @@ public sealed class InternalLocatorTests
     {
         var callCount = 0;
 
-        _locator.RegisterResolverCallbackChanged(() =>
+        _ = _locator.RegisterResolverCallbackChanged(() =>
         {
             callCount++;
             if (callCount != 1)
@@ -285,10 +285,10 @@ public sealed class InternalLocatorTests
 
             // This would cause a deadlock if the implementation doesn't handle it
             var anotherResolver = new FuncDependencyResolver(
-                (_, _) => null!,
-                (_, _, _) => { },
-                (_, _) => { },
-                (_, _) => { });
+                static (_, _) => null!,
+                static (_, _, _) => { },
+                static (_, _) => { },
+                static (_, _) => { });
             _locator.SetLocator(anotherResolver);
         });
 
@@ -303,18 +303,15 @@ public sealed class InternalLocatorTests
     {
         // This test covers the early return path in the constructor's callback
         // when CurrentMutable is null. This can happen during disposal or in edge cases.
-        var locator = new InternalLocator();
-
-        // Set Internal to null to simulate the edge case
-        locator.Internal = null!;
+        var locator = new InternalLocator() { Internal = null! };
 
         // Now trigger a resolver change which will invoke the constructor's callback
         // The callback should handle CurrentMutable being null gracefully
         var newResolver = new FuncDependencyResolver(
-            (_, _) => null!,
-            (_, _, _) => { },
-            (_, _) => { },
-            (_, _) => { });
+            static (_, _) => null!,
+            static (_, _, _) => { },
+            static (_, _) => { },
+            static (_, _) => { });
 
         // This should not throw even though CurrentMutable is now null
         await Assert.That(() => locator.SetLocator(newResolver)).ThrowsNothing();

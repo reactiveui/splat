@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -14,6 +14,9 @@ namespace Splat;
 /// are thread-safe and return bitmaps suitable for use in platform graphics APIs.</remarks>
 public class PlatformBitmapLoader : IBitmapLoader
 {
+    /// <summary>The default screen DPI used when creating a blank writeable bitmap.</summary>
+    private const double DefaultDpi = 96;
+
     /// <inheritdoc />
     public Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight) =>
         Task.Run<IBitmap?>(() =>
@@ -71,7 +74,7 @@ public class PlatformBitmapLoader : IBitmapLoader
          * These formats are natively supported and do not require a format conversion.
          * Other pixelFormat values require a format conversion for each frame update, which reduces performance.
          */
-        new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height, 96, 96, PixelFormats.Pbgra32, null));
+        new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height, DefaultDpi, DefaultDpi, PixelFormats.Pbgra32, null));
 
     /// <summary>Runs the supplied initialization block on a <see cref="BitmapImage"/> between <c>BeginInit</c> and <c>EndInit</c>.</summary>
     /// <param name="source">The bitmap image to initialize.</param>

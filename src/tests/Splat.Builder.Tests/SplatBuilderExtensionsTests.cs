@@ -33,7 +33,7 @@ public class SplatBuilderExtensionsTests
     public void ApplyThrowsOnNullModule()
     {
         const IModule module = null!;
-        Assert.Throws<ArgumentNullException>(() => module!.Apply());
+        _ = Assert.Throws<ArgumentNullException>(static () => module!.Apply());
     }
 
     /// <summary>Creates the splat builder throws on null resolver.</summary>
@@ -41,7 +41,7 @@ public class SplatBuilderExtensionsTests
     public void CreateSplatBuilderThrowsOnNullResolver()
     {
         const IMutableDependencyResolver resolver = null!;
-        Assert.Throws<ArgumentNullException>(() => resolver!.CreateSplatBuilder());
+        _ = Assert.Throws<ArgumentNullException>(static () => resolver!.CreateSplatBuilder());
     }
 
     /// <summary>Creates the splat builder returns application builder.</summary>
@@ -60,7 +60,7 @@ public class SplatBuilderExtensionsTests
     public void CreateSplatBuilderWithConfigureActionThrowsOnNullResolver()
     {
         const IMutableDependencyResolver resolver = null!;
-        Assert.Throws<ArgumentNullException>(() => resolver!.CreateSplatBuilder(_ => { }));
+        _ = Assert.Throws<ArgumentNullException>(static () => resolver!.CreateSplatBuilder(static _ => { }));
     }
 
     /// <summary>Creates the splat builder with configure action returns application builder.</summary>
@@ -69,7 +69,7 @@ public class SplatBuilderExtensionsTests
     public async Task CreateSplatBuilderWithConfigureActionReturnsAppBuilder()
     {
         var resolver = new InternalLocator();
-        var builder = resolver.CurrentMutable.CreateSplatBuilder(r => r.Register<string>(() => HelloValue))
+        var builder = resolver.CurrentMutable.CreateSplatBuilder(static r => r.Register(static () => HelloValue))
             .Build();
         await Assert.That(builder).IsNotNull();
         var hello = resolver.Current.GetService<string>();
@@ -83,7 +83,7 @@ public class SplatBuilderExtensionsTests
     public async Task CreateSplatBuilderWithConfigureActionReturnsAppBuilderNonGeneric()
     {
         var resolver = new InternalLocator();
-        var builder = resolver.CurrentMutable.CreateSplatBuilder(r => r.Register(() => HelloValue, typeof(string)))
+        var builder = resolver.CurrentMutable.CreateSplatBuilder(static r => r.Register(static () => HelloValue, typeof(string)))
             .Build();
         await Assert.That(builder).IsNotNull();
         var hello = resolver.Current.GetService<string>();

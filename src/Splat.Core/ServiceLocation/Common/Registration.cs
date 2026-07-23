@@ -48,18 +48,18 @@ internal readonly record struct Registration<T>
     /// <value>
     /// <see langword="true"/> if this registration is a factory; <see langword="false"/> if it is a constant instance.
     /// </value>
-    public bool IsFactory { get; }
+    internal bool IsFactory { get; }
 
     /// <summary>Creates a registration that stores a constant instance.</summary>
     /// <param name="instance">The instance to register. May be <see langword="null"/>.</param>
     /// <returns>A registration in instance mode.</returns>
-    public static Registration<T> FromInstance(T? instance) => new(instance, null, isFactory: false);
+    internal static Registration<T> FromInstance(T? instance) => new(instance, null, isFactory: false);
 
     /// <summary>Creates a registration that stores a factory delegate.</summary>
     /// <param name="factory">The factory delegate to register.</param>
     /// <returns>A registration in factory mode.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> is <see langword="null"/>.</exception>
-    public static Registration<T> FromFactory(Func<T?> factory)
+    internal static Registration<T> FromFactory(Func<T?> factory)
     {
         ArgumentExceptionHelper.ThrowIfNull(factory);
         return new(default, factory, isFactory: true);
@@ -71,7 +71,7 @@ internal readonly record struct Registration<T>
     /// This method is intended to be used only when <see cref="IsFactory"/> is <see langword="false"/>.
     /// For performance reasons, this method does not throw if the registration is in factory mode; it returns <see langword="null"/>.
     /// </remarks>
-    public T? GetInstance() => IsFactory ? default : _instance;
+    internal T? GetInstance() => IsFactory ? default : _instance;
 
     /// <summary>Gets the stored factory delegate.</summary>
     /// <returns>The stored factory delegate.</returns>
@@ -79,12 +79,12 @@ internal readonly record struct Registration<T>
     /// This method is intended to be used only when <see cref="IsFactory"/> is <see langword="true"/>.
     /// For performance reasons, this method does not throw if the registration is in instance mode; it returns <see langword="null"/>.
     /// </remarks>
-    public Func<T?>? GetFactory() => IsFactory ? _factory! : null;
+    internal Func<T?>? GetFactory() => IsFactory ? _factory! : null;
 
     /// <summary>Attempts to retrieve the stored instance when in instance mode.</summary>
     /// <param name="instance">Receives the instance when available.</param>
     /// <returns><see langword="true"/> if this registration is in instance mode; otherwise <see langword="false"/>.</returns>
-    public bool TryGetInstance([MaybeNullWhen(false)] out T instance)
+    internal bool TryGetInstance([MaybeNullWhen(false)] out T instance)
     {
         if (!IsFactory)
         {
@@ -99,7 +99,7 @@ internal readonly record struct Registration<T>
     /// <summary>Attempts to retrieve the stored factory when in factory mode.</summary>
     /// <param name="factory">Receives the factory delegate when available.</param>
     /// <returns><see langword="true"/> if this registration is in factory mode; otherwise <see langword="false"/>.</returns>
-    public bool TryGetFactory([MaybeNullWhen(false)] out Func<T?> factory)
+    internal bool TryGetFactory([MaybeNullWhen(false)] out Func<T?> factory)
     {
         if (IsFactory)
         {

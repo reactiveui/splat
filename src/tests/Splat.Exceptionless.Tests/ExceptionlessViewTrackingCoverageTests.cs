@@ -15,7 +15,7 @@ public sealed class ExceptionlessViewTrackingCoverageTests
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Constructor_Should_Throw_When_Client_Is_Null() =>
-        await Assert.That(() => new ExceptionlessViewTracking(null!)).Throws<ArgumentNullException>();
+        await Assert.That(static () => new ExceptionlessViewTracking(null!)).Throws<ArgumentNullException>();
 
     /// <summary>Verifies the constructor succeeds with a valid Exceptionless client.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -45,7 +45,7 @@ public sealed class ExceptionlessViewTrackingCoverageTests
     {
         var client = new ExceptionlessClient();
         client.Configuration.ApiKey = "someapikey";
-        client.Configuration.AddPlugin("cancel", context => context.Cancel = true);
+        client.Configuration.AddPlugin("cancel", static context => context.Cancel = true);
         return client;
     }
 }

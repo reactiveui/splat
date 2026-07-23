@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -16,14 +16,12 @@ public static class MutableDependencyResolverExtensions
         /// Configure Log4Net appenders and configuration before calling this method.
         /// </remarks>
         /// <example>
-        /// <code>
-        /// AppLocator.CurrentMutable.UseLog4NetWithWrappingFullLogger();
-        /// </code>
+        /// <c>AppLocator.CurrentMutable.UseLog4NetWithWrappingFullLogger();</c>
         /// </example>
         public void UseLog4NetWithWrappingFullLogger()
         {
             ArgumentExceptionHelper.ThrowIfNull(instance);
-            var funcLogManager = new FuncLogManager(type => new WrappingFullLogger(new Log4NetLogger(LogResolver.Resolve(type))));
+            var funcLogManager = new FuncLogManager(static type => new WrappingFullLogger(new Log4NetLogger(LogResolver.Resolve(type))));
 
             instance.RegisterConstant<ILogManager>(funcLogManager);
         }

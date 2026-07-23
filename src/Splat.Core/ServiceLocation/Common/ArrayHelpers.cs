@@ -29,7 +29,7 @@ internal static class ArrayHelpers
 #else
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    public static Registration<T>[] AppendNullable<T>(Registration<T>[]? current, Registration<T> newItem)
+    internal static Registration<T>[] AppendNullable<T>(Registration<T>[]? current, Registration<T> newItem)
     {
         if (current is null)
         {
@@ -55,7 +55,7 @@ internal static class ArrayHelpers
 #else
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    public static T[] RemoveLast<T>(T[]? current)
+    internal static T[] RemoveLast<T>(T[]? current)
     {
         if (current is null || current.Length <= 1)
         {
@@ -86,7 +86,7 @@ internal static class ArrayHelpers
 #else
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    public static T[] MaterializeRegistrations<T>(Registration<T>[] registrations)
+    internal static T[] MaterializeRegistrations<T>(Registration<T>[] registrations)
     {
         ArgumentExceptionHelper.ThrowIfNull(registrations);
 
@@ -113,7 +113,8 @@ internal static class ArrayHelpers
                 var value = factory.Invoke();
                 if (value is not null)
                 {
-                    tmp[idx++] = value;
+                    tmp[idx] = value;
+                    idx++;
                 }
 
                 continue;
@@ -123,7 +124,8 @@ internal static class ArrayHelpers
             var instance = reg.GetInstance();
             if (instance is not null)
             {
-                tmp[idx++] = instance;
+                tmp[idx] = instance;
+                idx++;
             }
         }
 
@@ -184,15 +186,15 @@ internal static class ArrayHelpers
 
         /// <summary>Gets the number of committed items.</summary>
         /// <remarks>Lock-free volatile read; reflects the count after the most recent committed mutation.</remarks>
-        public int Count => Volatile.Read(ref _count);
+        internal int Count => Volatile.Read(ref _count);
 
         /// <summary>Gets a value indicating whether the entry currently holds any items.</summary>
         /// <remarks>Lock-free volatile read; equivalent to <c><see cref="Count"/> &gt; 0</c>.</remarks>
-        public bool HasItems => Volatile.Read(ref _count) > 0;
+        internal bool HasItems => Volatile.Read(ref _count) > 0;
 
         /// <summary>Appends an item, invalidating the snapshot.</summary>
         /// <param name="value">The value to append.</param>
-        public void Add(TValue value)
+        internal void Add(TValue value)
         {
             lock (_gate)
             {
@@ -205,7 +207,7 @@ internal static class ArrayHelpers
         /// <summary>Removes the most recently added item, if any.</summary>
         /// <returns><see langword="true"/> if the entry became empty as a result; otherwise <see langword="false"/>.</returns>
         /// <remarks>When the entry drains to empty, an empty snapshot is published so subsequent reads fast-exit.</remarks>
-        public bool RemoveCurrent()
+        internal bool RemoveCurrent()
         {
             lock (_gate)
             {
@@ -237,7 +239,7 @@ internal static class ArrayHelpers
         /// <param name="value">The value to remove, matched by the default equality comparer.</param>
         /// <returns><see langword="true"/> if an item was removed; otherwise <see langword="false"/>.</returns>
         /// <remarks>When the entry drains to empty, an empty snapshot is published so subsequent reads fast-exit.</remarks>
-        public bool Remove(TValue value)
+        internal bool Remove(TValue value)
         {
             lock (_gate)
             {
@@ -262,7 +264,7 @@ internal static class ArrayHelpers
         }
 
         /// <summary>Removes all items and publishes an empty snapshot.</summary>
-        public void Clear()
+        internal void Clear()
         {
             lock (_gate)
             {
@@ -281,7 +283,7 @@ internal static class ArrayHelpers
         /// Otherwise the snapshot is rebuilt under the gate and allocates an array copy of the list.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TValue[] GetSnapshot()
+        internal TValue[] GetSnapshot()
         {
             var version = Volatile.Read(ref _version);
             var snapshot = Volatile.Read(ref _snapshot);
@@ -312,7 +314,7 @@ internal static class ArrayHelpers
         /// <param name="destination">The list to append the current items to.</param>
         /// <remarks>Used by disposal enumeration, which needs every item without invoking factories.</remarks>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="destination"/> is <see langword="null"/>.</exception>
-        public void CopyItemsTo(List<TValue> destination)
+        internal void CopyItemsTo(List<TValue> destination)
         {
             ArgumentExceptionHelper.ThrowIfNull(destination);
 

@@ -29,7 +29,7 @@ public class RegistrationTests
     public async Task FromFactory_CreatesFactoryRegistration()
     {
         // Arrange
-        Func<string?> factory = () => "test";
+        Func<string?> factory = static () => "test";
 
         // Act
         var registration = Registration<string>.FromFactory(factory);
@@ -62,7 +62,7 @@ public class RegistrationTests
     {
         // Arrange
         const string expectedValue = "factory result";
-        Func<string?> factory = () => expectedValue;
+        Func<string?> factory = static () => expectedValue;
         var registration = Registration<string>.FromFactory(factory);
 
         // Act
@@ -93,7 +93,7 @@ public class RegistrationTests
     public async Task FactoryRegistration_ThatReturnsNull_WorksCorrectly()
     {
         // Arrange
-        Func<string?> factory = () => null;
+        Func<string?> factory = static () => null;
         var registration = Registration<string?>.FromFactory(factory);
 
         // Assert factory mode is set
@@ -129,8 +129,8 @@ public class RegistrationTests
     public async Task FactoryRegistration_WithDifferentFactories_AreNotEqual()
     {
         // Arrange
-        Func<string?> factory1 = () => "test1";
-        Func<string?> factory2 = () => "test2";
+        Func<string?> factory1 = static () => "test1";
+        Func<string?> factory2 = static () => "test2";
         var reg1 = Registration<string>.FromFactory(factory1);
         var reg2 = Registration<string>.FromFactory(factory2);
 
@@ -165,7 +165,7 @@ public class RegistrationTests
     {
         // Arrange
         const int expectedValue = 100;
-        Func<TestClass?> factory = () => new() { Value = expectedValue, Name = "Factory" };
+        Func<TestClass?> factory = static () => new() { Value = expectedValue, Name = "Factory" };
         var registration = Registration<TestClass>.FromFactory(factory);
 
         // Act

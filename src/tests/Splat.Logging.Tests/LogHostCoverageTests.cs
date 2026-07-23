@@ -17,7 +17,7 @@ public class LogHostCoverageTests : IEnableLogger
     public async Task Default_Returns_Static_Full_Logger()
     {
         using var scope = new AppLocatorScope();
-        AppLocator.CurrentMutable.Register<ILogManager>(() => new FuncLogManager(_ => new WrappingFullLogger(new TextLogger())));
+        AppLocator.CurrentMutable.Register<ILogManager>(static () => new FuncLogManager(static _ => new WrappingFullLogger(new TextLogger())));
 
         var logger = LogHost.Default;
 
@@ -33,7 +33,7 @@ public class LogHostCoverageTests : IEnableLogger
         var textLogger = new TextLogger();
         AppLocator.CurrentMutable.Register<ILogManager>(() => new FuncLogManager(_ => new WrappingFullLogger(textLogger)));
 
-        await Assert.That(() => LogHost.Default.Info("hello")).ThrowsNothing();
+        await Assert.That(static () => LogHost.Default.Info("hello")).ThrowsNothing();
     }
 
     /// <summary>Test that LogHost.Default throws a LoggingException when no ILogManager is registered.</summary>
@@ -44,7 +44,7 @@ public class LogHostCoverageTests : IEnableLogger
         using var scope = new AppLocatorScope();
         AppLocator.CurrentMutable.UnregisterAll<ILogManager>();
 
-        await Assert.That(() => _ = LogHost.Default).Throws<LoggingException>();
+        await Assert.That(static () => _ = LogHost.Default).Throws<LoggingException>();
     }
 
     /// <summary>Test that the this.Log() extension returns a full logger when an ILogManager is registered.</summary>
@@ -53,7 +53,7 @@ public class LogHostCoverageTests : IEnableLogger
     public async Task Log_Extension_Returns_Full_Logger()
     {
         using var scope = new AppLocatorScope();
-        AppLocator.CurrentMutable.Register<ILogManager>(() => new FuncLogManager(_ => new WrappingFullLogger(new TextLogger())));
+        AppLocator.CurrentMutable.Register<ILogManager>(static () => new FuncLogManager(static _ => new WrappingFullLogger(new TextLogger())));
 
         var logger = this.Log();
 

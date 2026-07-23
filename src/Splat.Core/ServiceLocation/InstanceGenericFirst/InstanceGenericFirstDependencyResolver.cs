@@ -43,8 +43,8 @@ namespace Splat;
 /// </para>
 /// </remarks>
 [SuppressMessage(
-    "Minor Code Smell",
-    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    "StyleSharp",
+    "SST2307:A generic method's type parameter appears in no parameter, so no caller can infer it",
     Justification = "Generic service-location API; the service type is supplied explicitly by callers, so type inference cannot apply by design.")]
 public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 {
@@ -120,19 +120,14 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
             return default;
         }
 
-        var container = ContainerCache<T>.Get(_state);
+        var container = ContainerCache<T>.Get(Volatile.Read(ref _state));
         if (container.TryGet(out var service))
         {
             return service;
         }
 
-        var registry = ServiceTypeRegistryCache.Get(_state);
-        if (!registry.HasNonGenericRegistrations(TypeCache<T>.Type))
-        {
-            return default;
-        }
-
-        return TryCastAndUnwrap<T>(registry.GetService(TypeCache<T>.Type));
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
+        return !registry.HasNonGenericRegistrations(TypeCache<T>.Type) ? default : TryCastAndUnwrap<T>(registry.GetService(TypeCache<T>.Type));
     }
 
     /// <inheritdoc />
@@ -149,19 +144,14 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
             return default;
         }
 
-        var contractContainer = ContractContainerCache<T>.Get(_state);
+        var contractContainer = ContractContainerCache<T>.Get(Volatile.Read(ref _state));
         if (contractContainer.TryGet(contract, out var contractService))
         {
             return contractService;
         }
 
-        var registry = ServiceTypeRegistryCache.Get(_state);
-        if (!registry.HasNonGenericRegistrations(TypeCache<T>.Type, contract))
-        {
-            return default;
-        }
-
-        return TryCastAndUnwrap<T>(registry.GetService(TypeCache<T>.Type, contract));
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
+        return !registry.HasNonGenericRegistrations(TypeCache<T>.Type, contract) ? default : TryCastAndUnwrap<T>(registry.GetService(TypeCache<T>.Type, contract));
     }
 
     /// <inheritdoc />
@@ -173,7 +163,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         }
 
         serviceType ??= NullServiceType.CachedType;
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         return UnwrapNullServiceType(registry.GetService(serviceType));
     }
 
@@ -186,7 +176,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         }
 
         serviceType ??= NullServiceType.CachedType;
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         return UnwrapNullServiceType(registry.GetService(serviceType, contract));
     }
 
@@ -198,10 +188,10 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
             return [];
         }
 
-        var container = ContainerCache<T>.Get(_state);
+        var container = ContainerCache<T>.Get(Volatile.Read(ref _state));
         var genericResults = container.GetAll();
 
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         if (registry.HasNonGenericRegistrations(TypeCache<T>.Type))
         {
             var fallbackResults = registry.GetServices(TypeCache<T>.Type);
@@ -224,10 +214,10 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
             return [];
         }
 
-        var contractContainer = ContractContainerCache<T>.Get(_state);
+        var contractContainer = ContractContainerCache<T>.Get(Volatile.Read(ref _state));
         var contractResults = contractContainer.GetAll(contract);
 
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         if (registry.HasNonGenericRegistrations(TypeCache<T>.Type, contract))
         {
             var fallbackResults = registry.GetServices(TypeCache<T>.Type, contract);
@@ -246,7 +236,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         }
 
         serviceType ??= NullServiceType.CachedType;
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         return UnwrapResults(registry.GetServices(serviceType));
     }
 
@@ -264,7 +254,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         }
 
         serviceType ??= NullServiceType.CachedType;
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         return UnwrapResults(registry.GetServices(serviceType, contract));
     }
 
@@ -276,8 +266,8 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
             return false;
         }
 
-        var container = ContainerCache<T>.Get(_state);
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var container = ContainerCache<T>.Get(Volatile.Read(ref _state));
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         return container.HasRegistrations || registry.HasRegistration(TypeCache<T>.Type);
     }
 
@@ -294,8 +284,8 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
             return false;
         }
 
-        var contractContainer = ContractContainerCache<T>.Get(_state);
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var contractContainer = ContractContainerCache<T>.Get(Volatile.Read(ref _state));
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         return contractContainer.HasRegistrations(contract) || registry.HasRegistration(TypeCache<T>.Type, contract);
     }
 
@@ -308,7 +298,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         }
 
         serviceType ??= NullServiceType.CachedType;
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         return registry.HasRegistration(serviceType);
     }
 
@@ -326,7 +316,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         }
 
         serviceType ??= NullServiceType.CachedType;
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         return registry.HasRegistration(serviceType, contract);
     }
 
@@ -338,11 +328,11 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         MarkRegistered();
 
-        var container = ContainerCache<T>.Get(_state);
+        var container = ContainerCache<T>.Get(Volatile.Read(ref _state));
         container.Add(factory);
 
         // Also register in ServiceTypeRegistry so non-generic GetService(Type) can find it.
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         registry.Register(TypeCache<T>.Type, () => factory()!);
 
         NotifyCallbackChanged(TypeCache<T>.Type, null);
@@ -362,11 +352,11 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         MarkRegistered();
 
-        var contractContainer = ContractContainerCache<T>.Get(_state);
+        var contractContainer = ContractContainerCache<T>.Get(Volatile.Read(ref _state));
         contractContainer.Add(factory, contract);
 
         // Also register in ServiceTypeRegistry so non-generic GetService(Type, contract) can find it.
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         registry.Register(TypeCache<T>.Type, () => factory()!, contract);
 
         NotifyCallbackChanged(TypeCache<T>.Type, contract);
@@ -382,7 +372,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         MarkRegistered();
 
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         registry.Register(serviceType, factory);
         registry.TrackNonGenericRegistration(serviceType);
 
@@ -405,7 +395,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         MarkRegistered();
 
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         registry.Register(serviceType, factory, contract);
         registry.TrackNonGenericRegistration(serviceType, contract);
 
@@ -420,10 +410,10 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
         MarkRegistered();
 
-        var container = ContainerCache<TService>.Get(_state);
+        var container = ContainerCache<TService>.Get(Volatile.Read(ref _state));
         container.Add(static () => new TImplementation());
 
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         registry.Register(TypeCache<TService>.Type, static () => new TImplementation());
 
         NotifyCallbackChanged(TypeCache<TService>.Type, null);
@@ -443,10 +433,10 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
         MarkRegistered();
 
-        var contractContainer = ContractContainerCache<TService>.Get(_state);
+        var contractContainer = ContractContainerCache<TService>.Get(Volatile.Read(ref _state));
         contractContainer.Add(static () => new TImplementation(), contract);
 
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         registry.Register(TypeCache<TService>.Type, static () => new TImplementation(), contract);
 
         NotifyCallbackChanged(TypeCache<TService>.Type, contract);
@@ -461,10 +451,10 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         AddDisposableIfNeeded(value);
 
-        var container = ContainerCache<T>.Get(_state);
+        var container = ContainerCache<T>.Get(Volatile.Read(ref _state));
         container.Add(value!);
 
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         registry.Register(TypeCache<T>.Type, () => value!);
 
         NotifyCallbackChanged(TypeCache<T>.Type, null);
@@ -485,10 +475,10 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         AddDisposableIfNeeded(value);
 
-        var contractContainer = ContractContainerCache<T>.Get(_state);
+        var contractContainer = ContractContainerCache<T>.Get(Volatile.Read(ref _state));
         contractContainer.Add(value!, contract);
 
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         registry.Register(TypeCache<T>.Type, () => value!, contract);
 
         NotifyCallbackChanged(TypeCache<T>.Type, contract);
@@ -506,7 +496,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         var lazy = new Lazy<T?>(valueFactory, LazyThreadSafetyMode.ExecutionAndPublication);
 
         // Wrap lazy value access to dispose and throw if resolver was disposed during construction.
-        var container = ContainerCache<T>.Get(_state);
+        var container = ContainerCache<T>.Get(Volatile.Read(ref _state));
         container.Add(() =>
         {
             var value = lazy.Value;
@@ -521,7 +511,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         AddLazyDisposal(lazy);
 
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         registry.Register(TypeCache<T>.Type, () =>
         {
             var value = lazy.Value;
@@ -544,7 +534,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
     {
         if (contract is null)
         {
-            RegisterLazySingleton<T>(valueFactory);
+            RegisterLazySingleton(valueFactory);
             return;
         }
 
@@ -555,7 +545,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         var lazy = new Lazy<T?>(valueFactory, LazyThreadSafetyMode.ExecutionAndPublication);
 
         // Wrap lazy value access to dispose and throw if resolver was disposed during construction.
-        var contractContainer = ContractContainerCache<T>.Get(_state);
+        var contractContainer = ContractContainerCache<T>.Get(Volatile.Read(ref _state));
         contractContainer.Add(
             () =>
             {
@@ -572,7 +562,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         AddLazyDisposal(lazy);
 
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         registry.Register(
             TypeCache<T>.Type,
             () =>
@@ -596,10 +586,10 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
     {
         ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
 
-        var container = ContainerCache<T>.Get(_state);
+        var container = ContainerCache<T>.Get(Volatile.Read(ref _state));
         container.RemoveCurrent();
 
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         registry.UnregisterCurrent(TypeCache<T>.Type);
     }
 
@@ -614,10 +604,10 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
 
-        var contractContainer = ContractContainerCache<T>.Get(_state);
+        var contractContainer = ContractContainerCache<T>.Get(Volatile.Read(ref _state));
         contractContainer.RemoveCurrent(contract);
 
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         registry.UnregisterCurrent(TypeCache<T>.Type, contract);
     }
 
@@ -627,7 +617,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
 
         serviceType ??= NullServiceType.CachedType;
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         registry.UnregisterCurrent(serviceType);
     }
 
@@ -644,7 +634,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
 
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         registry.UnregisterCurrent(serviceType, contract);
     }
 
@@ -653,10 +643,10 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
     {
         ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
 
-        var container = ContainerCache<T>.Get(_state);
+        var container = ContainerCache<T>.Get(Volatile.Read(ref _state));
         container.Clear();
 
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         registry.UnregisterAll(TypeCache<T>.Type);
     }
 
@@ -671,10 +661,10 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
 
-        var contractContainer = ContractContainerCache<T>.Get(_state);
+        var contractContainer = ContractContainerCache<T>.Get(Volatile.Read(ref _state));
         contractContainer.Clear(contract);
 
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         registry.UnregisterAll(TypeCache<T>.Type, contract);
     }
 
@@ -684,7 +674,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
 
         serviceType ??= NullServiceType.CachedType;
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         registry.UnregisterAll(serviceType);
     }
 
@@ -701,7 +691,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
 
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         registry.UnregisterAll(serviceType, contract);
     }
 
@@ -719,12 +709,12 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         // Invoke callback once per existing registration (matches ModernDependencyResolver behavior).
         // Use counts to avoid invoking factories (especially lazy singletons).
-        var container = ContainerCache<T>.Get(_state);
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var container = ContainerCache<T>.Get(Volatile.Read(ref _state));
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
 
         var count = contract is null
             ? container.GetCount() + registry.GetCount(TypeCache<T>.Type)
-            : ContractContainerCache<T>.Get(_state).GetCount(contract) + registry.GetCount(TypeCache<T>.Type, contract);
+            : ContractContainerCache<T>.Get(Volatile.Read(ref _state)).GetCount(contract) + registry.GetCount(TypeCache<T>.Type, contract);
 
         for (var i = 0; i < count; i++)
         {
@@ -747,7 +737,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         var disp = AddCallback(serviceType, contract, callback);
 
-        var registry = ServiceTypeRegistryCache.Get(_state);
+        var registry = ServiceTypeRegistryCache.Get(Volatile.Read(ref _state));
         var count = registry.GetCount(serviceType, contract);
 
         for (var i = 0; i < count; i++)
@@ -789,9 +779,10 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
             {
                 callbacks[i](EmptyDisposable.Instance);
             }
-            catch
+            catch (Exception ex)
             {
                 // Suppress exceptions during disposal.
+                System.Diagnostics.Debug.WriteLine(ex);
             }
         }
 
@@ -804,9 +795,10 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
                 {
                     disposalActionsSnapshot[i]();
                 }
-                catch
+                catch (Exception ex)
                 {
                     // Suppress exceptions during disposal.
+                    System.Diagnostics.Debug.WriteLine(ex);
                 }
             }
         }
@@ -872,7 +864,8 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
             var v = UnwrapNullServiceType(arr[i]);
             if (v is not null)
             {
-                output[idx++] = v;
+                output[idx] = v;
+                idx++;
             }
         }
 
@@ -920,15 +913,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 #else
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    private static object? UnwrapNullServiceType(object? value)
-    {
-        if (value is NullServiceType nullServiceType)
-        {
-            return nullServiceType.Factory();
-        }
-
-        return value;
-    }
+    private static object? UnwrapNullServiceType(object? value) => value is NullServiceType nullServiceType ? nullServiceType.Factory() : value;
 
     /// <summary>Unwraps a possible <see cref="NullServiceType"/> marker and casts the result to <typeparamref name="T"/>.</summary>
     /// <typeparam name="T">The expected service type.</typeparam>
@@ -992,7 +977,8 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
             var unwrapped = UnwrapNullServiceType(fallbackResults[i]);
             if (unwrapped is T typed)
             {
-                combined[idx++] = typed;
+                combined[idx] = typed;
+                idx++;
             }
         }
 
@@ -1022,7 +1008,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
             return;
         }
 
-        _state.MarkHasRegistrations();
+        _ = _state.MarkHasRegistrations();
     }
 
     /// <summary>Registers a callback under the supplied <c>(service type, contract)</c> key and returns a disposable that removes it.</summary>
@@ -1037,17 +1023,22 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         lock (_callbackGate)
         {
             _callbackRegistry ??= [];
+#if NET6_0_OR_GREATER
+            ref var entry = ref System.Runtime.InteropServices.CollectionsMarshal.GetValueRefOrAddDefault(_callbackRegistry, key, out _);
+            entry ??= new();
+#else
             if (!_callbackRegistry.TryGetValue(key, out var entry))
             {
                 entry = new();
                 _callbackRegistry[key] = entry;
             }
+#endif
 
             entry.Add(callback);
             Volatile.Write(ref _callbackCount, _callbackCount + 1);
         }
 
-        return new ActionDisposable(() => RemoveCallback(key, callback));
+        return new(() => RemoveCallback(key, callback));
     }
 
     /// <summary>Atomically detaches and returns every registered callback for one-shot teardown invocation.</summary>
@@ -1101,7 +1092,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
             if (entry.Count == 0)
             {
-                _callbackRegistry.Remove(key);
+                _ = _callbackRegistry.Remove(key);
             }
         }
     }
@@ -1143,9 +1134,10 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
             {
                 snapshot[i](EmptyDisposable.Instance);
             }
-            catch
+            catch (Exception ex)
             {
                 // Suppress exceptions during normal notification to match existing behavior.
+                System.Diagnostics.Debug.WriteLine(ex);
             }
         }
     }
@@ -1169,9 +1161,10 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
                 {
                     disposable.Dispose();
                 }
-                catch
+                catch (Exception ex)
                 {
                     // Suppress exceptions during disposal.
+                    System.Diagnostics.Debug.WriteLine(ex);
                 }
             });
         }
@@ -1197,9 +1190,10 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
                         disposable.Dispose();
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
                     // Suppress exceptions during disposal.
+                    System.Diagnostics.Debug.WriteLine(ex);
                 }
             });
         }

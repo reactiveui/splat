@@ -24,7 +24,7 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
     {
         var resolver = new ModernDependencyResolver();
 
-        await Assert.That(() => resolver.ServiceRegistrationCallback(null!, _ => { }))
+        await Assert.That(() => resolver.ServiceRegistrationCallback(null!, static _ => { }))
             .Throws<ArgumentNullException>();
     }
 
@@ -108,9 +108,9 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
     public async Task ServiceRegistrationCallback_InvokedOncePerExistingRegistration()
     {
         var resolver = new ModernDependencyResolver();
-        resolver.Register(() => new ViewModelOne());
-        resolver.Register(() => new ViewModelOne());
-        resolver.Register(() => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
 
         var callbackCount = 0;
 
@@ -145,7 +145,7 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
     public async Task Dispose_DisposesResolver()
     {
         var resolver = new ModernDependencyResolver();
-        resolver.Register(() => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
 
         await Assert.That(() =>
         {
@@ -162,7 +162,7 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
         var resolver = new ModernDependencyResolver();
         var instance = new ViewModelOne();
         resolver.RegisterConstant(instance);
-        resolver.Register<IViewModelOne>(() => new ViewModelOne());
+        resolver.Register<IViewModelOne>(static () => new ViewModelOne());
 
         var duplicate = resolver.Duplicate();
 
@@ -179,7 +179,7 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
     public async Task Duplicate_OfDisposedResolver_ReturnsEmptyResolver()
     {
         var resolver = new ModernDependencyResolver();
-        resolver.Register(() => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
         resolver.Dispose();
 
         var duplicate = resolver.Duplicate();
@@ -193,11 +193,11 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
     public async Task Duplicate_CreatesIndependentResolver()
     {
         var resolver = new ModernDependencyResolver();
-        resolver.Register(() => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
 
         var duplicate = resolver.Duplicate();
 
-        duplicate.Register(() => new ViewModelOne());
+        duplicate.Register(static () => new ViewModelOne());
 
         var originalServices = resolver.GetServices<ViewModelOne>().ToList();
         var duplicateServices = duplicate.GetServices<ViewModelOne>().ToList();
@@ -212,7 +212,7 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
     public async Task AfterDispose_GetService_ThrowsObjectDisposedException()
     {
         var resolver = new ModernDependencyResolver();
-        resolver.Register(() => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
         resolver.Dispose();
 
         await Assert.That(() => resolver.GetService<ViewModelOne>())
@@ -225,7 +225,7 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
     public async Task AfterDispose_HasRegistration_ReturnsFalse()
     {
         var resolver = new ModernDependencyResolver();
-        resolver.Register(() => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
         resolver.Dispose();
 
         var result = resolver.HasRegistration<ViewModelOne>();

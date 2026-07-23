@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -37,7 +37,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     public SplatContainerExtension()
     {
         AppLocator.SetLocator(Instance);
-        _disposeAction = () => AppLocator.SetLocator(new InstanceGenericFirstDependencyResolver());
+        _disposeAction = static () => AppLocator.SetLocator(new InstanceGenericFirstDependencyResolver());
     }
 
     /// <summary>Gets the dependency resolver.</summary>
@@ -224,7 +224,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Existing API")]
     public object Resolve(Type type, params (Type Type, object Instance)[] parameters) =>
         (_types.TryGetValue((type, null), out var resolvedType)
-            ? Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance)) ?? throw new InvalidOperationException(CouldNotCreateTypeMessage)
+            ? Activator.CreateInstance(resolvedType, parameters.Select(static x => x.Instance)) ?? throw new InvalidOperationException(CouldNotCreateTypeMessage)
             : null) ?? throw new InvalidOperationException(MustBeValidValueMessage);
 
     /// <inheritdoc/>
@@ -238,7 +238,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
             ? resolvedType switch
             {
                 null => null,
-                _ => Activator.CreateInstance(resolvedType, parameters.Select(x => x.Instance))
+                _ => Activator.CreateInstance(resolvedType, parameters.Select(static x => x.Instance))
             }
             : null) ?? throw new InvalidOperationException(MustBeValidValueMessage);
 

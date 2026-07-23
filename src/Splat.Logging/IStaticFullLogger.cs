@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -21,9 +21,13 @@ namespace Splat;
 /// on the specific implementation.</remarks>
 [SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Existing API")]
 [SuppressMessage(
-    "Minor Code Smell",
-    "S4018:All type parameters should be used in the parameter list to enable type inference",
-    Justification = "The generic type parameter is the caller-supplied calling type used only to scope the log entry; it intentionally has no corresponding method parameter and cannot be inferred.")]
+    "StyleSharp",
+    "SST2307:A generic method's type parameter appears in no parameter, so no caller can infer it",
+    Justification = "Generic service/logging API; the type is supplied explicitly by callers, so type inference cannot apply by design.")]
+[SuppressMessage(
+    "StyleSharp",
+    "SST1452:A generic type parameter is used only as a marker",
+    Justification = "Generic marker API; the type parameter identifies the target and is applied via typeof(T) in the implementation.")]
 public interface IStaticFullLogger
 {
     /// <summary>Gets the level at which the target will emit messages.</summary>

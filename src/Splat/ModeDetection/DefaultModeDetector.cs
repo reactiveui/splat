@@ -81,36 +81,17 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
     ];
 
     /// <inheritdoc />
-    [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Records to the log")]
     public bool? InUnitTestRunner()
     {
         try
         {
-            // Prefer explicit, deterministic signals first (opt-in).
-            if (IsExplicitTestEnvironment())
-            {
-                return true;
-            }
-
-            // Then look for common runner environment variables.
-            if (HasTestRunnerEnvironmentSignals())
-            {
-                return true;
-            }
-
-            // Next, fall back to process-name heuristics (no assembly scans).
-            if (IsKnownTestHostProcess())
-            {
-                return true;
-            }
-
-            // Worst-case: fall back to legacy assembly scan.
-            if (LegacyAssemblyScan(_testAssemblyMarkers))
-            {
-                return true;
-            }
-
-            return false;
+            // Prefer explicit, deterministic signals first (opt-in), then common runner environment
+            // variables, then process-name heuristics, and finally the legacy assembly scan. The OR
+            // chain short-circuits, so the first positive signal wins.
+            return IsExplicitTestEnvironment()
+                || HasTestRunnerEnvironmentSignals()
+                || IsKnownTestHostProcess()
+                || LegacyAssemblyScan(_testAssemblyMarkers);
         }
         catch (Exception e)
         {
@@ -126,7 +107,6 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
     /// <returns>
     /// <c>true</c> if the environment explicitly signals a test environment; otherwise, <c>false</c>.
     /// </returns>
-    [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Records to the log")]
     private static bool IsExplicitTestEnvironment()
     {
         try
@@ -174,7 +154,6 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
     /// <returns>
     /// A boolean value indicating whether test runner environment signals are detected.
     /// </returns>
-    [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Records to the log")]
     private static bool HasTestRunnerEnvironmentSignals()
     {
         try
@@ -206,9 +185,10 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
                 }
             }
         }
-        catch
+        catch (Exception ex)
         {
             // Ignore enumeration/access issues and treat as not found.
+            System.Diagnostics.Debug.WriteLine(ex);
         }
 
         return false;
@@ -222,7 +202,6 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
     /// <returns>
     /// True if the process is identified as a known test host; otherwise, false.
     /// </returns>
-    [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Records to the log")]
     private static bool IsKnownTestHostProcess()
     {
         try
@@ -261,14 +240,16 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
                     return true;
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 // Access to MainModule can fail in restricted environments; ignore.
+                System.Diagnostics.Debug.WriteLine(ex);
             }
         }
-        catch
+        catch (Exception ex)
         {
             // Ignore all process inspection failures.
+            System.Diagnostics.Debug.WriteLine(ex);
         }
 
         return false;
@@ -288,7 +269,6 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
     /// A boolean value indicating whether at least one of the loaded assemblies
     /// matches an assembly marker. Returns <c>true</c> if a match is found; otherwise, <c>false</c>.
     /// </returns>
-    [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Records to the log")]
     private static bool LegacyAssemblyScan(string[] assemblyMarkers)
     {
         try
@@ -315,9 +295,10 @@ public class DefaultModeDetector : IModeDetector, IEnableLogger
                 }
             }
         }
-        catch
+        catch (Exception ex)
         {
             // Ignore assembly loading/introspection failures and treat as not found.
+            System.Diagnostics.Debug.WriteLine(ex);
         }
 
         return false;

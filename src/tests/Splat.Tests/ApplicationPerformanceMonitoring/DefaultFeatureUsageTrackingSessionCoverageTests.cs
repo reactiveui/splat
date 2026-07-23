@@ -32,7 +32,7 @@ public sealed class DefaultFeatureUsageTrackingSessionCoverageTests
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Constructor_ThrowsForInvalidFeatureName() =>
-        await Assert.That(() => new DefaultFeatureUsageTrackingSession("  ")).Throws<ArgumentException>();
+        await Assert.That(static () => new DefaultFeatureUsageTrackingSession("  ")).Throws<ArgumentException>();
 
     /// <summary>Verifies that SubFeature returns a child session referencing the parent feature.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>

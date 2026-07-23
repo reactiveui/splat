@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -12,6 +12,15 @@ namespace Splat;
 /// extension methods on the relevant types.</remarks>
 public static class SplatColorExtensions
 {
+    /// <summary>Extension methods for the <see cref="Color"/>.</summary>
+    /// <param name="value">The color to convert.</param>
+    extension(Color value)
+    {
+        /// <summary>Converts a <see cref="Color"/> into the XAML <see cref="SplatColor"/>.</summary>
+        /// <returns>The <see cref="SplatColor"/> generated.</returns>
+        public SplatColor FromNative() => SplatColor.FromArgb(value.A, value.R, value.G, value.B);
+    }
+
     /// <summary>Extension methods for the <see cref="SplatColor"/>.</summary>
     /// <param name="value">The color to convert.</param>
     extension(SplatColor value)
@@ -28,14 +37,5 @@ public static class SplatColorExtensions
             ret.Freeze();
             return ret;
         }
-    }
-
-    /// <summary>Extension methods for the <see cref="Color"/>.</summary>
-    /// <param name="value">The color to convert.</param>
-    extension(Color value)
-    {
-        /// <summary>Converts a <see cref="Color"/> into the XAML <see cref="SplatColor"/>.</summary>
-        /// <returns>The <see cref="SplatColor"/> generated.</returns>
-        public SplatColor FromNative() => SplatColor.FromArgb(value.A, value.R, value.G, value.B);
     }
 }

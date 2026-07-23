@@ -10,6 +10,9 @@ public class DefaultModeDetectorTests
     /// <summary>The environment variable / AppContext key used to flag a test run.</summary>
     private const string DotnetRunningInTest = "DOTNET_RUNNING_IN_TEST";
 
+    /// <summary>The environment variable that signals a run under the NUnit test runner.</summary>
+    private const string NUnitTest = "NUNIT_TEST";
+
     /// <summary>Test that DefaultModeDetector can detect unit test runner.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -178,14 +181,14 @@ public class DefaultModeDetectorTests
         var detector = new DefaultModeDetector();
         var oldDotnetEnv = Environment.GetEnvironmentVariable(DotnetRunningInTest);
         var oldAppCtx = AppContext.GetData(DotnetRunningInTest);
-        var oldNUnitEnv = Environment.GetEnvironmentVariable("NUNIT_TEST");
+        var oldNUnitEnv = Environment.GetEnvironmentVariable(NUnitTest);
 
         try
         {
             // Clear explicit signals to exercise runner env signal path and set NUNIT_TEST.
             Environment.SetEnvironmentVariable(DotnetRunningInTest, null);
             AppContext.SetData(DotnetRunningInTest, null);
-            Environment.SetEnvironmentVariable("NUNIT_TEST", "1");
+            Environment.SetEnvironmentVariable(NUnitTest, "1");
 
             // Act
             var result = detector.InUnitTestRunner();
@@ -201,7 +204,7 @@ public class DefaultModeDetectorTests
         {
             Environment.SetEnvironmentVariable(DotnetRunningInTest, oldDotnetEnv);
             AppContext.SetData(DotnetRunningInTest, oldAppCtx);
-            Environment.SetEnvironmentVariable("NUNIT_TEST", oldNUnitEnv);
+            Environment.SetEnvironmentVariable(NUnitTest, oldNUnitEnv);
         }
     }
 #endif
@@ -282,11 +285,6 @@ public class DefaultModeDetectorTests
                 await Assert.That(result.HasValue).IsTrue();
                 await Assert.That(result!.Value).IsTrue();
             }
-            else
-            {
-                // When Microsoft.Testing.Platform is not loaded (e.g., running under TUnit only),
-                // skip the MTP-specific assertion to avoid spurious failures.
-            }
         }
     }
 
@@ -303,7 +301,7 @@ public class DefaultModeDetectorTests
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
         var hasMTPAssembly = Array.Exists(
             assemblies,
-            a => a.FullName?.Contains("Microsoft.Testing.Platform", StringComparison.OrdinalIgnoreCase) == true);
+            static a => a.FullName?.Contains("Microsoft.Testing.Platform", StringComparison.OrdinalIgnoreCase) == true);
 
         var detector = new DefaultModeDetector();
         var result = detector.InUnitTestRunner();

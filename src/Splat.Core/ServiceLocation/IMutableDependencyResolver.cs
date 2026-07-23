@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -17,9 +17,13 @@ namespace Splat;
 /// execution, such as in plugin architectures or for testing purposes. Thread safety and registration order semantics
 /// may vary by implementation; consult the specific resolver's documentation for details.</remarks>
 [SuppressMessage(
-    "Minor Code Smell",
-    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    "StyleSharp",
+    "SST2307:A generic method's type parameter appears in no parameter, so no caller can infer it",
     Justification = "Generic service-location API; the service type is supplied explicitly by callers, so type inference cannot apply by design.")]
+[SuppressMessage(
+    "StyleSharp",
+    "SST1452:A generic type parameter is used only as a marker",
+    Justification = "Generic marker API such as HasService<T>() and Register<T>(); the type parameter identifies the service and is applied via typeof(T) in the implementation.")]
 public interface IMutableDependencyResolver
 {
     /// <summary>Determines whether a registration exists for the specified service type.</summary>

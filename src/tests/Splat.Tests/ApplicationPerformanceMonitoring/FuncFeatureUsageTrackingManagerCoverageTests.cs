@@ -15,7 +15,7 @@ public sealed class FuncFeatureUsageTrackingManagerCoverageTests
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Constructor_ThrowsForNullFactory() =>
-        await Assert.That(() => new FuncFeatureUsageTrackingManager(null!)).Throws<ArgumentNullException>();
+        await Assert.That(static () => new FuncFeatureUsageTrackingManager(null!)).Throws<ArgumentNullException>();
 
     /// <summary>Verifies GetFeatureUsageTrackingSession returns the session created by the supplied factory function.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>

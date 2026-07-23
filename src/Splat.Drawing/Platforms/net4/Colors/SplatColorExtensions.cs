@@ -12,6 +12,15 @@ namespace Splat;
 /// used as extension methods on <see cref="SplatColor"/> and <see cref="Color"/> instances.</remarks>
 public static class SplatColorExtensions
 {
+    /// <summary>Extension members for <see cref="Color"/>.</summary>
+    /// <param name="value">The value the extension members operate on.</param>
+    extension(Color value)
+    {
+        /// <summary>Converts a <see cref="Color"/> into the XAML <see cref="SplatColor"/>.</summary>
+        /// <returns>The <see cref="SplatColor"/> generated.</returns>
+        public SplatColor FromNative() => SplatColor.FromArgb(value.A, value.R, value.G, value.B);
+    }
+
     /// <summary>Extension members for <see cref="SplatColor"/>.</summary>
     /// <param name="value">The value the extension members operate on.</param>
     extension(SplatColor value)
@@ -28,14 +37,5 @@ public static class SplatColorExtensions
             ret.Freeze();
             return ret;
         }
-    }
-
-    /// <summary>Extension members for <see cref="Color"/>.</summary>
-    /// <param name="value">The value the extension members operate on.</param>
-    extension(Color value)
-    {
-        /// <summary>Converts a <see cref="Color"/> into the XAML <see cref="SplatColor"/>.</summary>
-        /// <returns>The <see cref="SplatColor"/> generated.</returns>
-        public SplatColor FromNative() => SplatColor.FromArgb(value.A, value.R, value.G, value.B);
     }
 }

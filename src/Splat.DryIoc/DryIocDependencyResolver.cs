@@ -19,8 +19,8 @@ namespace Splat.DryIoc;
 /// disposal of the underlying container are managed by this class.</remarks>
 /// <param name="container">The DryIoc container to use for service resolution and registration. If null, a new container instance is created.</param>
 [SuppressMessage(
-    "Minor Code Smell",
-    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    "StyleSharp",
+    "SST2307:A generic method's type parameter appears in no parameter, so no caller can infer it",
     Justification = "The generic parameter is the caller-supplied service type for resolution/registration; it cannot appear in the parameter list without changing the public interface contract.")]
 public class DryIocDependencyResolver(IContainer? container = null) : IDependencyResolver
 {
@@ -104,12 +104,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
                 return false;
             }
 
-            if (contract is null)
-            {
-                return IsDefaultKey(x.OptionalServiceKey);
-            }
-
-            return x.OptionalServiceKey is string serviceKeyAsString &&
+            return contract is null ? IsDefaultKey(x.OptionalServiceKey) : x.OptionalServiceKey is string serviceKeyAsString &&
                    contract.Equals(serviceKeyAsString, StringComparison.Ordinal);
         });
     }
@@ -164,7 +159,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
     /// <inheritdoc/>
     void IMutableDependencyResolver.Register<TService, TImplementation>() =>
         _container.RegisterDelegate<TService>(
-            _ => new TImplementation(),
+            static _ => new TImplementation(),
             ifAlreadyRegistered: IfAlreadyRegistered.AppendNewImplementation);
 
     /// <inheritdoc/>
@@ -173,13 +168,13 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
         if (string.IsNullOrEmpty(contract))
         {
             _container.RegisterDelegate<TService>(
-                _ => new TImplementation(),
+                static _ => new TImplementation(),
                 ifAlreadyRegistered: IfAlreadyRegistered.AppendNewImplementation);
             return;
         }
 
         _container.RegisterDelegate<TService>(
-            _ => new TImplementation(),
+            static _ => new TImplementation(),
             ifAlreadyRegistered: IfAlreadyRegistered.Replace,
             serviceKey: contract);
     }
@@ -190,7 +185,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
     {
         ArgumentExceptionHelper.ThrowIfNull(value);
 
-        _container.RegisterInstance<T>(
+        _container.RegisterInstance(
             value,
             ifAlreadyRegistered: IfAlreadyRegistered.AppendNewImplementation);
     }
@@ -203,13 +198,13 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
 
         if (string.IsNullOrEmpty(contract))
         {
-            _container.RegisterInstance<T>(
+            _container.RegisterInstance(
                 value,
                 ifAlreadyRegistered: IfAlreadyRegistered.AppendNewImplementation);
             return;
         }
 
-        _container.RegisterInstance<T>(
+        _container.RegisterInstance(
             value,
             ifAlreadyRegistered: IfAlreadyRegistered.Replace,
             serviceKey: contract);
@@ -221,7 +216,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
     {
         ArgumentExceptionHelper.ThrowIfNull(valueFactory);
 
-        _container.RegisterDelegate<T>(
+        _container.RegisterDelegate(
             _ => valueFactory()!,
             Reuse.Singleton,
             ifAlreadyRegistered: IfAlreadyRegistered.AppendNewImplementation);
@@ -235,14 +230,14 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
 
         if (string.IsNullOrEmpty(contract))
         {
-            _container.RegisterDelegate<T>(
+            _container.RegisterDelegate(
                 _ => valueFactory()!,
                 Reuse.Singleton,
                 ifAlreadyRegistered: IfAlreadyRegistered.AppendNewImplementation);
             return;
         }
 
-        _container.RegisterDelegate<T>(
+        _container.RegisterDelegate(
             _ => valueFactory()!,
             Reuse.Singleton,
             ifAlreadyRegistered: IfAlreadyRegistered.Replace,
@@ -261,12 +256,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
                     return false;
                 }
 
-                if (contract is null)
-                {
-                    return IsDefaultKey(x.OptionalServiceKey);
-                }
-
-                return x.OptionalServiceKey is string serviceKeyAsString &&
+                return contract is null ? IsDefaultKey(x.OptionalServiceKey) : x.OptionalServiceKey is string serviceKeyAsString &&
                        contract.Equals(serviceKeyAsString, StringComparison.Ordinal);
             });
 
@@ -310,12 +300,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
                     return false;
                 }
 
-                if (contract is null)
-                {
-                    return IsDefaultKey(x.OptionalServiceKey);
-                }
-
-                return x.OptionalServiceKey is string serviceKeyAsString &&
+                return contract is null ? IsDefaultKey(x.OptionalServiceKey) : x.OptionalServiceKey is string serviceKeyAsString &&
                        contract.Equals(serviceKeyAsString, StringComparison.Ordinal);
             })
             .ToList();
@@ -375,9 +360,10 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
         {
             _container?.Dispose();
         }
-        catch
+        catch (Exception ex)
         {
             // Suppress exceptions from service disposal
+            System.Diagnostics.Debug.WriteLine(ex);
         }
     }
 
@@ -413,7 +399,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
     private static object? Cast(Type type, object data)
     {
         // based upon https://stackoverflow.com/a/27584212
-        var dataParam = Expression.Parameter(typeof(object), "data");
+        var dataParam = Expression.Parameter(typeof(object), nameof(data));
         var body = Expression.Block(Expression.Convert(Expression.Convert(dataParam, data.GetType()), type));
 
         var run = Expression.Lambda(body, dataParam).Compile();

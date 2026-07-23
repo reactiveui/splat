@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -16,8 +16,8 @@ namespace Splat;
 /// testing scenarios require replacing it. Thread safety and resolver change notifications are managed internally. For
 /// most applications, use the Current and CurrentMutable properties to access the dependency resolver.</remarks>
 [SuppressMessage(
-    "Minor Code Smell",
-    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    "StyleSharp",
+    "SST2307:A generic method's type parameter appears in no parameter, so no caller can infer it",
     Justification = "Generic service-location API; the service type is supplied explicitly by callers, so type inference cannot apply by design.")]
 public static class AppLocator
 {
@@ -48,7 +48,7 @@ public static class AppLocator
     /// <remarks>This property is intended for internal use to allow resetting or reconfiguring the dependency
     /// resolver during application lifetime. Modifying this property may affect how dependencies are resolved within
     /// the application.</remarks>
-    internal static Action<IMutableDependencyResolver> ReInit { get; set; } = _ => { };
+    internal static Action<IMutableDependencyResolver> ReInit { get; set; } = static _ => { };
 
     /// <summary>Registers the action that initializes each resolver as it is set or reset for the application.</summary>
     /// <remarks>This is the hook Splat (and libraries built on it) use to re-register their services against every

@@ -16,6 +16,9 @@ public abstract class BaseDependencyResolverTests<T>
     /// <summary>The contract name used by tests that register a named service.</summary>
     private const string NamedContract = "named";
 
+    /// <summary>Contract name reused across the registration-chain tests.</summary>
+    private const string SevenContract = "seven";
+
     /// <summary>The minimum number of registrations expected when a service is registered more than once.</summary>
     private const int ExpectedMultipleRegistrationCount = 2;
 
@@ -45,8 +48,8 @@ public abstract class BaseDependencyResolverTests<T>
         var resolver = GetDependencyResolver();
         var type = typeof(ILogManager);
 
-        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type);
-        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, NamedContract);
+        resolver.Register(static () => new DefaultLogManager(AppLocator.Current), type);
+        resolver.Register(static () => new DefaultLogManager(AppLocator.Current), type, NamedContract);
 
         await Assert.That(() =>
         {
@@ -63,9 +66,9 @@ public abstract class BaseDependencyResolverTests<T>
         var resolver = GetDependencyResolver();
         var type = typeof(ILogManager);
 
-        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type);
-        resolver.Register(() => new FuncLogManager(_ => new WrappingFullLogger(new DebugLogger())), type);
-        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, NamedContract);
+        resolver.Register(static () => new DefaultLogManager(AppLocator.Current), type);
+        resolver.Register(static () => new FuncLogManager(static _ => new WrappingFullLogger(new DebugLogger())), type);
+        resolver.Register(static () => new DefaultLogManager(AppLocator.Current), type, NamedContract);
 
         var service = resolver.GetService(type);
         await Assert.That(service).IsTypeOf<FuncLogManager>();
@@ -85,8 +88,8 @@ public abstract class BaseDependencyResolverTests<T>
         var type = typeof(ILogManager);
         const string contract = NamedContract;
 
-        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type);
-        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, contract);
+        resolver.Register(static () => new DefaultLogManager(AppLocator.Current), type);
+        resolver.Register(static () => new DefaultLogManager(AppLocator.Current), type, contract);
 
         await Assert.That(() =>
         {
@@ -103,8 +106,8 @@ public abstract class BaseDependencyResolverTests<T>
         var resolver = GetDependencyResolver();
         var type = typeof(ILogManager);
 
-        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type);
-        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, NamedContract);
+        resolver.Register(static () => new DefaultLogManager(AppLocator.Current), type);
+        resolver.Register(static () => new DefaultLogManager(AppLocator.Current), type, NamedContract);
 
         await Assert.That(() =>
         {
@@ -122,8 +125,8 @@ public abstract class BaseDependencyResolverTests<T>
         var type = typeof(ILogManager);
         const string contract = NamedContract;
 
-        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type);
-        resolver.Register(() => new DefaultLogManager(AppLocator.Current), type, contract);
+        resolver.Register(static () => new DefaultLogManager(AppLocator.Current), type);
+        resolver.Register(static () => new DefaultLogManager(AppLocator.Current), type, contract);
 
         await Assert.That(() =>
         {
@@ -163,7 +166,7 @@ public abstract class BaseDependencyResolverTests<T>
             await Assert.That(resolver.HasRegistration(type, contractTwo)).IsFalse();
         }
 
-        resolver.Register(() => "unnamed", type);
+        resolver.Register(static () => "unnamed", type);
         using (Assert.Multiple())
         {
             await Assert.That(resolver.HasRegistration(type)).IsTrue();
@@ -173,7 +176,7 @@ public abstract class BaseDependencyResolverTests<T>
 
         resolver.UnregisterAll(type);
 
-        resolver.Register(() => contractOne, type, contractOne);
+        resolver.Register(static () => contractOne, type, contractOne);
         using (Assert.Multiple())
         {
             await Assert.That(resolver.HasRegistration(type)).IsFalse();
@@ -183,7 +186,7 @@ public abstract class BaseDependencyResolverTests<T>
 
         resolver.UnregisterAll(type, contractOne);
 
-        resolver.Register(() => contractTwo, type, contractTwo);
+        resolver.Register(static () => contractTwo, type, contractTwo);
         using (Assert.Multiple())
         {
             await Assert.That(resolver.HasRegistration(type)).IsFalse();
@@ -201,13 +204,13 @@ public abstract class BaseDependencyResolverTests<T>
         IDependencyResolver? resolver2 = null;
 
         await Assert.That(() => resolver2!.WithResolver().Dispose()).Throws<ArgumentNullException>();
-        await Assert.That(() => resolver1!.RegisterLazySingleton(() => new DefaultLogManager(AppLocator.Current), typeof(ILogManager))).Throws<ArgumentNullException>();
-        await Assert.That(() => resolver1!.RegisterLazySingletonAnd(() => new DefaultLogManager(AppLocator.Current), typeof(ILogManager))).Throws<ArgumentNullException>();
+        await Assert.That(() => resolver1!.RegisterLazySingleton(static () => new DefaultLogManager(AppLocator.Current), typeof(ILogManager))).Throws<ArgumentNullException>();
+        await Assert.That(() => resolver1!.RegisterLazySingletonAnd(static () => new DefaultLogManager(AppLocator.Current), typeof(ILogManager))).Throws<ArgumentNullException>();
         await Assert.That(() => resolver1!.RegisterLazySingletonAnd<ViewModelOne>("eight")).Throws<ArgumentNullException>();
-        await Assert.That(() => resolver1!.RegisterLazySingletonAnd<DefaultLogManager>(() => new(AppLocator.Current), "seven")).Throws<ArgumentNullException>();
+        await Assert.That(() => resolver1!.RegisterLazySingletonAnd<DefaultLogManager>(static () => new(AppLocator.Current), SevenContract)).Throws<ArgumentNullException>();
         await Assert.That(() => resolver1!.RegisterAnd<ViewModelOne>()).Throws<ArgumentNullException>();
-        await Assert.That(() => resolver1!.RegisterAnd(() => new DefaultLogManager(AppLocator.Current))).Throws<ArgumentNullException>();
-        await Assert.That(() => resolver1!.RegisterAnd<IViewModelOne>(() => new ViewModelOne())).Throws<ArgumentNullException>();
+        await Assert.That(() => resolver1!.RegisterAnd(static () => new DefaultLogManager(AppLocator.Current))).Throws<ArgumentNullException>();
+        await Assert.That(() => resolver1!.RegisterAnd<IViewModelOne>(static () => new ViewModelOne())).Throws<ArgumentNullException>();
         await Assert.That(() => resolver1!.RegisterConstantAnd(new ViewModelOne())).Throws<ArgumentNullException>();
         await Assert.That(() => resolver1!.RegisterConstantAnd(new ViewModelOne())).Throws<ArgumentNullException>();
         await Assert.That(() => resolver1!.RegisterConstantAnd<ViewModelOne>()).Throws<ArgumentNullException>();
@@ -224,13 +227,13 @@ public abstract class BaseDependencyResolverTests<T>
 
         resolver.RegisterAnd<ViewModelOne>("one")
                 .RegisterAnd<IViewModelOne, ViewModelOne>("two")
-                .RegisterAnd(() => new DefaultLogManager(AppLocator.Current), "three")
-                .RegisterAnd<IViewModelOne>(() => new ViewModelOne(), "four")
+                .RegisterAnd(static () => new DefaultLogManager(AppLocator.Current), "three")
+                .RegisterAnd<IViewModelOne>(static () => new ViewModelOne(), "four")
                 .RegisterConstantAnd<ViewModelOne>("five")
                 .RegisterConstantAnd(new ViewModelOne(), "six")
-                .RegisterLazySingletonAnd(() => new DefaultLogManager(AppLocator.Current), typeof(ILogManager), "seven")
+                .RegisterLazySingletonAnd(static () => new DefaultLogManager(AppLocator.Current), typeof(ILogManager), SevenContract)
                 .RegisterLazySingletonAnd<ViewModelOne>("eight")
-                .RegisterLazySingletonAnd(() => new DefaultLogManager(AppLocator.Current), "seven")
+                .RegisterLazySingletonAnd(static () => new DefaultLogManager(AppLocator.Current), SevenContract)
                 .Register<IViewModelOne, ViewModelOne>();
     }
 
@@ -279,8 +282,8 @@ public abstract class BaseDependencyResolverTests<T>
     public virtual async Task GetServices_Generic_ReturnsAllServices()
     {
         var resolver = GetDependencyResolver();
-        resolver.Register(() => new ViewModelOne());
-        resolver.Register(() => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
 
         var results = resolver.GetServices<ViewModelOne>().ToList();
 
@@ -294,8 +297,8 @@ public abstract class BaseDependencyResolverTests<T>
     {
         var resolver = GetDependencyResolver();
         const string contract = "test";
-        resolver.Register(() => new ViewModelOne());
-        resolver.Register(() => new ViewModelOne(), contract);
+        resolver.Register(static () => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne(), contract);
 
         var results = resolver.GetServices<ViewModelOne>(contract).ToList();
 
@@ -347,7 +350,7 @@ public abstract class BaseDependencyResolverTests<T>
     public virtual async Task Register_Generic_WithFactory_RegistersService()
     {
         var resolver = GetDependencyResolver();
-        resolver.Register(() => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
 
         var result = resolver.GetService<ViewModelOne>();
 
@@ -361,7 +364,7 @@ public abstract class BaseDependencyResolverTests<T>
     {
         var resolver = GetDependencyResolver();
         const string contract = "test";
-        resolver.Register(() => new ViewModelOne(), contract);
+        resolver.Register(static () => new ViewModelOne(), contract);
 
         var result = resolver.GetService<ViewModelOne>(contract);
 
@@ -462,7 +465,7 @@ public abstract class BaseDependencyResolverTests<T>
         var resolver = GetDependencyResolver();
         const string contract = "test";
 
-        resolver.RegisterLazySingleton<ViewModelOne>(() => new(), contract);
+        resolver.RegisterLazySingleton<ViewModelOne>(static () => new(), contract);
 
         var result1 = resolver.GetService<ViewModelOne>(contract);
         var result2 = resolver.GetService<ViewModelOne>(contract);
@@ -515,7 +518,7 @@ public abstract class BaseDependencyResolverTests<T>
     {
         var resolver = GetDependencyResolver();
         resolver.RegisterConstant(new ViewModelOne());
-        resolver.Register(() => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
 
         await Assert.That(resolver.HasRegistration<ViewModelOne>()).IsTrue();
 
@@ -532,7 +535,7 @@ public abstract class BaseDependencyResolverTests<T>
         var resolver = GetDependencyResolver();
         const string contract = "test";
         resolver.RegisterConstant(new ViewModelOne(), contract);
-        resolver.Register(() => new ViewModelOne(), contract);
+        resolver.Register(static () => new ViewModelOne(), contract);
 
         await Assert.That(resolver.HasRegistration<ViewModelOne>(contract)).IsTrue();
 
@@ -553,7 +556,7 @@ public abstract class BaseDependencyResolverTests<T>
 
         await Assert.That(callbackInvoked).IsFalse();
 
-        resolver.Register(() => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
 
         await Assert.That(callbackInvoked).IsTrue();
     }
@@ -564,7 +567,7 @@ public abstract class BaseDependencyResolverTests<T>
     public virtual async Task ServiceRegistrationCallback_Generic_WithExistingRegistration_InvokesImmediately()
     {
         var resolver = GetDependencyResolver();
-        resolver.Register(() => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
 
         var callbackInvoked = false;
 
@@ -586,7 +589,7 @@ public abstract class BaseDependencyResolverTests<T>
 
         await Assert.That(callbackInvoked).IsFalse();
 
-        resolver.Register(() => new ViewModelOne(), contract);
+        resolver.Register(static () => new ViewModelOne(), contract);
 
         await Assert.That(callbackInvoked).IsTrue();
     }
@@ -603,7 +606,7 @@ public abstract class BaseDependencyResolverTests<T>
 
         await Assert.That(callbackInvoked).IsFalse();
 
-        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
 
         await Assert.That(callbackInvoked).IsTrue();
     }
@@ -624,7 +627,7 @@ public abstract class BaseDependencyResolverTests<T>
 
         await Assert.That(callbackInvoked).IsFalse();
 
-        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne), contract);
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne), contract);
 
         await Assert.That(callbackInvoked).IsTrue();
     }
@@ -639,12 +642,12 @@ public abstract class BaseDependencyResolverTests<T>
 
         var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(_ => callbackCount++);
 
-        resolver.Register(() => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
         await Assert.That(callbackCount).IsEqualTo(1);
 
         subscription.Dispose();
 
-        resolver.Register(() => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
         await Assert.That(callbackCount).IsEqualTo(1); // Should not increment
     }
 
@@ -724,7 +727,7 @@ public abstract class BaseDependencyResolverTests<T>
         var resolver = GetDependencyResolver();
         var callbackInvoked = false;
 
-        resolver.ServiceRegistrationCallback<ViewModelOne>(_ => callbackInvoked = true);
+        _ = resolver.ServiceRegistrationCallback<ViewModelOne>(_ => callbackInvoked = true);
 
         resolver.Dispose();
 
@@ -763,7 +766,7 @@ public abstract class BaseDependencyResolverTests<T>
     public virtual async Task GetServices_Generic_WithNullContract_DelegatesToNonContract()
     {
         var resolver = GetDependencyResolver();
-        resolver.Register(() => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
 
         var results = resolver.GetServices<ViewModelOne>(null).ToList();
 
@@ -776,7 +779,7 @@ public abstract class BaseDependencyResolverTests<T>
     public virtual async Task GetServices_NonGeneric_WithNullContract_DelegatesToNonContract()
     {
         var resolver = GetDependencyResolver();
-        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
 
         var results = resolver.GetServices(typeof(ViewModelOne), null).ToList();
 
@@ -826,7 +829,7 @@ public abstract class BaseDependencyResolverTests<T>
     public virtual async Task HasRegistration_NonGeneric_WithNullContract_DelegatesToNonContract()
     {
         var resolver = GetDependencyResolver();
-        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
 
         var result = resolver.HasRegistration(typeof(ViewModelOne), null);
 
@@ -839,7 +842,7 @@ public abstract class BaseDependencyResolverTests<T>
     public virtual async Task Register_Generic_WithNullContract_DelegatesToNonContract()
     {
         var resolver = GetDependencyResolver();
-        resolver.Register(() => new ViewModelOne(), null);
+        resolver.Register(static () => new ViewModelOne(), null);
 
         var result = resolver.GetService<ViewModelOne>();
 
@@ -852,7 +855,7 @@ public abstract class BaseDependencyResolverTests<T>
     public virtual async Task Register_NonGeneric_WithNullContract_DelegatesToNonContract()
     {
         var resolver = GetDependencyResolver();
-        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne), null);
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne), null);
 
         var result = resolver.GetService(typeof(ViewModelOne));
 
@@ -893,7 +896,7 @@ public abstract class BaseDependencyResolverTests<T>
     public virtual async Task RegisterLazySingleton_Generic_WithNullContract_DelegatesToNonContract()
     {
         var resolver = GetDependencyResolver();
-        resolver.RegisterLazySingleton<ViewModelOne>(() => new(), null);
+        resolver.RegisterLazySingleton<ViewModelOne>(static () => new(), null);
 
         var result1 = resolver.GetService<ViewModelOne>();
         var result2 = resolver.GetService<ViewModelOne>();
@@ -926,8 +929,8 @@ public abstract class BaseDependencyResolverTests<T>
     public virtual async Task UnregisterCurrent_NonGeneric_WithNullContract_DelegatesToNonContract()
     {
         var resolver = GetDependencyResolver();
-        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
-        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
 
         resolver.UnregisterCurrent(typeof(ViewModelOne), null);
 
@@ -941,7 +944,7 @@ public abstract class BaseDependencyResolverTests<T>
     {
         var resolver = GetDependencyResolver();
         resolver.RegisterConstant(new ViewModelOne());
-        resolver.Register(() => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
 
         resolver.UnregisterAll<ViewModelOne>(null);
 
@@ -954,8 +957,8 @@ public abstract class BaseDependencyResolverTests<T>
     public virtual async Task UnregisterAll_NonGeneric_WithNullContract_DelegatesToNonContract()
     {
         var resolver = GetDependencyResolver();
-        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
-        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
 
         resolver.UnregisterAll(typeof(ViewModelOne), null);
 
@@ -968,8 +971,8 @@ public abstract class BaseDependencyResolverTests<T>
     public virtual async Task GetServices_Generic_CombinesGenericAndNonGenericResults()
     {
         var resolver = GetDependencyResolver();
-        resolver.Register(() => new ViewModelOne());
-        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Register(static () => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
 
         var results = resolver.GetServices<ViewModelOne>().ToList();
 
@@ -983,8 +986,8 @@ public abstract class BaseDependencyResolverTests<T>
     {
         var resolver = GetDependencyResolver();
         const string contract = "test";
-        resolver.Register(() => new ViewModelOne(), contract);
-        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne), contract);
+        resolver.Register(static () => new ViewModelOne(), contract);
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne), contract);
 
         var results = resolver.GetServices<ViewModelOne>(contract).ToList();
 
@@ -997,9 +1000,9 @@ public abstract class BaseDependencyResolverTests<T>
     public virtual async Task ServiceRegistrationCallback_Generic_InvokesForEachExistingRegistration()
     {
         var resolver = GetDependencyResolver();
-        resolver.Register(() => new ViewModelOne());
-        resolver.Register(() => new ViewModelOne());
-        resolver.Register(() => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
 
         var callbackCount = 0;
 
@@ -1015,7 +1018,7 @@ public abstract class BaseDependencyResolverTests<T>
     {
         var resolver = GetDependencyResolver();
 
-        resolver.ServiceRegistrationCallback<ViewModelOne>(_ => throw new InvalidOperationException("Test exception"));
+        _ = resolver.ServiceRegistrationCallback<ViewModelOne>(static _ => throw new InvalidOperationException("Test exception"));
 
         await Assert.That(() =>
         {
@@ -1049,13 +1052,13 @@ public abstract class BaseDependencyResolverTests<T>
         var resolver = GetDependencyResolver();
         var callbackCount = 0;
 
-        resolver.ServiceRegistrationCallback<ViewModelOne>(_ => callbackCount++);
+        _ = resolver.ServiceRegistrationCallback<ViewModelOne>(_ => callbackCount++);
 
         resolver.Dispose();
 
         var countAfterDispose = callbackCount;
 
-        await Assert.That(() => resolver.Register(() => new ViewModelOne())).Throws<ObjectDisposedException>();
+        await Assert.That(() => resolver.Register(static () => new ViewModelOne())).Throws<ObjectDisposedException>();
 
         await Assert.That(callbackCount).IsEqualTo(countAfterDispose);
     }
@@ -1119,7 +1122,7 @@ public abstract class BaseDependencyResolverTests<T>
         var resolver = GetDependencyResolver();
         var disposableService = new DisposableTestService();
 
-        resolver.RegisterLazySingleton<DisposableTestService>(() => disposableService);
+        resolver.RegisterLazySingleton(() => disposableService);
 
         var retrieved = resolver.GetService<DisposableTestService>();
         await Assert.That(retrieved).IsSameReferenceAs(disposableService);
@@ -1189,7 +1192,7 @@ public abstract class BaseDependencyResolverTests<T>
     public virtual async Task GetServices_NonGeneric_WithNullType_HandlesNullServiceType()
     {
         var resolver = GetDependencyResolver();
-        resolver.Register((Func<object?>)(() => new ViewModelOne()), (Type?)null);
+        resolver.Register((Func<object?>)(static () => new ViewModelOne()), (Type?)null);
 
         var results = resolver.GetServices(null).ToList();
 
@@ -1202,7 +1205,7 @@ public abstract class BaseDependencyResolverTests<T>
     public virtual async Task HasRegistration_NonGeneric_WithNullType_HandlesNullServiceType()
     {
         var resolver = GetDependencyResolver();
-        resolver.Register((Func<object?>)(() => new ViewModelOne()), (Type?)null);
+        resolver.Register((Func<object?>)(static () => new ViewModelOne()), (Type?)null);
 
         var result = resolver.HasRegistration(null);
 
@@ -1215,8 +1218,8 @@ public abstract class BaseDependencyResolverTests<T>
     public virtual async Task UnregisterCurrent_NonGeneric_WithNullType_HandlesNullServiceType()
     {
         var resolver = GetDependencyResolver();
-        resolver.Register((Func<object?>)(() => new ViewModelOne()), (Type?)null);
-        resolver.Register((Func<object?>)(() => new ViewModelOne()), (Type?)null);
+        resolver.Register((Func<object?>)(static () => new ViewModelOne()), (Type?)null);
+        resolver.Register((Func<object?>)(static () => new ViewModelOne()), (Type?)null);
 
         resolver.UnregisterCurrent(null);
 
@@ -1229,7 +1232,7 @@ public abstract class BaseDependencyResolverTests<T>
     public virtual async Task UnregisterAll_NonGeneric_WithNullType_HandlesNullServiceType()
     {
         var resolver = GetDependencyResolver();
-        resolver.Register((Func<object?>)(() => new ViewModelOne()), (Type?)null);
+        resolver.Register((Func<object?>)(static () => new ViewModelOne()), (Type?)null);
 
         resolver.UnregisterAll(null);
 
@@ -1248,10 +1251,10 @@ public abstract class BaseDependencyResolverTests<T>
         var resolver = GetDependencyResolver();
 
         // Register a slow service that takes 3 seconds to construct
-        resolver.RegisterLazySingleton<SlowDisposableService>(() => new());
+        resolver.RegisterLazySingleton<SlowDisposableService>(static () => new());
 
         // Register a fast service for comparison
-        resolver.RegisterLazySingleton<FastDisposableService>(() => new());
+        resolver.RegisterLazySingleton<FastDisposableService>(static () => new());
 
         // Start constructing the slow service in a background task
         var slowTask = Task.Run(() => resolver.GetService<SlowDisposableService>());
@@ -1342,18 +1345,24 @@ public abstract class BaseDependencyResolverTests<T>
     protected sealed class ThrowingDisposableService : IDisposable
     {
         /// <inheritdoc />
-        [SuppressMessage("Blocker Code Smell", "S3877:Exceptions should not be thrown from unexpected methods", Justification = "Testing purposes")]
+        [SuppressMessage(
+            "Design",
+            "SST1485:'Dispose' should not throw",
+            Justification = "Test fixture deliberately throws during disposal to verify the resolver handles disposal exceptions.")]
         public void Dispose() => throw new InvalidOperationException("Disposal exception");
     }
 
     /// <summary>Disposable test service that takes time to construct.</summary>
     protected sealed class SlowDisposableService : IDisposable
     {
+        /// <summary>The number of seconds the constructor sleeps to simulate slow construction.</summary>
+        private const int ConstructionDelaySeconds = 3;
+
         /// <summary>Initializes a new instance of the <see cref="SlowDisposableService"/> class.</summary>
         public SlowDisposableService()
         {
             ConstructionStarted = true;
-            Thread.Sleep(TimeSpan.FromSeconds(3));
+            Thread.Sleep(TimeSpan.FromSeconds(ConstructionDelaySeconds));
             ConstructionCompleted = true;
         }
 
@@ -1361,10 +1370,10 @@ public abstract class BaseDependencyResolverTests<T>
         public bool IsDisposed { get; private set; }
 
         /// <summary>Gets a value indicating whether construction has started.</summary>
-        public bool ConstructionStarted { get; }
+        internal bool ConstructionStarted { get; }
 
         /// <summary>Gets a value indicating whether construction has completed.</summary>
-        public bool ConstructionCompleted { get; }
+        internal bool ConstructionCompleted { get; }
 
         /// <inheritdoc />
         public void Dispose() => IsDisposed = true;

@@ -14,8 +14,8 @@ namespace Splat;
 /// multiple log levels, message formatting, and exception logging. All log methods delegate to the underlying
 /// Serilog.ILogger instance. Thread safety and configuration are determined by the provided Serilog logger.</remarks>
 [SuppressMessage(
-    "Minor Code Smell",
-    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    "StyleSharp",
+    "SST2307:A generic method's type parameter appears in no parameter, so no caller can infer it",
     Justification = "The generic type parameter is the caller-supplied calling type used only to scope the log entry; it intentionally has no corresponding method parameter and cannot be inferred.")]
 public partial class SerilogFullLogger : IFullLogger
 {
@@ -25,6 +25,11 @@ public partial class SerilogFullLogger : IFullLogger
     /// properties by default, so the emitted text matches the message that was passed in.
     /// </summary>
     private const string MessageTemplate = "{Message:l}";
+
+#if NET8_0_OR_GREATER
+    /// <summary>The parsed composite format used to render a single value with a caller-supplied format provider.</summary>
+    private static readonly System.Text.CompositeFormat _valueCompositeFormat = System.Text.CompositeFormat.Parse("{0}");
+#endif
 
     /// <summary>The underlying Serilog logger that messages are forwarded to.</summary>
     private readonly global::Serilog.ILogger _logger;
@@ -65,11 +70,8 @@ public partial class SerilogFullLogger : IFullLogger
             return LogLevel.Fatal;
         }
 
-        set
-        {
-            // Do nothing. set is going soon anyway.
-            _ = value;
-        }
+        // Do nothing. set is going soon anyway.
+        set => _ = value;
     }
 
     /// <inheritdoc />
@@ -77,7 +79,11 @@ public partial class SerilogFullLogger : IFullLogger
 
     /// <inheritdoc />
     public void Debug<T>(IFormatProvider formatProvider, T value) =>
+#if NET8_0_OR_GREATER
+        _logger.Debug(MessageTemplate, string.Format(formatProvider, _valueCompositeFormat, value));
+#else
         _logger.Debug(MessageTemplate, string.Format(formatProvider, "{0}", value));
+#endif
 
     /// <inheritdoc />
     public void Debug(IFormatProvider formatProvider, [Localizable(false)] string message, params object[] args) =>
@@ -100,7 +106,7 @@ public partial class SerilogFullLogger : IFullLogger
         _logger.Debug(MessageTemplate, string.Format(formatProvider, message, argument));
 
     /// <inheritdoc />
-    public void Debug<TArgument>([Localizable(false)] string message, TArgument args) => _logger.Debug(message, args);
+    public void Debug<TArgument>([Localizable(false)] string messageFormat, TArgument argument) => _logger.Debug(messageFormat, argument);
 
     /// <inheritdoc />
     public void Debug<TArgument1, TArgument2>(

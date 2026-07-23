@@ -31,6 +31,6 @@ public sealed class AutofacSplatModule : IModule
         var autofacResolver = _builder.UseAutofacDependencyResolver();
 
         // Also register the resolver instance for later retrieval if the container is built after
-        _builder.RegisterInstance(autofacResolver);
+        _ = _builder.RegisterInstance(autofacResolver);
     }
 }

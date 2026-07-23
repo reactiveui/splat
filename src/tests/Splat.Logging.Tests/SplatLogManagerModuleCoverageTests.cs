@@ -16,7 +16,7 @@ public class SplatLogManagerModuleCoverageTests
     public async Task Configure_On_Empty_Resolver_Registers_LogManager()
     {
         var resolver = new ModernDependencyResolver();
-        resolver.Register<ILogger>(() => new TextLogger());
+        resolver.Register<ILogger>(static () => new TextLogger());
 
         new SplatLogManagerModule(resolver).Configure(resolver);
 
@@ -29,7 +29,7 @@ public class SplatLogManagerModuleCoverageTests
     public async Task Configure_On_Empty_Resolver_Registers_DefaultLogManager()
     {
         var resolver = new ModernDependencyResolver();
-        resolver.Register<ILogger>(() => new TextLogger());
+        resolver.Register<ILogger>(static () => new TextLogger());
 
         new SplatLogManagerModule(resolver).Configure(resolver);
 
@@ -42,7 +42,7 @@ public class SplatLogManagerModuleCoverageTests
     public async Task Configure_Does_Not_Replace_Existing_LogManager()
     {
         var resolver = new ModernDependencyResolver();
-        var existing = new FuncLogManager(_ => new WrappingFullLogger(new TextLogger()));
+        var existing = new FuncLogManager(static _ => new WrappingFullLogger(new TextLogger()));
         resolver.Register<ILogManager>(() => existing);
 
         new SplatLogManagerModule(resolver).Configure(resolver);

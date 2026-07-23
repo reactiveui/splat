@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -27,21 +27,17 @@ namespace Splat;
 ///   Gonzalo Paniagua Javier (gonzalo@ximian.com)
 ///   Peter Dennis Bartok (pbartok@novell.com)
 ///   Sebastien Pouliot (sebastien@ximian.com)
-///
 /// Adapted for Splat, modernized for .NET 8 / .NET Standard.
 /// Copyright (C) 2007 Novell,
 /// and contributors to the Splat project.
-///
 /// Permission is hereby granted, free of charge, to any person obtaining a copy
 /// of this software and associated documentation files (the "Software"), to deal
 /// in the Software without restriction, including without limitation the rights
 /// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 /// copies of the Software, and to permit persons to whom the Software is
 /// furnished to do so, subject to the following conditions:
-///
 /// The above copyright notice and this permission notice shall be included in
 /// all copies or substantial portions of the Software.
-///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 /// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -54,7 +50,7 @@ namespace Splat;
 internal static class KnownColors
 {
     /// <summary>ARGB values (0xAARRGGBB), indexed by <see cref="KnownColor"/>.</summary>
-    internal static readonly uint[] ArgbValues =
+    private static readonly uint[] ArgbValues =
     [
         0x00000000, /* 000 - Empty */
         0xFFD4D0C8, /* 001 - ActiveBorder */
@@ -229,28 +225,31 @@ internal static class KnownColors
     /// <summary>Fast ARGB → <see cref="KnownColor"/> reverse index. Keeps the first occurrence for duplicates (for example, Aqua/Cyan).</summary>
     private static readonly Dictionary<uint, KnownColor> ArgbToKnown = BuildReverseIndex();
 
+    /// <summary>Gets the number of ARGB entries in the known-color table.</summary>
+    internal static int ArgbValueCount => ArgbValues.Length;
+
     /// <summary>Creates a <see cref="SplatColor"/> for a given <see cref="KnownColor"/>.</summary>
     /// <param name="kc">The known color to convert.</param>
     /// <returns>A <see cref="SplatColor"/> representing the known color.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static SplatColor FromKnownColor(KnownColor kc) => SplatColor.FromKnownColor(kc);
+    internal static SplatColor FromKnownColor(KnownColor kc) => SplatColor.FromKnownColor(kc);
 
     /// <summary>Gets a user-friendly name for a <see cref="KnownColor"/> given as a numeric value.</summary>
     /// <param name="kc">The numeric value of the known color.</param>
     /// <returns>The known color name, or <see cref="string.Empty"/> if the value does not map to a defined enum member.</returns>
-    public static string GetName(short kc)
+    internal static string GetName(short kc)
     {
         // Valid if value is within the defined enum range.
         // Update the upper bound if you add new enum members.
         const short MaxKnown = (short)KnownColor.MenuHighlight; // 174
-        return kc >= 0 && kc <= MaxKnown ? ((KnownColor)kc).ToString() : string.Empty;
+        return kc is >= 0 and <= MaxKnown ? ((KnownColor)kc).ToString() : string.Empty;
     }
 
     /// <summary>Gets a user-friendly name for a <see cref="KnownColor"/>.</summary>
     /// <param name="kc">The known color.</param>
     /// <returns>The name of the known color.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string GetName(KnownColor kc) => kc.ToString();
+    internal static string GetName(KnownColor kc) => kc.ToString();
 
     /// <summary>Attempts to find the matching <see cref="KnownColor"/> for an exact ARGB color.</summary>
     /// <param name="c">The color to match.</param>
@@ -262,7 +261,7 @@ internal static class KnownColors
     /// Matching is exact (all 32 bits, including alpha). Duplicates (e.g., <c>Aqua</c> and <c>Cyan</c>)
     /// resolve to the first defined color in <see cref="ArgbValues"/>.
     /// </remarks>
-    public static SplatColor FindColorMatch(SplatColor c)
+    internal static SplatColor FindColorMatch(SplatColor c)
     {
         var argb = c.ToArgb();
         return ArgbToKnown.TryGetValue(argb, out var kc) ? FromKnownColor(kc) : SplatColor.Empty;
@@ -271,7 +270,12 @@ internal static class KnownColors
     /// <summary>Gets the ARGB value (<c>0xAARRGGBB</c>) for a known color.</summary>
     /// <param name="kc">The known color.</param>
     /// <returns>The packed ARGB value for the known color.</returns>
-    public static uint GetArgb(KnownColor kc) => ArgbValues[(int)kc];
+    internal static uint GetArgb(KnownColor kc) => ArgbValues[(int)kc];
+
+    /// <summary>Finds the index of the supplied packed ARGB value in the known-color table.</summary>
+    /// <param name="argb">The packed ARGB value (<c>0xAARRGGBB</c>) to locate.</param>
+    /// <returns>The zero-based index of the value, or <c>-1</c> when it is not present.</returns>
+    internal static int IndexOfArgb(uint argb) => Array.IndexOf(ArgbValues, argb);
 
     /// <summary>
     /// Overrides a known color with a new ARGB value and updates reverse lookup tables.
@@ -283,7 +287,7 @@ internal static class KnownColors
     /// If multiple known colors share the same ARGB, the most recently updated color
     /// will be returned for that ARGB by <see cref="FindColorMatch(SplatColor)"/>.
     /// </remarks>
-    public static void Update(int knownColor, int color)
+    internal static void Update(int knownColor, int color)
     {
         var index = knownColor;
         var kc = (KnownColor)index;
@@ -292,7 +296,7 @@ internal static class KnownColors
         var oldArgb = ArgbValues[index];
         if (ArgbToKnown.TryGetValue(oldArgb, out var mapped) && mapped.Equals(kc))
         {
-            ArgbToKnown.Remove(oldArgb);
+            _ = ArgbToKnown.Remove(oldArgb);
         }
 
         // set new value and refresh reverse index

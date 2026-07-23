@@ -385,10 +385,10 @@ public sealed class ResolverMixinsTests
     {
         var resolver = AppLocator.CurrentMutable;
 
-        resolver
+        _ = resolver
             .RegisterAnd<TestService>()
             .RegisterConstantAnd<ITestService>(new TestService())
-            .RegisterLazySingletonAnd<ITestService>(() => new TestService(), "lazy");
+            .RegisterLazySingletonAnd<ITestService>(static () => new TestService(), "lazy");
 
         var service1 = AppLocator.GetService<TestService>();
         var service2 = AppLocator.GetService<ITestService>();

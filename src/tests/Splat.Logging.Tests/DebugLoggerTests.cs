@@ -21,8 +21,8 @@ public class DebugLoggerTests
         {
             logger.Write("Test message", LogLevel.Debug);
             logger.Write("Test message", typeof(DebugLoggerTests), LogLevel.Info);
-            logger.Write(new Exception("Test"), "Test exception", LogLevel.Error);
-            logger.Write(new Exception("Test"), "Test exception", typeof(DebugLoggerTests), LogLevel.Fatal);
+            logger.Write(new("Test"), "Test exception", LogLevel.Error);
+            logger.Write(new("Test"), "Test exception", typeof(DebugLoggerTests), LogLevel.Fatal);
         }).ThrowsNothing();
     }
 
