@@ -2,6 +2,8 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.IO;
+
 namespace Splat.Drawing.Tests;
 
 /// <summary>Unit tests covering the static <see cref="BitmapLoader"/> accessor and its state.</summary>
