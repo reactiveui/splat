@@ -85,6 +85,25 @@ public sealed class BitmapLoaderCoverageTests
         }
     }
 
+    /// <summary>Verifies that <see cref="BitmapLoader.ResetState"/> re-resolves the loader from the current locator.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task ResetState_ResolvesLoaderFromLocator()
+    {
+        var saved = BitmapLoader.GetState();
+        try
+        {
+            BitmapLoader.Current = new StubBitmapLoader();
+            BitmapLoader.ResetState();
+
+            await Assert.That(BitmapLoader.GetState()).IsEqualTo(AppLocator.Current.GetService<IBitmapLoader>());
+        }
+        finally
+        {
+            BitmapLoader.RestoreState(saved);
+        }
+    }
+
     /// <summary>A throwaway <see cref="IBitmapLoader"/> implementation used to verify the setter round-trip.</summary>
     private sealed class StubBitmapLoader : IBitmapLoader
     {

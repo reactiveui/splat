@@ -25,6 +25,17 @@ public class MicrosoftExtensionsLoggingLoggerTests : FullLoggerTestBase
         { LogLevel.Fatal, global::Microsoft.Extensions.Logging.LogLevel.Critical },
     };
 
+    /// <summary>Verifies the effective level falls back to <see cref="LogLevel.Fatal"/> when the wrapped logger enables no level.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Level_WhenNoLevelEnabled_ReturnsFatal()
+    {
+        var mockLogger = new MockActualMicrosoftExtensionsLoggingLogger(global::Microsoft.Extensions.Logging.LogLevel.None);
+        var logger = new MicrosoftExtensionsLoggingLogger(mockLogger);
+
+        await Assert.That(logger.Level).IsEqualTo(LogLevel.Fatal);
+    }
+
     /// <inheritdoc/>
     protected override (IFullLogger logger, IMockLogTarget mockTarget) GetLogger(LogLevel minimumLogLevel)
     {

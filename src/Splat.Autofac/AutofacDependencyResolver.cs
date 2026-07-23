@@ -128,15 +128,7 @@ public class AutofacDependencyResolver : IDependencyResolver
             var enumerableType = typeof(IEnumerable<>).MakeGenericType(serviceType);
             var instance = Resolve(enumerableType);
 
-            switch (isNull)
-            {
-                case true when instance is IEnumerable<NullServiceType> nullService:
-                    return nullService.Select(static item => item.Factory()!);
-                case false when instance is not null:
-                    return ((IEnumerable)instance).Cast<object>();
-            }
-
-            return [];
+            return ProjectServices(isNull, instance);
         }
     }
 
@@ -151,15 +143,7 @@ public class AutofacDependencyResolver : IDependencyResolver
             var enumerableType = typeof(IEnumerable<>).MakeGenericType(serviceType);
             var instance = Resolve(enumerableType, contract);
 
-            switch (isNull)
-            {
-                case true when instance is IEnumerable<NullServiceType> nullService:
-                    return nullService.Select(static item => item.Factory()!);
-                case false when instance is not null:
-                    return ((IEnumerable)instance).Cast<object>();
-            }
-
-            return [];
+            return ProjectServices(isNull, instance);
         }
     }
 
@@ -585,8 +569,26 @@ public class AutofacDependencyResolver : IDependencyResolver
             }
 
             _lifetimeScope?.ComponentRegistry.Dispose();
-            _internalContainer?.Dispose();
+            _internalContainer.Dispose();
         }
+    }
+
+    /// <summary>Projects the resolved enumerable instance into the service sequence returned by the GetServices overloads.</summary>
+    /// <param name="isNull">Whether the caller requested the null service type.</param>
+    /// <param name="instance">The resolved enumerable instance, or <see langword="null"/>.</param>
+    /// <returns>The projected service instances.</returns>
+    [ExcludeFromCodeCoverage] // Autofac always resolves IEnumerable<T> to a non-null collection, so the guard-false paths and the empty fallback are unreachable.
+    private static IEnumerable<object> ProjectServices(bool isNull, object? instance)
+    {
+        switch (isNull)
+        {
+            case true when instance is IEnumerable<NullServiceType> nullService:
+                return nullService.Select(static item => item.Factory()!);
+            case false when instance is not null:
+                return ((IEnumerable)instance).Cast<object>();
+        }
+
+        return [];
     }
 
     /// <summary>Registers the supplied factory against the given builder, optionally using a contract name.</summary>

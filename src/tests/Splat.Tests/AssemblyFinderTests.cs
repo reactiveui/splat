@@ -78,4 +78,17 @@ public class AssemblyFinderTests
         // Assert
         await Assert.That(result).IsNull();
     }
+
+    /// <summary>Test that AttemptToLoadType instantiates a type that exists in the same assembly.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task AttemptToLoadType_InstantiatesExistingType()
+    {
+        // Act - DefaultModeDetector lives in the same assembly as AssemblyFinder and has a public parameterless constructor.
+        var result = AssemblyFinder.AttemptToLoadType<DefaultModeDetector>("Splat.DefaultModeDetector");
+
+        // Assert
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result).IsTypeOf<DefaultModeDetector>();
+    }
 }

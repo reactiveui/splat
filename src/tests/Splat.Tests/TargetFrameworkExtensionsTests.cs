@@ -50,4 +50,22 @@ public class TargetFrameworkExtensionsTests
         var actual = TargetFrameworkExtensions.GetTargetFrameworkName(frameworkName);
         await Assert.That(actual).IsEqualTo(expected);
     }
+
+    /// <summary>Verifies that an unrecognized framework moniker maps to null.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetTargetFrameworkName_UnknownFramework_ReturnsNull()
+    {
+        var actual = TargetFrameworkExtensions.GetTargetFrameworkName(".NETUnknown,Version=v99.0");
+        await Assert.That(actual).IsNull();
+    }
+
+    /// <summary>Verifies that a null framework moniker maps to null.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetTargetFrameworkName_NullFramework_ReturnsNull()
+    {
+        var actual = TargetFrameworkExtensions.GetTargetFrameworkName((string?)null);
+        await Assert.That(actual).IsNull();
+    }
 }

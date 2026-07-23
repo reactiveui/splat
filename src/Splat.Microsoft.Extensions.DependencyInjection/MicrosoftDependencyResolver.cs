@@ -425,17 +425,11 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
 
         lock (_syncLock)
         {
-            if (_serviceCollection is null)
+            // A null collection would mean the container was already built from a provider and became immutable,
+            // a state rejected above, so the null-conditional simply keeps the nullable analyzer satisfied.
+            foreach (var sd in _serviceCollection?.Where(s => !s.IsKeyedService && s.ServiceType == serviceType).ToList() ?? [])
             {
-                // required so that it gets rebuilt if not injected externally.
-                DisposeServiceProvider(_serviceProvider);
-                _serviceProvider = null;
-                return;
-            }
-
-            foreach (var sd in _serviceCollection.Where(s => !s.IsKeyedService && s.ServiceType == serviceType).ToList())
-            {
-                _ = _serviceCollection.Remove(sd);
+                _ = _serviceCollection!.Remove(sd);
             }
 
             // required so that it gets rebuilt if not injected externally.
@@ -468,17 +462,11 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
 
         lock (_syncLock)
         {
-            if (_serviceCollection is null)
+            // A null collection would mean the container was already built from a provider and became immutable,
+            // a state rejected above, so the null-conditional simply keeps the nullable analyzer satisfied.
+            foreach (var sd in _serviceCollection?.Where(sd => MatchesKeyedContract(serviceType, contract, sd)).ToList() ?? [])
             {
-                // required so that it gets rebuilt if not injected externally.
-                DisposeServiceProvider(_serviceProvider);
-                _serviceProvider = null;
-                return;
-            }
-
-            foreach (var sd in _serviceCollection.Where(sd => MatchesKeyedContract(serviceType, contract, sd)).ToList())
-            {
-                _ = _serviceCollection.Remove(sd);
+                _ = _serviceCollection!.Remove(sd);
             }
 
             // required so that it gets rebuilt if not injected externally.

@@ -134,6 +134,23 @@ public class DependencyResolverTests
             AppLocator.CurrentMutable.Register(static () => new ViewOne()));
     }
 
+    /// <summary>Using the provider extension when the current locator is not a Microsoft resolver installs a new resolver.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task UseMicrosoftDependencyResolver_FromProvider_WhenCurrentIsNotMicrosoftResolver_SetsNewResolver()
+    {
+        using var scope = new AppLocatorScope();
+
+        await Assert.That(AppLocator.Current).IsNotTypeOf<MicrosoftDependencyResolver>();
+
+        var services = new ServiceCollection();
+        _ = services.AddSingleton<IScreen>(new MockScreen());
+        services.BuildServiceProvider().UseMicrosoftDependencyResolver();
+
+        await Assert.That(AppLocator.Current).IsTypeOf<MicrosoftDependencyResolver>();
+        await Assert.That(AppLocator.Current.GetService<IScreen>()).IsTypeOf<MockScreen>();
+    }
+
     /// <summary>Tests to ensure NLog registers correctly with different service locators. Based on issue reported in #553.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]

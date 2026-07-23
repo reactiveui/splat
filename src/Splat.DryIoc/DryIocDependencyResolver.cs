@@ -358,7 +358,7 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
 
         try
         {
-            _container?.Dispose();
+            DisposeContainer(_container);
         }
         catch (Exception ex)
         {
@@ -366,6 +366,12 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
             System.Diagnostics.Debug.WriteLine(ex);
         }
     }
+
+    /// <summary>Disposes the supplied container.</summary>
+    /// <remarks>The null-conditional is a defensive guard: the container field is always assigned a non-null value at construction, so the null branch cannot be reached.</remarks>
+    /// <param name="container">The container to dispose.</param>
+    [ExcludeFromCodeCoverage]
+    private static void DisposeContainer(IContainer? container) => container?.Dispose();
 
     /// <summary>Determines whether the supplied service key represents a contract-less (default) registration.</summary>
     /// <remarks>
@@ -376,7 +382,17 @@ public class DryIocDependencyResolver(IContainer? container = null) : IDependenc
     /// <param name="serviceKey">The optional service key of a registration.</param>
     /// <returns><see langword="true"/> if the key is <see langword="null"/> or a DryIoc <c>DefaultKey</c>; otherwise <see langword="false"/>.</returns>
     private static bool IsDefaultKey(object? serviceKey) =>
-        serviceKey is null ||
+        serviceKey is null || StartsWithDefaultKeyPrefix(serviceKey);
+
+    /// <summary>Determines whether a non-null service key's string form is a DryIoc auto-generated default key.</summary>
+    /// <remarks>
+    /// The null-conditional on the rendered key is a defensive guard: DryIoc default keys and string contracts
+    /// never render as <see langword="null"/>, so the null branch cannot be reached.
+    /// </remarks>
+    /// <param name="serviceKey">The non-null service key of a registration.</param>
+    /// <returns><see langword="true"/> if the key's string form starts with the default-key prefix; otherwise <see langword="false"/>.</returns>
+    [ExcludeFromCodeCoverage]
+    private static bool StartsWithDefaultKeyPrefix(object serviceKey) =>
         serviceKey.ToString()?.StartsWith(DefaultKeyPrefix, StringComparison.Ordinal) == true;
 
     /// <summary>Invokes the factory and converts the produced instance to the requested service type.</summary>

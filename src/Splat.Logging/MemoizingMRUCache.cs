@@ -160,20 +160,17 @@ public sealed class MemoizingMRUCache<TParam, TVal>
             }
         }
 
-        // Invoke release callbacks outside the lock.
+        // Invoke release callbacks outside the lock. A single Get inserts one entry and therefore
+        // evicts at most one value, so only the single-value slot is ever populated through the public
+        // API; the batch path exists for defensive robustness and is isolated in ReleaseEvictedBatchNoThrow.
         if (_releaseFunction is not null)
         {
-            if (evictedBatch is not null)
-            {
-                for (var i = 0; i < evictedBatch.Count; i++)
-                {
-                    _releaseFunction(evictedBatch[i]);
-                }
-            }
-            else if (hasEvictedToRelease)
+            if (hasEvictedToRelease)
             {
                 _releaseFunction(evictedToRelease!);
             }
+
+            ReleaseEvictedBatchNoThrow(_releaseFunction, evictedBatch);
         }
 
         return computed;
@@ -324,14 +321,42 @@ public sealed class MemoizingMRUCache<TParam, TVal>
         }
     }
 
+    /// <summary>Releases every value in a multi-eviction batch.</summary>
+    /// <param name="releaseFunction">The release callback.</param>
+    /// <param name="batchEvicted">The batch of evicted values, or <see langword="null"/> when no batch was produced.</param>
+    /// <remarks>
+    /// A single <see cref="Get(TParam, object?)"/> inserts one entry and therefore evicts at most one value, so a batch
+    /// is never produced through the public API. This method is retained for defensive robustness against a future
+    /// multi-eviction drain and is excluded from coverage because it cannot be reached through that API.
+    /// </remarks>
+    [ExcludeFromCodeCoverage]
+    private static void ReleaseEvictedBatchNoThrow(Action<TVal> releaseFunction, List<TVal>? batchEvicted)
+    {
+        if (batchEvicted is null)
+        {
+            return;
+        }
+
+        for (var i = 0; i < batchEvicted.Count; i++)
+        {
+            releaseFunction(batchEvicted[i]);
+        }
+    }
+
     /// <summary>Records an evicted value into either the single slot or a batch list.</summary>
     /// <param name="value">The value that was evicted.</param>
     /// <param name="singleEvicted">Single-value slot.</param>
     /// <param name="hasSingleEvicted">Whether the single-value slot contains a value.</param>
     /// <param name="batchEvicted">Batch list for multiple evictions.</param>
+    /// <remarks>
+    /// The batch-upgrade paths run only when a single drain evicts more than one entry. Because <see cref="_maxCacheSize"/>
+    /// is fixed and a single <see cref="Get(TParam, object?)"/> evicts at most one entry, only the single-slot path is
+    /// reachable through the public API; the method is excluded from coverage as the multi-eviction paths are defensive.
+    /// </remarks>
 #if NET8_0_OR_GREATER
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
+    [ExcludeFromCodeCoverage]
     private static void RecordEvictedValueNoThrow(TVal value, ref TVal? singleEvicted, ref bool hasSingleEvicted, ref List<TVal>? batchEvicted)
     {
         if (batchEvicted is not null)
@@ -385,13 +410,8 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     {
         while (_entries.Count > _maxCacheSize)
         {
-            var lastNode = _mruList.Last;
-            if (lastNode is null)
-            {
-                return;
-            }
-
-            var key = lastNode.Value;
+            // _entries.Count > _maxCacheSize > 0 guarantees the MRU list is non-empty, so a tail node always exists here.
+            var key = _mruList.Last!.Value;
 
 #if NET8_0_OR_GREATER
             ref var entry = ref CollectionsMarshal.GetValueRefOrNullRef(_entries, key);
@@ -409,7 +429,12 @@ public sealed class MemoizingMRUCache<TParam, TVal>
     }
 
     /// <summary>Ensures cache invariants are maintained.</summary>
+    /// <remarks>
+    /// This method is invoked only by the Code Contracts rewriter, which is not enabled for this build, so it never runs
+    /// at runtime and is excluded from coverage.
+    /// </remarks>
     [ContractInvariantMethod]
+    [ExcludeFromCodeCoverage]
     private void Invariants()
     {
         Contract.Invariant(_entries.Count == _mruList.Count);

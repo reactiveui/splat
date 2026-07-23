@@ -32,6 +32,33 @@ public class LocatorTests
         _appLocatorScope = null;
     }
 
+    /// <summary>Verifies that <see cref="Locator.SetLocator"/> replaces the resolver returned by <see cref="Locator.GetLocator"/>.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SetLocator_ReplacesCurrentResolver()
+    {
+        using var resolver = new ModernDependencyResolver();
+
+        Locator.SetLocator(resolver);
+
+        await Assert.That(Locator.GetLocator()).IsSameReferenceAs(resolver);
+    }
+
+    /// <summary>Verifies that <see cref="Locator.SuppressResolverCallbackChangedNotifications"/> disables notifications until disposed.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SuppressResolverCallbackChangedNotifications_DisablesNotificationsUntilDisposed()
+    {
+        await Assert.That(Locator.AreResolverCallbackChangedNotificationsEnabled()).IsTrue();
+
+        using (Locator.SuppressResolverCallbackChangedNotifications())
+        {
+            await Assert.That(Locator.AreResolverCallbackChangedNotificationsEnabled()).IsFalse();
+        }
+
+        await Assert.That(Locator.AreResolverCallbackChangedNotificationsEnabled()).IsTrue();
+    }
+
     /// <summary>Should the resolve nulls.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]

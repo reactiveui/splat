@@ -7,6 +7,12 @@ namespace Splat.Drawing.Tests;
 /// <summary>Unit tests covering <see cref="DefaultPlatformModeDetector"/>.</summary>
 public sealed class DefaultPlatformModeDetectorCoverageTests
 {
+    /// <summary>An entry-point path whose executable name matches a known design-environment host.</summary>
+    private const string DesignHostPath = "/apps/design/BLEND.EXE";
+
+    /// <summary>An entry-point path whose executable name does not match any known design environment.</summary>
+    private const string RegularHostPath = "/apps/myapp/MyApp.dll";
+
     /// <summary>Verifies that <see cref="DefaultPlatformModeDetector.InDesignMode"/> does not throw.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -39,4 +45,22 @@ public sealed class DefaultPlatformModeDetectorCoverageTests
 
         await Assert.That(second).IsEqualTo(first);
     }
+
+    /// <summary>Verifies that a null entry-point path is not treated as a design environment.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task IsDesignEnvironmentEntry_WithNullEntry_IsFalse()
+        => await Assert.That(DefaultPlatformModeDetector.IsDesignEnvironmentEntry(null)).IsFalse();
+
+    /// <summary>Verifies that a known design-environment host executable is recognised as a design environment.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task IsDesignEnvironmentEntry_WithDesignHostExecutable_IsTrue()
+        => await Assert.That(DefaultPlatformModeDetector.IsDesignEnvironmentEntry(DesignHostPath)).IsTrue();
+
+    /// <summary>Verifies that an ordinary host executable is not treated as a design environment.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task IsDesignEnvironmentEntry_WithNonDesignExecutable_IsFalse()
+        => await Assert.That(DefaultPlatformModeDetector.IsDesignEnvironmentEntry(RegularHostPath)).IsFalse();
 }

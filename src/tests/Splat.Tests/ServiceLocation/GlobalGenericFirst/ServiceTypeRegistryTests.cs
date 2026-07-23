@@ -370,6 +370,38 @@ public class ServiceTypeRegistryTests
         await Assert.That(result.Length).IsEqualTo(0);
     }
 
+    /// <summary>Tests that unregister all for a type that was never registered does not throw.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task UnregisterAll_WhenNotRegistered_DoesNotThrow()
+    {
+        // Act & Assert - the registry has no entry for this type, so the removal short-circuits.
+        await Assert.That(static () =>
+        {
+            ServiceTypeRegistry.UnregisterAll(typeof(string));
+            return Task.CompletedTask;
+        }).ThrowsNothing();
+
+        await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(string))).IsFalse();
+    }
+
+    /// <summary>Tests that get services where every factory yields null returns an empty array.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetServices_WithAllNullFactories_ReturnsEmptyArray()
+    {
+        // Arrange - every factory returns null so materialization produces no values.
+        ServiceTypeRegistry.Register(typeof(string), static () => null);
+        ServiceTypeRegistry.Register(typeof(string), static () => null);
+
+        // Act
+        var result = ServiceTypeRegistry.GetServices(typeof(string));
+
+        // Assert
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result.Length).IsEqualTo(0);
+    }
+
     /// <summary>Tests that unregister all only affects specified type and contract.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]

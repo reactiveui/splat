@@ -828,6 +828,172 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         await Assert.That(throwing.IsDisposed).IsTrue();
     }
 
+    /// <summary>Verifies that the contract overload of UnregisterCurrent throws when no delegate is provided.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task UnregisterCurrent_WithContract_ShouldThrowNotSupportedException_WhenDelegateIsNull()
+    {
+        var resolver = new FuncDependencyResolver(static (_, _) => []);
+
+        await Assert.That(() => resolver.UnregisterCurrent(typeof(string), MyContract))
+            .Throws<NotSupportedException>();
+    }
+
+    /// <summary>Verifies that the contract overload of UnregisterAll throws when no delegate is provided.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task UnregisterAll_WithContract_ShouldThrowNotSupportedException_WhenDelegateIsNull()
+    {
+        var resolver = new FuncDependencyResolver(static (_, _) => []);
+
+        await Assert.That(() => resolver.UnregisterAll(typeof(string), MyContract))
+            .Throws<NotSupportedException>();
+    }
+
+    /// <summary>Verifies that UnregisterCurrent substitutes the null service type when none is supplied.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task UnregisterCurrent_WithNullServiceType_UsesNullServiceType()
+    {
+        Type? capturedType = null;
+        using var resolver = new FuncDependencyResolver(
+            getAllServices: static (_, _) => [],
+            unregisterCurrent: (type, _) => capturedType = type);
+
+        resolver.UnregisterCurrent(serviceType: null, MyContract);
+
+        await Assert.That(capturedType).IsEqualTo(NullServiceType.CachedType);
+    }
+
+    /// <summary>Verifies that UnregisterAll substitutes the null service type when none is supplied.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task UnregisterAll_WithNullServiceType_UsesNullServiceType()
+    {
+        Type? capturedType = null;
+        using var resolver = new FuncDependencyResolver(
+            getAllServices: static (_, _) => [],
+            unregisterAll: (type, _) => capturedType = type);
+
+        resolver.UnregisterAll(serviceType: null, MyContract);
+
+        await Assert.That(capturedType).IsEqualTo(NullServiceType.CachedType);
+    }
+
+    /// <summary>Verifies that HasRegistration substitutes the null service type when none is supplied.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task HasRegistration_WithNullServiceType_UsesNullServiceType()
+    {
+        Type? capturedType = null;
+        using var resolver = new FuncDependencyResolver((type, _) =>
+        {
+            capturedType = type;
+            return [];
+        });
+
+        _ = resolver.HasRegistration(serviceType: null, MyContract);
+
+        await Assert.That(capturedType).IsEqualTo(NullServiceType.CachedType);
+    }
+
+    /// <summary>Verifies that GetService returns the last element of an <see cref="IReadOnlyList{T}"/> that is not an <see cref="IList{T}"/>.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_OverReadOnlyList_ReturnsLastElement()
+    {
+        var services = new ReadOnlyServiceList([First, Second]);
+        using var resolver = new FuncDependencyResolver((_, _) => services);
+
+        var result = resolver.GetService<object>();
+
+        await Assert.That(result).IsEqualTo(Second);
+    }
+
+    /// <summary>Verifies that GetService returns null over an empty <see cref="IReadOnlyList{T}"/> that is not an <see cref="IList{T}"/>.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_OverEmptyReadOnlyList_ReturnsNull()
+    {
+        var services = new ReadOnlyServiceList([]);
+        using var resolver = new FuncDependencyResolver((_, _) => services);
+
+        var result = resolver.GetService<object>();
+
+        await Assert.That(result).IsNull();
+    }
+
+    /// <summary>Verifies that GetService returns the last element of a lazily-evaluated sequence.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_OverEnumerable_ReturnsLastElement()
+    {
+        using var resolver = new FuncDependencyResolver(static (_, _) => Sequence(First, Second));
+
+        var result = resolver.GetService<object>();
+
+        await Assert.That(result).IsEqualTo(Second);
+    }
+
+    /// <summary>Verifies that GetService returns null over an empty lazily-evaluated sequence.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_OverEmptyEnumerable_ReturnsNull()
+    {
+        using var resolver = new FuncDependencyResolver(static (_, _) => Sequence());
+
+        var result = resolver.GetService<object>();
+
+        await Assert.That(result).IsNull();
+    }
+
+    /// <summary>Verifies that resolving a null service type over a materialized collection unwraps <see cref="NullServiceType"/> markers.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetServices_WithNullServiceTypeOverCollection_UnwrapsMarkers()
+    {
+        var services = new List<object> { new NullServiceType(static () => UnwrappedValue), PlainValue };
+        using var resolver = new FuncDependencyResolver((_, _) => services);
+
+        var result = resolver.GetServices((Type?)null).ToList();
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(result.Count).IsEqualTo(MixedServiceCount);
+            await Assert.That(result[0]).IsEqualTo(UnwrappedValue);
+            await Assert.That(result[1]).IsEqualTo(PlainValue);
+        }
+    }
+
+    /// <summary>Verifies that a lazy singleton whose factory disposes the resolver disposes the value and throws.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_WhenLazySingletonAccessedAfterDispose_DisposesValueAndThrows()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.RegisterLazySingleton(static () => new DisposableTestService());
+
+        // Dispose before the lazy value is ever created; the next resolve constructs it and observes disposal.
+        resolver.Dispose();
+
+        await Assert.That(() => resolver.GetService<DisposableTestService>())
+            .Throws<ObjectDisposedException>();
+    }
+
+    /// <summary>Verifies that disposing a resolver constructed without a services delegate does not throw.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Dispose_WithNullGetAllServices_DoesNotThrow()
+    {
+        var resolver = new FuncDependencyResolver(getAllServices: null!);
+
+        await Assert.That(() =>
+        {
+            resolver.Dispose();
+            return Task.CompletedTask;
+        }).ThrowsNothing();
+    }
+
     /// <inheritdoc/>
     protected override FuncDependencyResolver GetDependencyResolver()
     {
@@ -932,8 +1098,36 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         yield return PlainValue;
     }
 
+    /// <summary>Yields the supplied items as a lazily-evaluated sequence that is neither a list nor a read-only list.</summary>
+    /// <param name="items">The items to yield.</param>
+    /// <returns>A non-materialized sequence of the items.</returns>
+    private static IEnumerable<object> Sequence(params object[] items)
+    {
+        foreach (var item in items)
+        {
+            yield return item;
+        }
+    }
+
     /// <summary>Concrete implementation used as a test service.</summary>
     private sealed class TestClass : ITestInterface;
+
+    /// <summary>A read-only list wrapper that deliberately does not implement <see cref="IList{T}"/>.</summary>
+    /// <param name="items">The backing items.</param>
+    private sealed class ReadOnlyServiceList(IReadOnlyList<object> items) : IReadOnlyList<object>
+    {
+        /// <inheritdoc />
+        public int Count => items.Count;
+
+        /// <inheritdoc />
+        public object this[int index] => items[index];
+
+        /// <inheritdoc />
+        public IEnumerator<object> GetEnumerator() => items.GetEnumerator();
+
+        /// <inheritdoc />
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => items.GetEnumerator();
+    }
 
     /// <summary>Disposable test helper that records whether it has been disposed.</summary>
     private sealed class TestDisposable : IDisposable

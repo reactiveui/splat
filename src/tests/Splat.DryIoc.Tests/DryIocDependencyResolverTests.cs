@@ -371,6 +371,99 @@ public sealed class DryIocDependencyResolverTests : BaseDependencyResolverTests<
         await Assert.That(resolver.HasRegistration(typeof(Common.Test.ViewModelOne))).IsFalse();
     }
 
+    /// <summary>Verifies that querying an unregistered type skips registrations of other types and reports no registration.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task HasRegistration_ForUnregisteredType_WithOtherRegistrationsPresent_ReturnsFalse()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.Register(static () => new Common.Test.ViewModelOne(), typeof(Common.Test.ViewModelOne));
+
+        // The only registration is for a different service type, so the predicate skips it and reports no match.
+        await Assert.That(resolver.HasRegistration(typeof(Common.Test.ViewModelTwo))).IsFalse();
+    }
+
+    /// <summary>Verifies that unregistering the current registration for one type leaves registrations of other types intact.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task UnregisterCurrent_ForType_WithOtherRegistrationsPresent_LeavesOthersRegistered()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.Register(static () => new Common.Test.ViewModelOne(), typeof(Common.Test.ViewModelOne));
+        resolver.Register(static () => new Common.Test.ViewModelTwo(), typeof(Common.Test.ViewModelTwo));
+
+        resolver.UnregisterCurrent(typeof(Common.Test.ViewModelTwo));
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(resolver.HasRegistration(typeof(Common.Test.ViewModelTwo))).IsFalse();
+            await Assert.That(resolver.HasRegistration(typeof(Common.Test.ViewModelOne))).IsTrue();
+        }
+    }
+
+    /// <summary>Verifies that unregistering all registrations for one type leaves registrations of other types intact.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task UnregisterAll_ForType_WithOtherRegistrationsPresent_LeavesOthersRegistered()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.Register(static () => new Common.Test.ViewModelOne(), typeof(Common.Test.ViewModelOne));
+        resolver.Register(static () => new Common.Test.ViewModelTwo(), typeof(Common.Test.ViewModelTwo));
+
+        resolver.UnregisterAll(typeof(Common.Test.ViewModelTwo));
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(resolver.HasRegistration(typeof(Common.Test.ViewModelTwo))).IsFalse();
+            await Assert.That(resolver.HasRegistration(typeof(Common.Test.ViewModelOne))).IsTrue();
+        }
+    }
+
+    /// <summary>Verifies the finalizer disposal path leaves the underlying container untouched.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Dispose_WhenNotDisposing_LeavesContainerUsable()
+    {
+        using var resolver = new FinalizableDryIocDependencyResolver(new Container());
+        resolver.Register(static () => new Common.Test.ViewModelOne(), typeof(Common.Test.ViewModelOne));
+
+        // The non-disposing (finalizer) path must not dispose the container.
+        resolver.InvokeDispose(false);
+
+        await Assert.That(resolver.GetService(typeof(Common.Test.ViewModelOne))).IsNotNull();
+    }
+
+    /// <summary>Verifies a resolver created without an explicit container provisions its own usable container.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Constructor_WithoutContainer_CreatesUsableResolver()
+    {
+        using var resolver = new DryIocDependencyResolver();
+        resolver.Register(static () => new Common.Test.ViewModelOne(), typeof(Common.Test.ViewModelOne));
+
+        await Assert.That(resolver.GetService(typeof(Common.Test.ViewModelOne))).IsNotNull();
+    }
+
+    /// <summary>Verifies that a factory producing <see langword="null"/> resolves to no service.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_WhenFactoryReturnsNull_ReturnsNull()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.Register(static () => null, typeof(Common.Test.ViewModelOne));
+
+        await Assert.That(resolver.GetService(typeof(Common.Test.ViewModelOne))).IsNull();
+    }
+
     /// <inheritdoc />
     protected override DryIocDependencyResolver GetDependencyResolver() => new(new Container());
+
+    /// <summary>A resolver that exposes the protected disposal method so the finalizer path can be exercised.</summary>
+    /// <param name="container">The DryIoc container to resolve against.</param>
+    private sealed class FinalizableDryIocDependencyResolver(IContainer container) : DryIocDependencyResolver(container)
+    {
+        /// <summary>Invokes the protected <see cref="DryIocDependencyResolver.Dispose(bool)"/> overload.</summary>
+        /// <param name="disposing">Whether the call represents a deterministic dispose (<see langword="true"/>) or a finalizer (<see langword="false"/>).</param>
+        public void InvokeDispose(bool disposing) => Dispose(disposing);
+    }
 }

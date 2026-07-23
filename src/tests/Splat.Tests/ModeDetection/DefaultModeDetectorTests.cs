@@ -248,6 +248,47 @@ public class DefaultModeDetectorTests
     }
 #endif
 
+#if NET8_0_OR_GREATER
+    /// <summary>
+    /// Verifies that a non-affirmative DOTNET_RUNNING_IN_TEST value is not treated as an explicit test signal,
+    /// exercising the length-based value switch, while detection still succeeds via the test-runner assembly scan.
+    /// </summary>
+    /// <param name="value">A DOTNET_RUNNING_IN_TEST value that must not be interpreted as an affirmative signal.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    [Arguments("0")]
+    [Arguments("no")]
+    [Arguments("false")]
+    public async Task DefaultModeDetector_ExplicitEnvVar_NonAffirmativeValues_StillDetectViaRunner(string value)
+    {
+        // Arrange
+        var detector = new DefaultModeDetector();
+        var oldEnv = Environment.GetEnvironmentVariable(DotnetRunningInTest);
+        var oldAppCtx = AppContext.GetData(DotnetRunningInTest);
+
+        try
+        {
+            Environment.SetEnvironmentVariable(DotnetRunningInTest, value);
+            AppContext.SetData(DotnetRunningInTest, null);
+
+            // Act - the explicit value is rejected, but the runner is still detected by the later assembly scan.
+            var result = detector.InUnitTestRunner();
+
+            // Assert
+            using (Assert.Multiple())
+            {
+                await Assert.That(result.HasValue).IsTrue();
+                await Assert.That(result!.Value).IsTrue();
+            }
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable(DotnetRunningInTest, oldEnv);
+            AppContext.SetData(DotnetRunningInTest, oldAppCtx);
+        }
+    }
+#endif
+
     /// <summary>
     /// Verifies that DefaultModeDetector can detect Microsoft Testing Platform (MTP) via assembly scan.
     /// This test ensures MTP is recognized as a unit test framework.

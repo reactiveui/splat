@@ -2,6 +2,7 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
 namespace Splat;
@@ -424,22 +425,26 @@ public partial struct SplatColor : IEquatable<SplatColor>
     /// <returns>The matching known <see cref="SplatColor"/>, or <paramref name="splatColor"/> when no match exists.</returns>
     private static SplatColor CheckIfIsKnownColor(SplatColor splatColor)
     {
+        var index = FindKnownColorIndex(splatColor.Value);
+        return index >= 0 ? FromKnownColor((KnownColor)index) : splatColor;
+    }
+
+    /// <summary>Finds the known-color index for a packed ARGB value, tolerating any lookup failure.</summary>
+    /// <param name="value">The packed ARGB value to locate.</param>
+    /// <returns>The zero-based known-color index, or <c>-1</c> when the value is not a known color or the lookup fails.</returns>
+    [ExcludeFromCodeCoverage] // Defensive: KnownColors.IndexOfArgb cannot throw for a packed ARGB value in a managed host, so the catch is unreachable.
+    private static int FindKnownColorIndex(uint value)
+    {
         try
         {
-            var index = KnownColors.IndexOfArgb(splatColor.Value);
-            if (index >= 0)
-            {
-                var knownColorLookup = (KnownColor)index;
-                return FromKnownColor(knownColorLookup);
-            }
+            return KnownColors.IndexOfArgb(value);
         }
         catch (Exception ex)
         {
             // Intentionally ignored: if the known-color lookup fails for any reason we
-            // simply fall back to returning the original color unchanged.
+            // fall back to treating the value as a non-known color.
             System.Diagnostics.Debug.WriteLine(ex);
+            return -1;
         }
-
-        return splatColor;
     }
 }

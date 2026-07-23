@@ -18,6 +18,24 @@ public class ContractContainerCacheTests
     /// <summary>The count expected once a contract has been cleared.</summary>
     private const int EmptyCount = 0;
 
+    /// <summary>Verifies that resolving all registrations for a contract with no entry returns an empty array.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetAll_ForUnregisteredContract_ReturnsEmpty()
+    {
+        // Arrange - a registration exists for one contract, but not for the queried one.
+        var state = new ResolverState();
+        var container = ContractContainerCache<ViewModelOne>.Get(state);
+        container.Add(new ViewModelOne(), FirstContract);
+
+        // Act
+        var result = container.GetAll(SecondContract);
+
+        // Assert
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result.Length).IsEqualTo(EmptyCount);
+    }
+
     /// <summary>Verifies that clearing all contracts removes every contract's registrations.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]

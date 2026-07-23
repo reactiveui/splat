@@ -17,6 +17,12 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
     /// <summary>The number of registrations expected when a duplicate is registered.</summary>
     private const int DuplicatedRegistrationCount = 2;
 
+    /// <summary>The number of non-generic registrations made before subscribing a callback.</summary>
+    private const int NonGenericExistingCount = 2;
+
+    /// <summary>The number of times a one-shot callback is expected to fire.</summary>
+    private const int SingleInvocation = 1;
+
     /// <summary>Test ServiceRegistrationCallback with null service type throws.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -233,6 +239,194 @@ public sealed class ModernDependencyResolverTests : BaseDependencyResolverTests<
         await Assert.That(result).IsFalse();
     }
 
+    /// <summary>Test HasRegistration with a runtime type returns false after disposal.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task AfterDispose_HasRegistration_NonGeneric_ReturnsFalse()
+    {
+        var resolver = new ModernDependencyResolver();
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Dispose();
+
+        await Assert.That(resolver.HasRegistration(typeof(ViewModelOne))).IsFalse();
+    }
+
+    /// <summary>Test GetService with a runtime type throws after disposal.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task AfterDispose_GetService_NonGeneric_ThrowsObjectDisposedException()
+    {
+        var resolver = new ModernDependencyResolver();
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Dispose();
+
+        await Assert.That(() => resolver.GetService(typeof(ViewModelOne)))
+            .Throws<ObjectDisposedException>();
+    }
+
+    /// <summary>Test GetServices with a runtime type throws after disposal.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task AfterDispose_GetServices_NonGeneric_ThrowsObjectDisposedException()
+    {
+        var resolver = new ModernDependencyResolver();
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Dispose();
+
+        await Assert.That(() => resolver.GetServices(typeof(ViewModelOne)))
+            .Throws<ObjectDisposedException>();
+    }
+
+    /// <summary>Test generic GetServices throws after disposal.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task AfterDispose_GetServices_Generic_ThrowsObjectDisposedException()
+    {
+        var resolver = new ModernDependencyResolver();
+        resolver.Register(static () => new ViewModelOne());
+        resolver.Dispose();
+
+        await Assert.That(() => resolver.GetServices<ViewModelOne>())
+            .Throws<ObjectDisposedException>();
+    }
+
+    /// <summary>Test ServiceRegistrationCallback with a runtime type after disposal returns an empty disposable.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task AfterDispose_ServiceRegistrationCallback_NonGeneric_ReturnsEmptyDisposable()
+    {
+        var resolver = new ModernDependencyResolver();
+        resolver.Dispose();
+
+        var callbackInvoked = false;
+
+        await Assert.That(() =>
+        {
+            var subscription = resolver.ServiceRegistrationCallback(typeof(ViewModelOne), _ => callbackInvoked = true);
+            subscription.Dispose();
+            return Task.CompletedTask;
+        }).ThrowsNothing();
+
+        await Assert.That(callbackInvoked).IsFalse();
+    }
+
+    /// <summary>Test non-generic GetService returns null when the last registration has been removed.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_NonGeneric_AfterUnregisterAll_ReturnsNull()
+    {
+        using var resolver = new ModernDependencyResolver();
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.UnregisterAll(typeof(ViewModelOne));
+
+        await Assert.That(resolver.GetService(typeof(ViewModelOne))).IsNull();
+    }
+
+    /// <summary>Test generic GetService returns default when the last registration has been removed.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_Generic_AfterUnregisterAll_ReturnsDefault()
+    {
+        using var resolver = new ModernDependencyResolver();
+        resolver.Register(static () => new ViewModelOne());
+        resolver.UnregisterAll<ViewModelOne>();
+
+        await Assert.That(resolver.GetService<ViewModelOne>()).IsNull();
+    }
+
+    /// <summary>Test non-generic ServiceRegistrationCallback fires once for each existing registration.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task ServiceRegistrationCallback_NonGeneric_WithExistingRegistrations_InvokesImmediately()
+    {
+        using var resolver = new ModernDependencyResolver();
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
+
+        var callbackCount = 0;
+        using var subscription = resolver.ServiceRegistrationCallback(typeof(ViewModelOne), _ => callbackCount++);
+
+        await Assert.That(callbackCount).IsEqualTo(NonGenericExistingCount);
+    }
+
+    /// <summary>Test generic ServiceRegistrationCallback fires once for each existing registration.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task ServiceRegistrationCallback_Generic_WithExistingRegistrations_InvokesImmediately()
+    {
+        using var resolver = new ModernDependencyResolver();
+        resolver.Register(static () => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
+
+        var callbackCount = 0;
+        using var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(_ => callbackCount++);
+
+        await Assert.That(callbackCount).IsEqualTo(NonGenericExistingCount);
+    }
+
+    /// <summary>Test Dispose(false) from a finalizer-style path leaves the resolver usable.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Dispose_WhenNotDisposingManagedResources_LeavesResolverUsable()
+    {
+        using var resolver = new FinalizerDisposableResolver();
+        resolver.Register(static () => new ViewModelOne());
+
+        resolver.InvokeNonManagedDispose();
+
+        // Dispose(false) short-circuits before disposal, so the resolver remains active.
+        await Assert.That(resolver.HasRegistration<ViewModelOne>()).IsTrue();
+        await Assert.That(resolver.GetService<ViewModelOne>()).IsNotNull();
+    }
+
+    /// <summary>Test that a lazy singleton whose factory disposes the resolver disposes the value and throws.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_WhenLazyFactoryDisposesResolver_DisposesValueAndThrows()
+    {
+        var resolver = new ModernDependencyResolver();
+        var service = new DisposableTestService();
+
+        resolver.RegisterLazySingleton(() =>
+        {
+            resolver.Dispose();
+            return service;
+        });
+
+        await Assert.That(() => resolver.GetService<DisposableTestService>())
+            .Throws<ObjectDisposedException>();
+
+        await Assert.That(service.IsDisposed).IsTrue();
+    }
+
+    /// <summary>Test that a callback which disposes its token is removed after firing during a registration.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Register_WhenCallbackDisposesToken_RemovesCallbackAfterFiring()
+    {
+        using var resolver = new ModernDependencyResolver();
+        var invocations = 0;
+
+        using var subscription = resolver.ServiceRegistrationCallback<ViewModelOne>(disposable =>
+        {
+            invocations++;
+            disposable.Dispose();
+        });
+
+        resolver.Register(static () => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
+
+        // The callback disposed its token on the first registration, so it is removed and does not fire again.
+        await Assert.That(invocations).IsEqualTo(SingleInvocation);
+    }
+
     /// <inheritdoc />
     protected override ModernDependencyResolver GetDependencyResolver() => new();
+
+    /// <summary>A resolver subclass that exposes the finalizer-style <see cref="ModernDependencyResolver.Dispose(bool)"/> path.</summary>
+    private sealed class FinalizerDisposableResolver : ModernDependencyResolver
+    {
+        /// <summary>Invokes <see cref="ModernDependencyResolver.Dispose(bool)"/> with <see langword="false"/>, as a finalizer would.</summary>
+        public void InvokeNonManagedDispose() => Dispose(false);
+    }
 }

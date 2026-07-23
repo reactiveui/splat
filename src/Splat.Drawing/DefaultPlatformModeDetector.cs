@@ -2,6 +2,7 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 
@@ -50,6 +51,29 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
     /// <inheritdoc />
     public bool? InDesignMode() => DetectDesignMode();
 
+    /// <summary>Determines whether the supplied host entry-point path names a known design-environment executable.</summary>
+    /// <param name="entry">The host entry-point path, or <see langword="null"/> when it is unavailable.</param>
+    /// <returns><see langword="true"/> when the entry path names a known design environment; otherwise <see langword="false"/>.</returns>
+    internal static bool IsDesignEnvironmentEntry(string? entry)
+    {
+        if (entry is null)
+        {
+            return false;
+        }
+
+        var exeName = new FileInfo(entry).Name;
+
+        foreach (var designEnv in _designEnvironments)
+        {
+            if (IsDesignEnvironment(designEnv, exeName))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /// <summary>Runs the design-mode probes in priority order and returns (and caches) the result.</summary>
     /// <returns>A value indicating whether the application is running in design mode.</returns>
     private static bool? DetectDesignMode()
@@ -62,18 +86,27 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
         // Probe each platform in priority order; the first detected platform wins,
         // mirroring the original else-if chain. The cached result is then reset to
         // false below, preserving the original behaviour.
-        _ = ProbeXamlDesignProperties()
-            || ProbeWpfDesignerProperties()
-            || ProbeWinRtDesignMode()
-            || ProbeDesignEnvironmentExecutable();
+        RunDesignModeProbes();
 
         _cachedInDesignModeResult = false;
 
         return _cachedInDesignModeResult;
     }
 
+    /// <summary>Runs the platform design-mode probes in priority order.</summary>
+    /// <remarks>None of the Silverlight, WPF, or WinRT host types resolve on the supported .NET targets, so the
+    /// short-circuiting branches that fire when one of those probes reports a platform are unreachable off their
+    /// native hosts.</remarks>
+    [ExcludeFromCodeCoverage]
+    private static void RunDesignModeProbes() =>
+        _ = ProbeXamlDesignProperties()
+            || ProbeWpfDesignerProperties()
+            || ProbeWinRtDesignMode()
+            || ProbeDesignEnvironmentExecutable();
+
     /// <summary>Probes for the Silverlight / Windows Phone 8 design-mode indicator.</summary>
     /// <returns><see langword="true"/> if the platform was detected; otherwise <see langword="false"/>.</returns>
+    [ExcludeFromCodeCoverage] // Off-platform reflection: the Silverlight/XAML type never resolves on supported targets; only the type-null guard runs.
     private static bool ProbeXamlDesignProperties()
     {
         var type = Type.GetType(XamlDesignPropertiesType, false);
@@ -96,6 +129,7 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
 
     /// <summary>Probes for the WPF designer design-mode indicator.</summary>
     /// <returns><see langword="true"/> if the platform was detected; otherwise <see langword="false"/>.</returns>
+    [ExcludeFromCodeCoverage] // Off-platform reflection: the WPF type never resolves on supported targets; only the type-null guard runs.
     private static bool ProbeWpfDesignerProperties()
     {
         var type = Type.GetType(WpfDesignerPropertiesType, false);
@@ -117,6 +151,7 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
 
     /// <summary>Probes for the WinRT design-mode indicator.</summary>
     /// <returns><see langword="true"/> if the platform was detected; otherwise <see langword="false"/>.</returns>
+    [ExcludeFromCodeCoverage] // Off-platform reflection: the WinRT type never resolves on supported targets; only the type-null guard runs.
     private static bool ProbeWinRtDesignMode()
     {
         var type = Type.GetType(WinFormsDesignerPropertiesType, false);
@@ -138,21 +173,7 @@ public class DefaultPlatformModeDetector : IPlatformModeDetector
 #else
         var entry = AppContext.BaseDirectory;
 #endif
-        if (entry is null)
-        {
-            return true;
-        }
-
-        var exeName = new FileInfo(entry).Name;
-
-        foreach (var designEnv in _designEnvironments)
-        {
-            if (IsDesignEnvironment(designEnv, exeName))
-            {
-                _cachedInDesignModeResult = true;
-                break;
-            }
-        }
+        _cachedInDesignModeResult = IsDesignEnvironmentEntry(entry);
 
         return true;
     }

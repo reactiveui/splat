@@ -252,6 +252,54 @@ public class MemoizingMRUCacheTests
         await Assert.That(() => instance.InvalidateAll()).ThrowsNothing();
     }
 
+    /// <summary>Test that InvalidateAll releases every cached item through a non-throwing release function.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task InvalidateAll_WithReleaseFunction_ReleasesEveryItem()
+    {
+        var releaseCount = 0;
+        var instance = new MemoizingMRUCache<string, DummyObjectClass1>(
+            static (_, _) => new(),
+            MaxCacheSize,
+            _ => releaseCount++);
+
+        _ = instance.Get("key1");
+        _ = instance.Get("key2");
+
+        instance.InvalidateAll();
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(releaseCount).IsEqualTo(TwoCachedItems);
+            await Assert.That(instance.CachedValues()).IsEmpty();
+        }
+    }
+
+    /// <summary>
+    /// Test that InvalidateAll with exception aggregation still releases every cached item when the release function
+    /// does not throw.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task InvalidateAll_WithAggregateExceptions_ReleasesEveryItem_WhenReleaseSucceeds()
+    {
+        var releaseCount = 0;
+        var instance = new MemoizingMRUCache<string, DummyObjectClass1>(
+            static (_, _) => new(),
+            MaxCacheSize,
+            _ => releaseCount++);
+
+        _ = instance.Get("key1");
+        _ = instance.Get("key2");
+
+        await Assert.That(() => instance.InvalidateAll(true)).ThrowsNothing();
+        using (Assert.Multiple())
+        {
+            await Assert.That(releaseCount).IsEqualTo(TwoCachedItems);
+            await Assert.That(instance.CachedValues()).IsEmpty();
+        }
+    }
+
     /// <summary>Test that InvalidateAll with null release function works.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]

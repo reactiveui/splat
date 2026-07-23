@@ -9,6 +9,8 @@ using Serilog.Core;
 using Serilog.Events;
 using Serilog.Formatting.Display;
 
+using static Splat.Tests.Logging.LoggerTestConstants;
+
 namespace Splat.Tests.Logging;
 
 /// <summary>
@@ -96,6 +98,81 @@ public class SerilogFullLoggerFormatProviderTests
         logger.Level = LogLevel.Fatal;
 
         await Assert.That(logger.Level).IsEqualTo(before);
+    }
+
+    /// <summary>Test that the Debug one/two/three-argument format-provider overloads forward the formatted text.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public Task Debug_With_FormatProvider_Arguments_Forwards_Formatted_Text() =>
+        AssertFormatProviderArgumentsAsync(
+            static logger => logger.Debug(CultureInfo.InvariantCulture, Format1, Arg1),
+            static logger => logger.Debug(CultureInfo.InvariantCulture, Format2, Arg1, Arg2),
+            static logger => logger.Debug(CultureInfo.InvariantCulture, Format3, Arg1, Arg2, Arg3));
+
+    /// <summary>Test that the Info one/two/three-argument format-provider overloads forward the formatted text.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public Task Info_With_FormatProvider_Arguments_Forwards_Formatted_Text() =>
+        AssertFormatProviderArgumentsAsync(
+            static logger => logger.Info(CultureInfo.InvariantCulture, Format1, Arg1),
+            static logger => logger.Info(CultureInfo.InvariantCulture, Format2, Arg1, Arg2),
+            static logger => logger.Info(CultureInfo.InvariantCulture, Format3, Arg1, Arg2, Arg3));
+
+    /// <summary>Test that the Warn one/two/three-argument format-provider overloads forward the formatted text.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public Task Warn_With_FormatProvider_Arguments_Forwards_Formatted_Text() =>
+        AssertFormatProviderArgumentsAsync(
+            static logger => logger.Warn(CultureInfo.InvariantCulture, Format1, Arg1),
+            static logger => logger.Warn(CultureInfo.InvariantCulture, Format2, Arg1, Arg2),
+            static logger => logger.Warn(CultureInfo.InvariantCulture, Format3, Arg1, Arg2, Arg3));
+
+    /// <summary>Test that the Error one/two/three-argument format-provider overloads forward the formatted text.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public Task Error_With_FormatProvider_Arguments_Forwards_Formatted_Text() =>
+        AssertFormatProviderArgumentsAsync(
+            static logger => logger.Error(CultureInfo.InvariantCulture, Format1, Arg1),
+            static logger => logger.Error(CultureInfo.InvariantCulture, Format2, Arg1, Arg2),
+            static logger => logger.Error(CultureInfo.InvariantCulture, Format3, Arg1, Arg2, Arg3));
+
+    /// <summary>Test that the Fatal one/two/three-argument format-provider overloads forward the formatted text.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public Task Fatal_With_FormatProvider_Arguments_Forwards_Formatted_Text() =>
+        AssertFormatProviderArgumentsAsync(
+            static logger => logger.Fatal(CultureInfo.InvariantCulture, Format1, Arg1),
+            static logger => logger.Fatal(CultureInfo.InvariantCulture, Format2, Arg1, Arg2),
+            static logger => logger.Fatal(CultureInfo.InvariantCulture, Format3, Arg1, Arg2, Arg3));
+
+    /// <summary>Asserts that the one, two, and three-argument format-provider overloads of a level each render
+    /// the composite format string against <see cref="CultureInfo.InvariantCulture"/>.</summary>
+    /// <param name="logOneArgument">Invokes the single-argument format-provider overload.</param>
+    /// <param name="logTwoArguments">Invokes the two-argument format-provider overload.</param>
+    /// <param name="logThreeArguments">Invokes the three-argument format-provider overload.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    private static async Task AssertFormatProviderArgumentsAsync(
+        Action<SerilogFullLogger> logOneArgument,
+        Action<SerilogFullLogger> logTwoArguments,
+        Action<SerilogFullLogger> logThreeArguments)
+    {
+        var (logger, sink) = CreateLogger();
+
+        logOneArgument(logger);
+        var oneArgument = sink.LastMessage;
+
+        logTwoArguments(logger);
+        var twoArguments = sink.LastMessage;
+
+        logThreeArguments(logger);
+        var threeArguments = sink.LastMessage;
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(oneArgument).IsEqualTo(Expected1);
+            await Assert.That(twoArguments).IsEqualTo(Expected2);
+            await Assert.That(threeArguments).IsEqualTo(Expected3);
+        }
     }
 
     /// <summary>Creates a <see cref="SerilogFullLogger"/> writing to a verbose-level capturing sink.</summary>

@@ -310,6 +310,26 @@ public class ArrayHelpersTests
         await Assert.That(result[1]).IsEqualTo("another valid");
     }
 
+    /// <summary>Tests that materialize registrations where every registration yields null returns an empty array.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task MaterializeRegistrations_WithAllNullValues_ReturnsEmptyArray()
+    {
+        // Arrange - both an instance-null and a factory-null so no value survives materialization.
+        var registrations = new[]
+        {
+            Registration<string?>.FromInstance(null),
+            Registration<string?>.FromFactory(static () => null)
+        };
+
+        // Act
+        var result = ArrayHelpers.MaterializeRegistrations(registrations);
+
+        // Assert
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result.Length).IsEqualTo(0);
+    }
+
     /// <summary>Tests that materialize registrations with factory that throws propagates exception.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -480,6 +500,60 @@ public class ArrayHelpersTests
         // Assert
         await Assert.That(becameEmpty).IsFalse();
         await Assert.That(entry.Count).IsEqualTo(0);
+    }
+
+    /// <summary>Tests that entry remove of a present value removes it and reports success.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Entry_Remove_PresentValue_RemovesItAndReportsTrue()
+    {
+        // Arrange
+        var entry = new ArrayHelpers.Entry<int>();
+        entry.Add(FirstValue);
+        entry.Add(SecondValue);
+
+        // Act
+        var removed = entry.Remove(FirstValue);
+
+        // Assert
+        await Assert.That(removed).IsTrue();
+        await Assert.That(entry.Count).IsEqualTo(1);
+        await Assert.That(entry.GetSnapshot()[0]).IsEqualTo(SecondValue);
+    }
+
+    /// <summary>Tests that entry remove of an absent value reports failure and leaves the entry unchanged.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Entry_Remove_AbsentValue_ReturnsFalse()
+    {
+        // Arrange
+        var entry = new ArrayHelpers.Entry<int>();
+        entry.Add(FirstValue);
+
+        // Act
+        var removed = entry.Remove(SecondValue);
+
+        // Assert
+        await Assert.That(removed).IsFalse();
+        await Assert.That(entry.Count).IsEqualTo(1);
+    }
+
+    /// <summary>Tests that entry remove of the final value publishes an empty snapshot.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Entry_Remove_LastValue_PublishesEmptySnapshot()
+    {
+        // Arrange
+        var entry = new ArrayHelpers.Entry<int>();
+        entry.Add(SampleValue);
+
+        // Act
+        var removed = entry.Remove(SampleValue);
+
+        // Assert
+        await Assert.That(removed).IsTrue();
+        await Assert.That(entry.HasItems).IsFalse();
+        await Assert.That(entry.GetSnapshot().Length).IsEqualTo(0);
     }
 
     /// <summary>Tests that entry clear removes all items.</summary>
