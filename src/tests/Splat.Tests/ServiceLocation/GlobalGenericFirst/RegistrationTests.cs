@@ -7,6 +7,9 @@ namespace Splat.Tests.ServiceLocation.GenericFirst;
 /// <summary>Tests for the Registration&lt;T&gt; struct.</summary>
 public class RegistrationTests
 {
+    /// <summary>A sample value used across the mode-conversion tests.</summary>
+    private const string SampleValue = "value";
+
     /// <summary>Tests that from instance creates instance registration.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -29,7 +32,7 @@ public class RegistrationTests
     public async Task FromFactory_CreatesFactoryRegistration()
     {
         // Arrange
-        Func<string?> factory = () => "test";
+        Func<string?> factory = static () => "test";
 
         // Act
         var registration = Registration<string>.FromFactory(factory);
@@ -62,7 +65,7 @@ public class RegistrationTests
     {
         // Arrange
         const string expectedValue = "factory result";
-        Func<string?> factory = () => expectedValue;
+        Func<string?> factory = static () => expectedValue;
         var registration = Registration<string>.FromFactory(factory);
 
         // Act
@@ -93,7 +96,7 @@ public class RegistrationTests
     public async Task FactoryRegistration_ThatReturnsNull_WorksCorrectly()
     {
         // Arrange
-        Func<string?> factory = () => null;
+        Func<string?> factory = static () => null;
         var registration = Registration<string?>.FromFactory(factory);
 
         // Assert factory mode is set
@@ -129,8 +132,8 @@ public class RegistrationTests
     public async Task FactoryRegistration_WithDifferentFactories_AreNotEqual()
     {
         // Arrange
-        Func<string?> factory1 = () => "test1";
-        Func<string?> factory2 = () => "test2";
+        Func<string?> factory1 = static () => "test1";
+        Func<string?> factory2 = static () => "test2";
         var reg1 = Registration<string>.FromFactory(factory1);
         var reg2 = Registration<string>.FromFactory(factory2);
 
@@ -165,7 +168,7 @@ public class RegistrationTests
     {
         // Arrange
         const int expectedValue = 100;
-        Func<TestClass?> factory = () => new() { Value = expectedValue, Name = "Factory" };
+        Func<TestClass?> factory = static () => new() { Value = expectedValue, Name = "Factory" };
         var registration = Registration<TestClass>.FromFactory(factory);
 
         // Act
@@ -177,6 +180,74 @@ public class RegistrationTests
         await Assert.That(result).IsNotNull();
         await Assert.That(result!.Value).IsEqualTo(expectedValue);
         await Assert.That(result.Name).IsEqualTo("Factory");
+    }
+
+    /// <summary>Tests that <see cref="Registration{T}.GetInstance"/> returns default when the registration is a factory.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetInstance_OnFactoryRegistration_ReturnsDefault()
+    {
+        // Arrange
+        var registration = Registration<string?>.FromFactory(static () => SampleValue);
+
+        // Act
+        var result = registration.GetInstance();
+
+        // Assert - factory-mode registrations do not carry an instance.
+        await Assert.That(result).IsNull();
+    }
+
+    /// <summary>Tests that <see cref="Registration{T}.GetFactory"/> returns null when the registration is an instance.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetFactory_OnInstanceRegistration_ReturnsNull()
+    {
+        // Arrange
+        var registration = Registration<string>.FromInstance(SampleValue);
+
+        // Act
+        var result = registration.GetFactory();
+
+        // Assert - instance-mode registrations do not carry a factory.
+        await Assert.That(result is null).IsTrue();
+    }
+
+    /// <summary>Tests that <see cref="Registration{T}.TryGetInstance"/> succeeds for an instance registration.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task TryGetInstance_OnInstanceRegistration_ReturnsTrueWithInstance()
+    {
+        // Arrange
+        var registration = Registration<string>.FromInstance(SampleValue);
+
+        // Act
+        var success = registration.TryGetInstance(out var result);
+
+        // Assert
+        using (Assert.Multiple())
+        {
+            await Assert.That(success).IsTrue();
+            await Assert.That(result).IsEqualTo(SampleValue);
+        }
+    }
+
+    /// <summary>Tests that <see cref="Registration{T}.TryGetInstance"/> fails for a factory registration.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task TryGetInstance_OnFactoryRegistration_ReturnsFalse()
+    {
+        // Arrange
+        var registration = Registration<string?>.FromFactory(static () => SampleValue);
+
+        // Act
+        var success = registration.TryGetInstance(out var result);
+
+        // Assert
+        using (Assert.Multiple())
+        {
+            await Assert.That(success).IsFalse();
+            await Assert.That(result is null).IsTrue();
+        }
     }
 
     /// <summary>A simple reference type used for testing registrations.</summary>

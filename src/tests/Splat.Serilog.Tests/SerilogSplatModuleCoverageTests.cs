@@ -75,7 +75,7 @@ public class SerilogSplatModuleCoverageTests
     [Test]
     public async Task UseSerilogFullLogger_Default_Registers_LogManager()
     {
-        var resolver = new ModernDependencyResolver();
+        using var resolver = new ModernDependencyResolver();
 
         resolver.UseSerilogFullLogger();
 
@@ -87,7 +87,7 @@ public class SerilogSplatModuleCoverageTests
     [Test]
     public async Task UseSerilogFullLogger_With_Logger_Registers_LogManager()
     {
-        var resolver = new ModernDependencyResolver();
+        using var resolver = new ModernDependencyResolver();
         global::Serilog.ILogger logger = new LoggerConfiguration().CreateLogger();
 
         resolver.UseSerilogFullLogger(logger);
@@ -102,7 +102,7 @@ public class SerilogSplatModuleCoverageTests
     {
         const IMutableDependencyResolver resolver = null!;
 
-        await Assert.That(() => resolver.UseSerilogFullLogger()).Throws<ArgumentNullException>();
+        await Assert.That(static () => resolver.UseSerilogFullLogger()).Throws<ArgumentNullException>();
     }
 
     /// <summary>Tests that the explicit-logger extension method throws when the resolver is null.</summary>

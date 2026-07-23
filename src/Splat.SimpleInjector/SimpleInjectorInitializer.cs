@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -16,9 +16,13 @@ namespace Splat.SimpleInjector;
 /// in-memory dependency resolution is required without advanced features such as scopes or contract-based
 /// resolution.</remarks>
 [SuppressMessage(
-    "Minor Code Smell",
-    "S4018:All type parameters should be used in the parameter list to enable type inference",
-    Justification = "Generic parameter is the caller-supplied service/implementation type for these IDependencyResolver APIs and cannot become a method parameter without changing the contract.")]
+    "StyleSharp",
+    "SST2307:A generic method's type parameter appears in no parameter, so no caller can infer it",
+    Justification = "Generic service-location API; the service type is supplied explicitly by callers, so type inference cannot apply by design.")]
+[SuppressMessage(
+    "StyleSharp",
+    "SST1452:A generic type parameter is used only as a marker",
+    Justification = "Generic marker API; the type parameter identifies the service and is applied via typeof(T) in the implementation.")]
 public class SimpleInjectorInitializer : IDependencyResolver
 {
     /// <summary>Serializes access to the registered-factory collection.</summary>
@@ -75,7 +79,7 @@ public class SimpleInjectorInitializer : IDependencyResolver
         lock (_lockObject)
         {
             return RegisteredFactories[serviceType]
-                .Select(n => n()!);
+                .Select(static n => n()!);
         }
     }
 
@@ -90,12 +94,7 @@ public class SimpleInjectorInitializer : IDependencyResolver
     {
         lock (_lockObject)
         {
-            if (!RegisteredFactories.TryGetValue(typeof(T), out var factories))
-            {
-                return [];
-            }
-
-            return factories.Select(factory => (T)factory()!);
+            return !RegisteredFactories.TryGetValue(typeof(T), out var factories) ? [] : factories.Select(static factory => (T)factory()!);
         }
     }
 
@@ -147,11 +146,16 @@ public class SimpleInjectorInitializer : IDependencyResolver
 
         lock (_lockObject)
         {
+#if NET6_0_OR_GREATER
+            ref var value = ref System.Runtime.InteropServices.CollectionsMarshal.GetValueRefOrAddDefault(RegisteredFactories, serviceType, out _);
+            value ??= [];
+#else
             if (!RegisteredFactories.TryGetValue(serviceType, out var value))
             {
                 value = [];
                 RegisteredFactories.Add(serviceType, value);
             }
+#endif
 
             value.Add(() =>
                 isNull
@@ -173,11 +177,16 @@ public class SimpleInjectorInitializer : IDependencyResolver
 
         lock (_lockObject)
         {
+#if NET6_0_OR_GREATER
+            ref var value = ref System.Runtime.InteropServices.CollectionsMarshal.GetValueRefOrAddDefault(RegisteredFactories, typeof(T), out _);
+            value ??= [];
+#else
             if (!RegisteredFactories.TryGetValue(typeof(T), out var value))
             {
                 value = [];
                 RegisteredFactories.Add(typeof(T), value);
             }
+#endif
 
             value.Add(() => factory());
         }
@@ -196,13 +205,18 @@ public class SimpleInjectorInitializer : IDependencyResolver
     {
         lock (_lockObject)
         {
+#if NET6_0_OR_GREATER
+            ref var value = ref System.Runtime.InteropServices.CollectionsMarshal.GetValueRefOrAddDefault(RegisteredFactories, typeof(TService), out _);
+            value ??= [];
+#else
             if (!RegisteredFactories.TryGetValue(typeof(TService), out var value))
             {
                 value = [];
                 RegisteredFactories.Add(typeof(TService), value);
             }
+#endif
 
-            value.Add(() => new TImplementation());
+            value.Add(static () => new TImplementation());
         }
     }
 
@@ -280,11 +294,16 @@ public class SimpleInjectorInitializer : IDependencyResolver
 
         lock (_lockObject)
         {
+#if NET6_0_OR_GREATER
+            ref var factories = ref System.Runtime.InteropServices.CollectionsMarshal.GetValueRefOrAddDefault(RegisteredFactories, typeof(T), out _);
+            factories ??= [];
+#else
             if (!RegisteredFactories.TryGetValue(typeof(T), out var factories))
             {
                 factories = [];
                 RegisteredFactories.Add(typeof(T), factories);
             }
+#endif
 
             factories.Add(() => value);
         }
@@ -307,11 +326,16 @@ public class SimpleInjectorInitializer : IDependencyResolver
 
         lock (_lockObject)
         {
+#if NET6_0_OR_GREATER
+            ref var factories = ref System.Runtime.InteropServices.CollectionsMarshal.GetValueRefOrAddDefault(RegisteredFactories, typeof(T), out _);
+            factories ??= [];
+#else
             if (!RegisteredFactories.TryGetValue(typeof(T), out var factories))
             {
                 factories = [];
                 RegisteredFactories.Add(typeof(T), factories);
             }
+#endif
 
             factories.Add(() => lazy.Value);
         }

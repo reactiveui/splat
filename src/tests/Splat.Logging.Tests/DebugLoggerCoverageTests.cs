@@ -35,9 +35,9 @@ public class DebugLoggerCoverageTests
         {
             logger.Write("info", LogLevel.Info);
             logger.Write("warn", LogLevel.Warn);
-            logger.Write(new Exception("ex"), "error", LogLevel.Error);
+            logger.Write(new("ex"), "error", LogLevel.Error);
             logger.Write("fatal", typeof(DebugLoggerCoverageTests), LogLevel.Fatal);
-            logger.Write(new Exception("ex"), "fatal", typeof(DebugLoggerCoverageTests), LogLevel.Fatal);
+            logger.Write(new("ex"), "fatal", typeof(DebugLoggerCoverageTests), LogLevel.Fatal);
         }).ThrowsNothing();
     }
 
@@ -51,9 +51,9 @@ public class DebugLoggerCoverageTests
         await Assert.That(() =>
         {
             logger.Write(DebugMessage, LogLevel.Debug);
-            logger.Write(new Exception("ex"), DebugMessage, LogLevel.Debug);
+            logger.Write(new("ex"), DebugMessage, LogLevel.Debug);
             logger.Write(DebugMessage, typeof(DebugLoggerCoverageTests), LogLevel.Info);
-            logger.Write(new Exception("ex"), DebugMessage, typeof(DebugLoggerCoverageTests), LogLevel.Warn);
+            logger.Write(new("ex"), DebugMessage, typeof(DebugLoggerCoverageTests), LogLevel.Warn);
         }).ThrowsNothing();
     }
 
@@ -69,9 +69,9 @@ public class DebugLoggerCoverageTests
             foreach (var level in new[] { LogLevel.Debug, LogLevel.Info, LogLevel.Warn, LogLevel.Error, LogLevel.Fatal })
             {
                 logger.Write(SampleMessage, level);
-                logger.Write(new Exception("ex"), SampleMessage, level);
+                logger.Write(new("ex"), SampleMessage, level);
                 logger.Write(SampleMessage, typeof(DebugLoggerCoverageTests), level);
-                logger.Write(new Exception("ex"), SampleMessage, typeof(DebugLoggerCoverageTests), level);
+                logger.Write(new("ex"), SampleMessage, typeof(DebugLoggerCoverageTests), level);
             }
         }).ThrowsNothing();
     }

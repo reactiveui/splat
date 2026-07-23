@@ -16,9 +16,13 @@ namespace Splat;
 /// concrete implementations and to facilitate dependency injection patterns. Thread safety and lifetime management
 /// depend on the specific implementation of the interface.</remarks>
 [SuppressMessage(
-    "Minor Code Smell",
-    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    "StyleSharp",
+    "SST2307:A generic method's type parameter appears in no parameter, so no caller can infer it",
     Justification = "Generic service-location API; the service type is supplied explicitly by callers, so type inference cannot apply by design.")]
+[SuppressMessage(
+    "StyleSharp",
+    "SST1452:A generic type parameter is used only as a marker",
+    Justification = "Generic marker API such as HasService<T>() and Register<T>(); the type parameter identifies the service and is applied via typeof(T) in the implementation.")]
 public interface IServiceLocator
 {
     /// <summary>Gets an instance of the specified service type.</summary>

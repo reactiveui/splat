@@ -18,7 +18,7 @@ public sealed class MutableDependencyResolverExtensionsCoverageTests
     [Test]
     public async Task UseExceptionlessWithWrappingFullLogger_Should_Register_LogManager()
     {
-        var resolver = new ModernDependencyResolver();
+        using var resolver = new ModernDependencyResolver();
         var client = CreateClient();
 
         resolver.UseExceptionlessWithWrappingFullLogger(client);
@@ -32,7 +32,7 @@ public sealed class MutableDependencyResolverExtensionsCoverageTests
     [Test]
     public async Task UseExceptionlessWithWrappingFullLogger_Registered_LogManager_Should_Provide_Logger()
     {
-        var resolver = new ModernDependencyResolver();
+        using var resolver = new ModernDependencyResolver();
         var client = CreateClient();
 
         resolver.UseExceptionlessWithWrappingFullLogger(client);
@@ -48,7 +48,7 @@ public sealed class MutableDependencyResolverExtensionsCoverageTests
     {
         var client = new ExceptionlessClient();
         client.Configuration.ApiKey = "someapikey";
-        client.Configuration.AddPlugin("cancel", context => context.Cancel = true);
+        client.Configuration.AddPlugin("cancel", static context => context.Cancel = true);
         return client;
     }
 }

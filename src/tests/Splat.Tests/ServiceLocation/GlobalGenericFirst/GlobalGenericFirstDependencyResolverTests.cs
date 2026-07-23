@@ -14,18 +14,391 @@ namespace Splat.Tests.ServiceLocation;
 [InheritsTests]
 public sealed class GlobalGenericFirstDependencyResolverTests : BaseDependencyResolverTests<GlobalGenericFirstDependencyResolver>
 {
+    /// <summary>The contract used when probing for a service that was never registered under that contract.</summary>
+    private const string MissingContract = "missing";
+
+    /// <summary>The value produced by a <see cref="NullServiceType"/>-wrapped registration once unwrapped.</summary>
+    private const string WrappedValue = "wrapped";
+
+    /// <summary>A plain, non-wrapped service value.</summary>
+    private const string PlainValue = "plain";
+
+    /// <summary>The number of services expected from a mixed wrapped/plain non-generic registration.</summary>
+    private const int MixedServiceCount = 2;
+
+    /// <summary>The number of times the change callback is expected to fire for a single registration.</summary>
+    private const int ExpectedCallbackInvocations = 1;
+
+    /// <summary>The contract used by the registered-then-resolved tests.</summary>
+    private const string Contract = "contract";
+
+    /// <summary>A non-generic value that is not assignable to the generic service type under test.</summary>
+    private const string NonCastableValue = "not a view model";
+
+    /// <summary>The number of services expected from a single registration.</summary>
+    private const int SingleService = 1;
+
+    /// <summary>The number of non-generic registrations made before subscribing a callback.</summary>
+    private const int NonGenericExistingCount = 2;
+
     /// <summary>Teardown method to clear static generic containers after each test. Ensures no state leaks between test runs.</summary>
     [After(Test)]
     public void ClearStaticContainers() => GlobalGenericFirstDependencyResolver.Clear();
+
+    /// <summary>Verifies a contract-scoped generic resolve returns default when the process has no registrations at all.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_GenericWithContract_WhenNeverRegistered_ReturnsDefault()
+    {
+        GlobalGenericFirstDependencyResolver.Clear();
+        using var resolver = new GlobalGenericFirstDependencyResolver();
+
+        await Assert.That(resolver.GetService<IViewModelOne>(Contract)).IsNull();
+    }
+
+    /// <summary>Verifies a non-generic resolve returns null when the process has no registrations at all.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_NonGeneric_WhenNeverRegistered_ReturnsNull()
+    {
+        GlobalGenericFirstDependencyResolver.Clear();
+        using var resolver = new GlobalGenericFirstDependencyResolver();
+
+        await Assert.That(resolver.GetService(typeof(IViewModelOne))).IsNull();
+    }
+
+    /// <summary>Verifies a non-generic multi-resolve returns empty when the process has no registrations at all.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetServices_NonGeneric_WhenNeverRegistered_ReturnsEmpty()
+    {
+        GlobalGenericFirstDependencyResolver.Clear();
+        using var resolver = new GlobalGenericFirstDependencyResolver();
+
+        await Assert.That(resolver.GetServices(typeof(IViewModelOne))).IsEmpty();
+    }
+
+    /// <summary>Verifies non-generic multi-resolve with a contract returns the registered services.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetServices_NonGeneric_WithContract_ReturnsRegisteredServices()
+    {
+        using var resolver = new GlobalGenericFirstDependencyResolver();
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne), Contract);
+
+        var services = resolver.GetServices(typeof(ViewModelOne), Contract).ToList();
+
+        await Assert.That(services.Count).IsEqualTo(SingleService);
+        GlobalGenericFirstDependencyResolver.Clear();
+    }
+
+    /// <summary>Verifies the service/implementation registration is resolvable through both the generic and non-generic APIs.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Register_ServiceAndImplementation_ResolvableViaGenericAndNonGeneric()
+    {
+        using var resolver = new GlobalGenericFirstDependencyResolver();
+        resolver.Register<IViewModelOne, ViewModelOne>();
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(resolver.GetService<IViewModelOne>()).IsNotNull();
+            await Assert.That(resolver.GetService(typeof(IViewModelOne))).IsNotNull();
+        }
+
+        GlobalGenericFirstDependencyResolver.Clear();
+    }
+
+    /// <summary>Verifies the contract-scoped service/implementation registration is resolvable through the non-generic API.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Register_ServiceAndImplementationWithContract_ResolvableViaNonGeneric()
+    {
+        using var resolver = new GlobalGenericFirstDependencyResolver();
+        resolver.Register<IViewModelOne, ViewModelOne>(Contract);
+
+        await Assert.That(resolver.GetService(typeof(IViewModelOne), Contract)).IsNotNull();
+        GlobalGenericFirstDependencyResolver.Clear();
+    }
+
+    /// <summary>Verifies a constant registration is resolvable through the non-generic API.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task RegisterConstant_ResolvableViaNonGeneric()
+    {
+        using var resolver = new GlobalGenericFirstDependencyResolver();
+        resolver.RegisterConstant(new ViewModelOne());
+
+        await Assert.That(resolver.GetService(typeof(ViewModelOne))).IsNotNull();
+        GlobalGenericFirstDependencyResolver.Clear();
+    }
+
+    /// <summary>Verifies a contract-scoped constant registration is resolvable through the non-generic API.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task RegisterConstantWithContract_ResolvableViaNonGeneric()
+    {
+        using var resolver = new GlobalGenericFirstDependencyResolver();
+        resolver.RegisterConstant(new ViewModelOne(), Contract);
+
+        await Assert.That(resolver.GetService(typeof(ViewModelOne), Contract)).IsNotNull();
+        GlobalGenericFirstDependencyResolver.Clear();
+    }
+
+    /// <summary>Verifies a non-generic resolve of a lazy singleton whose factory disposes the resolver disposes the value and throws.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_NonGeneric_WhenLazyFactoryDisposesResolver_DisposesValueAndThrows()
+    {
+        GlobalGenericFirstDependencyResolver.Clear();
+        var resolver = new GlobalGenericFirstDependencyResolver();
+        var service = new DisposableTestService();
+
+        resolver.RegisterLazySingleton(() =>
+        {
+            resolver.Dispose();
+            return service;
+        });
+
+        await Assert.That(() => resolver.GetService(typeof(DisposableTestService)))
+            .Throws<ObjectDisposedException>();
+        await Assert.That(service.IsDisposed).IsTrue();
+
+        GlobalGenericFirstDependencyResolver.Clear();
+    }
+
+    /// <summary>Verifies a contract-scoped generic resolve of a lazy singleton whose factory disposes the resolver disposes the value and throws.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_GenericWithContract_WhenLazyFactoryDisposesResolver_DisposesValueAndThrows()
+    {
+        GlobalGenericFirstDependencyResolver.Clear();
+        var resolver = new GlobalGenericFirstDependencyResolver();
+        var service = new DisposableTestService();
+
+        resolver.RegisterLazySingleton(
+            () =>
+            {
+                resolver.Dispose();
+                return service;
+            },
+            Contract);
+
+        await Assert.That(() => resolver.GetService<DisposableTestService>(Contract))
+            .Throws<ObjectDisposedException>();
+        await Assert.That(service.IsDisposed).IsTrue();
+
+        GlobalGenericFirstDependencyResolver.Clear();
+    }
+
+    /// <summary>Verifies a contract-scoped non-generic resolve of a lazy singleton whose factory disposes the resolver disposes the value and throws.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_NonGenericWithContract_WhenLazyFactoryDisposesResolver_DisposesValueAndThrows()
+    {
+        GlobalGenericFirstDependencyResolver.Clear();
+        var resolver = new GlobalGenericFirstDependencyResolver();
+        var service = new DisposableTestService();
+
+        resolver.RegisterLazySingleton(
+            () =>
+            {
+                resolver.Dispose();
+                return service;
+            },
+            Contract);
+
+        await Assert.That(() => resolver.GetService(typeof(DisposableTestService), Contract))
+            .Throws<ObjectDisposedException>();
+        await Assert.That(service.IsDisposed).IsTrue();
+
+        GlobalGenericFirstDependencyResolver.Clear();
+    }
+
+    /// <summary>Verifies non-generic multi-resolve returns empty when every registered factory yields null.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetServices_NonGeneric_WhenAllFactoriesReturnNull_ReturnsEmpty()
+    {
+        using var resolver = new GlobalGenericFirstDependencyResolver();
+        resolver.Register(static () => (object?)null, typeof(ViewModelOne));
+
+        await Assert.That(resolver.GetServices(typeof(ViewModelOne))).IsEmpty();
+        GlobalGenericFirstDependencyResolver.Clear();
+    }
+
+    /// <summary>Verifies a generic resolve falls back to a non-generic registration for the same type.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_Generic_FallsBackToNonGenericRegistration()
+    {
+        using var resolver = new GlobalGenericFirstDependencyResolver();
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
+
+        // No generic registration exists, so resolution falls back through the non-generic registry.
+        await Assert.That(resolver.GetService<ViewModelOne>()).IsNotNull();
+        GlobalGenericFirstDependencyResolver.Clear();
+    }
+
+    /// <summary>Verifies a generic multi-resolve returns empty when the only fallback registration yields null.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetServices_Generic_WhenFallbackYieldsNull_ReturnsEmpty()
+    {
+        using var resolver = new GlobalGenericFirstDependencyResolver();
+        resolver.Register(static () => (object?)null, typeof(ViewModelOne));
+
+        await Assert.That(resolver.GetServices<ViewModelOne>()).IsEmpty();
+        GlobalGenericFirstDependencyResolver.Clear();
+    }
+
+    /// <summary>Verifies a generic multi-resolve ignores fallback registrations that are not assignable to the service type.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetServices_Generic_IgnoresNonCastableFallbackRegistrations()
+    {
+        using var resolver = new GlobalGenericFirstDependencyResolver();
+        resolver.Register(static () => (object?)NonCastableValue, typeof(ViewModelOne));
+
+        await Assert.That(resolver.GetServices<ViewModelOne>()).IsEmpty();
+        GlobalGenericFirstDependencyResolver.Clear();
+    }
+
+    /// <summary>Verifies non-generic ServiceRegistrationCallback fires once for each existing registration.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task ServiceRegistrationCallback_NonGeneric_WithExistingRegistrations_InvokesImmediately()
+    {
+        using var resolver = new GlobalGenericFirstDependencyResolver();
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
+
+        var callbackCount = 0;
+        using var subscription = resolver.ServiceRegistrationCallback(typeof(ViewModelOne), _ => callbackCount++);
+
+        await Assert.That(callbackCount).IsEqualTo(NonGenericExistingCount);
+        GlobalGenericFirstDependencyResolver.Clear();
+    }
+
+    /// <summary>
+    /// Verifies that a generic resolve for a type with no generic or non-generic registration returns the default
+    /// value, even when unrelated registrations exist (so the never-registered fast path is not taken).
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_Generic_WhenOnlyUnrelatedTypeRegistered_ReturnsDefault()
+    {
+        using var resolver = new GlobalGenericFirstDependencyResolver();
+
+        // A non-generic registration for a different type marks the process as registered, so the generic
+        // GetService evaluates its no-non-generic-registration branch for the unregistered type.
+        resolver.Register(static () => new ViewModelTwo(), typeof(ViewModelTwo));
+
+        var result = resolver.GetService<IViewModelOne>();
+
+        await Assert.That(result).IsNull();
+        GlobalGenericFirstDependencyResolver.Clear();
+    }
+
+    /// <summary>
+    /// Verifies that a contract-scoped generic resolve for a type with no matching registration returns the
+    /// default value, even when unrelated registrations exist.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_GenericWithContract_WhenNoContractRegistration_ReturnsDefault()
+    {
+        using var resolver = new GlobalGenericFirstDependencyResolver();
+        resolver.Register(static () => new ViewModelTwo(), typeof(ViewModelTwo));
+
+        var result = resolver.GetService<IViewModelOne>(MissingContract);
+
+        await Assert.That(result).IsNull();
+        GlobalGenericFirstDependencyResolver.Clear();
+    }
+
+    /// <summary>Verifies that resolving all non-generic services unwraps <see cref="NullServiceType"/> markers in the registry results.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetServices_NonGeneric_UnwrapsNullServiceTypeMarkers()
+    {
+        using var resolver = new GlobalGenericFirstDependencyResolver();
+        resolver.Register(static () => (object?)new NullServiceType(static () => WrappedValue), typeof(object));
+        resolver.Register(static () => (object?)PlainValue, typeof(object));
+
+        var services = resolver.GetServices(typeof(object)).ToList();
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(services.Count).IsEqualTo(MixedServiceCount);
+            await Assert.That(services).Contains(WrappedValue);
+            await Assert.That(services).Contains(PlainValue);
+        }
+
+        GlobalGenericFirstDependencyResolver.Clear();
+    }
+
+    /// <summary>Verifies that an exception thrown by a registration-change callback during registration is suppressed.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Register_WhenRegistrationCallbackThrows_DoesNotPropagate()
+    {
+        using var resolver = new GlobalGenericFirstDependencyResolver();
+
+        var invocations = 0;
+
+        // Subscribe before any registration exists so the callback is not invoked during subscription.
+        using var subscription = resolver.ServiceRegistrationCallback<IViewModelOne>(_ =>
+        {
+            invocations++;
+            throw new InvalidOperationException("callback failure");
+        });
+
+        // The throwing callback fires during the registration notification; the exception must be suppressed.
+        await Assert.That(() =>
+        {
+            resolver.Register<IViewModelOne>(static () => new ViewModelOne());
+            return Task.CompletedTask;
+        }).ThrowsNothing();
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(invocations).IsEqualTo(ExpectedCallbackInvocations);
+            await Assert.That(resolver.HasRegistration<IViewModelOne>()).IsTrue();
+        }
+
+        GlobalGenericFirstDependencyResolver.Clear();
+    }
+
+    /// <summary>Verifies that an exception thrown while disposing a created lazy singleton is suppressed on disposal.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Dispose_WhenLazySingletonDisposalThrows_DoesNotPropagate()
+    {
+        var resolver = new GlobalGenericFirstDependencyResolver();
+        resolver.RegisterLazySingleton(static () => new ThrowingDisposableService());
+
+        // Force creation so the lazy value exists and is disposed during teardown.
+        var service = resolver.GetService<ThrowingDisposableService>();
+        await Assert.That(service).IsNotNull();
+
+        await Assert.That(() =>
+        {
+            resolver.Dispose();
+            return Task.CompletedTask;
+        }).ThrowsNothing();
+
+        GlobalGenericFirstDependencyResolver.Clear();
+    }
 
     /// <summary>Test constructor with configure parameter registers services.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Constructor_WithConfigure_RegistersServices()
     {
-        var resolver = new GlobalGenericFirstDependencyResolver(r =>
+        using var resolver = new GlobalGenericFirstDependencyResolver(static r =>
         {
-            r.Register<IViewModelOne>(() => new ViewModelOne());
+            r.Register<IViewModelOne>(static () => new ViewModelOne());
             r.RegisterConstant(new ViewModelOne());
         });
 
@@ -42,7 +415,7 @@ public sealed class GlobalGenericFirstDependencyResolverTests : BaseDependencyRe
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Constructor_WithNullConfigure_DoesNotThrow() =>
-        await Assert.That(() =>
+        await Assert.That(static () =>
         {
             _ = new GlobalGenericFirstDependencyResolver(null);
             return Task.CompletedTask;
@@ -53,9 +426,9 @@ public sealed class GlobalGenericFirstDependencyResolverTests : BaseDependencyRe
     [Test]
     public async Task Clear_RemovesAllRegistrations()
     {
-        var resolver = new GlobalGenericFirstDependencyResolver();
-        resolver.Register<IViewModelOne>(() => new ViewModelOne());
-        resolver.Register(() => new ViewModelOne());
+        using var resolver = new GlobalGenericFirstDependencyResolver();
+        resolver.Register<IViewModelOne>(static () => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
 
         await Assert.That(resolver.HasRegistration<IViewModelOne>()).IsTrue();
         await Assert.That(resolver.HasRegistration<ViewModelOne>()).IsTrue();
@@ -72,13 +445,13 @@ public sealed class GlobalGenericFirstDependencyResolverTests : BaseDependencyRe
     public async Task Dispose_DisposesResolver()
     {
         var resolver = new GlobalGenericFirstDependencyResolver();
-        resolver.Register(() => new ViewModelOne());
+        resolver.Register(static () => new ViewModelOne());
 
         resolver.Dispose();
 
         await Assert.That(() =>
         {
-            resolver.Register(() => new ViewModelOne());
+            resolver.Register(static () => new ViewModelOne());
             return Task.CompletedTask;
         }).Throws<ObjectDisposedException>();
     }
@@ -93,19 +466,19 @@ public sealed class GlobalGenericFirstDependencyResolverTests : BaseDependencyRe
 
         await Assert.That(() =>
         {
-            resolver.Register(() => new ViewModelOne());
+            resolver.Register(static () => new ViewModelOne());
             return Task.CompletedTask;
         }).Throws<ObjectDisposedException>();
 
         await Assert.That(() =>
         {
-            resolver.Register(() => new ViewModelOne(), "contract");
+            resolver.Register(static () => new ViewModelOne(), "contract");
             return Task.CompletedTask;
         }).Throws<ObjectDisposedException>();
 
         await Assert.That(() =>
         {
-            resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
+            resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
             return Task.CompletedTask;
         }).Throws<ObjectDisposedException>();
 

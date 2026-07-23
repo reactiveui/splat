@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -22,34 +22,31 @@ internal static class AssemblyFinder
     /// <returns>An instance of type T if the type is found and instantiated successfully; otherwise, null.</returns>
     [RequiresUnreferencedCode("This method uses reflection to dynamically load types and cannot be made AOT-compatible.")]
     [SuppressMessage(
-        "Minor Code Smell",
-        "S4018:All type parameters should be used in the parameter list to enable type inference",
+        "StyleSharp",
+        "SST2307:A generic method's type parameter appears in no parameter, so no caller can infer it",
         Justification = "T is the caller-supplied target type to instantiate; it is identified by its fully qualified name string, not a value of type T, so it cannot appear in the parameter list.")]
-    public static T? AttemptToLoadType<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(string fullTypeName)
+    internal static T? AttemptToLoadType<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(string fullTypeName)
     {
         var thisType = typeof(AssemblyFinder);
 
-        var thisTypeName = thisType.AssemblyQualifiedName;
-
-        if (thisTypeName is null)
-        {
-            return default;
-        }
+        // AssemblyQualifiedName is null only for a generic type parameter; AssemblyFinder is a concrete
+        // non-generic type, so it is always populated here.
+        var thisTypeName = thisType.AssemblyQualifiedName!;
 
         AssemblyName[] toSearch =
         [
 #if NET6_0_OR_GREATER
-            new(thisTypeName.Replace(thisType.FullName + ", ", string.Empty, StringComparison.CurrentCulture)),
-            new(thisTypeName.Replace(thisType.FullName + ", ", string.Empty, StringComparison.CurrentCulture).Replace(".Portable", string.Empty, StringComparison.CurrentCulture)),
+            new(thisTypeName.Replace($"{thisType.FullName}, ", string.Empty, StringComparison.CurrentCulture)),
+            new(thisTypeName.Replace($"{thisType.FullName}, ", string.Empty, StringComparison.CurrentCulture).Replace(".Portable", string.Empty, StringComparison.CurrentCulture)),
 #else
-            new(thisTypeName.Replace(thisType.FullName + ", ", string.Empty)),
-            new(thisTypeName.Replace(thisType.FullName + ", ", string.Empty).Replace(".Portable", string.Empty)),
+            new(thisTypeName.Replace($"{thisType.FullName}, ", string.Empty)),
+            new(thisTypeName.Replace($"{thisType.FullName}, ", string.Empty).Replace(".Portable", string.Empty)),
 #endif
         ];
 
         foreach (var assembly in toSearch)
         {
-            string fullName = fullTypeName + ", " + assembly.FullName;
+            string fullName = $"{fullTypeName}, {assembly.FullName}";
 
             var type = Type.GetType(fullName, false);
             if (type is null)

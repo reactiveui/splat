@@ -17,7 +17,7 @@ public class MicrosoftExtensionsLoggingExtensionsCoverageTests
     [Test]
     public async Task UseMicrosoftExtensionsLoggingWithWrappingFullLogger_RegistersLogManager()
     {
-        var resolver = new ModernDependencyResolver();
+        using var resolver = new ModernDependencyResolver();
 
         resolver.UseMicrosoftExtensionsLoggingWithWrappingFullLogger(NullLoggerFactory.Instance);
 
@@ -29,7 +29,7 @@ public class MicrosoftExtensionsLoggingExtensionsCoverageTests
     [Test]
     public async Task UseMicrosoftExtensionsLoggingWithWrappingFullLogger_ResolvesFullLogger()
     {
-        var resolver = new ModernDependencyResolver();
+        using var resolver = new ModernDependencyResolver();
 
         resolver.UseMicrosoftExtensionsLoggingWithWrappingFullLogger(NullLoggerFactory.Instance);
 
@@ -47,7 +47,7 @@ public class MicrosoftExtensionsLoggingExtensionsCoverageTests
     {
         const IMutableDependencyResolver resolver = null!;
 
-        await Assert.That(() => resolver.UseMicrosoftExtensionsLoggingWithWrappingFullLogger(NullLoggerFactory.Instance)).Throws<ArgumentNullException>();
+        await Assert.That(static () => resolver.UseMicrosoftExtensionsLoggingWithWrappingFullLogger(NullLoggerFactory.Instance)).Throws<ArgumentNullException>();
     }
 
     /// <summary>Verifies the logging builder extension registers a Splat logger provider.</summary>
@@ -58,7 +58,7 @@ public class MicrosoftExtensionsLoggingExtensionsCoverageTests
         var registeredSplatProvider = false;
         using var loggerFactory = LoggerFactory.Create(builder =>
         {
-            builder.AddSplat();
+            _ = builder.AddSplat();
             registeredSplatProvider = builder.Services.Any(static descriptor =>
                 descriptor.ServiceType == typeof(ILoggerProvider) &&
                 descriptor.ImplementationType == typeof(MicrosoftExtensionsLogProvider));
@@ -85,7 +85,7 @@ public class MicrosoftExtensionsLoggingExtensionsCoverageTests
     {
         const ILoggingBuilder builder = null!;
 
-        await Assert.That(() => builder.AddSplat()).Throws<ArgumentNullException>();
+        await Assert.That(static () => builder.AddSplat()).Throws<ArgumentNullException>();
     }
 
     /// <summary>Verifies the logger factory extension returns the same factory for chaining.</summary>
@@ -107,6 +107,6 @@ public class MicrosoftExtensionsLoggingExtensionsCoverageTests
     {
         const ILoggerFactory loggerFactory = null!;
 
-        await Assert.That(() => loggerFactory.AddSplat()).Throws<ArgumentNullException>();
+        await Assert.That(static () => loggerFactory.AddSplat()).Throws<ArgumentNullException>();
     }
 }

@@ -27,6 +27,15 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     /// <summary>Zero-based index of the third item.</summary>
     private const int ThirdIndex = 2;
 
+    /// <summary>The value produced by a <see cref="NullServiceType"/>-wrapped registration once unwrapped.</summary>
+    private const string UnwrappedValue = "unwrapped";
+
+    /// <summary>A plain, non-wrapped service value.</summary>
+    private const string PlainValue = "plain";
+
+    /// <summary>The number of services yielded by the mixed wrapped/plain sequence.</summary>
+    private const int MixedServiceCount = 2;
+
     /// <summary>Marker interface used by the tests.</summary>
     private interface ITestInterface;
 
@@ -36,7 +45,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     public async Task Constructor_ShouldAcceptMinimalParameters()
     {
         // Arrange & Act
-        var resolver = new FuncDependencyResolver((_, _) => []);
+        var resolver = new FuncDependencyResolver(static (_, _) => []);
 
         // Assert
         await Assert.That(resolver).IsNotNull();
@@ -52,10 +61,10 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
 
         // Act
         var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => [],
-            register: (_, _, _) => { },
-            unregisterCurrent: (_, _) => { },
-            unregisterAll: (_, _) => { },
+            getAllServices: static (_, _) => [],
+            register: static (_, _, _) => { },
+            unregisterCurrent: static (_, _) => { },
+            unregisterAll: static (_, _) => { },
             toDispose: disposable);
 
         // Assert
@@ -73,7 +82,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     {
         // Arrange
         var services = new List<object> { First, Second, Third };
-        var resolver = new FuncDependencyResolver((_, _) => services);
+        using var resolver = new FuncDependencyResolver((_, _) => services);
 
         // Act
         var result = resolver.GetService<object>();
@@ -88,7 +97,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     public async Task GetService_ShouldReturnNull_WhenNoServicesRegistered()
     {
         // Arrange
-        var resolver = new FuncDependencyResolver((_, _) => []);
+        using var resolver = new FuncDependencyResolver(static (_, _) => []);
 
         // Act
         var result = resolver.GetService<string>();
@@ -104,7 +113,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     {
         // Arrange
         var services = new List<object> { First, Second };
-        var resolver = new FuncDependencyResolver((_, contract) =>
+        using var resolver = new FuncDependencyResolver((_, contract) =>
             contract == "test" ? services : []);
 
         // Act
@@ -120,7 +129,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     public async Task GetServices_ShouldReturnEmptyList_WhenGetAllServicesReturnsNull()
     {
         // Arrange
-        var resolver = new FuncDependencyResolver((_, _) => null!);
+        using var resolver = new FuncDependencyResolver(static (_, _) => null!);
 
         // Act
         var result = resolver.GetServices<string>().ToList();
@@ -136,7 +145,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     {
         // Arrange
         var services = new List<object> { First, Second, Third };
-        var resolver = new FuncDependencyResolver((_, _) => services);
+        using var resolver = new FuncDependencyResolver((_, _) => services);
 
         // Act
         var result = resolver.GetServices<string>().ToList();
@@ -155,7 +164,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     {
         // Arrange
         string? capturedContract = null;
-        var resolver = new FuncDependencyResolver((_, contract) =>
+        using var resolver = new FuncDependencyResolver((_, contract) =>
         {
             capturedContract = contract;
             return [];
@@ -175,7 +184,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     {
         // Arrange
         Type? capturedType = null;
-        var resolver = new FuncDependencyResolver((type, _) =>
+        using var resolver = new FuncDependencyResolver((type, _) =>
         {
             capturedType = type;
             return [];
@@ -194,7 +203,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     public async Task HasRegistration_ShouldReturnTrue_WhenGetAllServicesReturnsNonNull()
     {
         // Arrange
-        var resolver = new FuncDependencyResolver((_, _) => []);
+        using var resolver = new FuncDependencyResolver(static (_, _) => []);
 
         // Act
         var result = resolver.HasRegistration<string>();
@@ -209,7 +218,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     public async Task HasRegistration_ShouldReturnFalse_WhenGetAllServicesReturnsNull()
     {
         // Arrange
-        var resolver = new FuncDependencyResolver((_, _) => null!);
+        using var resolver = new FuncDependencyResolver(static (_, _) => null!);
 
         // Act
         var result = resolver.HasRegistration<string>();
@@ -225,7 +234,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     {
         // Arrange
         string? capturedContract = null;
-        var resolver = new FuncDependencyResolver((_, contract) =>
+        using var resolver = new FuncDependencyResolver((_, contract) =>
         {
             capturedContract = contract;
             return [];
@@ -244,10 +253,10 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     public async Task Register_ShouldThrowNotSupportedException_WhenRegisterDelegateIsNull()
     {
         // Arrange
-        var resolver = new FuncDependencyResolver((_, _) => []);
+        var resolver = new FuncDependencyResolver(static (_, _) => []);
 
         // Act & Assert
-        await Assert.That(() => resolver.Register(() => "test", typeof(string)))
+        await Assert.That(() => resolver.Register(static () => "test", typeof(string)))
             .Throws<NotSupportedException>()
             .WithMessageContaining("Register is not supported", StringComparison.Ordinal);
     }
@@ -262,8 +271,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         Type? capturedType = null;
         string? capturedContract = null;
 
-        var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => [],
+        using var resolver = new FuncDependencyResolver(
+            getAllServices: static (_, _) => [],
             register: (factory, type, contract) =>
             {
                 capturedFactory = factory;
@@ -272,7 +281,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
             });
 
         // Act
-        resolver.Register(() => "test", typeof(string));
+        resolver.Register(static () => "test", typeof(string));
 
         // Assert
         await Assert.That(capturedFactory).IsNotNull();
@@ -288,12 +297,12 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         // Arrange
         string? capturedContract = null;
 
-        var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => [],
+        using var resolver = new FuncDependencyResolver(
+            getAllServices: static (_, _) => [],
             register: (_, _, contract) => capturedContract = contract);
 
         // Act
-        resolver.Register(() => "test", typeof(string), MyContract);
+        resolver.Register(static () => "test", typeof(string), MyContract);
 
         // Assert
         await Assert.That(capturedContract).IsEqualTo(MyContract);
@@ -307,12 +316,12 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         // Arrange
         object? capturedValue = null;
 
-        var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => [],
+        using var resolver = new FuncDependencyResolver(
+            getAllServices: static (_, _) => [],
             register: (factory, _, _) => capturedValue = factory());
 
         // Act
-        resolver.Register(() => "test", serviceType: null);
+        resolver.Register(static () => "test", serviceType: null);
 
         // Assert
         await Assert.That(capturedValue).IsNotNull();
@@ -326,8 +335,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     {
         // Arrange
         var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => [],
-            register: (_, _, _) => { });
+            getAllServices: static (_, _) => [],
+            register: static (_, _, _) => { });
 
         // Act & Assert
         await Assert.That(() => resolver.Register<string>(null!))
@@ -342,8 +351,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         // Arrange
         object? capturedValue = null;
 
-        var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => [],
+        using var resolver = new FuncDependencyResolver(
+            getAllServices: static (_, _) => [],
             register: (factory, _, _) => capturedValue = factory());
 
         var testValue = new TestClass();
@@ -362,8 +371,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     {
         // Arrange
         var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => [],
-            register: (_, _, _) => { });
+            getAllServices: static (_, _) => [],
+            register: static (_, _, _) => { });
 
         // Act & Assert
         await Assert.That(() => resolver.RegisterLazySingleton<TestClass>(null!))
@@ -379,8 +388,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         var callCount = 0;
         Func<object?>? capturedFactory = null;
 
-        var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => null!, // Return null to avoid triggering factories during registration callbacks
+        using var resolver = new FuncDependencyResolver(
+            getAllServices: static (_, _) => null!, // Return null to avoid triggering factories during registration callbacks
             register: (factory, _, _) => capturedFactory = factory);
 
         // Act
@@ -408,7 +417,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     public async Task UnregisterCurrent_ShouldThrowNotSupportedException_WhenDelegateIsNull()
     {
         // Arrange
-        var resolver = new FuncDependencyResolver((_, _) => []);
+        var resolver = new FuncDependencyResolver(static (_, _) => []);
 
         // Act & Assert
         await Assert.That(() => resolver.UnregisterCurrent<string>())
@@ -425,8 +434,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         Type? capturedType = null;
         string? capturedContract = null;
 
-        var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => [],
+        using var resolver = new FuncDependencyResolver(
+            getAllServices: static (_, _) => [],
             unregisterCurrent: (type, contract) =>
             {
                 capturedType = type;
@@ -449,8 +458,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         // Arrange
         string? capturedContract = null;
 
-        var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => [],
+        using var resolver = new FuncDependencyResolver(
+            getAllServices: static (_, _) => [],
             unregisterCurrent: (_, contract) => capturedContract = contract);
 
         // Act
@@ -466,7 +475,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     public async Task UnregisterAll_ShouldThrowNotSupportedException_WhenDelegateIsNull()
     {
         // Arrange
-        var resolver = new FuncDependencyResolver((_, _) => []);
+        var resolver = new FuncDependencyResolver(static (_, _) => []);
 
         // Act & Assert
         await Assert.That(() => resolver.UnregisterAll<string>())
@@ -482,8 +491,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         Type? capturedType = null;
         string? capturedContract = null;
 
-        var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => [],
+        using var resolver = new FuncDependencyResolver(
+            getAllServices: static (_, _) => [],
             unregisterAll: (type, contract) =>
             {
                 capturedType = type;
@@ -506,8 +515,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         // Arrange
         string? capturedContract = null;
 
-        var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => [],
+        using var resolver = new FuncDependencyResolver(
+            getAllServices: static (_, _) => [],
             unregisterAll: (_, contract) => capturedContract = contract);
 
         // Act
@@ -525,14 +534,14 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         // Arrange
         var callbackInvoked = false;
         var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => [],
-            register: (_, _, _) => { });
+            getAllServices: static (_, _) => [],
+            register: static (_, _, _) => { });
 
         // Act
         var disposable = resolver.ServiceRegistrationCallback<string>(disp => callbackInvoked = true);
 
         // Register a service to trigger callbacks
-        resolver.Register(() => "test", typeof(string));
+        resolver.Register(static () => "test", typeof(string));
 
         // Assert
         await Assert.That(callbackInvoked).IsTrue();
@@ -545,7 +554,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     public async Task ServiceRegistrationCallback_ShouldThrowArgumentNullException_WhenCallbackIsNull()
     {
         // Arrange
-        var resolver = new FuncDependencyResolver((_, _) => []);
+        var resolver = new FuncDependencyResolver(static (_, _) => []);
 
         // Act & Assert
         await Assert.That(() => resolver.ServiceRegistrationCallback<string>(null!))
@@ -560,14 +569,14 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         // Arrange
         var callbackInvoked = false;
         var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => [],
-            register: (_, _, _) => { });
+            getAllServices: static (_, _) => [],
+            register: static (_, _, _) => { });
 
         var disposable = resolver.ServiceRegistrationCallback<string>(disp => callbackInvoked = true);
 
         // Act
         disposable.Dispose();
-        resolver.Register(() => "test", typeof(string));
+        resolver.Register(static () => "test", typeof(string));
 
         // Assert - callback should not be invoked after disposal
         await Assert.That(callbackInvoked).IsFalse();
@@ -581,12 +590,12 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         // Arrange
         var callbackInvoked = false;
         var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => [],
-            register: (_, _, _) => { });
+            getAllServices: static (_, _) => [],
+            register: static (_, _, _) => { });
 
         // Act
         _ = resolver.ServiceRegistrationCallback<string>(MyContract, _ => callbackInvoked = true);
-        resolver.Register(() => "test", typeof(string), MyContract);
+        resolver.Register(static () => "test", typeof(string), MyContract);
 
         // Assert
         await Assert.That(callbackInvoked).IsTrue();
@@ -600,12 +609,12 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         // Arrange
         var callbackInvoked = false;
         var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => [],
-            register: (_, _, _) => { });
+            getAllServices: static (_, _) => [],
+            register: static (_, _, _) => { });
 
         // Act
         _ = resolver.ServiceRegistrationCallback<string>("contract1", _ => callbackInvoked = true);
-        resolver.Register(() => "test", typeof(string), "contract2");
+        resolver.Register(static () => "test", typeof(string), "contract2");
 
         // Assert - callback should not be invoked for different contract
         await Assert.That(callbackInvoked).IsFalse();
@@ -618,8 +627,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     {
         // Arrange
         var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => [],
-            register: (_, _, _) => { });
+            getAllServices: static (_, _) => [],
+            register: static (_, _, _) => { });
 
         var callbackInvoked = false;
         _ = resolver.ServiceRegistrationCallback<string>(disp =>
@@ -629,13 +638,13 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         });
 
         // Act - first registration should invoke callback
-        resolver.Register(() => "test1", typeof(string));
+        resolver.Register(static () => "test1", typeof(string));
         var firstInvocation = callbackInvoked;
 
         callbackInvoked = false;
 
         // Second registration should not invoke callback (it was removed)
-        resolver.Register(() => "test2", typeof(string));
+        resolver.Register(static () => "test2", typeof(string));
 
         // Assert
         await Assert.That(firstInvocation).IsTrue();
@@ -650,7 +659,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         // Arrange
         var disposable = new TestDisposable();
         var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => [],
+            getAllServices: static (_, _) => [],
             toDispose: disposable);
 
         // Act
@@ -669,7 +678,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         var disposeCount = 0;
         var disposable = new TestDisposable(() => disposeCount++);
         var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => [],
+            getAllServices: static (_, _) => [],
             toDispose: disposable);
 
         // Act
@@ -687,7 +696,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     public async Task Dispose_ShouldNotThrow_WhenInnerDisposableIsNull()
     {
         // Arrange
-        var resolver = new FuncDependencyResolver((_, _) => []);
+        var resolver = new FuncDependencyResolver(static (_, _) => []);
 
         // Act & Assert
         await Assert.That(() => resolver.Dispose()).ThrowsNothing();
@@ -699,10 +708,19 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public override Task Dispose_DisposesRegisteredServices() =>
+    public override async Task Dispose_DisposesRegisteredServices()
+    {
+        // FuncDependencyResolver does not track created instances, so disposing it must not
+        // dispose services registered through it; disposal stays the responsibility of the
+        // external getAllServices provider.
+        var resolver = GetDependencyResolver();
+        var disposableService = new DisposableTestService();
+        resolver.RegisterConstant(disposableService);
 
-        // FuncDependencyResolver doesn't track instances, so it can't dispose them
-        Task.CompletedTask;
+        resolver.Dispose();
+
+        await Assert.That(disposableService.IsDisposed).IsFalse();
+    }
 
     /// <summary>Verifies that the two-type-parameter Register creates a new instance each time.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -712,8 +730,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         // Arrange
         Func<object?>? capturedFactory = null;
 
-        var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => [],
+        using var resolver = new FuncDependencyResolver(
+            getAllServices: static (_, _) => [],
             register: (factory, _, _) => capturedFactory = factory);
 
         // Act
@@ -736,8 +754,8 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         // Arrange
         string? capturedContract = null;
 
-        var resolver = new FuncDependencyResolver(
-            getAllServices: (_, _) => [],
+        using var resolver = new FuncDependencyResolver(
+            getAllServices: static (_, _) => [],
             register: (_, _, contract) => capturedContract = contract);
 
         // Act
@@ -745,6 +763,235 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
 
         // Assert
         await Assert.That(capturedContract).IsEqualTo(MyContract);
+    }
+
+    /// <summary>
+    /// Verifies that resolving a null service type over a lazily-evaluated (non-collection) sequence unwraps
+    /// <see cref="NullServiceType"/> markers by materializing a new list.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetServices_WithNullServiceTypeOverNonCollection_UnwrapsMarkers()
+    {
+        // Arrange - the sequence is an iterator, so it is not an ICollection and takes the materializing unwrap path.
+        using var resolver = new FuncDependencyResolver(static (_, _) => WrappedThenPlainServices());
+
+        // Act
+        var services = resolver.GetServices((Type?)null).ToList();
+
+        // Assert - the wrapper is unwrapped to its factory value; the plain value passes through unchanged.
+        using (Assert.Multiple())
+        {
+            await Assert.That(services.Count).IsEqualTo(MixedServiceCount);
+            await Assert.That(services[0]).IsEqualTo(UnwrappedValue);
+            await Assert.That(services[1]).IsEqualTo(PlainValue);
+        }
+    }
+
+    /// <summary>Verifies that an exception thrown while disposing a created lazy singleton is suppressed on <see cref="FuncDependencyResolver.Dispose()"/>.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Dispose_WhenLazySingletonDisposalThrows_DoesNotPropagate()
+    {
+        // Arrange
+        var resolver = GetDependencyResolver();
+        resolver.RegisterLazySingleton(static () => new ThrowingDisposableService());
+
+        // Force creation so the lazy value exists and is disposed during teardown.
+        var service = resolver.GetService<ThrowingDisposableService>();
+        await Assert.That(service).IsNotNull();
+
+        // Act & Assert - the disposal exception from the created singleton must not escape.
+        await Assert.That(() =>
+        {
+            resolver.Dispose();
+            return Task.CompletedTask;
+        }).ThrowsNothing();
+    }
+
+    /// <summary>Verifies that an exception thrown by a registered service during resolver disposal is suppressed.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Dispose_WhenRegisteredServiceDisposalThrows_DoesNotPropagate()
+    {
+        // Arrange - the backing store surfaces a disposable that records the attempt, then throws.
+        var throwing = new TestDisposable(static () => throw new InvalidOperationException("disposal failure"));
+        var resolver = new FuncDependencyResolver((_, _) => new object[] { throwing });
+
+        // Act & Assert
+        await Assert.That(() =>
+        {
+            resolver.Dispose();
+            return Task.CompletedTask;
+        }).ThrowsNothing();
+
+        await Assert.That(throwing.IsDisposed).IsTrue();
+    }
+
+    /// <summary>Verifies that the contract overload of UnregisterCurrent throws when no delegate is provided.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task UnregisterCurrent_WithContract_ShouldThrowNotSupportedException_WhenDelegateIsNull()
+    {
+        var resolver = new FuncDependencyResolver(static (_, _) => []);
+
+        await Assert.That(() => resolver.UnregisterCurrent(typeof(string), MyContract))
+            .Throws<NotSupportedException>();
+    }
+
+    /// <summary>Verifies that the contract overload of UnregisterAll throws when no delegate is provided.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task UnregisterAll_WithContract_ShouldThrowNotSupportedException_WhenDelegateIsNull()
+    {
+        var resolver = new FuncDependencyResolver(static (_, _) => []);
+
+        await Assert.That(() => resolver.UnregisterAll(typeof(string), MyContract))
+            .Throws<NotSupportedException>();
+    }
+
+    /// <summary>Verifies that UnregisterCurrent substitutes the null service type when none is supplied.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task UnregisterCurrent_WithNullServiceType_UsesNullServiceType()
+    {
+        Type? capturedType = null;
+        using var resolver = new FuncDependencyResolver(
+            getAllServices: static (_, _) => [],
+            unregisterCurrent: (type, _) => capturedType = type);
+
+        resolver.UnregisterCurrent(serviceType: null, MyContract);
+
+        await Assert.That(capturedType).IsEqualTo(NullServiceType.CachedType);
+    }
+
+    /// <summary>Verifies that UnregisterAll substitutes the null service type when none is supplied.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task UnregisterAll_WithNullServiceType_UsesNullServiceType()
+    {
+        Type? capturedType = null;
+        using var resolver = new FuncDependencyResolver(
+            getAllServices: static (_, _) => [],
+            unregisterAll: (type, _) => capturedType = type);
+
+        resolver.UnregisterAll(serviceType: null, MyContract);
+
+        await Assert.That(capturedType).IsEqualTo(NullServiceType.CachedType);
+    }
+
+    /// <summary>Verifies that HasRegistration substitutes the null service type when none is supplied.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task HasRegistration_WithNullServiceType_UsesNullServiceType()
+    {
+        Type? capturedType = null;
+        using var resolver = new FuncDependencyResolver((type, _) =>
+        {
+            capturedType = type;
+            return [];
+        });
+
+        _ = resolver.HasRegistration(serviceType: null, MyContract);
+
+        await Assert.That(capturedType).IsEqualTo(NullServiceType.CachedType);
+    }
+
+    /// <summary>Verifies that GetService returns the last element of an <see cref="IReadOnlyList{T}"/> that is not an <see cref="IList{T}"/>.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_OverReadOnlyList_ReturnsLastElement()
+    {
+        var services = new ReadOnlyServiceList([First, Second]);
+        using var resolver = new FuncDependencyResolver((_, _) => services);
+
+        var result = resolver.GetService<object>();
+
+        await Assert.That(result).IsEqualTo(Second);
+    }
+
+    /// <summary>Verifies that GetService returns null over an empty <see cref="IReadOnlyList{T}"/> that is not an <see cref="IList{T}"/>.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_OverEmptyReadOnlyList_ReturnsNull()
+    {
+        var services = new ReadOnlyServiceList([]);
+        using var resolver = new FuncDependencyResolver((_, _) => services);
+
+        var result = resolver.GetService<object>();
+
+        await Assert.That(result).IsNull();
+    }
+
+    /// <summary>Verifies that GetService returns the last element of a lazily-evaluated sequence.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_OverEnumerable_ReturnsLastElement()
+    {
+        using var resolver = new FuncDependencyResolver(static (_, _) => Sequence(First, Second));
+
+        var result = resolver.GetService<object>();
+
+        await Assert.That(result).IsEqualTo(Second);
+    }
+
+    /// <summary>Verifies that GetService returns null over an empty lazily-evaluated sequence.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_OverEmptyEnumerable_ReturnsNull()
+    {
+        using var resolver = new FuncDependencyResolver(static (_, _) => Sequence());
+
+        var result = resolver.GetService<object>();
+
+        await Assert.That(result).IsNull();
+    }
+
+    /// <summary>Verifies that resolving a null service type over a materialized collection unwraps <see cref="NullServiceType"/> markers.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetServices_WithNullServiceTypeOverCollection_UnwrapsMarkers()
+    {
+        var services = new List<object> { new NullServiceType(static () => UnwrappedValue), PlainValue };
+        using var resolver = new FuncDependencyResolver((_, _) => services);
+
+        var result = resolver.GetServices((Type?)null).ToList();
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(result.Count).IsEqualTo(MixedServiceCount);
+            await Assert.That(result[0]).IsEqualTo(UnwrappedValue);
+            await Assert.That(result[1]).IsEqualTo(PlainValue);
+        }
+    }
+
+    /// <summary>Verifies that a lazy singleton whose factory disposes the resolver disposes the value and throws.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetService_WhenLazySingletonAccessedAfterDispose_DisposesValueAndThrows()
+    {
+        var resolver = GetDependencyResolver();
+        resolver.RegisterLazySingleton(static () => new DisposableTestService());
+
+        // Dispose before the lazy value is ever created; the next resolve constructs it and observes disposal.
+        resolver.Dispose();
+
+        await Assert.That(() => resolver.GetService<DisposableTestService>())
+            .Throws<ObjectDisposedException>();
+    }
+
+    /// <summary>Verifies that disposing a resolver constructed without a services delegate does not throw.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Dispose_WithNullGetAllServices_DoesNotThrow()
+    {
+        var resolver = new FuncDependencyResolver(getAllServices: null!);
+
+        await Assert.That(() =>
+        {
+            resolver.Dispose();
+            return Task.CompletedTask;
+        }).ThrowsNothing();
     }
 
     /// <inheritdoc/>
@@ -777,12 +1024,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         string? contract)
     {
         var key = NormalizeKey(type, contract);
-        if (services.TryGetValue(key, out var list) && list.Count > 0)
-        {
-            return [.. list.Select(f => f()!)];
-        }
-
-        return null!; // Return null to indicate no services registered
+        return services.TryGetValue(key, out var list) && list.Count > 0 ? [.. list.Select(static f => f()!)] : null!;
     }
 
     /// <summary>Registers a factory for the given service type and contract.</summary>
@@ -797,11 +1039,16 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         string? contract)
     {
         var key = NormalizeKey(type, contract);
+#if NET6_0_OR_GREATER
+        ref var value = ref System.Runtime.InteropServices.CollectionsMarshal.GetValueRefOrAddDefault(services, key, out _);
+        value ??= [];
+#else
         if (!services.TryGetValue(key, out var value))
         {
             value = [];
             services[key] = value;
         }
+#endif
 
         value.Add(factory);
     }
@@ -827,7 +1074,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
             return;
         }
 
-        services.Remove(key);
+        _ = services.Remove(key);
     }
 
     /// <summary>Removes all registered factories for the given service type and contract.</summary>
@@ -840,8 +1087,47 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         string? contract) =>
         services.Remove(NormalizeKey(type, contract));
 
+    /// <summary>
+    /// Yields a <see cref="NullServiceType"/>-wrapped value followed by a plain value as a lazily evaluated
+    /// (non-collection) sequence, forcing the null-service-type unwrap loop that materializes a new list.
+    /// </summary>
+    /// <returns>A non-materialized sequence of services.</returns>
+    private static IEnumerable<object> WrappedThenPlainServices()
+    {
+        yield return new NullServiceType(static () => UnwrappedValue);
+        yield return PlainValue;
+    }
+
+    /// <summary>Yields the supplied items as a lazily-evaluated sequence that is neither a list nor a read-only list.</summary>
+    /// <param name="items">The items to yield.</param>
+    /// <returns>A non-materialized sequence of the items.</returns>
+    private static IEnumerable<object> Sequence(params object[] items)
+    {
+        foreach (var item in items)
+        {
+            yield return item;
+        }
+    }
+
     /// <summary>Concrete implementation used as a test service.</summary>
     private sealed class TestClass : ITestInterface;
+
+    /// <summary>A read-only list wrapper that deliberately does not implement <see cref="IList{T}"/>.</summary>
+    /// <param name="items">The backing items.</param>
+    private sealed class ReadOnlyServiceList(IReadOnlyList<object> items) : IReadOnlyList<object>
+    {
+        /// <inheritdoc />
+        public int Count => items.Count;
+
+        /// <inheritdoc />
+        public object this[int index] => items[index];
+
+        /// <inheritdoc />
+        public IEnumerator<object> GetEnumerator() => items.GetEnumerator();
+
+        /// <inheritdoc />
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => items.GetEnumerator();
+    }
 
     /// <summary>Disposable test helper that records whether it has been disposed.</summary>
     private sealed class TestDisposable : IDisposable

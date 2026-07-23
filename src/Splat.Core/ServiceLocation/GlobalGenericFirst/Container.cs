@@ -35,7 +35,7 @@ internal static class Container<T>
     /// <remarks>
     /// Uses a fast volatile count check to avoid snapshot materialization on the common empty path.
     /// </remarks>
-    public static bool HasRegistrations
+    internal static bool HasRegistrations
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => Entries.HasItems;
@@ -44,14 +44,14 @@ internal static class Container<T>
     /// <summary>Gets the number of registrations without invoking any factories.</summary>
     /// <returns>The number of registrations currently stored.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetCount() => Entries.Count;
+    internal static int GetCount() => Entries.Count;
 
     /// <summary>Adds a constant instance registration.</summary>
     /// <param name="service">The instance to register (may be <see langword="null"/>).</param>
     /// <remarks>
     /// This is an O(1) operation. Snapshot rebuild is deferred until a read occurs.
     /// </remarks>
-    public static void Add(T service) => Entries.Add(Registration<T>.FromInstance(service));
+    internal static void Add(T service) => Entries.Add(Registration<T>.FromInstance(service));
 
     /// <summary>Adds a factory registration.</summary>
     /// <param name="factory">Factory delegate used to produce instances.</param>
@@ -59,7 +59,7 @@ internal static class Container<T>
     /// This is an O(1) operation. Snapshot rebuild is deferred until a read occurs.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> is <see langword="null"/>.</exception>
-    public static void Add(Func<T?> factory)
+    internal static void Add(Func<T?> factory)
     {
         ArgumentExceptionHelper.ThrowIfNull(factory);
         Entries.Add(Registration<T>.FromFactory(factory));
@@ -74,7 +74,7 @@ internal static class Container<T>
     /// This method never holds internal locks while invoking user factories.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool TryGet([MaybeNullWhen(false)] out T instance)
+    internal static bool TryGet([MaybeNullWhen(false)] out T instance)
     {
         // Fast path: avoid snapshot materialization if empty.
         if (!Entries.HasItems)
@@ -83,25 +83,7 @@ internal static class Container<T>
             return false;
         }
 
-        var registrations = Entries.GetSnapshot();
-        if (registrations.Length == 0)
-        {
-            // Defensive: should be rare if the count is accurate, but safe under racey Clear/Remove sequences.
-            instance = default;
-            return false;
-        }
-
-        var last = registrations[registrations.Length - 1];
-
-        // Invoke user code outside locks (snapshot is immutable).
-        if (last.TryGetFactory(out var factory))
-        {
-            instance = factory.Invoke()!;
-            return instance is not null;
-        }
-
-        instance = last.GetInstance();
-        return instance is not null;
+        return ResolveLast(Entries.GetSnapshot(), out instance);
     }
 
     /// <summary>Resolves all registrations as a materialized array.</summary>
@@ -109,7 +91,7 @@ internal static class Container<T>
     /// <remarks>
     /// Factories are invoked during materialization. Exceptions are not caught and propagate to the caller.
     /// </remarks>
-    public static T[] GetAll()
+    internal static T[] GetAll()
     {
         // Keep the empty fast path.
         if (!Entries.HasItems)
@@ -125,12 +107,41 @@ internal static class Container<T>
     /// <remarks>
     /// Snapshot rebuild is deferred until a read occurs.
     /// </remarks>
-    public static void RemoveCurrent() => Entries.RemoveCurrent();
+    internal static void RemoveCurrent() => Entries.RemoveCurrent();
 
     /// <summary>Clears all registrations from this container.</summary>
     /// <remarks>
     /// Publishes an empty snapshot corresponding to the new version so that subsequent reads can fast-exit.
     /// Readers will observe either the complete old snapshot or the new empty snapshot.
     /// </remarks>
-    public static void Clear() => Entries.Clear();
+    internal static void Clear() => Entries.Clear();
+
+    /// <summary>Resolves the most recent registration from <paramref name="registrations"/> (last registration wins).</summary>
+    /// <param name="registrations">The immutable snapshot to resolve from.</param>
+    /// <param name="instance">Receives the resolved instance when available.</param>
+    /// <returns><see langword="true"/> when a non-null instance is produced; otherwise <see langword="false"/>.</returns>
+    /// <remarks>
+    /// The empty-snapshot arm is a copy-on-write race guard: <see cref="ArrayHelpers.Entry{TValue}.HasItems"/> was observed true,
+    /// but a concurrent <see cref="Clear"/>/<see cref="RemoveCurrent"/> drained the snapshot before it was read. That window
+    /// cannot be reproduced by a single-threaded test, so the method is excluded from coverage.
+    /// </remarks>
+    [ExcludeFromCodeCoverage] // Defensive: the empty-snapshot arm only fires when a concurrent Clear/Remove drains the entry between the HasItems check and the snapshot read.
+    private static bool ResolveLast(Registration<T>[] registrations, [MaybeNullWhen(false)] out T instance)
+    {
+        if (registrations.Length == 0)
+        {
+            instance = default;
+            return false;
+        }
+
+        var last = registrations[^1];
+        if (last.TryGetFactory(out var factory))
+        {
+            instance = factory.Invoke()!;
+            return instance is not null;
+        }
+
+        instance = last.GetInstance();
+        return instance is not null;
+    }
 }

@@ -150,8 +150,8 @@ public class ActionLoggerCoverageTests
         {
             logger.Write(TestMessage, LogLevel.Debug);
             logger.Write(TestMessage, typeof(ActionLoggerCoverageTests), LogLevel.Debug);
-            logger.Write(new Exception("boom"), TestMessage, LogLevel.Debug);
-            logger.Write(new Exception("boom"), TestMessage, typeof(ActionLoggerCoverageTests), LogLevel.Debug);
+            logger.Write(new("boom"), TestMessage, LogLevel.Debug);
+            logger.Write(new("boom"), TestMessage, typeof(ActionLoggerCoverageTests), LogLevel.Debug);
         }).ThrowsNothing();
     }
 }

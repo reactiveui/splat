@@ -19,7 +19,7 @@ internal static class ArgumentGuard
     /// <param name="condition">The condition to evaluate.</param>
     /// <param name="message">The message to include in the exception.</param>
     /// <param name="paramName">The name of the offending parameter.</param>
-    public static void ThrowIf(
+    internal static void ThrowIf(
         [DoesNotReturnIf(true)] bool condition,
         string message,
         [CallerArgumentExpression(nameof(condition))] string? paramName = null)
@@ -36,7 +36,7 @@ internal static class ArgumentGuard
     /// <param name="argument">The argument to validate as non-null.</param>
     /// <param name="message">The message to include in the exception.</param>
     /// <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
-    public static void ThrowIfNullWithMessage(
+    internal static void ThrowIfNullWithMessage(
         [NotNull] object? argument,
         string message,
         [CallerArgumentExpression(nameof(argument))] string? paramName = null)

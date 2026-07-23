@@ -30,8 +30,6 @@ public sealed class MicrosoftExtensionsLogProvider : ILoggerProvider
     {
         /// <summary>The logging category name; retained deliberately even though currently unread.</summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1823:Avoid unused private fields", Justification = "Deliberate")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1213:Remove unused member declaration", Justification = "Deliberate")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop", "IDE0052:Remove unused member declaration", Justification = "Deliberate")]
         private readonly string _categoryName = categoryName;
 
         /// <inheritdoc />

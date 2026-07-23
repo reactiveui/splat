@@ -14,7 +14,11 @@ public partial class SerilogFullLogger
 
     /// <inheritdoc />
     public void Fatal<T>(IFormatProvider formatProvider, T value) =>
+#if NET8_0_OR_GREATER
+        _logger.Fatal(MessageTemplate, string.Format(formatProvider, _valueCompositeFormat, value));
+#else
         _logger.Fatal(MessageTemplate, string.Format(formatProvider, "{0}", value));
+#endif
 
     /// <inheritdoc />
     public void Fatal(Exception exception, string? message) => _logger.Fatal(exception, message ?? exception?.Message ?? string.Empty);

@@ -5,6 +5,10 @@
 namespace Splat.Tests.Platform;
 
 /// <summary>Unit tests for the platform-specific bitmap loader.</summary>
+[System.Diagnostics.CodeAnalysis.SuppressMessage(
+    "Design",
+    "SST1436:Add members to the type or remove it",
+    Justification = "All test methods are conditionally compiled for platform-specific targets; the type is intentionally empty on shared .NET builds.")]
 public sealed class PlatformBitmapLoaderTests
 {
 #if !IS_SHARED_NET

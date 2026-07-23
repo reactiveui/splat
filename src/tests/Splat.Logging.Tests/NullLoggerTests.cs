@@ -20,8 +20,8 @@ public class NullLoggerTests
         {
             logger.Write("Test message", LogLevel.Debug);
             logger.Write("Test message", typeof(NullLoggerTests), LogLevel.Info);
-            logger.Write(new Exception("Test"), "Test exception", LogLevel.Error);
-            logger.Write(new Exception("Test"), "Test exception", typeof(NullLoggerTests), LogLevel.Fatal);
+            logger.Write(new("Test"), "Test exception", LogLevel.Error);
+            logger.Write(new("Test"), "Test exception", typeof(NullLoggerTests), LogLevel.Fatal);
         }).ThrowsNothing();
     }
 

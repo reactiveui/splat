@@ -12,6 +12,15 @@ namespace Splat;
 /// required.</remarks>
 public static class PointExtensions
 {
+    /// <summary>Extension members for <see cref="Point"/>.</summary>
+    /// <param name="value">The value the extension members operate on.</param>
+    extension(Point value)
+    {
+        /// <summary>Converts a <see cref="Point"/> to a <see cref="System.Drawing.PointF"/>.</summary>
+        /// <returns>A <see cref="System.Drawing.PointF"/> of the value.</returns>
+        public System.Drawing.PointF FromNative() => new((float)value.X, (float)value.Y);
+    }
+
     /// <summary>Extension members for <see cref="System.Drawing.Point"/>.</summary>
     /// <param name="value">The value the extension members operate on.</param>
     extension(System.Drawing.Point value)
@@ -28,14 +37,5 @@ public static class PointExtensions
         /// <summary>Convert a <see cref="System.Drawing.PointF"/> to the android native <see cref="Point"/>.</summary>
         /// <returns>A <see cref="Point"/> of the value.</returns>
         public Point ToNative() => new(value.X, value.Y);
-    }
-
-    /// <summary>Extension members for <see cref="Point"/>.</summary>
-    /// <param name="value">The value the extension members operate on.</param>
-    extension(Point value)
-    {
-        /// <summary>Converts a <see cref="Point"/> to a <see cref="System.Drawing.PointF"/>.</summary>
-        /// <returns>A <see cref="System.Drawing.PointF"/> of the value.</returns>
-        public System.Drawing.PointF FromNative() => new((float)value.X, (float)value.Y);
     }
 }

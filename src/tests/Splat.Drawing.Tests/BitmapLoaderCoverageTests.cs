@@ -2,6 +2,8 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.IO;
+
 namespace Splat.Drawing.Tests;
 
 /// <summary>Unit tests covering the static <see cref="BitmapLoader"/> accessor and its state.</summary>
@@ -37,7 +39,7 @@ public sealed class BitmapLoaderCoverageTests
         {
             BitmapLoader.RestoreState(null);
 
-            await Assert.That(() => BitmapLoader.Current).Throws<BitmapLoaderException>();
+            await Assert.That(static () => BitmapLoader.Current).Throws<BitmapLoaderException>();
         }
         finally
         {
@@ -83,6 +85,25 @@ public sealed class BitmapLoaderCoverageTests
         }
     }
 
+    /// <summary>Verifies that <see cref="BitmapLoader.ResetState"/> re-resolves the loader from the current locator.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task ResetState_ResolvesLoaderFromLocator()
+    {
+        var saved = BitmapLoader.GetState();
+        try
+        {
+            BitmapLoader.Current = new StubBitmapLoader();
+            BitmapLoader.ResetState();
+
+            await Assert.That(BitmapLoader.GetState()).IsEqualTo(AppLocator.Current.GetService<IBitmapLoader>());
+        }
+        finally
+        {
+            BitmapLoader.RestoreState(saved);
+        }
+    }
+
     /// <summary>A throwaway <see cref="IBitmapLoader"/> implementation used to verify the setter round-trip.</summary>
     private sealed class StubBitmapLoader : IBitmapLoader
     {
@@ -90,7 +111,7 @@ public sealed class BitmapLoaderCoverageTests
         public IBitmap? Create(float width, float height) => null;
 
         /// <inheritdoc />
-        public Task<IBitmap?> Load(System.IO.Stream sourceStream, float? desiredWidth, float? desiredHeight) => Task.FromResult<IBitmap?>(null);
+        public Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight) => Task.FromResult<IBitmap?>(null);
 
         /// <inheritdoc />
         public Task<IBitmap?> LoadFromResource(string source, float? desiredWidth, float? desiredHeight) => Task.FromResult<IBitmap?>(null);

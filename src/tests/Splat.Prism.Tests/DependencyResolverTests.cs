@@ -16,7 +16,7 @@ public class DependencyResolverTests
     {
         using var container = new SplatContainerExtension();
 
-        Assert.Throws<NotSupportedException>(() => container.CreateScope());
+        _ = Assert.Throws<NotSupportedException>(() => container.CreateScope());
     }
 
     /// <summary>Tracks RegisterScoped not being implemented in case it's changed in future.</summary>
@@ -25,9 +25,9 @@ public class DependencyResolverTests
     {
         using var container = new SplatContainerExtension();
 
-        Assert.Throws<NotSupportedException>(() => container.RegisterScoped(
+        _ = Assert.Throws<NotSupportedException>(() => container.RegisterScoped(
             typeof(IViewFor<ViewModelOne>),
-            () => new ViewOne()));
+            static () => new ViewOne()));
     }
 
     /// <summary>Tracks RegisterManySingleton not being implemented in case it's changed in future.</summary>
@@ -36,7 +36,7 @@ public class DependencyResolverTests
     {
         using var container = new SplatContainerExtension();
 
-        Assert.Throws<NotSupportedException>(() => container.RegisterManySingleton(
+        _ = Assert.Throws<NotSupportedException>(() => container.RegisterManySingleton(
             typeof(IViewFor<ViewModelOne>),
             typeof(ViewOne)));
     }
@@ -47,7 +47,7 @@ public class DependencyResolverTests
     {
         using var container = new SplatContainerExtension();
 
-        container.RegisterMany(
+        _ = container.RegisterMany(
             typeof(IViewFor<ViewModelOne>),
             typeof(ViewOne));
     }
@@ -58,7 +58,7 @@ public class DependencyResolverTests
     public async Task Resolve_Succeeds()
     {
         using var container = new SplatContainerExtension();
-        container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne));
+        _ = container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne));
 
         var instance = container.Resolve(typeof(IViewFor<ViewModelOne>));
 
@@ -71,7 +71,7 @@ public class DependencyResolverTests
     public async Task Resolve_With_Name_Succeeds()
     {
         using var container = new SplatContainerExtension();
-        container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne), "name");
+        _ = container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne), "name");
 
         var instance = container.Resolve(typeof(IViewFor<ViewModelOne>), "name");
 
@@ -84,7 +84,7 @@ public class DependencyResolverTests
     public async Task IsRegistered_Returns_True()
     {
         using var container = new SplatContainerExtension();
-        container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne));
+        _ = container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne));
 
         var isRegistered = container.IsRegistered(typeof(IViewFor<ViewModelOne>));
 
@@ -97,7 +97,7 @@ public class DependencyResolverTests
     public async Task IsRegistered_With_Name_Returns_True()
     {
         using var container = new SplatContainerExtension();
-        container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne), "name");
+        _ = container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne), "name");
 
         var isRegistered = container.IsRegistered(typeof(IViewFor<ViewModelOne>), "name");
 
@@ -110,8 +110,8 @@ public class DependencyResolverTests
     public async Task PrismDependencyResolver_Should_Resolve_Views()
     {
         using var container = new SplatContainerExtension();
-        container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne));
-        container.Register(typeof(IViewFor<ViewModelTwo>), typeof(ViewTwo));
+        _ = container.Register(typeof(IViewFor<ViewModelOne>), typeof(ViewOne));
+        _ = container.Register(typeof(IViewFor<ViewModelTwo>), typeof(ViewTwo));
 
         var viewOne = AppLocator.Current.GetService<IViewFor<ViewModelOne>>();
         var viewTwo = AppLocator.Current.GetService<IViewFor<ViewModelTwo>>();
@@ -132,7 +132,7 @@ public class DependencyResolverTests
     public async Task PrismDependencyResolver_Should_Resolve_Named_View()
     {
         using var container = new SplatContainerExtension();
-        container.Register(typeof(IViewFor<ViewModelTwo>), typeof(ViewTwo), "Other");
+        _ = container.Register(typeof(IViewFor<ViewModelTwo>), typeof(ViewTwo), "Other");
 
         var viewTwo = AppLocator.Current.GetService<IViewFor<ViewModelTwo>>("Other");
 
@@ -147,16 +147,16 @@ public class DependencyResolverTests
     {
         using var container = new SplatContainerExtension();
 
-        container.Register(typeof(ViewModelOne), typeof(ViewModelOne));
-        container.Register(typeof(ViewModelTwo), typeof(ViewModelTwo));
+        _ = container.Register(typeof(ViewModelOne), typeof(ViewModelOne));
+        _ = container.Register(typeof(ViewModelTwo), typeof(ViewModelTwo));
 
-        var vmOne = AppLocator.Current.GetService<ViewModelOne>();
-        var vmTwo = AppLocator.Current.GetService<ViewModelTwo>();
+        var viewModelOne = AppLocator.Current.GetService<ViewModelOne>();
+        var viewModelTwo = AppLocator.Current.GetService<ViewModelTwo>();
 
         using (Assert.Multiple())
         {
-            await Assert.That(vmOne).IsNotNull();
-            await Assert.That(vmTwo).IsNotNull();
+            await Assert.That(viewModelOne).IsNotNull();
+            await Assert.That(viewModelTwo).IsNotNull();
         }
     }
 
@@ -166,7 +166,7 @@ public class DependencyResolverTests
     public async Task PrismDependencyResolver_Should_Resolve_Screen()
     {
         using var builder = new SplatContainerExtension();
-        builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen));
+        _ = builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen));
 
         var screen = AppLocator.Current.GetService<IScreen>();
 
@@ -180,7 +180,7 @@ public class DependencyResolverTests
     public async Task PrismDependencyResolver_Should_UnregisterCurrent_Screen()
     {
         using var builder = new SplatContainerExtension();
-        builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen));
+        _ = builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen));
 
         await Assert.That(AppLocator.Current.GetService<IScreen>()).IsNotNull();
 
@@ -195,7 +195,7 @@ public class DependencyResolverTests
     public async Task PrismDependencyResolver_Should_UnregisterCurrent_Screen_With_Contract()
     {
         using var builder = new SplatContainerExtension();
-        builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen), nameof(MockScreen));
+        _ = builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen), nameof(MockScreen));
 
         await Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen))).IsNotNull();
 
@@ -210,7 +210,7 @@ public class DependencyResolverTests
     public async Task PrismDependencyResolver_Should_UnregisterAll_Screen()
     {
         using var builder = new SplatContainerExtension();
-        builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen));
+        _ = builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen));
 
         await Assert.That(AppLocator.Current.GetService<IScreen>()).IsNotNull();
 
@@ -225,7 +225,7 @@ public class DependencyResolverTests
     public async Task PrismDependencyResolver_Should_UnregisterAll_Screen_With_Contract()
     {
         using var builder = new SplatContainerExtension();
-        builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen), nameof(MockScreen));
+        _ = builder.RegisterSingleton(typeof(IScreen), typeof(MockScreen), nameof(MockScreen));
 
         await Assert.That(AppLocator.Current.GetService<IScreen>(nameof(MockScreen))).IsNotNull();
 
@@ -243,9 +243,9 @@ public class DependencyResolverTests
     public async Task PrismDependencyResolver_Should_ReturnRegisteredLogger()
     {
         using var c = new SplatContainerExtension();
-        c.Register(typeof(ILogger), typeof(ConsoleLogger));
+        _ = c.Register(typeof(ILogger), typeof(ConsoleLogger));
         AppLocator.CurrentMutable.RegisterConstant<ILogManager>(
-            new FuncLogManager(_ => new WrappingFullLogger(new ConsoleLogger())));
+            new FuncLogManager(static _ => new WrappingFullLogger(new ConsoleLogger())));
 
         var d = AppLocator.Current.GetService<ILogManager>();
 
@@ -261,12 +261,66 @@ public class DependencyResolverTests
     public async Task PrismDependencyResolver_PreInit_Should_ReturnRegisteredLogger()
     {
         using var c = new SplatContainerExtension();
-        c.RegisterInstance(
+        _ = c.RegisterInstance(
             typeof(ILogManager),
-            new FuncLogManager(_ => new WrappingFullLogger(new ConsoleLogger())));
+            new FuncLogManager(static _ => new WrappingFullLogger(new ConsoleLogger())));
 
         var d = AppLocator.Current.GetService<ILogManager>();
 
         await Assert.That(d).IsTypeOf<FuncLogManager>();
+    }
+
+    /// <summary>Resolving a registered type with constructor parameters should build it from the supplied parameters.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Resolve_With_Parameters_Creates_Instance_From_Registered_Type()
+    {
+        const string parameterValue = "payload";
+        using var container = new SplatContainerExtension();
+        _ = container.Register(typeof(ConstructorParameterService), typeof(ConstructorParameterService));
+
+        var resolved = container.Resolve(typeof(ConstructorParameterService), (typeof(string), (object)parameterValue));
+
+        await Assert.That(resolved).IsTypeOf<ConstructorParameterService>();
+
+        var typed = (ConstructorParameterService)resolved;
+        using (Assert.Multiple())
+        {
+            await Assert.That(typed.Parameters).Count().IsEqualTo(1);
+            await Assert.That(typed.Parameters[0]).IsEqualTo(parameterValue);
+        }
+    }
+
+    /// <summary>Resolving a named registration with constructor parameters builds it from the supplied parameters.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Resolve_With_Name_And_Parameters_Creates_Instance_From_Named_Registration()
+    {
+        const string parameterValue = "payload";
+        const string registrationName = "named";
+        using var container = new SplatContainerExtension();
+        _ = container.Register(typeof(ConstructorParameterService), typeof(ConstructorParameterService), registrationName);
+
+        var resolved = container.Resolve(typeof(ConstructorParameterService), registrationName, (typeof(string), (object)parameterValue));
+
+        await Assert.That(resolved).IsTypeOf<ConstructorParameterService>();
+
+        var typed = (ConstructorParameterService)resolved;
+        using (Assert.Multiple())
+        {
+            await Assert.That(typed.Parameters).Count().IsEqualTo(1);
+            await Assert.That(typed.Parameters[0]).IsEqualTo(parameterValue);
+        }
+    }
+
+    /// <summary>A service whose constructor records the activation parameters the container supplied to it.</summary>
+    private sealed class ConstructorParameterService
+    {
+        /// <summary>Initializes a new instance of the <see cref="ConstructorParameterService"/> class.</summary>
+        /// <param name="parameters">The activation parameters supplied by the container.</param>
+        public ConstructorParameterService(IEnumerable<object> parameters) => Parameters = parameters.ToArray();
+
+        /// <summary>Gets the activation parameters the instance was constructed with.</summary>
+        public object[] Parameters { get; }
     }
 }

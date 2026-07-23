@@ -37,7 +37,7 @@ internal sealed class InternalLocatorScope : IDisposable
     }
 
     /// <summary>Gets the InternalLocator instance for this scope.</summary>
-    public InternalLocator Locator { get; }
+    internal InternalLocator Locator { get; }
 
     /// <summary>Restores the AppLocator.InternalLocator to its previous state.</summary>
     public void Dispose()

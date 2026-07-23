@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -127,7 +127,7 @@ public enum KnownColor
     /// <summary>Bisque (0xFFFFE4C4).</summary>
     Bisque = 34,
 
-    /// <summary>Black (0xFF000000).</summary>
+    /// <summary>The color black, with packed ARGB value 0xFF000000.</summary>
     Black = 35,
 
     /// <summary>BlanchedAlmond (0xFFFFEBCD).</summary>
@@ -256,10 +256,10 @@ public enum KnownColor
     /// <summary>Goldenrod (0xFFDAA520).</summary>
     Goldenrod = 77,
 
-    /// <summary>Gray (0xFF808080).</summary>
+    /// <summary>The color gray, with packed ARGB value 0xFF808080.</summary>
     Gray = 78,
 
-    /// <summary>Green (0xFF008000).</summary>
+    /// <summary>The color green, with packed ARGB value 0xFF008000.</summary>
     Green = 79,
 
     /// <summary>GreenYellow (0xFFADFF2F).</summary>
@@ -391,13 +391,13 @@ public enum KnownColor
     /// <summary>NavajoWhite (0xFFFFDEAD).</summary>
     NavajoWhite = 122,
 
-    /// <summary>Navy (0xFF000080).</summary>
+    /// <summary>The color navy, with packed ARGB value 0xFF000080.</summary>
     Navy = 123,
 
     /// <summary>OldLace (0xFFFDF5E6).</summary>
     OldLace = 124,
 
-    /// <summary>Olive (0xFF808000).</summary>
+    /// <summary>The color olive, with packed ARGB value 0xFF808000.</summary>
     Olive = 125,
 
     /// <summary>OliveDrab (0xFF6B8E23).</summary>
@@ -496,7 +496,7 @@ public enum KnownColor
     /// <summary>Tan (0xFFD2B48C).</summary>
     Tan = 157,
 
-    /// <summary>Teal (0xFF008080).</summary>
+    /// <summary>The color teal, with packed ARGB value 0xFF008080.</summary>
     Teal = 158,
 
     /// <summary>Thistle (0xFFD8BFD8).</summary>

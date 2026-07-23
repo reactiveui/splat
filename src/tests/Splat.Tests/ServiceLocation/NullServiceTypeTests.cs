@@ -40,7 +40,7 @@ public sealed class NullServiceTypeTests
     [Test]
     public async Task Factory_CanReturnNull()
     {
-        Func<object?> factory = () => null;
+        Func<object?> factory = static () => null;
 
         var nullServiceType = new NullServiceType(factory);
         var result = nullServiceType.Factory();
@@ -78,8 +78,8 @@ public sealed class NullServiceTypeTests
         const string value1 = "first";
         const string value2 = "second";
 
-        var instance1 = new NullServiceType(() => value1);
-        var instance2 = new NullServiceType(() => value2);
+        var instance1 = new NullServiceType(static () => value1);
+        var instance2 = new NullServiceType(static () => value2);
 
         await Assert.That(instance1.Factory()).IsEqualTo(value1);
         await Assert.That(instance2.Factory()).IsEqualTo(value2);

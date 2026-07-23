@@ -14,7 +14,7 @@ public class MutableDependencyResolverExtensionsCoverageTests
     [Test]
     public async Task UseNLogWithWrappingFullLogger_Registers_ILogManager()
     {
-        var resolver = new ModernDependencyResolver();
+        using var resolver = new ModernDependencyResolver();
 
         resolver.UseNLogWithWrappingFullLogger();
 
@@ -28,7 +28,7 @@ public class MutableDependencyResolverExtensionsCoverageTests
     [Test]
     public async Task UseNLogWithWrappingFullLogger_Resolves_Working_Logger()
     {
-        var resolver = new ModernDependencyResolver();
+        using var resolver = new ModernDependencyResolver();
 
         resolver.UseNLogWithWrappingFullLogger();
 
@@ -46,6 +46,6 @@ public class MutableDependencyResolverExtensionsCoverageTests
     {
         const IMutableDependencyResolver resolver = null!;
 
-        await Assert.That(() => resolver.UseNLogWithWrappingFullLogger()).Throws<ArgumentNullException>();
+        await Assert.That(static () => resolver.UseNLogWithWrappingFullLogger()).Throws<ArgumentNullException>();
     }
 }

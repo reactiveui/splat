@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -13,10 +13,6 @@ namespace Splat;
 /// A <see cref="WrappingFullLogger"/> will wrap simple loggers into a full logger.
 /// </summary>
 [SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Existing API")]
-[SuppressMessage(
-    "Major Code Smell",
-    "S107:Methods should not have too many parameters",
-    Justification = "These are deliberately strongly-typed, allocation-free logging overloads; each typed parameter avoids params-array boxing on the logging hot path.")]
 public interface IAllocationFreeErrorLogger : ILogger
 {
     /// <summary>Emits a message using formatting to the debug log.</summary>

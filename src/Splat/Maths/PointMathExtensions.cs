@@ -13,7 +13,7 @@ namespace Splat;
 public static class PointMathExtensions
 {
     /// <summary>The number of degrees in half a turn, used to convert radians to degrees (degrees = radians * <see cref="DegreesPerHalfTurn"/> / pi).</summary>
-    private const float DegreesPerHalfTurn = 180.0f;
+    private const float DegreesPerHalfTurn = 180.0F;
 
     /// <summary>Extension members for mathematical operations on <see cref="Point"/>.</summary>
     /// <param name="value">The point the extension members operate on.</param>
@@ -65,7 +65,7 @@ public static class PointMathExtensions
         /// zero.</returns>
         public PointF Normalize() => value.Length() switch
         {
-            0.0f => value,
+            0.0F => value,
             _ => new(value.X / value.Length(), value.Y / value.Length())
         };
 
@@ -100,7 +100,7 @@ public static class PointMathExtensions
         /// <returns>A new <see cref="PointF"/> representing the projection of the original point along the specified angle.</returns>
         public PointF ProjectAlongAngle(float angleInDegrees)
         {
-            var rads = angleInDegrees * Math.PI / 180.0f;
+            var rads = angleInDegrees * Math.PI / DegreesPerHalfTurn;
             var direction = new PointF((float)Math.Cos(rads), (float)Math.Sin(rads));
 
             return value.ProjectAlong(direction);

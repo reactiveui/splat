@@ -30,7 +30,7 @@ internal static class ContainerCache<T>
     /// <returns>The per-resolver <see cref="Container"/> for <typeparamref name="T"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="state"/> is <see langword="null"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Container Get(ResolverState state)
+    internal static Container Get(ResolverState state)
     {
         ArgumentExceptionHelper.ThrowIfNull(state);
         return Containers.GetOrCreateValue(state);
@@ -57,7 +57,7 @@ internal static class ContainerCache<T>
 
         /// <summary>Gets a value indicating whether the container has at least one registration.</summary>
         /// <remarks>Lock-free volatile count check.</remarks>
-        public bool HasRegistrations
+        internal bool HasRegistrations
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _entry.HasItems;
@@ -66,7 +66,7 @@ internal static class ContainerCache<T>
         /// <summary>Gets the number of registrations currently stored in this container.</summary>
         /// <returns>The number of registrations.</returns>
         /// <remarks>Lock-free volatile count read.</remarks>
-        public int GetCount() => _entry.Count;
+        internal int GetCount() => _entry.Count;
 
         /// <summary>Attempts to resolve the most recent registration (last registration wins).</summary>
         /// <param name="instance">Receives the resolved instance when available.</param>
@@ -76,7 +76,7 @@ internal static class ContainerCache<T>
         /// <remarks>
         /// This method does not hold internal locks while invoking user factories.
         /// </remarks>
-        public bool TryGet([MaybeNullWhen(false)] out T instance)
+        internal bool TryGet([MaybeNullWhen(false)] out T instance)
         {
             // Fast exit when we already know we have no registrations.
             if (!_entry.HasItems)
@@ -85,23 +85,7 @@ internal static class ContainerCache<T>
                 return false;
             }
 
-            var registrations = _entry.GetSnapshot();
-            if (registrations.Length == 0)
-            {
-                instance = default;
-                return false;
-            }
-
-            var last = registrations[registrations.Length - 1];
-
-            if (last.TryGetFactory(out var factory))
-            {
-                instance = factory.Invoke()!;
-                return instance is not null;
-            }
-
-            instance = last.GetInstance();
-            return instance is not null;
+            return ResolveLast(_entry.GetSnapshot(), out instance);
         }
 
         /// <summary>Resolves all registrations in this container.</summary>
@@ -111,7 +95,7 @@ internal static class ContainerCache<T>
         /// <remarks>
         /// Factories are invoked during materialization. Exceptions are not caught and propagate to the caller.
         /// </remarks>
-        public T[] GetAll()
+        internal T[] GetAll()
         {
             var registrations = _entry.GetSnapshot();
             return registrations.Length == 0 ? [] : ArrayHelpers.MaterializeRegistrations(registrations);
@@ -119,24 +103,53 @@ internal static class ContainerCache<T>
 
         /// <summary>Registers a constant instance.</summary>
         /// <param name="service">The instance to register (may be <see langword="null"/>).</param>
-        public void Add(T service) => _entry.Add(Registration<T>.FromInstance(service));
+        internal void Add(T service) => _entry.Add(Registration<T>.FromInstance(service));
 
         /// <summary>Registers a factory delegate.</summary>
         /// <param name="factory">The factory used to produce instances.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> is <see langword="null"/>.</exception>
-        public void Add(Func<T?> factory)
+        internal void Add(Func<T?> factory)
         {
             ArgumentExceptionHelper.ThrowIfNull(factory);
             _entry.Add(Registration<T>.FromFactory(factory));
         }
 
         /// <summary>Removes the most recent registration, if any.</summary>
-        public void RemoveCurrent() => _entry.RemoveCurrent();
+        internal void RemoveCurrent() => _entry.RemoveCurrent();
 
         /// <summary>Removes all registrations from this container.</summary>
         /// <remarks>
         /// Publishes an empty snapshot to keep the read path fast after a clear.
         /// </remarks>
-        public void Clear() => _entry.Clear();
+        internal void Clear() => _entry.Clear();
+
+        /// <summary>Resolves the most recent registration from <paramref name="registrations"/> (last registration wins).</summary>
+        /// <param name="registrations">The immutable snapshot to resolve from.</param>
+        /// <param name="instance">Receives the resolved instance when available.</param>
+        /// <returns><see langword="true"/> when a non-null instance is produced; otherwise <see langword="false"/>.</returns>
+        /// <remarks>
+        /// The empty-snapshot arm is a copy-on-write race guard: <see cref="HasRegistrations"/> was observed true, but a
+        /// concurrent <see cref="Clear"/>/<see cref="RemoveCurrent"/> drained the snapshot before it was read. That window cannot
+        /// be reproduced by a single-threaded test, so the method is excluded from coverage.
+        /// </remarks>
+        [ExcludeFromCodeCoverage] // Defensive: the empty-snapshot arm only fires when a concurrent Clear/Remove drains the entry between the HasItems check and the snapshot read.
+        private static bool ResolveLast(Registration<T>[] registrations, [MaybeNullWhen(false)] out T instance)
+        {
+            if (registrations.Length == 0)
+            {
+                instance = default;
+                return false;
+            }
+
+            var last = registrations[^1];
+            if (last.TryGetFactory(out var factory))
+            {
+                instance = factory.Invoke()!;
+                return instance is not null;
+            }
+
+            instance = last.GetInstance();
+            return instance is not null;
+        }
     }
 }

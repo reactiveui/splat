@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -23,15 +23,13 @@ public static class MutableDependencyResolverExtensions
         /// You should configure Serilog prior to calling this method.
         /// </remarks>
         /// <example>
-        /// <code>
-        /// AppLocator.CurrentMutable.UseSerilogWithWrappingFullLogger();
-        /// </code>
+        /// <c>AppLocator.CurrentMutable.UseSerilogWithWrappingFullLogger();</c>
         /// </example>
         public void UseSerilogFullLogger()
         {
             ArgumentExceptionHelper.ThrowIfNull(instance);
 
-            var funcLogManager = new FuncLogManager(type =>
+            var funcLogManager = new FuncLogManager(static type =>
             {
                 var actualLogger = global::Serilog.Log.ForContext(type);
                 return new SerilogFullLogger(actualLogger);
@@ -46,9 +44,7 @@ public static class MutableDependencyResolverExtensions
         /// </remarks>
         /// <param name="actualLogger">The serilog logger to register.</param>
         /// <example>
-        /// <code>
-        /// AppLocator.CurrentMutable.UseSerilogWithWrappingFullLogger();
-        /// </code>
+        /// <c>AppLocator.CurrentMutable.UseSerilogWithWrappingFullLogger();</c>
         /// </example>
         public void UseSerilogFullLogger(global::Serilog.ILogger actualLogger)
         {

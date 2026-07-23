@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -23,7 +23,7 @@ internal class InternalLocator : IDisposable
     private readonly IDisposable _resolverChangedNotification;
 
     /// <summary>Reentrancy counter; while greater than zero, change notifications are suppressed.</summary>
-    private volatile int _resolverChangedNotificationSuspendCount;
+    private int _resolverChangedNotificationSuspendCount;
 
     /// <summary>Guards against running the dispose logic more than once.</summary>
     private bool _disposedValue;
@@ -33,15 +33,8 @@ internal class InternalLocator : IDisposable
     {
         Internal = new InstanceGenericFirstDependencyResolver();
 
-        _resolverChangedNotification = RegisterResolverCallbackChanged(() =>
-        {
-            if (CurrentMutable is null)
-            {
-                return;
-            }
-
-            AppLocator.ReInit(CurrentMutable);
-        });
+        // CurrentMutable returns the non-nullable Internal resolver (set in this constructor and only ever replaced via the null-guarded SetLocator), so it is never null here.
+        _resolverChangedNotification = RegisterResolverCallbackChanged(() => AppLocator.ReInit(CurrentMutable));
     }
 
     /// <summary>
@@ -52,14 +45,14 @@ internal class InternalLocator : IDisposable
     /// to simply use the default implementation.
     /// </summary>
     /// <value>The dependency resolver.</value>
-    public IReadonlyDependencyResolver Current => Internal;
+    internal IReadonlyDependencyResolver Current => Internal;
 
     /// <summary>
     /// Gets the mutable dependency resolver.
     /// The default resolver is also a mutable resolver, so this will be non-null.
     /// Use this to register new types on startup if you are using the default resolver.
     /// </summary>
-    public IMutableDependencyResolver CurrentMutable => Internal;
+    internal IMutableDependencyResolver CurrentMutable => Internal;
 
     /// <summary>Gets or sets the dependency resolver used internally by the component.</summary>
     internal IDependencyResolver Internal { get; set; }
@@ -73,7 +66,7 @@ internal class InternalLocator : IDisposable
 
     /// <summary>Allows setting the dependency resolver.</summary>
     /// <param name="dependencyResolver">The dependency resolver to set.</param>
-    public void SetLocator(IDependencyResolver dependencyResolver)
+    internal void SetLocator(IDependencyResolver dependencyResolver)
     {
         ArgumentExceptionHelper.ThrowIfNull(dependencyResolver);
         Internal = dependencyResolver;
@@ -108,7 +101,7 @@ internal class InternalLocator : IDisposable
     /// to configure the current resolver.</param>
     /// <returns>When disposed, removes the callback. You probably can
     /// ignore this.</returns>
-    public IDisposable RegisterResolverCallbackChanged(Action callback)
+    internal IDisposable RegisterResolverCallbackChanged(Action callback)
     {
         lock (_resolverChanged)
         {
@@ -126,7 +119,7 @@ internal class InternalLocator : IDisposable
         {
             lock (_resolverChanged)
             {
-                _resolverChanged.Remove(callback);
+                _ = _resolverChanged.Remove(callback);
             }
         });
     }
@@ -134,16 +127,16 @@ internal class InternalLocator : IDisposable
     /// <summary>This method will prevent resolver changed notifications from happening until the returned <see cref="IDisposable"/> is disposed.</summary>
     /// <returns>A disposable which when disposed will indicate the change
     /// notification is no longer needed.</returns>
-    public IDisposable SuppressResolverCallbackChangedNotifications()
+    internal IDisposable SuppressResolverCallbackChangedNotifications()
     {
-        Interlocked.Increment(ref _resolverChangedNotificationSuspendCount);
+        _ = Interlocked.Increment(ref _resolverChangedNotificationSuspendCount);
 
         return new ActionDisposable(() => Interlocked.Decrement(ref _resolverChangedNotificationSuspendCount));
     }
 
     /// <summary>Indicates if the we are notifying external classes of updates to the resolver being changed.</summary>
     /// <returns>A value indicating whether the notifications are happening.</returns>
-    public bool AreResolverCallbackChangedNotificationsEnabled() => _resolverChangedNotificationSuspendCount == 0;
+    internal bool AreResolverCallbackChangedNotificationsEnabled() => Volatile.Read(ref _resolverChangedNotificationSuspendCount) == 0;
 
     /// <summary>Releases the unmanaged resources used by the object and optionally releases the managed resources.</summary>
     /// <remarks>This method is called by public Dispose methods and the finalizer. When disposing is true,

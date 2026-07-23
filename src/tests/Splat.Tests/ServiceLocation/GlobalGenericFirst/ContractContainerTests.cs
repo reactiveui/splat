@@ -14,6 +14,12 @@ public class ContractContainerTests
     /// <summary>The second contract name used in these tests.</summary>
     private const string Contract2 = "Contract2";
 
+    /// <summary>Value stored under the first contract in isolation tests.</summary>
+    private const string Contract1Value = "contract1";
+
+    /// <summary>Value stored under the second contract in isolation tests.</summary>
+    private const string Contract2Value = "contract2";
+
     /// <summary>Contract name used for the first registration in these tests.</summary>
     private const string First = "first";
 
@@ -101,7 +107,7 @@ public class ContractContainerTests
     {
         // Arrange
         const int expectedValue = 42;
-        Func<int?> factory = () => expectedValue;
+        Func<int?> factory = static () => expectedValue;
 
         // Act
         ContractContainer<int?>.Add(factory, Contract1);
@@ -197,7 +203,7 @@ public class ContractContainerTests
     public async Task TryGet_WithFactoryReturningNull_ReturnsFalse()
     {
         // Arrange
-        ContractContainer<string?>.Add(() => null, Contract1);
+        ContractContainer<string?>.Add(static () => null, Contract1);
 
         // Act
         var success = ContractContainer<string?>.TryGet(Contract1, out var result);
@@ -223,8 +229,8 @@ public class ContractContainerTests
             Contract1);
 
         // Act
-        ContractContainer<int>.TryGet(Contract1, out var result1);
-        ContractContainer<int>.TryGet(Contract1, out var result2);
+        _ = ContractContainer<int>.TryGet(Contract1, out var result1);
+        _ = ContractContainer<int>.TryGet(Contract1, out var result2);
 
         // Assert
         await Assert.That(invocationCount).IsEqualTo(TwoItems);
@@ -340,8 +346,8 @@ public class ContractContainerTests
     public async Task RemoveCurrent_OnlyAffectsSpecifiedContract()
     {
         // Arrange
-        ContractContainer<string>.Add("contract1", Contract1);
-        ContractContainer<string>.Add("contract2", Contract2);
+        ContractContainer<string>.Add(Contract1Value, Contract1);
+        ContractContainer<string>.Add(Contract2Value, Contract2);
 
         // Act
         ContractContainer<string>.RemoveCurrent(Contract1);
@@ -376,8 +382,8 @@ public class ContractContainerTests
     public async Task Clear_OnlyAffectsSpecifiedContract()
     {
         // Arrange
-        ContractContainer<string>.Add("contract1", Contract1);
-        ContractContainer<string>.Add("contract2", Contract2);
+        ContractContainer<string>.Add(Contract1Value, Contract1);
+        ContractContainer<string>.Add(Contract2Value, Contract2);
 
         // Act
         ContractContainer<string>.Clear(Contract1);
@@ -393,8 +399,8 @@ public class ContractContainerTests
     public async Task ClearAll_RemovesAllContracts()
     {
         // Arrange
-        ContractContainer<string>.Add("contract1", Contract1);
-        ContractContainer<string>.Add("contract2", Contract2);
+        ContractContainer<string>.Add(Contract1Value, Contract1);
+        ContractContainer<string>.Add(Contract2Value, Contract2);
 
         // Act
         ContractContainer<string>.ClearAll();
@@ -422,8 +428,8 @@ public class ContractContainerTests
         ContractContainer<int>.Add(SampleValue, Contract1);
 
         // Assert
-        ContractContainer<string>.TryGet(Contract1, out var stringResult);
-        ContractContainer<int>.TryGet(Contract1, out var intResult);
+        _ = ContractContainer<string>.TryGet(Contract1, out var stringResult);
+        _ = ContractContainer<int>.TryGet(Contract1, out var intResult);
 
         await Assert.That(stringResult).IsEqualTo("string value");
         await Assert.That(intResult).IsEqualTo(SampleValue);

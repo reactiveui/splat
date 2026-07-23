@@ -19,6 +19,81 @@ public sealed class SplatColorCoverageTests
     /// <summary>The blue component used by the component-extraction test.</summary>
     private const byte BlueComponent = 0x78;
 
+    /// <summary>Fully opaque alpha component.</summary>
+    private const int FullAlpha = 255;
+
+    /// <summary>The blue component of <see cref="KnownColor.DarkBlue"/>.</summary>
+    private const int DarkBlueBlue = 139;
+
+    /// <summary>The alpha component of an arbitrary color that has no known match.</summary>
+    private const int SampleAlpha = 10;
+
+    /// <summary>The red component of an arbitrary color that has no known match.</summary>
+    private const int SampleRed = 20;
+
+    /// <summary>The green component of an arbitrary color that has no known match.</summary>
+    private const int SampleGreen = 30;
+
+    /// <summary>The blue component of an arbitrary color that has no known match.</summary>
+    private const int SampleBlue = 40;
+
+    /// <summary>The blue component of the first color in the inequality comparison.</summary>
+    private const int BaseBlue = 1;
+
+    /// <summary>The blue component of the second, differing color in the inequality comparison.</summary>
+    private const int DifferentBlue = 2;
+
+    /// <summary>The red component of a light color whose channel sum exceeds a single channel maximum.</summary>
+    private const int LightRed = 200;
+
+    /// <summary>The green component of a light color whose channel sum exceeds a single channel maximum.</summary>
+    private const int LightGreen = 220;
+
+    /// <summary>The blue component of a light color whose channel sum exceeds a single channel maximum.</summary>
+    private const int LightBlue = 240;
+
+    /// <summary>The saturation expected from the light color, taken through the high-sum branch.</summary>
+    private const float LightSaturation = 40F / 70F;
+
+    /// <summary>The red component of a red-dominant color whose hue wraps past a full circle.</summary>
+    private const int RedDominantRed = 200;
+
+    /// <summary>The green component of a red-dominant color whose hue wraps past a full circle.</summary>
+    private const int RedDominantGreen = 199;
+
+    /// <summary>The blue component of a red-dominant color whose hue wraps past a full circle.</summary>
+    private const int RedDominantBlue = 0;
+
+    /// <summary>The hue, in degrees, expected from the red-dominant color after wrapping past a full circle.</summary>
+    private const float RedDominantHue = 59.7F;
+
+    /// <summary>The red component of a green-dominant color.</summary>
+    private const int GreenDominantRed = 100;
+
+    /// <summary>The green component of a green-dominant color.</summary>
+    private const int GreenDominantGreen = 200;
+
+    /// <summary>The blue component of a green-dominant color.</summary>
+    private const int GreenDominantBlue = 50;
+
+    /// <summary>The hue, in degrees, expected from the green-dominant color.</summary>
+    private const float GreenDominantHue = 100F;
+
+    /// <summary>Tolerance used when comparing floating-point color components.</summary>
+    private const float ColorEpsilon = 1e-6F;
+
+    /// <summary>Tolerance used when comparing floating-point hue values.</summary>
+    private const float HueTolerance = 0.1F;
+
+    /// <summary>An alpha component differing from <see cref="SampleAlpha"/>.</summary>
+    private const int DifferentAlpha = SampleAlpha + 1;
+
+    /// <summary>A red component differing from <see cref="SampleRed"/>.</summary>
+    private const int DifferentRed = SampleRed + 1;
+
+    /// <summary>A green component differing from <see cref="SampleGreen"/>.</summary>
+    private const int DifferentGreen = SampleGreen + 1;
+
     /// <summary>Verifies that a color created from a known color reports as known, named, and not empty.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -53,7 +128,7 @@ public sealed class SplatColorCoverageTests
     [Test]
     public async Task FromArgb_NonKnownValue_IsNotKnownOrNamed()
     {
-        var color = SplatColor.FromArgb(10, 20, 30, 40);
+        var color = SplatColor.FromArgb(SampleAlpha, SampleRed, SampleGreen, SampleBlue);
 
         using (Assert.Multiple())
         {
@@ -68,7 +143,7 @@ public sealed class SplatColorCoverageTests
     [Test]
     public async Task Name_ForUnnamedColor_IsHexValue()
     {
-        var color = SplatColor.FromArgb(10, 20, 30, 40);
+        var color = SplatColor.FromArgb(SampleAlpha, SampleRed, SampleGreen, SampleBlue);
 
         await Assert.That(color.Name).IsEqualTo($"{color.ToArgb():x}");
     }
@@ -105,7 +180,7 @@ public sealed class SplatColorCoverageTests
     [Test]
     public async Task GetHashCode_IsEqualForEqualColors()
     {
-        var first = SplatColor.FromArgb(255, 0, 0, 139);
+        var first = SplatColor.FromArgb(FullAlpha, 0, 0, DarkBlueBlue);
         var second = SplatColor.FromKnownColor(KnownColor.DarkBlue);
 
         await Assert.That(first.GetHashCode()).IsEqualTo(second.GetHashCode());
@@ -116,7 +191,7 @@ public sealed class SplatColorCoverageTests
     [Test]
     public async Task Equals_WithNonColorObject_IsFalse()
     {
-        var color = SplatColor.FromArgb(1, 2, 3, 4);
+        var color = SplatColor.FromArgb(AlphaComponent, RedComponent, GreenComponent, BlueComponent);
 
         await Assert.That(color.Equals("not a color")).IsFalse();
     }
@@ -126,8 +201,8 @@ public sealed class SplatColorCoverageTests
     [Test]
     public async Task EqualityOperator_ForEqualColors_IsTrue()
     {
-        var first = SplatColor.FromArgb(0, 0, 139);
-        var second = SplatColor.FromArgb(255, 0, 0, 139);
+        var first = SplatColor.FromArgb(0, 0, DarkBlueBlue);
+        var second = SplatColor.FromArgb(FullAlpha, 0, 0, DarkBlueBlue);
 
         await Assert.That(first == second).IsTrue();
     }
@@ -137,8 +212,8 @@ public sealed class SplatColorCoverageTests
     [Test]
     public async Task InequalityOperator_ForDifferingColors_IsTrue()
     {
-        var first = SplatColor.FromArgb(0, 0, 1);
-        var second = SplatColor.FromArgb(0, 0, 2);
+        var first = SplatColor.FromArgb(0, 0, BaseBlue);
+        var second = SplatColor.FromArgb(0, 0, DifferentBlue);
 
         await Assert.That(first != second).IsTrue();
     }
@@ -146,10 +221,7 @@ public sealed class SplatColorCoverageTests
     /// <summary>Verifies that <see cref="SplatColor.Empty"/> stringifies to its empty form.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task ToString_ForEmpty_GivesEmptyForm()
-    {
-        await Assert.That(SplatColor.Empty.ToString()).IsEqualTo("SplatColor [Empty]");
-    }
+    public async Task ToString_ForEmpty_GivesEmptyForm() => await Assert.That(SplatColor.Empty.ToString()).IsEqualTo("SplatColor [Empty]");
 
     /// <summary>Verifies that a system known color reports as a system color.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -159,5 +231,68 @@ public sealed class SplatColorCoverageTests
         var color = SplatColor.FromKnownColor(KnownColor.Control);
 
         await Assert.That(color.IsSystemColor).IsTrue();
+    }
+
+    /// <summary>Verifies that a light color whose channel sum exceeds a single channel maximum uses the high-sum saturation branch.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetSaturation_ForLightColor_UsesHighSumBranch()
+    {
+        var color = SplatColor.FromArgb(FullAlpha, LightRed, LightGreen, LightBlue);
+
+        await Assert.That(color.GetSaturation()).IsEqualTo(LightSaturation).Within(ColorEpsilon);
+    }
+
+    /// <summary>Verifies that a red-dominant color produces a hue that wraps back past a full circle.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetHue_ForRedDominantColor_WrapsPastFullCircle()
+    {
+        var color = SplatColor.FromArgb(FullAlpha, RedDominantRed, RedDominantGreen, RedDominantBlue);
+
+        await Assert.That(color.GetHue()).IsEqualTo(RedDominantHue).Within(HueTolerance);
+    }
+
+    /// <summary>Verifies that a green-dominant color produces a hue in the green sextant.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetHue_ForGreenDominantColor_UsesGreenSextant()
+    {
+        var color = SplatColor.FromArgb(FullAlpha, GreenDominantRed, GreenDominantGreen, GreenDominantBlue);
+
+        await Assert.That(color.GetHue()).IsEqualTo(GreenDominantHue).Within(HueTolerance);
+    }
+
+    /// <summary>Verifies that colors differing only in their alpha component are not equal.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Equals_WhenAlphaDiffers_IsFalse()
+    {
+        var first = SplatColor.FromArgb(SampleAlpha, SampleRed, SampleGreen, SampleBlue);
+        var second = SplatColor.FromArgb(DifferentAlpha, SampleRed, SampleGreen, SampleBlue);
+
+        await Assert.That(first.Equals(second)).IsFalse();
+    }
+
+    /// <summary>Verifies that colors differing only in their red component are not equal.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Equals_WhenRedDiffers_IsFalse()
+    {
+        var first = SplatColor.FromArgb(SampleAlpha, SampleRed, SampleGreen, SampleBlue);
+        var second = SplatColor.FromArgb(SampleAlpha, DifferentRed, SampleGreen, SampleBlue);
+
+        await Assert.That(first.Equals(second)).IsFalse();
+    }
+
+    /// <summary>Verifies that colors differing only in their green component are not equal.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Equals_WhenGreenDiffers_IsFalse()
+    {
+        var first = SplatColor.FromArgb(SampleAlpha, SampleRed, SampleGreen, SampleBlue);
+        var second = SplatColor.FromArgb(SampleAlpha, SampleRed, DifferentGreen, SampleBlue);
+
+        await Assert.That(first.Equals(second)).IsFalse();
     }
 }

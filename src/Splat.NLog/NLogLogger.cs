@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -16,8 +16,8 @@ namespace Splat.NLog;
 /// the underlying NLog logger.</remarks>
 [DebuggerDisplay("Name={_logger.Name} Level={Level}")]
 [SuppressMessage(
-    "Minor Code Smell",
-    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    "StyleSharp",
+    "SST2307:A generic method's type parameter appears in no parameter, so no caller can infer it",
     Justification = "T is the caller-supplied source type used via LogResolver.Resolve(typeof(T)); it cannot appear in the parameter list without breaking the IFullLogger API contract.")]
 public sealed partial class NLogLogger : IFullLogger, IDisposable
 {

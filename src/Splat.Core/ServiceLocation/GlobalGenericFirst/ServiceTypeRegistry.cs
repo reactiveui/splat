@@ -32,7 +32,7 @@ internal static class ServiceTypeRegistry
     /// <param name="serviceType">The service type that was registered.</param>
     /// <param name="contract">Optional contract key; <see langword="null"/> maps to the default contract.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="serviceType"/> is <see langword="null"/>.</exception>
-    public static void TrackNonGenericRegistration(Type serviceType, string? contract = null)
+    internal static void TrackNonGenericRegistration(Type serviceType, string? contract = null)
     {
         ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
@@ -40,7 +40,7 @@ internal static class ServiceTypeRegistry
 
         lock (NonGenericGate)
         {
-            NonGenericRegistrationSet.Add(key);
+            _ = NonGenericRegistrationSet.Add(key);
             PublishNonGenericSnapshot_NoThrow();
         }
     }
@@ -50,7 +50,7 @@ internal static class ServiceTypeRegistry
     /// <param name="contract">Optional contract key; <see langword="null"/> maps to the default contract.</param>
     /// <returns><see langword="true"/> if a non-generic registration exists; otherwise <see langword="false"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="serviceType"/> is <see langword="null"/>.</exception>
-    public static bool HasNonGenericRegistrations(Type serviceType, string? contract = null)
+    internal static bool HasNonGenericRegistrations(Type serviceType, string? contract = null)
     {
         ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
@@ -63,7 +63,7 @@ internal static class ServiceTypeRegistry
     /// <param name="factory">Factory delegate that produces instances.</param>
     /// <param name="contract">Optional contract key; <see langword="null"/> maps to the default contract.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="serviceType"/> or <paramref name="factory"/> is <see langword="null"/>.</exception>
-    public static void Register(Type serviceType, Func<object?> factory, string? contract = null)
+    internal static void Register(Type serviceType, Func<object?> factory, string? contract = null)
     {
         ArgumentExceptionHelper.ThrowIfNull(serviceType);
         ArgumentExceptionHelper.ThrowIfNull(factory);
@@ -77,7 +77,7 @@ internal static class ServiceTypeRegistry
     /// <param name="contract">Optional contract key; <see langword="null"/> maps to the default contract.</param>
     /// <returns>The resolved instance, or <see langword="null"/> when no registration exists or the factory returns <see langword="null"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="serviceType"/> is <see langword="null"/>.</exception>
-    public static object? GetService(Type serviceType, string? contract = null)
+    internal static object? GetService(Type serviceType, string? contract = null)
     {
         ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
@@ -87,7 +87,7 @@ internal static class ServiceTypeRegistry
         }
 
         var factories = entry.GetSnapshot();
-        return factories.Length == 0 ? null : factories[factories.Length - 1]();
+        return factories.Length == 0 ? null : factories[^1]();
     }
 
     /// <summary>Gets all registered services for a type.</summary>
@@ -95,7 +95,7 @@ internal static class ServiceTypeRegistry
     /// <param name="contract">Optional contract key; <see langword="null"/> maps to the default contract.</param>
     /// <returns>An array of resolved services (excluding nulls). Returns an empty array when none exist.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="serviceType"/> is <see langword="null"/>.</exception>
-    public static object[] GetServices(Type serviceType, string? contract = null)
+    internal static object[] GetServices(Type serviceType, string? contract = null)
     {
         ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
@@ -113,7 +113,7 @@ internal static class ServiceTypeRegistry
     /// <param name="contract">Optional contract key; <see langword="null"/> maps to the default contract.</param>
     /// <returns><see langword="true"/> if at least one registration exists; otherwise <see langword="false"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="serviceType"/> is <see langword="null"/>.</exception>
-    public static bool HasRegistration(Type serviceType, string? contract = null)
+    internal static bool HasRegistration(Type serviceType, string? contract = null)
     {
         ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
@@ -125,7 +125,7 @@ internal static class ServiceTypeRegistry
     /// <param name="contract">Optional contract key; <see langword="null"/> maps to the default contract.</param>
     /// <returns>The number of registrations for the type and contract.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="serviceType"/> is <see langword="null"/>.</exception>
-    public static int GetCount(Type serviceType, string? contract = null)
+    internal static int GetCount(Type serviceType, string? contract = null)
     {
         ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
@@ -136,7 +136,7 @@ internal static class ServiceTypeRegistry
     /// <param name="serviceType">The service type to unregister.</param>
     /// <param name="contract">Optional contract key; <see langword="null"/> maps to the default contract.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="serviceType"/> is <see langword="null"/>.</exception>
-    public static void UnregisterCurrent(Type serviceType, string? contract = null)
+    internal static void UnregisterCurrent(Type serviceType, string? contract = null)
     {
         ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
@@ -147,11 +147,11 @@ internal static class ServiceTypeRegistry
             return;
         }
 
-        Entries.TryRemove(key, out _);
+        _ = Entries.TryRemove(key, out _);
 
         lock (NonGenericGate)
         {
-            NonGenericRegistrationSet.Remove(key);
+            _ = NonGenericRegistrationSet.Remove(key);
             PublishNonGenericSnapshot_NoThrow();
         }
     }
@@ -160,7 +160,7 @@ internal static class ServiceTypeRegistry
     /// <param name="serviceType">The service type to unregister.</param>
     /// <param name="contract">Optional contract key; <see langword="null"/> maps to the default contract.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="serviceType"/> is <see langword="null"/>.</exception>
-    public static void UnregisterAll(Type serviceType, string? contract = null)
+    internal static void UnregisterAll(Type serviceType, string? contract = null)
     {
         ArgumentExceptionHelper.ThrowIfNull(serviceType);
 
@@ -173,13 +173,13 @@ internal static class ServiceTypeRegistry
 
         lock (NonGenericGate)
         {
-            NonGenericRegistrationSet.Remove(key);
+            _ = NonGenericRegistrationSet.Remove(key);
             PublishNonGenericSnapshot_NoThrow();
         }
     }
 
     /// <summary>Clears all registrations.</summary>
-    public static void Clear()
+    internal static void Clear()
     {
         Entries.Clear();
 
@@ -192,7 +192,7 @@ internal static class ServiceTypeRegistry
 
     /// <summary>Returns a snapshot of all registered factories for disposal.</summary>
     /// <returns>An array containing every registered factory across all entries at the time of the call.</returns>
-    public static Func<object?>[] GetAllFactoriesForDisposal()
+    internal static Func<object?>[] GetAllFactoriesForDisposal()
     {
         var entriesSnapshot = Entries.ToArray();
 
@@ -218,7 +218,8 @@ internal static class ServiceTypeRegistry
             var value = factories[i]();
             if (value is not null)
             {
-                tmp[idx++] = value;
+                tmp[idx] = value;
+                idx++;
             }
         }
 

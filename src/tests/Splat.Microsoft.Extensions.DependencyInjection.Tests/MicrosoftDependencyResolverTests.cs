@@ -27,11 +27,11 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
         const int foo = 5;
 
         // Explicitly cast to call the non-generic Register method with null service type
-        resolver.Register(() => foo, serviceType: null);
+        resolver.Register(static () => foo, serviceType: null);
 
         const int bar = 4;
         const string contract = "foo";
-        resolver.Register(() => bar, serviceType: null, contract: contract);
+        resolver.Register(static () => bar, serviceType: null, contract: contract);
 
         await Assert.That(resolver.HasRegistration(null)).IsTrue();
 
@@ -75,7 +75,7 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     public override Task ServiceRegistrationCallback_Generic_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        _ = Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(static _ => { }));
         return Task.CompletedTask;
     }
 
@@ -88,8 +88,8 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
         var resolver = GetDependencyResolver();
 
         // Register a service first so the callback would normally fire immediately; MS.DI still throws.
-        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
+        _ = Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(static _ => { }));
         return Task.CompletedTask;
     }
 
@@ -100,7 +100,7 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     public override Task ServiceRegistrationCallback_Generic_WithContract_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>("test", _ => { }));
+        _ = Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>("test", static _ => { }));
         return Task.CompletedTask;
     }
 
@@ -111,7 +111,7 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     public override Task ServiceRegistrationCallback_NonGeneric_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), _ => { }));
+        _ = Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), static _ => { }));
         return Task.CompletedTask;
     }
 
@@ -122,7 +122,7 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
     public override Task ServiceRegistrationCallback_NonGeneric_WithContract_InvokedWhenServiceRegistered()
     {
         var resolver = GetDependencyResolver();
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), "test", _ => { }));
+        _ = Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback(typeof(ViewModelOne), "test", static _ => { }));
         return Task.CompletedTask;
     }
 
@@ -135,7 +135,7 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
         var resolver = GetDependencyResolver();
 
         // The subscription disposable is never produced because MS.DI throws before returning it.
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }).Dispose());
+        _ = Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(static _ => { }).Dispose());
         return Task.CompletedTask;
     }
 
@@ -164,9 +164,9 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
         var resolver = GetDependencyResolver();
 
         // Register multiple services so the callback would normally fire for each; MS.DI still throws.
-        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
-        resolver.Register(() => new ViewModelOne(), typeof(ViewModelOne));
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
+        resolver.Register(static () => new ViewModelOne(), typeof(ViewModelOne));
+        _ = Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(static _ => { }));
         return Task.CompletedTask;
     }
 
@@ -180,7 +180,7 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
         await resolver.DisposeAsync();
 
         // After disposal, ServiceRegistrationCallback still throws NotSupportedException for MS.DI.
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        _ = Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(static _ => { }));
     }
 
     /// <summary>Verifies that Dispose suppresses exceptions from callbacks (NotApplicable for MS.DI as callbacks throw).</summary>
@@ -192,38 +192,62 @@ public sealed class MicrosoftDependencyResolverTests : BaseDependencyResolverTes
         var resolver = GetDependencyResolver();
 
         // Callbacks can never be registered (MS.DI throws), so disposal has nothing to suppress.
-        Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(_ => { }));
+        _ = Assert.Throws<NotSupportedException>(() => resolver.ServiceRegistrationCallback<ViewModelOne>(static _ => { }));
         await resolver.DisposeAsync();
     }
 
     /// <summary>MS.DI doesn't invoke callbacks on disposal.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    [ExcludeFromCodeCoverage]
-    public override Task Dispose_InvokesCallbacks()
+    public override async Task Dispose_InvokesCallbacks()
     {
-        // MS.DI ServiceRegistrationCallback throws NotSupportedException, so this test doesn't apply
-        return Task.CompletedTask;
+        var resolver = GetDependencyResolver();
+
+        // MS.DI does not support registration callbacks, so there is nothing for disposal to invoke.
+        await Assert.That(() => resolver.ServiceRegistrationCallback<ViewModelOne>(static _ => { }))
+            .Throws<NotSupportedException>();
+        await resolver.DisposeAsync();
     }
 
-    /// <summary>MS.DI manages disposal of registered services itself.</summary>
+    /// <summary>MS.DI disposes the factory-created services it owns on disposal.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    [ExcludeFromCodeCoverage]
-    public override Task Dispose_DisposesRegisteredServices()
+    public override async Task Dispose_DisposesRegisteredServices()
     {
-        // MS.DI manages its own service disposal lifecycle
-        return Task.CompletedTask;
+        var resolver = GetDependencyResolver();
+        var disposableService = new DisposableTestService();
+
+        // A factory-backed singleton is created and owned by the provider (unlike a constant instance, which MS.DI leaves alone).
+        resolver.RegisterLazySingleton(() => disposableService);
+
+        _ = resolver.GetService<DisposableTestService>();
+        await Assert.That(disposableService.IsDisposed).IsFalse();
+
+        await resolver.DisposeAsync();
+
+        // MS.DI disposes the services it creates when the provider is disposed.
+        await Assert.That(disposableService.IsDisposed).IsTrue();
     }
 
-    /// <summary>MS.DI handles lazy singletons itself.</summary>
+    /// <summary>MS.DI does not create an unresolved lazy singleton just to dispose it.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    [ExcludeFromCodeCoverage]
-    public override Task Dispose_WithLazySingleton_DoesNotCreateIfNotAccessed()
+    public override async Task Dispose_WithLazySingleton_DoesNotCreateIfNotAccessed()
     {
-        // MS.DI manages lazy singleton creation and disposal
-        return Task.CompletedTask;
+        var resolver = GetDependencyResolver();
+        var factoryCalled = false;
+        resolver.RegisterLazySingleton<DisposableTestService>(() =>
+        {
+            factoryCalled = true;
+            return new();
+        });
+
+        await Assert.That(factoryCalled).IsFalse();
+
+        await resolver.DisposeAsync();
+
+        // MS.DI does not activate an unresolved singleton just to dispose it.
+        await Assert.That(factoryCalled).IsFalse();
     }
 
     /// <inheritdoc />

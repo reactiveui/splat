@@ -32,21 +32,48 @@ public class LocatorTests
         _appLocatorScope = null;
     }
 
+    /// <summary>Verifies that <see cref="Locator.SetLocator"/> replaces the resolver returned by <see cref="Locator.GetLocator"/>.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SetLocator_ReplacesCurrentResolver()
+    {
+        using var resolver = new ModernDependencyResolver();
+
+        Locator.SetLocator(resolver);
+
+        await Assert.That(Locator.GetLocator()).IsSameReferenceAs(resolver);
+    }
+
+    /// <summary>Verifies that <see cref="Locator.SuppressResolverCallbackChangedNotifications"/> disables notifications until disposed.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SuppressResolverCallbackChangedNotifications_DisablesNotificationsUntilDisposed()
+    {
+        await Assert.That(Locator.AreResolverCallbackChangedNotificationsEnabled()).IsTrue();
+
+        using (Locator.SuppressResolverCallbackChangedNotifications())
+        {
+            await Assert.That(Locator.AreResolverCallbackChangedNotificationsEnabled()).IsFalse();
+        }
+
+        await Assert.That(Locator.AreResolverCallbackChangedNotificationsEnabled()).IsTrue();
+    }
+
     /// <summary>Should the resolve nulls.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Can_Register_And_Resolve_Null_Types()
     {
-        var container = new InternalLocator();
+        using var container = new InternalLocator();
 
         const int foo = 5;
 
         // Explicitly cast to call the non-generic Register method with null service type
-        container.CurrentMutable.Register(() => foo, serviceType: null);
+        container.CurrentMutable.Register(static () => foo, serviceType: null);
 
         const int bar = 4;
         const string contract = "foo";
-        container.CurrentMutable.Register(() => bar, serviceType: null, contract: contract);
+        container.CurrentMutable.Register(static () => bar, serviceType: null, contract: contract);
 
         await Assert.That(container.CurrentMutable.HasRegistration(null)).IsTrue();
         var value = container.Current.GetService(null);
@@ -84,7 +111,7 @@ public class LocatorTests
     public async Task InitializeSplat_RegistrationsNotEmptyNoRegistrations()
     {
         // this is using the internal constructor and the Type-based GetService overload
-        var testLocator = new InternalLocator();
+        using var testLocator = new InternalLocator();
         var logManager = testLocator.Current.GetService(typeof(ILogManager));
         var logger = testLocator.Current.GetService(typeof(ILogger));
 
@@ -106,7 +133,7 @@ public class LocatorTests
     [Test]
     public async Task InitializeSplat_ContractRegistrationsNullNoRegistration()
     {
-        var testLocator = new InternalLocator();
+        using var testLocator = new InternalLocator();
         var logManager = testLocator.Current.GetService(typeof(ILogManager), "test");
         var logger = testLocator.Current.GetService(typeof(ILogger), "test");
 
@@ -122,7 +149,7 @@ public class LocatorTests
     [Test]
     public async Task InitializeSplat_ContractRegistrationsExtensionMethodsNullNoRegistration()
     {
-        var testLocator = new InternalLocator();
+        using var testLocator = new InternalLocator();
         var logManager = testLocator.Current.GetService<ILogManager>("test");
         var logger = testLocator.Current.GetService<ILogger>("test");
 
@@ -138,7 +165,7 @@ public class LocatorTests
     [Test]
     public async Task InitializeSplat_ExtensionMethodsNotNull()
     {
-        var testLocator = new InternalLocator();
+        using var testLocator = new InternalLocator();
         var logManager = testLocator.Current.GetService<ILogManager>();
         var logger = testLocator.Current.GetService<ILogger>();
 
@@ -166,7 +193,7 @@ public class LocatorTests
         var numberNotifications = 0;
         void NotificationAction() => Interlocked.Increment(ref numberNotifications);
 
-        testLocator.RegisterResolverCallbackChanged(NotificationAction);
+        _ = testLocator.RegisterResolverCallbackChanged(NotificationAction);
 
         testLocator.SetLocator(new ModernDependencyResolver());
         testLocator.SetLocator(new ModernDependencyResolver());
@@ -192,7 +219,7 @@ public class LocatorTests
             var numberNotifications = 0;
             void NotificationAction() => Interlocked.Increment(ref numberNotifications);
 
-            testLocator.RegisterResolverCallbackChanged(NotificationAction);
+            _ = testLocator.RegisterResolverCallbackChanged(NotificationAction);
 
             testLocator.SetLocator(new ModernDependencyResolver());
             testLocator.SetLocator(new ModernDependencyResolver());
@@ -212,7 +239,7 @@ public class LocatorTests
         void NotificationAction() => Interlocked.Increment(ref numberNotifications);
 
         var testLocator = new InternalLocator();
-        testLocator.RegisterResolverCallbackChanged(NotificationAction);
+        _ = testLocator.RegisterResolverCallbackChanged(NotificationAction);
 
         var outerResolver = testLocator.Internal.WithResolver();
         var innerResolver = testLocator.Internal.WithResolver();
@@ -231,7 +258,7 @@ public class LocatorTests
         var numberNotifications = 0;
         void NotificationAction() => Interlocked.Increment(ref numberNotifications);
 
-        Locator.RegisterResolverCallbackChanged(NotificationAction);
+        _ = Locator.RegisterResolverCallbackChanged(NotificationAction);
 
         var outerResolver = Locator.GetLocator().WithResolver(false);
         var innerResolver = Locator.GetLocator().WithResolver(false);
@@ -251,7 +278,7 @@ public class LocatorTests
     [Test]
     public async Task ModernDependencyResolver_UnregisterAll_WithValuesWorks()
     {
-        var currentMutable = new ModernDependencyResolver();
+        using var currentMutable = new ModernDependencyResolver();
 
         var dummy1 = new DummyObjectClass1();
         var dummy2 = new DummyObjectClass2();
@@ -291,7 +318,7 @@ public class LocatorTests
     [Test]
     public async Task RegisterAndResolveANullableTypeWithValue()
     {
-        Locator.CurrentMutable.Register<DummyObjectClass1?>(() => new());
+        Locator.CurrentMutable.Register<DummyObjectClass1?>(static () => new());
         var doc = Locator.Current.GetService<DummyObjectClass1?>();
         await Assert.That(doc).IsTypeOf<DummyObjectClass1>();
     }
@@ -301,7 +328,7 @@ public class LocatorTests
     [Test]
     public async Task RegisterAndResolveANullableTypeWithNull()
     {
-        Locator.CurrentMutable.Register<DummyObjectClass1?>(() => null);
+        Locator.CurrentMutable.Register<DummyObjectClass1?>(static () => null);
         var doc = Locator.Current.GetService<DummyObjectClass1?>();
         await Assert.That(doc).IsNull();
     }
@@ -312,7 +339,7 @@ public class LocatorTests
     public async Task RegisterAndResolveANullableTypeWithValueLocatorDisposed()
     {
         var currentMutable = new ModernDependencyResolver();
-        currentMutable.Register<DummyObjectClass1?>(() => new());
+        currentMutable.Register<DummyObjectClass1?>(static () => new());
         currentMutable.Dispose();
 
         await Assert.That(() => currentMutable.GetService<DummyObjectClass1?>())
@@ -335,7 +362,7 @@ public class LocatorTests
     public async Task RegisterAndResolveANullableTypeWithNulledInstance()
     {
         const DummyObjectClass1? dummy = null;
-        Locator.CurrentMutable.Register(() => dummy);
+        Locator.CurrentMutable.Register(static () => dummy);
         var doc = Locator.Current.GetService<DummyObjectClass1?>();
         await Assert.That(doc).IsNull();
     }
@@ -345,7 +372,7 @@ public class LocatorTests
     [Test]
     public async Task ModernDependencyResolver_UnregisterAll_NoValuesWorks()
     {
-        var currentMutable = new ModernDependencyResolver();
+        using var currentMutable = new ModernDependencyResolver();
 
         var items = currentMutable.GetServices<IDummyInterface>();
 
@@ -367,7 +394,7 @@ public class LocatorTests
         var dummy2 = new DummyObjectClass2();
         var dummy3 = new DummyObjectClass3();
 
-        var currentMutable = new ModernDependencyResolver();
+        using var currentMutable = new ModernDependencyResolver();
 
         var testContracts = new[] { string.Empty, "test" };
 
@@ -408,7 +435,7 @@ public class LocatorTests
     [Test]
     public async Task ModernDependencyResolver_UnregisterCurrent_NoValuesWorks()
     {
-        var currentMutable = new ModernDependencyResolver();
+        using var currentMutable = new ModernDependencyResolver();
         var items = currentMutable.GetServices<IDummyInterface>();
 
         await Assert.That(items).IsEmpty();
@@ -429,8 +456,8 @@ public class LocatorTests
         Type? type = null;
         string? contract = null;
 
-        var currentMutable = new FuncDependencyResolver(
-            (_, _) => [],
+        using var currentMutable = new FuncDependencyResolver(
+            static (_, _) => [],
             unregisterAll: (passedType, passedContract) =>
             {
                 unregisterAllCalled = true;
@@ -466,8 +493,8 @@ public class LocatorTests
         Type? type = null;
         string? contract = null;
 
-        var currentMutable = new FuncDependencyResolver(
-            (_, _) => [],
+        using var currentMutable = new FuncDependencyResolver(
+            static (_, _) => [],
             unregisterCurrent: (passedType, passedContract) =>
             {
                 unregisterAllCalled = true;

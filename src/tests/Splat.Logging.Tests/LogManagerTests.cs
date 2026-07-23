@@ -15,7 +15,7 @@ public class LogManagerTests
     public async Task DefaultLogManager_Should_Create_WrappingFullLogger()
     {
         var resolver = new ModernDependencyResolver();
-        resolver.Register<ILogger>(() => new TextLogger());
+        resolver.Register<ILogger>(static () => new TextLogger());
         var logManager = new DefaultLogManager(resolver);
         var logger = logManager.GetLogger(typeof(LogManagerTests));
 
@@ -51,9 +51,42 @@ public class LogManagerTests
     [Test]
     public async Task LogManagerMixin_Should_Create_FullLogger()
     {
-        var logManager = new FuncLogManager(_ => new WrappingFullLogger(new TextLogger()));
+        var logManager = new FuncLogManager(static _ => new WrappingFullLogger(new TextLogger()));
         var logger = logManager.GetLogger<LogManagerTests>();
 
         await Assert.That(logger).IsTypeOf<WrappingFullLogger>();
+    }
+
+    /// <summary>
+    /// Test that requesting the logger for the internal cache type returns the shared null logger without touching
+    /// the dependency resolver, and returns the same cached instance on repeated calls.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task DefaultLogManager_Should_Return_Shared_NullLogger_For_Cache_Type()
+    {
+        var resolver = new ModernDependencyResolver();
+        resolver.Register<ILogger>(static () => new TextLogger());
+        var logManager = new DefaultLogManager(resolver);
+
+        var first = logManager.GetLogger(typeof(MemoizingMRUCache<Type, IFullLogger>));
+        var second = logManager.GetLogger(typeof(MemoizingMRUCache<Type, IFullLogger>));
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(first).IsTypeOf<WrappingFullLogger>();
+            await Assert.That(first).IsSameReferenceAs(second);
+        }
+    }
+
+    /// <summary>Test that <see cref="DefaultLogManager"/> throws when the dependency resolver supplies no logger.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task DefaultLogManager_Should_Throw_When_Resolver_Has_No_Logger()
+    {
+        var resolver = new ModernDependencyResolver();
+        var logManager = new DefaultLogManager(resolver);
+
+        await Assert.That(() => logManager.GetLogger(typeof(LogManagerTests))).Throws<LoggingException>();
     }
 }

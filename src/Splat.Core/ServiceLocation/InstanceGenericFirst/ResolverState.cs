@@ -52,7 +52,7 @@ internal sealed class ResolverState
     /// <see cref="Volatile"/> / <see cref="Interlocked"/> operations.
     /// </para>
     /// </remarks>
-    public bool HasAnyRegistrations => Volatile.Read(ref _hasAnyRegistrations) != 0;
+    internal bool HasAnyRegistrations => Volatile.Read(ref _hasAnyRegistrations) != 0;
 
     /// <summary>Gets a unique identifier for this resolver state instance.</summary>
     /// <remarks>
@@ -65,9 +65,9 @@ internal sealed class ResolverState
     /// within the current process.
     /// </para>
     /// </remarks>
-    public long Id { get; } = Interlocked.Increment(ref _nextId);
+    internal long Id { get; } = Interlocked.Increment(ref _nextId);
 
     /// <summary>Marks that at least one registration has been added (one-way <c>false</c> → <c>true</c> transition).</summary>
     /// <returns><see langword="true"/> if this call performed the transition; otherwise <see langword="false"/>.</returns>
-    public bool MarkHasRegistrations() => Interlocked.CompareExchange(ref _hasAnyRegistrations, 1, 0) == 0;
+    internal bool MarkHasRegistrations() => Interlocked.CompareExchange(ref _hasAnyRegistrations, 1, 0) == 0;
 }

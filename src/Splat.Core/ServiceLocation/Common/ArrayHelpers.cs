@@ -2,6 +2,7 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace Splat;
@@ -29,7 +30,7 @@ internal static class ArrayHelpers
 #else
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    public static Registration<T>[] AppendNullable<T>(Registration<T>[]? current, Registration<T> newItem)
+    internal static Registration<T>[] AppendNullable<T>(Registration<T>[]? current, Registration<T> newItem)
     {
         if (current is null)
         {
@@ -55,7 +56,7 @@ internal static class ArrayHelpers
 #else
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    public static T[] RemoveLast<T>(T[]? current)
+    internal static T[] RemoveLast<T>(T[]? current)
     {
         if (current is null || current.Length <= 1)
         {
@@ -86,7 +87,7 @@ internal static class ArrayHelpers
 #else
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    public static T[] MaterializeRegistrations<T>(Registration<T>[] registrations)
+    internal static T[] MaterializeRegistrations<T>(Registration<T>[] registrations)
     {
         ArgumentExceptionHelper.ThrowIfNull(registrations);
 
@@ -113,7 +114,8 @@ internal static class ArrayHelpers
                 var value = factory.Invoke();
                 if (value is not null)
                 {
-                    tmp[idx++] = value;
+                    tmp[idx] = value;
+                    idx++;
                 }
 
                 continue;
@@ -123,7 +125,8 @@ internal static class ArrayHelpers
             var instance = reg.GetInstance();
             if (instance is not null)
             {
-                tmp[idx++] = instance;
+                tmp[idx] = instance;
+                idx++;
             }
         }
 
@@ -184,15 +187,15 @@ internal static class ArrayHelpers
 
         /// <summary>Gets the number of committed items.</summary>
         /// <remarks>Lock-free volatile read; reflects the count after the most recent committed mutation.</remarks>
-        public int Count => Volatile.Read(ref _count);
+        internal int Count => Volatile.Read(ref _count);
 
         /// <summary>Gets a value indicating whether the entry currently holds any items.</summary>
         /// <remarks>Lock-free volatile read; equivalent to <c><see cref="Count"/> &gt; 0</c>.</remarks>
-        public bool HasItems => Volatile.Read(ref _count) > 0;
+        internal bool HasItems => Volatile.Read(ref _count) > 0;
 
         /// <summary>Appends an item, invalidating the snapshot.</summary>
         /// <param name="value">The value to append.</param>
-        public void Add(TValue value)
+        internal void Add(TValue value)
         {
             lock (_gate)
             {
@@ -205,7 +208,7 @@ internal static class ArrayHelpers
         /// <summary>Removes the most recently added item, if any.</summary>
         /// <returns><see langword="true"/> if the entry became empty as a result; otherwise <see langword="false"/>.</returns>
         /// <remarks>When the entry drains to empty, an empty snapshot is published so subsequent reads fast-exit.</remarks>
-        public bool RemoveCurrent()
+        internal bool RemoveCurrent()
         {
             lock (_gate)
             {
@@ -237,7 +240,7 @@ internal static class ArrayHelpers
         /// <param name="value">The value to remove, matched by the default equality comparer.</param>
         /// <returns><see langword="true"/> if an item was removed; otherwise <see langword="false"/>.</returns>
         /// <remarks>When the entry drains to empty, an empty snapshot is published so subsequent reads fast-exit.</remarks>
-        public bool Remove(TValue value)
+        internal bool Remove(TValue value)
         {
             lock (_gate)
             {
@@ -262,7 +265,7 @@ internal static class ArrayHelpers
         }
 
         /// <summary>Removes all items and publishes an empty snapshot.</summary>
-        public void Clear()
+        internal void Clear()
         {
             lock (_gate)
             {
@@ -281,19 +284,43 @@ internal static class ArrayHelpers
         /// Otherwise the snapshot is rebuilt under the gate and allocates an array copy of the list.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TValue[] GetSnapshot()
+        internal TValue[] GetSnapshot()
         {
             var version = Volatile.Read(ref _version);
             var snapshot = Volatile.Read(ref _snapshot);
 
-            if (snapshot is not null && Volatile.Read(ref _snapshotVersion) == version)
-            {
-                return snapshot;
-            }
+            return snapshot is not null && Volatile.Read(ref _snapshotVersion) == version
+                ? snapshot
+                : RebuildSnapshot();
+        }
+
+        /// <summary>Appends all current items to <paramref name="destination"/> under the gate.</summary>
+        /// <param name="destination">The list to append the current items to.</param>
+        /// <remarks>Used by disposal enumeration, which needs every item without invoking factories.</remarks>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="destination"/> is <see langword="null"/>.</exception>
+        internal void CopyItemsTo(List<TValue> destination)
+        {
+            ArgumentExceptionHelper.ThrowIfNull(destination);
 
             lock (_gate)
             {
-                snapshot = _snapshot;
+                destination.AddRange(_list);
+            }
+        }
+
+        /// <summary>Rebuilds and publishes the snapshot under the gate after the lock-free fast path missed.</summary>
+        /// <returns>The current immutable snapshot; never <see langword="null"/>.</returns>
+        /// <remarks>
+        /// The in-gate re-validation success (returning the cached snapshot without rebuilding) only happens when another thread
+        /// rebuilt the snapshot between this thread's lock-free miss and its acquisition of the gate. That race cannot be
+        /// reproduced by a single-threaded test, so the method is excluded from coverage.
+        /// </remarks>
+        [ExcludeFromCodeCoverage] // Defensive: the in-gate re-validation only succeeds when another thread rebuilt the snapshot between the lock-free miss and acquiring the gate.
+        private TValue[] RebuildSnapshot()
+        {
+            lock (_gate)
+            {
+                var snapshot = _snapshot;
                 var currentVersion = _version;
 
                 if (snapshot is null || _snapshotVersion != currentVersion)
@@ -305,20 +332,6 @@ internal static class ArrayHelpers
                 }
 
                 return snapshot;
-            }
-        }
-
-        /// <summary>Appends all current items to <paramref name="destination"/> under the gate.</summary>
-        /// <param name="destination">The list to append the current items to.</param>
-        /// <remarks>Used by disposal enumeration, which needs every item without invoking factories.</remarks>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="destination"/> is <see langword="null"/>.</exception>
-        public void CopyItemsTo(List<TValue> destination)
-        {
-            ArgumentExceptionHelper.ThrowIfNull(destination);
-
-            lock (_gate)
-            {
-                destination.AddRange(_list);
             }
         }
     }

@@ -28,7 +28,7 @@ public class AppBuilderTests
     /// <summary>Constructors the throws on null resolver.</summary>
     [Test]
     public void ConstructorThrowsOnNullResolver() =>
-        Assert.Throws<ArgumentNullException>(() => _ = new AppBuilder(null!));
+        Assert.Throws<ArgumentNullException>(static () => _ = new AppBuilder(null!));
 
     /// <summary>Constructors the sets using builder true.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -81,7 +81,7 @@ public class AppBuilderTests
     {
         var resolver = new InternalLocator();
         var builder = new AppBuilder(resolver.CurrentMutable);
-        Assert.Throws<ArgumentNullException>(() => builder.UsingModule((IModule)null!));
+        _ = Assert.Throws<ArgumentNullException>(() => builder.UsingModule((IModule)null!));
         resolver.Dispose();
     }
 
@@ -103,7 +103,7 @@ public class AppBuilderTests
     {
         var resolver = new InternalLocator();
         var builder = new AppBuilder(resolver.CurrentMutable);
-        Assert.Throws<ArgumentNullException>(() =>
+        _ = Assert.Throws<ArgumentNullException>(() =>
             builder.WithCustomRegistration(null!));
         resolver.Dispose();
     }
@@ -115,7 +115,7 @@ public class AppBuilderTests
     {
         var resolver = new InternalLocator();
         var builder = new AppBuilder(resolver.CurrentMutable);
-        var result = builder.WithCustomRegistration(_ => { });
+        var result = builder.WithCustomRegistration(static _ => { });
         await Assert.That(result).IsSameReferenceAs(builder);
         resolver.Dispose();
     }
@@ -140,8 +140,8 @@ public class AppBuilderTests
         var resolver = new InternalLocator();
         var builder = new AppBuilder(resolver.CurrentMutable);
         bool called = false;
-        builder.WithCustomRegistration(_ => called = true);
-        builder.Build();
+        _ = builder.WithCustomRegistration(_ => called = true);
+        _ = builder.Build();
         await Assert.That(called).IsTrue();
         resolver.Dispose();
     }
@@ -153,10 +153,10 @@ public class AppBuilderTests
     {
         var resolver = new InternalLocator();
         var builder = new AppBuilder(resolver.CurrentMutable);
-        builder.Build(); // sets HasBeenBuilt
+        _ = builder.Build(); // sets HasBeenBuilt
         bool called = false;
-        builder.WithCustomRegistration(_ => called = true);
-        builder.Build(); // should not call registration again
+        _ = builder.WithCustomRegistration(_ => called = true);
+        _ = builder.Build(); // should not call registration again
         await Assert.That(called).IsFalse();
         resolver.Dispose();
     }

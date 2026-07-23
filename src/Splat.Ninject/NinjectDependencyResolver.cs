@@ -18,8 +18,8 @@ namespace Splat.Ninject;
 /// the resolver will also dispose the underlying Ninject kernel, releasing all managed resources.</remarks>
 /// <param name="kernel">The Ninject kernel instance used to manage service bindings and resolve dependencies. Cannot be null.</param>
 [SuppressMessage(
-    "Minor Code Smell",
-    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    "StyleSharp",
+    "SST2307:A generic method's type parameter appears in no parameter, so no caller can infer it",
     Justification = "These are dependency-resolution and registration APIs whose generic type parameter is the caller-supplied service type, which by contract cannot appear in the parameter list.")]
 public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 {
@@ -57,7 +57,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
         {
             // Get all bindings and filter by metadata to avoid implicit self-binding issues
             var matchingBindings = kernel.GetBindings(serviceType)
-                .Where(b => IsCorrectMetadata(b.BindingConfiguration.Metadata, null))
+                .Where(static b => IsCorrectMetadata(b.BindingConfiguration.Metadata, null))
                 .ToList();
 
             if (matchingBindings.Count == 0)
@@ -141,7 +141,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
         {
             // Get all bindings and filter by metadata to avoid implicit self-binding issues
             var matchingBindings = kernel.GetBindings(typeof(T))
-                .Where(b => IsCorrectMetadata(b.BindingConfiguration.Metadata, null))
+                .Where(static b => IsCorrectMetadata(b.BindingConfiguration.Metadata, null))
                 .ToList();
 
             if (matchingBindings.Count == 0)
@@ -221,7 +221,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         serviceType ??= NullServiceType.CachedType;
 
-        return kernel.CanResolve(serviceType, metadata => IsCorrectMetadata(metadata, null));
+        return kernel.CanResolve(serviceType, static metadata => IsCorrectMetadata(metadata, null));
     }
 
     /// <inheritdoc />
@@ -272,11 +272,11 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         if (contract is null)
         {
-            kernel.Bind<T>().ToMethod(_ => factory()!);
+            _ = kernel.Bind<T>().ToMethod(_ => factory()!);
         }
         else
         {
-            kernel.Bind<T>().ToMethod(_ => factory()!).Named(contract);
+            _ = kernel.Bind<T>().ToMethod(_ => factory()!).Named(contract);
         }
     }
 
@@ -293,11 +293,11 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         if (contract is null)
         {
-            kernel.Bind<TService>().To<TImplementation>();
+            _ = kernel.Bind<TService>().To<TImplementation>();
         }
         else
         {
-            kernel.Bind<TService>().To<TImplementation>().Named(contract);
+            _ = kernel.Bind<TService>().To<TImplementation>().Named(contract);
         }
     }
 
@@ -307,7 +307,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         ArgumentExceptionHelper.ThrowIfNull(value);
 
-        kernel.Bind<T>().ToConstant(value);
+        _ = kernel.Bind<T>().ToConstant(value);
     }
 
     /// <inheritdoc/>
@@ -318,11 +318,11 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
         if (contract is null)
         {
-            kernel.Bind<T>().ToConstant(value);
+            _ = kernel.Bind<T>().ToConstant(value);
         }
         else
         {
-            kernel.Bind<T>().ToConstant(value).Named(contract);
+            _ = kernel.Bind<T>().ToConstant(value).Named(contract);
         }
     }
 
@@ -332,7 +332,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         ArgumentExceptionHelper.ThrowIfNull(valueFactory);
 
-        kernel.Bind<T>().ToMethod(_ => valueFactory()!).InSingletonScope();
+        _ = kernel.Bind<T>().ToMethod(_ => valueFactory()!).InSingletonScope();
     }
 
     /// <inheritdoc/>
@@ -343,11 +343,11 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
         if (contract is null)
         {
-            kernel.Bind<T>().ToMethod(_ => valueFactory()!).InSingletonScope();
+            _ = kernel.Bind<T>().ToMethod(_ => valueFactory()!).InSingletonScope();
         }
         else
         {
-            kernel.Bind<T>().ToMethod(_ => valueFactory()!).InSingletonScope().Named(contract);
+            _ = kernel.Bind<T>().ToMethod(_ => valueFactory()!).InSingletonScope().Named(contract);
         }
     }
 
@@ -363,7 +363,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
             return;
         }
 
-        var matchingBinding = bindings.LastOrDefault(x => IsCorrectMetadata(x.BindingConfiguration.Metadata, null));
+        var matchingBinding = bindings.LastOrDefault(static x => IsCorrectMetadata(x.BindingConfiguration.Metadata, null));
 
         if (matchingBinding is null)
         {
@@ -415,7 +415,7 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
             return;
         }
 
-        var matchingBinding = bindings.Where(x => IsCorrectMetadata(x.BindingConfiguration.Metadata, null)).ToArray();
+        var matchingBinding = bindings.Where(static x => IsCorrectMetadata(x.BindingConfiguration.Metadata, null)).ToArray();
 
         if (matchingBinding.Length < 1)
         {

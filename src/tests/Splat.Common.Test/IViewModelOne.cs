@@ -5,5 +5,4 @@
 namespace Splat.Common.Test;
 
 /// <summary>Interface for ViewModelOne.</summary>
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1040:Avoid empty interfaces", Justification = "Marker interface used as a service-location test contract.")]
 public interface IViewModelOne;

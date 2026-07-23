@@ -18,6 +18,9 @@ public class MicrosoftExtensionsLogProviderCoverageTests
     /// <summary>The category name used when creating the logger under test.</summary>
     private const string Category = "MyCategory";
 
+    /// <summary>The log state value passed to scope and write calls.</summary>
+    private const string LogState = "state";
+
     /// <summary>Verifies the provider creates a non-null logger.</summary>
     /// <returns>A task representing the asynchronous test operation.</returns>
     [Test]
@@ -77,7 +80,7 @@ public class MicrosoftExtensionsLogProviderCoverageTests
         using var provider = new MicrosoftExtensionsLogProvider();
         var logger = provider.CreateLogger(Category);
 
-        await Assert.That(() => logger.BeginScope("state")).ThrowsNothing();
+        await Assert.That(() => logger.BeginScope(LogState)).ThrowsNothing();
     }
 
     /// <summary>Verifies a None-level write is skipped and does not forward to Splat.</summary>
@@ -91,13 +94,13 @@ public class MicrosoftExtensionsLogProviderCoverageTests
         using var provider = new MicrosoftExtensionsLogProvider();
         var logger = provider.CreateLogger(Category);
 
-        logger.Log(MsLogLevel.None, new EventId(0), "state", null, static (state, _) => state);
+        logger.Log(MsLogLevel.None, new(0), LogState, null, static (state, _) => state);
 
         await Assert.That(capture.Logs).IsEmpty();
     }
 
     /// <summary>Verifies an enabled-level write forwards the formatted message to Splat.</summary>
-    /// <param name="msLevel">The Microsoft log level used for the write.</param>
+    /// <param name="microsoftLevel">The Microsoft log level used for the write.</param>
     /// <param name="expectedSplatLevel">The expected Splat log level after mapping.</param>
     /// <returns>A task representing the asynchronous test operation.</returns>
     [Test]
@@ -106,7 +109,7 @@ public class MicrosoftExtensionsLogProviderCoverageTests
     [Arguments(MsLogLevel.Warning, LogLevel.Warn)]
     [Arguments(MsLogLevel.Error, LogLevel.Error)]
     [Arguments(MsLogLevel.Critical, LogLevel.Fatal)]
-    public async Task Log_EnabledLevel_ForwardsToSplat(MsLogLevel msLevel, LogLevel expectedSplatLevel)
+    public async Task Log_EnabledLevel_ForwardsToSplat(MsLogLevel microsoftLevel, LogLevel expectedSplatLevel)
     {
         using var scope = new AppLocatorScope();
         var capture = RegisterCapturingLogManager();
@@ -114,7 +117,7 @@ public class MicrosoftExtensionsLogProviderCoverageTests
         using var provider = new MicrosoftExtensionsLogProvider();
         var logger = provider.CreateLogger(Category);
 
-        logger.Log(msLevel, new EventId(0), "hello", null, static (state, _) => state);
+        logger.Log(microsoftLevel, new(0), "hello", null, static (state, _) => state);
 
         await Assert.That(capture.Logs.Count).IsEqualTo(1);
         await Assert.That(capture.Logs[0].logLevel).IsEqualTo(expectedSplatLevel);
@@ -126,12 +129,12 @@ public class MicrosoftExtensionsLogProviderCoverageTests
     public async Task Log_NullFormatter_Throws()
     {
         using var scope = new AppLocatorScope();
-        RegisterCapturingLogManager();
+        _ = RegisterCapturingLogManager();
 
         using var provider = new MicrosoftExtensionsLogProvider();
         var logger = provider.CreateLogger(Category);
 
-        await Assert.That(() => logger.Log<string>(MsLogLevel.Information, new EventId(0), "state", null, null!)).Throws<ArgumentNullException>();
+        await Assert.That(() => logger.Log(MsLogLevel.Information, new(0), LogState, null, null!)).Throws<ArgumentNullException>();
     }
 
     /// <summary>Registers an <see cref="ILogManager"/> backed by a capturing logger so writes can be observed.</summary>

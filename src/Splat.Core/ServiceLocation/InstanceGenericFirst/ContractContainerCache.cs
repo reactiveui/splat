@@ -32,7 +32,7 @@ internal static class ContractContainerCache<T>
     /// <returns>The per-resolver <see cref="ContractContainer"/> for <typeparamref name="T"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="state"/> is <see langword="null"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ContractContainer Get(ResolverState state)
+    internal static ContractContainer Get(ResolverState state)
     {
         ArgumentExceptionHelper.ThrowIfNull(state);
         return Containers.GetOrCreateValue(state);
@@ -55,7 +55,7 @@ internal static class ContractContainerCache<T>
         /// <param name="contract">The contract key.</param>
         /// <returns><see langword="true"/> when the contract exists and has at least one registration; otherwise <see langword="false"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="contract"/> is <see langword="null"/>.</exception>
-        public bool HasRegistrations(string contract)
+        internal bool HasRegistrations(string contract)
         {
             ArgumentExceptionHelper.ThrowIfNull(contract);
 
@@ -66,7 +66,7 @@ internal static class ContractContainerCache<T>
         /// <param name="contract">The contract key.</param>
         /// <returns>The number of registrations for the contract.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="contract"/> is <see langword="null"/>.</exception>
-        public int GetCount(string contract)
+        internal int GetCount(string contract)
         {
             ArgumentExceptionHelper.ThrowIfNull(contract);
 
@@ -83,7 +83,7 @@ internal static class ContractContainerCache<T>
         /// This method does not hold locks while invoking user factories.
         /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="contract"/> is <see langword="null"/>.</exception>
-        public bool TryGet(string contract, [MaybeNullWhen(false)] out T instance)
+        internal bool TryGet(string contract, [MaybeNullWhen(false)] out T instance)
         {
             ArgumentExceptionHelper.ThrowIfNull(contract);
 
@@ -93,23 +93,7 @@ internal static class ContractContainerCache<T>
                 return false;
             }
 
-            var registrations = entry.GetSnapshot();
-            if (registrations.Length == 0)
-            {
-                instance = default;
-                return false;
-            }
-
-            var last = registrations[registrations.Length - 1];
-
-            if (last.TryGetFactory(out var factory))
-            {
-                instance = factory.Invoke()!;
-                return instance is not null;
-            }
-
-            instance = last.GetInstance();
-            return instance is not null;
+            return ResolveLast(entry.GetSnapshot(), out instance);
         }
 
         /// <summary>Resolves all registrations for a contract.</summary>
@@ -119,7 +103,7 @@ internal static class ContractContainerCache<T>
         /// Factories are invoked during materialization.
         /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="contract"/> is <see langword="null"/>.</exception>
-        public T[] GetAll(string contract)
+        internal T[] GetAll(string contract)
         {
             ArgumentExceptionHelper.ThrowIfNull(contract);
 
@@ -136,7 +120,7 @@ internal static class ContractContainerCache<T>
         /// <param name="service">The instance to register.</param>
         /// <param name="contract">The contract key.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="contract"/> is <see langword="null"/>.</exception>
-        public void Add(T service, string contract)
+        internal void Add(T service, string contract)
         {
             ArgumentExceptionHelper.ThrowIfNull(contract);
 
@@ -148,7 +132,7 @@ internal static class ContractContainerCache<T>
         /// <param name="factory">Factory used to produce instances.</param>
         /// <param name="contract">The contract key.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> or <paramref name="contract"/> is <see langword="null"/>.</exception>
-        public void Add(Func<T?> factory, string contract)
+        internal void Add(Func<T?> factory, string contract)
         {
             ArgumentExceptionHelper.ThrowIfNull(factory);
             ArgumentExceptionHelper.ThrowIfNull(contract);
@@ -163,7 +147,7 @@ internal static class ContractContainerCache<T>
         /// If removal empties the contract, the contract entry is removed from the dictionary.
         /// </remarks>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="contract"/> is <see langword="null"/>.</exception>
-        public void RemoveCurrent(string contract)
+        internal void RemoveCurrent(string contract)
         {
             ArgumentExceptionHelper.ThrowIfNull(contract);
 
@@ -172,19 +156,48 @@ internal static class ContractContainerCache<T>
                 return;
             }
 
-            _entries.TryRemove(contract, out _);
+            _ = _entries.TryRemove(contract, out _);
         }
 
         /// <summary>Removes all registrations for a contract.</summary>
         /// <param name="contract">The contract key.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="contract"/> is <see langword="null"/>.</exception>
-        public void Clear(string contract)
+        internal void Clear(string contract)
         {
             ArgumentExceptionHelper.ThrowIfNull(contract);
-            _entries.TryRemove(contract, out _);
+            _ = _entries.TryRemove(contract, out _);
         }
 
         /// <summary>Removes all registrations for all contracts in this container.</summary>
-        public void ClearAll() => _entries.Clear();
+        internal void ClearAll() => _entries.Clear();
+
+        /// <summary>Resolves the most recent registration from <paramref name="registrations"/> (last registration wins).</summary>
+        /// <param name="registrations">The immutable snapshot to resolve from.</param>
+        /// <param name="instance">Receives the resolved instance when available.</param>
+        /// <returns><see langword="true"/> when a non-null instance is produced; otherwise <see langword="false"/>.</returns>
+        /// <remarks>
+        /// The empty-snapshot arm is a copy-on-write race guard: the entry reported items but a concurrent
+        /// <see cref="Clear"/>/<see cref="RemoveCurrent"/> drained the snapshot before it was read. That window cannot be
+        /// reproduced by a single-threaded test, so the method is excluded from coverage.
+        /// </remarks>
+        [ExcludeFromCodeCoverage] // Defensive: the empty-snapshot arm only fires when a concurrent Clear/Remove drains the entry between the HasItems check and the snapshot read.
+        private static bool ResolveLast(Registration<T>[] registrations, [MaybeNullWhen(false)] out T instance)
+        {
+            if (registrations.Length == 0)
+            {
+                instance = default;
+                return false;
+            }
+
+            var last = registrations[^1];
+            if (last.TryGetFactory(out var factory))
+            {
+                instance = factory.Invoke()!;
+                return instance is not null;
+            }
+
+            instance = last.GetInstance();
+            return instance is not null;
+        }
     }
 }

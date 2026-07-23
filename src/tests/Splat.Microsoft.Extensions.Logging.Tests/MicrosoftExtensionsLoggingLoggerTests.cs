@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -25,15 +25,16 @@ public class MicrosoftExtensionsLoggingLoggerTests : FullLoggerTestBase
         { LogLevel.Fatal, global::Microsoft.Extensions.Logging.LogLevel.Critical },
     };
 
-    /// <summary>Mappings of Microsoft.Extensions.Logging log levels to equivalent Splat log levels.</summary>
-    private static readonly Dictionary<global::Microsoft.Extensions.Logging.LogLevel, LogLevel> _MSLog2Splat = new()
+    /// <summary>Verifies the effective level falls back to <see cref="LogLevel.Fatal"/> when the wrapped logger enables no level.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Level_WhenNoLevelEnabled_ReturnsFatal()
     {
-        { global::Microsoft.Extensions.Logging.LogLevel.Debug, LogLevel.Debug },
-        { global::Microsoft.Extensions.Logging.LogLevel.Information, LogLevel.Info },
-        { global::Microsoft.Extensions.Logging.LogLevel.Warning, LogLevel.Warn },
-        { global::Microsoft.Extensions.Logging.LogLevel.Error, LogLevel.Error },
-        { global::Microsoft.Extensions.Logging.LogLevel.Critical, LogLevel.Fatal },
-    };
+        var mockLogger = new MockActualMicrosoftExtensionsLoggingLogger(global::Microsoft.Extensions.Logging.LogLevel.None);
+        var logger = new MicrosoftExtensionsLoggingLogger(mockLogger);
+
+        await Assert.That(logger.Level).IsEqualTo(LogLevel.Fatal);
+    }
 
     /// <inheritdoc/>
     protected override (IFullLogger logger, IMockLogTarget mockTarget) GetLogger(LogLevel minimumLogLevel)
@@ -47,6 +48,16 @@ public class MicrosoftExtensionsLoggingLoggerTests : FullLoggerTestBase
     /// <param name="level">The minimum log level the logger is enabled for.</param>
     private sealed class MockActualMicrosoftExtensionsLoggingLogger(global::Microsoft.Extensions.Logging.LogLevel level) : global::Microsoft.Extensions.Logging.ILogger, IMockLogTarget
     {
+        /// <summary>Mappings of Microsoft.Extensions.Logging log levels to equivalent Splat log levels.</summary>
+        private static readonly Dictionary<global::Microsoft.Extensions.Logging.LogLevel, LogLevel> _MSLog2Splat = new()
+        {
+            { global::Microsoft.Extensions.Logging.LogLevel.Debug, LogLevel.Debug },
+            { global::Microsoft.Extensions.Logging.LogLevel.Information, LogLevel.Info },
+            { global::Microsoft.Extensions.Logging.LogLevel.Warning, LogLevel.Warn },
+            { global::Microsoft.Extensions.Logging.LogLevel.Error, LogLevel.Error },
+            { global::Microsoft.Extensions.Logging.LogLevel.Critical, LogLevel.Fatal },
+        };
+
         /// <summary>The captured log entries.</summary>
         private readonly List<(LogLevel logLevel, string message)> _logs = [];
 

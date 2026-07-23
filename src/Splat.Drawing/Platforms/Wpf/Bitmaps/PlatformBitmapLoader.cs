@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -8,12 +8,15 @@ using System.Windows.Media.Imaging;
 
 namespace Splat;
 
-/// <summary>Provides platform-specific functionality for loading and creating bitmap images.</summary>
-/// <remarks>This class implements the IBitmapLoader interface to support loading bitmaps from streams and
-/// resources, as well as creating new bitmap instances. It is intended for use in scenarios where platform-dependent
-/// image loading is required.</remarks>
+/// <summary>Provides methods for loading and creating bitmap images from streams and resources on the current platform.</summary>
+/// <remarks>This class implements the IBitmapLoader interface to support platform-specific bitmap loading and
+/// creation. It enables loading bitmaps from data streams or resource identifiers, with optional resizing. All methods
+/// are thread-safe and return bitmaps suitable for use in platform graphics APIs.</remarks>
 public class PlatformBitmapLoader : IBitmapLoader
 {
+    /// <summary>The default screen DPI used when creating a blank writeable bitmap.</summary>
+    private const double DefaultDpi = 96;
+
     /// <inheritdoc />
     public Task<IBitmap?> Load(Stream sourceStream, float? desiredWidth, float? desiredHeight) =>
         Task.Run<IBitmap?>(() =>
@@ -63,7 +66,15 @@ public class PlatformBitmapLoader : IBitmapLoader
         });
 
     /// <inheritdoc />
-    public IBitmap Create(float width, float height) => new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height, 96, 96, PixelFormats.Pbgra32, null));
+    public IBitmap Create(float width, float height) =>
+        /*
+         * Taken from MSDN:
+         *
+         * The preferred values for pixelFormat are Bgr32 and Pbgra32.
+         * These formats are natively supported and do not require a format conversion.
+         * Other pixelFormat values require a format conversion for each frame update, which reduces performance.
+         */
+        new BitmapSourceBitmap(new WriteableBitmap((int)width, (int)height, DefaultDpi, DefaultDpi, PixelFormats.Pbgra32, null));
 
     /// <summary>Runs the supplied initialization block on a <see cref="BitmapImage"/> between <c>BeginInit</c> and <c>EndInit</c>.</summary>
     /// <param name="source">The bitmap image to initialize.</param>

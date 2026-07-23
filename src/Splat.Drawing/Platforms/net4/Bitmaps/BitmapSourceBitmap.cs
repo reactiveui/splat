@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -14,14 +14,17 @@ namespace Splat;
 /// <param name="bitmap">The platform-specific BitmapSource to wrap. Cannot be null.</param>
 internal sealed class BitmapSourceBitmap(BitmapSource bitmap) : IBitmap
 {
-    /// <inheritdoc />
-    public float Width => (float)(Inner?.Width ?? 0f);
+    /// <summary>The scale that converts a normalized 0-1 quality into a 0-100 JPEG quality level.</summary>
+    private const float QualityPercentScale = 100.0F;
 
     /// <inheritdoc />
-    public float Height => (float)(Inner?.Height ?? 0f);
+    public float Width => (float)(Inner?.Width ?? 0F);
+
+    /// <inheritdoc />
+    public float Height => (float)(Inner?.Height ?? 0F);
 
     /// <summary>Gets the platform <see cref="BitmapSource"/>.</summary>
-    public BitmapSource? Inner { get; private set; } = bitmap;
+    internal BitmapSource? Inner { get; private set; } = bitmap;
 
     /// <inheritdoc />
     public Task Save(CompressedBitmapFormat format, float quality, Stream target) => Inner switch
@@ -30,7 +33,7 @@ internal sealed class BitmapSourceBitmap(BitmapSource bitmap) : IBitmap
         _ => Task.Run(() =>
         {
             var encoder = format == CompressedBitmapFormat.Jpeg
-                ? new JpegBitmapEncoder { QualityLevel = (int)(quality * 100.0f) }
+                ? new JpegBitmapEncoder { QualityLevel = (int)(quality * QualityPercentScale) }
                 : (BitmapEncoder)new PngBitmapEncoder();
 
             encoder.Frames.Add(BitmapFrame.Create(Inner));

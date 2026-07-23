@@ -10,6 +10,10 @@ public class TargetFrameworkExtensionsTests
     /// <summary>Gets the test source data for Framework names.</summary>
     public static IEnumerable<(string FrameworkName, string Expected)> FrameworkNamesTestSource { get; } = new[]
     {
+        (".NETCoreApp,Version=v11.0", "net11.0"),
+        (".NETCoreApp,Version=v10.0", "net10.0"),
+        (".NETCoreApp,Version=v9.0", "net9.0"),
+        (".NETCoreApp,Version=v8.0", "net8.0"),
         (".NETCoreApp,Version=v2.2", "netcoreapp2.2"),
         (".NETCoreApp,Version=v2.1", "netcoreapp2.1"),
         (".NETCoreApp,Version=v2.0", "netcoreapp2.0"),
@@ -48,6 +52,46 @@ public class TargetFrameworkExtensionsTests
     public async Task ReturnsName(string frameworkName, string expected)
     {
         var actual = TargetFrameworkExtensions.GetTargetFrameworkName(frameworkName);
+        await Assert.That(actual).IsEqualTo(expected);
+    }
+
+    /// <summary>Verifies that an unrecognized framework moniker maps to null.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetTargetFrameworkName_UnknownFramework_ReturnsNull()
+    {
+        var actual = TargetFrameworkExtensions.GetTargetFrameworkName(".NETUnknown,Version=v99.0");
+        await Assert.That(actual).IsNull();
+    }
+
+    /// <summary>Verifies that a null framework moniker maps to null.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetTargetFrameworkName_NullFramework_ReturnsNull()
+    {
+        var actual = TargetFrameworkExtensions.GetTargetFrameworkName((string?)null);
+        await Assert.That(actual).IsNull();
+    }
+
+    /// <summary>Verifies the assembly extension member resolves the running assembly's short target framework moniker.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetTargetFrameworkName_ForCurrentAssembly_ReturnsExpectedShortName()
+    {
+#if NET8_0
+        const string expected = "net8.0";
+#elif NET9_0
+        const string expected = "net9.0";
+#elif NET10_0
+        const string expected = "net10.0";
+#elif NET11_0
+        const string expected = "net11.0";
+#else
+#error Unhandled target framework; add its short name to the moniker map and to this test.
+#endif
+
+        var actual = typeof(TargetFrameworkExtensions).Assembly.GetTargetFrameworkName();
+
         await Assert.That(actual).IsEqualTo(expected);
     }
 }

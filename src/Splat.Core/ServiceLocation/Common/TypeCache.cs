@@ -12,5 +12,5 @@ namespace Splat;
 internal static class TypeCache<T>
 {
     /// <summary>Cached Type instance for T.</summary>
-    public static readonly Type Type = typeof(T);
+    internal static readonly Type Type = typeof(T);
 }

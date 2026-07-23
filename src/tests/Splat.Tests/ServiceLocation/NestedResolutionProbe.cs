@@ -10,5 +10,5 @@ namespace Splat.Tests.ServiceLocation;
 internal sealed class NestedResolutionProbe<T>(IDependencyResolver resolver)
 {
     /// <summary>Gets the service resolved by a nested generic lookup performed during construction.</summary>
-    public T? Service { get; } = resolver.GetService<T>();
+    internal T? Service { get; } = resolver.GetService<T>();
 }

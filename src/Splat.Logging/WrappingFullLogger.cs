@@ -1,8 +1,7 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace Splat;
@@ -16,14 +15,15 @@ namespace Splat;
 /// convenience overloads and formatting capabilities as defined by <see cref="IFullLogger"/>. It enables
 /// allocation-free logging patterns and supports structured and formatted messages. Thread safety and performance
 /// characteristics depend on the underlying <see cref="ILogger"/> implementation.</remarks>
-[SuppressMessage(
-    "Minor Code Smell",
-    "S4018:All type parameters should be used in the parameter list to enable type inference",
-    Justification = "The generic type parameter is the caller-supplied calling type used only to scope the log entry; it intentionally has no corresponding method parameter and cannot be inferred.")]
 public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
 {
     /// <summary>Text substituted for a <see langword="null"/> argument when formatting a message.</summary>
     private const string NullText = "(null)";
+
+#if NET8_0_OR_GREATER
+    /// <summary>Cached composite format used to emit a single value without reparsing the format string on every call.</summary>
+    private static readonly System.Text.CompositeFormat _singleValueFormat = System.Text.CompositeFormat.Parse("{0}");
+#endif
 
     /// <summary>The underlying logger that formatted messages are forwarded to.</summary>
     private readonly ILogger _inner;
@@ -49,10 +49,15 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     }
 
     /// <inheritdoc />
-    public void Debug<T>(IFormatProvider formatProvider, T value) => _inner.Write(string.Format(formatProvider, "{0}", value), LogLevel.Debug);
+    public void Debug<T>(IFormatProvider formatProvider, T value) =>
+#if NET8_0_OR_GREATER
+        _inner.Write(string.Format(formatProvider, _singleValueFormat, value), LogLevel.Debug);
+#else
+        _inner.Write(string.Format(formatProvider, "{0}", value), LogLevel.Debug);
+#endif
 
     /// <inheritdoc />
-    public void Debug(Exception exception, string? message) => _inner.Write(exception, $"{message}", LogLevel.Debug);
+    public void Debug(Exception exception, string? message) => _inner.Write(exception, message ?? NullText, LogLevel.Debug);
 
     /// <inheritdoc />
     public void Debug(IFormatProvider formatProvider, string message, params object[] args)
@@ -160,10 +165,15 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     }
 
     /// <inheritdoc />
-    public void Info<T>(IFormatProvider formatProvider, T value) => _inner.Write(string.Format(formatProvider, "{0}", value), LogLevel.Info);
+    public void Info<T>(IFormatProvider formatProvider, T value) =>
+#if NET8_0_OR_GREATER
+        _inner.Write(string.Format(formatProvider, _singleValueFormat, value), LogLevel.Info);
+#else
+        _inner.Write(string.Format(formatProvider, "{0}", value), LogLevel.Info);
+#endif
 
     /// <inheritdoc />
-    public void Info(Exception exception, string? message) => _inner.Write(exception, $"{message}", LogLevel.Info);
+    public void Info(Exception exception, string? message) => _inner.Write(exception, message ?? NullText, LogLevel.Info);
 
     /// <inheritdoc />
     public void Info(IFormatProvider formatProvider, string message, params object[] args)
@@ -270,10 +280,15 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     }
 
     /// <inheritdoc />
-    public void Warn<T>(IFormatProvider formatProvider, T value) => _inner.Write(string.Format(formatProvider, "{0}", value), LogLevel.Warn);
+    public void Warn<T>(IFormatProvider formatProvider, T value) =>
+#if NET8_0_OR_GREATER
+        _inner.Write(string.Format(formatProvider, _singleValueFormat, value), LogLevel.Warn);
+#else
+        _inner.Write(string.Format(formatProvider, "{0}", value), LogLevel.Warn);
+#endif
 
     /// <inheritdoc />
-    public void Warn(Exception exception, string? message) => _inner.Write(exception, $"{message}", LogLevel.Warn);
+    public void Warn(Exception exception, string? message) => _inner.Write(exception, message ?? NullText, LogLevel.Warn);
 
     /// <inheritdoc />
     public void Warn(IFormatProvider formatProvider, string message, params object[] args)
@@ -380,10 +395,15 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     }
 
     /// <inheritdoc />
-    public void Error<T>(IFormatProvider formatProvider, T value) => _inner.Write(string.Format(formatProvider, "{0}", value), LogLevel.Error);
+    public void Error<T>(IFormatProvider formatProvider, T value) =>
+#if NET8_0_OR_GREATER
+        _inner.Write(string.Format(formatProvider, _singleValueFormat, value), LogLevel.Error);
+#else
+        _inner.Write(string.Format(formatProvider, "{0}", value), LogLevel.Error);
+#endif
 
     /// <inheritdoc />
-    public void Error(Exception exception, string? message) => _inner.Write(exception, $"{message}", LogLevel.Error);
+    public void Error(Exception exception, string? message) => _inner.Write(exception, message ?? NullText, LogLevel.Error);
 
     /// <inheritdoc />
     public void Error(IFormatProvider formatProvider, string message, params object[] args)
@@ -490,10 +510,15 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     }
 
     /// <inheritdoc />
-    public void Fatal<T>(IFormatProvider formatProvider, T value) => _inner.Write(string.Format(formatProvider, "{0}", value), LogLevel.Fatal);
+    public void Fatal<T>(IFormatProvider formatProvider, T value) =>
+#if NET8_0_OR_GREATER
+        _inner.Write(string.Format(formatProvider, _singleValueFormat, value), LogLevel.Fatal);
+#else
+        _inner.Write(string.Format(formatProvider, "{0}", value), LogLevel.Fatal);
+#endif
 
     /// <inheritdoc />
-    public void Fatal(Exception exception, string? message) => _inner.Write(exception, $"{message}", LogLevel.Fatal);
+    public void Fatal(Exception exception, string? message) => _inner.Write(exception, message ?? NullText, LogLevel.Fatal);
 
     /// <inheritdoc />
     public void Fatal(IFormatProvider formatProvider, string message, params object[] args)
@@ -593,8 +618,5 @@ public class WrappingFullLogger : AllocationFreeLoggerBase, IFullLogger
     /// <param name="message">The composite format string.</param>
     /// <param name="args">The arguments to substitute into the format string.</param>
     /// <returns>The formatted message.</returns>
-    private static string InvokeStringFormat(IFormatProvider formatProvider, string message, object[] args)
-    {
-        return string.Format(formatProvider, message, args);
-    }
+    private static string InvokeStringFormat(IFormatProvider formatProvider, string message, object[] args) => string.Format(formatProvider, message, args);
 }

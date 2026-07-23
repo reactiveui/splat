@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -16,11 +16,11 @@ internal sealed class ContainerWrapper
     public ContainerWrapper() => ServiceCollection.UseMicrosoftDependencyResolver();
 
     /// <summary>Gets the underlying service collection.</summary>
-    public IServiceCollection ServiceCollection { get; } = new ServiceCollection();
+    internal IServiceCollection ServiceCollection { get; } = new ServiceCollection();
 
     /// <summary>Gets the service provider, building it on first access.</summary>
-    public IServiceProvider ServiceProvider => _serviceProvider ??= ServiceCollection.BuildServiceProvider();
+    internal IServiceProvider ServiceProvider => _serviceProvider ??= ServiceCollection.BuildServiceProvider();
 
     /// <summary>Builds the service provider and registers it as the Microsoft dependency resolver.</summary>
-    public void BuildAndUse() => ServiceProvider.UseMicrosoftDependencyResolver();
+    internal void BuildAndUse() => ServiceProvider.UseMicrosoftDependencyResolver();
 }

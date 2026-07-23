@@ -13,10 +13,6 @@ namespace Splat;
 /// A <see cref="WrappingFullLogger"/> will wrap simple loggers into a full logger.
 /// </summary>
 [SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Existing API")]
-[SuppressMessage(
-    "Major Code Smell",
-    "S107:Methods should not have too many parameters",
-    Justification = "These are deliberately strongly-typed, allocation-free logging overloads; each typed parameter avoids params-array boxing on the logging hot path.")]
 public interface IAllocationFreeLogger : IAllocationFreeErrorLogger
 {
     /// <summary>Gets a value indicating whether the logger currently emits debug logs.</summary>

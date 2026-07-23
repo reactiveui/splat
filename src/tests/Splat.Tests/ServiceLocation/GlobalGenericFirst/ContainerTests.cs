@@ -96,7 +96,7 @@ public class ContainerTests
     {
         // Arrange
         const int expectedValue = 42;
-        Func<int?> factory = () => expectedValue;
+        Func<int?> factory = static () => expectedValue;
 
         // Act
         Container<int?>.Add(factory);
@@ -143,7 +143,7 @@ public class ContainerTests
     public async Task TryGet_WithFactoryReturningNull_ReturnsFalse()
     {
         // Arrange
-        Container<string?>.Add(() => null);
+        Container<string?>.Add(static () => null);
 
         // Act
         var success = Container<string?>.TryGet(out var result);
@@ -167,8 +167,8 @@ public class ContainerTests
         });
 
         // Act
-        Container<int>.TryGet(out var result1);
-        Container<int>.TryGet(out var result2);
+        _ = Container<int>.TryGet(out var result1);
+        _ = Container<int>.TryGet(out var result2);
 
         // Assert
         await Assert.That(invocationCount).IsEqualTo(TwoItems);
@@ -250,7 +250,7 @@ public class ContainerTests
     {
         // Arrange
         Container<string>.Add("instance");
-        Container<string>.Add(() => "factory");
+        Container<string>.Add(static () => "factory");
         Container<string>.Add("another instance");
 
         // Act
@@ -321,11 +321,11 @@ public class ContainerTests
 
         // Act & Assert
         Container<int>.RemoveCurrent();
-        Container<int>.TryGet(out var result1);
+        _ = Container<int>.TryGet(out var result1);
         await Assert.That(result1).IsEqualTo(SecondValue);
 
         Container<int>.RemoveCurrent();
-        Container<int>.TryGet(out var result2);
+        _ = Container<int>.TryGet(out var result2);
         await Assert.That(result2).IsEqualTo(FirstValue);
 
         Container<int>.RemoveCurrent();
@@ -415,8 +415,8 @@ public class ContainerTests
         Container<int>.Add(SampleValue);
 
         // Assert
-        Container<string>.TryGet(out var stringResult);
-        Container<int>.TryGet(out var intResult);
+        _ = Container<string>.TryGet(out var stringResult);
+        _ = Container<int>.TryGet(out var intResult);
 
         await Assert.That(stringResult).IsEqualTo("string value");
         await Assert.That(intResult).IsEqualTo(SampleValue);

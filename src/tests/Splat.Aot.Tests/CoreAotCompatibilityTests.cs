@@ -15,7 +15,6 @@ namespace Splat.Tests.Aot;
     "Trimming",
     "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
     Justification = "Testing Purposes")]
-[SuppressMessage("Usage", "CA2263:Prefer generic overload when type is known", Justification = "Testing purposes")]
 [SuppressMessage(
     "AOT",
     "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.",
@@ -24,6 +23,9 @@ public class CoreAotCompatibilityTests
 {
     /// <summary>The contract name used when registering a service via a factory delegate.</summary>
     private const string FactoryContract = "factory";
+
+    /// <summary>The contract name used when registering and querying a named service.</summary>
+    private const string Contract = "contract";
 
     /// <summary>The format string for a log message with a single argument.</summary>
     private const string SimpleMessageFormat = "Simple message {0}";
@@ -76,7 +78,7 @@ public class CoreAotCompatibilityTests
         // Register services using factory methods (AOT-safe)
         resolver.RegisterConstant<ILogger>(new DebugLogger());
         resolver.RegisterConstant<ILogManager>(new DefaultLogManager(resolver));
-        resolver.Register<IEnableLogger>(() => new TestService());
+        resolver.Register<IEnableLogger>(static () => new TestService());
 
         // Verify services can be resolved
         var logger = resolver.GetService<ILogger>();
@@ -102,14 +104,14 @@ public class CoreAotCompatibilityTests
         using var resolver = new InstanceGenericFirstDependencyResolver();
 
         // Test all registration methods
-        resolver.Register<ITestInterface>(() => new TestImplementation());
+        resolver.Register<ITestInterface>(static () => new TestImplementation());
         resolver.RegisterConstant<ILogger>(new DebugLogger());
         resolver.RegisterLazySingleton<ILogManager>(() => new DefaultLogManager(resolver));
 
         // Fluent registration
-        resolver.RegisterAnd<IEnableLogger>(() => new TestService())
+        _ = resolver.RegisterAnd<IEnableLogger>(static () => new TestService())
                 .RegisterConstantAnd<ITestInterface>(new TestImplementation())
-                .RegisterLazySingletonAnd<ILogger>(() => new ConsoleLogger());
+                .RegisterLazySingletonAnd<ILogger>(static () => new ConsoleLogger());
 
         // All services should resolve
         var testInterface = resolver.GetService<ITestInterface>();
@@ -251,16 +253,16 @@ public class CoreAotCompatibilityTests
     {
         using var resolver = new InstanceGenericFirstDependencyResolver();
 
-        resolver.Register<ITestInterface>(() => new TestImplementation());
-        resolver.Register<ITestInterface>(() => new AlternateTestImplementation());
+        resolver.Register<ITestInterface>(static () => new TestImplementation());
+        resolver.Register<ITestInterface>(static () => new AlternateTestImplementation());
 
         var services = resolver.GetServices<ITestInterface>().ToList();
 
         using (Assert.Multiple())
         {
             await Assert.That(services).Count().IsEqualTo(ExpectedTwoRegistrations);
-            await Assert.That(services).Any(s => s is TestImplementation);
-            await Assert.That(services).Any(s => s is AlternateTestImplementation);
+            await Assert.That(services).Any(static s => s is TestImplementation);
+            await Assert.That(services).Any(static s => s is AlternateTestImplementation);
         }
     }
 
@@ -362,17 +364,17 @@ public class CoreAotCompatibilityTests
         using (Assert.Multiple())
         {
             await Assert.That(resolver.HasRegistration(typeof(ITestInterface))).IsFalse();
-            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), "contract")).IsFalse();
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), Contract)).IsFalse();
         }
 
         // After registration
         resolver.RegisterConstant<ITestInterface>(new TestImplementation());
-        resolver.RegisterConstant<ITestInterface>(new AlternateTestImplementation(), "contract");
+        resolver.RegisterConstant<ITestInterface>(new AlternateTestImplementation(), Contract);
 
         using (Assert.Multiple())
         {
             await Assert.That(resolver.HasRegistration(typeof(ITestInterface))).IsTrue();
-            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), "contract")).IsTrue();
+            await Assert.That(resolver.HasRegistration(typeof(ITestInterface), Contract)).IsTrue();
         }
     }
 
@@ -461,14 +463,14 @@ public class CoreAotCompatibilityTests
         resolver.RegisterConstant<ILogManager>(new DefaultLogManager(resolver));
         using var resolvedInner = resolver.WithResolver();
 
-        await Assert.That(() =>
+        await Assert.That(static () =>
         {
             LogHost.Default.Debug("Static debug message");
             LogHost.Default.Info("Static info message");
             LogHost.Default.Warn("Static warn message");
             LogHost.Default.Error("Static error message");
             LogHost.Default.Fatal("Static fatal message");
-            LogHost.Default.Debug("Static debug with param: {0}", "test");
+            LogHost.Default.Debug("Static debug with param: {0}");
         }).ThrowsNothing();
     }
 
@@ -567,7 +569,7 @@ public class CoreAotCompatibilityTests
         // Register multiple services
         resolver.RegisterConstant<ITestInterface>(new TestImplementation());
         resolver.RegisterConstant<ITestInterface>(new AlternateTestImplementation(), contract);
-        resolver.Register<ITestInterface>(() => new TestImplementation(), FactoryContract);
+        resolver.Register<ITestInterface>(static () => new TestImplementation(), FactoryContract);
 
         // Verify initial registrations
         using (Assert.Multiple())
@@ -595,7 +597,7 @@ public class CoreAotCompatibilityTests
 
         // Unregister all (default contract only)
         resolver.RegisterConstant<ITestInterface>(new TestImplementation());
-        resolver.Register<ITestInterface>(() => new AlternateTestImplementation());
+        resolver.Register<ITestInterface>(static () => new AlternateTestImplementation());
         await Assert.That(resolver.HasRegistration(typeof(ITestInterface))).IsTrue();
 
         resolver.UnregisterAll<ITestInterface>();
@@ -613,10 +615,10 @@ public class CoreAotCompatibilityTests
     {
         using var resolver = new InstanceGenericFirstDependencyResolver();
 
-        resolver.RegisterAnd<ITestInterface>(() => new TestImplementation())
+        resolver.RegisterAnd<ITestInterface>(static () => new TestImplementation())
                 .RegisterConstantAnd<ILogger>(new DebugLogger())
                 .RegisterLazySingletonAnd<ILogManager>(() => new DefaultLogManager(resolver))
-                .Register<IEnableLogger>(() => new TestService());
+                .Register<IEnableLogger>(static () => new TestService());
 
         using (Assert.Multiple())
         {
@@ -753,14 +755,14 @@ public class CoreAotCompatibilityTests
     {
         using var resolver = new InstanceGenericFirstDependencyResolver();
 
-        resolver.Register<IEnumerable<ITestInterface>>(() => new List<ITestInterface>
+        resolver.Register<IEnumerable<ITestInterface>>(static () => new List<ITestInterface>
         {
             new TestImplementation(),
             new AlternateTestImplementation()
         });
 
-        resolver.Register<Func<ITestInterface>>(() => () => new TestImplementation());
-        resolver.Register(() => new Lazy<ILogger>(() => new DebugLogger()));
+        resolver.Register<Func<ITestInterface>>(static () => static () => new TestImplementation());
+        resolver.Register(static () => new Lazy<ILogger>(static () => new DebugLogger()));
 
         var enumerable = resolver.GetService<IEnumerable<ITestInterface>>();
         var factory = resolver.GetService<Func<ITestInterface>>();
@@ -783,7 +785,7 @@ public class CoreAotCompatibilityTests
     public async Task ConcurrentAccess_WorksWithAot()
     {
         using var resolver = new InstanceGenericFirstDependencyResolver();
-        resolver.RegisterLazySingleton<ILogger>(() => new DebugLogger());
+        resolver.RegisterLazySingleton<ILogger>(static () => new DebugLogger());
 
         var exceptions = new List<Exception>();
         const int taskCount = 10;

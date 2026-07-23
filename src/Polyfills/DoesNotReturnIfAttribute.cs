@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -14,6 +14,10 @@ namespace System.Diagnostics.CodeAnalysis;
 [ExcludeFromCodeCoverage]
 [DebuggerNonUserCode]
 [AttributeUsage(AttributeTargets.Parameter)]
+[SuppressMessage(
+    "Design",
+    "SST2324:Do not declare a member more accessible than its containing type",
+    Justification = "Mirrors the shape of the corresponding BCL attribute; the polyfill compiles only where the BCL lacks it.")]
 internal sealed class DoesNotReturnIfAttribute : Attribute
 {
     /// <summary>Initializes a new instance of the <see cref="DoesNotReturnIfAttribute"/> class with the specified parameter value.</summary>

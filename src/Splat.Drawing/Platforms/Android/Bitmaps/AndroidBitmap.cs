@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -17,28 +17,28 @@ internal sealed class AndroidBitmap(Bitmap inner) : IBitmap
     private const int QualityPercentageScale = 100;
 
     /// <summary>The wrapped Android bitmap; set to <see langword="null"/> once disposed.</summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Is Disposed using Interlocked method")]
     private Bitmap? _inner = inner;
 
     /// <inheritdoc />
-    public float Width => _inner?.Width ?? 0;
+    public float Width => Volatile.Read(ref _inner)?.Width ?? 0;
 
     /// <inheritdoc />
-    public float Height => _inner?.Height ?? 0;
+    public float Height => Volatile.Read(ref _inner)?.Height ?? 0;
 
     /// <summary>Gets the internal bitmap we are wrapping.</summary>
-    internal Bitmap Inner => _inner ?? throw new InvalidOperationException("Attempt to access a disposed Bitmap");
+    internal Bitmap Inner => Volatile.Read(ref _inner) ?? throw new InvalidOperationException("Attempt to access a disposed Bitmap");
 
     /// <inheritdoc />
     public Task Save(CompressedBitmapFormat format, float quality, Stream target)
     {
-        if (_inner is null)
+        var inner = Volatile.Read(ref _inner);
+        if (inner is null)
         {
             return Task.CompletedTask;
         }
 
         var fmt = (format == CompressedBitmapFormat.Jpeg ? Bitmap.CompressFormat.Jpeg : Bitmap.CompressFormat.Png)!;
-        return Task.Run(() => _inner.Compress(fmt, (int)(quality * QualityPercentageScale), target));
+        return Task.Run(() => inner.Compress(fmt, (int)(quality * QualityPercentageScale), target));
     }
 
     /// <inheritdoc />

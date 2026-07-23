@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -46,7 +46,7 @@ public class ExceptionlessLoggerTests : FullLoggerTestBase
         exceptionlessClient.Configuration.ApiKey = "someapikey";
 
         var exceptionlessMinLogLevel = _splat2Exceptionless[minimumLogLevel];
-        exceptionlessClient.Configuration.UseInMemoryLogger(exceptionlessMinLogLevel);
+        _ = exceptionlessClient.Configuration.UseInMemoryLogger(exceptionlessMinLogLevel);
         exceptionlessClient.Configuration.SetDefaultMinLogLevel(exceptionlessMinLogLevel);
         exceptionlessClient.Configuration.AddPlugin("Use Mock Log Target Interceptor", context => PluginAction(context, logTarget));
         var inner = new ExceptionlessSplatLogger(typeof(ExceptionlessLoggerTests), exceptionlessClient);

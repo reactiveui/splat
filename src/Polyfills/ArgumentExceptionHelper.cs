@@ -21,7 +21,7 @@ internal static class ArgumentExceptionHelper
     /// <summary>Throws an <see cref="ArgumentNullException"/> if <paramref name="argument"/> is <see langword="null"/>.</summary>
     /// <param name="argument">The reference type argument to validate as non-null.</param>
     /// <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
-    public static void ThrowIfNull(
+    internal static void ThrowIfNull(
         [NotNull] object? argument,
         [CallerArgumentExpression(nameof(argument))] string? paramName = null)
     {
@@ -36,7 +36,7 @@ internal static class ArgumentExceptionHelper
     /// <summary>Throws if <paramref name="argument"/> is <see langword="null"/>, empty, or all white-space.</summary>
     /// <param name="argument">The string argument to validate.</param>
     /// <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
-    public static void ThrowIfNullOrWhiteSpace(
+    internal static void ThrowIfNullOrWhiteSpace(
         [NotNull] string? argument,
         [CallerArgumentExpression(nameof(argument))] string? paramName = null)
     {

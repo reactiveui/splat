@@ -19,7 +19,7 @@ internal static class ObjectDisposedExceptionHelper
     /// <summary>Throws an <see cref="ObjectDisposedException"/> if <paramref name="condition"/> is <see langword="true"/>.</summary>
     /// <param name="condition">The condition to evaluate.</param>
     /// <param name="instance">The object whose type name is included in the exception message.</param>
-    public static void ThrowIf([DoesNotReturnIf(true)] bool condition, object instance)
+    internal static void ThrowIf([DoesNotReturnIf(true)] bool condition, object instance)
     {
         if (!condition)
         {
@@ -32,7 +32,7 @@ internal static class ObjectDisposedExceptionHelper
     /// <summary>Throws an <see cref="ObjectDisposedException"/> if <paramref name="condition"/> is <see langword="true"/>.</summary>
     /// <param name="condition">The condition to evaluate.</param>
     /// <param name="type">The type whose name is included in the exception message.</param>
-    public static void ThrowIf([DoesNotReturnIf(true)] bool condition, Type type)
+    internal static void ThrowIf([DoesNotReturnIf(true)] bool condition, Type type)
     {
         if (!condition)
         {

@@ -17,7 +17,7 @@ namespace Splat;
 public static class SplatColorExtensions
 {
     /// <summary>The maximum value of a single 8-bit colour component, used to scale between byte and normalized float channels.</summary>
-    private const float ByteComponentMax = 255f;
+    private const float ByteComponentMax = 255F;
 
 #if UIKIT
     /// <summary>Extension members for <see cref="SplatColor"/>.</summary>
@@ -45,16 +45,6 @@ public static class SplatColorExtensions
         }
     }
 #else
-    /// <summary>Extension members for <see cref="SplatColor"/>.</summary>
-    /// <param name="value">The value the extension members operate on.</param>
-    extension(SplatColor value)
-    {
-        /// <summary>Converts a <see cref="SplatColor"/> into the cocoa native <see cref="NSColor"/>.</summary>
-        /// <returns>The <see cref="NSColor"/> generated.</returns>
-        public NSColor ToNative() =>
-            NSColor.FromSrgb(value.R / ByteComponentMax, value.G / ByteComponentMax, value.B / ByteComponentMax, value.A / ByteComponentMax);
-    }
-
     /// <summary>Extension members for <see cref="NSColor"/>.</summary>
     /// <param name="value">The value the extension members operate on.</param>
     extension(NSColor value)
@@ -68,6 +58,16 @@ public static class SplatColorExtensions
             value.GetRgba(out var r, out var g, out var b, out var a);
             return SplatColor.FromArgb((int)(a * ByteComponentMax), (int)(r * ByteComponentMax), (int)(g * ByteComponentMax), (int)(b * ByteComponentMax));
         }
+    }
+
+    /// <summary>Extension members for <see cref="SplatColor"/>.</summary>
+    /// <param name="value">The value the extension members operate on.</param>
+    extension(SplatColor value)
+    {
+        /// <summary>Converts a <see cref="SplatColor"/> into the cocoa native <see cref="NSColor"/>.</summary>
+        /// <returns>The <see cref="NSColor"/> generated.</returns>
+        public NSColor ToNative() =>
+            NSColor.FromSrgb(value.R / ByteComponentMax, value.G / ByteComponentMax, value.B / ByteComponentMax, value.A / ByteComponentMax);
     }
 #endif
 }

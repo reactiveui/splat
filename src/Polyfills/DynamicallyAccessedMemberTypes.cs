@@ -8,15 +8,14 @@ namespace System.Diagnostics.CodeAnalysis;
 
 /// <summary>
 /// Specifies the types of members that are dynamically accessed.
-///
 /// This enumeration has a <see cref="FlagsAttribute"/> attribute that allows a
 /// bitwise combination of its member values.
 /// </summary>
 [Flags]
 [SuppressMessage(
-    "Major Code Smell",
-    "S4070:Non-flags enums should not be marked with FlagsAttribute",
-    Justification = "Faithful mirror of the BCL DynamicallyAccessedMemberTypes; FlagsAttribute and its composite values are intentional.")]
+    "Design",
+    "SST2303:Flags enums should declare bit values",
+    Justification = "Mirrors the shape of the corresponding BCL type (System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes); the polyfill compiles only where the BCL lacks it.")]
 internal enum DynamicallyAccessedMemberTypes
 {
     /// <summary>Specifies no members.</summary>

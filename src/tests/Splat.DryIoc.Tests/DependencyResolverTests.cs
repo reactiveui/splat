@@ -12,15 +12,18 @@ namespace Splat.DryIoc.Tests;
 [NotInParallel]
 public class DependencyResolverTests
 {
+    /// <summary>The contract used by the duplicate keyed registration tests.</summary>
+    private const string ViewModelOneContract = "ViewModelOne";
+
     /// <summary>Shoulds the resolve nulls.</summary>
     [Test] //// (Ignore("Further investigation required"))]
     public void Can_Register_And_Resolve_Null_Types()
     {
-        var builder = new Container();
+        using var builder = new Container();
         builder.UseDryIocDependencyResolver();
 
         const int foo = 5;
-        Assert.Throws<ArgumentNullException>(() => AppLocator.CurrentMutable.Register(() => foo, serviceType: null, contract: null));
+        _ = Assert.Throws<ArgumentNullException>(static () => AppLocator.CurrentMutable.Register(static () => foo, serviceType: null, contract: null));
 
         // Tests skipped as functionality removed.
 #if SKIP_TEST
@@ -60,22 +63,22 @@ public class DependencyResolverTests
     [Test]
     public void DryIocDependencyResolver_Should_Register_But_Not_Create_Views()
     {
-        var container = new Container();
+        using var container = new Container();
         container.UseDryIocDependencyResolver();
 
-        AppLocator.CurrentMutable.Register(() => new ViewThatShouldNotLoad(), typeof(IViewFor<ViewModelOne>));
-        Assert.Throws<InvalidOperationException>(() => AppLocator.Current.GetService<IViewFor<ViewModelOne>>());
+        AppLocator.CurrentMutable.Register(static () => new ViewThatShouldNotLoad(), typeof(IViewFor<ViewModelOne>));
+        _ = Assert.Throws<InvalidOperationException>(static () => AppLocator.Current.GetService<IViewFor<ViewModelOne>>());
     }
 
     /// <summary>Should resolve the views.</summary>
     [Test]
     public void DryIocDependencyResolver_Should_Register_With_Contract_But_Not_Create_Views()
     {
-        var container = new Container();
+        using var container = new Container();
         container.UseDryIocDependencyResolver();
 
-        AppLocator.CurrentMutable.Register(() => new ViewThatShouldNotLoad(), typeof(IViewFor<ViewModelOne>), "name");
-        Assert.Throws<InvalidOperationException>(() => AppLocator.Current.GetService<IViewFor<ViewModelOne>>("name"));
+        AppLocator.CurrentMutable.Register(static () => new ViewThatShouldNotLoad(), typeof(IViewFor<ViewModelOne>), "name");
+        _ = Assert.Throws<InvalidOperationException>(static () => AppLocator.Current.GetService<IViewFor<ViewModelOne>>("name"));
     }
 
     /// <summary>Should resolve the views.</summary>
@@ -83,7 +86,7 @@ public class DependencyResolverTests
     [Test]
     public async Task DryIocDependencyResolver_Should_Resolve_Views()
     {
-        var container = new Container();
+        using var container = new Container();
         container.Register<IViewFor<ViewModelOne>, ViewOne>();
         container.Register<IViewFor<ViewModelTwo>, ViewTwo>();
         container.UseDryIocDependencyResolver();
@@ -106,7 +109,7 @@ public class DependencyResolverTests
     [Test]
     public async Task DryIocDependencyResolver_Should_Resolve_Named_View()
     {
-        var container = new Container();
+        using var container = new Container();
         container.Register<IViewFor<ViewModelTwo>, ViewTwo>(serviceKey: "Other");
         container.UseDryIocDependencyResolver();
 
@@ -121,20 +124,20 @@ public class DependencyResolverTests
     [Test]
     public async Task DryIocDependencyResolver_Should_Resolve_View_Models()
     {
-        var container = new Container();
+        using var container = new Container();
         container.Register<ViewModelOne>();
         container.Register<ViewModelTwo>();
         container.UseDryIocDependencyResolver();
 
-        AppLocator.CurrentMutable.Register(() => new ViewThatShouldNotLoad(), typeof(IViewFor<ViewModelOne>), "name");
+        AppLocator.CurrentMutable.Register(static () => new ViewThatShouldNotLoad(), typeof(IViewFor<ViewModelOne>), "name");
 
-        var vmOne = AppLocator.Current.GetService<ViewModelOne>();
-        var vmTwo = AppLocator.Current.GetService<ViewModelTwo>();
+        var viewModelOne = AppLocator.Current.GetService<ViewModelOne>();
+        var viewModelTwo = AppLocator.Current.GetService<ViewModelTwo>();
 
         using (Assert.Multiple())
         {
-            await Assert.That(vmOne).IsNotNull();
-            await Assert.That(vmTwo).IsNotNull();
+            await Assert.That(viewModelOne).IsNotNull();
+            await Assert.That(viewModelTwo).IsNotNull();
         }
     }
 
@@ -143,7 +146,7 @@ public class DependencyResolverTests
     [Test]
     public async Task DryIocDependencyResolver_Should_Resolve_Screen()
     {
-        var builder = new Container();
+        using var builder = new Container();
         builder.Register<IScreen, MockScreen>(Reuse.Singleton);
         builder.UseDryIocDependencyResolver();
 
@@ -158,7 +161,7 @@ public class DependencyResolverTests
     [Test]
     public async Task DryIocDependencyResolver_Should_UnregisterCurrent_Screen()
     {
-        var builder = new Container();
+        using var builder = new Container();
         builder.Register<IScreen, MockScreen>(Reuse.Singleton);
         builder.UseDryIocDependencyResolver();
 
@@ -174,7 +177,7 @@ public class DependencyResolverTests
     [Test]
     public async Task DryIocDependencyResolver_Should_UnregisterCurrent_Screen_With_Contract()
     {
-        var builder = new Container();
+        using var builder = new Container();
         builder.Register<IScreen, MockScreen>(Reuse.Singleton, serviceKey: nameof(MockScreen));
         builder.UseDryIocDependencyResolver();
 
@@ -190,7 +193,7 @@ public class DependencyResolverTests
     [Test]
     public async Task DryIocDependencyResolver_Should_UnregisterAll_Screen()
     {
-        var builder = new Container();
+        using var builder = new Container();
         builder.Register<IScreen, MockScreen>(Reuse.Singleton);
         builder.UseDryIocDependencyResolver();
 
@@ -206,7 +209,7 @@ public class DependencyResolverTests
     [Test]
     public async Task DryIocDependencyResolver_Should_UnregisterAll_Screen_With_Contract()
     {
-        var builder = new Container();
+        using var builder = new Container();
         builder.Register<IScreen, MockScreen>(Reuse.Singleton, serviceKey: nameof(MockScreen));
         builder.UseDryIocDependencyResolver();
 
@@ -221,11 +224,11 @@ public class DependencyResolverTests
     [Test]
     public void DryIocDependencyResolver_Should_Throw_If_ServiceRegistionCallback_Called()
     {
-        var container = new Container();
+        using var container = new Container();
         container.UseDryIocDependencyResolver();
 
-        Assert.Throws<NotSupportedException>(() =>
-            AppLocator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), _ => { }));
+        _ = Assert.Throws<NotSupportedException>(static () =>
+            AppLocator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), static _ => { }));
     }
 
     /// <summary>Check to ensure the correct logger is returned.</summary>
@@ -239,11 +242,11 @@ public class DependencyResolverTests
         // ConsoleLogger exposes both a parameterless and a TextWriter constructor, so DryIoc must be told how to
         // choose. ConstructorWithResolvableArguments selects the greediest constructor whose arguments can be
         // resolved; with no TextWriter registered that resolves to the parameterless constructor.
-        var c = new Container(rules => rules.With(FactoryMethod.ConstructorWithResolvableArguments));
+        using var c = new Container(static rules => rules.With(FactoryMethod.ConstructorWithResolvableArguments));
         c.UseDryIocDependencyResolver();
         c.Register<ILogger, ConsoleLogger>(ifAlreadyRegistered: IfAlreadyRegistered.Replace);
         AppLocator.CurrentMutable.RegisterConstant<ILogManager>(
-            new FuncLogManager(_ => new WrappingFullLogger(new ConsoleLogger())));
+            new FuncLogManager(static _ => new WrappingFullLogger(new ConsoleLogger())));
 
         var d = AppLocator.Current.GetService<ILogManager>();
 
@@ -258,9 +261,9 @@ public class DependencyResolverTests
     [Test]
     public async Task DryIocDependencyResolver_PreInit_Should_ReturnRegisteredLogger()
     {
-        var c = new Container();
+        using var c = new Container();
         c.RegisterInstance<ILogManager>(
-            new FuncLogManager(_ => new WrappingFullLogger(new ConsoleLogger())));
+            new FuncLogManager(static _ => new WrappingFullLogger(new ConsoleLogger())));
         c.UseDryIocDependencyResolver();
 
         var d = AppLocator.Current.GetService<ILogManager>();
@@ -273,14 +276,14 @@ public class DependencyResolverTests
     [Test]
     public async Task DryIocDependencyResolver_Should_Resolve_AfterDuplicateKeyedRegistration()
     {
-        var container = new Container();
+        using var container = new Container();
         container.UseDryIocDependencyResolver();
-        AppLocator.CurrentMutable.Register(() => new ViewModelOne(), typeof(ViewModelOne), "ViewModelOne");
-        AppLocator.CurrentMutable.Register(() => new ViewModelOne(), typeof(ViewModelOne), "ViewModelOne");
+        AppLocator.CurrentMutable.Register(static () => new ViewModelOne(), typeof(ViewModelOne), ViewModelOneContract);
+        AppLocator.CurrentMutable.Register(static () => new ViewModelOne(), typeof(ViewModelOne), ViewModelOneContract);
 
-        var vmOne = AppLocator.Current.GetService<ViewModelOne>("ViewModelOne");
+        var viewModelOne = AppLocator.Current.GetService<ViewModelOne>(ViewModelOneContract);
 
-        await Assert.That(vmOne).IsNotNull();
+        await Assert.That(viewModelOne).IsNotNull();
     }
 
     /// <summary>DryIoc dependency resolver should create a resolved object only once when resolving.</summary>
@@ -296,16 +299,16 @@ public class DependencyResolverTests
             return new ViewModelOne();
         });
 
-        var resolver = new DryIocDependencyResolver(container);
+        using var resolver = new DryIocDependencyResolver(container);
 
         // Imitate a call to Locator.Current.GetService<ViewModelOne>()
         var vms = resolver.GetServices(typeof(ViewModelOne));
         await Assert.That(count).IsEqualTo(1);
 
-        var vmOne = vms.LastOrDefault();
+        var viewModelOne = vms.LastOrDefault();
         using (Assert.Multiple())
         {
-            await Assert.That(vmOne).IsNotNull();
+            await Assert.That(viewModelOne).IsNotNull();
             await Assert.That(count).IsEqualTo(1);
         }
     }

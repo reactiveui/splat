@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -24,22 +24,22 @@ namespace Splat;
 internal sealed class CocoaBitmap(UIImage inner) : IBitmap
 {
     /// <summary>The native image backing this bitmap; set to <see langword="null"/> once the bitmap is disposed.</summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Is Disposed using Interlocked method")]
     private UIImage? _inner = inner;
 
     /// <inheritdoc />
-    public float Width => (float)(_inner?.Size.Width ?? 0);
+    public float Width => (float)(Volatile.Read(ref _inner)?.Size.Width ?? 0);
 
     /// <inheritdoc />
-    public float Height => (float)(_inner?.Size.Height ?? 0);
+    public float Height => (float)(Volatile.Read(ref _inner)?.Size.Height ?? 0);
 
     /// <summary>Gets the native image.</summary>
-    internal UIImage Inner => _inner ?? throw new InvalidOperationException("Inner bitmap is no longer valid");
+    internal UIImage Inner => Volatile.Read(ref _inner) ?? throw new InvalidOperationException("Inner bitmap is no longer valid");
 
     /// <inheritdoc />
     public Task Save(CompressedBitmapFormat format, float quality, Stream target)
     {
-        if (_inner is null)
+        var inner = Volatile.Read(ref _inner);
+        if (inner is null)
         {
             return Task.CompletedTask;
         }
@@ -47,15 +47,15 @@ internal sealed class CocoaBitmap(UIImage inner) : IBitmap
         return Task.Run(() =>
         {
 #if UIKIT
-            var data = (format == CompressedBitmapFormat.Jpeg ? _inner.AsJPEG(quality) : _inner.AsPNG())!;
+            var data = (format == CompressedBitmapFormat.Jpeg ? inner.AsJPEG(quality) : inner.AsPNG())!;
             data.AsStream().CopyTo(target);
 
 #else
 
             var rect = CGRect.Empty;
 
-            var cgImage = _inner.AsCGImage(ref rect, null, null);
-            var imageRep = new NSBitmapImageRep(cgImage);
+            var coreGraphicsImage = inner.AsCGImage(ref rect, null, null);
+            var imageRep = new NSBitmapImageRep(coreGraphicsImage);
 
             var props = format == CompressedBitmapFormat.Png
                 ? new()
@@ -63,11 +63,8 @@ internal sealed class CocoaBitmap(UIImage inner) : IBitmap
 
             var type = format == CompressedBitmapFormat.Png ? NSBitmapImageFileType.Png : NSBitmapImageFileType.Jpeg;
 
-            var outData = imageRep.RepresentationUsingTypeProperties(type, props);
-            if (outData is null)
-            {
-                throw new InvalidOperationException("Failed to create bitmap representation");
-            }
+            var outData = imageRep.RepresentationUsingTypeProperties(type, props)
+                ?? throw new InvalidOperationException("Failed to create bitmap representation");
 
             outData.AsStream().CopyTo(target);
 #endif

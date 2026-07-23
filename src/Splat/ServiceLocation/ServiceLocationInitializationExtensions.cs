@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -60,7 +60,7 @@ public static class ServiceLocationInitializationExtensions
             return;
         }
 
-        resolver.Register<ILogManager>(() => new DefaultLogManager(AppLocator.Current));
+        resolver.Register<ILogManager>(static () => new DefaultLogManager(AppLocator.Current));
     }
 
     /// <summary>Registers a default logger implementation with the specified dependency resolver if no logger is already registered.</summary>

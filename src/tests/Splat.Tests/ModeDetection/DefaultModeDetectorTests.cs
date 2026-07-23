@@ -10,6 +10,9 @@ public class DefaultModeDetectorTests
     /// <summary>The environment variable / AppContext key used to flag a test run.</summary>
     private const string DotnetRunningInTest = "DOTNET_RUNNING_IN_TEST";
 
+    /// <summary>The environment variable that signals a run under the NUnit test runner.</summary>
+    private const string NUnitTest = "NUNIT_TEST";
+
     /// <summary>Test that DefaultModeDetector can detect unit test runner.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -178,14 +181,14 @@ public class DefaultModeDetectorTests
         var detector = new DefaultModeDetector();
         var oldDotnetEnv = Environment.GetEnvironmentVariable(DotnetRunningInTest);
         var oldAppCtx = AppContext.GetData(DotnetRunningInTest);
-        var oldNUnitEnv = Environment.GetEnvironmentVariable("NUNIT_TEST");
+        var oldNUnitEnv = Environment.GetEnvironmentVariable(NUnitTest);
 
         try
         {
             // Clear explicit signals to exercise runner env signal path and set NUNIT_TEST.
             Environment.SetEnvironmentVariable(DotnetRunningInTest, null);
             AppContext.SetData(DotnetRunningInTest, null);
-            Environment.SetEnvironmentVariable("NUNIT_TEST", "1");
+            Environment.SetEnvironmentVariable(NUnitTest, "1");
 
             // Act
             var result = detector.InUnitTestRunner();
@@ -201,7 +204,7 @@ public class DefaultModeDetectorTests
         {
             Environment.SetEnvironmentVariable(DotnetRunningInTest, oldDotnetEnv);
             AppContext.SetData(DotnetRunningInTest, oldAppCtx);
-            Environment.SetEnvironmentVariable("NUNIT_TEST", oldNUnitEnv);
+            Environment.SetEnvironmentVariable(NUnitTest, oldNUnitEnv);
         }
     }
 #endif
@@ -245,6 +248,47 @@ public class DefaultModeDetectorTests
     }
 #endif
 
+#if NET8_0_OR_GREATER
+    /// <summary>
+    /// Verifies that a non-affirmative DOTNET_RUNNING_IN_TEST value is not treated as an explicit test signal,
+    /// exercising the length-based value switch, while detection still succeeds via the test-runner assembly scan.
+    /// </summary>
+    /// <param name="value">A DOTNET_RUNNING_IN_TEST value that must not be interpreted as an affirmative signal.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    [Arguments("0")]
+    [Arguments("no")]
+    [Arguments("false")]
+    public async Task DefaultModeDetector_ExplicitEnvVar_NonAffirmativeValues_StillDetectViaRunner(string value)
+    {
+        // Arrange
+        var detector = new DefaultModeDetector();
+        var oldEnv = Environment.GetEnvironmentVariable(DotnetRunningInTest);
+        var oldAppCtx = AppContext.GetData(DotnetRunningInTest);
+
+        try
+        {
+            Environment.SetEnvironmentVariable(DotnetRunningInTest, value);
+            AppContext.SetData(DotnetRunningInTest, null);
+
+            // Act - the explicit value is rejected, but the runner is still detected by the later assembly scan.
+            var result = detector.InUnitTestRunner();
+
+            // Assert
+            using (Assert.Multiple())
+            {
+                await Assert.That(result.HasValue).IsTrue();
+                await Assert.That(result!.Value).IsTrue();
+            }
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable(DotnetRunningInTest, oldEnv);
+            AppContext.SetData(DotnetRunningInTest, oldAppCtx);
+        }
+    }
+#endif
+
     /// <summary>
     /// Verifies that DefaultModeDetector can detect Microsoft Testing Platform (MTP) via assembly scan.
     /// This test ensures MTP is recognized as a unit test framework.
@@ -282,11 +326,6 @@ public class DefaultModeDetectorTests
                 await Assert.That(result.HasValue).IsTrue();
                 await Assert.That(result!.Value).IsTrue();
             }
-            else
-            {
-                // When Microsoft.Testing.Platform is not loaded (e.g., running under TUnit only),
-                // skip the MTP-specific assertion to avoid spurious failures.
-            }
         }
     }
 
@@ -303,7 +342,7 @@ public class DefaultModeDetectorTests
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
         var hasMTPAssembly = Array.Exists(
             assemblies,
-            a => a.FullName?.Contains("Microsoft.Testing.Platform", StringComparison.OrdinalIgnoreCase) == true);
+            static a => a.FullName?.Contains("Microsoft.Testing.Platform", StringComparison.OrdinalIgnoreCase) == true);
 
         var detector = new DefaultModeDetector();
         var result = detector.InUnitTestRunner();
@@ -319,5 +358,27 @@ public class DefaultModeDetectorTests
             // Ensure this test only passes if the MTP assembly is present or another test framework is detected
             await Assert.That(hasMTPAssembly || result == true).IsTrue();
         }
+    }
+
+    /// <summary>
+    /// Verifies the marker matching helper across null, empty, matching, and non-matching names,
+    /// including case-insensitive comparison.
+    /// </summary>
+    /// <param name="name">The candidate name to test.</param>
+    /// <param name="expected">The expected match result.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    [Arguments(null, false)]
+    [Arguments("", false)]
+    [Arguments("just-an-ordinary-app", false)]
+    [Arguments("MyTestHostRunner", true)]
+    [Arguments("some/path/to/VSTEST.console", true)]
+    public async Task NameContainsAnyMarker_MatchesExpected(string? name, bool expected)
+    {
+        var markers = new[] { "testhost", "vstest" };
+
+        var actual = DefaultModeDetector.NameContainsAnyMarker(name, markers, StringComparison.OrdinalIgnoreCase);
+
+        await Assert.That(actual).IsEqualTo(expected);
     }
 }

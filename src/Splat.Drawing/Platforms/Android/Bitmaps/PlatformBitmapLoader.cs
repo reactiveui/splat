@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -17,11 +17,14 @@ namespace Splat;
 /// instances of this class. If neither is registered, the loader will fall back to reflection-based assembly scanning,
 /// which is not AOT-compatible. For full AOT compatibility, consider using <see cref="PlatformBitmapLoader"/> instead.</remarks>
 [SuppressMessage(
-    "Minor Code Smell",
-    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    "StyleSharp",
+    "SST2307:A generic method's type parameter appears in no parameter, so no caller can infer it",
     Justification = "RegisterDrawables<TDrawable>'s generic parameter is the caller-supplied Resource.Drawable type; it has no value argument so cannot appear in the parameter list.")]
 public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
 {
+    /// <summary>The shared prefix used when logging drawable list contents.</summary>
+    private const string DrawableListGotPrefix = "DrawableList. Got ";
+
     /// <summary>Resolves a drawable resource name to its integer resource id; <see langword="null"/> until registered.</summary>
     private static Func<string, int>? _drawableResolver;
 
@@ -86,9 +89,7 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
     /// </summary>
     /// <typeparam name="TDrawable">The Resource.Drawable type from your application.</typeparam>
     /// <example>
-    /// <code>
-    /// PlatformBitmapLoader.RegisterDrawables&lt;MyApp.Resource.Drawable&gt;();
-    /// </code>
+    /// <c>PlatformBitmapLoader.RegisterDrawables&lt;MyApp.Resource.Drawable&gt;();</c>
     /// </example>
     public static void RegisterDrawables<TDrawable>() => _drawableType = typeof(TDrawable);
 
@@ -212,11 +213,11 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
         if (log?.IsDebugEnabled == true)
         {
             var output = new StringBuilder();
-            output.Append("DrawableList. Got ").Append(result.Count).AppendLine(" items from registered type.");
+            _ = output.Append(DrawableListGotPrefix).Append(result.Count).AppendLine(" items from registered type.");
 
             foreach (var keyValuePair in result)
             {
-                output.Append("DrawableList Item: ").AppendLine(keyValuePair.Key);
+                _ = output.Append("DrawableList Item: ").AppendLine(keyValuePair.Key);
             }
 
             log.Debug(output.ToString());
@@ -307,20 +308,20 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
         var drawableTypes = assemblies
             .AsParallel()
             .SelectMany(a => GetTypesFromAssembly(a, log))
-            .Where(x => x.Name.Equals("Resource", StringComparison.Ordinal) && x.GetNestedType("Drawable") is not null)
-            .Select(x => x.GetNestedType("Drawable"))
-            .Where(x => x is not null)
-            .Select(x => x!)
+            .Where(static x => x.Name.Equals("Resource", StringComparison.Ordinal) && x.GetNestedType("Drawable") is not null)
+            .Select(static x => x.GetNestedType("Drawable"))
+            .Where(static x => x is not null)
+            .Select(static x => x!)
             .ToArray();
 
         if (log?.IsDebugEnabled == true)
         {
             var output = new StringBuilder();
-            output.Append("DrawableList. Got ").Append(drawableTypes.Length).AppendLine(" types.");
+            _ = output.Append(DrawableListGotPrefix).Append(drawableTypes.Length).AppendLine(" types.");
 
             foreach (var drawableType in drawableTypes)
             {
-                output.Append("DrawableList Type: ").AppendLine(drawableType.Name);
+                _ = output.Append("DrawableList Type: ").AppendLine(drawableType.Name);
             }
 
             log.Debug(output.ToString());
@@ -328,18 +329,18 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
 
         var result = drawableTypes
             .AsParallel()
-            .SelectMany(x => x.GetFields())
-            .Where(x => x.FieldType == typeof(int) && x.IsLiteral)
-            .ToDictionary(k => k.Name, v => (int?)v.GetRawConstantValue() ?? 0);
+            .SelectMany(static x => x.GetFields())
+            .Where(static x => x.FieldType == typeof(int) && x.IsLiteral)
+            .ToDictionary(static k => k.Name, static v => (int?)v.GetRawConstantValue() ?? 0);
 
         if (log?.IsDebugEnabled == true)
         {
             var output = new StringBuilder();
-            output.Append("DrawableList. Got ").Append(result.Count).AppendLine(" items.");
+            _ = output.Append(DrawableListGotPrefix).Append(result.Count).AppendLine(" items.");
 
             foreach (var keyValuePair in result)
             {
-                output.Append("DrawableList Item: ").AppendLine(keyValuePair.Key);
+                _ = output.Append("DrawableList Item: ").AppendLine(keyValuePair.Key);
             }
 
             log.Debug(output.ToString());

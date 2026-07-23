@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -15,8 +15,8 @@ namespace Splat;
 /// registrations for advanced scenarios. All methods return the resolver instance to enable fluent chaining of multiple
 /// registrations.</remarks>
 [SuppressMessage(
-    "Minor Code Smell",
-    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    "StyleSharp",
+    "SST2307:A generic method's type parameter appears in no parameter, so no caller can infer it",
     Justification = "Generic service-location API; the service type is supplied explicitly by callers, so type inference cannot apply by design.")]
 public static class ResolverMixins
 {
@@ -37,7 +37,7 @@ public static class ResolverMixins
         {
             ArgumentExceptionHelper.ThrowIfNull(resolver);
 
-            resolver.Register<TService>(() => new());
+            resolver.Register<TService>(static () => new());
             return resolver;
         }
 
@@ -57,7 +57,7 @@ public static class ResolverMixins
         {
             ArgumentExceptionHelper.ThrowIfNull(resolver);
 
-            resolver.Register<TService>(() => new(), contract);
+            resolver.Register<TService>(static () => new(), contract);
             return resolver;
         }
 
@@ -112,7 +112,7 @@ public static class ResolverMixins
         {
             ArgumentExceptionHelper.ThrowIfNull(resolver);
 
-            resolver.Register<TService>(() => new TImplementation());
+            resolver.Register<TService>(static () => new TImplementation());
             return resolver;
         }
 
@@ -132,7 +132,7 @@ public static class ResolverMixins
         {
             ArgumentExceptionHelper.ThrowIfNull(resolver);
 
-            resolver.Register<TService>(() => new TImplementation(), contract);
+            resolver.Register<TService>(static () => new TImplementation(), contract);
             return resolver;
         }
 
@@ -340,7 +340,7 @@ public static class ResolverMixins
         {
             ArgumentExceptionHelper.ThrowIfNull(resolver);
 
-            var val = new Lazy<TService?>(() => new(), LazyThreadSafetyMode.ExecutionAndPublication);
+            var val = new Lazy<TService?>(static () => new(), LazyThreadSafetyMode.ExecutionAndPublication);
             resolver.Register(() => val.Value);
             return resolver;
         }
@@ -360,7 +360,7 @@ public static class ResolverMixins
         {
             ArgumentExceptionHelper.ThrowIfNull(resolver);
 
-            var val = new Lazy<TService?>(() => new(), LazyThreadSafetyMode.ExecutionAndPublication);
+            var val = new Lazy<TService?>(static () => new(), LazyThreadSafetyMode.ExecutionAndPublication);
             resolver.Register(() => val.Value, contract);
             return resolver;
         }

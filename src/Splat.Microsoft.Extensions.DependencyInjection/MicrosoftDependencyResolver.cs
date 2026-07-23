@@ -20,8 +20,8 @@ namespace Splat.Microsoft.Extensions.DependencyInjection;
 /// implements IKeyedServiceProvider. This resolver is suitable for scenarios requiring dynamic service registration and
 /// resolution, as well as integration with existing Microsoft.Extensions.DependencyInjection infrastructure.</remarks>
 [SuppressMessage(
-    "Minor Code Smell",
-    "S4018:All type parameters should be used in the parameter list to enable type inference",
+    "StyleSharp",
+    "SST2307:A generic method's type parameter appears in no parameter, so no caller can infer it",
     Justification = "The generic parameter is the caller-supplied service type and cannot appear in the parameter list without breaking the IDependencyResolver resolution/registration contract.")]
 public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
 {
@@ -164,20 +164,13 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
         : ServiceProvider.GetService<T>();
 
     /// <inheritdoc/>
-    public T? GetService<T>(string? contract)
-    {
-        if (contract is null)
-        {
-            return GetService<T>();
-        }
-
-        return ServiceProvider switch
+    public T? GetService<T>(string? contract) =>
+        contract is null ? GetService<T>() : ServiceProvider switch
         {
             null => throw new InvalidOperationException(ServiceProviderNullMessage),
             IKeyedServiceProvider keyedServiceProvider => keyedServiceProvider.GetKeyedService<T>(contract),
             _ => default
         };
-    }
 
     /// <inheritdoc />
     public virtual IEnumerable<object> GetServices(Type? serviceType)
@@ -192,14 +185,14 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
 
         // this is to deal with CS8613 that GetServices returns IEnumerable<object?>?
         IEnumerable<object> services = ServiceProvider.GetServices(serviceType)
-            .Where(a => a is not null)
-            .Select(a => a!);
+            .Where(static a => a is not null)
+            .Select(static a => a!);
 
         if (isNull)
         {
             services = services
                 .Cast<NullServiceType>()
-                .Select(nst => nst.Factory()!);
+                .Select(static nst => nst.Factory()!);
         }
 
         return services;
@@ -221,15 +214,15 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
         if (ServiceProvider is IKeyedServiceProvider serviceProvider)
         {
             services = serviceProvider.GetKeyedServices(serviceType, contract)
-                .Where(a => a is not null)
-                .Select(a => a!);
+                .Where(static a => a is not null)
+                .Select(static a => a!);
         }
 
         if (isNull)
         {
             services = services
                 .Cast<NullServiceType>()
-                .Select(nst => nst.Factory()!);
+                .Select(static nst => nst.Factory()!);
         }
 
         return services;
@@ -241,20 +234,13 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
         : ServiceProvider.GetServices<T>();
 
     /// <inheritdoc/>
-    public IEnumerable<T> GetServices<T>(string? contract)
-    {
-        if (contract is null)
-        {
-            return GetServices<T>();
-        }
-
-        return ServiceProvider switch
+    public IEnumerable<T> GetServices<T>(string? contract) =>
+        contract is null ? GetServices<T>() : ServiceProvider switch
         {
             null => throw new InvalidOperationException(ServiceProviderNullMessage),
             IKeyedServiceProvider keyedServiceProvider => keyedServiceProvider.GetKeyedServices<T>(contract),
             _ => []
         };
-    }
 
     /// <inheritdoc />
     public virtual void Register(Func<object?> factory, Type? serviceType)
@@ -272,8 +258,8 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
         {
             _serviceCollection?.AddTransient(serviceType, _ =>
             isNull
-            ? new NullServiceType(factory)
-            : factory()!);
+                ? new NullServiceType(factory)
+                : factory()!);
 
             // required so that it gets rebuilt if not injected externally.
             DisposeServiceProvider(_serviceProvider);
@@ -303,8 +289,8 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
         {
             _serviceCollection?.AddKeyedTransient(serviceType, contract, (_, _) =>
             isNull
-            ? new NullServiceType(factory)
-            : factory()!);
+                ? new NullServiceType(factory)
+                : factory()!);
 
             // required so that it gets rebuilt if not injected externally.
             DisposeServiceProvider(_serviceProvider);
@@ -439,19 +425,11 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
 
         lock (_syncLock)
         {
-            if (_serviceCollection is null)
+            // A null collection would mean the container was already built from a provider and became immutable,
+            // a state rejected above, so the null-conditional simply keeps the nullable analyzer satisfied.
+            foreach (var sd in _serviceCollection?.Where(s => !s.IsKeyedService && s.ServiceType == serviceType).ToList() ?? [])
             {
-                // required so that it gets rebuilt if not injected externally.
-                DisposeServiceProvider(_serviceProvider);
-                _serviceProvider = null;
-                return;
-            }
-
-            var sds = _serviceCollection.Where(s => !s.IsKeyedService && s.ServiceType == serviceType);
-
-            foreach (var sd in sds.ToList())
-            {
-                _ = _serviceCollection.Remove(sd);
+                _ = _serviceCollection!.Remove(sd);
             }
 
             // required so that it gets rebuilt if not injected externally.
@@ -484,19 +462,11 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
 
         lock (_syncLock)
         {
-            if (_serviceCollection is null)
+            // A null collection would mean the container was already built from a provider and became immutable,
+            // a state rejected above, so the null-conditional simply keeps the nullable analyzer satisfied.
+            foreach (var sd in _serviceCollection?.Where(sd => MatchesKeyedContract(serviceType, contract, sd)).ToList() ?? [])
             {
-                // required so that it gets rebuilt if not injected externally.
-                DisposeServiceProvider(_serviceProvider);
-                _serviceProvider = null;
-                return;
-            }
-
-            var sds = _serviceCollection.Where(sd => MatchesKeyedContract(serviceType, contract, sd));
-
-            foreach (var sd in sds.ToList())
-            {
-                _ = _serviceCollection.Remove(sd);
+                _ = _serviceCollection!.Remove(sd);
             }
 
             // required so that it gets rebuilt if not injected externally.
@@ -555,14 +525,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
 
         serviceType ??= NullServiceType.CachedType;
 
-        if (!_isImmutable)
-        {
-            // Only keyed services match when a non-null contract is specified.
-            return _serviceCollection?.Any(sd => MatchesKeyedContract(serviceType, contract, sd)) == true;
-        }
-
-        // Immutable provider path: only keyed services match when a non-null contract is specified.
-        return _serviceProvider is IKeyedServiceProvider keyedServiceProvider
+        return !_isImmutable ? _serviceCollection?.Any(sd => MatchesKeyedContract(serviceType, contract, sd)) == true : _serviceProvider is IKeyedServiceProvider keyedServiceProvider
                && keyedServiceProvider.GetKeyedService(serviceType, contract) is not null;
     }
 

@@ -20,8 +20,8 @@ public class DependencyResolverTests
     {
         var wrapper = new ContainerWrapper();
         var services = wrapper.ServiceCollection;
-        services.AddTransient<IViewFor<ViewModelOne>, ViewOne>();
-        services.AddTransient<IViewFor<ViewModelTwo>, ViewTwo>();
+        _ = services.AddTransient<IViewFor<ViewModelOne>, ViewOne>();
+        _ = services.AddTransient<IViewFor<ViewModelTwo>, ViewTwo>();
 
         wrapper.BuildAndUse();
 
@@ -45,7 +45,7 @@ public class DependencyResolverTests
     {
         var wrapper = new ContainerWrapper();
         var services = wrapper.ServiceCollection;
-        services.AddTransient<IViewFor<ViewModelTwo>, ViewTwo>();
+        _ = services.AddTransient<IViewFor<ViewModelTwo>, ViewTwo>();
 
         wrapper.BuildAndUse();
 
@@ -62,18 +62,18 @@ public class DependencyResolverTests
     {
         var wrapper = new ContainerWrapper();
         var services = wrapper.ServiceCollection;
-        services.AddTransient<ViewModelOne>();
-        services.AddTransient<ViewModelTwo>();
+        _ = services.AddTransient<ViewModelOne>();
+        _ = services.AddTransient<ViewModelTwo>();
 
         wrapper.BuildAndUse();
 
-        var vmOne = AppLocator.Current.GetService<ViewModelOne>();
-        var vmTwo = AppLocator.Current.GetService<ViewModelTwo>();
+        var viewModelOne = AppLocator.Current.GetService<ViewModelOne>();
+        var viewModelTwo = AppLocator.Current.GetService<ViewModelTwo>();
 
         using (Assert.Multiple())
         {
-            await Assert.That(vmOne).IsNotNull();
-            await Assert.That(vmTwo).IsNotNull();
+            await Assert.That(viewModelOne).IsNotNull();
+            await Assert.That(viewModelTwo).IsNotNull();
         }
     }
 
@@ -84,7 +84,7 @@ public class DependencyResolverTests
     {
         var wrapper = new ContainerWrapper();
         var services = wrapper.ServiceCollection;
-        services.AddSingleton<IScreen>(new MockScreen());
+        _ = services.AddSingleton<IScreen>(new MockScreen());
 
         wrapper.BuildAndUse();
 
@@ -102,7 +102,7 @@ public class DependencyResolverTests
         var wrapper = new ContainerWrapper();
         var services = wrapper.ServiceCollection;
 
-        services.AddSingleton<IScreen>(new MockScreen());
+        _ = services.AddSingleton<IScreen>(new MockScreen());
 
         await Assert.That(AppLocator.CurrentMutable.HasRegistration<IScreen>()).IsTrue();
 
@@ -119,8 +119,8 @@ public class DependencyResolverTests
         var wrapper = new ContainerWrapper();
         wrapper.BuildAndUse();
 
-        Assert.Throws<NotSupportedException>(() =>
-            AppLocator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), _ => { }));
+        _ = Assert.Throws<NotSupportedException>(static () =>
+            AppLocator.CurrentMutable.ServiceRegistrationCallback(typeof(IScreen), static _ => { }));
     }
 
     /// <summary>Should throw an exception if trying to register services when the container is registered as immutable.</summary>
@@ -130,8 +130,25 @@ public class DependencyResolverTests
         var wrapper = new ContainerWrapper();
         wrapper.BuildAndUse();
 
-        Assert.Throws<InvalidOperationException>(() =>
-            AppLocator.CurrentMutable.Register(() => new ViewOne()));
+        _ = Assert.Throws<InvalidOperationException>(static () =>
+            AppLocator.CurrentMutable.Register(static () => new ViewOne()));
+    }
+
+    /// <summary>Using the provider extension when the current locator is not a Microsoft resolver installs a new resolver.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task UseMicrosoftDependencyResolver_FromProvider_WhenCurrentIsNotMicrosoftResolver_SetsNewResolver()
+    {
+        using var scope = new AppLocatorScope();
+
+        await Assert.That(AppLocator.Current).IsNotTypeOf<MicrosoftDependencyResolver>();
+
+        var services = new ServiceCollection();
+        _ = services.AddSingleton<IScreen>(new MockScreen());
+        services.BuildServiceProvider().UseMicrosoftDependencyResolver();
+
+        await Assert.That(AppLocator.Current).IsTypeOf<MicrosoftDependencyResolver>();
+        await Assert.That(AppLocator.Current.GetService<IScreen>()).IsTypeOf<MockScreen>();
     }
 
     /// <summary>Tests to ensure NLog registers correctly with different service locators. Based on issue reported in #553.</summary>
@@ -143,8 +160,8 @@ public class DependencyResolverTests
         var services = wrapper.ServiceCollection;
 
         // Setup NLog for Logging (doesn't matter if I actually configure NLog or not)
-        var funcLogManager = new FuncLogManager(type => new NLogLogger(LogResolver.Resolve(type)));
-        services.AddSingleton<ILogManager>(funcLogManager);
+        var funcLogManager = new FuncLogManager(static type => new NLogLogger(LogResolver.Resolve(type)));
+        _ = services.AddSingleton<ILogManager>(funcLogManager);
 
         wrapper.BuildAndUse();
 

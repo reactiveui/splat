@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -14,6 +14,9 @@ namespace Splat;
 /// <param name="bitmap">The <see cref="BitmapSource"/> instance to wrap. Cannot be null.</param>
 internal sealed class BitmapSourceBitmap(BitmapSource bitmap) : IBitmap
 {
+    /// <summary>The scale factor used to convert a normalized quality (0-1) into a percentage (0-100).</summary>
+    private const float QualityPercentageScale = 100.0F;
+
     /// <inheritdoc />
     public float Width => (float)(Inner?.Width ?? 0);
 
@@ -21,7 +24,7 @@ internal sealed class BitmapSourceBitmap(BitmapSource bitmap) : IBitmap
     public float Height => (float)(Inner?.Height ?? 0);
 
     /// <summary>Gets the platform <see cref="BitmapSource"/>.</summary>
-    public BitmapSource? Inner { get; private set; } = bitmap;
+    internal BitmapSource? Inner { get; private set; } = bitmap;
 
     /// <inheritdoc />
     public Task Save(CompressedBitmapFormat format, float quality, Stream target)
@@ -31,7 +34,7 @@ internal sealed class BitmapSourceBitmap(BitmapSource bitmap) : IBitmap
         return Task.Run(() =>
         {
             var encoder = format == CompressedBitmapFormat.Jpeg
-                ? new JpegBitmapEncoder { QualityLevel = (int)(quality * 100.0f) }
+                ? new JpegBitmapEncoder { QualityLevel = (int)(quality * QualityPercentageScale) }
                 : (BitmapEncoder)new PngBitmapEncoder();
 
             encoder.Frames.Add(BitmapFrame.Create(Inner));

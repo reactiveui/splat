@@ -52,5 +52,5 @@ public class SplatLoggerModuleCoverageTests
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Configure_With_Null_Resolver_Throws()
-        => await Assert.That(() => new SplatLoggerModule().Configure(null!)).Throws<ArgumentNullException>();
+        => await Assert.That(static () => new SplatLoggerModule().Configure(null!)).Throws<ArgumentNullException>();
 }

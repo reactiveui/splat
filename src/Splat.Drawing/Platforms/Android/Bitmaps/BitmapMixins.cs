@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -17,25 +17,6 @@ namespace Splat;
 /// data in applications targeting Android.</remarks>
 public static class BitmapMixins
 {
-    /// <summary>Extension members for <see cref="IBitmap"/>.</summary>
-    /// <param name="value">The value the extension members operate on.</param>
-    extension(IBitmap value)
-    {
-        /// <summary>Converts <see cref="IBitmap"/> to a native type.</summary>
-        /// <returns>A <see cref="Drawable"/> bitmap.</returns>
-        public Drawable ToNative()
-        {
-            ArgumentExceptionHelper.ThrowIfNull(value);
-
-            return value switch
-            {
-                AndroidBitmap androidBitmap => new BitmapDrawable(Application.Context.Resources, androidBitmap.Inner),
-                DrawableBitmap drawableBitmap => drawableBitmap.Inner,
-                _ => throw new InvalidCastException($"Unable to convert {value.GetType()} to a {nameof(Drawable)}."),
-            };
-        }
-    }
-
     /// <summary>Extension members for <see cref="Bitmap"/>.</summary>
     /// <param name="value">The value the extension members operate on.</param>
     extension(Bitmap value)
@@ -73,5 +54,24 @@ public static class BitmapMixins
         /// <summary>Converts a <see cref="Drawable"/> to a splat <see cref="IBitmap"/>.</summary>
         /// <returns>A <see cref="IBitmap"/> bitmap.</returns>
         public IBitmap FromNative() => new DrawableBitmap(value);
+    }
+
+    /// <summary>Extension members for <see cref="IBitmap"/>.</summary>
+    /// <param name="value">The value the extension members operate on.</param>
+    extension(IBitmap value)
+    {
+        /// <summary>Converts <see cref="IBitmap"/> to a native type.</summary>
+        /// <returns>A <see cref="Drawable"/> bitmap.</returns>
+        public Drawable ToNative()
+        {
+            ArgumentExceptionHelper.ThrowIfNull(value);
+
+            return value switch
+            {
+                AndroidBitmap androidBitmap => new BitmapDrawable(Application.Context.Resources, androidBitmap.Inner),
+                DrawableBitmap drawableBitmap => drawableBitmap.Inner,
+                _ => throw new InvalidCastException($"Unable to convert {value.GetType()} to a {nameof(Drawable)}."),
+            };
+        }
     }
 }

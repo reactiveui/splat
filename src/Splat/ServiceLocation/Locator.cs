@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI Association Incorporated. All rights reserved.
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
@@ -16,7 +16,7 @@ namespace Splat;
 public static class Locator
 {
     /// <summary>Initializes static members of the <see cref="Locator"/> class.</summary>
-    static Locator() => AppLocator.RegisterResolverInitializer(resolver => resolver.InitializeSplat());
+    static Locator() => AppLocator.RegisterResolverInitializer(static resolver => resolver.InitializeSplat());
 
     /// <summary>Gets the current dependency resolver used by the application.</summary>
     /// <remarks>Use this property to resolve application services and dependencies at runtime. The value is

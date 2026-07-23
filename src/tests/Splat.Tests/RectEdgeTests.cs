@@ -20,14 +20,16 @@ public class RectEdgeTests
     public async Task RectEdge_AllValues_WorkWithDivide(RectEdge edge)
     {
         // Arrange
-        var rect = new RectangleF(0.0f, 0.0f, 100.0f, 100.0f);
+        const float rectSize = 100.0F;
+        const float sliceAmount = 25.0F;
+        var rect = new RectangleF(0.0F, 0.0F, rectSize, rectSize);
 
         // Act & Assert - should not throw
         RectangleF slice = default;
         RectangleF remainder = default;
         await Assert.That(() =>
         {
-            var result = rect.Divide(25.0f, edge);
+            var result = rect.Divide(sliceAmount, edge);
             slice = result.Item1;
             remainder = result.Item2;
         }).ThrowsNothing();
@@ -36,8 +38,8 @@ public class RectEdgeTests
         using (Assert.Multiple())
         {
             await Assert.That(slice.Width > 0 || slice.Height > 0).IsTrue();
-            await Assert.That(remainder.Width).IsGreaterThanOrEqualTo(0f);
-            await Assert.That(remainder.Height).IsGreaterThanOrEqualTo(0f);
+            await Assert.That(remainder.Width).IsGreaterThanOrEqualTo(0F);
+            await Assert.That(remainder.Height).IsGreaterThanOrEqualTo(0F);
         }
     }
 
@@ -107,8 +109,12 @@ public class RectEdgeTests
     public async Task RectEdge_ProducesDifferentResultsWithDivide()
     {
         // Arrange
-        var rect = new RectangleF(10.0f, 20.0f, 100.0f, 80.0f);
-        const float amount = 30.0f;
+        const float rectX = 10.0F;
+        const float rectY = 20.0F;
+        const float rectWidth = 100.0F;
+        const float rectHeight = 80.0F;
+        var rect = new RectangleF(rectX, rectY, rectWidth, rectHeight);
+        const float amount = 30.0F;
 
         // Act
         var leftResult = rect.Divide(amount, RectEdge.Left);
