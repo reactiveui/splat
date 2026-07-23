@@ -33,9 +33,6 @@ public class ModernDependencyResolver : IDependencyResolver
     /// <summary>Default capacity for the callback registry and tracked-disposables collections.</summary>
     private const int DefaultBookkeepingCapacity = 16;
 
-    /// <summary>Default capacity for a per-key callback list.</summary>
-    private const int DefaultCallbackListCapacity = 4;
-
     /// <summary>Default capacity for a per-key registration factory list.</summary>
     private const int DefaultRegistrationListCapacity = 4;
 
@@ -547,16 +544,7 @@ public class ModernDependencyResolver : IDependencyResolver
                 return EmptyDisposable.Instance;
             }
 
-#if NET6_0_OR_GREATER
-            ref var list = ref System.Runtime.InteropServices.CollectionsMarshal.GetValueRefOrAddDefault(_callbackRegistry, pair, out _);
-            list ??= new(DefaultCallbackListCapacity);
-#else
-            if (!_callbackRegistry.TryGetValue(pair, out var list))
-            {
-                list = new(DefaultCallbackListCapacity);
-                _callbackRegistry[pair] = list;
-            }
-#endif
+            var list = ResolverDictionaryHelpers.GetOrAddValue(_callbackRegistry, pair);
 
             list.Add(callback);
         }
@@ -610,16 +598,7 @@ public class ModernDependencyResolver : IDependencyResolver
                 return EmptyDisposable.Instance;
             }
 
-#if NET6_0_OR_GREATER
-            ref var list = ref System.Runtime.InteropServices.CollectionsMarshal.GetValueRefOrAddDefault(_callbackRegistry, pair, out _);
-            list ??= new(DefaultCallbackListCapacity);
-#else
-            if (!_callbackRegistry.TryGetValue(pair, out var list))
-            {
-                list = new(DefaultCallbackListCapacity);
-                _callbackRegistry[pair] = list;
-            }
-#endif
+            var list = ResolverDictionaryHelpers.GetOrAddValue(_callbackRegistry, pair);
 
             list.Add(callback);
         }
@@ -793,16 +772,12 @@ public class ModernDependencyResolver : IDependencyResolver
             var list = kvp.Value;
             for (var i = 0; i < list.Count; i++)
             {
-                try
+                var callback = list[i];
+                ResolverExceptionHelpers.RunSwallowingExceptions(() =>
                 {
                     using var disp = new BooleanDisposable();
-                    list[i](disp);
-                }
-                catch (Exception ex)
-                {
-                    // Ignore exceptions during disposal.
-                    System.Diagnostics.Debug.WriteLine(ex);
-                }
+                    callback(disp);
+                });
             }
         }
     }
@@ -818,10 +793,9 @@ public class ModernDependencyResolver : IDependencyResolver
 
         for (var i = 0; i < disposablesSnapshot.Count; i++)
         {
-            try
+            var item = disposablesSnapshot[i];
+            ResolverExceptionHelpers.RunSwallowingExceptions(() =>
             {
-                var item = disposablesSnapshot[i];
-
                 // Lazy wrapper from RegisterLazySingleton.
                 if (item is Lazy<object?> lazy)
                 {
@@ -834,17 +808,12 @@ public class ModernDependencyResolver : IDependencyResolver
                         disposable.Dispose();
                     }
 
-                    continue;
+                    return;
                 }
 
                 // Singleton instance from RegisterConstant.
                 (item as IDisposable)?.Dispose();
-            }
-            catch (Exception ex)
-            {
-                // Ignore exceptions during disposal.
-                System.Diagnostics.Debug.WriteLine(ex);
-            }
+            });
         }
     }
 

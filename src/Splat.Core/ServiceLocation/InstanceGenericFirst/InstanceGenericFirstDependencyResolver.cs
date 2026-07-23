@@ -775,15 +775,8 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         // Dispose registration callbacks (exceptions suppressed).
         for (var i = 0; i < callbacks.Length; i++)
         {
-            try
-            {
-                callbacks[i](EmptyDisposable.Instance);
-            }
-            catch (Exception ex)
-            {
-                // Suppress exceptions during disposal.
-                System.Diagnostics.Debug.WriteLine(ex);
-            }
+            var callback = callbacks[i];
+            ResolverExceptionHelpers.RunSwallowingExceptions(() => callback(EmptyDisposable.Instance));
         }
 
         // Execute disposal actions for constants and lazy singletons (exceptions suppressed).
@@ -791,15 +784,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         {
             for (var i = 0; i < disposalActionsSnapshot.Length; i++)
             {
-                try
-                {
-                    disposalActionsSnapshot[i]();
-                }
-                catch (Exception ex)
-                {
-                    // Suppress exceptions during disposal.
-                    System.Diagnostics.Debug.WriteLine(ex);
-                }
+                ResolverExceptionHelpers.RunSwallowingExceptions(disposalActionsSnapshot[i]);
             }
         }
 
@@ -1023,16 +1008,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
         lock (_callbackGate)
         {
             _callbackRegistry ??= [];
-#if NET6_0_OR_GREATER
-            ref var entry = ref System.Runtime.InteropServices.CollectionsMarshal.GetValueRefOrAddDefault(_callbackRegistry, key, out _);
-            entry ??= new();
-#else
-            if (!_callbackRegistry.TryGetValue(key, out var entry))
-            {
-                entry = new();
-                _callbackRegistry[key] = entry;
-            }
-#endif
+            var entry = ResolverDictionaryHelpers.GetOrAddValue(_callbackRegistry, key);
 
             entry.Add(callback);
             Volatile.Write(ref _callbackCount, _callbackCount + 1);
@@ -1130,15 +1106,8 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         for (var i = 0; i < snapshot.Length; i++)
         {
-            try
-            {
-                snapshot[i](EmptyDisposable.Instance);
-            }
-            catch (Exception ex)
-            {
-                // Suppress exceptions during normal notification to match existing behavior.
-                System.Diagnostics.Debug.WriteLine(ex);
-            }
+            var callback = snapshot[i];
+            ResolverExceptionHelpers.RunSwallowingExceptions(() => callback(EmptyDisposable.Instance));
         }
     }
 
@@ -1155,18 +1124,7 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         lock (_disposalGate)
         {
-            _disposalActions.Add(() =>
-            {
-                try
-                {
-                    disposable.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    // Suppress exceptions during disposal.
-                    System.Diagnostics.Debug.WriteLine(ex);
-                }
-            });
+            _disposalActions.Add(() => ResolverExceptionHelpers.RunSwallowingExceptions(disposable.Dispose));
         }
     }
 
@@ -1181,21 +1139,15 @@ public sealed class InstanceGenericFirstDependencyResolver : IDependencyResolver
 
         lock (_disposalGate)
         {
-            _disposalActions.Add(() =>
+            _disposalActions.Add(() => ResolverExceptionHelpers.RunSwallowingExceptions(() =>
             {
-                try
+                if (!lazy.IsValueCreated || lazy.Value is not IDisposable disposable)
                 {
-                    if (lazy.IsValueCreated && lazy.Value is IDisposable disposable)
-                    {
-                        disposable.Dispose();
-                    }
+                    return;
                 }
-                catch (Exception ex)
-                {
-                    // Suppress exceptions during disposal.
-                    System.Diagnostics.Debug.WriteLine(ex);
-                }
-            });
+
+                disposable.Dispose();
+            }));
         }
     }
 }

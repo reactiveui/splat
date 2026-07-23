@@ -740,15 +740,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
         // Invoke callbacks (exceptions suppressed).
         for (var i = 0; i < callbacks.Length; i++)
         {
-            try
-            {
-                callbacks[i]();
-            }
-            catch (Exception ex)
-            {
-                // Ignore exceptions thrown by callbacks during disposal.
-                System.Diagnostics.Debug.WriteLine(ex);
-            }
+            ResolverExceptionHelpers.RunSwallowingExceptions(callbacks[i]);
         }
 
         // Run disposal actions (exceptions suppressed).
@@ -756,15 +748,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
         {
             for (var i = 0; i < disposals.Length; i++)
             {
-                try
-                {
-                    disposals[i]();
-                }
-                catch (Exception ex)
-                {
-                    // Ignore exceptions during disposal.
-                    System.Diagnostics.Debug.WriteLine(ex);
-                }
+                ResolverExceptionHelpers.RunSwallowingExceptions(disposals[i]);
             }
         }
 
@@ -1021,15 +1005,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
         var callbacks = Volatile.Read(ref _callbackSnapshot);
         for (var i = 0; i < callbacks.Length; i++)
         {
-            try
-            {
-                callbacks[i]();
-            }
-            catch (Exception ex)
-            {
-                // Ignore exceptions thrown by callback implementations.
-                System.Diagnostics.Debug.WriteLine(ex);
-            }
+            ResolverExceptionHelpers.RunSwallowingExceptions(callbacks[i]);
         }
     }
 
@@ -1046,18 +1022,7 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
 
         lock (_disposalGate)
         {
-            _disposalActions.Add(() =>
-            {
-                try
-                {
-                    disposable.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    // Ignore exceptions during disposal.
-                    System.Diagnostics.Debug.WriteLine(ex);
-                }
-            });
+            _disposalActions.Add(() => ResolverExceptionHelpers.RunSwallowingExceptions(disposable.Dispose));
         }
     }
 
@@ -1072,21 +1037,15 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
 
         lock (_disposalGate)
         {
-            _disposalActions.Add(() =>
+            _disposalActions.Add(() => ResolverExceptionHelpers.RunSwallowingExceptions(() =>
             {
-                try
+                if (!lazy.IsValueCreated || lazy.Value is not IDisposable disposable)
                 {
-                    if (lazy.IsValueCreated && lazy.Value is IDisposable disposable)
-                    {
-                        disposable.Dispose();
-                    }
+                    return;
                 }
-                catch (Exception ex)
-                {
-                    // Ignore exceptions during disposal.
-                    System.Diagnostics.Debug.WriteLine(ex);
-                }
-            });
+
+                disposable.Dispose();
+            }));
         }
     }
 }
