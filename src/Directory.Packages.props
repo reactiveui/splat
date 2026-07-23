@@ -11,8 +11,8 @@
     <PackageVersion Include="Microsoft.AppCenter.Analytics" Version="5.0.7" />
     <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="5.0.7" />
     <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.23.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.10" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.300" />
     <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="11.2.5" />
     <PackageVersion Include="MinVer" Version="7.0.0" />
@@ -38,7 +38,7 @@
 
   <!-- Pinned transitive dependencies for compatibility -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="10.0.10" />
   </ItemGroup>
 
   <!-- Latest versions for modern TFMs (net8.0+) -->
