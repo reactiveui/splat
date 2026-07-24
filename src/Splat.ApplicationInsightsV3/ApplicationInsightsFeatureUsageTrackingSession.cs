@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for full license information.
 
 using Microsoft.ApplicationInsights;
-using Microsoft.ApplicationInsights.DataContracts;
 
 using Splat.ApplicationPerformanceMonitoring;
 
@@ -64,8 +63,11 @@ public sealed class ApplicationInsightsFeatureUsageTrackingSession : IFeatureUsa
     /// <inheritdoc />
     public void OnException(Exception exception)
     {
-        var telemetry = new ExceptionTelemetry(exception);
-        PrepareEventData(telemetry);
+        var telemetry = ApplicationInsightsTelemetryFactory.CreateExceptionTelemetry(
+            exception,
+            FeatureName,
+            FeatureReference,
+            ParentReference);
 
         _telemetryClient.TrackException(telemetry);
     }
@@ -74,26 +76,12 @@ public sealed class ApplicationInsightsFeatureUsageTrackingSession : IFeatureUsa
     /// <param name="eventName">The Application Insights event name.</param>
     private void TrackEvent(string eventName)
     {
-        var eventTelemetry = new EventTelemetry(eventName);
-        PrepareEventData(eventTelemetry);
+        var eventTelemetry = ApplicationInsightsTelemetryFactory.CreateFeatureUsageEvent(
+            eventName,
+            FeatureName,
+            FeatureReference,
+            ParentReference);
 
         _telemetryClient.TrackEvent(eventTelemetry);
-    }
-
-    /// <summary>Adds the session metadata shared by events and exceptions.</summary>
-    /// <typeparam name="TTelemetry">The telemetry shape that carries custom properties.</typeparam>
-    /// <param name="eventTelemetry">The telemetry item being populated.</param>
-    private void PrepareEventData<TTelemetry>(TTelemetry eventTelemetry)
-        where TTelemetry : ISupportProperties
-    {
-        eventTelemetry.Properties.Add("Name", FeatureName);
-        eventTelemetry.Properties.Add("Reference", FeatureReference.ToString());
-
-        if (ParentReference == Guid.Empty)
-        {
-            return;
-        }
-
-        eventTelemetry.Properties.Add("ParentReference", ParentReference.ToString());
     }
 }

@@ -16,5 +16,5 @@ public sealed class ApplicationInsightsViewTracking(TelemetryClient telemetryCli
     /// <summary>Tracks a view navigation as a custom <c>PageView</c> event.</summary>
     /// <param name="name">The view name recorded in the event properties.</param>
     public void OnViewNavigation(string name) =>
-        telemetryClient.TrackEvent("PageView", new Dictionary<string, string> { ["Name"] = name });
+        telemetryClient.TrackEvent(ApplicationInsightsTelemetryFactory.CreateViewNavigationEvent(name));
 }

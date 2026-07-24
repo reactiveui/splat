@@ -8,6 +8,9 @@
     <PackageId>Splat.ApplicationInsightsV3</PackageId>
   </PropertyGroup>
   <ItemGroup>
+    <InternalsVisibleTo Include="Splat.ApplicationInsightsV3.Tests" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights" VersionOverride="3.1.2" />
   </ItemGroup>
   <ItemGroup>
