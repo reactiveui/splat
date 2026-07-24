@@ -855,7 +855,8 @@ The table below shows the support across various APM packages
 
 | Product | Package | NuGet | Maturity Level | Error Reporting | Feature Usage Tracking | View Tracking |
 |----|----|----|----|----|----|----|
-| Application Insights | [Splat.ApplicationInsights][SplatApplicationInsightsNuGet] | [![SplatApplicationInsightsBadge]][SplatApplicationInsightsNuGet] | Alpha | TODO | Native | Native |
+| Application Insights v2 | [Splat.ApplicationInsights][SplatApplicationInsightsNuGet] | [![SplatApplicationInsightsBadge]][SplatApplicationInsightsNuGet] | Alpha | TODO | Native | Native |
+| Application Insights v3 | [Splat.ApplicationInsightsV3][SplatApplicationInsightsV3NuGet] | [![SplatApplicationInsightsV3Badge]][SplatApplicationInsightsV3NuGet] | Alpha | TODO | Native | Custom event named `PageView` |
 | Exceptionless | [Splat.Exceptionless][SplatExceptionlessNuGet] | [![SplatExceptionlessBadge]][SplatExceptionlessNuGet] | Alpha | TODO | Native | By Convention |
 | New Relic | N\A | N\A | Not Started | TODO | TODO | TODO
 | OpenTrace | N\A | N\A | Not Started |TODO | TODO | TODO
@@ -863,6 +864,8 @@ The table below shows the support across various APM packages
 
 [SplatApplicationInsightsNuGet]: https://www.nuget.org/packages/Splat.ApplicationInsights/
 [SplatApplicationInsightsBadge]: https://img.shields.io/nuget/v/Splat.ApplicationInsights.svg
+[SplatApplicationInsightsV3NuGet]: https://www.nuget.org/packages/Splat.ApplicationInsightsV3/
+[SplatApplicationInsightsV3Badge]: https://img.shields.io/nuget/v/Splat.ApplicationInsightsV3.svg
 [SplatExceptionlessNuGet]: https://www.nuget.org/packages/Splat.Exceptionless/
 [SplatExceptionlessBadge]: https://img.shields.io/nuget/v/Splat.Exceptionless.svg
 [SplatRaygunNuGet]: https://www.nuget.org/packages/Splat.Raygun/
@@ -959,15 +962,23 @@ as subfeatures.
 
 TODO
 
-#### Configuring Application Insights
+#### Configuring Application Insights v2
 
-First configure Application Insights. For guidance see https://docs.microsoft.com/en-us/azure/azure-monitor/app/worker-service
+First configure Application Insights v2. For guidance see https://docs.microsoft.com/en-us/azure/azure-monitor/app/worker-service
 
 ```cs
 using Splat.ApplicationInsights;
 
 // then in your service locator initialisation
 Locator.CurrentMutable.UseApplicationInsightsApm();
+```
+
+#### Configuring Application Insights v3
+
+The `Splat.ApplicationInsightsV3` package targets the Application Insights v3 SDK. Application Insights v3 removed native `TrackPageView` support, so Splat records view navigation as custom events named `PageView` with the view name in the `Name` property.
+
+```cs
+using Splat.ApplicationInsightsV3;
 ```
 
 #### Configuring Exceptionless

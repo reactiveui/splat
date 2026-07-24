@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(SplatModernTargets)</TargetFrameworks>
+
+    <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Splat.Tests\ApplicationPerformanceMonitoring\BaseFeatureUsageTrackingTests.cs" Link="BaseTests\BaseFeatureUsageTrackingTests.cs" />
+    <Compile Include="..\Splat.Tests\ApplicationPerformanceMonitoring\BaseViewTrackingTests.cs" Link="BaseTests\BaseViewTrackingTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights" VersionOverride="3.1.2" />
+    <ProjectReference Include="..\..\Splat.ApplicationInsightsV3\Splat.ApplicationInsightsV3.csproj" />
+    <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />
+  </ItemGroup>
+
+</Project>
