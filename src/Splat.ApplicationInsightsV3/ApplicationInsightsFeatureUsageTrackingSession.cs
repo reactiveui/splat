@@ -2,8 +2,6 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using Microsoft.ApplicationInsights;
-
 using Splat.ApplicationPerformanceMonitoring;
 
 namespace Splat.ApplicationInsightsV3;
@@ -11,77 +9,39 @@ namespace Splat.ApplicationInsightsV3;
 /// <summary>Tracks feature usage events and exceptions with the Application Insights v3 client.</summary>
 public sealed class ApplicationInsightsFeatureUsageTrackingSession : IFeatureUsageTrackingSession<Guid>
 {
-    /// <summary>The client used for all feature usage telemetry.</summary>
-    private readonly TelemetryClient _telemetryClient;
+    /// <summary>The session state and telemetry sender.</summary>
+    private readonly ApplicationInsightsFeatureUsageSessionCore _session;
 
     /// <summary>Initializes a new instance of the <see cref="ApplicationInsightsFeatureUsageTrackingSession"/> class.</summary>
     /// <param name="featureName">The feature name stored with each telemetry item.</param>
     /// <param name="telemetryClient">The client that receives telemetry.</param>
     public ApplicationInsightsFeatureUsageTrackingSession(
         string featureName,
-        TelemetryClient telemetryClient)
-        : this(featureName, Guid.Empty, telemetryClient)
+        Microsoft.ApplicationInsights.TelemetryClient telemetryClient)
+        : this(new ApplicationInsightsFeatureUsageSessionCore(featureName, Guid.Empty, telemetryClient))
     {
     }
 
     /// <summary>Initializes a new instance of the <see cref="ApplicationInsightsFeatureUsageTrackingSession"/> class.</summary>
-    /// <param name="featureName">The feature name stored with each telemetry item.</param>
-    /// <param name="parentReference">The parent feature reference, or <see cref="Guid.Empty"/> for root sessions.</param>
-    /// <param name="telemetryClient">The client that receives telemetry.</param>
-    internal ApplicationInsightsFeatureUsageTrackingSession(
-        string featureName,
-        Guid parentReference,
-        TelemetryClient telemetryClient)
-    {
-        _telemetryClient = telemetryClient;
-        FeatureName = featureName;
-        FeatureReference = Guid.NewGuid();
-        ParentReference = parentReference;
-
-        TrackEvent("Feature Usage Start");
-    }
+    /// <param name="session">The session state and telemetry sender.</param>
+    private ApplicationInsightsFeatureUsageTrackingSession(ApplicationInsightsFeatureUsageSessionCore session) => _session = session;
 
     /// <inheritdoc />
-    public Guid FeatureReference { get; }
+    public Guid FeatureReference => _session.FeatureReference;
 
     /// <inheritdoc />
-    public Guid ParentReference { get; }
+    public Guid ParentReference => _session.ParentReference;
 
     /// <inheritdoc />
-    public string FeatureName { get; }
+    public string FeatureName => _session.FeatureName;
 
     /// <inheritdoc />
-    public void Dispose() => TrackEvent("Feature Usage End");
+    public void Dispose() => _session.TrackEnd();
 
     /// <inheritdoc />
     public IFeatureUsageTrackingSession SubFeature(string description) =>
-        new ApplicationInsightsFeatureUsageTrackingSession(
-            description,
-            FeatureReference,
-            _telemetryClient);
+        new ApplicationInsightsFeatureUsageTrackingSession(_session.CreateSubFeature(description));
 
     /// <inheritdoc />
-    public void OnException(Exception exception)
-    {
-        var telemetry = ApplicationInsightsTelemetryFactory.CreateExceptionTelemetry(
-            exception,
-            FeatureName,
-            FeatureReference,
-            ParentReference);
-
-        _telemetryClient.TrackException(telemetry);
-    }
-
-    /// <summary>Sends a feature usage event with the current session metadata.</summary>
-    /// <param name="eventName">The Application Insights event name.</param>
-    private void TrackEvent(string eventName)
-    {
-        var eventTelemetry = ApplicationInsightsTelemetryFactory.CreateFeatureUsageEvent(
-            eventName,
-            FeatureName,
-            FeatureReference,
-            ParentReference);
-
-        _telemetryClient.TrackEvent(eventTelemetry);
-    }
+    public void OnException(Exception exception) => _session.TrackException(exception);
 }
