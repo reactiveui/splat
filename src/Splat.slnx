@@ -29,6 +29,7 @@
   </Folder>
   <Folder Name="/Other/">
     <Project Path="Splat.ApplicationInsights/Splat.ApplicationInsights.csproj" />
+    <Project Path="Splat.ApplicationInsightsV3/Splat.ApplicationInsightsV3.csproj" />
     <Project Path="Splat.Exceptionless/Splat.Exceptionless.csproj" />
     <Project Path="Splat.Raygun/Splat.Raygun.csproj" />
   </Folder>
@@ -57,6 +58,7 @@
   </Folder>
   <Folder Name="/test/PerformanceMonitoring/">
     <Project Path="tests/Splat.ApplicationInsights.Tests/Splat.ApplicationInsights.Tests.csproj" />
+    <Project Path="tests/Splat.ApplicationInsightsV3.Tests/Splat.ApplicationInsightsV3.Tests.csproj" />
     <Project Path="tests/Splat.Raygun.Tests/Splat.Raygun.Tests.csproj" />
   </Folder>
   <Folder Name="/_Solution Items/">

@@ -15,6 +15,7 @@
     <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.23.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.10" />
+    <PackageVersion Include="OpenTelemetry.Api" Version="1.17.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.301" />
     <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="11.2.6" />
     <PackageVersion Include="MinVer" Version="7.0.0" />
