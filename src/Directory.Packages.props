@@ -31,7 +31,7 @@
     <!-- StyleSharp.Analyzers, PerformanceSharp.Analyzers and SecuritySharp.Analyzers ship from the
          same release pipeline and always share a version. -->
     <PackageVersion Include="StyleSharp.Analyzers" Version="3.39.0" />
-    <PackageVersion Include="PerformanceSharp.Analyzers" Version="3.39.0" />
+    <PackageVersion Include="PerformanceSharp.Analyzers" Version="3.40.0" />
     <PackageVersion Include="SecuritySharp.Analyzers" Version="3.38.1" />
     <PackageVersion Include="System.Net.Http" Version="4.3.4" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
