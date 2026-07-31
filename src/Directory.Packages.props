@@ -12,7 +12,7 @@
     <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="5.0.7" />
     <!-- Pinned at the latest 2.x: Microsoft.ApplicationInsights 3.x removed PageViewTelemetry,
          which Splat.ApplicationInsights exposes on its public API (OnViewNavigation/GetPageViewTelemetry). -->
-    <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.23.0" />
+    <PackageVersion Include="Microsoft.ApplicationInsights" Version="3.1.2" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.10" />
     <PackageVersion Include="OpenTelemetry.Api" Version="1.17.0" />
