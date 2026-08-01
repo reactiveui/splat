@@ -1,0 +1,31 @@
+[assembly: System.Resources.NeutralResourcesLanguage("en-US")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Tests")]
+namespace Splat.Builder
+{
+    public sealed class Log4NetSplatModule : Splat.Builder.IModule
+    {
+        public Log4NetSplatModule() { }
+        public void Configure(Splat.IMutableDependencyResolver resolver) { }
+    }
+}
+namespace Splat.Log4Net
+{
+    [System.Diagnostics.DebuggerDisplay("Name={_logger.Logger.Name} Level={Level}")]
+    public sealed class Log4NetLogger : Splat.ILogger, System.IDisposable
+    {
+        public Log4NetLogger(log4net.ILog inner) { }
+        public Splat.LogLevel Level { get; }
+        public void Dispose() { }
+        public void Write(string message, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, string message, Splat.LogLevel logLevel) { }
+        public void Write(string message, System.Type type, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, string message, System.Type type, Splat.LogLevel logLevel) { }
+    }
+    public static class MutableDependencyResolverExtensions
+    {
+        extension(Splat.IMutableDependencyResolver instance)
+        {
+            public void UseLog4NetWithWrappingFullLogger() { }
+        }
+    }
+}

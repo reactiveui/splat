@@ -118,7 +118,7 @@
 
   <!-- The BCL shims and the argument/disposed helpers are compiled ONLY on net462-net481: on net8.0+ the
        BCL provides the real types, and emitting the #else type-forwarders there would add them to every
-       assembly's public API surface (RS0016). On net8.0+ those helpers are aliased straight to the BCL
+       assembly's public API surface (PAS0001). On net8.0+ those helpers are aliased straight to the BCL
        throw helpers (no shipped wrapper). -->
   <ItemGroup Condition="'$(_SplatCompilePolyfills)' == 'true' and $(TargetFramework.StartsWith('net4'))">
     <Compile Include="$(MSBuildThisFileDirectory)Polyfills\*.cs"
@@ -167,8 +167,8 @@
     <PackageReference Include="SonarAnalyzer.CSharp" PrivateAssets="all" />
   </ItemGroup>
 
-  <!-- Per-TFM public-API tracking via Roslyn PublicApiAnalyzers (RS0016/RS0017); baselines in
-       PublicAPI/<tfm>/. Tests and benchmarks are exempt. -->
+  <!-- Public API baselines live in <Project>/PublicAPI/<tfm>/PublicAPI.txt; shipped libraries only.
+       Tests and benchmarks are exempt. -->
   <PropertyGroup>
     <TrackPublicApi Condition="'$(TrackPublicApi)' == ''">true</TrackPublicApi>
     <TrackPublicApi Condition="'$(IsTestProject)' == 'true'">false</TrackPublicApi>
@@ -176,11 +176,10 @@
          '*Tests', so exempt the whole tests/ tree as well. -->
     <TrackPublicApi Condition="$(MSBuildProjectDirectory.Contains('tests'))">false</TrackPublicApi>
     <TrackPublicApi Condition="$(MSBuildProjectDirectory.Contains('benchmarks'))">false</TrackPublicApi>
+    <EnablePublicApiBaseline>$(TrackPublicApi)</EnablePublicApiBaseline>
   </PropertyGroup>
   <ItemGroup Condition="'$(TrackPublicApi)' == 'true'">
-    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="all" />
-    <AdditionalFiles Include="$(MSBuildProjectDirectory)\PublicAPI\$(TargetFramework)\PublicAPI.Shipped.txt" />
-    <AdditionalFiles Include="$(MSBuildProjectDirectory)\PublicAPI\$(TargetFramework)\PublicAPI.Unshipped.txt" />
+    <PackageReference Include="PublicApiSharp.Analyzers" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />

@@ -1434,10 +1434,10 @@ dotnet_diagnostic.SST2233.severity = error # Hot-path code should avoid System.L
 dotnet_diagnostic.RCS1040.severity = none # covered by SST1180
 
 ###################
-# PublicApiAnalyzers (RSxxxx) - public API surface tracking
+# Public API surface tracking (PASxxxx)
+# PAS0001/PAS0002/PAS0003/PAS0005 are errors by default and need no entry here.
 ###################
-dotnet_diagnostic.RS0016.severity = error # public symbol missing from the PublicAPI baseline
-dotnet_diagnostic.RS0017.severity = error # PublicAPI baseline entry no longer in source
+dotnet_diagnostic.PAS0004.severity = warning # no public API baseline for this target framework
 
 ###################
 # Trimming Analyzer Warnings (IL2001 - IL2123)
@@ -2843,14 +2843,3 @@ dotnet_diagnostic.SST2233.severity = none # Tests can use LINQ for clarity
 dotnet_diagnostic.SST1432.severity = none
 dotnet_diagnostic.RCS1072.severity = none # covered by SST1435
 dotnet_diagnostic.RCS1106.severity = none # covered by SST1434
-
-#############################################
-# PublicApiAnalyzers - file-scoped exemptions
-#############################################
-# The net4x System.Drawing.Primitives BCL types we type-forward (Color, Point, Size, ...)
-# were compiled without a nullable context, so their members are nullable-oblivious. RS0041
-# flags that, but it is not actionable here: we do not own those types and cannot annotate
-# them, and the analyzer offers no code fix. Scope the rule off for the forwarding file only;
-# it stays active everywhere else.
-[**/Platforms/TypeForwardedSystemDrawing.cs]
-dotnet_diagnostic.RS0041.severity = none

@@ -1,0 +1,58 @@
+namespace Splat.Builder
+{
+    public sealed class DryIocSplatModule : Splat.Builder.IModule
+    {
+        public DryIocSplatModule(DryIoc.IContainer container) { }
+        public void Configure(Splat.IMutableDependencyResolver resolver) { }
+    }
+}
+namespace Splat.DryIoc
+{
+    public class DryIocDependencyResolver : Splat.IDependencyResolver
+    {
+        public DryIocDependencyResolver(DryIoc.IContainer? container = null) { }
+        public void Dispose() { }
+        protected virtual void Dispose(bool disposing) { }
+        public object? GetService(System.Type? serviceType) { }
+        public virtual object? GetService(System.Type? serviceType, string? contract) { }
+        public T? GetService<T>() { }
+        public T? GetService<T>(string? contract) { }
+        public System.Collections.Generic.IEnumerable<object> GetServices(System.Type? serviceType) { }
+        public virtual System.Collections.Generic.IEnumerable<object> GetServices(System.Type? serviceType, string? contract) { }
+        public System.Collections.Generic.IEnumerable<T> GetServices<T>() { }
+        public System.Collections.Generic.IEnumerable<T> GetServices<T>(string? contract) { }
+        public bool HasRegistration(System.Type? serviceType) { }
+        public bool HasRegistration(System.Type? serviceType, string? contract) { }
+        public bool HasRegistration<T>() { }
+        public bool HasRegistration<T>(string? contract) { }
+        public void Register(System.Func<object?> factory, System.Type? serviceType) { }
+        public virtual void Register(System.Func<object?> factory, System.Type? serviceType, string? contract) { }
+        public void Register<T>(System.Func<T?> factory) { }
+        public void Register<T>(System.Func<T?> factory, string? contract) { }
+        public void RegisterConstant<T>(T? value) where T : class { }
+        public void RegisterConstant<T>(T? value, string? contract) where T : class { }
+        public void RegisterLazySingleton<T>(System.Func<T?> valueFactory) where T : class { }
+        public void RegisterLazySingleton<T>(System.Func<T?> valueFactory, string? contract) where T : class { }
+        public System.IDisposable ServiceRegistrationCallback(System.Type serviceType, System.Action<System.IDisposable> callback) { }
+        public virtual System.IDisposable ServiceRegistrationCallback(System.Type serviceType, string? contract, System.Action<System.IDisposable> callback) { }
+        public System.IDisposable ServiceRegistrationCallback<T>(System.Action<System.IDisposable> callback) { }
+        public System.IDisposable ServiceRegistrationCallback<T>(string? contract, System.Action<System.IDisposable> callback) { }
+        void Splat.IMutableDependencyResolver.Register<TService, TImplementation>() where TService : class where TImplementation : class, TService, new() { }
+        void Splat.IMutableDependencyResolver.Register<TService, TImplementation>(string? contract) where TService : class where TImplementation : class, TService, new() { }
+        public void UnregisterAll(System.Type? serviceType) { }
+        public virtual void UnregisterAll(System.Type? serviceType, string? contract) { }
+        public void UnregisterAll<T>() { }
+        public void UnregisterAll<T>(string? contract) { }
+        public void UnregisterCurrent(System.Type? serviceType) { }
+        public virtual void UnregisterCurrent(System.Type? serviceType, string? contract) { }
+        public void UnregisterCurrent<T>() { }
+        public void UnregisterCurrent<T>(string? contract) { }
+    }
+    public static class SplatDryIocExtensions
+    {
+        extension(DryIoc.IContainer container)
+        {
+            public void UseDryIocDependencyResolver() { }
+        }
+    }
+}
