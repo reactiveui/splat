@@ -1,0 +1,34 @@
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Builder.Tests")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Common.Test")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Drawing.Tests")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Tests")]
+namespace Splat.Builder;
+
+public class AppBuilder : Splat.Builder.IAppBuilder, Splat.Builder.IAppInstance
+{
+    public AppBuilder(Splat.IMutableDependencyResolver resolver) { }
+    public AppBuilder(Splat.IMutableDependencyResolver resolver, Splat.IReadonlyDependencyResolver? current) { }
+    public Splat.IReadonlyDependencyResolver? Current { get; }
+    public Splat.IMutableDependencyResolver CurrentMutable { get; }
+    public static bool HasBeenBuilt { get; }
+    public static bool UsingBuilder { get; }
+    public Splat.Builder.IAppInstance Build() { }
+    public Splat.Builder.IAppBuilder UseCurrentSplatLocator() { }
+    public Splat.Builder.IAppBuilder UsingModule<T>(T registrationModule) where T : Splat.Builder.IModule { }
+    public virtual Splat.Builder.IAppBuilder WithCoreServices() { }
+    public Splat.Builder.IAppBuilder WithCustomRegistration(System.Action<Splat.IMutableDependencyResolver> configureAction) { }
+    public static Splat.Builder.AppBuilder CreateSplatBuilder() { }
+    public static void ResetBuilderStateForTests() { }
+}
+public static class SplatBuilderExtensions
+{
+    extension(Splat.Builder.IModule module)
+    {
+        public void Apply() { }
+    }
+    extension(Splat.IMutableDependencyResolver resolver)
+    {
+        public Splat.Builder.IAppBuilder CreateSplatBuilder() { }
+        public Splat.Builder.IAppBuilder CreateSplatBuilder(System.Action<Splat.IMutableDependencyResolver> configureAction) { }
+    }
+}

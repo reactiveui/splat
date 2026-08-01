@@ -1,0 +1,99 @@
+namespace Splat.Builder
+{
+    public sealed class SimpleInjectorSplatModule : Splat.Builder.IModule
+    {
+        public SimpleInjectorSplatModule(SimpleInjector.Container container, Splat.SimpleInjector.SimpleInjectorInitializer initializer) { }
+        public void Configure(Splat.IMutableDependencyResolver resolver) { }
+    }
+}
+namespace Splat.SimpleInjector
+{
+    public class SimpleInjectorDependencyResolver : Splat.IDependencyResolver
+    {
+        public SimpleInjectorDependencyResolver(SimpleInjector.Container container, Splat.SimpleInjector.SimpleInjectorInitializer initializer) { }
+        public void Dispose() { }
+        protected virtual void Dispose(bool disposing) { }
+        public object? GetService(System.Type? serviceType) { }
+        public object? GetService(System.Type? serviceType, string? contract) { }
+        public T? GetService<T>() { }
+        public T? GetService<T>(string? contract) { }
+        public System.Collections.Generic.IEnumerable<object> GetServices(System.Type? serviceType) { }
+        public System.Collections.Generic.IEnumerable<object> GetServices(System.Type? serviceType, string? contract) { }
+        public System.Collections.Generic.IEnumerable<T> GetServices<T>() { }
+        public System.Collections.Generic.IEnumerable<T> GetServices<T>(string? contract) { }
+        public bool HasRegistration(System.Type? serviceType) { }
+        public bool HasRegistration(System.Type? serviceType, string? contract) { }
+        public bool HasRegistration<T>() { }
+        public bool HasRegistration<T>(string? contract) { }
+        public void Register(System.Func<object?> factory, System.Type? serviceType) { }
+        public void Register(System.Func<object?> factory, System.Type? serviceType, string? contract) { }
+        public void Register<T>(System.Func<T?> factory) { }
+        public void Register<T>(System.Func<T?> factory, string? contract) { }
+        public void Register<TService, TImplementation>() where TService : class where TImplementation : class, TService, new() { }
+        public void Register<TService, TImplementation>(string? contract) where TService : class where TImplementation : class, TService, new() { }
+        public void RegisterConstant<T>(T? value) where T : class { }
+        public void RegisterConstant<T>(T? value, string? contract) where T : class { }
+        public void RegisterLazySingleton<T>(System.Func<T?> valueFactory) where T : class { }
+        public void RegisterLazySingleton<T>(System.Func<T?> valueFactory, string? contract) where T : class { }
+        public System.IDisposable ServiceRegistrationCallback(System.Type serviceType, System.Action<System.IDisposable> callback) { }
+        public System.IDisposable ServiceRegistrationCallback(System.Type serviceType, string? contract, System.Action<System.IDisposable> callback) { }
+        public System.IDisposable ServiceRegistrationCallback<T>(System.Action<System.IDisposable> callback) { }
+        public System.IDisposable ServiceRegistrationCallback<T>(string? contract, System.Action<System.IDisposable> callback) { }
+        public void UnregisterAll(System.Type? serviceType) { }
+        public void UnregisterAll(System.Type? serviceType, string? contract) { }
+        public void UnregisterAll<T>() { }
+        public void UnregisterAll<T>(string? contract) { }
+        public void UnregisterCurrent(System.Type? serviceType) { }
+        public void UnregisterCurrent(System.Type? serviceType, string? contract) { }
+        public void UnregisterCurrent<T>() { }
+        public void UnregisterCurrent<T>(string? contract) { }
+    }
+    public class SimpleInjectorInitializer : Splat.IDependencyResolver
+    {
+        public SimpleInjectorInitializer() { }
+        public System.Collections.Generic.Dictionary<System.Type, System.Collections.Generic.List<System.Func<object?>>> RegisteredFactories { get; }
+        public void Dispose() { }
+        protected virtual void Dispose(bool isDisposing) { }
+        public object? GetService(System.Type? serviceType) { }
+        public object? GetService(System.Type? serviceType, string? contract) { }
+        public T? GetService<T>() { }
+        public T? GetService<T>(string? contract) { }
+        public System.Collections.Generic.IEnumerable<object> GetServices(System.Type? serviceType) { }
+        public System.Collections.Generic.IEnumerable<object> GetServices(System.Type? serviceType, string? contract) { }
+        public System.Collections.Generic.IEnumerable<T> GetServices<T>() { }
+        public System.Collections.Generic.IEnumerable<T> GetServices<T>(string? contract) { }
+        public bool HasRegistration(System.Type? serviceType) { }
+        public bool HasRegistration(System.Type? serviceType, string? contract) { }
+        public bool HasRegistration<T>() { }
+        public bool HasRegistration<T>(string? contract) { }
+        public void Register(System.Func<object?> factory, System.Type? serviceType) { }
+        public void Register(System.Func<object?> factory, System.Type? serviceType, string? contract) { }
+        public void Register<T>(System.Func<T?> factory) { }
+        public void Register<T>(System.Func<T?> factory, string? contract) { }
+        public void Register<TService, TImplementation>() where TService : class where TImplementation : class, TService, new() { }
+        public void Register<TService, TImplementation>(string? contract) where TService : class where TImplementation : class, TService, new() { }
+        public void RegisterConstant<T>(T? value) where T : class { }
+        public void RegisterConstant<T>(T? value, string? contract) where T : class { }
+        public void RegisterLazySingleton<T>(System.Func<T?> valueFactory) where T : class { }
+        public void RegisterLazySingleton<T>(System.Func<T?> valueFactory, string? contract) where T : class { }
+        public System.IDisposable ServiceRegistrationCallback(System.Type serviceType, System.Action<System.IDisposable> callback) { }
+        public System.IDisposable ServiceRegistrationCallback(System.Type serviceType, string? contract, System.Action<System.IDisposable> callback) { }
+        public System.IDisposable ServiceRegistrationCallback<T>(System.Action<System.IDisposable> callback) { }
+        public System.IDisposable ServiceRegistrationCallback<T>(string? contract, System.Action<System.IDisposable> callback) { }
+        public void UnregisterAll(System.Type? serviceType) { }
+        public void UnregisterAll(System.Type? serviceType, string? contract) { }
+        public void UnregisterAll<T>() { }
+        public void UnregisterAll<T>(string? contract) { }
+        public void UnregisterCurrent(System.Type? serviceType) { }
+        public void UnregisterCurrent(System.Type? serviceType, string? contract) { }
+        public void UnregisterCurrent<T>() { }
+        public void UnregisterCurrent<T>(string? contract) { }
+    }
+    public static class SplatSimpleInjectorExtensions
+    {
+        extension(SimpleInjector.Container container)
+        {
+            public void UseSimpleInjectorDependencyResolver(Splat.SimpleInjector.SimpleInjectorInitializer initializer) { }
+        }
+    }
+}

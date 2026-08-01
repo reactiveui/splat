@@ -1,0 +1,36 @@
+namespace Splat.Prism;
+
+public class SplatContainerExtension : Prism.Ioc.IContainerExtension<Splat.IDependencyResolver>, System.IDisposable
+{
+    public SplatContainerExtension() { }
+    public Prism.Ioc.IScopedProvider CurrentScope { get; }
+    public Splat.IDependencyResolver Instance { get; }
+    public Prism.Ioc.IScopedProvider CreateScope() { }
+    public void Dispose() { }
+    protected virtual void Dispose(bool isDisposing) { }
+    public bool IsRegistered(System.Type type) { }
+    public bool IsRegistered(System.Type type, string name) { }
+    public Prism.Ioc.IContainerRegistry Register(System.Type type, System.Func<Prism.Ioc.IContainerProvider, object> factoryMethod) { }
+    public Prism.Ioc.IContainerRegistry Register(System.Type type, System.Func<object> factoryMethod) { }
+    public Prism.Ioc.IContainerRegistry Register(System.Type from, System.Type to) { }
+    public Prism.Ioc.IContainerRegistry Register(System.Type from, System.Type to, System.Func<object> defaultCreationFunc) { }
+    public Prism.Ioc.IContainerRegistry Register(System.Type from, System.Type to, string name) { }
+    public Prism.Ioc.IContainerRegistry Register(System.Type from, System.Type to, string name, System.Func<object> defaultCreationFunc) { }
+    public Prism.Ioc.IContainerRegistry RegisterInstance(System.Type type, object instance) { }
+    public Prism.Ioc.IContainerRegistry RegisterInstance(System.Type type, object instance, string name) { }
+    public Prism.Ioc.IContainerRegistry RegisterMany(System.Type type, params System.Type[] serviceTypes) { }
+    public Prism.Ioc.IContainerRegistry RegisterManySingleton(System.Type type, params System.Type[] serviceTypes) { }
+    public Prism.Ioc.IContainerRegistry RegisterScoped(System.Type type, System.Func<Prism.Ioc.IContainerProvider, object> factoryMethod) { }
+    public Prism.Ioc.IContainerRegistry RegisterScoped(System.Type type, System.Func<object> factoryMethod) { }
+    public Prism.Ioc.IContainerRegistry RegisterScoped(System.Type from, System.Type to) { }
+    public Prism.Ioc.IContainerRegistry RegisterSingleton(System.Type type, System.Func<Prism.Ioc.IContainerProvider, object> factoryMethod) { }
+    public Prism.Ioc.IContainerRegistry RegisterSingleton(System.Type type, System.Func<object> factoryMethod) { }
+    public Prism.Ioc.IContainerRegistry RegisterSingleton(System.Type from, System.Type to) { }
+    public Prism.Ioc.IContainerRegistry RegisterSingleton(System.Type from, System.Type to, System.Func<object> defaultCreationFunc) { }
+    public Prism.Ioc.IContainerRegistry RegisterSingleton(System.Type from, System.Type to, string name) { }
+    public Prism.Ioc.IContainerRegistry RegisterSingleton(System.Type from, System.Type to, string name, System.Func<object> defaultCreationFunc) { }
+    public object Resolve(System.Type type) { }
+    public object Resolve(System.Type type, params (System.Type Type, object Instance)[] parameters) { }
+    public object Resolve(System.Type type, string name) { }
+    public object Resolve(System.Type type, string name, params (System.Type Type, object Instance)[] parameters) { }
+}

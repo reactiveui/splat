@@ -1,32 +1,45 @@
-﻿# Catch all for anything we forgot. Add rules if you get CRLF to LF warnings.
-* text=auto
+# Auto-detect text files and normalise line endings to LF in the repository.
+# Working trees check out LF on every platform (auto, no forced CRLF).
+* text=auto eol=lf
 
-# Text files that should be normalized to LF in odb.
+# Source code
 *.cs     text diff=csharp
 *.xaml   text
-*.config text
 *.c      text
 *.h      text
 *.cpp    text
 *.hpp    text
 
-*.sln     text
-*.csproj  text
-*.vcxproj text
+# Projects and build
+*.slnx        text
+*.sln         text
+*.csproj      text
+*.vcxproj     text
+*.props       text
+*.targets     text
+*.msbuild     text
+*.config      text
+*.json        text
+*.xml         text
+*.yml         text
+*.yaml        text
+*.runsettings text
+*.editorconfig text
 
+# Documentation and scripts
 *.md       text
+*.markdown text
+*.txt      text
 *.tt       text
 *.sh       text
 *.ps1      text
 *.cmd      text
 *.bat      text
-*.markdown text
-*.msbuild  text
-
 
 # Binary files that should not be normalized or diffed
 *.png    binary
 *.jpg    binary
+*.bmp    binary
 *.gif    binary
 *.ico    binary
 *.rc     binary

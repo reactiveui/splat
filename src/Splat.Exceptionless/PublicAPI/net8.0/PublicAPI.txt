@@ -1,0 +1,46 @@
+namespace Splat
+{
+    public sealed class ExceptionlessFeatureUsageTrackingSession : Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession<System.Guid>
+    {
+        public ExceptionlessFeatureUsageTrackingSession(string featureName) { }
+        public string FeatureName { get; }
+        public System.Guid FeatureReference { get; }
+        public System.Guid ParentReference { get; }
+        public void Dispose() { }
+        public void OnException(System.Exception exception) { }
+        public Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession SubFeature(string description) { }
+    }
+    public sealed class ExceptionlessViewTracking : Splat.ApplicationPerformanceMonitoring.IViewTracking
+    {
+        public ExceptionlessViewTracking(Exceptionless.ExceptionlessClient exceptionlessClient) { }
+        public void OnViewNavigation(string name) { }
+    }
+}
+namespace Splat.Builder
+{
+    public sealed class ExceptionlessSplatModule : Splat.Builder.IModule
+    {
+        public ExceptionlessSplatModule(Exceptionless.ExceptionlessClient exceptionlessClient) { }
+        public void Configure(Splat.IMutableDependencyResolver resolver) { }
+    }
+}
+namespace Splat.Exceptionless
+{
+    [System.Diagnostics.DebuggerDisplay("Name={_sourceType} Level={Level}")]
+    public sealed class ExceptionlessSplatLogger : Splat.ILogger
+    {
+        public ExceptionlessSplatLogger(System.Type sourceType, Exceptionless.ExceptionlessClient exceptionlessClient) { }
+        public Splat.LogLevel Level { get; }
+        public void Write(string message, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, string message, Splat.LogLevel logLevel) { }
+        public void Write(string message, System.Type type, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, string message, System.Type type, Splat.LogLevel logLevel) { }
+    }
+    public static class MutableDependencyResolverExtensions
+    {
+        extension(Splat.IMutableDependencyResolver instance)
+        {
+            public void UseExceptionlessWithWrappingFullLogger(Exceptionless.ExceptionlessClient exceptionlessClient) { }
+        }
+    }
+}
