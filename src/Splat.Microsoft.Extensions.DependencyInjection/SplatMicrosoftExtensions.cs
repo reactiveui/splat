@@ -22,9 +22,7 @@ public static class SplatMicrosoftExtensions
     {
         /// <summary>Initializes an instance of <see cref="MicrosoftDependencyResolver"/> that overrides the default <see cref="AppLocator"/>.</summary>
         public void UseMicrosoftDependencyResolver() =>
-
-            // Will be disposed with the InternalLocator
-            AppLocator.SetLocator(new MicrosoftDependencyResolver(serviceCollection));
+            AppLocator.SetLocator(new MicrosoftDependencyResolver(serviceCollection)); // Will be disposed with the InternalLocator
     }
 
     /// <summary>Extension members for <see cref="IServiceProvider"/>.</summary>

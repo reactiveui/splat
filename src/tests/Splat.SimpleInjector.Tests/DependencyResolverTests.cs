@@ -994,8 +994,7 @@ public class DependencyResolverTests
     /// <summary>Test-only resolver that exposes the protected dispose to exercise the non-managed dispose branch.</summary>
     /// <param name="container">The container the resolver adapts.</param>
     /// <param name="initializer">The initializer supplying the factory registrations.</param>
-    private sealed class DisposeProbeResolver(Container container, SimpleInjectorInitializer initializer)
-        : SimpleInjectorDependencyResolver(container, initializer)
+    private sealed class DisposeProbeResolver(Container container, SimpleInjectorInitializer initializer) : SimpleInjectorDependencyResolver(container, initializer)
     {
         /// <summary>Invokes the protected dispose with the supplied flag.</summary>
         /// <param name="disposing">Whether managed resources should be released.</param>

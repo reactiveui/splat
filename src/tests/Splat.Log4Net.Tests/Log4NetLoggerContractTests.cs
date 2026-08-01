@@ -2,8 +2,6 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System.Diagnostics.CodeAnalysis;
-
 using Splat.Log4Net;
 
 using log4net;
@@ -22,7 +20,6 @@ public sealed class Log4NetLoggerContractTests
     private MemoryAppender? _appender;
 
     /// <summary>Removes any residual appenders before each test so log events are captured cleanly.</summary>
-    [SuppressMessage("Design", "SST2326:Concrete type narrowing", Justification = "Test needs the concrete log4net Hierarchy to reach Root, which ILoggerRepository does not expose.")]
     [Before(HookType.Test)]
     public void SetupTest()
     {
@@ -32,7 +29,6 @@ public sealed class Log4NetLoggerContractTests
     }
 
     /// <summary>Detaches the test's appender afterwards to avoid leaking state into other tests.</summary>
-    [SuppressMessage("Design", "SST2326:Concrete type narrowing", Justification = "Test needs the concrete log4net Hierarchy to reach Root, which ILoggerRepository does not expose.")]
     [After(HookType.Test)]
     public void CleanupTest()
     {
@@ -139,7 +135,6 @@ public sealed class Log4NetLoggerContractTests
 
     /// <summary>Builds a <see cref="Log4NetLogger"/> whose writes are captured by a root memory appender.</summary>
     /// <returns>A logger backed by a freshly configured hierarchy root capturing every level.</returns>
-    [SuppressMessage("Design", "SST2326:Concrete type narrowing", Justification = "Test needs the concrete log4net Hierarchy to reach Root, which ILoggerRepository does not expose.")]
     private Log4NetLogger CreateLoggerCapturingToRoot()
     {
         var hierarchy = (Hierarchy)LogManager.GetRepository(GetType().Assembly);

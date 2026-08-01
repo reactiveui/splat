@@ -2,6 +2,8 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
+
 using Android.Graphics;
 
 namespace Splat;
@@ -17,6 +19,10 @@ internal sealed class AndroidBitmap(Bitmap inner) : IBitmap
     private const int QualityPercentageScale = 100;
 
     /// <summary>The wrapped Android bitmap; set to <see langword="null"/> once disposed.</summary>
+    [SuppressMessage(
+        "Usage",
+        "CA2213:Disposable fields should be disposed",
+        Justification = "Disposed through an Interlocked.Exchange in Dispose so that a concurrent second dispose cannot repeat it.")]
     private Bitmap? _inner = inner;
 
     /// <inheritdoc />

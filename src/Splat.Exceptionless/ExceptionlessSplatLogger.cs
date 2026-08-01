@@ -146,7 +146,14 @@ public sealed class ExceptionlessSplatLogger : ILogger
         if (_exceptionlessClient.Configuration.Settings.TryGetValue("@@log:*", out var logLevel))
         {
             var l = global::Exceptionless.Logging.LogLevel.FromString(logLevel);
-            Level = _mappingsDictionary.First(x => x.Value == l).Key;
+            foreach (var mapping in _mappingsDictionary)
+            {
+                if (mapping.Value == l)
+                {
+                    Level = mapping.Key;
+                    break;
+                }
+            }
         }
         else
         {

@@ -25,8 +25,8 @@ public static class PointMathExtensions
         /// </summary>
         /// <returns>A PointF whose X and Y values are the result of applying the floor operation to the X and Y values of the input
         /// Point.</returns>
-        public PointF Floor()
-            => new((float)Math.Floor((double)value.X), (float)Math.Floor((double)value.Y));
+        public PointF Floor() =>
+            new((float)Math.Floor((double)value.X), (float)Math.Floor((double)value.Y));
     }
 
     /// <summary>Extension members for mathematical operations on <see cref="PointF"/>.</summary>

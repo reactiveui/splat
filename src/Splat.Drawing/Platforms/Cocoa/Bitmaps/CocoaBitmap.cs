@@ -2,6 +2,8 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
+
 #if UIKIT
 using UIKit;
 #else
@@ -24,6 +26,10 @@ namespace Splat;
 internal sealed class CocoaBitmap(UIImage inner) : IBitmap
 {
     /// <summary>The native image backing this bitmap; set to <see langword="null"/> once the bitmap is disposed.</summary>
+    [SuppressMessage(
+        "Usage",
+        "CA2213:Disposable fields should be disposed",
+        Justification = "Disposed through an Interlocked.Exchange in Dispose so that a concurrent second dispose cannot repeat it.")]
     private UIImage? _inner = inner;
 
     /// <inheritdoc />

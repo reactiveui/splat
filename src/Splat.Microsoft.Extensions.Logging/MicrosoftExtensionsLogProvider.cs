@@ -22,16 +22,11 @@ public sealed class MicrosoftExtensionsLogProvider : ILoggerProvider
     }
 
     /// <inheritdoc />
-    public global::Microsoft.Extensions.Logging.ILogger CreateLogger(string categoryName) => new SplatLoggingAdapter(categoryName);
+    public global::Microsoft.Extensions.Logging.ILogger CreateLogger(string categoryName) => new SplatLoggingAdapter();
 
     /// <summary>Adapts a Splat logger so it can be consumed through the Microsoft.Extensions.Logging abstraction.</summary>
-    /// <param name="categoryName">The category name associated with messages produced by this logger.</param>
-    private sealed class SplatLoggingAdapter(string categoryName) : global::Microsoft.Extensions.Logging.ILogger
+    private sealed class SplatLoggingAdapter : global::Microsoft.Extensions.Logging.ILogger
     {
-        /// <summary>The logging category name; retained deliberately even though currently unread.</summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1823:Avoid unused private fields", Justification = "Deliberate")]
-        private readonly string _categoryName = categoryName;
-
         /// <inheritdoc />
         public void Log<TState>(global::Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
@@ -55,9 +50,6 @@ public sealed class MicrosoftExtensionsLogProvider : ILoggerProvider
         /// <inheritdoc />
         public IDisposable BeginScope<TState>(TState state)
              where TState : notnull =>
-
-            // documentation states we're allowed to return null.
-            // NRT in net6 causing build issue as of 2021-11-10.
-            null!;
+            null!; // The documentation states we are allowed to return null; the nullable annotations added in net6 made this a build issue.
     }
 }

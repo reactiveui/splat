@@ -19,8 +19,8 @@ public sealed partial class NLogLogger
         string messageFormat,
         TArgument1 argument1,
         TArgument2 argument2,
-        TArgument3 argument3)
-        => _logger.Debug(exception, messageFormat, argument1, argument2, argument3);
+        TArgument3 argument3) =>
+        _logger.Debug(exception, messageFormat, argument1, argument2, argument3);
 
     /// <inheritdoc/>
     public void Debug<TArgument1, TArgument2, TArgument3, TArgument4>(
@@ -29,8 +29,8 @@ public sealed partial class NLogLogger
         TArgument1 argument1,
         TArgument2 argument2,
         TArgument3 argument3,
-        TArgument4 argument4)
-        => _logger.Debug(exception, messageFormat, argument1, argument2, argument3, argument4);
+        TArgument4 argument4) =>
+        _logger.Debug(exception, messageFormat, argument1, argument2, argument3, argument4);
 
     /// <inheritdoc/>
     public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(
@@ -40,8 +40,8 @@ public sealed partial class NLogLogger
         TArgument2 argument2,
         TArgument3 argument3,
         TArgument4 argument4,
-        TArgument5 argument5)
-        => _logger.Debug(exception, messageFormat, argument1, argument2, argument3, argument4, argument5);
+        TArgument5 argument5) =>
+        _logger.Debug(exception, messageFormat, argument1, argument2, argument3, argument4, argument5);
 
     /// <inheritdoc/>
     public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(
@@ -52,8 +52,8 @@ public sealed partial class NLogLogger
         TArgument3 argument3,
         TArgument4 argument4,
         TArgument5 argument5,
-        TArgument6 argument6)
-        => _logger.Debug(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6);
+        TArgument6 argument6) =>
+        _logger.Debug(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6);
 
     /// <inheritdoc/>
     public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(
@@ -65,8 +65,8 @@ public sealed partial class NLogLogger
         TArgument4 argument4,
         TArgument5 argument5,
         TArgument6 argument6,
-        TArgument7 argument7)
-        => _logger.Debug(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7);
+        TArgument7 argument7) =>
+        _logger.Debug(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7);
 
     /// <inheritdoc/>
     public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(
@@ -79,8 +79,8 @@ public sealed partial class NLogLogger
         TArgument5 argument5,
         TArgument6 argument6,
         TArgument7 argument7,
-        TArgument8 argument8)
-        => _logger.Debug(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8);
+        TArgument8 argument8) =>
+        _logger.Debug(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8);
 
     /// <inheritdoc/>
     public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(
@@ -94,8 +94,8 @@ public sealed partial class NLogLogger
         TArgument6 argument6,
         TArgument7 argument7,
         TArgument8 argument8,
-        TArgument9 argument9)
-        => _logger.Debug(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9);
+        TArgument9 argument9) =>
+        _logger.Debug(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9);
 
     /// <inheritdoc/>
     public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(
@@ -110,8 +110,8 @@ public sealed partial class NLogLogger
         TArgument7 argument7,
         TArgument8 argument8,
         TArgument9 argument9,
-        TArgument10 argument10)
-        => _logger.Debug(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10);
+        TArgument10 argument10) =>
+        _logger.Debug(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10);
 
     /// <inheritdoc/>
     public void Info<TArgument>(Exception exception, string messageFormat, TArgument argument) => _logger.Info(exception, messageFormat, argument);
@@ -125,8 +125,8 @@ public sealed partial class NLogLogger
         string messageFormat,
         TArgument1 argument1,
         TArgument2 argument2,
-        TArgument3 argument3)
-        => _logger.Info(exception, messageFormat, argument1, argument2, argument3);
+        TArgument3 argument3) =>
+        _logger.Info(exception, messageFormat, argument1, argument2, argument3);
 
     /// <inheritdoc/>
     public void Info<TArgument1, TArgument2, TArgument3, TArgument4>(
@@ -135,8 +135,8 @@ public sealed partial class NLogLogger
         TArgument1 argument1,
         TArgument2 argument2,
         TArgument3 argument3,
-        TArgument4 argument4)
-        => _logger.Info(exception, messageFormat, argument1, argument2, argument3, argument4);
+        TArgument4 argument4) =>
+        _logger.Info(exception, messageFormat, argument1, argument2, argument3, argument4);
 
     /// <inheritdoc/>
     public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(
@@ -146,8 +146,8 @@ public sealed partial class NLogLogger
         TArgument2 argument2,
         TArgument3 argument3,
         TArgument4 argument4,
-        TArgument5 argument5)
-        => _logger.Info(exception, messageFormat, argument1, argument2, argument3, argument4, argument5);
+        TArgument5 argument5) =>
+        _logger.Info(exception, messageFormat, argument1, argument2, argument3, argument4, argument5);
 
     /// <inheritdoc/>
     public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(
@@ -158,8 +158,8 @@ public sealed partial class NLogLogger
         TArgument3 argument3,
         TArgument4 argument4,
         TArgument5 argument5,
-        TArgument6 argument6)
-        => _logger.Info(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6);
+        TArgument6 argument6) =>
+        _logger.Info(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6);
 
     /// <inheritdoc/>
     public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(
@@ -171,8 +171,8 @@ public sealed partial class NLogLogger
         TArgument4 argument4,
         TArgument5 argument5,
         TArgument6 argument6,
-        TArgument7 argument7)
-        => _logger.Info(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7);
+        TArgument7 argument7) =>
+        _logger.Info(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7);
 
     /// <inheritdoc/>
     public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(
@@ -185,8 +185,8 @@ public sealed partial class NLogLogger
         TArgument5 argument5,
         TArgument6 argument6,
         TArgument7 argument7,
-        TArgument8 argument8)
-        => _logger.Info(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8);
+        TArgument8 argument8) =>
+        _logger.Info(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8);
 
     /// <inheritdoc/>
     public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(
@@ -200,8 +200,8 @@ public sealed partial class NLogLogger
         TArgument6 argument6,
         TArgument7 argument7,
         TArgument8 argument8,
-        TArgument9 argument9)
-        => _logger.Info(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9);
+        TArgument9 argument9) =>
+        _logger.Info(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9);
 
     /// <inheritdoc/>
     public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(
@@ -216,8 +216,8 @@ public sealed partial class NLogLogger
         TArgument7 argument7,
         TArgument8 argument8,
         TArgument9 argument9,
-        TArgument10 argument10)
-        => _logger.Info(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10);
+        TArgument10 argument10) =>
+        _logger.Info(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10);
 
     /// <inheritdoc/>
     public void Warn<TArgument>(Exception exception, string messageFormat, TArgument argument) => _logger.Warn(exception, messageFormat, argument);
@@ -231,8 +231,8 @@ public sealed partial class NLogLogger
         string messageFormat,
         TArgument1 argument1,
         TArgument2 argument2,
-        TArgument3 argument3)
-        => _logger.Warn(exception, messageFormat, argument1, argument2, argument3);
+        TArgument3 argument3) =>
+        _logger.Warn(exception, messageFormat, argument1, argument2, argument3);
 
     /// <inheritdoc/>
     public void Warn<TArgument1, TArgument2, TArgument3, TArgument4>(
@@ -241,8 +241,8 @@ public sealed partial class NLogLogger
         TArgument1 argument1,
         TArgument2 argument2,
         TArgument3 argument3,
-        TArgument4 argument4)
-        => _logger.Warn(exception, messageFormat, argument1, argument2, argument3, argument4);
+        TArgument4 argument4) =>
+        _logger.Warn(exception, messageFormat, argument1, argument2, argument3, argument4);
 
     /// <inheritdoc/>
     public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(
@@ -252,8 +252,8 @@ public sealed partial class NLogLogger
         TArgument2 argument2,
         TArgument3 argument3,
         TArgument4 argument4,
-        TArgument5 argument5)
-        => _logger.Warn(exception, messageFormat, argument1, argument2, argument3, argument4, argument5);
+        TArgument5 argument5) =>
+        _logger.Warn(exception, messageFormat, argument1, argument2, argument3, argument4, argument5);
 
     /// <inheritdoc/>
     public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(
@@ -264,8 +264,8 @@ public sealed partial class NLogLogger
         TArgument3 argument3,
         TArgument4 argument4,
         TArgument5 argument5,
-        TArgument6 argument6)
-        => _logger.Warn(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6);
+        TArgument6 argument6) =>
+        _logger.Warn(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6);
 
     /// <inheritdoc/>
     public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(
@@ -277,8 +277,8 @@ public sealed partial class NLogLogger
         TArgument4 argument4,
         TArgument5 argument5,
         TArgument6 argument6,
-        TArgument7 argument7)
-        => _logger.Warn(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7);
+        TArgument7 argument7) =>
+        _logger.Warn(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7);
 
     /// <inheritdoc/>
     public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(
@@ -291,8 +291,8 @@ public sealed partial class NLogLogger
         TArgument5 argument5,
         TArgument6 argument6,
         TArgument7 argument7,
-        TArgument8 argument8)
-        => _logger.Warn(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8);
+        TArgument8 argument8) =>
+        _logger.Warn(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8);
 
     /// <inheritdoc/>
     public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(
@@ -306,8 +306,8 @@ public sealed partial class NLogLogger
         TArgument6 argument6,
         TArgument7 argument7,
         TArgument8 argument8,
-        TArgument9 argument9)
-        => _logger.Warn(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9);
+        TArgument9 argument9) =>
+        _logger.Warn(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9);
 
     /// <inheritdoc/>
     public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(
@@ -322,8 +322,8 @@ public sealed partial class NLogLogger
         TArgument7 argument7,
         TArgument8 argument8,
         TArgument9 argument9,
-        TArgument10 argument10)
-        => _logger.Warn(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10);
+        TArgument10 argument10) =>
+        _logger.Warn(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10);
 
     /// <inheritdoc/>
     public void Error<TArgument>(Exception exception, string messageFormat, TArgument argument) => _logger.Error(exception, messageFormat, argument);
@@ -337,8 +337,8 @@ public sealed partial class NLogLogger
         string messageFormat,
         TArgument1 argument1,
         TArgument2 argument2,
-        TArgument3 argument3)
-        => _logger.Error(exception, messageFormat, argument1, argument2, argument3);
+        TArgument3 argument3) =>
+        _logger.Error(exception, messageFormat, argument1, argument2, argument3);
 
     /// <inheritdoc/>
     public void Error<TArgument1, TArgument2, TArgument3, TArgument4>(
@@ -347,8 +347,8 @@ public sealed partial class NLogLogger
         TArgument1 argument1,
         TArgument2 argument2,
         TArgument3 argument3,
-        TArgument4 argument4)
-        => _logger.Error(exception, messageFormat, argument1, argument2, argument3, argument4);
+        TArgument4 argument4) =>
+        _logger.Error(exception, messageFormat, argument1, argument2, argument3, argument4);
 
     /// <inheritdoc/>
     public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(
@@ -358,8 +358,8 @@ public sealed partial class NLogLogger
         TArgument2 argument2,
         TArgument3 argument3,
         TArgument4 argument4,
-        TArgument5 argument5)
-        => _logger.Error(exception, messageFormat, argument1, argument2, argument3, argument4, argument5);
+        TArgument5 argument5) =>
+        _logger.Error(exception, messageFormat, argument1, argument2, argument3, argument4, argument5);
 
     /// <inheritdoc/>
     public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(
@@ -370,8 +370,8 @@ public sealed partial class NLogLogger
         TArgument3 argument3,
         TArgument4 argument4,
         TArgument5 argument5,
-        TArgument6 argument6)
-        => _logger.Error(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6);
+        TArgument6 argument6) =>
+        _logger.Error(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6);
 
     /// <inheritdoc/>
     public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(
@@ -383,8 +383,8 @@ public sealed partial class NLogLogger
         TArgument4 argument4,
         TArgument5 argument5,
         TArgument6 argument6,
-        TArgument7 argument7)
-        => _logger.Error(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7);
+        TArgument7 argument7) =>
+        _logger.Error(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7);
 
     /// <inheritdoc/>
     public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(
@@ -397,8 +397,8 @@ public sealed partial class NLogLogger
         TArgument5 argument5,
         TArgument6 argument6,
         TArgument7 argument7,
-        TArgument8 argument8)
-        => _logger.Error(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8);
+        TArgument8 argument8) =>
+        _logger.Error(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8);
 
     /// <inheritdoc/>
     public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(
@@ -412,8 +412,8 @@ public sealed partial class NLogLogger
         TArgument6 argument6,
         TArgument7 argument7,
         TArgument8 argument8,
-        TArgument9 argument9)
-        => _logger.Error(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9);
+        TArgument9 argument9) =>
+        _logger.Error(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9);
 
     /// <inheritdoc/>
     public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(
@@ -428,8 +428,8 @@ public sealed partial class NLogLogger
         TArgument7 argument7,
         TArgument8 argument8,
         TArgument9 argument9,
-        TArgument10 argument10)
-        => _logger.Error(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10);
+        TArgument10 argument10) =>
+        _logger.Error(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10);
 
     /// <inheritdoc/>
     public void Fatal<TArgument>(Exception exception, string messageFormat, TArgument argument) => _logger.Fatal(exception, messageFormat, argument);
@@ -443,8 +443,8 @@ public sealed partial class NLogLogger
         string messageFormat,
         TArgument1 argument1,
         TArgument2 argument2,
-        TArgument3 argument3)
-        => _logger.Fatal(exception, messageFormat, argument1, argument2, argument3);
+        TArgument3 argument3) =>
+        _logger.Fatal(exception, messageFormat, argument1, argument2, argument3);
 
     /// <inheritdoc/>
     public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4>(
@@ -453,8 +453,8 @@ public sealed partial class NLogLogger
         TArgument1 argument1,
         TArgument2 argument2,
         TArgument3 argument3,
-        TArgument4 argument4)
-        => _logger.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4);
+        TArgument4 argument4) =>
+        _logger.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4);
 
     /// <inheritdoc/>
     public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(
@@ -464,8 +464,8 @@ public sealed partial class NLogLogger
         TArgument2 argument2,
         TArgument3 argument3,
         TArgument4 argument4,
-        TArgument5 argument5)
-        => _logger.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5);
+        TArgument5 argument5) =>
+        _logger.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5);
 
     /// <inheritdoc/>
     public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(
@@ -476,8 +476,8 @@ public sealed partial class NLogLogger
         TArgument3 argument3,
         TArgument4 argument4,
         TArgument5 argument5,
-        TArgument6 argument6)
-        => _logger.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6);
+        TArgument6 argument6) =>
+        _logger.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6);
 
     /// <inheritdoc/>
     public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(
@@ -489,8 +489,8 @@ public sealed partial class NLogLogger
         TArgument4 argument4,
         TArgument5 argument5,
         TArgument6 argument6,
-        TArgument7 argument7)
-        => _logger.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7);
+        TArgument7 argument7) =>
+        _logger.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7);
 
     /// <inheritdoc/>
     public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(
@@ -503,8 +503,8 @@ public sealed partial class NLogLogger
         TArgument5 argument5,
         TArgument6 argument6,
         TArgument7 argument7,
-        TArgument8 argument8)
-        => _logger.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8);
+        TArgument8 argument8) =>
+        _logger.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8);
 
     /// <inheritdoc/>
     public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(
@@ -518,8 +518,8 @@ public sealed partial class NLogLogger
         TArgument6 argument6,
         TArgument7 argument7,
         TArgument8 argument8,
-        TArgument9 argument9)
-        => _logger.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9);
+        TArgument9 argument9) =>
+        _logger.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9);
 
     /// <inheritdoc/>
     public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(
@@ -534,6 +534,6 @@ public sealed partial class NLogLogger
         TArgument7 argument7,
         TArgument8 argument8,
         TArgument9 argument9,
-        TArgument10 argument10)
-        => _logger.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10);
+        TArgument10 argument10) =>
+        _logger.Fatal(exception, messageFormat, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10);
 }

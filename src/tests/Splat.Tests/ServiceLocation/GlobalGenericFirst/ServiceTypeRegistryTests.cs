@@ -41,16 +41,12 @@ public class ServiceTypeRegistryTests
     /// <summary>Clears the registry state before each test.</summary>
     [Before(Test)]
     public void Setup() =>
-
-        // Clear the registry before each test
-        ServiceTypeRegistry.Clear();
+        ServiceTypeRegistry.Clear(); // Clear the registry before each test
 
     /// <summary>Clears the registry state after each test.</summary>
     [After(Test)]
     public void Cleanup() =>
-
-        // Clear the registry after each test
-        ServiceTypeRegistry.Clear();
+        ServiceTypeRegistry.Clear(); // Clear the registry after each test
 
     /// <summary>Tests that track non generic registration tracks type.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -81,9 +77,7 @@ public class ServiceTypeRegistryTests
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task HasNonGenericRegistrations_WhenNotTracked_ReturnsFalse() =>
-
-        // Act & Assert
-        await Assert.That(ServiceTypeRegistry.HasNonGenericRegistrations(typeof(string))).IsFalse();
+        await Assert.That(ServiceTypeRegistry.HasNonGenericRegistrations(typeof(string))).IsFalse(); // Act & Assert
 
     /// <summary>Tests that register stores factory.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -263,9 +257,7 @@ public class ServiceTypeRegistryTests
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task HasRegistration_WhenEmpty_ReturnsFalse() =>
-
-        // Act & Assert
-        await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(string))).IsFalse();
+        await Assert.That(ServiceTypeRegistry.HasRegistration(typeof(string))).IsFalse(); // Act & Assert
 
     /// <summary>Tests that has registration after registering returns true.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -296,9 +288,7 @@ public class ServiceTypeRegistryTests
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task UnregisterCurrent_WhenEmpty_DoesNotThrow() =>
-
-        // Act & Assert - should not throw
-        ServiceTypeRegistry.UnregisterCurrent(typeof(string));
+        ServiceTypeRegistry.UnregisterCurrent(typeof(string)); // Act & Assert - should not throw
 
     /// <summary>Tests that unregister current with single item clears registration.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -444,9 +434,7 @@ public class ServiceTypeRegistryTests
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task Clear_WhenEmpty_DoesNotThrow() =>
-
-        // Act & Assert - should not throw
-        ServiceTypeRegistry.Clear();
+        ServiceTypeRegistry.Clear(); // Act & Assert - should not throw
 
     /// <summary>Tests that registry with different types are isolated.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>

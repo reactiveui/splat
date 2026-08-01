@@ -40,8 +40,8 @@ public class PlatformBitmapLoader : IBitmapLoader, IEnableLogger
     /// before creating instances of this class.
     /// </remarks>
     [RequiresUnreferencedCode(
-        "Constructor may use reflection for drawable discovery if RegisterDrawableResolver() or RegisterDrawables<T>() " +
-        "are not called first. For full AOT compatibility, use PlatformBitmapLoader<T> instead.")]
+        "Constructor may use reflection for drawable discovery if RegisterDrawableResolver() or RegisterDrawables<T>() "
+        + "are not called first. For full AOT compatibility, use PlatformBitmapLoader<T> instead.")]
     public PlatformBitmapLoader()
     {
         // If a resolver is registered, we don't need the dictionary at all (AOT-safe)

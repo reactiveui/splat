@@ -20,10 +20,7 @@ public static class ApplicationInsightsFeatureUsageTrackingSessionTests
         /// <inheritdoc/>
         protected override ApplicationInsightsFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
         {
-            var telemetryConfiguration = new TelemetryConfiguration
-            {
-                DisableTelemetry = true,
-            };
+            var telemetryConfiguration = new TelemetryConfiguration { DisableTelemetry = true, };
             var telemetryClient = new TelemetryClient(telemetryConfiguration);
 
             return new(featureName, telemetryClient);
@@ -37,10 +34,7 @@ public static class ApplicationInsightsFeatureUsageTrackingSessionTests
         /// <inheritdoc/>
         protected override ApplicationInsightsFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
         {
-            var telemetryConfiguration = new TelemetryConfiguration
-            {
-                DisableTelemetry = true,
-            };
+            var telemetryConfiguration = new TelemetryConfiguration { DisableTelemetry = true, };
             var telemetryClient = new TelemetryClient(telemetryConfiguration);
 
             return new(featureName, telemetryClient);

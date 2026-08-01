@@ -38,11 +38,7 @@ internal sealed class CapturingTelemetryChannel : ITelemetryChannel
     internal static (TelemetryClient Client, CapturingTelemetryChannel Channel) CreateClient()
     {
         var channel = new CapturingTelemetryChannel();
-        var configuration = new TelemetryConfiguration
-        {
-            ConnectionString = $"InstrumentationKey={Guid.NewGuid()}",
-            TelemetryChannel = channel,
-        };
+        var configuration = new TelemetryConfiguration { ConnectionString = $"InstrumentationKey={Guid.NewGuid()}", TelemetryChannel = channel, };
 
         return (new TelemetryClient(configuration), channel);
     }

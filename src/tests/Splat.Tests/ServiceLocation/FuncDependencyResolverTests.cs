@@ -1126,7 +1126,7 @@ public class FuncDependencyResolverTests : BaseDependencyResolverTests<FuncDepen
         public IEnumerator<object> GetEnumerator() => items.GetEnumerator();
 
         /// <inheritdoc />
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => items.GetEnumerator();
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
     /// <summary>Disposable test helper that records whether it has been disposed.</summary>

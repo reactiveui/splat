@@ -60,8 +60,8 @@ public class MicrosoftExtensionsLoggingExtensionsCoverageTests
         {
             _ = builder.AddSplat();
             registeredSplatProvider = builder.Services.Any(static descriptor =>
-                descriptor.ServiceType == typeof(ILoggerProvider) &&
-                descriptor.ImplementationType == typeof(MicrosoftExtensionsLogProvider));
+                descriptor.ServiceType == typeof(ILoggerProvider)
+                && descriptor.ImplementationType == typeof(MicrosoftExtensionsLogProvider));
         });
 
         await Assert.That(registeredSplatProvider).IsTrue();

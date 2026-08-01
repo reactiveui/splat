@@ -49,18 +49,18 @@ public sealed class DefaultPlatformModeDetectorCoverageTests
     /// <summary>Verifies that a null entry-point path is not treated as a design environment.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task IsDesignEnvironmentEntry_WithNullEntry_IsFalse()
-        => await Assert.That(DefaultPlatformModeDetector.IsDesignEnvironmentEntry(null)).IsFalse();
+    public async Task IsDesignEnvironmentEntry_WithNullEntry_IsFalse() =>
+        await Assert.That(DefaultPlatformModeDetector.IsDesignEnvironmentEntry(null)).IsFalse();
 
     /// <summary>Verifies that a known design-environment host executable is recognised as a design environment.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task IsDesignEnvironmentEntry_WithDesignHostExecutable_IsTrue()
-        => await Assert.That(DefaultPlatformModeDetector.IsDesignEnvironmentEntry(DesignHostPath)).IsTrue();
+    public async Task IsDesignEnvironmentEntry_WithDesignHostExecutable_IsTrue() =>
+        await Assert.That(DefaultPlatformModeDetector.IsDesignEnvironmentEntry(DesignHostPath)).IsTrue();
 
     /// <summary>Verifies that an ordinary host executable is not treated as a design environment.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task IsDesignEnvironmentEntry_WithNonDesignExecutable_IsFalse()
-        => await Assert.That(DefaultPlatformModeDetector.IsDesignEnvironmentEntry(RegularHostPath)).IsFalse();
+    public async Task IsDesignEnvironmentEntry_WithNonDesignExecutable_IsFalse() =>
+        await Assert.That(DefaultPlatformModeDetector.IsDesignEnvironmentEntry(RegularHostPath)).IsFalse();
 }

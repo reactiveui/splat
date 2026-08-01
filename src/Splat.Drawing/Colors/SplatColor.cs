@@ -134,10 +134,11 @@ public partial struct SplatColor : IEquatable<SplatColor>
     public readonly byte B => (byte)Value;
 
     /// <summary>Gets the name of the color if one is known. Otherwise will be the hex value.</summary>
+    /// <remarks>
+    /// The name was required for serialization under MS 1.x, but not under 2.0, so it may be absent on values
+    /// deserialized from an MS stream; the known name or the hex value stands in for it.
+    /// </remarks>
     public readonly string Name =>
-
-        // The name was required for serialization under MS 1.x, but not under 2.0, so it may be
-        // absent on values deserialized from an MS stream; fall back to the known name or hex value.
         _name ?? (IsNamedColor ? KnownColors.GetName(_knownColor) : $"{ToArgb():x}");
 
     /// <summary>Gets a value indicating whether the color is part of the <see cref="ColorTypes.Known"/> group.</summary>

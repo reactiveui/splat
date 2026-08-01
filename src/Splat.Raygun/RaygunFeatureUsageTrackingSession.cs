@@ -57,12 +57,7 @@ public sealed class RaygunFeatureUsageTrackingSession : IFeatureUsageTrackingSes
         FeatureName = featureName;
         FeatureReference = Guid.NewGuid();
 
-        var userCustomData = new Dictionary<string, string>
-        {
-            { "EventType", "FeatureUsage" },
-            { "EventReference", FeatureReference.ToString() },
-            { "ParentReference", parentReference.ToString() },
-        };
+        var userCustomData = new Dictionary<string, string> { { "EventType", "FeatureUsage" }, { "EventReference", FeatureReference.ToString() }, { "ParentReference", parentReference.ToString() } };
 
         // Raygun does not yet have a dedicated feature-usage event API, so we send a
         // custom message with user data as a workaround. Track progress on first-class

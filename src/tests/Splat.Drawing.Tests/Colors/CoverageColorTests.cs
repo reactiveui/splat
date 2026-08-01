@@ -244,26 +244,26 @@ public class CoverageColorTests
     /// <summary>Invalids the Argb color A throws.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task InvalidArgbColorAThrows()
-        => await Assert.That(static () => SplatColor.FromArgb(ComponentRange, 0, 0, 0)).Throws<ArgumentException>();
+    public async Task InvalidArgbColorAThrows() =>
+        await Assert.That(static () => SplatColor.FromArgb(ComponentRange, 0, 0, 0)).Throws<ArgumentException>();
 
     /// <summary>Invalids the Argb color r throws.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task InvalidArgbColorRThrows()
-        => await Assert.That(static () => SplatColor.FromArgb(0, ComponentRange, 0, 0)).Throws<ArgumentException>();
+    public async Task InvalidArgbColorRThrows() =>
+        await Assert.That(static () => SplatColor.FromArgb(0, ComponentRange, 0, 0)).Throws<ArgumentException>();
 
     /// <summary>Invalids the Argb color g throws.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task InvalidArgbColorGThrows()
-        => await Assert.That(static () => SplatColor.FromArgb(0, 0, ComponentRange, 0)).Throws<ArgumentException>();
+    public async Task InvalidArgbColorGThrows() =>
+        await Assert.That(static () => SplatColor.FromArgb(0, 0, ComponentRange, 0)).Throws<ArgumentException>();
 
     /// <summary>Invalids the Argb color b throws.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task InvalidArgbColorBThrows()
-        => await Assert.That(static () => SplatColor.FromArgb(0, 0, 0, ComponentRange)).Throws<ArgumentException>();
+    public async Task InvalidArgbColorBThrows() =>
+        await Assert.That(static () => SplatColor.FromArgb(0, 0, 0, ComponentRange)).Throws<ArgumentException>();
 
     // Known color static properties tests - each property is tested individually for coverage
     /// <summary>Verifies that the Transparent known color is valid.</summary>

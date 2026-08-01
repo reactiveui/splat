@@ -187,10 +187,7 @@ public sealed class StaticLoggerTests
         /// <returns>A new static full logger.</returns>
         private static StaticFullLogger GetLogger(LogLevel logLevel)
         {
-            var textLogger = new TextLogger
-            {
-                Level = logLevel
-            };
+            var textLogger = new TextLogger { Level = logLevel };
 
             var wrappingFullLogger = new WrappingFullLogger(textLogger);
             return new(wrappingFullLogger);

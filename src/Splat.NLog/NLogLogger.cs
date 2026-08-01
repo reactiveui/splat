@@ -25,7 +25,7 @@ public sealed partial class NLogLogger : IFullLogger, IDisposable
 #if NET5_0_OR_GREATER
     private static readonly LogLevel[] _allLogLevels = Enum.GetValues<LogLevel>();
 #else
-    private static readonly LogLevel[] _allLogLevels = [.. Enum.GetValues(typeof(LogLevel)).Cast<LogLevel>()];
+    private static readonly LogLevel[] _allLogLevels = BuildAllLogLevels();
 #endif
 
     /// <summary>The underlying NLog logger that messages are forwarded to.</summary>
@@ -149,8 +149,8 @@ public sealed partial class NLogLogger : IFullLogger, IDisposable
         IFormatProvider formatProvider,
         string message,
         TArgument1 argument1,
-        TArgument2 argument2)
-        => _logger.Debug(formatProvider, message, argument1, argument2);
+        TArgument2 argument2) =>
+        _logger.Debug(formatProvider, message, argument1, argument2);
 
     /// <inheritdoc/>
     public void Debug<TArgument1, TArgument2, TArgument3>(
@@ -158,8 +158,8 @@ public sealed partial class NLogLogger : IFullLogger, IDisposable
         string message,
         TArgument1 argument1,
         TArgument2 argument2,
-        TArgument3 argument3)
-        => _logger.Debug(formatProvider, message, argument1, argument2, argument3);
+        TArgument3 argument3) =>
+        _logger.Debug(formatProvider, message, argument1, argument2, argument3);
 
     /// <inheritdoc/>
     public void DebugException(string? message, Exception exception) => _logger.Debug(exception, message ?? string.Empty);
@@ -253,8 +253,8 @@ public sealed partial class NLogLogger : IFullLogger, IDisposable
         string message,
         TArgument1 argument1,
         TArgument2 argument2,
-        TArgument3 argument3)
-        => _logger.Info(formatProvider, message, argument1, argument2, argument3);
+        TArgument3 argument3) =>
+        _logger.Info(formatProvider, message, argument1, argument2, argument3);
 
     /// <inheritdoc/>
     public void InfoException(string? message, Exception exception) => _logger.Info(exception, message ?? string.Empty);
@@ -348,8 +348,8 @@ public sealed partial class NLogLogger : IFullLogger, IDisposable
         string message,
         TArgument1 argument1,
         TArgument2 argument2,
-        TArgument3 argument3)
-        => _logger.Warn(formatProvider, message, argument1, argument2, argument3);
+        TArgument3 argument3) =>
+        _logger.Warn(formatProvider, message, argument1, argument2, argument3);
 
     /// <inheritdoc/>
     public void WarnException(string? message, Exception exception) => _logger.Warn(exception, message ?? string.Empty);
@@ -439,8 +439,8 @@ public sealed partial class NLogLogger : IFullLogger, IDisposable
         IFormatProvider formatProvider,
         string message,
         TArgument1 argument1,
-        TArgument2 argument2)
-        => _logger.Error(formatProvider, message, argument1, argument2);
+        TArgument2 argument2) =>
+        _logger.Error(formatProvider, message, argument1, argument2);
 
     /// <inheritdoc/>
     public void Error<TArgument1, TArgument2, TArgument3>(
@@ -448,8 +448,8 @@ public sealed partial class NLogLogger : IFullLogger, IDisposable
         string message,
         TArgument1 argument1,
         TArgument2 argument2,
-        TArgument3 argument3)
-        => _logger.Error(formatProvider, message, argument1, argument2, argument3);
+        TArgument3 argument3) =>
+        _logger.Error(formatProvider, message, argument1, argument2, argument3);
 
     /// <inheritdoc/>
     public void ErrorException(string? message, Exception exception) => _logger.Error(exception, message ?? string.Empty);
@@ -539,8 +539,8 @@ public sealed partial class NLogLogger : IFullLogger, IDisposable
         IFormatProvider formatProvider,
         string message,
         TArgument1 argument1,
-        TArgument2 argument2)
-        => _logger.Fatal(formatProvider, message, argument1, argument2);
+        TArgument2 argument2) =>
+        _logger.Fatal(formatProvider, message, argument1, argument2);
 
     /// <inheritdoc/>
     public void Fatal<TArgument1, TArgument2, TArgument3>(
@@ -548,8 +548,8 @@ public sealed partial class NLogLogger : IFullLogger, IDisposable
         string message,
         TArgument1 argument1,
         TArgument2 argument2,
-        TArgument3 argument3)
-        => _logger.Fatal(formatProvider, message, argument1, argument2, argument3);
+        TArgument3 argument3) =>
+        _logger.Fatal(formatProvider, message, argument1, argument2, argument3);
 
     /// <inheritdoc/>
     public void FatalException(string? message, Exception exception) => _logger.Fatal(exception, message ?? string.Empty);
@@ -567,6 +567,22 @@ public sealed partial class NLogLogger : IFullLogger, IDisposable
 
         _logger.Fatal(exception, function.Invoke());
     }
+
+#if !NET5_0_OR_GREATER
+    /// <summary>Reads the defined <see cref="LogLevel"/> values on targets without the generic Enum.GetValues.</summary>
+    /// <returns>Every defined log level.</returns>
+    private static LogLevel[] BuildAllLogLevels()
+    {
+        var values = Enum.GetValues(typeof(LogLevel));
+        var levels = new LogLevel[values.Length];
+        for (var i = 0; i < values.Length; i++)
+        {
+            levels[i] = (LogLevel)values.GetValue(i)!;
+        }
+
+        return levels;
+    }
+#endif
 
     /// <summary>Maps a Splat <see cref="LogLevel"/> to the equivalent NLog log level.</summary>
     /// <param name="logLevel">The Splat log level to translate.</param>

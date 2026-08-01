@@ -56,9 +56,7 @@ public class ContainerTests
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task HasRegistrations_WhenEmpty_ReturnsFalse() =>
-
-        // Act & Assert
-        await Assert.That(Container<string>.HasRegistrations).IsFalse();
+        await Assert.That(Container<string>.HasRegistrations).IsFalse(); // Act & Assert
 
     /// <summary>Tests that has registrations after adding returns true.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>

@@ -309,8 +309,8 @@ public class DefaultModeDetectorTests
         foreach (var assembly in assemblies)
         {
             var fullName = assembly.FullName;
-            if (!string.IsNullOrEmpty(fullName) &&
-                fullName.Contains("Microsoft.Testing.Platform", StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(fullName)
+                && fullName.Contains("Microsoft.Testing.Platform", StringComparison.OrdinalIgnoreCase))
             {
                 hasMTPAssembly = true;
                 break;

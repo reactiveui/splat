@@ -66,6 +66,10 @@ public class AutofacDependencyResolver : IDependencyResolver
     private ILifetimeScope? _lifetimeScope;
 
     /// <summary>The lifetime scope of <see cref="_internalContainer"/> used until the user supplies their own scope.</summary>
+    [SuppressMessage(
+        "Usage",
+        "CA2213:Disposable fields should be disposed",
+        Justification = "The scope is a child of _internalContainer, which is disposed; disposing it separately would surface disposal exceptions the container absorbs.")]
     private ILifetimeScope _internalLifetimeScope;
 
     /// <summary>
@@ -148,11 +152,22 @@ public class AutofacDependencyResolver : IDependencyResolver
     }
 
     /// <inheritdoc/>
-    public IEnumerable<T> GetServices<T>() => GetServices(typeof(T)).Cast<T>();
+    public IEnumerable<T> GetServices<T>()
+    {
+        foreach (var service in GetServices(typeof(T)))
+        {
+            yield return (T)service;
+        }
+    }
 
     /// <inheritdoc/>
-    public IEnumerable<T> GetServices<T>(string? contract) =>
-        GetServices(typeof(T), contract).Cast<T>();
+    public IEnumerable<T> GetServices<T>(string? contract)
+    {
+        foreach (var service in GetServices(typeof(T), contract))
+        {
+            yield return (T)service;
+        }
+    }
 
     /// <summary>
     ///     Sets the lifetime scope which will be used to resolve ReactiveUI services.
@@ -583,12 +598,34 @@ public class AutofacDependencyResolver : IDependencyResolver
         switch (isNull)
         {
             case true when instance is IEnumerable<NullServiceType> nullService:
-                return nullService.Select(static item => item.Factory()!);
+                return MaterializeNullServices(nullService);
             case false when instance is not null:
-                return ((IEnumerable)instance).Cast<object>();
+                return MaterializeServices((IEnumerable)instance);
         }
 
         return [];
+    }
+
+    /// <summary>Invokes each null-service factory in the resolved sequence.</summary>
+    /// <param name="services">The resolved null-service registrations.</param>
+    /// <returns>The instances the factories produced.</returns>
+    private static IEnumerable<object> MaterializeNullServices(IEnumerable<NullServiceType> services)
+    {
+        foreach (var service in services)
+        {
+            yield return service.Factory()!;
+        }
+    }
+
+    /// <summary>Yields the resolved sequence as objects.</summary>
+    /// <param name="services">The resolved service instances.</param>
+    /// <returns>The service instances.</returns>
+    private static IEnumerable<object> MaterializeServices(IEnumerable services)
+    {
+        foreach (var service in services)
+        {
+            yield return service;
+        }
     }
 
     /// <summary>Registers the supplied factory against the given builder, optionally using a contract name.</summary>
