@@ -27,7 +27,7 @@ namespace Splat;
     "StyleSharp",
     "SST1452:A generic type parameter is used only as a marker",
     Justification = "Generic marker API; the type parameter identifies the target and is applied via typeof(T) in the implementation.")]
-public interface IFullLogger : IAllocationFreeLogger
+public partial interface IFullLogger : IAllocationFreeLogger
 {
     /// <summary>Emits a debug log message. This will emit the public contents of the object provided to the log.</summary>
     /// <typeparam name="T">The type of object used as the message.</typeparam>
@@ -70,33 +70,6 @@ public interface IFullLogger : IAllocationFreeLogger
     /// <param name="message">A non-localizable message to emit to the log which includes the standard formatting tags.</param>
     /// <param name="args">The arguments for formatting purposes.</param>
     void Debug<T>([Localizable(false)] string message, params object[] args);
-
-    /// <summary>Emits a message using formatting to the debug log.</summary>
-    /// <typeparam name="TArgument">The type of the argument which is used in the formatting.</typeparam>
-    /// <param name="formatProvider">The format provider to use.</param>
-    /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-    /// <param name="argument">The argument for formatting purposes.</param>
-    void Debug<TArgument>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument argument);
-
-    /// <summary>Emits a message using formatting to the debug log.</summary>
-    /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
-    /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
-    /// <param name="formatProvider">The format provider to use.</param>
-    /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-    /// <param name="argument1">The first argument for formatting purposes.</param>
-    /// <param name="argument2">The second argument for formatting purposes.</param>
-    void Debug<TArgument1, TArgument2>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2);
-
-    /// <summary>Emits a message using formatting to the debug log.</summary>
-    /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
-    /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
-    /// <typeparam name="TArgument3">The type of the third argument which is used in the formatting.</typeparam>
-    /// <param name="formatProvider">The format provider to use.</param>
-    /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-    /// <param name="argument1">The first argument for formatting purposes.</param>
-    /// <param name="argument2">The second argument for formatting purposes.</param>
-    /// <param name="argument3">The third argument for formatting purposes.</param>
-    void Debug<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
     /// <summary>Sends the value provided by the provided delegate, only if Debug is enabled.</summary>
     /// <param name="function">The function to evaluate if Debug logging is enabled.</param>
@@ -170,33 +143,6 @@ public interface IFullLogger : IAllocationFreeLogger
     /// <param name="args">The arguments for formatting purposes.</param>
     void Info<T>([Localizable(false)] string message, params object[] args);
 
-    /// <summary>Emits a message using formatting to the info log.</summary>
-    /// <typeparam name="TArgument">The type of the argument which is used in the formatting.</typeparam>
-    /// <param name="formatProvider">The format provider to use.</param>
-    /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-    /// <param name="argument">The argument for formatting purposes.</param>
-    void Info<TArgument>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument argument);
-
-    /// <summary>Emits a message using formatting to the info log.</summary>
-    /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
-    /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
-    /// <param name="formatProvider">The format provider to use.</param>
-    /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-    /// <param name="argument1">The first argument for formatting purposes.</param>
-    /// <param name="argument2">The second argument for formatting purposes.</param>
-    void Info<TArgument1, TArgument2>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2);
-
-    /// <summary>Emits a message using formatting to the info log.</summary>
-    /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
-    /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
-    /// <typeparam name="TArgument3">The type of the third argument which is used in the formatting.</typeparam>
-    /// <param name="formatProvider">The format provider to use.</param>
-    /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-    /// <param name="argument1">The first argument for formatting purposes.</param>
-    /// <param name="argument2">The second argument for formatting purposes.</param>
-    /// <param name="argument3">The third argument for formatting purposes.</param>
-    void Info<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
-
     /// <summary>Sends the value provided by the provided delegate, only if Info is enabled.</summary>
     /// <param name="function">The function to evaluate if Info logging is enabled.</param>
     void Info(Func<string> function);
@@ -268,33 +214,6 @@ public interface IFullLogger : IAllocationFreeLogger
     /// <param name="message">A non-localizable message to emit to the log which includes the standard formatting tags.</param>
     /// <param name="args">The arguments for formatting purposes.</param>
     void Warn<T>([Localizable(false)] string message, params object[] args);
-
-    /// <summary>Emits a message using formatting to the warning log.</summary>
-    /// <typeparam name="TArgument">The type of the argument which is used in the formatting.</typeparam>
-    /// <param name="formatProvider">The format provider to use.</param>
-    /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-    /// <param name="argument">The argument for formatting purposes.</param>
-    void Warn<TArgument>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument argument);
-
-    /// <summary>Emits a message using formatting to the warning log.</summary>
-    /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
-    /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
-    /// <param name="formatProvider">The format provider to use.</param>
-    /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-    /// <param name="argument1">The first argument for formatting purposes.</param>
-    /// <param name="argument2">The second argument for formatting purposes.</param>
-    void Warn<TArgument1, TArgument2>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2);
-
-    /// <summary>Emits a message using formatting to the warning log.</summary>
-    /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
-    /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
-    /// <typeparam name="TArgument3">The type of the third argument which is used in the formatting.</typeparam>
-    /// <param name="formatProvider">The format provider to use.</param>
-    /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-    /// <param name="argument1">The first argument for formatting purposes.</param>
-    /// <param name="argument2">The second argument for formatting purposes.</param>
-    /// <param name="argument3">The third argument for formatting purposes.</param>
-    void Warn<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
     /// <summary>Sends the value provided by the provided delegate, only if Warn is enabled.</summary>
     /// <param name="function">The function to evaluate if Warn logging is enabled.</param>
@@ -372,33 +291,6 @@ public interface IFullLogger : IAllocationFreeLogger
     /// <param name="args">The arguments for formatting purposes.</param>
     void Error<T>([Localizable(false)] string message, params object[] args);
 
-    /// <summary>Emits a message using formatting to the error log.</summary>
-    /// <typeparam name="TArgument">The type of the argument which is used in the formatting.</typeparam>
-    /// <param name="formatProvider">The format provider to use.</param>
-    /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-    /// <param name="argument">The argument for formatting purposes.</param>
-    void Error<TArgument>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument argument);
-
-    /// <summary>Emits a message using formatting to the error log.</summary>
-    /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
-    /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
-    /// <param name="formatProvider">The format provider to use.</param>
-    /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-    /// <param name="argument1">The first argument for formatting purposes.</param>
-    /// <param name="argument2">The second argument for formatting purposes.</param>
-    void Error<TArgument1, TArgument2>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2);
-
-    /// <summary>Emits a message using formatting to the error log.</summary>
-    /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
-    /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
-    /// <typeparam name="TArgument3">The type of the third argument which is used in the formatting.</typeparam>
-    /// <param name="formatProvider">The format provider to use.</param>
-    /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-    /// <param name="argument1">The first argument for formatting purposes.</param>
-    /// <param name="argument2">The second argument for formatting purposes.</param>
-    /// <param name="argument3">The third argument for formatting purposes.</param>
-    void Error<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
-
     /// <summary>Sends the value provided by the provided delegate, only if Error is enabled.</summary>
     /// <param name="function">The function to evaluate if Error logging is enabled.</param>
     void Error(Func<string> function);
@@ -470,33 +362,6 @@ public interface IFullLogger : IAllocationFreeLogger
     /// <param name="message">A non-localizable message to emit to the log which includes the standard formatting tags.</param>
     /// <param name="args">The arguments for formatting purposes.</param>
     void Fatal<T>([Localizable(false)] string message, params object[] args);
-
-    /// <summary>Emits a message using formatting to the fatal log.</summary>
-    /// <typeparam name="TArgument">The type of the argument which is used in the formatting.</typeparam>
-    /// <param name="formatProvider">The format provider to use.</param>
-    /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-    /// <param name="argument">The argument for formatting purposes.</param>
-    void Fatal<TArgument>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument argument);
-
-    /// <summary>Emits a message using formatting to the fatal log.</summary>
-    /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
-    /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
-    /// <param name="formatProvider">The format provider to use.</param>
-    /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-    /// <param name="argument1">The first argument for formatting purposes.</param>
-    /// <param name="argument2">The second argument for formatting purposes.</param>
-    void Fatal<TArgument1, TArgument2>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2);
-
-    /// <summary>Emits a message using formatting to the fatal log.</summary>
-    /// <typeparam name="TArgument1">The type of the first argument which is used in the formatting.</typeparam>
-    /// <typeparam name="TArgument2">The type of the second argument which is used in the formatting.</typeparam>
-    /// <typeparam name="TArgument3">The type of the third argument which is used in the formatting.</typeparam>
-    /// <param name="formatProvider">The format provider to use.</param>
-    /// <param name="message">A message to emit to the log which includes the standard formatting tags.</param>
-    /// <param name="argument1">The first argument for formatting purposes.</param>
-    /// <param name="argument2">The second argument for formatting purposes.</param>
-    /// <param name="argument3">The third argument for formatting purposes.</param>
-    void Fatal<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider, [Localizable(false)] string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3);
 
     /// <summary>Sends the value provided by the provided delegate, only if Fatal is enabled.</summary>
     /// <param name="function">The function to evaluate if Fatal logging is enabled.</param>

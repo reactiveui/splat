@@ -2842,13 +2842,16 @@ end_of_line = crlf
 dotnet_diagnostic.SST1431.severity = none
 
 #############################################
-# Allocation-free logging - file-scoped exemptions
+# Typed-argument overloads - file-scoped exemptions
 #############################################
-# The allocation-free overloads take their format arguments as separate generic parameters precisely so
-# that a call site does not box them into a params array. Nine arguments is the widest overload, and
-# grouping them into a type would reintroduce the allocation the whole API exists to avoid.
-[**/Splat.Logging/IAllocationFree*Logger.cs]
+# These files hold nothing but the overload matrix each logging contract dictates: one overload per
+# argument count, per level. The shape is not a design choice, so the rules that judge design do not
+# apply. The arguments stay as separate generic parameters precisely so that a call site does not box
+# them into a params array, and the file is long because the matrix is, not because logic accumulated
+# in it. The same reasoning excludes these files from copy/paste detection in .github/workflows.
+[**/*.TypedArguments.cs]
 dotnet_diagnostic.SST1472.severity = none
+dotnet_diagnostic.SST1522.severity = none
 
 #############################################
 # Deprecated public API - file-scoped exemptions
