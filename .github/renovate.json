@@ -3,7 +3,28 @@
     "extends": [
         "local>reactiveui/.github:renovate"
     ],
+    "customManagers": [
+        {
+            "customType": "regex",
+            "description": "Splat.ApplicationInsightsV3 pins the Application Insights 3.x line with VersionOverride rather than a central PackageVersion, so the nuget manager never sees it. Track that attribute directly.",
+            "managerFilePatterns": [
+                "/^src/Splat\\.ApplicationInsightsV3/Splat\\.ApplicationInsightsV3\\.csproj$/"
+            ],
+            "matchStrings": [
+                "<PackageReference\\s+Include=\"(?<depName>Microsoft\\.ApplicationInsights)\"\\s+VersionOverride=\"(?<currentValue>[^\"]+)\""
+            ],
+            "datasourceTemplate": "nuget"
+        }
+    ],
     "packageRules": [
+        {
+            "description": "Two Application Insights adapters ship side by side: Splat.ApplicationInsights on the 2.x line and Splat.ApplicationInsightsV3 on 3.x. The central PackageVersion feeds the 2.x adapter, which exposes PageViewTelemetry on its public API - a type 3.x removed - so hold it below 3.0.0. The 3.x pin lives in the V3 project and is matched by its own current version, so it keeps moving.",
+            "matchDepNames": [
+                "Microsoft.ApplicationInsights"
+            ],
+            "matchCurrentVersion": "/^2\\./",
+            "allowedVersions": "<3.0.0"
+        },
         {
             "description": "Legacy System.* compatibility packages are pinned to their 4.x line for the net4*/netstandard targets. Cap Renovate below 5.0.0 so the .NET monorepo v10 updates do not bump these and break those targets. The modern 10.x System.* entries (in the Otherwise/modern groups) are unaffected because this rule only matches versions currently on 4.x.",
             "matchManagers": [
