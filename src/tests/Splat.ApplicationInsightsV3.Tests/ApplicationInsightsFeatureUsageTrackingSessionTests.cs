@@ -19,11 +19,7 @@ public static class ApplicationInsightsFeatureUsageTrackingSessionTests
         /// <inheritdoc />
         protected override ApplicationInsightsFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
         {
-            var telemetryConfiguration = new TelemetryConfiguration
-            {
-                ConnectionString = $"InstrumentationKey={Guid.NewGuid()}",
-                DisableTelemetry = true,
-            };
+            var telemetryConfiguration = new TelemetryConfiguration { ConnectionString = $"InstrumentationKey={Guid.NewGuid()}", DisableTelemetry = true, };
             var telemetryClient = new TelemetryClient(telemetryConfiguration);
 
             return new(featureName, telemetryClient);
@@ -37,11 +33,7 @@ public static class ApplicationInsightsFeatureUsageTrackingSessionTests
         /// <inheritdoc />
         protected override ApplicationInsightsFeatureUsageTrackingSession GetFeatureUsageTrackingSession(string featureName)
         {
-            var telemetryConfiguration = new TelemetryConfiguration
-            {
-                ConnectionString = $"InstrumentationKey={Guid.NewGuid()}",
-                DisableTelemetry = true,
-            };
+            var telemetryConfiguration = new TelemetryConfiguration { ConnectionString = $"InstrumentationKey={Guid.NewGuid()}", DisableTelemetry = true, };
             var telemetryClient = new TelemetryClient(telemetryConfiguration);
 
             return new(featureName, telemetryClient);
@@ -90,11 +82,7 @@ public static class ApplicationInsightsFeatureUsageTrackingSessionTests
         /// <returns>The configured telemetry client.</returns>
         private static TelemetryClient CreateClient()
         {
-            var telemetryConfiguration = new TelemetryConfiguration
-            {
-                ConnectionString = $"InstrumentationKey={Guid.NewGuid()}",
-                DisableTelemetry = true,
-            };
+            var telemetryConfiguration = new TelemetryConfiguration { ConnectionString = $"InstrumentationKey={Guid.NewGuid()}", DisableTelemetry = true, };
 
             return new(telemetryConfiguration);
         }

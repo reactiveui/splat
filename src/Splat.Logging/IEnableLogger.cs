@@ -2,6 +2,7 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 namespace Splat;
@@ -18,4 +19,8 @@ namespace Splat;
 /// enablement.
 /// </para></remarks>
 [ComVisible(false)]
+[SuppressMessage(
+    "Design",
+    "SST1437:Avoid empty interfaces",
+    Justification = "Marker interface for logger enablement; the Log() mixin keys off it.")]
 public interface IEnableLogger;

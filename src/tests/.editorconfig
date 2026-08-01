@@ -1,13 +1,44 @@
+# Relaxations for the test tree, carried over from the [**/tests/**/*.cs] section that used to live in
+# the repository-root .editorconfig. Everything else inherits the root file.
 [*.cs]
 
 ###################
-# Code Analysis (CA) - Disable rules for test projects
+# Code Analysis (CA)
 ###################
-dotnet_diagnostic.CA1001.severity = none            # Owns disposable fields
-dotnet_diagnostic.CA1034.severity = none            # Do not nest type declarations
-dotnet_diagnostic.CA1063.severity = none            # Implement IDisposable correctly
-dotnet_diagnostic.CA1065.severity = none            # Do not raise exceptions in unexpected locations
-dotnet_diagnostic.CA1707.severity = none            # Remove underscores from names
-dotnet_diagnostic.CA1812.severity = none            # Avoid uninstantiated internal classes
-dotnet_diagnostic.CA2213.severity = none            # Disposable fields should be disposed
-dotnet_diagnostic.CA2263.severity = none            # Use generic method
+dotnet_diagnostic.CA1001.severity = none # Owns disposable fields
+dotnet_diagnostic.CA1034.severity = none # Do not nest type declarations
+dotnet_diagnostic.CA1063.severity = none # Implement IDisposable correctly
+dotnet_diagnostic.CA1065.severity = none # Do not raise exceptions in unexpected locations
+dotnet_diagnostic.CA1707.severity = none # Remove underscores from names
+dotnet_diagnostic.CA1812.severity = none # Avoid uninstantiated internal classes
+dotnet_diagnostic.CA2213.severity = none # Disposable fields should be disposed
+dotnet_diagnostic.CA2263.severity = none # Use generic method
+
+###################
+# StyleSharp (SST)
+###################
+dotnet_diagnostic.SST1432.severity = none # Test fixtures need not be static
+dotnet_diagnostic.SST1437.severity = none # A test double for a service registration only has to be a distinct type; an empty interface is the smallest one
+dotnet_diagnostic.SST2410.severity = none # A test creates the disposable it is asserting about; the test process owns it and exits
+
+###################
+# PerformanceSharp (PSH)
+###################
+performancesharp.avoid_linq_on_hot_path = false
+dotnet_diagnostic.PSH1100.severity = none # Tests can use LINQ for clarity
+dotnet_diagnostic.PSH1101.severity = error # In tests, simplify LINQ Where plus terminal calls instead of banning LINQ
+dotnet_diagnostic.PSH1102.severity = error # In tests, simplify LINQ type filters instead of banning LINQ
+
+###################
+# Rules that a test tree cannot satisfy
+###################
+dotnet_diagnostic.SST2310.severity = none # A deprecated member keeps its tests until the member itself goes
+dotnet_diagnostic.SST2318.severity = none # A before/after hook resetting the same state, or two data-driven cases over one body, are duplicate bodies by design
+
+#############################################
+# Platform-conditional test files
+#############################################
+# Both files hold a single test class wrapped in a platform #if, so on the targets that define
+# IS_SHARED_NET they compile down to nothing but usings.
+[Splat.Drawing.Tests/{BitmapLoaderTests,PlatformBitmapLoaderHelpersTests}.cs]
+dotnet_diagnostic.SST1533.severity = none

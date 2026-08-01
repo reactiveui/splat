@@ -2,6 +2,7 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 namespace Splat.ApplicationPerformanceMonitoring;
@@ -11,4 +12,8 @@ namespace Splat.ApplicationPerformanceMonitoring;
 /// usage. The presence of this interface may be used by frameworks or tools to discover and interact with feature usage
 /// tracking capabilities.</remarks>
 [ComVisible(false)]
+[SuppressMessage(
+    "Design",
+    "SST1437:Avoid empty interfaces",
+    Justification = "Marker interface for feature usage tracking; the tracking extension methods key off it.")]
 public interface IEnableFeatureUsageTracking;

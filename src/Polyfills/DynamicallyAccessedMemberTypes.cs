@@ -25,10 +25,6 @@ internal enum DynamicallyAccessedMemberTypes
     PublicParameterlessConstructor = 0x0001,
 
     /// <summary>Specifies all public constructors.</summary>
-    [SuppressMessage(
-        "Roslynator",
-        "RCS1157:Composite enum value contains undefined flag",
-        Justification = "Mirrors the BCL DynamicallyAccessedMemberTypes definition verbatim; the 0x0002 bit has no standalone named member by design.")]
     PublicConstructors = 0x0002 | PublicParameterlessConstructor,
 
     /// <summary>Specifies all non-public constructors.</summary>

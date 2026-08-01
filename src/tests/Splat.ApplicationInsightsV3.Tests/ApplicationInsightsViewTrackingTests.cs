@@ -19,11 +19,7 @@ public static class ApplicationInsightsViewTrackingTests
         /// <inheritdoc />
         protected override ApplicationInsightsViewTracking GetViewTracking()
         {
-            var telemetryConfiguration = new TelemetryConfiguration
-            {
-                ConnectionString = $"InstrumentationKey={Guid.NewGuid()}",
-                DisableTelemetry = true,
-            };
+            var telemetryConfiguration = new TelemetryConfiguration { ConnectionString = $"InstrumentationKey={Guid.NewGuid()}", DisableTelemetry = true, };
             var telemetryClient = new TelemetryClient(telemetryConfiguration);
 
             return new(telemetryClient);
@@ -48,11 +44,7 @@ public static class ApplicationInsightsViewTrackingTests
         /// <returns>The configured telemetry client.</returns>
         private static TelemetryClient CreateClient()
         {
-            var telemetryConfiguration = new TelemetryConfiguration
-            {
-                ConnectionString = $"InstrumentationKey={Guid.NewGuid()}",
-                DisableTelemetry = true,
-            };
+            var telemetryConfiguration = new TelemetryConfiguration { ConnectionString = $"InstrumentationKey={Guid.NewGuid()}", DisableTelemetry = true, };
 
             return new(telemetryConfiguration);
         }

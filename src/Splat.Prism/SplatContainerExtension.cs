@@ -44,7 +44,6 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     public IDependencyResolver Instance { get; } = new InstanceGenericFirstDependencyResolver();
 
     /// <inheritdoc/>
-    [SuppressMessage("Design", "CA1065: Do not raise exceptions in properties", Justification = "Very rare scenario")]
     public IScopedProvider CurrentScope =>
         throw new NotSupportedException(ScopedNotSupportedMessage);
 
@@ -224,7 +223,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Existing API")]
     public object Resolve(Type type, params (Type Type, object Instance)[] parameters) =>
         (_types.TryGetValue((type, null), out var resolvedType)
-            ? Activator.CreateInstance(resolvedType, parameters.Select(static x => x.Instance)) ?? throw new InvalidOperationException(CouldNotCreateTypeMessage)
+            ? Activator.CreateInstance(resolvedType, ToActivationArguments(parameters)) ?? throw new InvalidOperationException(CouldNotCreateTypeMessage)
             : null) ?? throw new InvalidOperationException(MustBeValidValueMessage);
 
     /// <inheritdoc/>
@@ -235,7 +234,7 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
     [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Existing API")]
     public object Resolve(Type type, string name, params (Type Type, object Instance)[] parameters) =>
         (_types.TryGetValue((type, name), out var resolvedType)
-            ? Activator.CreateInstance(resolvedType, parameters.Select(static x => x.Instance)) ?? throw new InvalidOperationException(CouldNotCreateTypeMessage)
+            ? Activator.CreateInstance(resolvedType, ToActivationArguments(parameters)) ?? throw new InvalidOperationException(CouldNotCreateTypeMessage)
             : null) ?? throw new InvalidOperationException(MustBeValidValueMessage);
 
     /// <summary>Disposes data associated with the extension.</summary>
@@ -249,5 +248,20 @@ public class SplatContainerExtension : IContainerExtension<IDependencyResolver>,
 
         Interlocked.Exchange(ref _disposeAction, null)?.Invoke();
         _types.Clear();
+    }
+
+    /// <summary>Packs the supplied instances into the single activation argument the constructor receives.</summary>
+    /// <param name="parameters">The parameter pairs supplied by the caller.</param>
+    /// <returns>One argument: the instances, in the order the caller supplied them.</returns>
+    [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1316:Tuple element names should use correct casing", Justification = "Existing API")]
+    private static object[] ToActivationArguments((Type Type, object Instance)[] parameters)
+    {
+        var instances = new object[parameters.Length];
+        for (var i = 0; i < parameters.Length; i++)
+        {
+            instances[i] = parameters[i].Instance;
+        }
+
+        return [instances];
     }
 }

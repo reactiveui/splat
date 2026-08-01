@@ -119,11 +119,10 @@ public sealed class InternalLocatorTests
     }
 
     /// <summary>Verifies that RegisterResolverCallbackChanged throws when the callback is null.</summary>
+    /// <remarks>InternalLocator does not validate the parameter, so the null reaches the delegate invocation.</remarks>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task RegisterResolverCallbackChanged_WithNullCallback_ShouldThrowNullReferenceException() =>
-
-        // InternalLocator doesn't validate null parameter, so it throws NullReferenceException
         await Assert.That(() => _locator.RegisterResolverCallbackChanged(null!)).ThrowsExactly<NullReferenceException>();
 
     /// <summary>Verifies that RegisterResolverCallbackChanged invokes the callback immediately.</summary>

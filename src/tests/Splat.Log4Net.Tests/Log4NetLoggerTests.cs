@@ -2,8 +2,6 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System.Diagnostics.CodeAnalysis;
-
 using Splat.Log4Net;
 using Splat.Tests.Mocks;
 
@@ -36,7 +34,6 @@ public class Log4NetLoggerTests : FullLoggerTestBase
     private log4net.Appender.MemoryAppender? _currentAppender;
 
     /// <summary>Set up clean state before each test to prevent state leakage.</summary>
-    [SuppressMessage("Design", "SST2326:Concrete type narrowing", Justification = "Test needs the concrete log4net Hierarchy to reach Root, which ILoggerRepository does not expose.")]
     [Before(HookType.Test)]
     public void SetupTest()
     {
@@ -73,20 +70,12 @@ public class Log4NetLoggerTests : FullLoggerTestBase
     }
 
     /// <inheritdoc/>
-    [SuppressMessage("Design", "SST2326:Concrete type narrowing", Justification = "Test needs the concrete log4net Hierarchy to reach Root, which ILoggerRepository does not expose.")]
     protected override (IFullLogger logger, IMockLogTarget mockTarget) GetLogger(LogLevel minimumLogLevel)
     {
         _hierarchy = (Hierarchy)LogManager.GetRepository(GetType().Assembly);
 
         // Configure the repository with appender
-        var memoryAppender = new log4net.Appender.MemoryAppender
-        {
-            Threshold = _splat2log4net[minimumLogLevel],
-            Layout = new PatternLayout
-            {
-                ConversionPattern = "%m %exception",
-            },
-        };
+        var memoryAppender = new log4net.Appender.MemoryAppender { Threshold = _splat2log4net[minimumLogLevel], Layout = new PatternLayout { ConversionPattern = "%m %exception", }, };
 
         memoryAppender.ActivateOptions();
         _currentAppender = memoryAppender;

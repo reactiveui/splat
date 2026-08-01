@@ -56,11 +56,7 @@ internal static class PlatformBitmapLoaderHelpers
         }
         else
         {
-            using var opts = new BitmapFactory.Options
-            {
-                OutWidth = (int)desiredWidth.Value,
-                OutHeight = (int)desiredHeight.Value,
-            };
+            using var opts = new BitmapFactory.Options { OutWidth = (int)desiredWidth.Value, OutHeight = (int)desiredHeight.Value };
 
             using var noPadding = new Rect(0, 0, 0, 0);
             bitmap = await Task.Run(() => BitmapFactory.DecodeStream(sourceStream, noPadding, opts)).ConfigureAwait(true);

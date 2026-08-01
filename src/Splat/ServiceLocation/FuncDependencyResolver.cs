@@ -65,6 +65,10 @@ public class FuncDependencyResolver(
     private readonly List<Action> _disposalActions = new(16);
 
     /// <summary>Optional inner disposable provided at construction, disposed when this resolver is disposed.</summary>
+    [SuppressMessage(
+        "Usage",
+        "CA2213:Disposable fields should be disposed",
+        Justification = "Disposed through an Interlocked.Exchange in Dispose so that a concurrent second dispose cannot repeat it.")]
     private IDisposable _inner = toDispose ?? EmptyDisposable.Instance;
 
     /// <summary>Tracks whether this resolver has been disposed.</summary>

@@ -67,9 +67,7 @@ public class ContractContainerTests
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task HasRegistrations_WhenEmpty_ReturnsFalse() =>
-
-        // Act & Assert
-        await Assert.That(ContractContainer<string>.HasRegistrations(Contract1)).IsFalse();
+        await Assert.That(ContractContainer<string>.HasRegistrations(Contract1)).IsFalse(); // Act & Assert
 
     /// <summary>Tests that has registrations after adding returns true.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -414,9 +412,7 @@ public class ContractContainerTests
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
     public async Task ClearAll_WhenEmpty_DoesNotThrow() =>
-
-        // Act & Assert - should not throw
-        ContractContainer<string>.ClearAll();
+        ContractContainer<string>.ClearAll(); // Act & Assert - should not throw
 
     /// <summary>Tests that contract container different types are isolated.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>

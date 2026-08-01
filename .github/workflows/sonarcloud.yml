@@ -19,7 +19,9 @@ jobs:
       sonarOrganization: reactiveui
       sonarExclusions: '**/tests/**,**/Benchmarks/**,**/benchmarks/**,**/TestResults/**'
       sonarCoverageExclusions: '**/tests/**,**/Benchmarks/**,**/benchmarks/**,**/*Tests/**,**/*Tests.cs,**/Polyfills/**,**/Generated/**'
-      sonarCpdExclusions: '**/tests/**,**/Benchmarks/**,**/benchmarks/**,**/Polyfills/**'
+      # *.TypedArguments.cs holds the overload matrix each logging contract dictates - one overload per
+      # argument count, per level - so the repetition is the contract, not a copy that should be shared.
+      sonarCpdExclusions: '**/tests/**,**/Benchmarks/**,**/benchmarks/**,**/Polyfills/**,**/*.TypedArguments.cs'
       sonarTestExclusions: '**/tests/**,**/Benchmarks/**,**/benchmarks/**'
       testTimeout: '15m'
     secrets:

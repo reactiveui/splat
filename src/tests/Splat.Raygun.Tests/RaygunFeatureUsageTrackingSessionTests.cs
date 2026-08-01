@@ -17,10 +17,7 @@ public static class RaygunFeatureUsageTrackingSessionTests
     private static RaygunFeatureUsageTrackingSession GetRaygunFeatureUsageTrackingSession(string featureName)
     {
         var apiKey = string.Empty;
-        var raygunSettings = new RaygunSettings
-        {
-            ApiKey = apiKey,
-        };
+        var raygunSettings = new RaygunSettings { ApiKey = apiKey, };
 
         var raygunClient = new RaygunClient(raygunSettings);
 

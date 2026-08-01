@@ -25,7 +25,7 @@ public sealed partial class NLogLogger : IFullLogger, IDisposable
 #if NET5_0_OR_GREATER
     private static readonly LogLevel[] _allLogLevels = Enum.GetValues<LogLevel>();
 #else
-    private static readonly LogLevel[] _allLogLevels = [.. Enum.GetValues(typeof(LogLevel)).Cast<LogLevel>()];
+    private static readonly LogLevel[] _allLogLevels = BuildAllLogLevels();
 #endif
 
     /// <summary>The underlying NLog logger that messages are forwarded to.</summary>
@@ -142,26 +142,6 @@ public sealed partial class NLogLogger : IFullLogger, IDisposable
     public void Debug<T>(string message, params object[] args) => LogResolver.Resolve(typeof(T)).Debug(CultureInfo.InvariantCulture, message, args);
 
     /// <inheritdoc/>
-    public void Debug<TArgument>(IFormatProvider formatProvider, string message, TArgument argument) => _logger.Debug(formatProvider, message, argument);
-
-    /// <inheritdoc/>
-    public void Debug<TArgument1, TArgument2>(
-        IFormatProvider formatProvider,
-        string message,
-        TArgument1 argument1,
-        TArgument2 argument2)
-        => _logger.Debug(formatProvider, message, argument1, argument2);
-
-    /// <inheritdoc/>
-    public void Debug<TArgument1, TArgument2, TArgument3>(
-        IFormatProvider formatProvider,
-        string message,
-        TArgument1 argument1,
-        TArgument2 argument2,
-        TArgument3 argument3)
-        => _logger.Debug(formatProvider, message, argument1, argument2, argument3);
-
-    /// <inheritdoc/>
     public void DebugException(string? message, Exception exception) => _logger.Debug(exception, message ?? string.Empty);
 
     /// <inheritdoc />
@@ -240,21 +220,6 @@ public sealed partial class NLogLogger : IFullLogger, IDisposable
 
     /// <inheritdoc/>
     public void Info<T>(string message, params object[] args) => LogResolver.Resolve(typeof(T)).Info(CultureInfo.InvariantCulture, message, args);
-
-    /// <inheritdoc/>
-    public void Info<TArgument>(IFormatProvider formatProvider, string message, TArgument argument) => _logger.Info(formatProvider, message, argument);
-
-    /// <inheritdoc/>
-    public void Info<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) => _logger.Info(formatProvider, message, argument1, argument2);
-
-    /// <inheritdoc/>
-    public void Info<TArgument1, TArgument2, TArgument3>(
-        IFormatProvider formatProvider,
-        string message,
-        TArgument1 argument1,
-        TArgument2 argument2,
-        TArgument3 argument3)
-        => _logger.Info(formatProvider, message, argument1, argument2, argument3);
 
     /// <inheritdoc/>
     public void InfoException(string? message, Exception exception) => _logger.Info(exception, message ?? string.Empty);
@@ -337,21 +302,6 @@ public sealed partial class NLogLogger : IFullLogger, IDisposable
     public void Warn<T>(string message, params object[] args) => LogResolver.Resolve(typeof(T)).Warn(CultureInfo.InvariantCulture, message, args);
 
     /// <inheritdoc/>
-    public void Warn<TArgument>(IFormatProvider formatProvider, string message, TArgument argument) => _logger.Warn(formatProvider, message, argument);
-
-    /// <inheritdoc/>
-    public void Warn<TArgument1, TArgument2>(IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) => _logger.Warn(formatProvider, message, argument1, argument2);
-
-    /// <inheritdoc/>
-    public void Warn<TArgument1, TArgument2, TArgument3>(
-        IFormatProvider formatProvider,
-        string message,
-        TArgument1 argument1,
-        TArgument2 argument2,
-        TArgument3 argument3)
-        => _logger.Warn(formatProvider, message, argument1, argument2, argument3);
-
-    /// <inheritdoc/>
     public void WarnException(string? message, Exception exception) => _logger.Warn(exception, message ?? string.Empty);
 
     /// <inheritdoc />
@@ -430,26 +380,6 @@ public sealed partial class NLogLogger : IFullLogger, IDisposable
 
     /// <inheritdoc/>
     public void Error<T>(string message, params object[] args) => LogResolver.Resolve(typeof(T)).Error(CultureInfo.InvariantCulture, message, args);
-
-    /// <inheritdoc/>
-    public void Error<TArgument>(IFormatProvider formatProvider, string message, TArgument argument) => _logger.Error(formatProvider, message, argument);
-
-    /// <inheritdoc/>
-    public void Error<TArgument1, TArgument2>(
-        IFormatProvider formatProvider,
-        string message,
-        TArgument1 argument1,
-        TArgument2 argument2)
-        => _logger.Error(formatProvider, message, argument1, argument2);
-
-    /// <inheritdoc/>
-    public void Error<TArgument1, TArgument2, TArgument3>(
-        IFormatProvider formatProvider,
-        string message,
-        TArgument1 argument1,
-        TArgument2 argument2,
-        TArgument3 argument3)
-        => _logger.Error(formatProvider, message, argument1, argument2, argument3);
 
     /// <inheritdoc/>
     public void ErrorException(string? message, Exception exception) => _logger.Error(exception, message ?? string.Empty);
@@ -532,26 +462,6 @@ public sealed partial class NLogLogger : IFullLogger, IDisposable
     public void Fatal<T>(string message, params object[] args) => LogResolver.Resolve(typeof(T)).Fatal(CultureInfo.InvariantCulture, message, args);
 
     /// <inheritdoc/>
-    public void Fatal<TArgument>(IFormatProvider formatProvider, string message, TArgument argument) => _logger.Fatal(formatProvider, message, argument);
-
-    /// <inheritdoc/>
-    public void Fatal<TArgument1, TArgument2>(
-        IFormatProvider formatProvider,
-        string message,
-        TArgument1 argument1,
-        TArgument2 argument2)
-        => _logger.Fatal(formatProvider, message, argument1, argument2);
-
-    /// <inheritdoc/>
-    public void Fatal<TArgument1, TArgument2, TArgument3>(
-        IFormatProvider formatProvider,
-        string message,
-        TArgument1 argument1,
-        TArgument2 argument2,
-        TArgument3 argument3)
-        => _logger.Fatal(formatProvider, message, argument1, argument2, argument3);
-
-    /// <inheritdoc/>
     public void FatalException(string? message, Exception exception) => _logger.Fatal(exception, message ?? string.Empty);
 
     /// <inheritdoc />
@@ -567,6 +477,22 @@ public sealed partial class NLogLogger : IFullLogger, IDisposable
 
         _logger.Fatal(exception, function.Invoke());
     }
+
+#if !NET5_0_OR_GREATER
+    /// <summary>Reads the defined <see cref="LogLevel"/> values on targets without the generic Enum.GetValues.</summary>
+    /// <returns>Every defined log level.</returns>
+    private static LogLevel[] BuildAllLogLevels()
+    {
+        var values = Enum.GetValues(typeof(LogLevel));
+        var levels = new LogLevel[values.Length];
+        for (var i = 0; i < values.Length; i++)
+        {
+            levels[i] = (LogLevel)values.GetValue(i)!;
+        }
+
+        return levels;
+    }
+#endif
 
     /// <summary>Maps a Splat <see cref="LogLevel"/> to the equivalent NLog log level.</summary>
     /// <param name="logLevel">The Splat log level to translate.</param>

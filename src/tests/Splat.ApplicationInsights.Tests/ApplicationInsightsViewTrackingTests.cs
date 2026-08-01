@@ -18,10 +18,7 @@ public static class ApplicationInsightsViewTrackingTests
         /// <inheritdoc/>
         protected override ApplicationInsightsViewTracking GetViewTracking()
         {
-            var telemetryConfiguration = new TelemetryConfiguration
-            {
-                DisableTelemetry = true,
-            };
+            var telemetryConfiguration = new TelemetryConfiguration { DisableTelemetry = true, };
             var telemetryClient = new TelemetryClient(telemetryConfiguration);
 
             return new(telemetryClient);

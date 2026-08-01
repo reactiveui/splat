@@ -184,18 +184,7 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
         serviceType ??= NullServiceType.CachedType;
 
         // this is to deal with CS8613 that GetServices returns IEnumerable<object?>?
-        IEnumerable<object> services = ServiceProvider.GetServices(serviceType)
-            .Where(static a => a is not null)
-            .Select(static a => a!);
-
-        if (isNull)
-        {
-            services = services
-                .Cast<NullServiceType>()
-                .Select(static nst => nst.Factory()!);
-        }
-
-        return services;
+        return Project(ServiceProvider.GetServices(serviceType), isNull);
     }
 
     /// <inheritdoc />
@@ -209,23 +198,9 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
         var isNull = serviceType is null;
         serviceType ??= NullServiceType.CachedType;
 
-        IEnumerable<object> services = [];
-
-        if (ServiceProvider is IKeyedServiceProvider serviceProvider)
-        {
-            services = serviceProvider.GetKeyedServices(serviceType, contract)
-                .Where(static a => a is not null)
-                .Select(static a => a!);
-        }
-
-        if (isNull)
-        {
-            services = services
-                .Cast<NullServiceType>()
-                .Select(static nst => nst.Factory()!);
-        }
-
-        return services;
+        return ServiceProvider is IKeyedServiceProvider serviceProvider
+            ? Project(serviceProvider.GetKeyedServices(serviceType, contract), isNull)
+            : [];
     }
 
     /// <inheritdoc/>
@@ -427,9 +402,9 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
         {
             // A null collection would mean the container was already built from a provider and became immutable,
             // a state rejected above, so the null-conditional simply keeps the nullable analyzer satisfied.
-            foreach (var sd in _serviceCollection?.Where(s => !s.IsKeyedService && s.ServiceType == serviceType).ToList() ?? [])
+            foreach (var descriptor in CollectUnkeyedDescriptors(serviceType))
             {
-                _ = _serviceCollection!.Remove(sd);
+                _ = _serviceCollection!.Remove(descriptor);
             }
 
             // required so that it gets rebuilt if not injected externally.
@@ -464,9 +439,9 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
         {
             // A null collection would mean the container was already built from a provider and became immutable,
             // a state rejected above, so the null-conditional simply keeps the nullable analyzer satisfied.
-            foreach (var sd in _serviceCollection?.Where(sd => MatchesKeyedContract(serviceType, contract, sd)).ToList() ?? [])
+            foreach (var descriptor in CollectKeyedDescriptors(serviceType, contract))
             {
-                _ = _serviceCollection!.Remove(sd);
+                _ = _serviceCollection!.Remove(descriptor);
             }
 
             // required so that it gets rebuilt if not injected externally.
@@ -679,4 +654,63 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
         sd.ServiceType == serviceType
         && sd is { IsKeyedService: true, ServiceKey: string serviceKey }
         && serviceKey == contract;
+
+    /// <summary>Drops the nulls the container may return and, for the null service type, invokes the recorded factories.</summary>
+    /// <param name="resolved">The instances the container resolved.</param>
+    /// <param name="isNull">Whether the caller asked for the null service type.</param>
+    /// <returns>The service instances.</returns>
+    private static List<object> Project(IEnumerable<object?> resolved, bool isNull)
+    {
+        var services = new List<object>();
+        foreach (var service in resolved)
+        {
+            if (service is null)
+            {
+                continue;
+            }
+
+            services.Add(isNull ? ((NullServiceType)service).Factory()! : service);
+        }
+
+        return services;
+    }
+
+    /// <summary>Copies out the unkeyed descriptors for a service type so the collection can be mutated while removing them.</summary>
+    /// <param name="serviceType">The service type to match.</param>
+    /// <returns>The matching descriptors.</returns>
+    private List<ServiceDescriptor> CollectUnkeyedDescriptors(Type? serviceType)
+    {
+        // A null collection would mean the container was already built from a provider and became
+        // immutable, a state the caller rejects before reaching here.
+        var matches = new List<ServiceDescriptor>();
+        foreach (var descriptor in _serviceCollection!)
+        {
+            if (!descriptor.IsKeyedService && descriptor.ServiceType == serviceType)
+            {
+                matches.Add(descriptor);
+            }
+        }
+
+        return matches;
+    }
+
+    /// <summary>Copies out the descriptors registered under a contract so the collection can be mutated while removing them.</summary>
+    /// <param name="serviceType">The service type to match.</param>
+    /// <param name="contract">The contract the descriptor is keyed under.</param>
+    /// <returns>The matching descriptors.</returns>
+    private List<ServiceDescriptor> CollectKeyedDescriptors(Type? serviceType, string? contract)
+    {
+        // A null collection would mean the container was already built from a provider and became
+        // immutable, a state the caller rejects before reaching here.
+        var matches = new List<ServiceDescriptor>();
+        foreach (var descriptor in _serviceCollection!)
+        {
+            if (MatchesKeyedContract(serviceType, contract, descriptor))
+            {
+                matches.Add(descriptor);
+            }
+        }
+
+        return matches;
+    }
 }

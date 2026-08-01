@@ -755,11 +755,7 @@ public class CoreAotCompatibilityTests
     {
         using var resolver = new InstanceGenericFirstDependencyResolver();
 
-        resolver.Register<IEnumerable<ITestInterface>>(static () => new List<ITestInterface>
-        {
-            new TestImplementation(),
-            new AlternateTestImplementation()
-        });
+        resolver.Register<IEnumerable<ITestInterface>>(static () => new List<ITestInterface> { new TestImplementation(), new AlternateTestImplementation() });
 
         resolver.Register<Func<ITestInterface>>(static () => static () => new TestImplementation());
         resolver.Register(static () => new Lazy<ILogger>(static () => new DebugLogger()));

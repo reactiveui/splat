@@ -69,6 +69,21 @@ public sealed class ExceptionlessSplatLoggerLevelTests
         await Assert.That(logger.Level).IsEqualTo(LogLevel.Error);
     }
 
+    /// <summary>Verifies a configured level with no Splat equivalent leaves the effective level where it was.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task Reconfiguration_ToLevelWithoutSplatEquivalent_KeepsPreviousLevel()
+    {
+        var (logger, _, client) = CreateLogger(global::Exceptionless.Logging.LogLevel.Warn);
+        await Assert.That(logger.Level).IsEqualTo(LogLevel.Warn);
+
+        // Trace has no Splat counterpart, so the level lookup finds no match.
+        client.Configuration.Settings[WildcardLogLevelKey] = global::Exceptionless.Logging.LogLevel.Trace.ToString();
+        client.Configuration.ApiKey = "trace-api-key";
+
+        await Assert.That(logger.Level).IsEqualTo(LogLevel.Warn);
+    }
+
     /// <summary>Builds a logger whose submitted log events are captured and never sent to the network.</summary>
     /// <param name="minLevel">The minimum Exceptionless log level to configure.</param>
     /// <returns>The logger, the list of captured (source, message) pairs, and the client backing it.</returns>

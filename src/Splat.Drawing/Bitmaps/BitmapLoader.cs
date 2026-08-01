@@ -2,8 +2,6 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Splat;
 
 /// <summary>Provides access to the current bitmap loader used for loading bitmap images within the application.</summary>
@@ -24,7 +22,6 @@ public static class BitmapLoader
     /// property replaces the current default loader for all subsequent bitmap loading operations. Typically, this is
     /// configured during application startup and should not be changed at runtime unless reconfiguring the dependency
     /// resolver.</remarks>
-    [SuppressMessage("Design", "CA1065: Do not raise exceptions in properties", Justification = "Very rare scenario")]
     public static IBitmapLoader Current
     {
         get

@@ -30,10 +30,7 @@ public class NLogLoggerTests : FullLoggerTestBase
     {
         var configuration = new LoggingConfiguration();
 
-        var errorTarget = new MemoryTargetWrapper
-        {
-            Layout = "${message} ${exception:format=tostring}",
-        };
+        var errorTarget = new MemoryTargetWrapper { Layout = "${message} ${exception:format=tostring}", };
 
         configuration.AddTarget(errorTarget);
         var errorLoggingRule = new LoggingRule("*", _splat2NLog[minimumLogLevel], errorTarget);

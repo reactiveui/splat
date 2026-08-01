@@ -5,24 +5,23 @@
 #if !NET
 
 using System.Diagnostics;
+using Targets = System.AttributeTargets;
 
 namespace System.Diagnostics.CodeAnalysis;
-
-using Targets = AttributeTargets;
 
 /// <summary>Indicates that certain members on a specified <see cref="Type"/> are accessed dynamically, for example through <see cref="System.Reflection"/>.</summary>
 [ExcludeFromCodeCoverage]
 [DebuggerNonUserCode]
 [AttributeUsage(
-    validOn: Targets.Class |
-             Targets.Field |
-             Targets.GenericParameter |
-             Targets.Interface |
-             Targets.Method |
-             Targets.Parameter |
-             Targets.Property |
-             Targets.ReturnValue |
-             Targets.Struct,
+    validOn: Targets.Class
+             | Targets.Field
+             | Targets.GenericParameter
+             | Targets.Interface
+             | Targets.Method
+             | Targets.Parameter
+             | Targets.Property
+             | Targets.ReturnValue
+             | Targets.Struct,
     Inherited = false)]
 [SuppressMessage(
     "Design",

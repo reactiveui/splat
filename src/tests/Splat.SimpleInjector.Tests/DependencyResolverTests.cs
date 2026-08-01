@@ -761,6 +761,47 @@ public class DependencyResolverTests
         await Assert.That(services).Count().IsEqualTo(expectedCount);
     }
 
+    /// <summary>The resolver's generic GetServices should return the container's registrations typed.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SimpleInjectorDependencyResolver_GetServicesGeneric_ReturnsTypedRegistrations()
+    {
+        const int expectedCount = 1;
+        var container = new Container();
+        container.RegisterSingleton<IScreen, MockScreen>();
+        using var resolver = new SimpleInjectorDependencyResolver(container, new SimpleInjectorInitializer());
+
+        var services = resolver.GetServices<IScreen>().ToList();
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(services).Count().IsEqualTo(expectedCount);
+            await Assert.That(services[0]).IsTypeOf<MockScreen>();
+        }
+    }
+
+    /// <summary>The initializer should report no service when the registered factory list for a type is empty.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SimpleInjectorInitializer_GetServiceByType_WithEmptyFactoryList_ReturnsNull()
+    {
+        var initializer = new SimpleInjectorInitializer();
+        initializer.RegisteredFactories[typeof(IScreen)] = [];
+
+        await Assert.That(initializer.GetService(typeof(IScreen))).IsNull();
+    }
+
+    /// <summary>The initializer's generic GetService should report no service when the registered factory list is empty.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SimpleInjectorInitializer_GetServiceGeneric_WithEmptyFactoryList_ReturnsDefault()
+    {
+        var initializer = new SimpleInjectorInitializer();
+        initializer.RegisteredFactories[typeof(IScreen)] = [];
+
+        await Assert.That(initializer.GetService<IScreen>()).IsNull();
+    }
+
     /// <summary>The resolver's non-generic HasRegistration should reflect whether the container has a registration for a type.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -994,8 +1035,7 @@ public class DependencyResolverTests
     /// <summary>Test-only resolver that exposes the protected dispose to exercise the non-managed dispose branch.</summary>
     /// <param name="container">The container the resolver adapts.</param>
     /// <param name="initializer">The initializer supplying the factory registrations.</param>
-    private sealed class DisposeProbeResolver(Container container, SimpleInjectorInitializer initializer)
-        : SimpleInjectorDependencyResolver(container, initializer)
+    private sealed class DisposeProbeResolver(Container container, SimpleInjectorInitializer initializer) : SimpleInjectorDependencyResolver(container, initializer)
     {
         /// <summary>Invokes the protected dispose with the supplied flag.</summary>
         /// <param name="disposing">Whether managed resources should be released.</param>

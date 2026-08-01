@@ -30,23 +30,23 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     public virtual object? GetService(Type? serviceType)
     {
         ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
-        return GetServices(serviceType).LastOrDefault()!;
+        return Last(GetServices(serviceType))!;
     }
 
     /// <inheritdoc />
     public virtual object? GetService(Type? serviceType, string? contract)
     {
         ObjectDisposedExceptionHelper.ThrowIf(Volatile.Read(ref _isDisposed) != 0, this);
-        return GetServices(serviceType, contract).LastOrDefault()!;
+        return Last(GetServices(serviceType, contract))!;
     }
 
     /// <inheritdoc/>
     public T? GetService<T>() =>
-        GetServices<T>().LastOrDefault();
+        Last(GetServices<T>());
 
     /// <inheritdoc/>
     public T? GetService<T>(string? contract) =>
-        GetServices<T>(contract).LastOrDefault();
+        Last(GetServices<T>(contract));
 
     /// <inheritdoc />
     public virtual IEnumerable<object> GetServices(Type? serviceType)
@@ -55,20 +55,15 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
         try
         {
-            // Get all bindings and filter by metadata to avoid implicit self-binding issues
-            var matchingBindings = kernel.GetBindings(serviceType)
-                .Where(static b => IsCorrectMetadata(b.BindingConfiguration.Metadata, null))
-                .ToList();
-
-            if (matchingBindings.Count == 0)
+            // Filter the bindings by metadata to avoid implicit self-binding issues, resolving each one individually
+            var results = new List<object>();
+            foreach (var binding in kernel.GetBindings(serviceType))
             {
-                return [];
-            }
+                if (!IsCorrectMetadata(binding.BindingConfiguration.Metadata, null))
+                {
+                    continue;
+                }
 
-            // Resolve each binding individually
-            var results = new List<object>(matchingBindings.Count);
-            foreach (var binding in matchingBindings)
-            {
                 try
                 {
                     var instance = kernel.Get(serviceType, meta => meta.Equals(binding.BindingConfiguration.Metadata));
@@ -98,20 +93,15 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
 
         try
         {
-            // Get all bindings and filter by metadata to avoid implicit self-binding issues
-            var matchingBindings = kernel.GetBindings(serviceType)
-                .Where(b => IsCorrectMetadata(b.BindingConfiguration.Metadata, contract))
-                .ToList();
-
-            if (matchingBindings.Count == 0)
+            // Filter the bindings by metadata to avoid implicit self-binding issues, resolving each one individually
+            var results = new List<object>();
+            foreach (var binding in kernel.GetBindings(serviceType))
             {
-                return [];
-            }
+                if (!IsCorrectMetadata(binding.BindingConfiguration.Metadata, contract))
+                {
+                    continue;
+                }
 
-            // Resolve each binding individually
-            var results = new List<object>(matchingBindings.Count);
-            foreach (var binding in matchingBindings)
-            {
                 try
                 {
                     var instance = kernel.Get(serviceType, meta => meta.Equals(binding.BindingConfiguration.Metadata));
@@ -139,20 +129,15 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         try
         {
-            // Get all bindings and filter by metadata to avoid implicit self-binding issues
-            var matchingBindings = kernel.GetBindings(typeof(T))
-                .Where(static b => IsCorrectMetadata(b.BindingConfiguration.Metadata, null))
-                .ToList();
-
-            if (matchingBindings.Count == 0)
+            // Filter the bindings by metadata to avoid implicit self-binding issues, resolving each one individually using the generic method
+            var results = new List<T>();
+            foreach (var binding in kernel.GetBindings(typeof(T)))
             {
-                return [];
-            }
+                if (!IsCorrectMetadata(binding.BindingConfiguration.Metadata, null))
+                {
+                    continue;
+                }
 
-            // Resolve each binding individually using generic method
-            var results = new List<T>(matchingBindings.Count);
-            foreach (var binding in matchingBindings)
-            {
                 try
                 {
                     var instance = kernel.Get<T>(meta => meta.Equals(binding.BindingConfiguration.Metadata));
@@ -180,20 +165,15 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         try
         {
-            // Get all bindings and filter by metadata to avoid implicit self-binding issues
-            var matchingBindings = kernel.GetBindings(typeof(T))
-                .Where(b => IsCorrectMetadata(b.BindingConfiguration.Metadata, contract))
-                .ToList();
-
-            if (matchingBindings.Count == 0)
+            // Filter the bindings by metadata to avoid implicit self-binding issues, resolving each one individually using the generic method
+            var results = new List<T>();
+            foreach (var binding in kernel.GetBindings(typeof(T)))
             {
-                return [];
-            }
+                if (!IsCorrectMetadata(binding.BindingConfiguration.Metadata, contract))
+                {
+                    continue;
+                }
 
-            // Resolve each binding individually using generic method
-            var results = new List<T>(matchingBindings.Count);
-            foreach (var binding in matchingBindings)
-            {
                 try
                 {
                     var instance = kernel.Get<T>(meta => meta.Equals(binding.BindingConfiguration.Metadata));
@@ -356,14 +336,14 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         serviceType ??= NullServiceType.CachedType;
 
-        var bindings = kernel.GetBindings(serviceType).ToArray();
-
-        if (bindings.Length < 1)
+        global::Ninject.Planning.Bindings.IBinding? matchingBinding = null;
+        foreach (var binding in kernel.GetBindings(serviceType))
         {
-            return;
+            if (IsCorrectMetadata(binding.BindingConfiguration.Metadata, null))
+            {
+                matchingBinding = binding;
+            }
         }
-
-        var matchingBinding = bindings.LastOrDefault(static x => IsCorrectMetadata(x.BindingConfiguration.Metadata, null));
 
         if (matchingBinding is null)
         {
@@ -378,14 +358,14 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         serviceType ??= NullServiceType.CachedType;
 
-        var bindings = kernel.GetBindings(serviceType).ToArray();
-
-        if (bindings.Length < 1)
+        global::Ninject.Planning.Bindings.IBinding? matchingBinding = null;
+        foreach (var binding in kernel.GetBindings(serviceType))
         {
-            return;
+            if (IsCorrectMetadata(binding.BindingConfiguration.Metadata, contract))
+            {
+                matchingBinding = binding;
+            }
         }
-
-        var matchingBinding = bindings.LastOrDefault(x => IsCorrectMetadata(x.BindingConfiguration.Metadata, contract));
 
         if (matchingBinding is null)
         {
@@ -408,21 +388,16 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         serviceType ??= NullServiceType.CachedType;
 
-        var bindings = kernel.GetBindings(serviceType).ToArray();
-
-        if (bindings.Length < 1)
+        var matchingBindings = new List<global::Ninject.Planning.Bindings.IBinding>();
+        foreach (var binding in kernel.GetBindings(serviceType))
         {
-            return;
+            if (IsCorrectMetadata(binding.BindingConfiguration.Metadata, null))
+            {
+                matchingBindings.Add(binding);
+            }
         }
 
-        var matchingBinding = bindings.Where(static x => IsCorrectMetadata(x.BindingConfiguration.Metadata, null)).ToArray();
-
-        if (matchingBinding.Length < 1)
-        {
-            return;
-        }
-
-        foreach (var binding in matchingBinding)
+        foreach (var binding in matchingBindings)
         {
             kernel.RemoveBinding(binding);
         }
@@ -433,21 +408,16 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     {
         serviceType ??= NullServiceType.CachedType;
 
-        var bindings = kernel.GetBindings(serviceType).ToArray();
-
-        if (bindings.Length < 1)
+        var matchingBindings = new List<global::Ninject.Planning.Bindings.IBinding>();
+        foreach (var binding in kernel.GetBindings(serviceType))
         {
-            return;
+            if (IsCorrectMetadata(binding.BindingConfiguration.Metadata, contract))
+            {
+                matchingBindings.Add(binding);
+            }
         }
 
-        var matchingBinding = bindings.Where(x => IsCorrectMetadata(x.BindingConfiguration.Metadata, contract)).ToArray();
-
-        if (matchingBinding.Length < 1)
-        {
-            return;
-        }
-
-        foreach (var binding in matchingBinding)
+        foreach (var binding in matchingBindings)
         {
             kernel.RemoveBinding(binding);
         }
@@ -510,4 +480,19 @@ public class NinjectDependencyResolver(IKernel kernel) : IDependencyResolver
     private static bool IsCorrectMetadata(global::Ninject.Planning.Bindings.IBindingMetadata metadata, string? contract) =>
         (metadata?.Name is null && string.IsNullOrWhiteSpace(contract))
         || (metadata?.Name is not null && metadata.Name.Equals(contract, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>Returns the last registration in the sequence, which is the one that wins.</summary>
+    /// <typeparam name="T">The service type.</typeparam>
+    /// <param name="services">The resolved services, in registration order.</param>
+    /// <returns>The last service, or the default when the sequence is empty.</returns>
+    private static T? Last<T>(IEnumerable<T> services)
+    {
+        var last = default(T);
+        foreach (var service in services)
+        {
+            last = service;
+        }
+
+        return last;
+    }
 }

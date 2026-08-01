@@ -1298,10 +1298,7 @@ public class NLogLoggerCoverageTests
     {
         var configuration = new LoggingConfiguration();
 
-        var errorTarget = new MemoryTargetWrapper
-        {
-            Layout = "${message} ${exception:format=tostring}",
-        };
+        var errorTarget = new MemoryTargetWrapper { Layout = "${message} ${exception:format=tostring}", };
 
         configuration.AddTarget(errorTarget);
         var errorLoggingRule = new LoggingRule("*", _splat2NLog[minimumLogLevel], errorTarget);
@@ -1318,10 +1315,7 @@ public class NLogLoggerCoverageTests
     {
         var configuration = new LoggingConfiguration();
 
-        var errorTarget = new MemoryTargetWrapper
-        {
-            Layout = "${message} ${exception:format=tostring}",
-        };
+        var errorTarget = new MemoryTargetWrapper { Layout = "${message} ${exception:format=tostring}", };
 
         configuration.AddTarget(errorTarget);
         var loggingRule = new LoggingRule("*", global::NLog.LogLevel.Debug, global::NLog.LogLevel.Error, errorTarget);
