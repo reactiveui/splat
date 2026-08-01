@@ -158,6 +158,18 @@ public class MicrosoftDependencyResolverLifecycleTests
         await Assert.That(results).IsEmpty();
     }
 
+    /// <summary>Verifies that a keyed enumeration by type against a provider that is not keyed returns an empty sequence.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task GetServices_ByType_WithContract_NonKeyedProvider_ReturnsEmpty()
+    {
+        await using var resolver = new MicrosoftDependencyResolver(new NonKeyedServiceProvider());
+
+        var results = resolver.GetServices(typeof(ViewModelOne), Contract).ToList();
+
+        await Assert.That(results).IsEmpty();
+    }
+
     /// <summary>Verifies that every mutating method throws once the container has been built and is immutable.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]

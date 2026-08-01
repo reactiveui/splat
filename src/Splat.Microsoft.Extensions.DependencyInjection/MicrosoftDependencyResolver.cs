@@ -680,13 +680,10 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     /// <returns>The matching descriptors.</returns>
     private List<ServiceDescriptor> CollectUnkeyedDescriptors(Type? serviceType)
     {
+        // A null collection would mean the container was already built from a provider and became
+        // immutable, a state the caller rejects before reaching here.
         var matches = new List<ServiceDescriptor>();
-        if (_serviceCollection is null)
-        {
-            return matches;
-        }
-
-        foreach (var descriptor in _serviceCollection)
+        foreach (var descriptor in _serviceCollection!)
         {
             if (!descriptor.IsKeyedService && descriptor.ServiceType == serviceType)
             {
@@ -703,13 +700,10 @@ public class MicrosoftDependencyResolver : IDependencyResolver, IAsyncDisposable
     /// <returns>The matching descriptors.</returns>
     private List<ServiceDescriptor> CollectKeyedDescriptors(Type? serviceType, string? contract)
     {
+        // A null collection would mean the container was already built from a provider and became
+        // immutable, a state the caller rejects before reaching here.
         var matches = new List<ServiceDescriptor>();
-        if (_serviceCollection is null)
-        {
-            return matches;
-        }
-
-        foreach (var descriptor in _serviceCollection)
+        foreach (var descriptor in _serviceCollection!)
         {
             if (MatchesKeyedContract(serviceType, contract, descriptor))
             {
