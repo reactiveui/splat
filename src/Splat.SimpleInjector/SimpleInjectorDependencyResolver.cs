@@ -12,12 +12,29 @@ namespace Splat.SimpleInjector;
 /// Provides an implementation of the IDependencyResolver interface using a SimpleInjector container for dependency
 /// resolution.
 /// </summary>
-/// <remarks>This resolver adapts a SimpleInjector Container to the IDependencyResolver abstraction, enabling
-/// integration with frameworks or components that expect this interface. Contract-based resolution is not natively
-/// supported by SimpleInjector; contract parameters are ignored and treated as standard resolution requests. Service
-/// unregistration and registration callbacks are not supported, as SimpleInjector does not provide mechanisms for
-/// removing registrations or observing registration events after initial configuration. The resolver manages the
-/// lifetime of the underlying container and disposes it when the resolver is disposed.</remarks>
+/// <remarks>
+/// <para>
+/// This resolver adapts a SimpleInjector Container to the IDependencyResolver abstraction, enabling integration with
+/// frameworks or components that expect this interface.
+/// </para>
+/// <para>
+/// SimpleInjector has no keyed registrations, so a contract cannot be expressed inside the container. Contract
+/// registrations are held beside the container instead and are only ever returned to a caller asking for the same
+/// contract; a contract-less lookup never sees them, and two implementations registered under different contracts
+/// stay distinct.
+/// </para>
+/// <para>
+/// Registration goes straight into the container, so anything registered here is also injectable by SimpleInjector.
+/// SimpleInjector locks its container on the first resolution, so a registration attempted after the first service
+/// has been resolved fails with SimpleInjector's own exception. Register everything up front - through
+/// <see cref="SimpleInjectorInitializer"/> or against the container - before resolving.
+/// </para>
+/// <para>
+/// Service unregistration and registration callbacks are not supported, as SimpleInjector does not provide mechanisms
+/// for removing registrations or observing registration events after initial configuration. The resolver manages the
+/// lifetime of the underlying container and disposes it when the resolver is disposed.
+/// </para>
+/// </remarks>
 [SuppressMessage(
     "StyleSharp",
     "SST2307:A generic method's type parameter appears in no parameter, so no caller can infer it",
@@ -26,6 +43,18 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
 {
     /// <summary>The underlying SimpleInjector container used for registration and resolution.</summary>
     private readonly Container _container;
+
+    /// <summary>The factories registered against a contract, which SimpleInjector itself cannot express.</summary>
+    private readonly ContractRegistrations _contractFactories = new();
+
+    /// <summary>Serializes access to <see cref="_collectionServiceTypes"/>.</summary>
+    private readonly Lock _lockObject = new();
+
+    /// <summary>The service types this resolver has added factories to the container's collection for.</summary>
+    /// <remarks>SimpleInjector does not report a collection registration from <c>GetCurrentRegistrations</c> until
+    /// the container has been locked, so these are tracked here to keep <see cref="HasRegistration(Type)"/> honest
+    /// before the first resolution.</remarks>
+    private readonly HashSet<Type> _collectionServiceTypes = [];
 
     /// <summary>Initializes a new instance of the <see cref="SimpleInjectorDependencyResolver"/> class.</summary>
     /// <param name="container">The container.</param>
@@ -67,15 +96,25 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
 
     /// <inheritdoc />
     public object? GetService(Type? serviceType, string? contract) =>
-        GetService(serviceType); // SimpleInjector doesn't natively support contracts, so we treat contract-based calls the same as non-contract
+        contract is null
+            ? GetService(serviceType)
+            : _contractFactories.ResolveLast(serviceType ?? NullServiceType.CachedType, contract);
 
     /// <inheritdoc/>
     public T? GetService<T>() =>
         (T?)GetService(typeof(T)); // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
 
     /// <inheritdoc/>
-    public T? GetService<T>(string? contract) =>
-        (T?)GetService(typeof(T), contract); // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
+    public T? GetService<T>(string? contract)
+    {
+        if (contract is null)
+        {
+            return GetService<T>();
+        }
+
+        var service = _contractFactories.ResolveLast(typeof(T), contract);
+        return service is null ? default : (T?)service;
+    }
 
     /// <inheritdoc />
     public IEnumerable<object> GetServices(Type? serviceType)
@@ -98,7 +137,9 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
 
     /// <inheritdoc />
     public IEnumerable<object> GetServices(Type? serviceType, string? contract) =>
-        GetServices(serviceType); // SimpleInjector doesn't natively support contracts, so we treat contract-based calls the same as non-contract
+        contract is null
+            ? GetServices(serviceType)
+            : _contractFactories.ResolveAll(serviceType ?? NullServiceType.CachedType, contract);
 
     /// <inheritdoc/>
     /// <remarks>SimpleInjector's generic methods require a class constraint, so the non-generic overload does the work.</remarks>
@@ -125,12 +166,22 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     {
         serviceType ??= NullServiceType.CachedType;
 
+        lock (_lockObject)
+        {
+            if (_collectionServiceTypes.Contains(serviceType))
+            {
+                return true;
+            }
+        }
+
         return Array.Exists(_container.GetCurrentRegistrations(), x => x.ServiceType == serviceType);
     }
 
     /// <inheritdoc />
     public bool HasRegistration(Type? serviceType, string? contract) =>
-        HasRegistration(serviceType); // SimpleInjector doesn't natively support contracts, so we treat contract-based calls the same as non-contract
+        contract is null
+            ? HasRegistration(serviceType)
+            : _contractFactories.Contains(serviceType ?? NullServiceType.CachedType, contract);
 
     /// <inheritdoc/>
     public bool HasRegistration<T>() =>
@@ -138,29 +189,65 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
 
     /// <inheritdoc/>
     public bool HasRegistration<T>(string? contract) =>
-        HasRegistration(typeof(T), contract);
+        contract is null ? HasRegistration<T>() : _contractFactories.Contains(typeof(T), contract);
 
     /// <inheritdoc />
+    /// <exception cref="InvalidOperationException">The container has already resolved a service and can no longer be changed.</exception>
     public void Register(Func<object?> factory, Type? serviceType)
     {
-        // The function does nothing because there should be no registration called on this object.
-        // Anyway, AppLocator.SetLocator performs some unnecessary registrations.
+        ArgumentExceptionHelper.ThrowIfNull(factory);
+
+        var isNull = serviceType is null;
+        serviceType ??= NullServiceType.CachedType;
+
+        AppendToCollection(
+            serviceType,
+            isNull
+                ? () => new NullServiceType(factory)
+                : factory);
     }
 
     /// <inheritdoc />
     public void Register(Func<object?> factory, Type? serviceType, string? contract)
     {
-        // The function does nothing because there should be no registration called on this object.
-        // Anyway, AppLocator.SetLocator performs some unnecessary registrations.
+        if (contract is null)
+        {
+            Register(factory, serviceType);
+            return;
+        }
+
+        ArgumentExceptionHelper.ThrowIfNull(factory);
+
+        var isNull = serviceType is null;
+
+        _contractFactories.Add(
+            serviceType ?? NullServiceType.CachedType,
+            contract,
+            () => isNull ? new NullServiceType(factory) : factory());
     }
 
     /// <inheritdoc/>
-    public void Register<T>(Func<T?> factory) =>
-        Register(() => factory(), typeof(T)); // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
+    public void Register<T>(Func<T?> factory)
+    {
+        ArgumentExceptionHelper.ThrowIfNull(factory);
+
+        // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
+        Register(() => factory(), typeof(T));
+    }
 
     /// <inheritdoc/>
-    public void Register<T>(Func<T?> factory, string? contract) =>
-        Register(() => factory(), typeof(T), contract); // SimpleInjector's generic methods require class constraint, so we always use the non-generic version
+    public void Register<T>(Func<T?> factory, string? contract)
+    {
+        if (contract is null)
+        {
+            Register(factory);
+            return;
+        }
+
+        ArgumentExceptionHelper.ThrowIfNull(factory);
+
+        _contractFactories.Add(typeof(T), contract, () => factory());
+    }
 
     /// <inheritdoc/>
     public void Register<TService, TImplementation>()
@@ -171,8 +258,16 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     /// <inheritdoc/>
     public void Register<TService, TImplementation>(string? contract)
         where TService : class
-        where TImplementation : class, TService, new() =>
-        Register(static () => (TService)new TImplementation(), contract);
+        where TImplementation : class, TService, new()
+    {
+        if (contract is null)
+        {
+            Register<TService, TImplementation>();
+            return;
+        }
+
+        _contractFactories.Add(typeof(TService), contract, static () => new TImplementation());
+    }
 
     /// <inheritdoc />
     public void UnregisterCurrent(Type? serviceType) =>
@@ -184,7 +279,7 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     public void UnregisterCurrent(Type? serviceType, string? contract) =>
         throw new NotSupportedException(
             "UnregisterCurrent with contract is not supported in the SimpleInjector dependency resolver. "
-            + "SimpleInjector does not support contracts or removing individual registrations after they have been added.");
+            + "SimpleInjector does not support removing individual registrations after they have been added.");
 
     /// <inheritdoc/>
     public void UnregisterCurrent<T>() =>
@@ -204,7 +299,7 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     public void UnregisterAll(Type? serviceType, string? contract) =>
         throw new NotSupportedException(
             "UnregisterAll with contract is not supported in the SimpleInjector dependency resolver. "
-            + "SimpleInjector does not support contracts or removing registrations after they have been added.");
+            + "SimpleInjector does not support removing registrations after they have been added.");
 
     /// <inheritdoc/>
     public void UnregisterAll<T>() =>
@@ -224,7 +319,7 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     public IDisposable ServiceRegistrationCallback(Type serviceType, string? contract, Action<IDisposable> callback) =>
         throw new NotSupportedException(
             "ServiceRegistrationCallback with contract is not supported in the SimpleInjector dependency resolver. "
-            + "SimpleInjector does not support contracts or service registration callbacks.");
+            + "SimpleInjector does not provide a mechanism for service registration callbacks.");
 
     /// <inheritdoc/>
     public IDisposable ServiceRegistrationCallback<T>(Action<IDisposable> callback) =>
@@ -247,9 +342,15 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     public void RegisterConstant<T>(T? value, string? contract)
         where T : class
     {
+        if (contract is null)
+        {
+            RegisterConstant(value);
+            return;
+        }
+
         ArgumentExceptionHelper.ThrowIfNull(value);
 
-        Register(() => value, typeof(T), contract);
+        _contractFactories.Add(typeof(T), contract, () => value);
     }
 
     /// <inheritdoc/>
@@ -265,10 +366,17 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     public void RegisterLazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(Func<T?> valueFactory, string? contract)
         where T : class
     {
+        if (contract is null)
+        {
+            RegisterLazySingleton(valueFactory);
+            return;
+        }
+
         ArgumentExceptionHelper.ThrowIfNull(valueFactory);
 
         var lazy = new Lazy<T?>(valueFactory, LazyThreadSafetyMode.ExecutionAndPublication);
-        Register(() => lazy.Value, typeof(T), contract);
+
+        _contractFactories.Add(typeof(T), contract, () => lazy.Value);
     }
 
     /// <inheritdoc />
@@ -303,6 +411,28 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
             }
 
             _container.Collection.Register(typeFactories.Key, registrations);
+
+            lock (_lockObject)
+            {
+                _ = _collectionServiceTypes.Add(typeFactories.Key);
+            }
+        }
+
+        initializer.ContractFactories.CopyTo(_contractFactories);
+    }
+
+    /// <summary>Appends a factory to the container's collection for the supplied service type.</summary>
+    /// <param name="serviceType">The service type the factory produces.</param>
+    /// <param name="factory">The factory that produces the service.</param>
+    private void AppendToCollection(Type serviceType, Func<object?> factory)
+    {
+        _container.Collection.Append(
+            serviceType,
+            new TransientSimpleInjectorRegistration(_container, serviceType, factory));
+
+        lock (_lockObject)
+        {
+            _ = _collectionServiceTypes.Add(serviceType);
         }
     }
 }
