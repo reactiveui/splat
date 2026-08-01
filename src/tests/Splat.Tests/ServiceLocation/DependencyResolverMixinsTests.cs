@@ -92,6 +92,51 @@ public sealed class DependencyResolverMixinsTests
         await Assert.That(callbackInvoked).IsTrue();
     }
 
+    /// <summary>Verifies that a scope nested inside a suppressed scope keeps notifications suppressed.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task WithResolver_NestedInsideASuppressedScope_StaysSuppressed()
+    {
+        var notifications = 0;
+        using var subscription = AppLocator.RegisterResolverCallbackChanged(() => notifications++);
+        notifications = 0; // Reset after the immediate registration callback.
+
+        using var outerResolver = new InstanceGenericFirstDependencyResolver();
+        using var innerResolver = new InstanceGenericFirstDependencyResolver();
+
+        using (outerResolver.WithResolver(suppressResolverCallback: true))
+        using (innerResolver.WithResolver(suppressResolverCallback: false))
+        {
+            await Assert.That(AppLocator.AreResolverCallbackChangedNotificationsEnabled()).IsFalse();
+        }
+
+        await Assert.That(notifications).IsEqualTo(0);
+    }
+
+    /// <summary>Verifies that disposing a scope twice raises the change notification only once.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task WithResolver_DisposedTwice_RaisesTheChangeNotificationOnce()
+    {
+        var notifications = 0;
+        using var subscription = AppLocator.RegisterResolverCallbackChanged(() => notifications++);
+        notifications = 0; // Reset after the immediate registration callback.
+
+        var originalResolver = AppLocator.GetLocator();
+        using var testResolver = new InstanceGenericFirstDependencyResolver();
+
+        var scope = testResolver.WithResolver(suppressResolverCallback: false);
+        scope.Dispose();
+        scope.Dispose();
+
+        const int enterAndExit = 2;
+        using (Assert.Multiple())
+        {
+            await Assert.That(notifications).IsEqualTo(enterAndExit);
+            await Assert.That(AppLocator.GetLocator()).IsSameReferenceAs(originalResolver);
+        }
+    }
+
     /// <summary>Verifies that the type-based RegisterConstant throws when the resolver is null.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]

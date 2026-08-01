@@ -2,8 +2,6 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using ReactiveUI.Primitives.Disposables;
-
 namespace Splat;
 
 /// <summary>
@@ -20,40 +18,32 @@ public static class DependencyResolverMixins
     extension(IDependencyResolver resolver)
     {
         /// <summary>
-        /// Temporarily replaces the current application dependency resolver with the specified resolver, restoring the
-        /// original resolver when the returned object is disposed.
+        /// Resolves through the specified resolver for the calling async flow, restoring the resolver the flow was
+        /// using when the returned object is disposed.
         /// </summary>
-        /// <remarks>Use this method to temporarily override the application's dependency resolver within a
-        /// specific scope. This is useful for testing or for scenarios where a different resolver is needed temporarily.
-        /// Ensure that the returned IDisposable is properly disposed to avoid leaving the application in an inconsistent
-        /// state.</remarks>
-        /// <returns>An IDisposable that, when disposed, restores the original dependency resolver and re-enables notifications.</returns>
+        /// <remarks>Use this method to temporarily override the dependency resolver within a specific scope. The
+        /// override travels with the async flow - across awaits and thread hops - and is invisible to every other
+        /// flow, so tests running concurrently can each hold their own resolver without interfering. Ensure that the
+        /// returned IDisposable is properly disposed to avoid leaving the flow in an inconsistent state.</remarks>
+        /// <returns>An IDisposable that, when disposed, restores the resolver the flow was previously using.</returns>
         public IDisposable WithResolver() => resolver.WithResolver(true);
 
         /// <summary>
-        /// Temporarily replaces the current application dependency resolver with the specified resolver, restoring the
-        /// original resolver when the returned object is disposed.
+        /// Resolves through the specified resolver for the calling async flow, restoring the resolver the flow was
+        /// using when the returned object is disposed.
         /// </summary>
-        /// <remarks>Use this method to temporarily override the application's dependency resolver within a
-        /// specific scope. This is useful for testing or for scenarios where a different resolver is needed temporarily.
-        /// Ensure that the returned IDisposable is properly disposed to avoid leaving the application in an inconsistent
-        /// state.</remarks>
-        /// <param name="suppressResolverCallback">true to suppress resolver callback changed notifications while the resolver is replaced; otherwise, false.</param>
-        /// <returns>An IDisposable that, when disposed, restores the original dependency resolver and re-enables notifications if
+        /// <remarks>Use this method to temporarily override the dependency resolver within a specific scope. The
+        /// override travels with the async flow - across awaits and thread hops - and is invisible to every other
+        /// flow, so tests running concurrently can each hold their own resolver without interfering. Ensure that the
+        /// returned IDisposable is properly disposed to avoid leaving the flow in an inconsistent state.</remarks>
+        /// <param name="suppressResolverCallback">true to suppress resolver callback changed notifications for the calling flow while the resolver is replaced; otherwise, false.</param>
+        /// <returns>An IDisposable that, when disposed, restores the resolver the flow was previously using and re-enables notifications if
         /// they were suppressed.</returns>
         public IDisposable WithResolver(bool suppressResolverCallback)
         {
             ArgumentExceptionHelper.ThrowIfNull(resolver);
 
-            var origResolver = AppLocator.GetLocator();
-
-            // Start suppression BEFORE changing the locator if requested.
-            var notificationDisposable = suppressResolverCallback ? AppLocator.SuppressResolverCallbackChangedNotifications() : EmptyDisposable.Instance;
-
-            // Now change the locator while suppression is active.
-            AppLocator.SetLocator(resolver);
-
-            return new MultipleDisposable(new ActionDisposable(() => AppLocator.SetLocator(origResolver)), notificationDisposable);
+            return AppLocator.InternalLocator.WithResolver(resolver, suppressResolverCallback);
         }
     }
 
