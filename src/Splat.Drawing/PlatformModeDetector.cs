@@ -55,16 +55,19 @@ public static class PlatformModeDetector
     }
 
     /// <summary>Gets the current state for test isolation. Used by test scopes.</summary>
-    /// <returns>A tuple containing the current detector and cached result.</returns>
-    internal static (IPlatformModeDetector detector, bool? cachedResult) GetState() =>
-        (Current, _cachedInDesignModeResult);
+    /// <returns>A tuple containing the current detector, the cached result, and the default detector's own cached result.</returns>
+    /// <remarks><see cref="DefaultPlatformModeDetector"/> memoizes separately, so its cache has to travel with this
+    /// state; otherwise a test that leaves a design-mode value behind there leaks into every later test.</remarks>
+    internal static (IPlatformModeDetector detector, bool? cachedResult, bool? defaultDetectorCachedResult) GetState() =>
+        (Current, _cachedInDesignModeResult, DefaultPlatformModeDetector.GetState());
 
     /// <summary>Restores the state for test isolation. Used by test scopes.</summary>
     /// <param name="state">The state to restore.</param>
-    internal static void RestoreState((IPlatformModeDetector detector, bool? cachedResult) state)
+    internal static void RestoreState((IPlatformModeDetector detector, bool? cachedResult, bool? defaultDetectorCachedResult) state)
     {
         Current = state.detector;
         _cachedInDesignModeResult = state.cachedResult;
+        DefaultPlatformModeDetector.RestoreState(state.defaultDetectorCachedResult);
     }
 
     /// <summary>Resets the state to default for test isolation. Used by test scopes.</summary>
@@ -72,5 +75,6 @@ public static class PlatformModeDetector
     {
         Current = new DefaultPlatformModeDetector();
         _cachedInDesignModeResult = null;
+        DefaultPlatformModeDetector.ResetState();
     }
 }
