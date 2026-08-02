@@ -5,6 +5,7 @@
 namespace Splat.Drawing.Tests;
 
 /// <summary>Unit tests covering <see cref="DefaultPlatformModeDetector"/>.</summary>
+[NotInParallel] // Reads the memoized design-mode result, which is static state.
 public sealed class DefaultPlatformModeDetectorCoverageTests
 {
     /// <summary>An entry-point path whose executable name matches a known design-environment host.</summary>

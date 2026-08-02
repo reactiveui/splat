@@ -26,13 +26,17 @@ public sealed class PlatformModeDetectorScope : IDisposable
     /// <summary>The cached platform-mode-detection result captured on construction.</summary>
     private readonly bool? _savedCachedResult;
 
+    /// <summary>The default detector's own cached design-mode result captured on construction.</summary>
+    private readonly bool? _savedDefaultDetectorCachedResult;
+
     /// <summary>Initializes a new instance of the <see cref="PlatformModeDetectorScope"/> class. Saves the current PlatformModeDetector state and resets it to default.</summary>
     public PlatformModeDetectorScope()
     {
-        (_savedDetector, _savedCachedResult) = PlatformModeDetector.GetState();
+        (_savedDetector, _savedCachedResult, _savedDefaultDetectorCachedResult) = PlatformModeDetector.GetState();
         PlatformModeDetector.ResetState();
     }
 
     /// <summary>Restores the PlatformModeDetector to its previous state.</summary>
-    public void Dispose() => PlatformModeDetector.RestoreState((_savedDetector, _savedCachedResult));
+    public void Dispose() =>
+        PlatformModeDetector.RestoreState((_savedDetector, _savedCachedResult, _savedDefaultDetectorCachedResult));
 }

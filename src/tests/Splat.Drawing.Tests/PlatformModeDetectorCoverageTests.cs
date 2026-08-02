@@ -44,6 +44,33 @@ public sealed class PlatformModeDetectorCoverageTests
         }
     }
 
+    /// <summary>Verifies that a repeat query reports the memoized result instead of asking the detector again.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task InDesignMode_OnRepeatQuery_ReportsMemoizedResult()
+    {
+        var saved = PlatformModeDetector.GetState();
+        try
+        {
+            var detector = new StubModeDetector(true);
+            PlatformModeDetector.OverrideModeDetector(detector);
+
+            var first = PlatformModeDetector.InDesignMode();
+            var second = PlatformModeDetector.InDesignMode();
+
+            using (Assert.Multiple())
+            {
+                await Assert.That(first).IsTrue();
+                await Assert.That(second).IsTrue();
+                await Assert.That(detector.QueryCount).IsEqualTo(1);
+            }
+        }
+        finally
+        {
+            PlatformModeDetector.RestoreState(saved);
+        }
+    }
+
     /// <summary>Verifies that a null design-mode result falls back to false.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -81,11 +108,18 @@ public sealed class PlatformModeDetectorCoverageTests
         }
     }
 
-    /// <summary>A stub mode detector returning a fixed design-mode value.</summary>
+    /// <summary>A stub mode detector returning a fixed design-mode value and counting how often it was asked.</summary>
     /// <param name="result">The value to return from <see cref="StubModeDetector.InDesignMode"/>.</param>
     private sealed class StubModeDetector(bool? result) : IPlatformModeDetector
     {
+        /// <summary>Gets the number of times the detector was asked for the design-mode value.</summary>
+        public int QueryCount { get; private set; }
+
         /// <inheritdoc />
-        public bool? InDesignMode() => result;
+        public bool? InDesignMode()
+        {
+            QueryCount++;
+            return result;
+        }
     }
 }
