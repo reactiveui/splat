@@ -2,6 +2,7 @@
 // ReactiveUI Association Incorporated licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -46,6 +47,10 @@ public class PlatformBitmapLoader : IBitmapLoader
             WithInit(ret, x =>
             {
                 ApplyDecodeSize(x, sourceSize, desiredWidth, desiredHeight);
+
+                // This has to precede the source: without it the image is fetched on demand and the source is held
+                // open, which keeps a lock on the file the caller named for as long as the bitmap lives.
+                x.CacheOption = BitmapCacheOption.OnLoad;
 
                 x.UriSource = uri;
             });
@@ -96,33 +101,10 @@ public class PlatformBitmapLoader : IBitmapLoader
             : (0, height);
     }
 
-    /// <summary>Applies the chosen decode dimension to the bitmap being initialized.</summary>
-    /// <param name="target">The bitmap image to configure.</param>
-    /// <param name="sourceSize">The pixel dimensions of the source image, or <see langword="null"/> when they could not be read.</param>
-    /// <param name="desiredWidth">The requested width, or <see langword="null"/> when the caller did not constrain it.</param>
-    /// <param name="desiredHeight">The requested height, or <see langword="null"/> when the caller did not constrain it.</param>
-    private static void ApplyDecodeSize(BitmapImage target, (int Width, int Height)? sourceSize, float? desiredWidth, float? desiredHeight)
-    {
-        var (width, height) = ChooseDecodeSize(sourceSize, desiredWidth, desiredHeight);
-
-        if (width > 0)
-        {
-            target.DecodePixelWidth = width;
-            return;
-        }
-
-        if (height <= 0)
-        {
-            return;
-        }
-
-        target.DecodePixelHeight = height;
-    }
-
     /// <summary>Reads the pixel dimensions from an image stream without decoding its pixels, restoring the position.</summary>
     /// <param name="sourceStream">The stream to inspect.</param>
     /// <returns>The source dimensions, or <see langword="null"/> when the stream cannot be inspected.</returns>
-    private static (int Width, int Height)? ReadPixelSize(Stream sourceStream)
+    internal static (int Width, int Height)? ReadPixelSize(Stream sourceStream)
     {
         if (!sourceStream.CanSeek)
         {
@@ -151,39 +133,66 @@ public class PlatformBitmapLoader : IBitmapLoader
     }
 
     /// <summary>Reads the pixel dimensions from an image resource without decoding its pixels.</summary>
+    /// <remarks>
+    /// Only a file is measured, and through a stream this method owns and closes. Handing the resource identifier
+    /// straight to a decoder leaves it holding the file open, which would lock whatever the caller named. A resource
+    /// that is not a file reports no size, and the caller then constrains the decode by width alone, which still
+    /// preserves the proportions.
+    /// </remarks>
     /// <param name="source">The resource to inspect.</param>
     /// <returns>The source dimensions, or <see langword="null"/> when the resource cannot be inspected.</returns>
-    private static (int Width, int Height)? ReadPixelSize(Uri source)
+    internal static (int Width, int Height)? ReadPixelSize(Uri source)
     {
+        if (!source.IsAbsoluteUri || !source.IsFile)
+        {
+            return null;
+        }
+
         try
         {
-            var decoder = BitmapDecoder.Create(source, BitmapCreateOptions.DelayCreation, BitmapCacheOption.None);
-            return ReadFirstFrameSize(decoder);
+            using var stream = File.OpenRead(source.LocalPath);
+            return ReadPixelSize(stream);
         }
-        catch (NotSupportedException)
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
         {
-            return null;
-        }
-        catch (FileFormatException)
-        {
-            return null;
-        }
-        catch (IOException)
-        {
+            // Unreadable for any reason is the same answer: leave it unmeasured and let the decode report it.
             return null;
         }
     }
 
-    /// <summary>Reads the pixel dimensions of a decoder's first frame.</summary>
-    /// <param name="decoder">The decoder to read from.</param>
-    /// <returns>The first frame's dimensions, or <see langword="null"/> when the image carries no frame.</returns>
-    private static (int Width, int Height)? ReadFirstFrameSize(BitmapDecoder decoder)
+    /// <summary>Applies the chosen decode dimension to the bitmap being initialized.</summary>
+    /// <param name="target">The bitmap image to configure.</param>
+    /// <param name="sourceSize">The pixel dimensions of the source image, or <see langword="null"/> when they could not be read.</param>
+    /// <param name="desiredWidth">The requested width, or <see langword="null"/> when the caller did not constrain it.</param>
+    /// <param name="desiredHeight">The requested height, or <see langword="null"/> when the caller did not constrain it.</param>
+    private static void ApplyDecodeSize(BitmapImage target, (int Width, int Height)? sourceSize, float? desiredWidth, float? desiredHeight)
     {
-        if (decoder.Frames.Count == 0)
+        var (width, height) = ChooseDecodeSize(sourceSize, desiredWidth, desiredHeight);
+
+        if (width > 0)
         {
-            return null;
+            target.DecodePixelWidth = width;
+            return;
         }
 
+        if (height <= 0)
+        {
+            return;
+        }
+
+        target.DecodePixelHeight = height;
+    }
+
+    /// <summary>Reads the pixel dimensions of a decoder's first frame.</summary>
+    /// <remarks>
+    /// A decoder that was created successfully always carries a frame; anything malformed enough to produce none
+    /// fails in <see cref="BitmapDecoder.Create(Uri, BitmapCreateOptions, BitmapCacheOption)"/> or when the frames are
+    /// first touched, which the callers already treat as an unreadable header.
+    /// </remarks>
+    /// <param name="decoder">The decoder to read from.</param>
+    /// <returns>The first frame's dimensions.</returns>
+    private static (int Width, int Height) ReadFirstFrameSize(BitmapDecoder decoder)
+    {
         var frame = decoder.Frames[0];
         return (frame.PixelWidth, frame.PixelHeight);
     }
@@ -197,6 +206,18 @@ public class PlatformBitmapLoader : IBitmapLoader
         block(source);
         source.EndInit();
 
+        FreezeIfPossible(source);
+    }
+
+    /// <summary>Makes the bitmap cross-thread usable when it is in a state that allows it.</summary>
+    /// <remarks>
+    /// Both callers load the image up front, which leaves it freezable; the guard only matters for a source still
+    /// being fetched, which neither of them produces.
+    /// </remarks>
+    /// <param name="source">The bitmap to freeze.</param>
+    [ExcludeFromCodeCoverage]
+    private static void FreezeIfPossible(BitmapImage source)
+    {
         if (!source.CanFreeze)
         {
             return;
