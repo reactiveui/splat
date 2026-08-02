@@ -11,9 +11,11 @@ namespace Splat;
 /// Supports registering callbacks for resolver changes and allows controlled suppression of change notifications.
 /// </summary>
 /// <remarks>This class is intended for internal use to coordinate dependency resolution and notification logic.
-/// It enables libraries to react to resolver changes and supports isolation for testing scenarios. Thread safety is
-/// maintained for callback registration and notification suppression. Dispose the instance to release associated
-/// resources when no longer needed.</remarks>
+/// It enables libraries to react to resolver changes and supports isolation for testing scenarios. Alongside the
+/// process-wide resolver an async flow can install its own resolver through <see cref="WithResolver"/>; that override
+/// only exists for the flow that installed it, so overlapping flows never observe each other's resolver or
+/// notification suppression. Thread safety is maintained for callback registration and notification suppression.
+/// Dispose the instance to release associated resources when no longer needed.</remarks>
 internal class InternalLocator : IDisposable
 {
     /// <summary>Registration-change callbacks. A process-wide default instance is used, while still allowing isolation in unit tests.</summary>
@@ -22,8 +24,22 @@ internal class InternalLocator : IDisposable
     /// <summary>Subscription that raises registration-change notifications; disposed with this instance.</summary>
     private readonly IDisposable _resolverChangedNotification;
 
-    /// <summary>Reentrancy counter; while greater than zero, change notifications are suppressed.</summary>
+    /// <summary>The resolver installed for the calling async flow, if that flow entered a <see cref="WithResolver"/> scope.</summary>
+    private readonly AsyncLocal<ResolverOverride?> _flowOverride = new();
+
+    /// <summary>
+    /// Number of <see cref="WithResolver"/> scopes alive anywhere in the process; while zero, reads skip the flow
+    /// lookup entirely. Either stale answer is still correct: a stale zero can only be seen by a flow that installed
+    /// no scope of its own (a flow that installed one incremented before it reads), and a stale non-zero merely costs
+    /// the flow lookup, which then finds nothing.
+    /// </summary>
+    private int _flowOverrideCount;
+
+    /// <summary>Reentrancy counter; while greater than zero, change notifications are suppressed process wide.</summary>
     private int _resolverChangedNotificationSuspendCount;
+
+    /// <summary>The resolver used by every flow that has not installed one of its own.</summary>
+    private IDependencyResolver _processWide;
 
     /// <summary>Guards against running the dispose logic more than once.</summary>
     private bool _disposedValue;
@@ -31,9 +47,9 @@ internal class InternalLocator : IDisposable
     /// <summary>Initializes a new instance of the <see cref="InternalLocator"/> class.</summary>
     internal InternalLocator()
     {
-        Internal = new InstanceGenericFirstDependencyResolver();
+        _processWide = new InstanceGenericFirstDependencyResolver();
 
-        // CurrentMutable returns the non-nullable Internal resolver (set in this constructor and only ever replaced via the null-guarded SetLocator), so it is never null here.
+        // CurrentMutable returns the non-nullable process-wide resolver (set above and only ever replaced via the null-guarded SetLocator), so it is never null here.
         _resolverChangedNotification = RegisterResolverCallbackChanged(() => AppLocator.ReInit(CurrentMutable));
     }
 
@@ -55,7 +71,19 @@ internal class InternalLocator : IDisposable
     internal IMutableDependencyResolver CurrentMutable => Internal;
 
     /// <summary>Gets or sets the dependency resolver used internally by the component.</summary>
-    internal IDependencyResolver Internal { get; set; }
+    /// <value>
+    /// Reads return the resolver installed by the calling flow's <see cref="WithResolver"/> scope when there is one,
+    /// and the process-wide resolver otherwise. The setter always replaces the process-wide resolver; use
+    /// <see cref="SetLocator"/> to write through to whichever resolver the calling flow is actually using.
+    /// </value>
+    internal IDependencyResolver Internal
+    {
+        get => Volatile.Read(ref _flowOverrideCount) == 0 ? _processWide : _flowOverride.Value?.Resolver ?? _processWide;
+        set => _processWide = value;
+    }
+
+    /// <summary>Gets the resolver override installed by the calling async flow, or <c>null</c> when the flow uses the process-wide resolver.</summary>
+    private ResolverOverride? FlowOverride => Volatile.Read(ref _flowOverrideCount) == 0 ? null : _flowOverride.Value;
 
     /// <summary>Releases unmanaged and - optionally - managed resources.</summary>
     public void Dispose()
@@ -65,29 +93,50 @@ internal class InternalLocator : IDisposable
     }
 
     /// <summary>Allows setting the dependency resolver.</summary>
+    /// <remarks>When the calling flow is inside a <see cref="WithResolver"/> scope the new resolver replaces that
+    /// scope's resolver and is discarded when the scope ends; otherwise it replaces the process-wide resolver.</remarks>
     /// <param name="dependencyResolver">The dependency resolver to set.</param>
     internal void SetLocator(IDependencyResolver dependencyResolver)
     {
         ArgumentExceptionHelper.ThrowIfNull(dependencyResolver);
-        Internal = dependencyResolver;
 
-        if (!AreResolverCallbackChangedNotificationsEnabled())
+        var flowOverride = FlowOverride;
+        if (flowOverride is null)
         {
-            return;
+            _processWide = dependencyResolver;
+        }
+        else
+        {
+            flowOverride.Resolver = dependencyResolver;
         }
 
-        Action[] currentCallbacks;
-        lock (_resolverChanged)
+        NotifyResolverChanged();
+    }
+
+    /// <summary>Installs <paramref name="resolver"/> for the calling async flow until the returned scope is disposed.</summary>
+    /// <remarks>The override travels with the async flow - across awaits and thread hops - and is invisible to every
+    /// other flow, so tests running concurrently can each hold their own resolver. Scopes nest, and disposing one
+    /// restores the resolver the flow was using beforehand.</remarks>
+    /// <param name="resolver">The resolver the calling flow should resolve from. Must not be null.</param>
+    /// <param name="suppressResolverCallback">
+    /// <c>true</c> to keep resolver-changed notifications suppressed for this flow while the scope is open; otherwise
+    /// <c>false</c>, which raises them as the scope is entered and again as it is left.
+    /// </param>
+    /// <returns>A scope which, when disposed, restores the flow's previous resolver.</returns>
+    internal IDisposable WithResolver(IDependencyResolver resolver, bool suppressResolverCallback)
+    {
+        var previous = _flowOverride.Value;
+        var notificationsSuppressed = suppressResolverCallback || previous?.NotificationsSuppressed == true;
+
+        _ = Interlocked.Increment(ref _flowOverrideCount);
+        _flowOverride.Value = new(resolver, notificationsSuppressed);
+
+        if (!suppressResolverCallback)
         {
-            // NB: Prevent deadlocks should we reenter this setter from
-            // the callbacks
-            currentCallbacks = [.. _resolverChanged];
+            NotifyResolverChanged();
         }
 
-        foreach (var block in currentCallbacks)
-        {
-            block();
-        }
+        return new ResolverOverrideScope(this, previous, suppressResolverCallback);
     }
 
     /// <summary>
@@ -125,6 +174,7 @@ internal class InternalLocator : IDisposable
     }
 
     /// <summary>This method will prevent resolver changed notifications from happening until the returned <see cref="IDisposable"/> is disposed.</summary>
+    /// <remarks>Suppression requested here applies process wide; use <see cref="WithResolver"/> to confine it to the calling flow.</remarks>
     /// <returns>A disposable which when disposed will indicate the change
     /// notification is no longer needed.</returns>
     internal IDisposable SuppressResolverCallbackChangedNotifications()
@@ -136,7 +186,8 @@ internal class InternalLocator : IDisposable
 
     /// <summary>Indicates if the we are notifying external classes of updates to the resolver being changed.</summary>
     /// <returns>A value indicating whether the notifications are happening.</returns>
-    internal bool AreResolverCallbackChangedNotificationsEnabled() => Volatile.Read(ref _resolverChangedNotificationSuspendCount) == 0;
+    internal bool AreResolverCallbackChangedNotificationsEnabled() =>
+        Volatile.Read(ref _resolverChangedNotificationSuspendCount) == 0 && FlowOverride?.NotificationsSuppressed != true;
 
     /// <summary>Releases the unmanaged resources used by the object and optionally releases the managed resources.</summary>
     /// <remarks>This method is called by public Dispose methods and the finalizer. When disposing is true,
@@ -152,10 +203,73 @@ internal class InternalLocator : IDisposable
 
         if (disposing)
         {
-            Internal.Dispose();
+            _processWide.Dispose();
             _resolverChangedNotification.Dispose();
         }
 
         _disposedValue = true;
+    }
+
+    /// <summary>Runs the registered resolver-changed callbacks unless notifications are currently suppressed.</summary>
+    private void NotifyResolverChanged()
+    {
+        if (!AreResolverCallbackChangedNotificationsEnabled())
+        {
+            return;
+        }
+
+        Action[] currentCallbacks;
+        lock (_resolverChanged)
+        {
+            // NB: Prevent deadlocks should we reenter this setter from
+            // the callbacks
+            currentCallbacks = [.. _resolverChanged];
+        }
+
+        foreach (var block in currentCallbacks)
+        {
+            block();
+        }
+    }
+
+    /// <summary>The resolver, and the notification state, that one async flow is using.</summary>
+    /// <param name="resolver">The resolver the flow resolves from.</param>
+    /// <param name="notificationsSuppressed">Whether resolver-changed notifications are suppressed for the flow.</param>
+    private sealed class ResolverOverride(IDependencyResolver resolver, bool notificationsSuppressed)
+    {
+        /// <summary>Gets or sets the resolver the flow resolves from.</summary>
+        public IDependencyResolver Resolver { get; set; } = resolver;
+
+        /// <summary>Gets a value indicating whether resolver-changed notifications are suppressed for the flow.</summary>
+        public bool NotificationsSuppressed { get; } = notificationsSuppressed;
+    }
+
+    /// <summary>Restores the flow's previous resolver when disposed.</summary>
+    /// <param name="locator">The locator holding the override.</param>
+    /// <param name="previous">The override the flow had before this scope was entered, if any.</param>
+    /// <param name="suppressResolverCallback">Whether the scope was entered with resolver-changed notifications suppressed.</param>
+    private sealed class ResolverOverrideScope(InternalLocator locator, ResolverOverride? previous, bool suppressResolverCallback) : IDisposable
+    {
+        /// <summary>Non-zero once the scope has been disposed, so a second dispose is a no-op.</summary>
+        private int _disposed;
+
+        /// <summary>Restores the flow's previous resolver.</summary>
+        public void Dispose()
+        {
+            if (Interlocked.Exchange(ref _disposed, 1) != 0)
+            {
+                return;
+            }
+
+            locator._flowOverride.Value = previous;
+            _ = Interlocked.Decrement(ref locator._flowOverrideCount);
+
+            if (suppressResolverCallback)
+            {
+                return;
+            }
+
+            locator.NotifyResolverChanged();
+        }
     }
 }

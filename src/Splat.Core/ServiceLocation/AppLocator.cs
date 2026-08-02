@@ -63,14 +63,15 @@ public static class AppLocator
 
     /// <summary>Sets the dependency resolver to be used by the application.</summary>
     /// <remarks>Call this method at application startup to configure the global dependency resolver.
-    /// Subsequent calls will replace the existing resolver.</remarks>
+    /// Subsequent calls will replace the existing resolver. Inside a <c>WithResolver</c> scope the new resolver is
+    /// confined to the calling async flow and is discarded when that scope ends.</remarks>
     /// <param name="dependencyResolver">The dependency resolver instance that provides service resolution for the application. Cannot be null.</param>
     public static void SetLocator(IDependencyResolver dependencyResolver) => InternalLocator.SetLocator(dependencyResolver);
 
     /// <summary>Gets the current dependency resolver instance used by the application.</summary>
-    /// <remarks>The returned resolver provides access to registered services and dependencies. The same
-    /// instance is returned on each call. This method is intended for advanced scenarios where direct access to the
-    /// dependency resolver is required.</remarks>
+    /// <remarks>The returned resolver provides access to registered services and dependencies. Callers inside a
+    /// <c>WithResolver</c> scope get that scope's resolver; everyone else gets the process-wide one. This method is
+    /// intended for advanced scenarios where direct access to the dependency resolver is required.</remarks>
     /// <returns>An <see cref="IDependencyResolver"/> representing the application's current dependency resolver.</returns>
     [SuppressMessage("Design", "CA1024:Use properties where appropriate", Justification = "Existing API")]
     public static IDependencyResolver GetLocator() => InternalLocator.Internal;
