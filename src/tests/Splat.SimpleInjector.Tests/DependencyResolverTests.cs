@@ -112,6 +112,20 @@ public class DependencyResolverTests
         await Assert.That(views).IsNotNull();
     }
 
+    /// <summary>A registration made through the resolver once the locator is wired up must win over Splat's default.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SimpleInjectorDependencyResolver_RegisterAfterWiringLocator_ReplacesSplatDefaultLogManager()
+    {
+        await using var container = new Container();
+        container.UseSimpleInjectorDependencyResolver(new());
+        var logManager = new FuncLogManager(static _ => new WrappingFullLogger(new DebugLogger()));
+
+        AppLocator.CurrentMutable.Register<ILogManager>(() => logManager);
+
+        await Assert.That(AppLocator.Current.GetService<ILogManager>()).IsSameReferenceAs(logManager);
+    }
+
     /// <summary>The initializer's non-generic Register overload should store every factory and expose them from GetServices.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -193,19 +207,6 @@ public class DependencyResolverTests
         await Assert.That(second).IsSameReferenceAs(first);
     }
 
-    /// <summary>The resolver's service/implementation Register overload with a contract is a compatibility no-op that registers nothing.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorDependencyResolver_RegisterServiceImplementationWithContract_DoesNotRegister()
-    {
-        const string contract = "contract";
-        using var resolver = new SimpleInjectorDependencyResolver(new Container(), new SimpleInjectorInitializer());
-
-        resolver.Register<IViewModelOne, ViewModelOne>(contract);
-
-        await Assert.That(resolver.HasRegistration(typeof(IViewModelOne))).IsFalse();
-    }
-
     /// <summary>The resolver's RegisterLazySingleton should resolve the same singleton instance on repeated resolutions.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -237,19 +238,28 @@ public class DependencyResolverTests
         await Assert.That(service).IsSameReferenceAs(second);
     }
 
-    /// <summary>The initializer's non-generic GetService with a contract should ignore the contract and resolve normally.</summary>
+    /// <summary>The initializer's non-generic GetService should return null rather than throw when nothing is registered.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task SimpleInjectorInitializer_GetServiceByTypeWithContract_IgnoresContract()
+    public async Task SimpleInjectorInitializer_GetServiceByType_WithoutRegistration_ReturnsNull()
     {
-        const string contract = "contract";
         using var initializer = new SimpleInjectorInitializer();
-        var instance = new ViewModelOne();
-        initializer.Register((Func<object?>)(() => instance), typeof(IViewModelOne));
 
-        var service = initializer.GetService(typeof(IViewModelOne), contract);
+        var service = initializer.GetService(typeof(IViewModelOne));
 
-        await Assert.That(service).IsSameReferenceAs(instance);
+        await Assert.That(service).IsNull();
+    }
+
+    /// <summary>The initializer's non-generic GetServices should return an empty sequence rather than throw when nothing is registered.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SimpleInjectorInitializer_GetServicesByType_WithoutRegistration_ReturnsEmpty()
+    {
+        using var initializer = new SimpleInjectorInitializer();
+
+        var services = initializer.GetServices(typeof(IViewModelOne)).ToList();
+
+        await Assert.That(services).Count().IsEqualTo(0);
     }
 
     /// <summary>Registering under a null service type should round-trip through the NullServiceType wrapper via the non-generic GetService.</summary>
@@ -266,21 +276,6 @@ public class DependencyResolverTests
         await Assert.That(service).IsTypeOf<NullServiceType>();
     }
 
-    /// <summary>The initializer's generic GetService with a contract should ignore the contract and resolve normally.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorInitializer_GetServiceGenericWithContract_IgnoresContract()
-    {
-        const string contract = "contract";
-        using var initializer = new SimpleInjectorInitializer();
-        var instance = new ViewModelOne();
-        initializer.Register<IViewModelOne>(() => instance);
-
-        var service = initializer.GetService<IViewModelOne>(contract);
-
-        await Assert.That(service).IsSameReferenceAs(instance);
-    }
-
     /// <summary>The initializer's generic GetService should return the default value when nothing is registered.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -291,25 +286,6 @@ public class DependencyResolverTests
         var service = initializer.GetService<IViewModelOne>();
 
         await Assert.That(service).IsNull();
-    }
-
-    /// <summary>The initializer's non-generic GetServices with a contract should ignore the contract and resolve normally.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorInitializer_GetServicesByTypeWithContract_IgnoresContract()
-    {
-        const string contract = "contract";
-        using var initializer = new SimpleInjectorInitializer();
-        var instance = new ViewModelOne();
-        initializer.Register((Func<object?>)(() => instance), typeof(IViewModelOne));
-
-        var services = initializer.GetServices(typeof(IViewModelOne), contract).ToList();
-
-        using (Assert.Multiple())
-        {
-            await Assert.That(services).Count().IsEqualTo(1);
-            await Assert.That(services[0]).IsSameReferenceAs(instance);
-        }
     }
 
     /// <summary>Registering under a null service type should be resolvable through the non-generic GetServices.</summary>
@@ -327,25 +303,6 @@ public class DependencyResolverTests
         {
             await Assert.That(services).Count().IsEqualTo(1);
             await Assert.That(services[0]).IsTypeOf<NullServiceType>();
-        }
-    }
-
-    /// <summary>The initializer's generic GetServices with a contract should ignore the contract and resolve normally.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorInitializer_GetServicesGenericWithContract_IgnoresContract()
-    {
-        const string contract = "contract";
-        using var initializer = new SimpleInjectorInitializer();
-        var instance = new ViewModelOne();
-        initializer.Register<IViewModelOne>(() => instance);
-
-        var services = initializer.GetServices<IViewModelOne>(contract).ToList();
-
-        using (Assert.Multiple())
-        {
-            await Assert.That(services).Count().IsEqualTo(1);
-            await Assert.That(services[0]).IsSameReferenceAs(instance);
         }
     }
 
@@ -377,75 +334,6 @@ public class DependencyResolverTests
         var result = initializer.HasRegistration((Type?)null);
 
         await Assert.That(result).IsFalse();
-    }
-
-    /// <summary>The initializer's non-generic HasRegistration with a contract should ignore the contract.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorInitializer_HasRegistrationByTypeWithContract_IgnoresContract()
-    {
-        const string contract = "contract";
-        using var initializer = new SimpleInjectorInitializer();
-        initializer.Register((Func<object?>)(static () => new ViewModelOne()), typeof(IViewModelOne));
-
-        var result = initializer.HasRegistration(typeof(IViewModelOne), contract);
-
-        await Assert.That(result).IsTrue();
-    }
-
-    /// <summary>The initializer's generic HasRegistration with a contract should ignore the contract.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorInitializer_HasRegistrationGenericWithContract_IgnoresContract()
-    {
-        const string contract = "contract";
-        using var initializer = new SimpleInjectorInitializer();
-        initializer.Register<IViewModelOne, ViewModelOne>();
-
-        var result = initializer.HasRegistration<IViewModelOne>(contract);
-
-        await Assert.That(result).IsTrue();
-    }
-
-    /// <summary>The initializer's non-generic Register with a contract should ignore the contract and still register the factory.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorInitializer_RegisterByTypeWithContract_IgnoresContractAndRegisters()
-    {
-        const string contract = "contract";
-        using var initializer = new SimpleInjectorInitializer();
-        var instance = new ViewModelOne();
-
-        initializer.Register((Func<object?>)(() => instance), typeof(IViewModelOne), contract);
-
-        await Assert.That(initializer.GetService(typeof(IViewModelOne))).IsSameReferenceAs(instance);
-    }
-
-    /// <summary>The initializer's generic Register with a contract should ignore the contract and still register the factory.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorInitializer_RegisterGenericWithContract_IgnoresContractAndRegisters()
-    {
-        const string contract = "contract";
-        using var initializer = new SimpleInjectorInitializer();
-        var instance = new ViewModelOne();
-
-        initializer.Register<IViewModelOne>(() => instance, contract);
-
-        await Assert.That(initializer.GetService<IViewModelOne>()).IsSameReferenceAs(instance);
-    }
-
-    /// <summary>The initializer's service/implementation Register with a contract should ignore the contract and resolve the implementation.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorInitializer_RegisterServiceImplementationWithContract_IgnoresContract()
-    {
-        const string contract = "contract";
-        using var initializer = new SimpleInjectorInitializer();
-
-        initializer.Register<IViewModelOne, ViewModelOne>(contract);
-
-        await Assert.That(initializer.GetService<IViewModelOne>()).IsTypeOf<ViewModelOne>();
     }
 
     /// <summary>The initializer does not support unregistering the current registration by type.</summary>
@@ -516,20 +404,6 @@ public class DependencyResolverTests
         await Assert.That(initializer.HasRegistration((Type?)null)).IsFalse();
     }
 
-    /// <summary>The initializer's non-generic UnregisterAll with a contract should ignore the contract and remove registrations.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorInitializer_UnregisterAllByTypeWithContract_RemovesRegistrations()
-    {
-        const string contract = "contract";
-        using var initializer = new SimpleInjectorInitializer();
-        initializer.Register((Func<object?>)(static () => new ViewModelOne()), typeof(IViewModelOne));
-
-        initializer.UnregisterAll(typeof(IViewModelOne), contract);
-
-        await Assert.That(initializer.HasRegistration(typeof(IViewModelOne))).IsFalse();
-    }
-
     /// <summary>The initializer's generic UnregisterAll should remove every factory for the type.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -539,20 +413,6 @@ public class DependencyResolverTests
         initializer.Register<IViewModelOne, ViewModelOne>();
 
         initializer.UnregisterAll<IViewModelOne>();
-
-        await Assert.That(initializer.HasRegistration<IViewModelOne>()).IsFalse();
-    }
-
-    /// <summary>The initializer's generic UnregisterAll with a contract should ignore the contract and remove registrations.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorInitializer_UnregisterAllGenericWithContract_RemovesRegistrations()
-    {
-        const string contract = "contract";
-        using var initializer = new SimpleInjectorInitializer();
-        initializer.Register<IViewModelOne, ViewModelOne>();
-
-        initializer.UnregisterAll<IViewModelOne>(contract);
 
         await Assert.That(initializer.HasRegistration<IViewModelOne>()).IsFalse();
     }
@@ -599,34 +459,96 @@ public class DependencyResolverTests
         await Assert.That(() => initializer.ServiceRegistrationCallback<IViewModelOne>(contract, static _ => { })).Throws<NotSupportedException>();
     }
 
-    /// <summary>The initializer's RegisterConstant with a contract should ignore the contract and register the constant.</summary>
+    /// <summary>The resolver's non-generic Register should put the factory into the container so the service resolves.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task SimpleInjectorInitializer_RegisterConstantWithContract_IgnoresContract()
+    public async Task SimpleInjectorDependencyResolver_RegisterByType_MakesServiceResolvable()
     {
-        const string contract = "contract";
-        using var initializer = new SimpleInjectorInitializer();
+        using var resolver = new SimpleInjectorDependencyResolver(new Container(), new SimpleInjectorInitializer());
         var instance = new ViewModelOne();
 
-        initializer.RegisterConstant(instance, contract);
+        resolver.Register((Func<object?>)(() => instance), typeof(IViewModelOne));
 
-        await Assert.That(initializer.GetService<ViewModelOne>()).IsSameReferenceAs(instance);
+        using (Assert.Multiple())
+        {
+            await Assert.That(resolver.HasRegistration(typeof(IViewModelOne))).IsTrue();
+            await Assert.That(resolver.GetService(typeof(IViewModelOne))).IsSameReferenceAs(instance);
+        }
     }
 
-    /// <summary>The initializer's RegisterLazySingleton with a contract should ignore the contract and resolve the same instance.</summary>
+    /// <summary>The resolver's generic Register should put the factory into the container so the service resolves.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task SimpleInjectorInitializer_RegisterLazySingletonWithContract_IgnoresContract()
+    public async Task SimpleInjectorDependencyResolver_RegisterGeneric_MakesServiceResolvable()
     {
-        const string contract = "contract";
+        using var resolver = new SimpleInjectorDependencyResolver(new Container(), new SimpleInjectorInitializer());
+        var instance = new ViewModelOne();
+
+        resolver.Register<IViewModelOne>(() => instance);
+
+        await Assert.That(resolver.GetService<IViewModelOne>()).IsSameReferenceAs(instance);
+    }
+
+    /// <summary>The resolver's non-generic Register should resolve the most recently registered factory.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SimpleInjectorDependencyResolver_RegisterByType_ResolvesLastRegisteredFactory()
+    {
+        using var resolver = new SimpleInjectorDependencyResolver(new Container(), new SimpleInjectorInitializer());
+        var first = new ViewModelOne();
+        var second = new ViewModelOne();
+
+        resolver.Register((Func<object?>)(() => first), typeof(IViewModelOne));
+        resolver.Register((Func<object?>)(() => second), typeof(IViewModelOne));
+
+        await Assert.That(resolver.GetService(typeof(IViewModelOne))).IsSameReferenceAs(second);
+    }
+
+    /// <summary>The resolver's non-generic Register should wrap a null service type in the NullServiceType marker.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SimpleInjectorDependencyResolver_RegisterByNullType_ResolvesNullServiceTypeWrapper()
+    {
+        using var resolver = new SimpleInjectorDependencyResolver(new Container(), new SimpleInjectorInitializer());
+        var instance = new ViewModelOne();
+
+        resolver.Register((Func<object?>)(() => instance), (Type?)null);
+
+        await Assert.That(resolver.GetService((Type?)null)).IsTypeOf<NullServiceType>();
+    }
+
+    /// <summary>The resolver's non-generic Register should reject a null factory instead of accepting it silently.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SimpleInjectorDependencyResolver_RegisterByType_NullFactory_Throws()
+    {
+        using var resolver = new SimpleInjectorDependencyResolver(new Container(), new SimpleInjectorInitializer());
+
+        await Assert.That(() => resolver.Register(null!, typeof(IViewModelOne))).Throws<ArgumentNullException>();
+    }
+
+    /// <summary>SimpleInjector locks its container on the first resolution, so a later registration must fail loudly rather than be dropped.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SimpleInjectorDependencyResolver_RegisterByType_AfterFirstResolution_Throws()
+    {
+        using var resolver = new SimpleInjectorDependencyResolver(new Container(), new SimpleInjectorInitializer());
+        _ = resolver.GetService(typeof(IViewModelOne));
+
+        await Assert.That(() => resolver.Register((Func<object?>)(static () => new ViewModelOne()), typeof(IViewModelOne)))
+            .Throws<InvalidOperationException>();
+    }
+
+    /// <summary>The resolver should report the registrations the initializer staged into the container.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SimpleInjectorDependencyResolver_HasRegistrationByType_SeesInitializerRegistrations()
+    {
         using var initializer = new SimpleInjectorInitializer();
-        initializer.RegisterLazySingleton(static () => new ViewModelOne(), contract);
+        initializer.Register((Func<object?>)(static () => new ViewModelOne()), typeof(IViewModelOne));
+        using var resolver = new SimpleInjectorDependencyResolver(new Container(), initializer);
 
-        var first = initializer.GetService<ViewModelOne>();
-        var second = initializer.GetService<ViewModelOne>();
-
-        await Assert.That(first).IsNotNull();
-        await Assert.That(second).IsSameReferenceAs(first);
+        await Assert.That(resolver.HasRegistration(typeof(IViewModelOne))).IsTrue();
     }
 
     /// <summary>The resolver's non-generic GetService should fall back to the registered collection when no single registration exists.</summary>
@@ -668,36 +590,6 @@ public class DependencyResolverTests
         await Assert.That(service).IsNull();
     }
 
-    /// <summary>The resolver's non-generic GetService with a contract should ignore the contract and resolve normally.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorDependencyResolver_GetServiceByTypeWithContract_IgnoresContract()
-    {
-        const string contract = "contract";
-        var container = new Container();
-        container.RegisterSingleton<IScreen, MockScreen>();
-        using var resolver = new SimpleInjectorDependencyResolver(container, new SimpleInjectorInitializer());
-
-        var service = resolver.GetService(typeof(IScreen), contract);
-
-        await Assert.That(service).IsTypeOf<MockScreen>();
-    }
-
-    /// <summary>The resolver's generic GetService with a contract should ignore the contract and resolve normally.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorDependencyResolver_GetServiceGenericWithContract_IgnoresContract()
-    {
-        const string contract = "contract";
-        var container = new Container();
-        container.RegisterSingleton<IScreen, MockScreen>();
-        using var resolver = new SimpleInjectorDependencyResolver(container, new SimpleInjectorInitializer());
-
-        var service = resolver.GetService<IScreen>(contract);
-
-        await Assert.That(service).IsTypeOf<MockScreen>();
-    }
-
     /// <summary>The resolver's non-generic GetServices should return the single registration when no collection registration exists.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -729,79 +621,6 @@ public class DependencyResolverTests
         await Assert.That(services).Count().IsEqualTo(0);
     }
 
-    /// <summary>The resolver's non-generic GetServices with a contract should ignore the contract and resolve normally.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorDependencyResolver_GetServicesByTypeWithContract_IgnoresContract()
-    {
-        const string contract = "contract";
-        const int expectedCount = 1;
-        var container = new Container();
-        container.RegisterSingleton<IScreen, MockScreen>();
-        using var resolver = new SimpleInjectorDependencyResolver(container, new SimpleInjectorInitializer());
-
-        var services = resolver.GetServices(typeof(IScreen), contract).ToList();
-
-        await Assert.That(services).Count().IsEqualTo(expectedCount);
-    }
-
-    /// <summary>The resolver's generic GetServices with a contract should ignore the contract and resolve normally.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorDependencyResolver_GetServicesGenericWithContract_IgnoresContract()
-    {
-        const string contract = "contract";
-        const int expectedCount = 1;
-        var container = new Container();
-        container.RegisterSingleton<IScreen, MockScreen>();
-        using var resolver = new SimpleInjectorDependencyResolver(container, new SimpleInjectorInitializer());
-
-        var services = resolver.GetServices<IScreen>(contract).ToList();
-
-        await Assert.That(services).Count().IsEqualTo(expectedCount);
-    }
-
-    /// <summary>The resolver's generic GetServices should return the container's registrations typed.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorDependencyResolver_GetServicesGeneric_ReturnsTypedRegistrations()
-    {
-        const int expectedCount = 1;
-        var container = new Container();
-        container.RegisterSingleton<IScreen, MockScreen>();
-        using var resolver = new SimpleInjectorDependencyResolver(container, new SimpleInjectorInitializer());
-
-        var services = resolver.GetServices<IScreen>().ToList();
-
-        using (Assert.Multiple())
-        {
-            await Assert.That(services).Count().IsEqualTo(expectedCount);
-            await Assert.That(services[0]).IsTypeOf<MockScreen>();
-        }
-    }
-
-    /// <summary>The initializer should report no service when the registered factory list for a type is empty.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorInitializer_GetServiceByType_WithEmptyFactoryList_ReturnsNull()
-    {
-        var initializer = new SimpleInjectorInitializer();
-        initializer.RegisteredFactories[typeof(IScreen)] = [];
-
-        await Assert.That(initializer.GetService(typeof(IScreen))).IsNull();
-    }
-
-    /// <summary>The initializer's generic GetService should report no service when the registered factory list is empty.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorInitializer_GetServiceGeneric_WithEmptyFactoryList_ReturnsDefault()
-    {
-        var initializer = new SimpleInjectorInitializer();
-        initializer.RegisteredFactories[typeof(IScreen)] = [];
-
-        await Assert.That(initializer.GetService<IScreen>()).IsNull();
-    }
-
     /// <summary>The resolver's non-generic HasRegistration should reflect whether the container has a registration for a type.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -826,32 +645,6 @@ public class DependencyResolverTests
         using var resolver = new SimpleInjectorDependencyResolver(new Container(), new SimpleInjectorInitializer());
 
         await Assert.That(resolver.HasRegistration((Type?)null)).IsFalse();
-    }
-
-    /// <summary>The resolver's non-generic HasRegistration with a contract should ignore the contract.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorDependencyResolver_HasRegistrationByTypeWithContract_IgnoresContract()
-    {
-        const string contract = "contract";
-        var container = new Container();
-        container.RegisterSingleton<IScreen, MockScreen>();
-        using var resolver = new SimpleInjectorDependencyResolver(container, new SimpleInjectorInitializer());
-
-        await Assert.That(resolver.HasRegistration(typeof(IScreen), contract)).IsTrue();
-    }
-
-    /// <summary>The resolver's generic HasRegistration with a contract should ignore the contract.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorDependencyResolver_HasRegistrationGenericWithContract_IgnoresContract()
-    {
-        const string contract = "contract";
-        var container = new Container();
-        container.RegisterSingleton<IScreen, MockScreen>();
-        using var resolver = new SimpleInjectorDependencyResolver(container, new SimpleInjectorInitializer());
-
-        await Assert.That(resolver.HasRegistration<IScreen>(contract)).IsTrue();
     }
 
     /// <summary>The resolver's service/implementation Register overload should register directly into the container and resolve the implementation.</summary>
@@ -992,32 +785,6 @@ public class DependencyResolverTests
         await Assert.That(() => resolver.ServiceRegistrationCallback<IViewModelOne>(contract, static _ => { })).Throws<NotSupportedException>();
     }
 
-    /// <summary>The resolver's RegisterConstant with a contract is a compatibility no-op that registers nothing.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorDependencyResolver_RegisterConstantWithContract_DoesNotRegister()
-    {
-        const string contract = "contract";
-        using var resolver = new SimpleInjectorDependencyResolver(new Container(), new SimpleInjectorInitializer());
-
-        resolver.RegisterConstant(new ViewModelOne(), contract);
-
-        await Assert.That(resolver.HasRegistration(typeof(ViewModelOne))).IsFalse();
-    }
-
-    /// <summary>The resolver's RegisterLazySingleton with a contract is a compatibility no-op that registers nothing.</summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task SimpleInjectorDependencyResolver_RegisterLazySingletonWithContract_DoesNotRegister()
-    {
-        const string contract = "contract";
-        using var resolver = new SimpleInjectorDependencyResolver(new Container(), new SimpleInjectorInitializer());
-
-        resolver.RegisterLazySingleton(static () => new ViewModelOne(), contract);
-
-        await Assert.That(resolver.HasRegistration(typeof(ViewModelOne))).IsFalse();
-    }
-
     /// <summary>Disposing the resolver without disposing managed resources should leave the underlying container usable.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
@@ -1030,6 +797,47 @@ public class DependencyResolverTests
         resolver.InvokeDispose(false);
 
         await Assert.That(container.GetInstance<ViewModelOne>()).IsNotNull();
+    }
+
+    /// <summary>The resolver's generic GetServices should return the container's registrations typed.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SimpleInjectorDependencyResolver_GetServicesGeneric_ReturnsTypedRegistrations()
+    {
+        const int expectedCount = 1;
+        var container = new Container();
+        container.RegisterSingleton<IScreen, MockScreen>();
+        using var resolver = new SimpleInjectorDependencyResolver(container, new SimpleInjectorInitializer());
+
+        var services = resolver.GetServices<IScreen>().ToList();
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(services).Count().IsEqualTo(expectedCount);
+            await Assert.That(services[0]).IsTypeOf<MockScreen>();
+        }
+    }
+
+    /// <summary>The initializer should report no service when the registered factory list for a type is empty.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SimpleInjectorInitializer_GetServiceByType_WithEmptyFactoryList_ReturnsNull()
+    {
+        var initializer = new SimpleInjectorInitializer();
+        initializer.RegisteredFactories[typeof(IScreen)] = [];
+
+        await Assert.That(initializer.GetService(typeof(IScreen))).IsNull();
+    }
+
+    /// <summary>The initializer's generic GetService should report no service when the registered factory list is empty.</summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    [Test]
+    public async Task SimpleInjectorInitializer_GetServiceGeneric_WithEmptyFactoryList_ReturnsDefault()
+    {
+        var initializer = new SimpleInjectorInitializer();
+        initializer.RegisteredFactories[typeof(IScreen)] = [];
+
+        await Assert.That(initializer.GetService<IScreen>()).IsNull();
     }
 
     /// <summary>Test-only resolver that exposes the protected dispose to exercise the non-managed dispose branch.</summary>

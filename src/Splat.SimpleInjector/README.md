@@ -41,3 +41,27 @@ container.Options.AllowOverridingRegistrations = true;
 container.Register<IViewLocator, MyCustomViewLocator>();
 
 ```
+
+### Contracts
+
+SimpleInjector deliberately has no named or keyed registrations, so Splat keeps contract registrations beside the
+container rather than inside it. A contract registration is only ever returned to a caller asking for the same
+contract, and a contract-less lookup never sees it:
+
+```cs
+AppLocator.CurrentMutable.Register<IViewLocator>(() => new PhoneViewLocator(), "phone");
+AppLocator.CurrentMutable.Register<IViewLocator>(() => new TabletViewLocator(), "tablet");
+
+AppLocator.Current.GetService<IViewLocator>("phone");  // PhoneViewLocator
+AppLocator.Current.GetService<IViewLocator>();         // null - neither contract answers this
+```
+
+Because contract registrations live outside the container, SimpleInjector cannot inject them into a constructor.
+Resolve them through Splat.
+
+### Registering after the container is wired up
+
+Contract-less registrations go straight into the container, so they are injectable by SimpleInjector. SimpleInjector
+locks its container on the first resolution, so register everything - through `SimpleInjectorInitializer` or against
+the container - before resolving anything. A registration attempted after the first resolution fails with
+SimpleInjector's own exception rather than being silently dropped.
