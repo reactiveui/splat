@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Splat.SkiaSharp\Splat.SkiaSharp.csproj" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Condition="$([MSBuild]::IsOsPlatform('Linux'))" />
   </ItemGroup>
 
   <!-- The shipped targets do not travel over a project reference, so import them here to keep this
