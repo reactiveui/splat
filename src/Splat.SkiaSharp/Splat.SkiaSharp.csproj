@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>$(SplatModernTargets)</TargetFrameworks>
+    <AssemblyName>Splat.SkiaSharp</AssemblyName>
+    <RootNamespace>Splat</RootNamespace>
+    <Authors>.NET Foundation and Contributors</Authors>
+    <Description>SkiaSharp bitmap loading and saving for Splat on the plain .NET target frameworks, which have no platform imaging stack of their own</Description>
+    <PackageId>Splat.SkiaSharp</PackageId>
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp" />
+    <!-- SkiaSharp itself only brings the macOS and Win32 native assets on the plain .NET target
+         frameworks, so Linux has to be asked for by name: without this the package restores
+         cleanly and then fails to load its native library on exactly the hosts this package
+         exists to serve. The build with no external shared-library dependencies is the one that
+         runs in a bare container; a consumer that also rasterises text can replace it with
+         SkiaSharp.NativeAssets.Linux, which links against fontconfig. -->
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Splat.Drawing\Splat.Drawing.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Splat.SkiaSharp.Tests" />
+  </ItemGroup>
+  <!-- Shipped to consumers, and imported here so this repository's own output matches theirs. -->
+  <ItemGroup>
+    <None Include="build\Splat.SkiaSharp.targets" Pack="true" PackagePath="buildTransitive\Splat.SkiaSharp.targets" />
+  </ItemGroup>
+  <Import Project="build\Splat.SkiaSharp.targets" />
+</Project>

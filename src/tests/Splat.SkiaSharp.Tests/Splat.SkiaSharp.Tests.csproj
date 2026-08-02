@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(SplatModernTargets)</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+    <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Splat.SkiaSharp\Splat.SkiaSharp.csproj" />
+  </ItemGroup>
+
+  <!-- The shipped targets do not travel over a project reference, so import them here to keep this
+       project's output the same size as a consumer's. -->
+  <Import Project="..\..\Splat.SkiaSharp\build\Splat.SkiaSharp.targets" />
+
+</Project>

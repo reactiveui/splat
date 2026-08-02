@@ -1,0 +1,53 @@
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.SkiaSharp.Tests")]
+namespace Splat.Builder
+{
+    public sealed class SkiaSharpSplatModule : Splat.Builder.IModule
+    {
+        public SkiaSharpSplatModule() { }
+        public SkiaSharpSplatModule(SkiaSharp.SKSamplingOptions? sampling) { }
+        public void Configure(Splat.IMutableDependencyResolver resolver) { }
+    }
+}
+namespace Splat.SkiaSharp
+{
+    public static class BitmapMixins
+    {
+        extension(SkiaSharp.SKBitmap value)
+        {
+            public Splat.IBitmap FromNative() { }
+        }
+        extension(Splat.IBitmap value)
+        {
+            public SkiaSharp.SKBitmap ToNative() { }
+        }
+    }
+    public static class MutableDependencyResolverExtensions
+    {
+        extension(Splat.IMutableDependencyResolver instance)
+        {
+            public void UseSkiaSharpBitmapLoader() { }
+            public void UseSkiaSharpBitmapLoader(SkiaSharp.SKSamplingOptions sampling) { }
+        }
+    }
+    public sealed class SkiaBitmap : Splat.IBitmap
+    {
+        public SkiaBitmap(SkiaSharp.SKBitmap bitmap) { }
+        public SkiaBitmap(SkiaSharp.SKBitmap bitmap, SkiaSharp.SKEncodedOrigin encodedOrigin) { }
+        public SkiaSharp.SKEncodedOrigin EncodedOrigin { get; }
+        public float Height { get; }
+        public SkiaSharp.SKBitmap? Inner { get; }
+        public float Width { get; }
+        public void Dispose() { }
+        public System.Threading.Tasks.Task Save(SkiaSharp.SKEncodedImageFormat format, float quality, System.IO.Stream target) { }
+        public System.Threading.Tasks.Task Save(Splat.CompressedBitmapFormat format, float quality, System.IO.Stream target) { }
+    }
+    public sealed class SkiaBitmapLoader : Splat.IBitmapLoader
+    {
+        public SkiaBitmapLoader() { }
+        public SkiaBitmapLoader(SkiaSharp.SKSamplingOptions sampling) { }
+        public SkiaSharp.SKSamplingOptions Sampling { get; }
+        public Splat.IBitmap Create(float width, float height) { }
+        public System.Threading.Tasks.Task<Splat.IBitmap?> Load(System.IO.Stream sourceStream, float? desiredWidth, float? desiredHeight) { }
+        public System.Threading.Tasks.Task<Splat.IBitmap?> LoadFromResource(string source, float? desiredWidth, float? desiredHeight) { }
+    }
+}

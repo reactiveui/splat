@@ -11,6 +11,7 @@
     <Project Path="Splat.Core/Splat.Core.csproj" />
     <Project Path="Splat.Drawing/Splat.Drawing.csproj" />
     <Project Path="Splat.Logging/Splat.Logging.csproj" />
+    <Project Path="Splat.SkiaSharp/Splat.SkiaSharp.csproj" />
     <Project Path="Splat/Splat.csproj" />
   </Folder>
   <Folder Name="/ExtensionsAppLocator/">
@@ -38,6 +39,7 @@
     <Project Path="tests/Splat.Builder.Tests/Splat.Builder.Tests.csproj" />
     <Project Path="tests/Splat.Common.Test/Splat.Common.Test.csproj" />
     <Project Path="tests/Splat.Drawing.Tests/Splat.Drawing.Tests.csproj" />
+    <Project Path="tests/Splat.SkiaSharp.Tests/Splat.SkiaSharp.Tests.csproj" />
     <Project Path="tests/Splat.Tests/Splat.Tests.csproj" />
   </Folder>
   <Folder Name="/test/DI/">
