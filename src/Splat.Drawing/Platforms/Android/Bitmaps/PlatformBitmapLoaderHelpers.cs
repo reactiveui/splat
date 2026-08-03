@@ -47,20 +47,7 @@ internal static class PlatformBitmapLoaderHelpers
             AttemptStreamByteCorrection(sourceStream, logger);
         }
 
-        sourceStream.Position = 0;
-        Bitmap? bitmap = null;
-
-        if (desiredWidth is null || desiredHeight is null)
-        {
-            bitmap = await Task.Run(() => BitmapFactory.DecodeStream(sourceStream)).ConfigureAwait(false);
-        }
-        else
-        {
-            using var opts = new BitmapFactory.Options { OutWidth = (int)desiredWidth.Value, OutHeight = (int)desiredHeight.Value };
-
-            using var noPadding = new Rect(0, 0, 0, 0);
-            bitmap = await Task.Run(() => BitmapFactory.DecodeStream(sourceStream, noPadding, opts)).ConfigureAwait(true);
-        }
+        var bitmap = await Task.Run(() => Decode(sourceStream, desiredWidth, desiredHeight)).ConfigureAwait(false);
 
         return bitmap switch
         {
@@ -131,5 +118,75 @@ internal static class PlatformBitmapLoaderHelpers
             sourceStream.Position = sourceStream.Length;
             sourceStream.Write([JpegEndOfImageMarkerByte1, JpegEndOfImageMarkerByte2]);
         }
+    }
+
+    /// <summary>Decodes the stream, shrinking the image inside the decode when a size was asked for.</summary>
+    /// <remarks>
+    /// The source dimensions are read from the header first so the decode can subsample: that keeps the full-size
+    /// pixels from ever being allocated, which is several times cheaper than decoding everything and scaling after.
+    /// Subsampling only lands on powers of two, so a final scale settles the image on the exact fitted size.
+    /// </remarks>
+    /// <param name="sourceStream">The stream to decode the bitmap from.</param>
+    /// <param name="desiredWidth">The requested width, or <see langword="null"/> when the caller did not constrain it.</param>
+    /// <param name="desiredHeight">The requested height, or <see langword="null"/> when the caller did not constrain it.</param>
+    /// <returns>The decoded bitmap, or <see langword="null"/> when the stream does not hold an image the decoder accepts.</returns>
+    private static Bitmap? Decode(Stream sourceStream, float? desiredWidth, float? desiredHeight)
+    {
+        var (sourceWidth, sourceHeight) = ReadPixelSize(sourceStream);
+
+        if (BitmapDecodeSize.ChooseFittedSize(sourceWidth, sourceHeight, desiredWidth, desiredHeight) is not { } target)
+        {
+            return DecodeStream(sourceStream, null);
+        }
+
+        var sampleSize = BitmapDecodeSize.ChooseSampleSize(sourceWidth, sourceHeight, target.Width, target.Height);
+
+        using var options = new BitmapFactory.Options { InSampleSize = sampleSize };
+
+        var decoded = DecodeStream(sourceStream, options);
+
+        return decoded is null ? null : ScaleToFittedSize(decoded, target);
+    }
+
+    /// <summary>Reads the source dimensions from the stream's header without allocating any pixels.</summary>
+    /// <param name="sourceStream">The stream to inspect.</param>
+    /// <returns>The source dimensions, which the decoder reports as non-positive when it cannot read the header.</returns>
+    private static (int Width, int Height) ReadPixelSize(Stream sourceStream)
+    {
+        using var bounds = new BitmapFactory.Options { InJustDecodeBounds = true };
+
+        // A bounds-only decode reports the dimensions through the options and hands back no bitmap.
+        DecodeStream(sourceStream, bounds)?.Dispose();
+
+        return (bounds.OutWidth, bounds.OutHeight);
+    }
+
+    /// <summary>Rewinds the stream and hands it to the decoder.</summary>
+    /// <param name="sourceStream">The stream to decode the bitmap from.</param>
+    /// <param name="options">The decoder options, or <see langword="null"/> to decode at the source size.</param>
+    /// <returns>The decoded bitmap, or <see langword="null"/> when the decoder produced none.</returns>
+    private static Bitmap? DecodeStream(Stream sourceStream, BitmapFactory.Options? options)
+    {
+        sourceStream.Position = 0;
+        return BitmapFactory.DecodeStream(sourceStream, null, options);
+    }
+
+    /// <summary>Settles a subsampled bitmap on the exact fitted size, releasing the intermediate.</summary>
+    /// <param name="decoded">The bitmap the decoder produced.</param>
+    /// <param name="target">The dimensions the caller's request works out to.</param>
+    /// <returns>The bitmap at the fitted size, or <see langword="null"/> when the scale produced none.</returns>
+    private static Bitmap? ScaleToFittedSize(Bitmap decoded, (int Width, int Height) target)
+    {
+        if (decoded.Width == target.Width && decoded.Height == target.Height)
+        {
+            return decoded;
+        }
+
+        var scaled = Bitmap.CreateScaledBitmap(decoded, target.Width, target.Height, true);
+
+        decoded.Recycle();
+        decoded.Dispose();
+
+        return scaled;
     }
 }

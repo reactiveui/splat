@@ -18,7 +18,10 @@ jobs:
       sonarProjectKey: reactiveui_splat
       sonarOrganization: reactiveui
       sonarExclusions: '**/tests/**,**/Benchmarks/**,**/benchmarks/**,**/TestResults/**'
-      sonarCoverageExclusions: '**/tests/**,**/Benchmarks/**,**/benchmarks/**,**/*Tests/**,**/*Tests.cs,**/Polyfills/**,**/Generated/**'
+      # The Android, Cocoa and .NET Framework platform folders compile only into target frameworks no
+      # test project builds, so nothing loads them on any machine or CI leg and they can never report
+      # coverage. Logic that needs covering is kept out of them.
+      sonarCoverageExclusions: '**/tests/**,**/Benchmarks/**,**/benchmarks/**,**/*Tests/**,**/*Tests.cs,**/Polyfills/**,**/Generated/**,**/Platforms/Android/**,**/Platforms/Cocoa/**,**/Platforms/net4/**'
       # *.TypedArguments.cs holds the overload matrix each logging contract dictates - one overload per
       # argument count, per level - so the repetition is the contract, not a copy that should be shared.
       sonarCpdExclusions: '**/tests/**,**/Benchmarks/**,**/benchmarks/**,**/Polyfills/**,**/*.TypedArguments.cs'
