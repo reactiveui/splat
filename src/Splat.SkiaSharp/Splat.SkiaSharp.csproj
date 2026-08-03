@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>$(SplatModernTargets)</TargetFrameworks>
+    <AssemblyName>Splat.SkiaSharp</AssemblyName>
+    <RootNamespace>Splat</RootNamespace>
+    <Authors>.NET Foundation and Contributors</Authors>
+    <Description>SkiaSharp bitmap loading and saving for Splat on the plain .NET target frameworks, which have no platform imaging stack of their own</Description>
+    <PackageId>Splat.SkiaSharp</PackageId>
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Splat.Drawing\Splat.Drawing.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Splat.SkiaSharp.Tests" />
+  </ItemGroup>
+  <!-- Shipped to consumers, and imported here so this repository's own output matches theirs. -->
+  <ItemGroup>
+    <None Include="build\Splat.SkiaSharp.targets" Pack="true" PackagePath="buildTransitive\Splat.SkiaSharp.targets" />
+  </ItemGroup>
+  <Import Project="build\Splat.SkiaSharp.targets" />
+</Project>

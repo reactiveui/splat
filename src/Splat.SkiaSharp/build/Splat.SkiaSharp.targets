@@ -1,0 +1,34 @@
+<Project>
+
+  <!--
+    The Skia native packages ship a debug symbol file next to each Windows native library, and each
+    one is roughly seven times the size of the library it describes. Nothing resolves them at run
+    time, but the SDK copies every native asset it finds, so leaving them in place adds hundreds of
+    megabytes to the build and publish output of any project that references this package. Set
+    SplatSkiaSharpIncludeNativeSymbols to true to keep them for native debugging.
+  -->
+  <PropertyGroup>
+    <SplatSkiaSharpIncludeNativeSymbols Condition="'$(SplatSkiaSharpIncludeNativeSymbols)' == ''">false</SplatSkiaSharpIncludeNativeSymbols>
+  </PropertyGroup>
+
+  <Target Name="SplatSkiaSharpRemoveNativeSymbolsFromOutput"
+          AfterTargets="ResolveReferences"
+          Condition="'$(SplatSkiaSharpIncludeNativeSymbols)' != 'true'">
+    <ItemGroup>
+      <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)"
+                               Condition="'%(Filename)%(Extension)' == 'libSkiaSharp.pdb'" />
+      <RuntimeTargetsCopyLocalItems Remove="@(RuntimeTargetsCopyLocalItems)"
+                                    Condition="'%(Filename)%(Extension)' == 'libSkiaSharp.pdb'" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="SplatSkiaSharpRemoveNativeSymbolsFromPublish"
+          AfterTargets="ComputeResolvedFilesToPublishList"
+          Condition="'$(SplatSkiaSharpIncludeNativeSymbols)' != 'true'">
+    <ItemGroup>
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)"
+                             Condition="'%(Filename)%(Extension)' == 'libSkiaSharp.pdb'" />
+    </ItemGroup>
+  </Target>
+
+</Project>
