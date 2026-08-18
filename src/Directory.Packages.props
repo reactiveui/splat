@@ -41,7 +41,7 @@
     <PackageVersion Include="TUnit" Version="1.65.0" />
     <PackageVersion Include="Verify.TUnit" Version="31.28.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
-    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.9.0" />
+    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.10.0" />
     <PackageVersion Include="Microsoft.Testing.Platform.MSBuild" Version="2.3.3" />
     <PackageVersion Include="PublicApiSharp.Analyzers" Version="1.0.1" />
   </ItemGroup>
