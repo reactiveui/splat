@@ -13,8 +13,8 @@
     <!-- Pinned at the latest 2.x: Microsoft.ApplicationInsights 3.x removed PageViewTelemetry,
          which Splat.ApplicationInsights exposes on its public API (OnViewNavigation/GetPageViewTelemetry). -->
     <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.23.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.11" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.11" />
     <PackageVersion Include="OpenTelemetry.Api" Version="1.17.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.301" />
     <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="11.2.6" />
@@ -48,7 +48,7 @@
 
   <!-- Pinned transitive dependencies for compatibility -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="10.0.11" />
   </ItemGroup>
 
   <!-- Latest versions for modern TFMs (net8.0+) -->
