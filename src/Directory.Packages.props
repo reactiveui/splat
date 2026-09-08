@@ -18,7 +18,7 @@
     <PackageVersion Include="OpenTelemetry.Api" Version="1.18.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.400" />
     <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="11.2.6" />
-    <PackageVersion Include="MinVer" Version="7.0.0" />
+    <PackageVersion Include="MinVer" Version="8.0.0" />
     <PackageVersion Include="Ninject" Version="3.3.6" />
     <PackageVersion Include="NLog" Version="6.2.0" />
     <PackageVersion Include="Prism.Core" Version="9.0.537" />
