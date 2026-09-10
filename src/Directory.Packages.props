@@ -38,7 +38,7 @@
     <PackageVersion Include="SecuritySharp.Analyzers" Version="3.40.1" />
     <PackageVersion Include="System.Net.Http" Version="4.3.4" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
-    <PackageVersion Include="TUnit" Version="1.65.68" />
+    <PackageVersion Include="TUnit" Version="1.66.27" />
     <PackageVersion Include="Verify.TUnit" Version="32.0.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
     <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.10.0" />
