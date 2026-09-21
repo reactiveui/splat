@@ -1,3 +1,7 @@
-# Contributor Code of Conduct
+# Code of Conduct
 
-If you’re being harassed, noticed someone else being harassed, or have any other concerns, please <a href="mailto:hello@reactiveui.net">contact us immediately</a>. Your reports will be taken seriously and will not be dismissed or argued with. All members, committers and volunteers in this community are required to act according to the [Code of Conduct](https://reactiveui.net/code-of-conduct/).
+The ReactiveUI Code of Conduct is published at
+[www.reactiveui.net/code-of-conduct](https://www.reactiveui.net/code-of-conduct/).
+It applies to every repository in the [reactiveui](https://github.com/reactiveui) organization.
+
+To report a concern, email [hello@reactiveui.net](mailto:hello@reactiveui.net).
