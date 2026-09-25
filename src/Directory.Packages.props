@@ -15,12 +15,12 @@
     <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.23.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.11" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.11" />
-    <PackageVersion Include="OpenTelemetry.Api" Version="1.18.0" />
+    <PackageVersion Include="OpenTelemetry.Api" Version="1.19.1" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.401" />
     <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="11.2.6" />
     <PackageVersion Include="MinVer" Version="8.0.0" />
     <PackageVersion Include="Ninject" Version="3.3.6" />
-    <PackageVersion Include="NLog" Version="6.2.0" />
+    <PackageVersion Include="NLog" Version="6.2.1" />
     <PackageVersion Include="Prism.Core" Version="9.0.537" />
     <PackageVersion Include="ReactiveUI.Disposables" Version="7.5.0" />
     <PackageVersion Include="Roslynator.Analyzers" Version="5.0.0" />
