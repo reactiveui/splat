@@ -7,7 +7,7 @@
     <PackageVersion Include="Autofac" Version="9.3.3" />
     <PackageVersion Include="DryIoc.Dll" Version="5.4.3" />
     <PackageVersion Include="Exceptionless" Version="6.2.0" />
-    <PackageVersion Include="log4net" Version="3.4.0" />
+    <PackageVersion Include="log4net" Version="3.5.0" />
     <PackageVersion Include="Microsoft.AppCenter.Analytics" Version="5.0.7" />
     <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="5.0.7" />
     <!-- Pinned at the latest 2.x: Microsoft.ApplicationInsights 3.x removed PageViewTelemetry,
