@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.ApplicationInsights" VersionOverride="3.1.2" />
+    <PackageReference Include="Microsoft.ApplicationInsights" VersionOverride="3.2.0" />
     <ProjectReference Include="..\..\Splat.ApplicationInsightsV3\Splat.ApplicationInsightsV3.csproj" />
     <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />
   </ItemGroup>
