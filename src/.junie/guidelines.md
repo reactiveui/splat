@@ -1,4 +1,4 @@
-﻿# Splat: Cross-Platform Library for .NET
+# Splat: Cross-Platform Library for .NET
 
 Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.
 
@@ -320,7 +320,7 @@ public partial class ObservableLinkedList<T> : INotifyCollectionChanged, INotify
 - **net8.0** - Modern .NET with performance improvements
 - **net9.0** - .NET with advanced features and AOT support
 - **net10.0** - Latest .NET with newest features
-- **net462/net472/net481** - .NET Framework for Windows compatibility
+- **net47/net472/net481** - .NET Framework for Windows compatibility
 
 ### Windows-Specific Frameworks
 - **net8.0-windows10.0.19041.0** - Windows-specific APIs

@@ -11,7 +11,7 @@ namespace Splat.Internal;
 
 /// <summary>
 /// Polyfill for the <see cref="ArgumentNullException"/>/<see cref="ArgumentException"/> throw helpers on target
-/// frameworks (net462-net481) that predate them. On net8.0 and later this type is not compiled; consuming projects
+/// frameworks (net47-net481) that predate them. On net8.0 and later this type is not compiled; consuming projects
 /// alias the <c>ArgumentExceptionHelper</c> identifier directly to <see cref="ArgumentNullException"/> so the call
 /// sites bind to the BCL methods (<c>ThrowIfNullOrWhiteSpace</c> resolving via the <see cref="ArgumentException"/> base).
 /// </summary>

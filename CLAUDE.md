@@ -211,7 +211,7 @@ Splat is a cross-platform utility library providing abstractions for common func
 The project uses granular target framework definitions in `Directory.Build.props`:
 
 - `SplatModernTargets` - net10.0, net11.0 (modern cross-platform)
-- `SplatLegacyTargets` - net462, net47, net471, net472, net48, net481 (.NET Framework)
+- `SplatLegacyTargets` - net47, net471, net472, net48, net481 (.NET Framework)
 - `SplatCoreTargets` - Combines modern + legacy targets for core libraries
 - `SplatWindowsTargets` - net10.0-windows10.0.17763.0 and net10.0/net11.0-windows10.0.19041.0
 - `SplatAndroidTargets` - net10.0-android36.0, net11.0-android37.0

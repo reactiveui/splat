@@ -328,8 +328,8 @@ Splat uses a centralized, OS-aware build system defined in `src/Directory.Build.
 
 #### TFM Property Groups
 - **`SplatModernTargets`**: `net8.0;net9.0;net10.0` - Used by tests and benchmarks.
-- **`SplatLegacyTargets`**: `net462;net472;net481` - Used by core libraries, only on Windows.
-- **`SplatCoreTargets`**: `net8.0;net9.0;net10.0;net462;net472;net481` - Used by core libraries for broad compatibility (legacy targets are conditional).
+- **`SplatLegacyTargets`**: `net472;net481` - Used by core libraries, only on Windows.
+- **`SplatCoreTargets`**: `net8.0;net9.0;net10.0;net472;net481` - Used by core libraries for broad compatibility (legacy targets are conditional).
 - **`SplatUiFinalTargetFrameworks`**: An OS-aware composition for UI projects that includes platform-specific targets (Android, Apple, Windows, Tizen).
 
 #### OS-Aware Target Selection
@@ -352,7 +352,7 @@ Splat uses a centralized, OS-aware build system defined in `src/Directory.Build.
 - **net8.0** - Modern .NET with performance improvements
 - **net9.0** - .NET with advanced features and AOT support
 - **net10.0** - Latest .NET with newest features
-- **net462/net472/net481** - .NET Framework for Windows compatibility
+- **net47/net472/net481** - .NET Framework for Windows compatibility
 
 ### Windows-Specific Frameworks
 - **net8.0-windows10.0.17763.0** - Windows-specific APIs

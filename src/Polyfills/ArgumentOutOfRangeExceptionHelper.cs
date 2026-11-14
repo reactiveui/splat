@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 namespace Splat.Internal;
 
 /// <summary>
-/// Polyfill for the <see cref="ArgumentOutOfRangeException"/> throw helpers on target frameworks (net462-net481)
+/// Polyfill for the <see cref="ArgumentOutOfRangeException"/> throw helpers on target frameworks (net47-net481)
 /// that predate them. On net8.0 and later this type is not compiled; consuming projects alias the
 /// <c>ArgumentOutOfRangeExceptionHelper</c> identifier directly to <see cref="ArgumentOutOfRangeException"/>.
 /// </summary>

@@ -12,7 +12,7 @@ public static class ServiceLocationDrawingInitializationExtensions
     extension(IMutableDependencyResolver resolver)
     {
         /// <summary>Registers the platform bitmap loader for the current platform.</summary>
-#if !IS_SHARED_NET && !NET462_OR_GREATER
+#if !IS_SHARED_NET && !NET47_OR_GREATER
         [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("Needs to use reflection")]
 #endif
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
