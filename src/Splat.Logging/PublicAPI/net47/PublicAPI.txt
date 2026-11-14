@@ -421,7 +421,7 @@ namespace Splat
     }
     public static class LogHostExtensions
     {
-        extension(T logClassInstance) where T : Splat.IEnableLogger
+        extension<T>(T logClassInstance) where T : Splat.IEnableLogger
         {
             public Splat.IFullLogger Log() { }
         }

@@ -19,7 +19,7 @@ namespace Splat;
 internal class InternalLocator : IDisposable
 {
     /// <summary>Registration-change callbacks. A process-wide default instance is used, while still allowing isolation in unit tests.</summary>
-    private readonly List<Action> _resolverChanged = new(4);
+    private readonly List<Action> _resolverChanged = [with(4)];
 
     /// <summary>Subscription that raises registration-change notifications; disposed with this instance.</summary>
     private readonly IDisposable _resolverChangedNotification;

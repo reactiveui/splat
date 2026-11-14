@@ -105,7 +105,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
         _comparer = paramComparer;
 
         _mruList = [];
-        _entries = new(_comparer);
+        _entries = [with(_comparer)];
     }
 
     /// <summary>Gets the cached value for <paramref name="key"/>, computing and caching it if necessary.</summary>
@@ -257,7 +257,7 @@ public sealed class MemoizingMRUCache<TParam, TVal>
             // Swap caches quickly under lock.
             oldEntries = _entries;
             _mruList = [];
-            _entries = new(_comparer);
+            _entries = [with(_comparer)];
         }
 
         if (_releaseFunction is null)

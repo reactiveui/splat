@@ -404,7 +404,7 @@ public class SimpleInjectorDependencyResolver : IDependencyResolver
     {
         foreach (var typeFactories in initializer.RegisteredFactories)
         {
-            List<TransientSimpleInjectorRegistration> registrations = new(typeFactories.Value.Count);
+            List<TransientSimpleInjectorRegistration> registrations = [with(typeFactories.Value.Count)];
             foreach (var factory in typeFactories.Value)
             {
                 registrations.Add(new(_container, typeFactories.Key, factory));

@@ -24,8 +24,11 @@ internal enum DynamicallyAccessedMemberTypes
     /// <summary>Specifies the default, parameterless public constructor.</summary>
     PublicParameterlessConstructor = 0x0001,
 
+    /// <summary>Specifies the public constructors that take parameters.</summary>
+    PublicParameterizedConstructors = 0x0002,
+
     /// <summary>Specifies all public constructors.</summary>
-    PublicConstructors = 0x0002 | PublicParameterlessConstructor,
+    PublicConstructors = PublicParameterizedConstructors | PublicParameterlessConstructor,
 
     /// <summary>Specifies all non-public constructors.</summary>
     NonPublicConstructors = 0x0004,
@@ -64,7 +67,9 @@ internal enum DynamicallyAccessedMemberTypes
     Interfaces = 0x2000,
 
     /// <summary>Specifies all members.</summary>
-    All = ~None
+    All = PublicConstructors | NonPublicConstructors | PublicMethods | NonPublicMethods
+        | PublicFields | NonPublicFields | PublicNestedTypes | NonPublicNestedTypes
+        | PublicProperties | NonPublicProperties | PublicEvents | NonPublicEvents | Interfaces
 }
 
 #else

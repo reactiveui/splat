@@ -17,6 +17,8 @@ public static class LogHostExtensions
         /// <returns>The <see cref="IFullLogger"/> for the class type.</returns>
         public IFullLogger Log()
         {
+            // The receiver supplies T for logger selection; null is supported.
+            _ = logClassInstance;
             var factory = AppLocator.Current.GetService<ILogManager>();
             return factory switch
             {

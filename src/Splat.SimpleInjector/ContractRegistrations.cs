@@ -109,7 +109,7 @@ internal sealed class ContractRegistrations
 
         lock (_lockObject)
         {
-            snapshot = new(_factories.Count);
+            snapshot = [with(_factories.Count)];
             foreach (var entry in _factories)
             {
                 foreach (var factory in entry.Value)

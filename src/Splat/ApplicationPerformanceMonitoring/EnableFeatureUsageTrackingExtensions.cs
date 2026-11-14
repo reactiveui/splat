@@ -20,6 +20,8 @@ public static class EnableFeatureUsageTrackingExtensions
         /// <exception cref="InvalidOperationException">Thrown if the feature usage tracking manager service is not available.</exception>
         public IFeatureUsageTrackingSession FeatureUsageTrackingSession(string featureName)
         {
+            // This marker receiver supplies the fluent API; tracking uses the registered manager.
+            _ = instance;
             var featureUsageTrackingSession = AppLocator.Current.GetService<IFeatureUsageTrackingManager>();
             return featureUsageTrackingSession switch
             {

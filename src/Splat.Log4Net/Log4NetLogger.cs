@@ -42,97 +42,50 @@ public sealed class Log4NetLogger : ILogger, IDisposable
     /// <inheritdoc />
     public void Write(string message, LogLevel logLevel)
     {
-        switch (logLevel)
+        if (logLevel == LogLevel.Info)
         {
-            case LogLevel.Debug:
-                {
-                    _logger.Debug(message);
-
-                    break;
-                }
-
-            case LogLevel.Info:
-                {
-                    _logger.Info(message);
-
-                    break;
-                }
-
-            case LogLevel.Warn:
-                {
-                    _logger.Warn(message);
-
-                    break;
-                }
-
-            case LogLevel.Error:
-                {
-                    _logger.Error(message);
-
-                    break;
-                }
-
-            case LogLevel.Fatal:
-                {
-                    _logger.Fatal(message);
-
-                    break;
-                }
-
-            default:
-                {
-                    _logger.Debug(message);
-
-                    break;
-                }
+            _logger.Info(message);
+        }
+        else if (logLevel == LogLevel.Warn)
+        {
+            _logger.Warn(message);
+        }
+        else if (logLevel == LogLevel.Error)
+        {
+            _logger.Error(message);
+        }
+        else if (logLevel == LogLevel.Fatal)
+        {
+            _logger.Fatal(message);
+        }
+        else
+        {
+            _logger.Debug(message);
         }
     }
 
     /// <inheritdoc />
     public void Write(Exception exception, string message, LogLevel logLevel)
     {
-        switch (logLevel)
+        if (logLevel == LogLevel.Info)
         {
-            case LogLevel.Debug:
-                {
-                    _logger.Debug(message, exception);
-                    break;
-                }
-
-            case LogLevel.Info:
-                {
-                    _logger.Info(message, exception);
-
-                    break;
-                }
-
-            case LogLevel.Warn:
-                {
-                    _logger.Warn(message, exception);
-
-                    break;
-                }
-
-            case LogLevel.Error:
-                {
-                    _logger.Error(message, exception);
-
-                    break;
-                }
-
-            case LogLevel.Fatal:
-                {
-                    _logger.Fatal(message, exception);
-
-                    break;
-                }
-
-            default:
-                {
-                    _logger.Debug(message, exception);
-
-                    break;
-                }
+            _logger.Info(message, exception);
+        }
+        else if (logLevel == LogLevel.Warn)
+        {
+            _logger.Warn(message, exception);
+        }
+        else if (logLevel == LogLevel.Error)
+        {
+            _logger.Error(message, exception);
+        }
+        else if (logLevel == LogLevel.Fatal)
+        {
+            _logger.Fatal(message, exception);
+        }
+        else
+        {
+            _logger.Debug(message, exception);
         }
     }
 
@@ -140,48 +93,25 @@ public sealed class Log4NetLogger : ILogger, IDisposable
     public void Write(string message, Type type, LogLevel logLevel)
     {
         var logger = LogResolver.Resolve(type);
-        switch (logLevel)
+        if (logLevel == LogLevel.Info)
         {
-            case LogLevel.Debug:
-                {
-                    logger.Debug(message);
-                    break;
-                }
-
-            case LogLevel.Info:
-                {
-                    logger.Info(message);
-
-                    break;
-                }
-
-            case LogLevel.Warn:
-                {
-                    logger.Warn(message);
-
-                    break;
-                }
-
-            case LogLevel.Error:
-                {
-                    logger.Error(message);
-
-                    break;
-                }
-
-            case LogLevel.Fatal:
-                {
-                    logger.Fatal(message);
-
-                    break;
-                }
-
-            default:
-                {
-                    logger.Debug(message);
-
-                    break;
-                }
+            logger.Info(message);
+        }
+        else if (logLevel == LogLevel.Warn)
+        {
+            logger.Warn(message);
+        }
+        else if (logLevel == LogLevel.Error)
+        {
+            logger.Error(message);
+        }
+        else if (logLevel == LogLevel.Fatal)
+        {
+            logger.Fatal(message);
+        }
+        else
+        {
+            logger.Debug(message);
         }
     }
 
@@ -189,48 +119,25 @@ public sealed class Log4NetLogger : ILogger, IDisposable
     public void Write(Exception exception, string message, Type type, LogLevel logLevel)
     {
         var logger = LogResolver.Resolve(type);
-        switch (logLevel)
+        if (logLevel == LogLevel.Info)
         {
-            case LogLevel.Debug:
-                {
-                    logger.Debug(message, exception);
-                    break;
-                }
-
-            case LogLevel.Info:
-                {
-                    logger.Info(message, exception);
-
-                    break;
-                }
-
-            case LogLevel.Warn:
-                {
-                    logger.Warn(message, exception);
-
-                    break;
-                }
-
-            case LogLevel.Error:
-                {
-                    logger.Error(message, exception);
-
-                    break;
-                }
-
-            case LogLevel.Fatal:
-                {
-                    logger.Fatal(message, exception);
-
-                    break;
-                }
-
-            default:
-                {
-                    logger.Debug(message, exception);
-
-                    break;
-                }
+            logger.Info(message, exception);
+        }
+        else if (logLevel == LogLevel.Warn)
+        {
+            logger.Warn(message, exception);
+        }
+        else if (logLevel == LogLevel.Error)
+        {
+            logger.Error(message, exception);
+        }
+        else if (logLevel == LogLevel.Fatal)
+        {
+            logger.Fatal(message, exception);
+        }
+        else
+        {
+            logger.Debug(message, exception);
         }
     }
 

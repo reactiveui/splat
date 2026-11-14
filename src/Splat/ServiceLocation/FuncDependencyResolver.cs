@@ -55,14 +55,14 @@ public class FuncDependencyResolver(
     private const int InitialCallbackListCapacity = 4;
 
     /// <summary>Maps a (service type, contract) key to the change callbacks registered for it.</summary>
-    private readonly Dictionary<(Type? type, string? contract), List<Action<IDisposable>>> _callbackRegistry = new(16);
+    private readonly Dictionary<(Type? type, string? contract), List<Action<IDisposable>>> _callbackRegistry = [with(16)];
 
     /// <summary>Stores deferred disposal actions associated with registrations made by this resolver.</summary>
     /// <remarks>
     /// Currently used for lazy singletons to dispose the created instance (if any) during <see cref="Dispose()"/>.
     /// Exceptions thrown by these actions are suppressed during disposal to avoid masking other cleanup.
     /// </remarks>
-    private readonly List<Action> _disposalActions = new(16);
+    private readonly List<Action> _disposalActions = [with(16)];
 
     /// <summary>Optional inner disposable provided at construction, disposed when this resolver is disposed.</summary>
     [SuppressMessage(
@@ -256,12 +256,12 @@ public class FuncDependencyResolver(
 
 #if NET6_0_OR_GREATER
         ref var slot = ref System.Runtime.InteropServices.CollectionsMarshal.GetValueRefOrAddDefault(_callbackRegistry, key, out _);
-        slot ??= new(InitialCallbackListCapacity);
+        slot ??= [with(InitialCallbackListCapacity)];
         var callbacks = slot;
 #else
         if (!_callbackRegistry.TryGetValue(key, out var callbacks))
         {
-            callbacks = new(InitialCallbackListCapacity);
+            callbacks = [with(InitialCallbackListCapacity)];
             _callbackRegistry[key] = callbacks;
         }
 #endif

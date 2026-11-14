@@ -96,7 +96,7 @@ public class ModernDependencyResolver : IDependencyResolver
         Dictionary<(Type serviceType, string? contract), List<Func<object?>>> reg;
         if (registry is not null)
         {
-            reg = new(registry.Count);
+            reg = [with(registry.Count)];
             foreach (var kvp in registry)
             {
                 reg[kvp.Key] = [.. kvp.Value];
@@ -104,12 +104,12 @@ public class ModernDependencyResolver : IDependencyResolver
         }
         else
         {
-            reg = new(DefaultRegistryCapacity);
+            reg = [with(DefaultRegistryCapacity)];
         }
 
         _snapshot = new(reg);
-        _callbackRegistry = new(DefaultBookkeepingCapacity);
-        _disposables = new(DefaultBookkeepingCapacity);
+        _callbackRegistry = [with(DefaultBookkeepingCapacity)];
+        _disposables = [with(DefaultBookkeepingCapacity)];
     }
 
     /// <inheritdoc />
@@ -172,7 +172,7 @@ public class ModernDependencyResolver : IDependencyResolver
             // Copy-on-write update of the registry for this key only.
             var newRegistry = CloneRegistryShallow(snap.Registry);
 
-            List<Func<object?>>? list = !newRegistry.TryGetValue(pair, out list) ? new(DefaultRegistrationListCapacity) : [.. list];
+            List<Func<object?>>? list = !newRegistry.TryGetValue(pair, out list) ? [with(DefaultRegistrationListCapacity)] : [.. list];
 
             // Wrap null-type registrations using NullServiceType.
             list.Add(isNull ? () => new NullServiceType(factory) : factory);
@@ -217,7 +217,7 @@ public class ModernDependencyResolver : IDependencyResolver
 
             var newRegistry = CloneRegistryShallow(snap.Registry);
 
-            List<Func<object?>>? list = !newRegistry.TryGetValue(pair, out list) ? new(DefaultRegistrationListCapacity) : [.. list];
+            List<Func<object?>>? list = !newRegistry.TryGetValue(pair, out list) ? [with(DefaultRegistrationListCapacity)] : [.. list];
 
             // Avoid extra closure allocation: store the delegate directly.
             list.Add(() => factory());

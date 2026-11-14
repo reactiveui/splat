@@ -258,18 +258,13 @@ public sealed class GlobalGenericFirstDependencyResolver : IDependencyResolver
     }
 
     /// <inheritdoc />
-    public bool HasRegistration<T>() => HasNeverRegistered() ? false : Container<T>.HasRegistrations || ServiceTypeRegistry.HasRegistration(TypeCache<T>.Type);
+    public bool HasRegistration<T>() => !HasNeverRegistered() && (Container<T>.HasRegistrations || ServiceTypeRegistry.HasRegistration(TypeCache<T>.Type));
 
     /// <inheritdoc />
-    public bool HasRegistration<T>(string? contract)
-    {
-        if (contract is null)
-        {
-            return HasRegistration<T>();
-        }
-
-        return HasNeverRegistered() ? false : ContractContainer<T>.HasRegistrations(contract) || ServiceTypeRegistry.HasRegistration(TypeCache<T>.Type, contract);
-    }
+    public bool HasRegistration<T>(string? contract) =>
+        contract is null
+            ? HasRegistration<T>()
+            : !HasNeverRegistered() && (ContractContainer<T>.HasRegistrations(contract) || ServiceTypeRegistry.HasRegistration(TypeCache<T>.Type, contract));
 
     /// <inheritdoc />
     public bool HasRegistration(Type? serviceType)

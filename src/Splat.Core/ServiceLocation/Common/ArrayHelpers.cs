@@ -171,7 +171,7 @@ internal static class ArrayHelpers
         private readonly Lock _gate = new();
 
         /// <summary>Backing storage for committed items; mutated only under <see cref="_gate"/>.</summary>
-        private readonly List<TValue> _list = new(4);
+        private readonly List<TValue> _list = [with(4)];
 
         /// <summary>Cached immutable copy of <see cref="_list"/> handed to lock-free readers; rebuilt when stale.</summary>
         private TValue[]? _snapshot;
