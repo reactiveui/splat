@@ -1,0 +1,42 @@
+namespace Splat.Builder
+{
+    public sealed class MicrosoftExtensionsLoggingSplatModule : Splat.Builder.IModule
+    {
+        public MicrosoftExtensionsLoggingSplatModule(Microsoft.Extensions.Logging.ILoggerFactory loggerFactory) { }
+        public void Configure(Splat.IMutableDependencyResolver resolver) { }
+    }
+}
+namespace Splat.Microsoft.Extensions.Logging
+{
+    public sealed class MicrosoftExtensionsLogProvider : Microsoft.Extensions.Logging.ILoggerProvider
+    {
+        public MicrosoftExtensionsLogProvider() { }
+        public Microsoft.Extensions.Logging.ILogger CreateLogger(string categoryName) { }
+        public void Dispose() { }
+    }
+    public static class MicrosoftExtensionsLoggingExtensions
+    {
+        extension(Microsoft.Extensions.Logging.ILoggerFactory loggerFactory)
+        {
+            public Microsoft.Extensions.Logging.ILoggerFactory AddSplat() { }
+        }
+        extension(Microsoft.Extensions.Logging.ILoggingBuilder builder)
+        {
+            public Microsoft.Extensions.Logging.ILoggingBuilder AddSplat() { }
+        }
+        extension(Splat.IMutableDependencyResolver instance)
+        {
+            public void UseMicrosoftExtensionsLoggingWithWrappingFullLogger(Microsoft.Extensions.Logging.ILoggerFactory loggerFactory) { }
+        }
+    }
+    [System.Diagnostics.DebuggerDisplay("Name={_logger.GetType()} Level={Level}")]
+    public sealed class MicrosoftExtensionsLoggingLogger : Splat.ILogger
+    {
+        public MicrosoftExtensionsLoggingLogger(Microsoft.Extensions.Logging.ILogger inner) { }
+        public Splat.LogLevel Level { get; }
+        public void Write(string message, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, string message, Splat.LogLevel logLevel) { }
+        public void Write(string message, System.Type type, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, string message, System.Type type, Splat.LogLevel logLevel) { }
+    }
+}

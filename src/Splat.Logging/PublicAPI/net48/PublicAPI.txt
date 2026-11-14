@@ -1,0 +1,628 @@
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Builder.Tests")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Drawing.Tests")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Logging.Tests")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Tests")]
+namespace Splat
+{
+    public class ActionLogger : Splat.ILogger
+    {
+        public ActionLogger(System.Action<string, Splat.LogLevel> writeNoType, System.Action<string, System.Type, Splat.LogLevel> writeWithType, System.Action<System.Exception, string, Splat.LogLevel> writeNoTypeWithException, System.Action<System.Exception, string, System.Type, Splat.LogLevel> writeWithTypeAndException) { }
+        public Splat.LogLevel Level { get; set; }
+        public void Write(string message, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, string message, Splat.LogLevel logLevel) { }
+        public void Write(string message, System.Type type, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, string message, System.Type type, Splat.LogLevel logLevel) { }
+    }
+    public abstract class AllocationFreeLoggerBase : Splat.IAllocationFreeLogger
+    {
+        protected AllocationFreeLoggerBase(Splat.ILogger inner) { }
+        public bool IsDebugEnabled { get; }
+        public bool IsErrorEnabled { get; }
+        public bool IsFatalEnabled { get; }
+        public bool IsInfoEnabled { get; }
+        public bool IsWarnEnabled { get; }
+        public Splat.LogLevel Level { get; }
+        public virtual void Debug<TArgument>(string messageFormat, TArgument argument) { }
+        public virtual void Debug<TArgument>(System.Exception exception, string messageFormat, TArgument argument) { }
+        public virtual void Debug<TArgument1, TArgument2>(string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        public void Debug<TArgument1, TArgument2>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        public virtual void Debug<TArgument1, TArgument2, TArgument3>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void Debug<TArgument1, TArgument2, TArgument3>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public virtual void Debug<TArgument1, TArgument2, TArgument3, TArgument4>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        public virtual void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        public virtual void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        public virtual void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        public virtual void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        public virtual void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        public virtual void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        public void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        public virtual void Error<TArgument>(string messageFormat, TArgument argument) { }
+        public void Error<TArgument>(System.Exception exception, string messageFormat, TArgument argument) { }
+        public virtual void Error<TArgument1, TArgument2>(string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        public void Error<TArgument1, TArgument2>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        public virtual void Error<TArgument1, TArgument2, TArgument3>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void Error<TArgument1, TArgument2, TArgument3>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public virtual void Error<TArgument1, TArgument2, TArgument3, TArgument4>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        public virtual void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        public virtual void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        public virtual void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        public virtual void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        public virtual void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        public virtual void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        public void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        public virtual void Fatal<TArgument>(string messageFormat, TArgument argument) { }
+        public void Fatal<TArgument>(System.Exception exception, string messageFormat, TArgument argument) { }
+        public virtual void Fatal<TArgument1, TArgument2>(string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        public void Fatal<TArgument1, TArgument2>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        public virtual void Fatal<TArgument1, TArgument2, TArgument3>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void Fatal<TArgument1, TArgument2, TArgument3>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public virtual void Fatal<TArgument1, TArgument2, TArgument3, TArgument4>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        public virtual void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        public virtual void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        public virtual void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        public virtual void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        public virtual void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        public virtual void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        public void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        public virtual void Info<TArgument>(string messageFormat, TArgument argument) { }
+        public void Info<TArgument>(System.Exception exception, string messageFormat, TArgument argument) { }
+        public virtual void Info<TArgument1, TArgument2>(string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        public void Info<TArgument1, TArgument2>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        public virtual void Info<TArgument1, TArgument2, TArgument3>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void Info<TArgument1, TArgument2, TArgument3>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public virtual void Info<TArgument1, TArgument2, TArgument3, TArgument4>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        public virtual void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        public virtual void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        public virtual void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        public virtual void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        public virtual void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        public virtual void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        public void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        public virtual void Warn<TArgument>(string messageFormat, TArgument argument) { }
+        public void Warn<TArgument>(System.Exception exception, string messageFormat, TArgument argument) { }
+        public virtual void Warn<TArgument1, TArgument2>(string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        public void Warn<TArgument1, TArgument2>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        public virtual void Warn<TArgument1, TArgument2, TArgument3>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void Warn<TArgument1, TArgument2, TArgument3>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public virtual void Warn<TArgument1, TArgument2, TArgument3, TArgument4>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        public virtual void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        public virtual void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        public virtual void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        public virtual void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        public virtual void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        public virtual void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        public void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        public void Write(string message, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, string message, Splat.LogLevel logLevel) { }
+        public void Write(string message, System.Type type, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, string message, System.Type type, Splat.LogLevel logLevel) { }
+    }
+    public class ConsoleLogger : Splat.ILogger
+    {
+        public ConsoleLogger() { }
+        public ConsoleLogger(System.IO.TextWriter? writer) { }
+        public string ExceptionMessageFormat { get; set; }
+        public Splat.LogLevel Level { get; set; }
+        public void Write(string message, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, string message, Splat.LogLevel logLevel) { }
+        public void Write(string message, System.Type type, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, string message, System.Type type, Splat.LogLevel logLevel) { }
+    }
+    public class DebugLogger : Splat.ILogger
+    {
+        public DebugLogger() { }
+        public Splat.LogLevel Level { get; set; }
+        public void Write(string message, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, string message, Splat.LogLevel logLevel) { }
+        public void Write(string message, System.Type type, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, string message, System.Type type, Splat.LogLevel logLevel) { }
+    }
+    public sealed class DefaultLogManager : Splat.ILogManager
+    {
+        public DefaultLogManager(Splat.IReadonlyDependencyResolver dependencyResolver) { }
+        public Splat.IFullLogger GetLogger(System.Type type) { }
+    }
+    public class FuncLogManager : Splat.ILogManager
+    {
+        public FuncLogManager(System.Func<System.Type, Splat.IFullLogger> getLoggerFunc) { }
+        public Splat.IFullLogger GetLogger(System.Type type) { }
+    }
+    public interface IAllocationFreeErrorLogger : Splat.ILogger
+    {
+        void Debug<TArgument>(System.Exception exception, string messageFormat, TArgument argument) { }
+        void Debug<TArgument1, TArgument2>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        void Debug<TArgument1, TArgument2, TArgument3>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        void Error<TArgument>(System.Exception exception, string messageFormat, TArgument argument) { }
+        void Error<TArgument1, TArgument2>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        void Error<TArgument1, TArgument2, TArgument3>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        void Fatal<TArgument>(System.Exception exception, string messageFormat, TArgument argument) { }
+        void Fatal<TArgument1, TArgument2>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        void Fatal<TArgument1, TArgument2, TArgument3>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        void Info<TArgument>(System.Exception exception, string messageFormat, TArgument argument) { }
+        void Info<TArgument1, TArgument2>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        void Info<TArgument1, TArgument2, TArgument3>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        void Warn<TArgument>(System.Exception exception, string messageFormat, TArgument argument) { }
+        void Warn<TArgument1, TArgument2>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        void Warn<TArgument1, TArgument2, TArgument3>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(System.Exception exception, string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+    }
+    public interface IAllocationFreeLogger : Splat.IAllocationFreeErrorLogger
+    {
+        bool IsDebugEnabled { get; }
+        bool IsErrorEnabled { get; }
+        bool IsFatalEnabled { get; }
+        bool IsInfoEnabled { get; }
+        bool IsWarnEnabled { get; }
+        void Debug<TArgument>(string messageFormat, TArgument argument) { }
+        void Debug<TArgument1, TArgument2>(string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        void Debug<TArgument1, TArgument2, TArgument3>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        void Debug<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        void Error<TArgument>(string messageFormat, TArgument argument) { }
+        void Error<TArgument1, TArgument2>(string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        void Error<TArgument1, TArgument2, TArgument3>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        void Error<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        void Fatal<TArgument>(string messageFormat, TArgument argument) { }
+        void Fatal<TArgument1, TArgument2>(string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        void Fatal<TArgument1, TArgument2, TArgument3>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        void Fatal<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        void Info<TArgument>(string messageFormat, TArgument argument) { }
+        void Info<TArgument1, TArgument2>(string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        void Info<TArgument1, TArgument2, TArgument3>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        void Info<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+        void Warn<TArgument>(string messageFormat, TArgument argument) { }
+        void Warn<TArgument1, TArgument2>(string messageFormat, TArgument1 argument1, TArgument2 argument2) { }
+        void Warn<TArgument1, TArgument2, TArgument3>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4) { }
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5) { }
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6) { }
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7) { }
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8) { }
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9) { }
+        void Warn<TArgument1, TArgument2, TArgument3, TArgument4, TArgument5, TArgument6, TArgument7, TArgument8, TArgument9, TArgument10>(string messageFormat, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, TArgument4 argument4, TArgument5 argument5, TArgument6 argument6, TArgument7 argument7, TArgument8 argument8, TArgument9 argument9, TArgument10 argument10) { }
+    }
+    [System.Runtime.InteropServices.ComVisible(false)]
+    public interface IEnableLogger
+    {
+    }
+    public interface IFullLogger : Splat.IAllocationFreeLogger
+    {
+        void Debug(System.Func<string> function) { }
+        void Debug(string? message) { }
+        void Debug(System.Exception exception, System.Func<string> function) { }
+        void Debug(System.Exception exception, string? message) { }
+        void Debug(string message, params object[] args) { }
+        void Debug(System.IFormatProvider formatProvider, string message, params object[] args) { }
+        void Debug<T>(System.Func<string> function) { }
+        void Debug<T>(T value) { }
+        void Debug<T>(string? message) { }
+        void Debug<T>(System.IFormatProvider formatProvider, T value) { }
+        void Debug<T>(string message, params object[] args) { }
+        void Debug<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument) { }
+        void Debug<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
+        void Debug<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        [System.Obsolete("Use void Debug(Exception exception, Func<string> function)")]
+        void DebugException(System.Func<string> function, System.Exception exception) { }
+        [System.Obsolete("Use void Debug(Exception exception, [Localizable(false)] string? message)")]
+        void DebugException(string? message, System.Exception exception) { }
+        void Error(System.Func<string> function) { }
+        void Error(string? message) { }
+        void Error(System.Exception exception, System.Func<string> function) { }
+        void Error(System.Exception exception, string? message) { }
+        void Error(string message, params object[] args) { }
+        void Error(System.IFormatProvider formatProvider, string message, params object[] args) { }
+        void Error<T>(System.Func<string> function) { }
+        void Error<T>(T value) { }
+        void Error<T>(string? message) { }
+        void Error<T>(System.IFormatProvider formatProvider, T value) { }
+        void Error<T>(string message, params object[] args) { }
+        void Error<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument) { }
+        void Error<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
+        void Error<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        [System.Obsolete("Use void Error(Exception exception, Func<string> function)")]
+        void ErrorException(System.Func<string> function, System.Exception exception) { }
+        [System.Obsolete("Use void Error(Exception exception, [Localizable(false)] string? message)")]
+        void ErrorException(string? message, System.Exception exception) { }
+        void Fatal(System.Func<string> function) { }
+        void Fatal(string? message) { }
+        void Fatal(System.Exception exception, System.Func<string> function) { }
+        void Fatal(System.Exception exception, string? message) { }
+        void Fatal(string message, params object[] args) { }
+        void Fatal(System.IFormatProvider formatProvider, string message, params object[] args) { }
+        void Fatal<T>(System.Func<string> function) { }
+        void Fatal<T>(T value) { }
+        void Fatal<T>(string? message) { }
+        void Fatal<T>(System.IFormatProvider formatProvider, T value) { }
+        void Fatal<T>(string message, params object[] args) { }
+        void Fatal<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument) { }
+        void Fatal<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
+        void Fatal<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        [System.Obsolete("Use void Fatal(Exception exception, Func<string> function)")]
+        void FatalException(System.Func<string> function, System.Exception exception) { }
+        [System.Obsolete("Use void Fatal(Exception exception, [Localizable(false)] string? message)")]
+        void FatalException(string? message, System.Exception exception) { }
+        void Info(System.Func<string> function) { }
+        void Info(string? message) { }
+        void Info(System.Exception exception, System.Func<string> function) { }
+        void Info(System.Exception exception, string? message) { }
+        void Info(string message, params object[] args) { }
+        void Info(System.IFormatProvider formatProvider, string message, params object[] args) { }
+        void Info<T>(System.Func<string> function) { }
+        void Info<T>(T value) { }
+        void Info<T>(string? message) { }
+        void Info<T>(System.IFormatProvider formatProvider, T value) { }
+        void Info<T>(string message, params object[] args) { }
+        void Info<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument) { }
+        void Info<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
+        void Info<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        [System.Obsolete("Use void Info(Exception exception, Func<string> function)")]
+        void InfoException(System.Func<string> function, System.Exception exception) { }
+        [System.Obsolete("Use void Info(Exception exception, [Localizable(false)] string? message)")]
+        void InfoException(string? message, System.Exception exception) { }
+        void Warn(System.Func<string> function) { }
+        void Warn(string? message) { }
+        void Warn(System.Exception exception, System.Func<string> function) { }
+        void Warn(System.Exception exception, string? message) { }
+        void Warn(string message, params object[] args) { }
+        void Warn(System.IFormatProvider formatProvider, string message, params object[] args) { }
+        void Warn<T>(System.Func<string> function) { }
+        void Warn<T>(T value) { }
+        void Warn<T>(string? message) { }
+        void Warn<T>(System.IFormatProvider formatProvider, T value) { }
+        void Warn<T>(string message, params object[] args) { }
+        void Warn<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument) { }
+        void Warn<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
+        void Warn<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        [System.Obsolete("Use void Warn(Exception exception, Func<string> function)")]
+        void WarnException(System.Func<string> function, System.Exception exception) { }
+        [System.Obsolete("Use void Warn(Exception exception, [Localizable(false)] string? message)")]
+        void WarnException(string? message, System.Exception exception) { }
+    }
+    public interface ILogManager
+    {
+        Splat.IFullLogger GetLogger(System.Type type) { }
+    }
+    public interface ILogger
+    {
+        Splat.LogLevel Level { get; }
+        void Write(string message, Splat.LogLevel logLevel) { }
+        void Write(System.Exception exception, string message, Splat.LogLevel logLevel) { }
+        void Write(string message, System.Type type, Splat.LogLevel logLevel) { }
+        void Write(System.Exception exception, string message, System.Type type, Splat.LogLevel logLevel) { }
+    }
+    public interface IStaticFullLogger
+    {
+        Splat.LogLevel Level { get; }
+        void Debug(string message, string? callerMemberName = null) { }
+        void Debug(System.Exception exception, string message, string? callerMemberName = null) { }
+        void Debug<T>(string message, string? callerMemberName = null) { }
+        void Debug<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument, string? callerMemberName = null) { }
+        void Debug<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, string? callerMemberName = null) { }
+        void Debug<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, string? callerMemberName = null) { }
+        void Error(string message, string? callerMemberName = null) { }
+        void Error(System.Exception exception, string message, string? callerMemberName = null) { }
+        void Error<T>(string message, string? callerMemberName = null) { }
+        void Error<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument, string? callerMemberName = null) { }
+        void Error<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, string? callerMemberName = null) { }
+        void Error<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, string? callerMemberName = null) { }
+        void Fatal(string message, string? callerMemberName = null) { }
+        void Fatal(System.Exception exception, string message, string? callerMemberName = null) { }
+        void Fatal<T>(string message, string? callerMemberName = null) { }
+        void Fatal<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument, string? callerMemberName = null) { }
+        void Fatal<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, string? callerMemberName = null) { }
+        void Fatal<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, string? callerMemberName = null) { }
+        void Info(string message, string? callerMemberName = null) { }
+        void Info(System.Exception exception, string message, string? callerMemberName = null) { }
+        void Info<T>(string message, string? callerMemberName = null) { }
+        void Info<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument, string? callerMemberName = null) { }
+        void Info<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, string? callerMemberName = null) { }
+        void Info<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, string? callerMemberName = null) { }
+        void Warn(string message, string? callerMemberName = null) { }
+        void Warn(System.Exception exception, string message, string? callerMemberName = null) { }
+        void Warn<T>(string message, string? callerMemberName = null) { }
+        void Warn<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument, string? callerMemberName = null) { }
+        void Warn<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, string? callerMemberName = null) { }
+        void Warn<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, string? callerMemberName = null) { }
+        void Write(string message, Splat.LogLevel logLevel, string? callerMemberName = null) { }
+        void Write(System.Exception exception, string message, Splat.LogLevel logLevel, string? callerMemberName = null) { }
+        void Write(string message, System.Type type, Splat.LogLevel logLevel, string? callerMemberName = null) { }
+        void Write(System.Exception exception, string message, System.Type type, Splat.LogLevel logLevel, string? callerMemberName = null) { }
+    }
+    public static class LogHost
+    {
+        public static Splat.IStaticFullLogger Default { get; }
+    }
+    public static class LogHostExtensions
+    {
+        extension(T logClassInstance) where T : Splat.IEnableLogger
+        {
+            public Splat.IFullLogger Log() { }
+        }
+    }
+    public enum LogLevel
+    {
+        Debug = 1,
+        Info = 2,
+        Warn = 3,
+        Error = 4,
+        Fatal = 5,
+    }
+    public static class LogManagerExtensions
+    {
+        extension(Splat.ILogManager logManager)
+        {
+            public Splat.IFullLogger GetLogger<T>() { }
+        }
+    }
+    [System.Serializable]
+    public class LoggingException : System.Exception
+    {
+        public LoggingException() { }
+        public LoggingException(string message) { }
+        public LoggingException(string message, System.Exception innerException) { }
+    }
+    public sealed class MemoizingMRUCache<TParam, TVal> where TParam : notnull
+    {
+        public MemoizingMRUCache(System.Func<TParam, object?, TVal> calculationFunc, int maxSize) { }
+        public MemoizingMRUCache(System.Func<TParam, object?, TVal> calculationFunc, int maxSize, System.Action<TVal> onRelease) { }
+        public MemoizingMRUCache(System.Func<TParam, object?, TVal> calculationFunc, int maxSize, System.Collections.Generic.IEqualityComparer<TParam> paramComparer) { }
+        public MemoizingMRUCache(System.Func<TParam, object?, TVal> calculationFunc, int maxSize, System.Action<TVal>? onRelease, System.Collections.Generic.IEqualityComparer<TParam> paramComparer) { }
+        public System.Collections.Generic.IEnumerable<TVal> CachedValues() { }
+        public TVal Get(TParam key) { }
+        public TVal Get(TParam key, object? context) { }
+        public void Invalidate(TParam key) { }
+        public void InvalidateAll() { }
+        public void InvalidateAll(bool aggregateReleaseExceptions) { }
+        public bool TryGet(TParam key, out TVal result) { }
+    }
+    public class NullLogger : Splat.ILogger
+    {
+        public NullLogger() { }
+        public Splat.LogLevel Level { get; set; }
+        public void Write(string message, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, string message, Splat.LogLevel logLevel) { }
+        public void Write(string message, System.Type type, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, string message, System.Type type, Splat.LogLevel logLevel) { }
+    }
+    public sealed class StaticFullLogger : Splat.IStaticFullLogger
+    {
+        public StaticFullLogger(Splat.IFullLogger fullLogger) { }
+        public Splat.LogLevel Level { get; }
+        public void Debug(string? message, string? callerMemberName = null) { }
+        public void Debug(System.Exception exception, string? message, string? callerMemberName = null) { }
+        public void Debug<T>(string? message, string? callerMemberName = null) { }
+        public void Debug<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument, string? callerMemberName = null) { }
+        public void Debug<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string? message, TArgument1 argument1, TArgument2 argument2, string? callerMemberName = null) { }
+        public void Debug<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string? message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, string? callerMemberName = null) { }
+        public void Error(string? message, string? callerMemberName = null) { }
+        public void Error(System.Exception exception, string? message, string? callerMemberName = null) { }
+        public void Error<T>(string? message, string? callerMemberName = null) { }
+        public void Error<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument, string? callerMemberName = null) { }
+        public void Error<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string? message, TArgument1 argument1, TArgument2 argument2, string? callerMemberName = null) { }
+        public void Error<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string? message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, string? callerMemberName = null) { }
+        public void Fatal(string? message, string? callerMemberName = null) { }
+        public void Fatal(System.Exception exception, string? message, string? callerMemberName = null) { }
+        public void Fatal<T>(string? message, string? callerMemberName = null) { }
+        public void Fatal<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument, string? callerMemberName = null) { }
+        public void Fatal<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string? message, TArgument1 argument1, TArgument2 argument2, string? callerMemberName = null) { }
+        public void Fatal<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string? message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, string? callerMemberName = null) { }
+        public void Info(string? message, string? callerMemberName = null) { }
+        public void Info(System.Exception exception, string? message, string? callerMemberName = null) { }
+        public void Info<T>(string? message, string? callerMemberName = null) { }
+        public void Info<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument, string? callerMemberName = null) { }
+        public void Info<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string? message, TArgument1 argument1, TArgument2 argument2, string? callerMemberName = null) { }
+        public void Info<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string? message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, string? callerMemberName = null) { }
+        public void Warn(string? message, string? callerMemberName = null) { }
+        public void Warn(System.Exception exception, string? message, string? callerMemberName = null) { }
+        public void Warn<T>(string? message, string? callerMemberName = null) { }
+        public void Warn<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument, string? callerMemberName = null) { }
+        public void Warn<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string? message, TArgument1 argument1, TArgument2 argument2, string? callerMemberName = null) { }
+        public void Warn<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string? message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3, string? callerMemberName = null) { }
+        public void Write(string? message, Splat.LogLevel logLevel, string? callerMemberName = null) { }
+        public void Write(System.Exception exception, string? message, Splat.LogLevel logLevel, string? callerMemberName = null) { }
+        public void Write(string? message, System.Type type, Splat.LogLevel logLevel, string? callerMemberName = null) { }
+        public void Write(System.Exception exception, string? message, System.Type type, Splat.LogLevel logLevel, string? callerMemberName = null) { }
+    }
+    public class WrappingFullLogger : Splat.AllocationFreeLoggerBase, Splat.IFullLogger
+    {
+        public WrappingFullLogger(Splat.ILogger inner) { }
+        public void Debug(System.Func<string> function) { }
+        public void Debug(string? message) { }
+        public void Debug(System.Exception exception, System.Func<string> function) { }
+        public void Debug(System.Exception exception, string? message) { }
+        public void Debug(string message, params object[] args) { }
+        public void Debug(System.IFormatProvider formatProvider, string message, params object[] args) { }
+        public void Debug<T>(System.Func<string> function) { }
+        public void Debug<T>(T value) { }
+        public void Debug<T>(string? message) { }
+        public void Debug<T>(System.IFormatProvider formatProvider, T value) { }
+        public void Debug<T>(string message, params object[] args) { }
+        public void Debug<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument) { }
+        public void Debug<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
+        public void Debug<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void DebugException(System.Func<string> function, System.Exception exception) { }
+        public void DebugException(string? message, System.Exception exception) { }
+        public void Error(System.Func<string> function) { }
+        public void Error(string? message) { }
+        public void Error(System.Exception exception, System.Func<string> function) { }
+        public void Error(System.Exception exception, string? message) { }
+        public void Error(string message, params object[] args) { }
+        public void Error(System.IFormatProvider formatProvider, string message, params object[] args) { }
+        public void Error<T>(System.Func<string> function) { }
+        public void Error<T>(T value) { }
+        public void Error<T>(string? message) { }
+        public void Error<T>(System.IFormatProvider formatProvider, T value) { }
+        public void Error<T>(string message, params object[] args) { }
+        public void Error<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument) { }
+        public void Error<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
+        public void Error<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void ErrorException(System.Func<string> function, System.Exception exception) { }
+        public void ErrorException(string? message, System.Exception exception) { }
+        public void Fatal(System.Func<string> function) { }
+        public void Fatal(string? message) { }
+        public void Fatal(System.Exception exception, System.Func<string> function) { }
+        public void Fatal(System.Exception exception, string? message) { }
+        public void Fatal(string message, params object[] args) { }
+        public void Fatal(System.IFormatProvider formatProvider, string message, params object[] args) { }
+        public void Fatal<T>(System.Func<string> function) { }
+        public void Fatal<T>(T value) { }
+        public void Fatal<T>(string? message) { }
+        public void Fatal<T>(System.IFormatProvider formatProvider, T value) { }
+        public void Fatal<T>(string message, params object[] args) { }
+        public void Fatal<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument) { }
+        public void Fatal<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
+        public void Fatal<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void FatalException(System.Func<string> function, System.Exception exception) { }
+        public void FatalException(string? message, System.Exception exception) { }
+        public void Info(System.Func<string> function) { }
+        public void Info(string? message) { }
+        public void Info(System.Exception exception, System.Func<string> function) { }
+        public void Info(System.Exception exception, string? message) { }
+        public void Info(string message, params object[] args) { }
+        public void Info(System.IFormatProvider formatProvider, string message, params object[] args) { }
+        public void Info<T>(System.Func<string> function) { }
+        public void Info<T>(T value) { }
+        public void Info<T>(string? message) { }
+        public void Info<T>(System.IFormatProvider formatProvider, T value) { }
+        public void Info<T>(string message, params object[] args) { }
+        public void Info<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument) { }
+        public void Info<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
+        public void Info<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void InfoException(System.Func<string> function, System.Exception exception) { }
+        public void InfoException(string? message, System.Exception exception) { }
+        public void Warn(System.Func<string> function) { }
+        public void Warn(string? message) { }
+        public void Warn(System.Exception exception, System.Func<string> function) { }
+        public void Warn(System.Exception exception, string? message) { }
+        public void Warn(string message, params object[] args) { }
+        public void Warn(System.IFormatProvider formatProvider, string message, params object[] args) { }
+        public void Warn<T>(System.Func<string> function) { }
+        public void Warn<T>(T value) { }
+        public void Warn<T>(string? message) { }
+        public void Warn<T>(System.IFormatProvider formatProvider, T value) { }
+        public void Warn<T>(string message, params object[] args) { }
+        public void Warn<TArgument>(System.IFormatProvider formatProvider, string message, TArgument argument) { }
+        public void Warn<TArgument1, TArgument2>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2) { }
+        public void Warn<TArgument1, TArgument2, TArgument3>(System.IFormatProvider formatProvider, string message, TArgument1 argument1, TArgument2 argument2, TArgument3 argument3) { }
+        public void WarnException(System.Func<string> function, System.Exception exception) { }
+        public void WarnException(string? message, System.Exception exception) { }
+    }
+    public class WrappingLogLevelLogger : Splat.ILogger
+    {
+        public WrappingLogLevelLogger(Splat.ILogger inner) { }
+        public Splat.LogLevel Level { get; }
+        public void Write(string message, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, string message, Splat.LogLevel logLevel) { }
+        public void Write(string message, System.Type type, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, string message, System.Type type, Splat.LogLevel logLevel) { }
+    }
+    public class WrappingPrefixLogger : Splat.ILogger
+    {
+        public WrappingPrefixLogger(Splat.ILogger inner, System.Type callingType) { }
+        public Splat.LogLevel Level { get; }
+        public void Write(string message, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, string message, Splat.LogLevel logLevel) { }
+        public void Write(string message, System.Type type, Splat.LogLevel logLevel) { }
+        public void Write(System.Exception exception, string message, System.Type type, Splat.LogLevel logLevel) { }
+    }
+}
+namespace Splat.Builder
+{
+    public sealed class SplatLogManagerModule : Splat.Builder.IModule
+    {
+        public SplatLogManagerModule(Splat.IReadonlyDependencyResolver current) { }
+        public void Configure(Splat.IMutableDependencyResolver resolver) { }
+    }
+    public sealed class SplatLoggerModule : Splat.Builder.IModule
+    {
+        public SplatLoggerModule() { }
+        public void Configure(Splat.IMutableDependencyResolver resolver) { }
+    }
+}

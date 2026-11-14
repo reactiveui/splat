@@ -1,73 +1,78 @@
-﻿<Project>
+<Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Autofac" Version="9.3.3" />
+    <PackageVersion Include="Autofac" Version="9.3.4" />
     <PackageVersion Include="DryIoc.Dll" Version="5.4.3" />
     <PackageVersion Include="Exceptionless" Version="6.2.0" />
-    <PackageVersion Include="log4net" Version="3.5.0" />
+    <PackageVersion Include="log4net" Version="3.6.0" />
     <PackageVersion Include="Microsoft.AppCenter.Analytics" Version="5.0.7" />
     <PackageVersion Include="Microsoft.AppCenter.Crashes" Version="5.0.7" />
     <!-- Pinned at the latest 2.x: Microsoft.ApplicationInsights 3.x removed PageViewTelemetry,
          which Splat.ApplicationInsights exposes on its public API (OnViewNavigation/GetPageViewTelemetry). -->
     <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.23.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.12" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.12" />
-    <PackageVersion Include="OpenTelemetry.Api" Version="1.19.1" />
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.403" />
-    <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="11.2.6" />
+    <PackageVersion Include="OpenTelemetry.Api" Version="1.21.0" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="11.0.100" />
+    <PackageVersion Include="Mindscape.Raygun4Net.NetCore" Version="11.2.7" />
     <PackageVersion Include="MinVer" Version="8.0.0" />
     <PackageVersion Include="Ninject" Version="3.3.6" />
-    <PackageVersion Include="NLog" Version="6.2.1" />
+    <PackageVersion Include="NLog" Version="6.2.2" />
     <PackageVersion Include="Prism.Core" Version="9.0.537" />
-    <PackageVersion Include="ReactiveUI.Disposables" Version="8.4.0" />
-    <PackageVersion Include="Roslynator.Analyzers" Version="5.0.0" />
+    <PackageVersion Include="ReactiveUI.Disposables" Version="9.0.0" />
+    <PackageVersion Include="Roslynator.Analyzers" Version="5.0.1" />
     <PackageVersion Include="Serilog" Version="4.4.0" />
     <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
-    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.31.0.145097" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.36.0.15337" />
     <PackageVersion Include="SimpleInjector" Version="5.6.0" />
-    <PackageVersion Include="SkiaSharp" Version="4.152.1" />
+    <PackageVersion Include="SkiaSharp" Version="4.156.0" />
     <!-- SkiaSharp brings only the macOS and Win32 native assets on the plain .NET target frameworks. -->
-    <PackageVersion Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="4.152.1" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="4.156.0" />
     <!-- StyleSharp.Analyzers, PerformanceSharp.Analyzers and SecuritySharp.Analyzers ship from the
          same release pipeline and always share a version. -->
-    <PackageVersion Include="StyleSharp.Analyzers" Version="5.1.4" />
-    <PackageVersion Include="PerformanceSharp.Analyzers" Version="5.1.4" />
-    <PackageVersion Include="SecuritySharp.Analyzers" Version="5.1.4" />
+    <PackageVersion Include="StyleSharp.Analyzers" Version="5.2.0" />
+    <PackageVersion Include="PerformanceSharp.Analyzers" Version="5.2.0" />
+    <PackageVersion Include="SecuritySharp.Analyzers" Version="5.2.0" />
     <PackageVersion Include="System.Net.Http" Version="4.3.4" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
-    <PackageVersion Include="TUnit" Version="1.72.10" />
+    <PackageVersion Include="TUnit" Version="1.84.0" />
     <PackageVersion Include="Verify.TUnit" Version="32.0.1" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.12.0" />
     <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.12.0" />
-    <PackageVersion Include="Microsoft.Testing.Platform.MSBuild" Version="2.4.1" />
-    <PackageVersion Include="PublicApiSharp.Analyzers" Version="2.1.0" />
+    <PackageVersion Include="Microsoft.Testing.Platform.MSBuild" Version="2.5.3" />
+    <PackageVersion Include="PublicApiSharp.Analyzers" Version="2.2.0" />
   </ItemGroup>
 
-  <!-- Pinned transitive dependencies for compatibility -->
-  <ItemGroup>
-    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="10.0.12" />
-  </ItemGroup>
-
-  <!-- Latest versions for modern TFMs (net8.0+) -->
-  <ItemGroup>
-    <PackageVersion Include="System.Collections.Immutable" Version="10.0.12" />
-    <PackageVersion Include="System.Text.Json" Version="10.0.12" />
-  </ItemGroup>
-
-  <!-- System.Runtime.Serialization.Formatters: TFM-specific versioning -->
-  <!-- Legacy TFMs (net4*/netstandard) require 4.3.0, net8.0+ supports 10.0.1 -->
   <Choose>
-    <When Condition="$(TargetFramework.StartsWith('net4')) or $(TargetFramework.StartsWith('netstandard'))">
+    <When Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net11.0'))">
       <ItemGroup>
-        <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
+        <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="11.0.0" />
+        <PackageVersion Include="Microsoft.Extensions.Logging" Version="11.0.0" />
+        <PackageVersion Include="System.Collections.Immutable" Version="11.0.0" />
+        <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="11.0.0" />
+        <PackageVersion Include="System.Text.Json" Version="11.0.0" />
+      </ItemGroup>
+    </When>
+    <When Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0'))">
+      <ItemGroup>
+        <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.15" />
+        <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="10.0.15" />
+        <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.15" />
+        <PackageVersion Include="System.Collections.Immutable" Version="10.0.15" />
+        <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="10.0.15" />
+        <PackageVersion Include="System.Text.Json" Version="10.0.15" />
       </ItemGroup>
     </When>
     <Otherwise>
       <ItemGroup>
-        <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="10.0.12" />
+        <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.15" />
+        <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="10.0.15" />
+        <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.15" />
+        <PackageVersion Include="System.Collections.Immutable" Version="10.0.15" />
+        <PackageVersion Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
+        <PackageVersion Include="System.Text.Json" Version="10.0.15" />
       </ItemGroup>
     </Otherwise>
   </Choose>

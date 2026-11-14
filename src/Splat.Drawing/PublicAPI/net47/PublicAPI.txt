@@ -10,7 +10,6 @@
 [assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.Drawing.RectangleF))]
 [assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.Drawing.Size))]
 [assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.Drawing.SizeF))]
-[assembly: System.Runtime.Versioning.SupportedOSPlatform("Windows10.0.17763.0")]
 namespace Splat;
 
 public static class BitmapLoader
@@ -297,7 +296,6 @@ public static class ServiceLocationDrawingInitializationExtensions
 {
     extension(Splat.IMutableDependencyResolver resolver)
     {
-        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("Needs to use reflection")]
         public void RegisterPlatformBitmapLoader() { }
     }
 }

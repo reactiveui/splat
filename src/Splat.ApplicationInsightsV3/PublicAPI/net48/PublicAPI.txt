@@ -1,0 +1,18 @@
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.ApplicationInsightsV3.Tests")]
+namespace Splat.ApplicationInsightsV3;
+
+public sealed class ApplicationInsightsFeatureUsageTrackingSession : Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession<System.Guid>
+{
+    public ApplicationInsightsFeatureUsageTrackingSession(string featureName, Microsoft.ApplicationInsights.TelemetryClient telemetryClient) { }
+    public string FeatureName { get; }
+    public System.Guid FeatureReference { get; }
+    public System.Guid ParentReference { get; }
+    public void Dispose() { }
+    public void OnException(System.Exception exception) { }
+    public Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession SubFeature(string description) { }
+}
+public sealed class ApplicationInsightsViewTracking : Splat.ApplicationPerformanceMonitoring.IViewTracking
+{
+    public ApplicationInsightsViewTracking(Microsoft.ApplicationInsights.TelemetryClient telemetryClient) { }
+    public void OnViewNavigation(string name) { }
+}

@@ -1,0 +1,12 @@
+namespace Splat;
+
+public sealed class RaygunFeatureUsageTrackingSession : Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession<System.Guid>
+{
+    public RaygunFeatureUsageTrackingSession(string featureName, Mindscape.Raygun4Net.RaygunClient raygunClient, Mindscape.Raygun4Net.RaygunSettings raygunSettings) { }
+    public string FeatureName { get; }
+    public System.Guid FeatureReference { get; }
+    public System.Guid ParentReference { get; }
+    public void Dispose() { }
+    public void OnException(System.Exception exception) { }
+    public Splat.ApplicationPerformanceMonitoring.IFeatureUsageTrackingSession SubFeature(string description) { }
+}

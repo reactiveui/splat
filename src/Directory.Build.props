@@ -42,19 +42,15 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <SplatModernTargets>net8.0;net9.0;net10.0;net11.0</SplatModernTargets>
+    <SplatModernTargets>net10.0;net11.0</SplatModernTargets>
 
-    <SplatLegacyTargets>net462;net472;net481</SplatLegacyTargets>
+    <SplatLegacyTargets>net462;net47;net471;net472;net48;net481</SplatLegacyTargets>
 
     <SplatCoreTargets>$(SplatModernTargets)</SplatCoreTargets>
     <SplatCoreTargets Condition=" '$(SplatLegacyTargets)' != '' ">$(SplatCoreTargets);$(SplatLegacyTargets)</SplatCoreTargets>
 
-    <!-- .NET MAUI 9 reached end of support on 2026-05-12, so the .NET 9 mobile
-         workload targets (Android + Apple) are dropped. The base net9.0 and the
-         net9.0-windows desktop TFMs remain: those track the .NET 9 runtime
-         lifecycle, not .NET MAUI. See https://dotnet.microsoft.com/platform/support/policy/maui -->
     <SplatAndroidTargets>net10.0-android36.0;net11.0-android37.0</SplatAndroidTargets>
-    <SplatWindowsTargets>net8.0-windows10.0.17763.0;net9.0-windows10.0.17763.0;net10.0-windows10.0.17763.0;net8.0-windows10.0.19041.0;net9.0-windows10.0.19041.0;net10.0-windows10.0.19041.0;net11.0-windows10.0.19041.0</SplatWindowsTargets>
+    <SplatWindowsTargets>net10.0-windows10.0.17763.0;net10.0-windows10.0.19041.0;net11.0-windows10.0.19041.0</SplatWindowsTargets>
     <SplatAppleTargets>net10.0-ios;net10.0-macos;net10.0-maccatalyst;net10.0-tvos;net11.0-ios;net11.0-macos;net11.0-maccatalyst;net11.0-tvos</SplatAppleTargets>
     <SplatUiFinalTargetFrameworks>$(SplatCoreTargets);$(SplatAndroidTargets);$(SplatWindowsTargets)</SplatUiFinalTargetFrameworks>
   </PropertyGroup>
@@ -100,10 +96,10 @@
   </PropertyGroup>
   <!-- Alias Lock to the dedicated System.Threading.Lock on .NET 9+ (faster EnterScope fast path),
      and to a plain object elsewhere (the lock statement falls back to Monitor). -->
-  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0'))">
+  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0'))">
     <Using Include="System.Threading.Lock" Alias="Lock" />
   </ItemGroup>
-  <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0'))">
+  <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0'))">
     <Using Include="System.Object" Alias="Lock" />
   </ItemGroup>
 
@@ -116,9 +112,9 @@
     <_SplatCompilePolyfills Condition="'$(IsTestProject)' == 'true' or $(MSBuildProjectDirectory.Contains('tests'))">false</_SplatCompilePolyfills>
   </PropertyGroup>
 
-  <!-- The BCL shims and the argument/disposed helpers are compiled ONLY on net462-net481: on net8.0+ the
+  <!-- The BCL shims and the argument/disposed helpers are compiled ONLY on net462-net481: on net10.0+ the
        BCL provides the real types, and emitting the #else type-forwarders there would add them to every
-       assembly's public API surface (PAS0001). On net8.0+ those helpers are aliased straight to the BCL
+       assembly's public API surface (PAS0001). On net10.0+ those helpers are aliased straight to the BCL
        throw helpers (no shipped wrapper). -->
   <ItemGroup Condition="'$(_SplatCompilePolyfills)' == 'true' and $(TargetFramework.StartsWith('net4'))">
     <Compile Include="$(MSBuildThisFileDirectory)Polyfills\*.cs"

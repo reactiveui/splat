@@ -210,18 +210,18 @@ Splat is a cross-platform utility library providing abstractions for common func
 
 The project uses granular target framework definitions in `Directory.Build.props`:
 
-- `SplatModernTargets` - net8.0, net9.0, net10.0 (modern cross-platform)
-- `SplatLegacyTargets` - net462, net472, net481 (Windows-only legacy .NET Framework)
+- `SplatModernTargets` - net10.0, net11.0 (modern cross-platform)
+- `SplatLegacyTargets` - net462, net47, net471, net472, net48, net481 (.NET Framework)
 - `SplatCoreTargets` - Combines modern + legacy targets for core libraries
-- `SplatWindowsTargets` - net8.0/9.0/10.0-windows10.0.17763.0 and windows10.0.19041.0
-- `SplatAndroidTargets` - net10.0-android (the .NET 9 mobile target was dropped when .NET MAUI 9 went out of support on 2026-05-12)
-- `SplatAppleTargets` - net10.0-ios, net10.0-macos, net10.0-maccatalyst, net10.0-tvos (the .NET 9 Apple targets were dropped when .NET MAUI 9 went out of support on 2026-05-12)
+- `SplatWindowsTargets` - net10.0-windows10.0.17763.0 and net10.0/net11.0-windows10.0.19041.0
+- `SplatAndroidTargets` - net10.0-android36.0, net11.0-android37.0
+- `SplatAppleTargets` - net10.0-ios, net10.0-macos, net10.0-maccatalyst, net10.0-tvos and the net11.0 equivalents
 - `SplatUiFinalTargetFrameworks` - OS-aware composition for UI projects
 
 **OS-Aware Builds:** The build system automatically selects appropriate target frameworks based on the host OS:
-- **Linux**: Builds .NET 8/9/10 and Android targets
+- **Linux**: Builds .NET 10/11 and Android targets
 - **Windows**: Builds all targets including .NET Framework, Core, Android, Windows, and Apple
-- **macOS**: Builds .NET 8/9/10, Android, and Apple targets
+- **macOS**: Builds .NET 10/11, Android, and Apple targets
 
 ### Zero-Reflection and AOT (Ahead-of-Time) Compilation Priority
 
@@ -280,7 +280,7 @@ private static void RegisterFromType(Type serviceType)
 
 ### AOT Compatibility Requirements
 
-All code targeting net8.0+ should be AOT-compatible:
+All code targeting net10.0+ should be AOT-compatible:
 
 **Key AOT Patterns:**
 - **Always prefer zero-reflection solutions** - design APIs that work without reflection
@@ -383,7 +383,7 @@ See `.github/COPILOT_INSTRUCTIONS.md` for complete style guide.
 - **Zero-Reflection First:** Always design for zero-reflection solutions before considering alternatives
 - **Source Generators:** Leverage source generators for compile-time code generation instead of runtime reflection
 - **No shallow clones:** Repository requires full clone for git version information used by Nerdbank.GitVersioning
-- **Required .NET SDKs:** .NET 8.0, 9.0, and 10.0 (all three required for full build)
+- **Required .NET SDKs:** .NET 10.0 and 11.0
 - **SLNX Format:** Uses modern XML-based solution format instead of legacy SLN
 - **Comprehensive Instructions:** `.github/COPILOT_INSTRUCTIONS.md` contains detailed development guidelines
 - **Code Formatting:** Always run `dotnet format whitespace` and `dotnet format style` before committing
