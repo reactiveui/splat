@@ -225,6 +225,9 @@ The project uses granular target framework definitions in `Directory.Build.props
 
 ### Zero-Reflection and AOT (Ahead-of-Time) Compilation Priority
 
+Do not enable Runtime Async in Splat assemblies. Blazor WebAssembly uses Mono by default in .NET 11,
+and Splat must remain compatible with those consumers.
+
 **CRITICAL: Prefer Zero-Reflection Solutions First**
 
 When implementing new features, follow this priority order:

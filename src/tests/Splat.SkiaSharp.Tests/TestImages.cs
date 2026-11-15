@@ -93,8 +93,12 @@ internal static class TestImages
     /// <param name="height">The height to create.</param>
     /// <param name="format">The encoder to use.</param>
     /// <returns>The stream.</returns>
-    internal static MemoryStream OpenStream(int width, int height, SKEncodedImageFormat format) =>
-        new(Encode(width, height, format));
+    internal static Stream OpenStream(int width, int height, SKEncodedImageFormat format) =>
+#if NET11_0_OR_GREATER
+        new ReadOnlyMemoryStream(Encode(width, height, format));
+#else
+        new MemoryStream(Encode(width, height, format), writable: false);
+#endif
 
     /// <summary>Finds the single red pixel a corner-marked bitmap was built with.</summary>
     /// <param name="bitmap">The bitmap to search.</param>

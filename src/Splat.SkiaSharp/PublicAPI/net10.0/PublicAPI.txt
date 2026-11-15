@@ -48,6 +48,8 @@ namespace Splat.SkiaSharp
         public SkiaSharp.SKSamplingOptions Sampling { get; }
         public Splat.IBitmap Create(float width, float height) { }
         public System.Threading.Tasks.Task<Splat.IBitmap?> Load(System.IO.Stream sourceStream, float? desiredWidth, float? desiredHeight) { }
+        public Splat.IBitmap? LoadFromMemory(System.ReadOnlyMemory<byte> source, float? desiredWidth, float? desiredHeight) { }
+        public Splat.IBitmap? LoadFromMemory(System.ReadOnlyMemory<byte> source, float? desiredWidth, float? desiredHeight, System.Threading.CancellationToken cancellationToken) { }
         public System.Threading.Tasks.Task<Splat.IBitmap?> LoadFromResource(string source, float? desiredWidth, float? desiredHeight) { }
     }
 }

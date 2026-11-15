@@ -20,6 +20,9 @@ public sealed class SkiaBitmapLoaderTests
     /// <summary>How far a decoded image's proportions may drift from the source's.</summary>
     private const float AspectTolerance = 0.01F;
 
+    /// <summary>Bytes surrounding the encoded image slice.</summary>
+    private const int SlicePadding = 2;
+
     /// <summary>Verifies that a decode with no requested size keeps the image's own dimensions.</summary>
     /// <param name="format">The encoder the fixture is written with.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -39,6 +42,111 @@ public sealed class SkiaBitmapLoaderTests
             await Assert.That(bitmap!.Width).IsEqualTo((float)SourceWidth);
             await Assert.That(bitmap.Height).IsEqualTo((float)SourceHeight);
         }
+    }
+
+    /// <summary>Verifies that decoding consumes a read-only source without taking ownership of it.</summary>
+    /// <returns>The asynchronous test operation.</returns>
+    [Test]
+    public async Task Load_FromAReadOnlyStream_LeavesTheSourceOpen()
+    {
+        var loader = new SkiaBitmapLoader();
+        await using var source = TestImages.OpenStream(SourceWidth, SourceHeight, SKEncodedImageFormat.Png);
+
+        using var bitmap = await loader.Load(source, null, null);
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(bitmap).IsNotNull();
+            await Assert.That(source.CanWrite).IsFalse();
+            await Assert.That(source.CanRead).IsTrue();
+            await Assert.That(source.Position).IsEqualTo(source.Length);
+        }
+    }
+
+    /// <summary>Verifies that memory slices decode with the same sizing as stream input.</summary>
+    /// <param name="format">The encoded image format.</param>
+    /// <param name="cancellationToken">Cancellation for the decode.</param>
+    /// <returns>The asynchronous test operation.</returns>
+    [Test]
+    [Arguments(SKEncodedImageFormat.Png)]
+    [Arguments(SKEncodedImageFormat.Jpeg)]
+    [Arguments(SKEncodedImageFormat.Webp)]
+    public async Task LoadFromMemory_WithASlice_MatchesStreamInput(SKEncodedImageFormat format, CancellationToken cancellationToken)
+    {
+        var loader = new SkiaBitmapLoader();
+        var image = TestImages.Encode(SourceWidth, SourceHeight, format);
+        var padded = new byte[image.Length + SlicePadding];
+        image.CopyTo(padded, 1);
+        ReadOnlyMemory<byte> source = padded.AsMemory(1, image.Length);
+        await using var stream = TestImages.OpenStream(SourceWidth, SourceHeight, format);
+
+        using var expected = await loader.Load(stream, SourceHeight, SourceHeight);
+        using var actual = loader.LoadFromMemory(source, SourceHeight, SourceHeight, cancellationToken);
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(actual).IsNotNull();
+            await Assert.That(actual!.Width).IsEqualTo(expected!.Width);
+            await Assert.That(actual.Height).IsEqualTo(expected.Height);
+        }
+    }
+
+    /// <summary>Verifies that memory input preserves the stream decoder's orientation and pixels.</summary>
+    /// <param name="orientation">The recorded Exif orientation.</param>
+    /// <returns>The asynchronous test operation.</returns>
+    [Test]
+    [Arguments(1)]
+    [Arguments(2)]
+    [Arguments(3)]
+    [Arguments(4)]
+    [Arguments(5)]
+    [Arguments(6)]
+    [Arguments(7)]
+    [Arguments(8)]
+    public async Task LoadFromMemory_WithAnOrientation_MatchesStreamInput(int orientation)
+    {
+        var loader = new SkiaBitmapLoader();
+        var image = TestImages.EncodeWithOrientation(SourceWidth, SourceHeight, orientation);
+        await using var stream = new MemoryStream(image, writable: false);
+        using var expected = (SkiaBitmap)(await loader.Load(stream, null, null))!;
+        using var actual = (SkiaBitmap)loader.LoadFromMemory(image, null, null)!;
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(actual.Width).IsEqualTo(expected.Width);
+            await Assert.That(actual.Height).IsEqualTo(expected.Height);
+            await Assert.That(actual.EncodedOrigin).IsEqualTo(expected.EncodedOrigin);
+            await Assert.That(actual.Inner!.GetPixelSpan().SequenceEqual(expected.Inner!.GetPixelSpan())).IsTrue();
+        }
+    }
+
+    /// <summary>Verifies that empty or invalid encoded memory returns no bitmap.</summary>
+    /// <param name="empty">Whether to supply empty memory.</param>
+    /// <returns>The asynchronous test operation.</returns>
+    [Test]
+    [Arguments(true)]
+    [Arguments(false)]
+    public async Task LoadFromMemory_WithoutAnImage_ReturnsNothing(bool empty)
+    {
+        var loader = new SkiaBitmapLoader();
+        ReadOnlyMemory<byte> source = empty ? ReadOnlyMemory<byte>.Empty : "invalid image"u8.ToArray();
+
+        using var bitmap = loader.LoadFromMemory(source, null, null);
+
+        await Assert.That(bitmap).IsNull();
+    }
+
+    /// <summary>Verifies that cancellation is observed before copying or decoding memory.</summary>
+    /// <returns>The asynchronous test operation.</returns>
+    [Test]
+    public async Task LoadFromMemory_WhenCancelled_Throws()
+    {
+        var loader = new SkiaBitmapLoader();
+        using var cancellation = new CancellationTokenSource();
+        await cancellation.CancelAsync();
+
+        await Assert.That(() => loader.LoadFromMemory(ReadOnlyMemory<byte>.Empty, null, null, cancellation.Token))
+            .Throws<OperationCanceledException>();
     }
 
     /// <summary>Verifies that a requested size is honoured without distorting the image.</summary>

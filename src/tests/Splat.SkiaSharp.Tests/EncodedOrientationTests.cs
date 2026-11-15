@@ -41,7 +41,7 @@ public sealed class EncodedOrientationTests
     {
         using var source = TestImages.CreateCornerMarked(SourceWidth, SourceHeight);
 
-        var upright = SkiaBitmapLoader.ApplyEncodedOrigin(source, SKEncodedOrigin.TopLeft, _nearest);
+        var upright = SkiaBitmapLoader.ApplyEncodedOrigin(source, SKEncodedOrigin.TopLeft, _nearest, CancellationToken.None);
 
         await Assert.That(upright).IsSameReferenceAs(source);
     }
@@ -78,7 +78,7 @@ public sealed class EncodedOrientationTests
     [Arguments(SKEncodedOrigin.LeftBottom, SourceHeight, SourceWidth, 0, 3)]
     public async Task ApplyEncodedOrigin_MovesTheMarkedCorner(SKEncodedOrigin origin, int expectedWidth, int expectedHeight, int expectedX, int expectedY)
     {
-        using var upright = SkiaBitmapLoader.ApplyEncodedOrigin(TestImages.CreateCornerMarked(SourceWidth, SourceHeight), origin, _nearest);
+        using var upright = SkiaBitmapLoader.ApplyEncodedOrigin(TestImages.CreateCornerMarked(SourceWidth, SourceHeight), origin, _nearest, CancellationToken.None);
 
         using (Assert.Multiple())
         {

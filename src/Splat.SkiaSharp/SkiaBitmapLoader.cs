@@ -48,9 +48,36 @@ public sealed class SkiaBitmapLoader : IBitmapLoader
     {
         ArgumentExceptionHelper.ThrowIfNull(sourceStream);
 
-        using var data = await ReadAsync(sourceStream).ConfigureAwait(false);
+        using var data = await ReadAsync(sourceStream, CancellationToken.None).ConfigureAwait(false);
 
-        return Decode(data, desiredWidth, desiredHeight, _sampling);
+        return Decode(data, desiredWidth, desiredHeight, _sampling, CancellationToken.None);
+    }
+
+    /// <summary>Decodes an encoded image from memory, applying the requested size and recorded orientation.</summary>
+    /// <param name="source">The encoded image. The memory is only used during this call.</param>
+    /// <param name="desiredWidth">The desired width, or null to leave it unconstrained.</param>
+    /// <param name="desiredHeight">The desired height, or null to leave it unconstrained.</param>
+    /// <returns>The decoded bitmap, or null when the memory does not contain a recognised image.</returns>
+    public IBitmap? LoadFromMemory(ReadOnlyMemory<byte> source, float? desiredWidth, float? desiredHeight) =>
+        LoadFromMemory(source, desiredWidth, desiredHeight, CancellationToken.None);
+
+    /// <summary>Decodes an encoded image from memory, applying the requested size and recorded orientation.</summary>
+    /// <param name="source">The encoded image. The memory is only used during this call.</param>
+    /// <param name="desiredWidth">The desired width, or null to leave it unconstrained.</param>
+    /// <param name="desiredHeight">The desired height, or null to leave it unconstrained.</param>
+    /// <param name="cancellationToken">Cancellation checked between native image operations; an operation in progress cannot be interrupted.</param>
+    /// <returns>The decoded bitmap, or null when the memory does not contain a recognised image.</returns>
+    public IBitmap? LoadFromMemory(ReadOnlyMemory<byte> source, float? desiredWidth, float? desiredHeight, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        if (source.IsEmpty)
+        {
+            return null;
+        }
+
+        using var data = SKData.CreateCopy(source.Span);
+
+        return Decode(data, desiredWidth, desiredHeight, _sampling, cancellationToken);
     }
 
     /// <inheritdoc />
@@ -127,9 +154,11 @@ public sealed class SkiaBitmapLoader : IBitmapLoader
     /// <param name="source">The decoded bitmap, in the orientation it was encoded in.</param>
     /// <param name="origin">The orientation the source image recorded.</param>
     /// <param name="sampling">The sampling to draw with.</param>
+    /// <param name="cancellationToken">Cancellation checked before drawing.</param>
     /// <returns>The upright bitmap.</returns>
-    internal static SKBitmap ApplyEncodedOrigin(SKBitmap source, SKEncodedOrigin origin, SKSamplingOptions sampling)
+    internal static SKBitmap ApplyEncodedOrigin(SKBitmap source, SKEncodedOrigin origin, SKSamplingOptions sampling, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         if (origin == SKEncodedOrigin.TopLeft)
         {
             return source;
@@ -175,10 +204,11 @@ public sealed class SkiaBitmapLoader : IBitmapLoader
     /// <param name="desiredWidth">The requested width, or <see langword="null"/> when the caller did not constrain it.</param>
     /// <param name="desiredHeight">The requested height, or <see langword="null"/> when the caller did not constrain it.</param>
     /// <param name="sampling">The sampling to resize with.</param>
+    /// <param name="cancellationToken">Cancellation checked between image operations.</param>
     /// <returns>The decoded image, or <see langword="null"/> when no codec recognised the data.</returns>
-    internal static SkiaBitmap? Decode(SKData data, float? desiredWidth, float? desiredHeight, SKSamplingOptions sampling)
+    internal static SkiaBitmap? Decode(SKData data, float? desiredWidth, float? desiredHeight, SKSamplingOptions sampling, CancellationToken cancellationToken)
     {
-        using var codec = CreateCodec(data);
+        using var codec = CreateCodec(data, cancellationToken);
         if (codec is null)
         {
             return null;
@@ -189,9 +219,22 @@ public sealed class SkiaBitmapLoader : IBitmapLoader
         var oriented = SwapsDimensions(origin) ? new SKSizeI(encoded.Height, encoded.Width) : encoded;
         var target = ChooseTargetSize(oriented, desiredWidth, desiredHeight);
 
-        var decoded = DecodeAtLeast(codec, encoded, oriented, target);
+        SKBitmap? decoded = null;
+        try
+        {
+            decoded = DecodeAtLeast(codec, encoded, oriented, target, cancellationToken);
+            decoded = ApplyEncodedOrigin(decoded, origin, sampling, cancellationToken);
+            decoded = ResizeTo(decoded, target, sampling, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
 
-        return new(ResizeTo(ApplyEncodedOrigin(decoded, origin, sampling), target, sampling), origin);
+            var result = new SkiaBitmap(decoded, origin);
+            decoded = null;
+            return result;
+        }
+        finally
+        {
+            decoded?.Dispose();
+        }
     }
 
     /// <summary>Creates a codec for encoded image data.</summary>
@@ -200,8 +243,13 @@ public sealed class SkiaBitmapLoader : IBitmapLoader
     /// the data, which is the ordinary answer for a stream that does not hold an image.
     /// </remarks>
     /// <param name="data">The encoded image.</param>
+    /// <param name="cancellationToken">Cancellation checked before opening the codec.</param>
     /// <returns>The codec, or <see langword="null"/> when no codec recognised the data.</returns>
-    private static SKCodec? CreateCodec(SKData data) => SKCodec.Create(data);
+    private static SKCodec? CreateCodec(SKData data, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        return SKCodec.Create(data);
+    }
 
     /// <summary>Decodes at the closest size at or above the target that the codec can produce directly.</summary>
     /// <remarks>
@@ -213,9 +261,12 @@ public sealed class SkiaBitmapLoader : IBitmapLoader
     /// <param name="encoded">The encoded pixel dimensions.</param>
     /// <param name="oriented">The encoded dimensions as they will be displayed.</param>
     /// <param name="target">The size wanted, in display orientation.</param>
+    /// <param name="cancellationToken">Cancellation checked before decoding.</param>
     /// <returns>The decoded bitmap.</returns>
-    private static SKBitmap DecodeAtLeast(SKCodec codec, SKSizeI encoded, SKSizeI oriented, SKSizeI target)
+    private static SKBitmap DecodeAtLeast(SKCodec codec, SKSizeI encoded, SKSizeI oriented, SKSizeI target, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         // Orientation only exchanges the two axes, so the linear scale factor is the same either way round.
         var scale = (float)target.Width / oriented.Width;
         var scaled = scale >= 1F ? encoded : codec.GetScaledDimensions(scale);
@@ -228,9 +279,11 @@ public sealed class SkiaBitmapLoader : IBitmapLoader
     /// <param name="source">The bitmap to resize.</param>
     /// <param name="target">The size wanted.</param>
     /// <param name="sampling">The sampling to resize with.</param>
+    /// <param name="cancellationToken">Cancellation checked before resizing.</param>
     /// <returns>The bitmap at the target size.</returns>
-    private static SKBitmap ResizeTo(SKBitmap source, SKSizeI target, SKSamplingOptions sampling)
+    private static SKBitmap ResizeTo(SKBitmap source, SKSizeI target, SKSamplingOptions sampling, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         if (source.Width == target.Width && source.Height == target.Height)
         {
             return source;
@@ -244,12 +297,13 @@ public sealed class SkiaBitmapLoader : IBitmapLoader
 
     /// <summary>Reads a stream into memory Skia can decode from.</summary>
     /// <param name="source">The stream to read.</param>
+    /// <param name="cancellationToken">Cancellation for reading the source stream.</param>
     /// <returns>The stream's remaining content.</returns>
-    private static async Task<SKData> ReadAsync(Stream source)
+    private static async Task<SKData> ReadAsync(Stream source, CancellationToken cancellationToken)
     {
         await using var buffer = new MemoryStream();
 
-        await source.CopyToAsync(buffer).ConfigureAwait(false);
+        await source.CopyToAsync(buffer, cancellationToken).ConfigureAwait(false);
 
         return SKData.CreateCopy(buffer.GetBuffer().AsSpan(0, (int)buffer.Length));
     }
