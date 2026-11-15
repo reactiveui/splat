@@ -15,6 +15,7 @@ jobs:
     with:
       productNamespacePrefix: Splat
       installWorkloads: true
+      testProjects: tests/**/*.csproj
       sonarProjectKey: reactiveui_splat
       sonarOrganization: reactiveui
       sonarExclusions: '**/tests/**,**/Benchmarks/**,**/benchmarks/**,**/TestResults/**'
