@@ -8,7 +8,7 @@
 [assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.Drawing.RectangleF))]
 [assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.Drawing.Size))]
 [assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.Drawing.SizeF))]
-[assembly: System.Runtime.Versioning.SupportedOSPlatform("MacCatalyst26.5")]
+[assembly: System.Runtime.Versioning.SupportedOSPlatform("MacCatalyst27.2")]
 namespace Splat;
 
 public static class BitmapLoader

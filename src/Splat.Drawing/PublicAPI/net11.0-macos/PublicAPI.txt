@@ -2,7 +2,7 @@
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Common.Test")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Drawing.Tests")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Splat.Tests")]
-[assembly: System.Runtime.Versioning.SupportedOSPlatform("macOS26.5")]
+[assembly: System.Runtime.Versioning.SupportedOSPlatform("macOS27.2")]
 namespace Splat;
 
 public static class BitmapLoader
