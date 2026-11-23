@@ -24,7 +24,7 @@
     <PackageVersion Include="Roslynator.Analyzers" Version="5.0.1" />
     <PackageVersion Include="Serilog" Version="4.4.0" />
     <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
-    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.36.0.15337" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.37.0.15768" />
     <PackageVersion Include="SimpleInjector" Version="5.6.0" />
     <PackageVersion Include="SkiaSharp" Version="4.157.0" />
     <!-- SkiaSharp brings only the macOS and Win32 native assets on the plain .NET target frameworks. -->
