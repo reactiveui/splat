@@ -20,7 +20,7 @@
     <PackageVersion Include="Ninject" Version="3.3.6" />
     <PackageVersion Include="NLog" Version="6.2.2" />
     <PackageVersion Include="Prism.Core" Version="9.0.537" />
-    <PackageVersion Include="ReactiveUI.Disposables" Version="10.1.0" />
+    <PackageVersion Include="ReactiveUI.Disposables" Version="10.2.3" />
     <PackageVersion Include="Roslynator.Analyzers" Version="5.0.1" />
     <PackageVersion Include="Serilog" Version="4.4.0" />
     <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
