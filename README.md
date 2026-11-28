@@ -1,15 +1,17 @@
-[![NuGet Stats](https://img.shields.io/nuget/v/splat.svg)](https://www.nuget.org/packages/splat) ![Build](https://github.com/reactiveui/splat/workflows/Build/badge.svg) [![Code Coverage](https://codecov.io/gh/reactiveui/splat/branch/main/graph/badge.svg)](https://codecov.io/gh/reactiveui/splat)
-<br>
-<a href="https://www.nuget.org/packages/splat">
-        <img src="https://img.shields.io/nuget/dt/splat.svg">
-</a>
-<a href="https://reactiveui.net/slack">
-        <img src="https://img.shields.io/badge/chat-slack-blue.svg">
-</a>
+<div align="center">
 
-<img src="https://github.com/reactiveui/styleguide/blob/master/logo_splat/logo.png?raw=true" width="200" />
+<a href="https://github.com/reactiveui/splat"><img src="https://raw.githubusercontent.com/reactiveui/styleguide/master/logo_splat/logo.svg" alt="Splat" width="128"></a>
 
 # Splat
+
+[![Build](https://img.shields.io/github/actions/workflow/status/reactiveui/splat/ci-build.yml?branch=main&label=build&logo=githubactions&logoColor=white)](https://github.com/reactiveui/splat/actions/workflows/ci-build.yml)
+[![NuGet](https://img.shields.io/nuget/v/Splat?label=nuget&logo=nuget&logoColor=white&color=004880)](https://www.nuget.org/packages/Splat)
+[![Downloads](https://img.shields.io/nuget/dt/Splat?label=downloads&logo=nuget&logoColor=white&color=004880)](https://www.nuget.org/packages/Splat)
+[![Coverage](https://img.shields.io/codecov/c/github/reactiveui/splat?label=coverage&logo=codecov&logoColor=white)](https://codecov.io/gh/reactiveui/splat)
+[![License](https://img.shields.io/github/license/reactiveui/splat?color=blue)](https://github.com/reactiveui/splat/blob/main/LICENSE)
+[![Discussions](https://img.shields.io/badge/discussions-ask%20a%20question-8A2BE2?logo=github&logoColor=white)](https://github.com/reactiveui/splat/discussions)
+
+</div>
 
 ## Table of Contents
 
@@ -158,7 +160,6 @@ Note:
 | **Thread Safety** | Lock-free reads, thread-safe writes | Lock-free reads, thread-safe writes |
 | **AOT Compatible** | Yes | Yes |
 
-
 #### Quick Start for New Users
 
 The service locator is simple to use - register services at startup, then resolve them when needed:
@@ -296,7 +297,6 @@ internal static class Container<T>
 - **O(1) registration** - snapshots are rebuilt lazily on first read, not on every registration
 - **Zero boxing/unboxing** for value types
 - **AOT-friendly** - no reflection required for generic registrations
-
 
 ##### 2. Type Registry (Compatibility Fallback)
 
@@ -714,7 +714,6 @@ var loggerFactory = container.Resolve<ILoggerFactory>();
 // in theory it could also be
 // var loggerFactory = new LoggerFactory();
 
-
 /// then in your service locator initialisation
 Locator.CurrentMutable.UseMicrosoftExtensionsLoggingWithWrappingFullLogger(loggerFactory);
 ```
@@ -757,7 +756,6 @@ Thanks to @joelweiss for first creating this logger.
 [SplatDrawingBadge]: https://img.shields.io/nuget/v/Splat.Drawing.svg
 
 ### Using Cross-Platform Colors and Geometry
-
 
 ```cs
 // This System.Drawing class works, even on WinRT where it's not supposed to exist
@@ -1095,14 +1093,28 @@ By switching to the new resolver, consumers get a **free performance boost** and
 
 ## Contribute
 
-Splat is developed under an OSI-approved open source license, making it freely usable and distributable, even for commercial use. We ❤ the people who are involved in this project, and we’d love to have you on board, especially if you are just getting started or have never contributed to open-source before.
+Splat is part of [ReactiveUI](https://github.com/reactiveui) and is released under the [MIT license](https://github.com/reactiveui/splat/blob/main/LICENSE). We welcome contributions of every size, from bug reports and documentation to features and tests.
 
-So here's to you, lovely person who wants to join us — this is how you can support us:
+- **Questions:** ask in [GitHub Discussions](https://github.com/reactiveui/splat/discussions).
+- **Bugs and feature requests:** open a [GitHub issue](https://github.com/reactiveui/splat/issues/new/choose).
+- **Larger changes:** open an issue or discussion first, so we can agree on the approach before you start.
+- **Contributor guide:** read [reactiveui.net/contribute](https://www.reactiveui.net/contribute/) for [building and testing](https://www.reactiveui.net/contribute/building-and-testing/) and [pull requests](https://www.reactiveui.net/contribute/pull-requests/).
 
-* [Responding to questions on StackOverflow](https://stackoverflow.com/questions/tagged/splat)
-* [Passing on knowledge and teaching the next generation of developers](http://ericsink.com/entries/dont_use_rxui.html)
-* Submitting documentation updates where you see fit or lacking.
-* Making contributions to the code base.
+### Coding standards
+
+Every pull request must meet these standards. The build checks most of them.
+
+- Follow the [ReactiveUI C# style guide](https://www.reactiveui.net/contribute/software-style-guide/code-style/).
+- The repository's `.editorconfig` and the StyleSharp, PerformanceSharp and SecuritySharp analyzers run on every build. Fix each finding in the code. Do not suppress it or relax the `.editorconfig`.
+- Add tests for every bug fix and new feature.
+- Document public APIs with XML documentation comments.
+- Write commit messages in the [Conventional Commits](https://www.reactiveui.net/contribute/software-style-guide/commit-message-convention/) format.
+- Follow the [Code of Conduct](https://github.com/reactiveui/.github/blob/main/CODE_OF_CONDUCT.md).
+
+### Support the project
+
+- Sponsor the maintainers on GitHub Sponsors: [reactivemarbles](https://github.com/sponsors/reactivemarbles), [glennawatson](https://github.com/sponsors/glennawatson) and [chrispulman](https://github.com/sponsors/chrispulman).
+- Ask your employer to support open source, for example with the [balanced employee IP agreement](https://github.com/github/balanced-employee-ip-agreement).
 
 ## Sponsors
 
