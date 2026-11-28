@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/examples/">
+    <Project Path="examples/DispatchAdapters/DispatchAdapters.csproj" />
+    <Project Path="examples/DispatchDesk/DispatchDesk.csproj" />
+  </Folder>
   <Configurations>
     <Platform Name="Any CPU" />
     <Platform Name="ARM" />

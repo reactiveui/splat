@@ -29,6 +29,16 @@ public static class ApplicationInsightsViewTrackingTests
     /// <summary>Verifies the v3 view tracking call path.</summary>
     public sealed class NavigationTests
     {
+        /// <summary>Checks the relationship between the packing and label sessions with a local test client.</summary>
+        /// <returns>Completion after checking the label session's parent.</returns>
+        [Test]
+        public async Task PackingDeskTracksLabelPrinting()
+        {
+            var (packing, parent) = DispatchTelemetry.PackingTelemetry.PrintLabel(CreateClient());
+            await Assert.That(packing).IsNotEqualTo(Guid.Empty);
+            await Assert.That(parent).IsEqualTo(packing);
+        }
+
         /// <summary>Verifies that navigating by name is accepted by the v3 SDK.</summary>
         /// <returns>A task representing the asynchronous test.</returns>
         [Test]

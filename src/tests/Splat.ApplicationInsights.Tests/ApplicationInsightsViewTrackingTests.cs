@@ -28,6 +28,18 @@ public static class ApplicationInsightsViewTrackingTests
     /// <summary>Verifies the page-view telemetry that navigation actually sends to Application Insights.</summary>
     public sealed class NavigationTests
     {
+        /// <summary>Checks that opening the packing desk records a page and associates label printing with packing.</summary>
+        /// <returns>Completion after reading the captured telemetry.</returns>
+        [Test]
+        public async Task PackingDeskTracksLabelPrinting()
+        {
+            var (client, channel) = CapturingTelemetryChannel.CreateClient();
+            var (packing, parent) = DispatchTelemetry.PackingTelemetry.PrintLabel(client);
+            await Assert.That(packing).IsNotEqualTo(Guid.Empty);
+            await Assert.That(parent).IsEqualTo(packing);
+            await Assert.That(channel.Sent[0]).IsTypeOf<PageViewTelemetry>();
+        }
+
         /// <summary>Verifies that navigating by name sends a page view carrying that name.</summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [Test]

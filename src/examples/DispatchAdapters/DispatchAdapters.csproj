@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../Splat.Autofac/Splat.Autofac.csproj" />
+    <ProjectReference Include="../../Splat.DryIoc/Splat.DryIoc.csproj" />
+    <ProjectReference Include="../../Splat.Microsoft.Extensions.DependencyInjection/Splat.Microsoft.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="../../Splat.Ninject/Splat.Ninject.csproj" />
+    <ProjectReference Include="../../Splat.Prism/Splat.Prism.csproj" />
+    <ProjectReference Include="../../Splat.SimpleInjector/Splat.SimpleInjector.csproj" />
+    <ProjectReference Include="../../Splat.SkiaSharp/Splat.SkiaSharp.csproj" />
+    <ProjectReference Include="../../Splat.Serilog/Splat.Serilog.csproj" />
+    <ProjectReference Include="../../Splat.Log4Net/Splat.Log4Net.csproj" />
+    <ProjectReference Include="../../Splat.NLog/Splat.NLog.csproj" />
+    <ProjectReference Include="../../Splat.Microsoft.Extensions.Logging/Splat.Microsoft.Extensions.Logging.csproj" />
+    <ProjectReference Include="../../Splat.Exceptionless/Splat.Exceptionless.csproj" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Condition="$([MSBuild]::IsOsPlatform('Linux'))" />
+    <InternalsVisibleTo Include="Splat.Tests" />
+  </ItemGroup>
+  <Import Project="../../Splat.SkiaSharp/build/Splat.SkiaSharp.targets" />
+</Project>
