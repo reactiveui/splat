@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="../../examples/DispatchDesk/DispatchDesk.csproj" />
+    <ProjectReference Include="../../examples/DispatchAdapters/DispatchAdapters.csproj" />
     <ProjectReference Include="..\..\Splat.Core\Splat.Core.csproj" />
     <ProjectReference Include="..\..\Splat\Splat.csproj" />
     <ProjectReference Include="..\Splat.Common.Test\Splat.Common.Test.csproj" />

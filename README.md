@@ -13,6 +13,8 @@
 
 </div>
 
+The [dispatch desk example](src/examples/README.md) uses a registration module, a named service and a logger in one runnable program.
+
 ## Table of Contents
 
 - [What does it do?](#what-does-it-do)

@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="../../examples/DispatchTelemetry/RaygunPacking.cs" Link="Examples/RaygunPacking.cs" />
     <Compile Include="..\Splat.Tests\ApplicationPerformanceMonitoring\BaseFeatureUsageTrackingTests.cs" Link="BaseTests\BaseFeatureUsageTrackingTests.cs" />
   </ItemGroup>
 
